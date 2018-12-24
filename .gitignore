@@ -11,6 +11,7 @@
 .mtj.tmp/
 
 # Package Files #
+*.iml
 *.jar
 *.war
 *.nar
@@ -22,9 +23,16 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+app/app.iml
+base/base.iml
+data/data.iml
+domain/domain.iml
+origin/origin.iml
+utility/utility.iml
+widget/widget.iml
+
 .idea/
 .gradle/
-*.iml
 /local.properties
 .DS_Store
 /build
