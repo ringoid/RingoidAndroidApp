@@ -1,15 +1,15 @@
 package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
-import com.ringoid.data.remote.model.action.CommitActionsEssence
 import com.ringoid.data.remote.model.image.ImageListResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
-import com.ringoid.data.remote.model.image.essence.ImageDeleteEssence
-import com.ringoid.data.remote.model.image.essence.ImageUploadUrlEssence
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
-import com.ringoid.data.remote.model.user.essence.AuthCreateProfileEssence
-import com.ringoid.data.remote.model.user.essence.UpdateUserSettingsEssence
+import com.ringoid.domain.model.essence.action.CommitActionsEssence
+import com.ringoid.domain.model.essence.image.ImageDeleteEssence
+import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
+import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
+import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssence
 import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.MediaType

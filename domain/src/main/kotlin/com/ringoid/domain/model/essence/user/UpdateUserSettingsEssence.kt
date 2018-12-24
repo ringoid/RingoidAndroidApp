@@ -1,4 +1,4 @@
-package com.ringoid.data.remote.model.user.essence
+package com.ringoid.domain.model.essence.user
 
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.model.IEssence

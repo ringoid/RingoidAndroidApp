@@ -1,4 +1,4 @@
-package com.ringoid.data.remote.model.image.essence
+package com.ringoid.domain.model.essence.image
 
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.model.IEssence
