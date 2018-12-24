@@ -1,14 +1,14 @@
 package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.data.remote.model.image.ImageListResponse
+import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
+import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface RingoidRestAdapter {
 
@@ -31,6 +31,18 @@ interface RingoidRestAdapter {
 
     /* Image */
     // --------------------------------------------------------------------------------------------
+    @POST("get_presigned")
+    fun getImageUploadUrl(@Body body: RequestBody): Single<ImageUploadUrlResponse>
+
+    @GET("get_own_photos")
+    fun getUserImages(@Query("access_token") accessToken: String,
+                      @Query("resolution") resolution: String): Single<ImageListResponse>
+
+    @POST("delete_photo")
+    fun deleteUserImage(@Body body: RequestBody): Single<BaseResponse>
+
+    @PUT
+    fun uploadImage(@Url url: String, @Body body: RequestBody): Completable
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
