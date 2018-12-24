@@ -1,0 +1,52 @@
+buildscript {
+    ext {
+        androidAnnotationVersion = '1.0.1'
+        androidAppCompatVersion = '1.0.2'
+        androidCoreVersion = '1.0.1'
+        androidFragmentVersion = '1.0.0'
+        androidMaterialVersion = '1.1.0-alpha01'
+
+        androidCardViewVersion = '1.0.0'
+        androidConstraintLayoutVersion = '1.1.3'
+        androidRecyclerViewVersion = '1.0.0'
+        androidViewPagerVersion = '1.0.0'
+
+        archComponentsVersion = '2.0.0'
+
+        kotlinVersion = '1.3.0'
+        kotlinCoroutinesVersion = '1.0.1'
+
+        daggerVersion = '2.16'
+
+        glideVersion = '4.8.0'
+        eventBusVersion = '3.1.1'
+        frescoVersion = '1.5.0'
+        gsonVersion = '2.8.5'
+        timberVersion = '4.7.1'
+
+        circularProgressVersion = '2.0.0'
+        overscrollVersion = '1.0.4'
+        rvAnimVersion = '3.0.0'
+
+        logInterceptorVersion = '3.0.0'
+        okHttpVersion = '3.10.0'
+        retrofitVersion = '2.4.0'
+
+        rxJavaVersion = '2.2.2'
+        rxAndroidVersion = '2.1.0'
+        rxBindingVersion = '3.0.0-alpha1'
+
+        archTestVersion = '1.1.1'
+        archRoomTestVersion = '1.1.0'
+        espressoVersion = '3.1.0'
+        googleTruthVersion = '0.42'
+        junitVersion = '4.12'
+        testVersion = '1.1.0'
+        testCoreVersion = '1.0.0'
+
+        buildGradleVersion = '3.2.1'
+        crashlyticsVersion = '2.8.0@aar'
+        leakCanaryVersion = '1.5.4'
+        multidexVersion = '1.0.3'
+    }
+}

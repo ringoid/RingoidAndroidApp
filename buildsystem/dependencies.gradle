@@ -1,0 +1,319 @@
+/**
+ * Inspired with: {@see https://hackernoon.com/android-how-to-add-gradle-dependencies-using-foreach-c4cbcc070458#.jy8ip88jc}
+ */
+apply from: "$rootProject.projectDir/buildsystem/version.gradle"
+
+ext {
+    d_android = [
+            annotation: "androidx.annotation:annotation:${androidAnnotationVersion}",
+            appcompat:  "androidx.appcompat:appcompat:${androidAppCompatVersion}",
+            core:       "androidx.core:core:${androidCoreVersion}",
+            fragment:   "androidx.fragment:fragment:${androidFragmentVersion}",
+            material:   "com.google.android.material:material:${androidMaterialVersion}",
+    ]
+
+    d_android_view = [
+            cardView:   "androidx.cardview:cardview:${androidCardViewVersion}",
+            constraint: "androidx.constraintlayout:constraintlayout:${androidConstraintLayoutVersion}",
+            recycler:   "androidx.recyclerview:recyclerview:${androidRecyclerViewVersion}",
+            viewpager:  "androidx.viewpager:viewpager:${androidViewPagerVersion}",
+    ]
+
+    d_arch = [
+            lifecycle:         "androidx.lifecycle:lifecycle-common:${archComponentsVersion}",
+            lifecycleCompiler: "androidx.lifecycle:lifecycle-compiler:${archComponentsVersion}",
+            lifecycleRx:       "androidx.lifecycle:lifecycle-reactivestreams:${archComponentsVersion}",
+
+            paging:       "androidx.paging:paging-common:${archComponentsVersion}",
+
+            room:         "androidx.room:room-common:${archComponentsVersion}",
+            roomCompiler: "androidx.room:room-compiler:${archComponentsVersion}",
+            roomRx:       "androidx.room:room-rxjava2:${archComponentsVersion}",
+    ]
+
+    d_kotlin = [
+            ktStdLib:     "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
+            ktCoroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlinCoroutinesVersion}",
+    ]
+
+    d_dagger = [
+            dagger:                 "com.google.dagger:dagger:${daggerVersion}",
+            daggerAndroid:          "com.google.dagger:dagger-android:${daggerVersion}",
+            daggerAndroidProcessor: "com.google.dagger:dagger-android-processor:${daggerVersion}",
+            daggerCompiler:         "com.google.dagger:dagger-compiler:${daggerVersion}",
+    ]
+
+    d_libs = [
+            glide:          "com.github.bumptech.glide:glide:${glideVersion}",
+            glideCompiler:  "com.github.bumptech.glide:compiler:${glideVersion}",
+
+            eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
+            fresco:         "com.facebook.fresco:fresco:${frescoVersion}",
+            gson:           "com.google.code.gson:gson:${gsonVersion}",
+            timber:         "com.jakewharton.timber:timber:${timberVersion}",
+
+            circularProgress: "com.mikhaellopez:circularprogressbar:${circularProgressVersion}",
+            overscroll:       "me.everything:overscroll-decor-android:${overscrollVersion}",
+            rvAnim:           "jp.wasabeef:recyclerview-animators:${rvAnimVersion}",
+    ]
+
+    d_network = [
+            logInterceptor: "com.github.ihsanbal:LoggingInterceptor:${logInterceptorVersion}",
+
+            okhttp:       "com.squareup.okhttp3:okhttp:${okHttpVersion}",
+            okhttpLog:    "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
+
+            retrofit:     "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            retrofitGson: "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            retrofitRx:   "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
+    ]
+
+    d_rx = [
+            rx:           "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
+            rxAndroid:    "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
+            rxBinding:    "com.jakewharton.rxbinding3:rxbinding:${rxBindingVersion}",
+            rxBindCore:   "com.jakewharton.rxbinding3:rxbinding-core:${rxBindingVersion}",
+            rxBindCompat: "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}"
+    ]
+
+    d_test = [
+            archTest:     "androidx.arch.core:core-testing:${archComponentsVersion}",
+            archRoomTest: "androidx.room:room-testing:${archComponentsVersion}",
+
+            espresso:    "androidx.test.espresso:espresso-core:${espressoVersion}",
+            googleTruth: "com.google.truth:truth:${googleTruthVersion}",
+            junit:       "junit:junit:${junitVersion}",
+            testCore:    "androidx.test:core:${testCoreVersion}",
+            testRunner:  "androidx.test:runner:${testVersion}",
+            testRules:   "androidx.test:rules:${testVersion}"
+    ]
+
+    d_view = [
+    ]
+
+    d_support = [
+            crashlytics: "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
+            leakCanary:  "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
+            multidex:    "com.android.support:multidex:${multidexVersion}",
+            timber:      "com.jakewharton.timber:timber:${timberVersion}",
+    ]
+
+    /* Modules */
+    // --------------------------------------------------------------------------------------------
+    modules = [
+            app:     ':app',
+            base:    ':base',
+            data:    ':data',
+            domain:  ':domain',
+            origin:  ':origin',
+            utility: ':utility',
+            widget:  ':widget'
+    ]
+
+    def module_base = [[configuration: "implementation", dependency: project(modules.base)]]
+    def module_data = [[configuration: "implementation", dependency: project(modules.data)]]
+    def module_domain = [[configuration: "implementation", dependency: project(modules.domain)]]
+    def module_origin = [[configuration: "implementation", dependency: project(modules.origin)]]
+    def module_utility = [[configuration: "implementation", dependency: project(modules.utility)]]
+    def module_widget = [[configuration: "implementation", dependency: project(modules.widget)]]
+
+    def originModules = module_base + module_data + module_domain + module_origin + module_utility + module_widget
+
+    /* Plugins */
+    // --------------------------------------------------------------------------------------------
+    xPlugins = [
+            androidApp:        "com.android.application",
+            androidFeature:    "com.android.feature",
+            androidInstantApp: "com.android.instantapp",
+            androidLib:        "com.android.library",
+            fabric:            "io.fabric",
+            google:            "com.google.gms.google-services",
+            kotlinAndroid:     "kotlin-android",
+            kotlinAndroidExt:  "kotlin-android-extensions",
+            kotlinAnnotation:  "kotlin-kapt",
+    ]
+
+    /* Pre-Configured dependencies */
+    // --------------------------------------------------------------------------------------------
+    def android = [
+            [configuration: "implementation", dependency: d_android.annotation],
+            [configuration: "implementation", dependency: d_android.appcompat],
+            [configuration: "implementation", dependency: d_android.core],
+            [configuration: "implementation", dependency: d_android.fragment],
+            [configuration: "implementation", dependency: d_android.material],
+            [configuration: "implementation", dependency: d_android_view.cardView],
+            [configuration: "implementation", dependency: d_android_view.constraint],
+            [configuration: "implementation", dependency: d_android_view.recycler],
+            [configuration: "implementation", dependency: d_android_view.viewpager],
+    ]
+
+    def arch = [
+            [configuration: "kapt", dependency: d_arch.lifecycleCompiler],
+            [configuration: "implementation", dependency: d_arch.lifecycle],
+            [configuration: "implementation", dependency: d_arch.lifecycleRx],
+            [configuration: "implementation", dependency: d_arch.paging],
+    ]
+
+    def dagger = [
+            [configuration: "kapt", dependency: d_dagger.daggerAndroidProcessor],
+            [configuration: "kapt", dependency: d_dagger.daggerCompiler],
+            [configuration: "implementation", dependency: d_dagger.dagger],
+            [configuration: "implementation", dependency: d_dagger.daggerAndroid],
+    ]
+
+    def eventbus = [
+            [configuration: "implementation", dependency: d_libs.eventBus],
+    ]
+
+    def kotlin = [
+            [configuration: "implementation", dependency: d_kotlin.ktStdLib],
+            [configuration: "implementation", dependency: d_kotlin.ktCoroutines],
+    ]
+
+    def log = [
+            [configuration: "implementation", dependency: d_support.timber],
+    ]
+
+    def net = [
+            [configuration: "implementation", dependency: d_network.logInterceptor, options: { exclude group: 'org.json', module: 'json' }],
+            [configuration: "implementation", dependency: d_network.okhttp],
+            [configuration: "implementation", dependency: d_network.okhttpLog],
+            [configuration: "implementation", dependency: d_network.retrofit],
+            [configuration: "implementation", dependency: d_network.retrofitGson],
+            [configuration: "implementation", dependency: d_network.retrofitRx],
+    ]
+
+    def room = [
+            [configuration: "kapt", dependency: d_arch.roomCompiler],
+            [configuration: "implementation", dependency: d_arch.room],
+            [configuration: "implementation", dependency: d_arch.roomRx],
+    ]
+
+    def rx = [
+            [configuration: "implementation", dependency: d_rx.rx],
+            [configuration: "implementation", dependency: d_rx.rxAndroid],
+            [configuration: "implementation", dependency: d_rx.rxBinding],
+            [configuration: "implementation", dependency: d_rx.rxBindCore],
+            [configuration: "implementation", dependency: d_rx.rxBindCompat],
+    ]
+
+    def view = [
+    ]
+
+    def support = [
+            [configuration: "implementation", dependency: d_support.crashlytics, options: { transitive = true }],
+            [configuration: "debugImplementation", dependency: d_support.leakCanary],
+            [configuration: "releaseImplementation", dependency: d_support.leakCanary],
+            [configuration: "implementation", dependency: d_support.multidex],
+    ]
+
+    // ------------------------------------------
+    def androidTest = [
+            [configuration: "androidTestImplementation", dependency: d_test.espresso],
+            [configuration: "androidTestImplementation", dependency: d_test.googleTruth],
+            [configuration: "androidTestImplementation", dependency: d_test.testCore],
+            [configuration: "androidTestImplementation", dependency: d_test.testRunner],
+            [configuration: "androidTestImplementation", dependency: d_test.testRules],
+    ]
+
+    def test = [
+            [configuration: "testImplementation", dependency: d_test.junit],
+            [configuration: "testImplementation", dependency: d_test.archTest],
+            [configuration: "testImplementation", dependency: d_test.archRoomTest],
+    ]
+
+    /* Dependencies */
+    // --------------------------------------------------------------------------------------------
+    /* App */
+    // ------------------------------------------
+    appDependencies = []
+    testAppDependencies = test
+
+    appPlugins = [
+            xPlugins.androidApp,
+            xPlugins.kotlinAndroid,
+    ]
+
+    appPluginsAtBottom = [
+            xPlugins.google,
+    ]
+
+    /* Origin */
+    // ------------------------------------------
+    originDependencies = []
+    originDependencies += android + arch + dagger + kotlin + log
+
+    androidTestOriginDeps = androidTest
+    androidTestOriginDeps += [
+            [configuration: "kaptAndroidTest", dependency: d_dagger.daggerCompiler],
+    ]
+    testOriginDependencies = test
+    testOriginDependencies += [
+            [configuration: "kaptTest", dependency: d_dagger.daggerCompiler],
+    ]
+
+    originPlugins = [
+            xPlugins.androidFeature,
+            xPlugins.kotlinAndroid,
+            xPlugins.kotlinAndroidExt,
+            xPlugins.kotlinAnnotation,
+//            xPlugins.fabric,
+    ]
+
+    /* Base */
+    // ------------------------------------------
+    baseDependencies = []
+    baseDependencies += module_data + module_domain + module_utility + kotlin + log
+    testBaseDependencies = test
+
+    basePlugins = [
+            xPlugins.androidLib,
+            xPlugins.kotlinAndroid,
+    ]
+
+    /* Data */
+    // ------------------------------------------
+    dataDependencies = []
+    dataDependencies += module_domain + module_utility + kotlin + log + net + room + rx
+    testDataDependencies = test
+
+    dataPlugins = [
+            xPlugins.androidLib,
+            xPlugins.kotlinAndroid,
+    ]
+
+    /* Domain */
+    // ------------------------------------------
+    domainDependencies = [
+            [configuration: "implementation", dependency: d_libs.gson],
+    ]
+    domainDependencies += module_utility + kotlin + log + room + rx
+    testDomainDependencies = test
+
+    domainPlugins = [
+            xPlugins.androidLib,
+            xPlugins.kotlinAndroid,
+    ]
+
+    /* Utility */
+    // ------------------------------------------
+    utilityDependencies = []
+    utilityDependencies += android + kotlin + log
+    testUtilityDependencies = test
+
+    utilityPlugins = [
+            xPlugins.androidLib,
+            xPlugins.kotlinAndroid,
+    ]
+
+    /* Widget */
+    // ------------------------------------------
+    widgetDependencies = []
+    widgetDependencies += module_utility + android + kotlin + log
+    testWidgetDependencies = test
+
+    widgetPlugins = [
+            xPlugins.androidLib,
+            xPlugins.kotlinAndroid,
+    ]
+}

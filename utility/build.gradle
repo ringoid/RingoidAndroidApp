@@ -1,0 +1,41 @@
+rootProject.utilityPlugins.each {
+    apply plugin: it
+}
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDirs += 'src/main/kotlin'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def utilityDependencies = rootProject.ext.utilityDependencies
+    def testUtilityDependencies = rootProject.ext.testUtilityDependencies
+
+    utilityDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testUtilityDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}
