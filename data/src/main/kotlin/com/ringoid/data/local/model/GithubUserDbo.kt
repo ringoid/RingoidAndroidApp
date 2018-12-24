@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ringoid.data.local.model.GithubUserDbo.Companion.TABLE_NAME
-import com.ringoid.domain.model.GithubUser
 import com.ringoid.domain.model.Mappable
 
 @Deprecated("Sample")
