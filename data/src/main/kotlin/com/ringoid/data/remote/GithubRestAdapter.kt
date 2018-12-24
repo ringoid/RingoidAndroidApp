@@ -7,6 +7,9 @@ import retrofit2.http.Path
 
 interface GithubRestAdapter {
 
+    //
+
+    // --------------------------------------------------------------------------------------------
     @GET("users")
     fun users(): Single<List<GithubUserEntity>>
 
