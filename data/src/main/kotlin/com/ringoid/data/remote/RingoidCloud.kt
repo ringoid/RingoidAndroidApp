@@ -15,7 +15,9 @@ import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
+import javax.inject.Singleton
 
+@Singleton
 class RingoidCloud(private val restAdapter: RingoidRestAdapter) {
 
     /* User (Auth, Profile) */
