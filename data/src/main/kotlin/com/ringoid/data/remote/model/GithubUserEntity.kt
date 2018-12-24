@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.model.GithubUser
 import com.ringoid.domain.model.Mappable
 
+@Deprecated("Sample")
 data class GithubUserEntity(
     @SerializedName(COLUMN_ID) val id: Int,
     @SerializedName(COLUMN_LOGIN) val login: String,

@@ -7,6 +7,7 @@ import com.ringoid.data.local.model.GithubUserDbo.Companion.TABLE_NAME
 import com.ringoid.domain.model.GithubUser
 import com.ringoid.domain.model.Mappable
 
+@Deprecated("Sample")
 @Entity(tableName = TABLE_NAME)
 data class GithubUserDbo(
     @PrimaryKey @ColumnInfo(name = COLUMN_ID) val id: Int,

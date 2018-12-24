@@ -7,6 +7,7 @@ import com.ringoid.domain.model.GithubUser
 import com.ringoid.domain.repository.IGithubUserRepository
 import io.reactivex.Single
 
+@Deprecated("Sample")
 class GetGithubUsersUseCase(private val repository: IGithubUserRepository,
                             threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor
 )

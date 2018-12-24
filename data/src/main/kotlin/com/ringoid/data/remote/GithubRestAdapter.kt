@@ -5,11 +5,9 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 
+@Deprecated("Sample")
 interface GithubRestAdapter {
 
-    //
-
-    // --------------------------------------------------------------------------------------------
     @GET("users")
     fun users(): Single<List<GithubUserEntity>>
 

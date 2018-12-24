@@ -5,7 +5,7 @@ import androidx.room.Query
 import com.ringoid.data.local.model.GithubUserDbo
 import io.reactivex.Single
 
-@Dao
+@Dao @Deprecated("Sample")
 interface GithubUserDao {
 
     @Query("SELECT * FROM ${GithubUserDbo.TABLE_NAME}")

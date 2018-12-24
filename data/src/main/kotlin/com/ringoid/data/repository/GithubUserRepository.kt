@@ -10,6 +10,7 @@ import com.ringoid.domain.repository.network
 import com.ringoid.domain.repository.repository
 import io.reactivex.Observable
 
+@Deprecated("Sample")
 class GithubUserRepository(private val cloud: GithubCloud, private val local: GithubUserDao) :
     IGithubUserRepository {
 
