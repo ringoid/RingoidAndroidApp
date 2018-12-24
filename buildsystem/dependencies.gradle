@@ -274,7 +274,7 @@ ext {
     /* Data */
     // ------------------------------------------
     dataDependencies = []
-    dataDependencies += module_domain + module_utility + kotlin + log + net + room + rx
+    dataDependencies += module_domain + module_utility + kotlin + dagger + log + net + room + rx
     testDataDependencies = test
 
     dataPlugins = [
