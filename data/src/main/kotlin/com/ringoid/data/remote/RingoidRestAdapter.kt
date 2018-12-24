@@ -14,16 +14,16 @@ interface RingoidRestAdapter {
 
     /* User (Auth, Profile) */
     // --------------------------------------------------------------------------------------------
-    @POST("create_profile")
+    @POST("auth/create_profile")
     fun createUserProfile(@Body body: RequestBody): Single<AuthCreateProfileResponse>
 
-    @POST("delete")
+    @POST("auth/delete")
     fun deleteUserProfile(@Body body: RequestBody): Single<BaseResponse>
 
-    @GET("get_settings")
+    @GET("auth/get_settings")
     fun getUserSettings(@Query("access_token") accessToken: String): Single<UserSettingsResponse>
 
-    @POST("update_settings")
+    @POST("auth/update_settings")
     fun updateUserSettings(@Body body: RequestBody): Single<BaseResponse>
 
     /* Actions */
@@ -31,14 +31,14 @@ interface RingoidRestAdapter {
 
     /* Image */
     // --------------------------------------------------------------------------------------------
-    @POST("get_presigned")
+    @POST("image/get_presigned")
     fun getImageUploadUrl(@Body body: RequestBody): Single<ImageUploadUrlResponse>
 
-    @GET("get_own_photos")
+    @GET("image/get_own_photos")
     fun getUserImages(@Query("access_token") accessToken: String,
                       @Query("resolution") resolution: String): Single<ImageListResponse>
 
-    @POST("delete_photo")
+    @POST("image/delete_photo")
     fun deleteUserImage(@Body body: RequestBody): Single<BaseResponse>
 
     @PUT
