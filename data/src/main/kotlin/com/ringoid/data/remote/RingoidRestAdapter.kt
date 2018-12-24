@@ -30,6 +30,8 @@ interface RingoidRestAdapter {
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
+    @POST("actions/actions")
+    fun commitActions(@Body body: RequestBody): Single<BaseResponse>
 
     /* Image */
     // --------------------------------------------------------------------------------------------

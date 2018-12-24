@@ -1,6 +1,7 @@
 package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.data.remote.model.action.CommitActionsEssence
 import com.ringoid.data.remote.model.image.ImageListResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.image.essence.ImageDeleteEssence
@@ -35,6 +36,8 @@ class RingoidCloud(private val restAdapter: RingoidRestAdapter) {
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
+    fun commitActions(essence: CommitActionsEssence): Single<BaseResponse> =
+            restAdapter.commitActions(essence.toBody())
 
     /* Image */
     // --------------------------------------------------------------------------------------------
