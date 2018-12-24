@@ -54,6 +54,11 @@ class RingoidCloud(private val restAdapter: RingoidRestAdapter) {
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
+    fun getNewFaces(accessToken: String, resolution: String, limit: Int) =
+            restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution, limit = limit)
+
+    fun getLmm(accessToken: String, resolution: String, lastActionTime: Long) =
+            restAdapter.getLmm(accessToken = accessToken, resolution = resolution, lastActionTime = lastActionTime)
 
     /* Test */
     // --------------------------------------------------------------------------------------------

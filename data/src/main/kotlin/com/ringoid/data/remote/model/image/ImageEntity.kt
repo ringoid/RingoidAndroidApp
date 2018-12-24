@@ -10,16 +10,13 @@ import com.google.gson.annotations.SerializedName
  *   "likes":22
  * }
  */
-data class ImageEntity(
-    @SerializedName(COLUMN_ID) val id: String,
+class ImageEntity(
     @SerializedName(COLUMN_ORIGIN_ID) val originId: String,
-    @SerializedName(COLUMN_URI) val uri: String,
-    @SerializedName(COLUMN_NUMBER_LIKES) val numberOfLikes: Int) {
+    @SerializedName(COLUMN_NUMBER_LIKES) val numberOfLikes: Int,
+    id: String, uri: String) : BaseImageEntity(id = id, uri = uri) {
 
     companion object {
-        const val COLUMN_ID = "photoId"
         const val COLUMN_ORIGIN_ID = "originPhotoId"
-        const val COLUMN_URI = "photoUri"
         const val COLUMN_NUMBER_LIKES = "likes"
     }
 }
