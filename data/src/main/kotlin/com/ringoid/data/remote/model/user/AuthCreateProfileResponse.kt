@@ -1,4 +1,4 @@
-package com.ringoid.data.remote.model.auth
+package com.ringoid.data.remote.model.user
 
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
