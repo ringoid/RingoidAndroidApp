@@ -2,7 +2,7 @@ package com.ringoid.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.ringoid.data.local.dao.feed.ProfileDao
+import com.ringoid.data.local.dao.feed.FeedDao
 import com.ringoid.data.local.model.feed.ProfileDbo
 import com.ringoid.data.local.model.image.ImageDbo
 
@@ -13,5 +13,5 @@ abstract class RingoidDatabase : RoomDatabase() {
         const val DATABASE_NAME = "Ringoid.db"
     }
 
-    abstract fun profileDao(): ProfileDao
+    abstract fun feedDao(): FeedDao
 }
