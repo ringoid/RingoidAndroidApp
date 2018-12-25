@@ -6,7 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SharedPrefsManager @Inject constructor(context: Context){
+class SharedPrefsManager @Inject constructor(context: Context) {
 
     private val sharedPreferences: SharedPreferences
 
