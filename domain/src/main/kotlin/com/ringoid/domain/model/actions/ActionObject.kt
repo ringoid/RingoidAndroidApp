@@ -3,6 +3,8 @@ package com.ringoid.domain.model.actions
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.model.IEssence
 
+sealed class BaseActionObject
+
 /**
  * {
  *   "sourceFeed":"new_faces",  // who_liked_me, matches, messages
@@ -17,8 +19,8 @@ open class ActionObject(
     @SerializedName(COLUMN_ACTION_TYPE) val actionType: String,
     @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: String,
     @SerializedName(COLUMN_TARGET_IMAGE_ID) val targetImageId: String,
-    @SerializedName(COLUMN_TARGET_USER_ID) val targetUserId: String) :
-    IEssence {
+    @SerializedName(COLUMN_TARGET_USER_ID) val targetUserId: String)
+    : BaseActionObject(), IEssence {
 
     companion object {
         const val COLUMN_ACTION_TIME = "actionTime"
