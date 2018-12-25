@@ -9,5 +9,9 @@ import com.ringoid.data.local.model.image.BaseImageDbo
 @Database(entities = [BaseImageDbo::class, ProfileDbo::class], version = 1)
 abstract class RingoidDatabase : RoomDatabase() {
 
+    companion object {
+        const val DATABASE_NAME = "Ringoid.db"
+    }
+
     abstract fun profileDao(): ProfileDao
 }
