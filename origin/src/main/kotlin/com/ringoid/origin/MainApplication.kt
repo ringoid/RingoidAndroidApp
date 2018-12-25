@@ -7,7 +7,11 @@ import com.crashlytics.android.Crashlytics
 import com.orcchg.githubuser.origin.BuildConfig
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
+import io.reactivex.exceptions.UndeliverableException
+import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
+import java.io.IOException
+import java.net.SocketException
 
 class MainApplication : Application() {
 
@@ -29,6 +33,7 @@ class MainApplication : Application() {
         }
         initializeLeakDetection()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
+        initializeRxErrorHandler()
     }
 
     /* Leak detection */
@@ -50,6 +55,36 @@ class MainApplication : Application() {
             })
         } else {
             Timber.plant(CrashlyticsTree())
+        }
+    }
+
+    /* Rx */
+    // ------------------------------------------------------------------------
+    private fun initializeRxErrorHandler() {
+        RxJavaPlugins.setErrorHandler {
+            var e = it
+            when (it) {
+                is UndeliverableException -> e = it.cause
+                is IOException, is SocketException -> {
+                    Timber.w("Fine, irrelevant network problem or API that throws on cancellation")
+                    return@setErrorHandler
+                }
+                is InterruptedException -> {
+                    Timber.w("Fine, some blocking code was interrupted by a dispose call")
+                    return@setErrorHandler
+                }
+                is NullPointerException, is IllegalArgumentException -> {
+                    Timber.w("That's likely a bug in the application")
+                    Thread.currentThread().uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e)
+                    return@setErrorHandler
+                }
+                is IllegalStateException -> {
+                    Timber.w("That's a bug in RxJava or in a custom operator")
+                    Thread.currentThread().uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e)
+                    return@setErrorHandler
+                }
+            }
+            Timber.e(e, "Undeliverable exception received, not sure what to do")
         }
     }
 
