@@ -1,16 +1,42 @@
 package com.ringoid.origin
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.orcchg.githubuser.origin.BuildConfig
+import com.squareup.leakcanary.LeakCanary
+import com.squareup.leakcanary.RefWatcher
 import timber.log.Timber
 
 class MainApplication : Application() {
 
+    private var refWatcher: RefWatcher? = null
+
+    companion object {
+        fun getRefWatcher(context: Context?): RefWatcher? {
+            val app = context?.applicationContext as? MainApplication
+            return app?.refWatcher
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return
+        }
+        initializeLeakDetection()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
+    }
+
+    /* Leak detection */
+    // ------------------------------------------------------------------------
+    private fun initializeLeakDetection() {
+        if (BuildConfig.DEBUG) {
+            refWatcher = LeakCanary.install(this)
+        }
     }
 
     /* Logger */
