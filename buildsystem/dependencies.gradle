@@ -50,7 +50,8 @@ ext {
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
             fresco:         "com.facebook.fresco:fresco:${frescoVersion}",
             gson:           "com.google.code.gson:gson:${gsonVersion}",
-            timber:         "com.jakewharton.timber:timber:${timberVersion}",
+            jobQueue:       "com.birbit:android-priority-jobqueue:${jobQueueVersion}",
+            workManager:    "com.evernote:android-job:${workManagerVersion}",
 
             circularProgress: "com.mikhaellopez:circularprogressbar:${circularProgressVersion}",
             overscroll:       "me.everything:overscroll-decor-android:${overscrollVersion}",
