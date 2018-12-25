@@ -2,6 +2,8 @@ package com.ringoid.data.remote.model.feed
 
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.domain.model.Mappable
+import com.ringoid.domain.model.feed.Feed
 
 /**
  * {
@@ -32,9 +34,12 @@ import com.ringoid.data.remote.model.BaseResponse
  */
 class FeedResponse(
     @SerializedName(COLUMN_PROFILES) val profiles: List<ProfileEntity> = emptyList(),
-    errorCode: String = "", errorMessage: String = "") : BaseResponse(errorCode, errorMessage) {
+    errorCode: String = "", errorMessage: String = "")
+    : BaseResponse(errorCode, errorMessage), Mappable<Feed> {
 
     companion object {
         const val COLUMN_PROFILES = "profiles"
     }
+
+    override fun map(): Feed = Feed(profiles = profiles.map { it.map() })
 }

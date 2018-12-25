@@ -5,10 +5,11 @@ import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.user.CurrentUser
 import com.ringoid.domain.repository.user.IUserRepository
 import io.reactivex.Single
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UserRepository(private val cloud: RingoidCloud) : IUserRepository {
+class UserRepository @Inject constructor(private val cloud: RingoidCloud) : IUserRepository {
 
     // TODO: always check db first
     override fun createUserProfile(essence: AuthCreateProfileEssence): Single<CurrentUser> =

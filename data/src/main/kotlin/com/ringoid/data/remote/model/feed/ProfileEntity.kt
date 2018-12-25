@@ -2,6 +2,8 @@ package com.ringoid.data.remote.model.feed
 
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.image.ImageEntity
+import com.ringoid.domain.model.Mappable
+import com.ringoid.domain.model.feed.Profile
 
 /**
  * {
@@ -19,11 +21,14 @@ import com.ringoid.data.remote.model.image.ImageEntity
 open class ProfileEntity(
     @SerializedName(COLUMN_ID) val id: String,
     @SerializedName(COLUMN_DEFAULT_SORT_POSITION) val sortPosition: Int,
-    @SerializedName(COLUMN_IMAGES) val images: List<ImageEntity> = emptyList()) {
+    @SerializedName(COLUMN_IMAGES) val images: List<ImageEntity> = emptyList())
+    : Mappable<Profile> {
 
     companion object {
         const val COLUMN_ID = "userId"
         const val COLUMN_DEFAULT_SORT_POSITION = "defaultSortingOrderPosition"
         const val COLUMN_IMAGES = "photos"
     }
+
+    override fun map(): Profile = Profile(id = id, images = images.map { it.map() })
 }

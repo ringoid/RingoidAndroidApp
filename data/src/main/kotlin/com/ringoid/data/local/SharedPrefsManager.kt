@@ -17,4 +17,8 @@ class SharedPrefsManager @Inject constructor(context: Context) {
     companion object {
         const val SHARED_PREFS_FILE_NAME = "Ringoid.prefs"
     }
+
+    /* Auth */
+    // --------------------------------------------------------------------------------------------
+    fun accessToken(): String? = null
 }
