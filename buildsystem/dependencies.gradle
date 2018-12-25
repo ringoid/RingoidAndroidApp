@@ -204,7 +204,7 @@ ext {
             [configuration: "implementation", dependency: d_support.crashlytics, options: { transitive = true }],
             [configuration: "debugImplementation", dependency: d_support.leakCanary],
             [configuration: "releaseImplementation", dependency: d_support.leakCanary],
-            [configuration: "implementation", dependency: d_support.multidex],
+//            [configuration: "implementation", dependency: d_support.multidex],
     ]
 
     // ------------------------------------------
@@ -241,7 +241,7 @@ ext {
     /* Origin */
     // ------------------------------------------
     originDependencies = []
-    originDependencies += module_base + android + arch + dagger + kotlin + log
+    originDependencies += module_base + android + arch + dagger + kotlin + log + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
