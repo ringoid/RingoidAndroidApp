@@ -14,7 +14,7 @@ import com.ringoid.data.remote.model.BaseResponse
  * }
  */
 class ImageListResponse(
-    @SerializedName(COLUMN_IMAGES) val images: List<ImageEntity> = emptyList(),
+    @SerializedName(COLUMN_IMAGES) val images: List<UserImageEntity> = emptyList(),
     errorCode: String = "", errorMessage: String = "") : BaseResponse(errorCode, errorMessage) {
 
     companion object {

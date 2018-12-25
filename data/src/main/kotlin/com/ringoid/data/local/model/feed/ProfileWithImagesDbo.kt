@@ -2,7 +2,7 @@ package com.ringoid.data.local.model.feed
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.ringoid.data.local.model.image.BaseImageDbo
+import com.ringoid.data.local.model.image.ImageDbo
 
 /**
  * For one-to-many relations (one Profile to many BaseImages):
@@ -14,6 +14,6 @@ import com.ringoid.data.local.model.image.BaseImageDbo
 data class ProfileWithImagesDbo(
     @Embedded val profile: ProfileDbo,
     @Relation(parentColumn = ProfileDbo.COLUMN_ID,
-              entityColumn = BaseImageDbo.COLUMN_PROFILE_ID,
-              entity = BaseImageDbo::class)
-    val images: List<BaseImageDbo>)
+              entityColumn = ImageDbo.COLUMN_PROFILE_ID,
+              entity = ImageDbo::class)
+    val images: List<ImageDbo>)

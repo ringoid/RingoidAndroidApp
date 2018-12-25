@@ -1,7 +1,7 @@
 package com.ringoid.data.remote.model.feed
 
 import com.google.gson.annotations.SerializedName
-import com.ringoid.data.remote.model.image.BaseImageEntity
+import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.remote.model.messenger.MessageEntity
 
 /**
@@ -22,7 +22,7 @@ import com.ringoid.data.remote.model.messenger.MessageEntity
 class FeedItemEntity(
     @SerializedName(COLUMN_FLAG_NOT_SEEN) val notSeen: Boolean,
     @SerializedName(COLUMN_MESSAGES) val messages: List<MessageEntity> = emptyList(),
-    id: String, sortPosition: Int, images: List<BaseImageEntity> = emptyList())
+    id: String, sortPosition: Int, images: List<ImageEntity> = emptyList())
     : ProfileEntity(id = id, sortPosition = sortPosition, images = images) {
 
     companion object {

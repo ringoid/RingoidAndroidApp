@@ -1,7 +1,7 @@
 package com.ringoid.data.remote.model.feed
 
 import com.google.gson.annotations.SerializedName
-import com.ringoid.data.remote.model.image.BaseImageEntity
+import com.ringoid.data.remote.model.image.ImageEntity
 
 /**
  * {
@@ -19,7 +19,7 @@ import com.ringoid.data.remote.model.image.BaseImageEntity
 open class ProfileEntity(
     @SerializedName(COLUMN_ID) val id: String,
     @SerializedName(COLUMN_DEFAULT_SORT_POSITION) val sortPosition: Int,
-    @SerializedName(COLUMN_IMAGES) val images: List<BaseImageEntity> = emptyList()) {
+    @SerializedName(COLUMN_IMAGES) val images: List<ImageEntity> = emptyList()) {
 
     companion object {
         const val COLUMN_ID = "userId"

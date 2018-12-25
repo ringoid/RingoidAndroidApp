@@ -3,11 +3,11 @@ package com.ringoid.data.local.model.image
 import androidx.room.*
 import com.ringoid.data.local.model.feed.ProfileDbo
 
-@Entity(tableName = BaseImageDbo.TABLE_NAME, indices = [Index(value = [ProfileDbo.COLUMN_ID], name = "baseImageDboIndex")],
+@Entity(tableName = ImageDbo.TABLE_NAME, indices = [Index(value = [ProfileDbo.COLUMN_ID], name = "baseImageDboIndex")],
         foreignKeys = [ForeignKey(entity = ProfileDbo::class, parentColumns = [ProfileDbo.COLUMN_ID],
-                                  childColumns = [BaseImageDbo.COLUMN_PROFILE_ID],
+                                  childColumns = [ImageDbo.COLUMN_PROFILE_ID],
                                   onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)])
-data class BaseImageDbo(
+data class ImageDbo(
     @PrimaryKey @ColumnInfo(name = COLUMN_ID) val id: Int,
     @ColumnInfo(name = COLUMN_PROFILE_ID) val profileId: String,
     @ColumnInfo(name = COLUMN_URI) val uri: String) {
