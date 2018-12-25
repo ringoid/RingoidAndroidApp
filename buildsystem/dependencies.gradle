@@ -48,6 +48,7 @@ ext {
             glideCompiler:  "com.github.bumptech.glide:compiler:${glideVersion}",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
+            fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
             fresco:         "com.facebook.fresco:fresco:${frescoVersion}",
             gson:           "com.google.code.gson:gson:${gsonVersion}",
             jobQueue:       "com.birbit:android-priority-jobqueue:${jobQueueVersion}",
