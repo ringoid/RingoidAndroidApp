@@ -263,7 +263,7 @@ ext {
     /* Base */
     // ------------------------------------------
     baseDependencies = []
-    baseDependencies += module_data + module_domain + module_utility + kotlin + log
+    baseDependencies += module_data + module_domain + module_utility + android + arch + dagger + kotlin + log
     testBaseDependencies = test
 
     basePlugins = [
