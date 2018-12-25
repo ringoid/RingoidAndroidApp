@@ -241,7 +241,7 @@ ext {
     /* Origin */
     // ------------------------------------------
     originDependencies = []
-    originDependencies += android + arch + dagger + kotlin + log
+    originDependencies += module_base + android + arch + dagger + kotlin + log
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
