@@ -19,6 +19,6 @@ class ImageRepository @Inject constructor(private val local: ImageDao,
     override fun getUserImages(resolution: String): Single<List<UserImage>> =
         spm.accessToken()?.let {
             cloud.getUserImages(accessToken = it, resolution = resolution)
-                .map { it.map() }
+                 .map { it.map() }
         } ?: Single.error<List<UserImage>> { InvalidAccessTokenException() }
 }

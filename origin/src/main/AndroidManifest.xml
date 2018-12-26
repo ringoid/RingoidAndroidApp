@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.orcchg.githubuser.origin">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
          android:allowBackup="true"
          android:name="com.ringoid.origin.MainApplication"
@@ -18,7 +20,8 @@
 
         <activity
             android:name="com.ringoid.origin.view.SplashActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
