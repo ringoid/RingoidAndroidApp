@@ -12,7 +12,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class CreateUserProfileUseCase @Inject constructor(private val repository: IUserRepository,
-                                                   threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
+    threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<CurrentUser>(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Single<CurrentUser> =
