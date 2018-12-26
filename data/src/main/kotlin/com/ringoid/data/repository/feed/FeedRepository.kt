@@ -3,6 +3,7 @@ package com.ringoid.data.repository.feed
 import com.ringoid.data.local.SharedPrefsManager
 import com.ringoid.data.local.dao.feed.FeedDao
 import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.repository.feed.IFeedRepository
@@ -11,9 +12,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FeedRepository @Inject constructor(
-    private val cloud: RingoidCloud, private val local: FeedDao,
-    private val spm: SharedPrefsManager) : IFeedRepository {
+class FeedRepository @Inject constructor(private val local: FeedDao,
+    cloud: RingoidCloud, spm: SharedPrefsManager) : BaseRepository(cloud, spm), IFeedRepository {
 
     // TODO: always check db first
     override fun getNewFaces(resolution: String, limit: Int): Single<Feed> =
