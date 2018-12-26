@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
-import com.orcchg.githubuser.data.BuildConfig
+import com.ringoid.data.BuildConfig
 import com.ringoid.data.remote.network.IRequestHeaderInterceptor
 import com.ringoid.data.remote.network.RequestHeaderInterceptor
 import dagger.Module

@@ -1,6 +1,6 @@
 package com.ringoid.data.remote.network
 
-import com.orcchg.githubuser.data.BuildConfig
+import com.ringoid.data.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 

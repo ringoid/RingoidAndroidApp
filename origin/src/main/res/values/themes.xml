@@ -7,7 +7,6 @@
         <item name="refColorAccent">@color/accent</item>
         <item name="refColorPrimary">@color/primary</item>
         <item name="refColorPrimaryDark">@color/primary_dark</item>
-        <item name="refToolbarTextColor">@android:color/white</item>
         <item name="colorAccent">?refColorAccent</item>
         <item name="colorPrimary">?refColorPrimary</item>
         <item name="colorPrimaryDark">?refColorPrimaryDark</item>

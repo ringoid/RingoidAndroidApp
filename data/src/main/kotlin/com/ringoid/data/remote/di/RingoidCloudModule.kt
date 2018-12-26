@@ -1,6 +1,6 @@
 package com.ringoid.data.remote.di
 
-import com.orcchg.githubuser.domain.BuildConfig
+import com.ringoid.domain.BuildConfig
 import com.ringoid.data.remote.RingoidRestAdapter
 import com.ringoid.data.remote.network.ApiUrlBase
 import dagger.Module
