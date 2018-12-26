@@ -1,4 +1,4 @@
-package com.ringoid.data.local.model.feed
+package com.ringoid.data.local.database.model.feed
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

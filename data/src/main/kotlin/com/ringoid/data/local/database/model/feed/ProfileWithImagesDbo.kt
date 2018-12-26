@@ -1,8 +1,8 @@
-package com.ringoid.data.local.model.feed
+package com.ringoid.data.local.database.model.feed
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.ringoid.data.local.model.image.ImageDbo
+import com.ringoid.data.local.database.model.image.ImageDbo
 
 /**
  * For one-to-many relations (one Profile to many BaseImages):

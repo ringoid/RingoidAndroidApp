@@ -1,4 +1,4 @@
-package com.ringoid.data.local.model.messenger
+package com.ringoid.data.local.database.model.messenger
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

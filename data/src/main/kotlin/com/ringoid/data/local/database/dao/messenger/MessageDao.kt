@@ -1,10 +1,10 @@
-package com.ringoid.data.local.dao.messenger
+package com.ringoid.data.local.database.dao.messenger
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.ringoid.data.local.model.messenger.MessageDbo
+import com.ringoid.data.local.database.model.messenger.MessageDbo
 import io.reactivex.Observable
 
 @Dao

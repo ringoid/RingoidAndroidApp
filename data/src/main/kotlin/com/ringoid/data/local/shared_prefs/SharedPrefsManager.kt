@@ -1,4 +1,4 @@
-package com.ringoid.data.local
+package com.ringoid.data.local.shared_prefs
 
 import android.content.Context
 import android.content.SharedPreferences

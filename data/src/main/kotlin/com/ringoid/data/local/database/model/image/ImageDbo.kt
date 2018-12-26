@@ -1,10 +1,10 @@
-package com.ringoid.data.local.model.image
+package com.ringoid.data.local.database.model.image
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import com.ringoid.data.local.model.feed.ProfileDbo
+import com.ringoid.data.local.database.model.feed.ProfileDbo
 
 @Entity(tableName = ImageDbo.TABLE_NAME, indices = [Index(value = [ProfileDbo.COLUMN_ID], name = "imageDboIndex")],
         foreignKeys = [ForeignKey(entity = ProfileDbo::class, parentColumns = [ProfileDbo.COLUMN_ID],

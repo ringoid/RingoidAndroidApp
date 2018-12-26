@@ -1,10 +1,10 @@
-package com.ringoid.data.local.dao.image
+package com.ringoid.data.local.database.dao.image
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.ringoid.data.local.model.image.UserImageDbo
+import com.ringoid.data.local.database.model.image.UserImageDbo
 import io.reactivex.Observable
 
 @Dao

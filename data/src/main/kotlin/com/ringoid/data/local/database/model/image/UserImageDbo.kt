@@ -1,4 +1,4 @@
-package com.ringoid.data.local.model.image
+package com.ringoid.data.local.database.model.image
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

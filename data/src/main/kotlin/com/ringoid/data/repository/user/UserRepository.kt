@@ -1,6 +1,6 @@
 package com.ringoid.data.repository.user
 
-import com.ringoid.data.local.SharedPrefsManager
+import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
