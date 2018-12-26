@@ -91,7 +91,7 @@ User's gesture happens on *View* -> passed to *ViewModel* -> *Trigger* is fired,
 
 *Navigator* - open screens.
 
-* responsible for opening screens, incluing external screens, and pass parameters to it
+* responsible for opening screens, including external screens, and pass parameters to it
 * plug-in architecture: low-level interface is referenced by any screen on upper modules
 * implementation resides on top-level module, which is aware of all screens
 
