@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Main">
+        <attr name="refColorAccent" format="reference"/>
+        <attr name="refColorPrimary" format="reference"/>
+        <attr name="refColorPrimaryDark" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="ForegroundImageView">
+        <attr name="xForeground" format="reference"/>
+    </declare-styleable>
+</resources>

@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="primary">#673AB7</color>
+    <color name="primary_dark">#512DA8</color>
+    <color name="primary_light">#D1C4E9</color>
+    <color name="accent">#03A9F4</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+
+    <color name="agat">#626f7e</color>
+    <color name="aquamarine">#5df2d6</color>
+    <color name="dim">#1A162230</color>
+    <color name="facebook">#4267b2</color>
+    <color name="green">#00c853</color>
     <color name="grey">#1f262c</color>
+    <color name="happy">#0de3fe</color>
+    <color name="inactive">#cacaca</color>
+    <color name="light_grey">#f0f2f5</color>
+    <color name="lavender">#c588e5</color>
+    <color name="launcher">#21C9E5</color>
+    <color name="lime">#d9ec44</color>
+    <color name="mango">#ffab30</color>
+    <color name="midBlue">#27a4bb</color>
+    <color name="orange">#feab2d</color>
+    <color name="raspberry">#ff5771</color>
+    <color name="raspberry_saturated">#E91E63</color>
+    <color name="semitransparent">#88000000</color>
+    <color name="semitransparent_soft">#1d000000</color>
+    <color name="sky">#27a4dd</color>
+    <color name="steel">#75888e</color>
+    <color name="steel_transparent">#3375888e</color>
+    <color name="teal">#abf1cf</color>
+    <color name="tiffany">#81d8d1</color>
+    <color name="underscore">#f2f2f2</color>
 </resources>
