@@ -3,6 +3,7 @@ package com.ringoid.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.ringoid.data.local.dao.feed.FeedDao
+import com.ringoid.data.local.dao.image.ImageDao
 import com.ringoid.data.local.dao.messenger.MessageDao
 import com.ringoid.data.local.model.feed.ProfileDbo
 import com.ringoid.data.local.model.image.ImageDbo
@@ -16,5 +17,6 @@ abstract class RingoidDatabase : RoomDatabase() {
     }
 
     abstract fun feedDao(): FeedDao
+    abstract fun imageDao(): ImageDao
     abstract fun messageDao(): MessageDao
 }
