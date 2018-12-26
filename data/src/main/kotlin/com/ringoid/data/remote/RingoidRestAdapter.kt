@@ -3,7 +3,7 @@ package com.ringoid.data.remote
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.LmmResponse
-import com.ringoid.data.remote.model.image.ImageListResponse
+import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
@@ -40,7 +40,7 @@ interface RingoidRestAdapter {
 
     @GET("image/get_own_photos")
     fun getUserImages(@Query("access_token") accessToken: String,
-                      @Query("resolution") resolution: String): Single<ImageListResponse>
+                      @Query("resolution") resolution: String): Single<UserImageListResponse>
 
     @POST("image/delete_photo")
     fun deleteUserImage(@Body body: RequestBody): Single<BaseResponse>

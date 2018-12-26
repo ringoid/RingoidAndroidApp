@@ -1,7 +1,7 @@
 package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
-import com.ringoid.data.remote.model.image.ImageListResponse
+import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
@@ -47,7 +47,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<ImageUploadUrlResponse> =
             restAdapter.getImageUploadUrl(essence.toBody())
 
-    fun getUserImages(accessToken: String, resolution: String): Single<ImageListResponse> =
+    fun getUserImages(accessToken: String, resolution: String): Single<UserImageListResponse> =
             restAdapter.getUserImages(accessToken = accessToken, resolution = resolution)
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =

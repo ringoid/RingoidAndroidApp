@@ -12,7 +12,7 @@ import com.ringoid.data.local.model.feed.ProfileDbo
                                   onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)])
 class ImageDbo(
     @ColumnInfo(name = COLUMN_PROFILE_ID) val profileId: String,
-    id: Int, uri: String) : BaseImageDbo(id = id, uri = uri) {
+    id: String, uri: String) : BaseImageDbo(id = id, uri = uri) {
 
     companion object {
         const val COLUMN_PROFILE_ID = "profileId"

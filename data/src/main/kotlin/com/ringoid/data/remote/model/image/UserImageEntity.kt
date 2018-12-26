@@ -1,6 +1,7 @@
 package com.ringoid.data.remote.model.image
 
 import com.google.gson.annotations.SerializedName
+import com.ringoid.domain.model.image.UserImage
 
 /**
  * {
@@ -13,10 +14,12 @@ import com.google.gson.annotations.SerializedName
 class UserImageEntity(
     @SerializedName(COLUMN_ORIGIN_ID) val originId: String,
     @SerializedName(COLUMN_NUMBER_LIKES) val numberOfLikes: Int,
-    id: String, uri: String) : ImageEntity(id = id, uri = uri) {
+    id: String, uri: String) : BaseImageEntity<UserImage>(id = id, uri = uri) {
 
     companion object {
         const val COLUMN_ORIGIN_ID = "originPhotoId"
         const val COLUMN_NUMBER_LIKES = "likes"
     }
+
+    override fun map(): UserImage = UserImage(originId = originId, numberOfLikes = numberOfLikes, id = id, uri = uri)
 }

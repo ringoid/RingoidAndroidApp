@@ -7,7 +7,7 @@ import androidx.room.Entity
 class UserImageDbo(
     @ColumnInfo(name = COLUMN_ORIGIN_ID) val originId: String,
     @ColumnInfo(name = COLUMN_NUMBER_LIKES) val numberOfLikes: Int,
-    id: Int, uri: String) : BaseImageDbo(id = id, uri = uri) {
+    id: String, uri: String) : BaseImageDbo(id = id, uri = uri) {
 
     companion object {
         const val COLUMN_ORIGIN_ID = "originPhotoId"
