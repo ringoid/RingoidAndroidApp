@@ -3,10 +3,12 @@ package com.ringoid.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.ringoid.data.local.dao.feed.FeedDao
+import com.ringoid.data.local.dao.messenger.MessageDao
 import com.ringoid.data.local.model.feed.ProfileDbo
 import com.ringoid.data.local.model.image.ImageDbo
+import com.ringoid.data.local.model.messenger.MessageDbo
 
-@Database(entities = [ImageDbo::class, ProfileDbo::class], version = 1)
+@Database(entities = [ImageDbo::class, MessageDbo::class, ProfileDbo::class], version = 1)
 abstract class RingoidDatabase : RoomDatabase() {
 
     companion object {
@@ -14,4 +16,5 @@ abstract class RingoidDatabase : RoomDatabase() {
     }
 
     abstract fun feedDao(): FeedDao
+    abstract fun messageDao(): MessageDao
 }
