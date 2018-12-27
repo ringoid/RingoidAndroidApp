@@ -245,7 +245,7 @@ ext {
     /* Origin */
     // ------------------------------------------
     originDependencies = []
-    originDependencies += module_base + module_widget + android + arch + dagger + kotlin + log + rx + support
+    originDependencies += module_base + module_utility + module_widget + android + arch + dagger + kotlin + log + rx + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
@@ -302,7 +302,7 @@ ext {
     /* Utility */
     // ------------------------------------------
     utilityDependencies = []
-    utilityDependencies += android + kotlin + log
+    utilityDependencies += android + kotlin + log + rx
     testUtilityDependencies = test
 
     utilityPlugins = [

@@ -6,5 +6,7 @@ import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
 
-    //
+    fun login() {
+        // TODO: get year and gender
+    }
 }
