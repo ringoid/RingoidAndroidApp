@@ -8,6 +8,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.ActivityDelegateVmFactory
 import com.ringoid.base.viewmodel.BaseViewModel
+import timber.log.Timber
 
 abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
@@ -20,6 +21,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
+        Timber.v("View State transition to: $newState")
         // override in subclasses
     }
 
