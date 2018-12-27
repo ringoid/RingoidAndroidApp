@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Button -->
+    <style name="FlatButton" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/flat_button_bg_transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">@dimen/std_btn_height</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/flat_button_text_color</item>
+        <item name="android:textSize">@dimen/std_text_14</item>
+    </style>
+
+    <style name="RaisedButton" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/raised_button_bg</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">@dimen/std_btn_height</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/std_text_14</item>
+    </style>
+
+    <!-- TextView -->
+    <style name="StdText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/std_text_14</item>
+    </style>
+
+    <style name="StdText.Accent">
+        <item name="android:textColor">?refColorAccent</item>
+    </style>
+
+    <style name="StdText.Primary">
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
+
+    <style name="StdText.Secondary">
+        <item name="android:textColor">@color/secondary_text</item>
+    </style>
+</resources>

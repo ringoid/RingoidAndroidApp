@@ -1,3 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">App</string>
+
+    <string name="common_sex_male">Male</string>
+    <string name="common_sex_female">Female</string>
+    
+    <!-- Login screen -->
+    <string name="login_button">Continue to upload photo</string>
+    <string name="login_terms">By tapping the button below, you confirm that you have read, understood, consent and agree to Ringoid\'s <a href="http://ringoid.com/terms.html">Terms of Service</a> and <a href="http://ringoid.com/privacy.html">Privacy Policy</a>, and that you are of legal age and adult, as defined by the country or state from where you access Ringoid.</string>
+    <string name="login_year_of_birth_et_hint">Year of Birth</string>
 </resources>

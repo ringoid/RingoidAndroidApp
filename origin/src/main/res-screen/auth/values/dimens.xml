@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="login_year_of_birth_et_text_size">23dp</dimen>
+</resources>
