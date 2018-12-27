@@ -13,8 +13,8 @@ class LoginViewModel @Inject constructor(app: Application) : BaseViewModel(app) 
 
     val calendar by lazy { getApplication<RingoidApplication>().calendar }
 
-    val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
-    val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
+    val loginButtonEnableState by lazy { MutableLiveData<Boolean>(false) }
+    val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>(WidgetState.NORMAL) }
 
     var gender: Gender? = null
         set (value) {

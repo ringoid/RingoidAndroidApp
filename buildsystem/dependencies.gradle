@@ -21,7 +21,7 @@ ext {
 
     d_arch = [
             lifecycle:         "androidx.lifecycle:lifecycle-common:${archComponentsVersion}",
-            lifecycleExt:      "androidx.lifecycle:lifecycle-extensions:${archComponentsVersion}",
+            lifecycleExt:      "androidx.lifecycle:lifecycle-extensions:${archComponentsVersionExp}",
             lifecycleCompiler: "androidx.lifecycle:lifecycle-compiler:${archComponentsVersion}",
             lifecycleRx:       "androidx.lifecycle:lifecycle-reactivestreams:${archComponentsVersion}",
 

@@ -12,6 +12,7 @@ buildscript {
         androidViewPagerVersion = '1.0.0'
 
         archComponentsVersion = '2.0.0'
+        archComponentsVersionExp = '2.1.0-alpha01'
 
         kotlinVersion = '1.3.11'
         kotlinCoroutinesVersion = '1.0.1'

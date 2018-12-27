@@ -7,5 +7,5 @@ import com.ringoid.base.view.ViewState
 
 abstract class BaseViewModel(app: Application) : AndroidViewModel(app) {
 
-    val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
+    val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>(ViewState.IDLE) }
 }
