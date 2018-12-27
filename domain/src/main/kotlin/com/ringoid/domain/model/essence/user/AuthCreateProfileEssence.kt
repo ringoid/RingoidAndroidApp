@@ -18,8 +18,8 @@ import com.ringoid.domain.model.IEssence
 data class AuthCreateProfileEssence(
     @SerializedName(COLUMN_BIRTH_YEAR) val yearOfBirth: Int,
     @SerializedName(COLUMN_DT_LA) val dtLegalAge: Long,
-    @SerializedName(COLUMN_DT_PN) val dtPrivacy: Long,
-    @SerializedName(COLUMN_DT_TC) val dtTCs: Long,
+    @SerializedName(COLUMN_DT_PN) val dtPrivacy: Long = dtLegalAge,
+    @SerializedName(COLUMN_DT_TC) val dtTCs: Long = dtLegalAge,
     @SerializedName(COLUMN_LOCALE) val locale: String,
     @SerializedName(COLUMN_SEX) val sex: String,
     @SerializedName(COLUMN_DEVICE) val device: String,
