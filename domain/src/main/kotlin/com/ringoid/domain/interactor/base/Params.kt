@@ -13,7 +13,8 @@ class Params {
     @Suppress("Unchecked_Cast")
     fun <T> get(klass: Class<T>): T? = map[klass.simpleName] as? T
 
-    fun put(item: Any) {
+    fun put(item: Any): Params {
         map[item.javaClass.simpleName] = item
+        return this
     }
 }
