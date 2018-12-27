@@ -16,22 +16,27 @@ class LoginViewModel @Inject constructor(app: Application) : BaseViewModel(app) 
     val loginButtonEnableState by lazy { MutableLiveData<Boolean>(false) }
     val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>(WidgetState.NORMAL) }
 
-    var gender: Gender? = null
+    private var gender: Gender? = null
         set (value) {
             field = value
             enableLoginButton()
         }
+    private var yearOfBirth: Int = 0
 
     // --------------------------------------------------------------------------------------------
     fun login() {
         // TODO: get year and gender
     }
 
+    fun onGenderSelect(gender: Gender) {
+        this.gender = gender
+    }
+
     fun onYearOfBirthChange(text: String) {
         yearOfBirthEntryState.value =
                 text.toIntOrNull()
                     ?.takeIf { isAdultAge(it, calendar) }
-                    ?.let { WidgetState.ACTIVE }
+                    ?.let { yearOfBirth = it ; WidgetState.ACTIVE }
                     ?: WidgetState.ERROR
 
         enableLoginButton()
