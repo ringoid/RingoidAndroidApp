@@ -25,15 +25,17 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
         when (newState) {
-            ViewState.IDLE -> {
+            is ViewState.IDLE -> {
                 btn_login.changeVisibility(isVisible = true)
                 pb_login.changeVisibility(isVisible = false)
             }
-            ViewState.LOADING -> {
+            is ViewState.LOADING -> {
                 btn_login.changeVisibility(isVisible = false)
                 pb_login.changeVisibility(isVisible = true)
             }
-            ViewState.ERROR -> {}
+            is ViewState.ERROR -> {
+                // TODO: analyze: newState.e
+            }
             else -> { /* no-op */ }
         }
     }

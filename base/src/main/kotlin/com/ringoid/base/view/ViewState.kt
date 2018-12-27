@@ -1,3 +1,9 @@
 package com.ringoid.base.view
 
-enum class ViewState { IDLE, LOADING, ERROR, PAGING }
+sealed class ViewState {
+    object IDLE : ViewState()
+    object LOADING : ViewState()
+    object PAGING : ViewState()
+
+    class ERROR(val e: Throwable) : ViewState()
+}
