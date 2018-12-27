@@ -1,5 +1,5 @@
 package com.ringoid.origin.view.messenger
 
-import com.ringoid.base.BaseFragment
+import com.ringoid.base.view.BaseFragment
 
 class ChatFragment : BaseFragment()
