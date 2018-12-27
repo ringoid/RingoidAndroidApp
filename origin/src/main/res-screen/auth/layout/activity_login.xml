@@ -53,6 +53,7 @@
             android:hint="@string/login_year_of_birth_et_hint"
             android:imeOptions="actionDone"
             android:inputType="number"
+            android:maxLength="4"
             android:padding="@dimen/std_margin_16"
             android:textSize="@dimen/login_year_of_birth_et_text_size"
             app:layout_constraintVertical_chainStyle="packed"
@@ -60,6 +61,15 @@
             app:layout_constraintBottom_toTopOf="@+id/ll_sex_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/std_margin_16"
+            app:layout_constraintTop_toTopOf="@id/et_year_of_birth"
+            app:layout_constraintBottom_toBottomOf="@id/et_year_of_birth"
+            app:layout_constraintEnd_toEndOf="@id/et_year_of_birth"/>
 
         <LinearLayout
             android:id="@+id/ll_sex_container"

@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.crashlytics.android.Crashlytics
-import com.ringoid.origin.BuildConfig
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import io.reactivex.exceptions.UndeliverableException
@@ -12,14 +11,17 @@ import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
 import java.io.IOException
 import java.net.SocketException
+import java.util.*
 
-class MainApplication : Application() {
+class RingoidApplication : Application() {
 
     private var refWatcher: RefWatcher? = null
 
+    val calendar = Calendar.getInstance()
+
     companion object {
         fun getRefWatcher(context: Context?): RefWatcher? {
-            val app = context?.applicationContext as? MainApplication
+            val app = context?.applicationContext as? RingoidApplication
             return app?.refWatcher
         }
     }
