@@ -12,7 +12,7 @@ abstract class BaseViewModel(app: Application) : AndroidViewModel(app) {
     protected var subs: Disposable? = null  // for single subscription
     protected val cs: CompositeDisposable = CompositeDisposable()  // for multiple subscriptions
 
-    val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>(ViewState.IDLE) }
+    val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
 
     override fun onCleared() {
         super.onCleared()

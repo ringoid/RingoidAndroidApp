@@ -3,10 +3,8 @@ package com.ringoid.origin
 import android.content.Context
 import android.util.Log
 import com.crashlytics.android.Crashlytics
-import com.ringoid.origin.di.DaggerApplicationComponent
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
-import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -15,24 +13,16 @@ import java.io.IOException
 import java.net.SocketException
 import java.util.*
 
-class RingoidApplication : DaggerApplication() {
+abstract class BaseRingoidApplication : DaggerApplication() {
 
     private var refWatcher: RefWatcher? = null
 
     val calendar = Calendar.getInstance()
 
     companion object {
-        fun getRefWatcher(context: Context?): RefWatcher? {
-            val app = context?.applicationContext as? RingoidApplication
-            return app?.refWatcher
-        }
+        fun refWatcher(context: Context?): RefWatcher? =
+            (context?.applicationContext as? BaseRingoidApplication)?.refWatcher
     }
-
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
-        DaggerApplicationComponent.builder()
-            .application(this)
-            .applicationContext(applicationContext)
-            .build()
 
     override fun onCreate() {
         super.onCreate()
@@ -41,6 +31,7 @@ class RingoidApplication : DaggerApplication() {
             // You should not init your app in this process.
             return
         }
+        Timber.d("Starting ${javaClass.simpleName}")
         initializeLeakDetection()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeRxErrorHandler()

@@ -21,9 +21,11 @@ ext {
 
     d_arch = [
             lifecycle:         "androidx.lifecycle:lifecycle-common:${archComponentsVersion}",
-            lifecycleExt:      "androidx.lifecycle:lifecycle-extensions:${archComponentsVersionExp}",
             lifecycleCompiler: "androidx.lifecycle:lifecycle-compiler:${archComponentsVersion}",
+            lifecycleExt:      "androidx.lifecycle:lifecycle-extensions:${archComponentsVersion}",
             lifecycleRx:       "androidx.lifecycle:lifecycle-reactivestreams:${archComponentsVersion}",
+            lifedata:          "androidx.lifecycle:lifecycle-livedata:${archComponentsVersion}",
+            viewmodel:         "androidx.lifecycle:lifecycle-viewmodel:${archComponentsVersion}",
 
             paging:       "androidx.paging:paging-common:${archComponentsVersion}",
 
@@ -160,7 +162,9 @@ ext {
             [configuration: "implementation", dependency: d_arch.lifecycle],
             [configuration: "implementation", dependency: d_arch.lifecycleExt],
             [configuration: "implementation", dependency: d_arch.lifecycleRx],
-            [configuration: "implementation", dependency: d_arch.paging],
+            [configuration: "implementation", dependency: d_arch.lifedata],
+            [configuration: "implementation", dependency: d_arch.viewmodel],
+//            [configuration: "implementation", dependency: d_arch.paging],
     ]
 
     def dagger = [
@@ -236,12 +240,15 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = []
-    appDependencies += all_features + develop + android + kotlin + log
+    appDependencies += all_features + develop + android + dagger + kotlin + log
+
+    androidTestAppDeps = androidTest
     testAppDependencies = test
 
     appPlugins = [
             xPlugins.androidApp,
             xPlugins.kotlinAndroid,
+            xPlugins.kotlinAnnotation,
     ]
 
     appPluginsAtBottom = [

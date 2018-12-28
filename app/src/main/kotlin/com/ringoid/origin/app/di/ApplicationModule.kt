@@ -1,4 +1,4 @@
-package com.ringoid.origin.di
+package com.ringoid.origin.app.di
 
 import dagger.Module
 

@@ -5,7 +5,7 @@ rootProject.appPlugins.each {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.orcchg.githubuser"
+        applicationId "com.ringoid.app"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -26,7 +26,19 @@ android {
 }
 
 dependencies {
-    implementation project(':origin')
+    def appDependencies = rootProject.ext.appDependencies
+    def androidTestAppDeps = rootProject.ext.androidTestAppDeps
+    def testAppDependencies = rootProject.ext.testAppDependencies
+
+    appDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testAppDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestAppDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
 }
 
 android.applicationVariants.all { variant ->

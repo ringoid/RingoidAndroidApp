@@ -8,6 +8,6 @@ class SplashActivity : SimpleBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // TODO: open main screen
-        finish()
+//        finish()
     }
 }

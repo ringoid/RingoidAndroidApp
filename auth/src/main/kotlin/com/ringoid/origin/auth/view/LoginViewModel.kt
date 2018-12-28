@@ -9,7 +9,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
-import com.ringoid.origin.RingoidApplication
+import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
 import timber.log.Timber
@@ -20,10 +20,10 @@ class LoginViewModel @Inject constructor(
     private val createUserProfileUseCase: CreateUserProfileUseCase, app: Application)
     : BaseViewModel(app) {
 
-    val calendar by lazy { getApplication<RingoidApplication>().calendar }
+    val calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
-    val loginButtonEnableState by lazy { MutableLiveData<Boolean>(false) }
-    val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>(WidgetState.NORMAL) }
+    val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
+    val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
 
     private var gender: Gender? = null
         set (value) {
