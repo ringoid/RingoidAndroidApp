@@ -12,8 +12,8 @@ import com.ringoid.data.local.database.model.image.ImageDbo
  * @see https://androidkt.com/database-relationships/
  */
 data class ProfileWithImagesDbo(
-    @Embedded val profile: ProfileDbo,
+    @Embedded var profile: ProfileDbo = ProfileDbo(id = ""),
     @Relation(parentColumn = ProfileDbo.COLUMN_ID,
               entityColumn = ImageDbo.COLUMN_PROFILE_ID,
               entity = ImageDbo::class)
-    val images: List<ImageDbo>)
+    var images: List<ImageDbo> = emptyList())
