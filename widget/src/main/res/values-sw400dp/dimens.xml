@@ -3,5 +3,7 @@
     <dimen name="std_btn_height">48dp</dimen>
     <dimen name="std_margin_8">8dp</dimen>
     <dimen name="std_margin_16">16dp</dimen>
+    <dimen name="std_margin_32">32dp</dimen>
     <dimen name="std_text_14">14dp</dimen>
+    <dimen name="std_text_20">20dp</dimen>
 </resources>

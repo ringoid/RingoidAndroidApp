@@ -6,6 +6,7 @@
         <activity
             android:name=".view.LoginActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/LoginTheme"
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
