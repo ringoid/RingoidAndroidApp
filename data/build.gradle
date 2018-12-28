@@ -19,9 +19,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas".toString())
+        }
+    }
     sourceSets {
         main {
             java.srcDirs += 'src/main/kotlin'
+        }
+        androidTest {
+            assets.srcDirs += files("$projectDir/schemas".toString())
         }
     }
 }
