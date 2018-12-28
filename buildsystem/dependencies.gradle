@@ -240,7 +240,7 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = []
-    appDependencies += all_features + develop + android + dagger + kotlin + log
+    appDependencies += all_features + develop + android + dagger + kotlin + log + rx
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
