@@ -115,6 +115,8 @@ ext {
     ]
 
     def feature_auth = [[configuration: "feature", dependency: project(modules.auth)]]
+
+    def module_auth = [[configuration: "implementation", dependency: project(modules.auth)]]
     def module_base = [[configuration: "implementation", dependency: project(modules.base)]]
     def module_data = [[configuration: "implementation", dependency: project(modules.data)]]
     def module_domain = [[configuration: "implementation", dependency: project(modules.domain)]]
@@ -123,6 +125,7 @@ ext {
     def module_widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
     def develop = module_base + module_data + module_domain + module_utility + module_widget
+    def all_features = module_auth + module_origin
 
     /* Plugins */
     // --------------------------------------------------------------------------------------------
@@ -233,6 +236,7 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = []
+    appDependencies += all_features + develop + android + kotlin + log
     testAppDependencies = test
 
     appPlugins = [

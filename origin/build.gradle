@@ -52,4 +52,6 @@ dependencies {
     androidTestOriginDeps.each {
         add(it.configuration, it.dependency, it.options)
     }
+
+    application project(':app')
 }
