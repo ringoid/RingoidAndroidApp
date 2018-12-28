@@ -8,12 +8,13 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.ActivityDelegateVmFactory
 import com.ringoid.base.viewmodel.BaseViewModel
+import dagger.android.AndroidInjection
 import timber.log.Timber
 
 abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     protected lateinit var vm: T
-    protected val vmFactory: ViewModelProvider.Factory by  ActivityDelegateVmFactory()
+    protected val vmFactory: ViewModelProvider.Factory by ActivityDelegateVmFactory()
 
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
@@ -28,6 +29,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         getLayoutId()?.let { setContentView(it) }
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {

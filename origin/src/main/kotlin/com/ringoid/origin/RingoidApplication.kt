@@ -3,7 +3,7 @@ package com.ringoid.origin
 import android.content.Context
 import android.util.Log
 import com.crashlytics.android.Crashlytics
-import com.ringoid.origin.di.ApplicationComponent
+import com.ringoid.origin.di.DaggerApplicationComponent
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.AndroidInjector
@@ -17,7 +17,6 @@ import java.util.*
 
 class RingoidApplication : DaggerApplication() {
 
-    private var appComponent: ApplicationComponent? = null
     private var refWatcher: RefWatcher? = null
 
     val calendar = Calendar.getInstance()
@@ -30,12 +29,7 @@ class RingoidApplication : DaggerApplication() {
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
-        appComponent ?: run { configureAppComponent() }
-
-    private fun configureAppComponent(): ApplicationComponent {
-        // TODO: configure
-        return appComponent!!
-    }
+        DaggerApplicationComponent.create()
 
     override fun onCreate() {
         super.onCreate()
