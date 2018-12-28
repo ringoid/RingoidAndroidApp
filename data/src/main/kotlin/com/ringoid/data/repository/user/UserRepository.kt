@@ -11,7 +11,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UserRepository @Inject constructor(cloud: RingoidCloud, spm: SharedPrefsManager) : BaseRepository(cloud, spm), IUserRepository {
+class UserRepository @Inject constructor(cloud: RingoidCloud, spm: SharedPrefsManager)
+    : BaseRepository(cloud, spm), IUserRepository {
 
     // TODO: always check db first
     override fun createUserProfile(essence: AuthCreateProfileEssence): Single<CurrentUser> =

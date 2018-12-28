@@ -4,13 +4,15 @@ import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.viewmodel.DaggerViewModelFactory
 import dagger.android.AndroidInjection
 import timber.log.Timber
+import javax.inject.Inject
 
 abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     protected lateinit var vm: T
-//    @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
+    @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
 
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 

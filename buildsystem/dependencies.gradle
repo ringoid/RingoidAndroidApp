@@ -240,15 +240,15 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = []
-    appDependencies += all_features + develop + android + dagger + kotlin + log + rx
+    appDependencies += all_features + develop + android + dagger + kotlin + log + net + rx + room
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
 
     appPlugins = [
-            xPlugins.androidApp,
-            xPlugins.kotlinAndroid,
-            xPlugins.kotlinAnnotation,
+        xPlugins.androidApp,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
     ]
 
     appPluginsAtBottom = [
@@ -301,6 +301,7 @@ ext {
     basePlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
     ]
 
     /* Data */
@@ -312,6 +313,7 @@ ext {
     dataPlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
     ]
 
     /* Domain */
@@ -325,6 +327,7 @@ ext {
     domainPlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
     ]
 
     /* Utility */

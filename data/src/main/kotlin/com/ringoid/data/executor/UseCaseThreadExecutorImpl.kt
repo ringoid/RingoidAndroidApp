@@ -5,8 +5,11 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UseCaseThreadExecutorImpl : UseCaseThreadExecutor {
+@Singleton
+class UseCaseThreadExecutorImpl @Inject constructor() : UseCaseThreadExecutor {
 
     private val executor = ThreadPoolExecutor(4, 8, 10, TimeUnit.SECONDS,
                                               LinkedBlockingQueue(), UseCaseThreadFactory())
