@@ -8,7 +8,8 @@ import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewModel
 import com.ringoid.domain.misc.Gender
-import com.ringoid.origin.R
+import com.ringoid.origin.auth.R
+import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.inputDebounce
@@ -68,18 +69,18 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         vm.yearOfBirthEntryState.observe(this, Observer {
             when (it) {
                 WidgetState.NORMAL -> {
-                    et_year_of_birth.setBackgroundResource(R.drawable.rect_round_grey)
+                    et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_grey)
                     iv_status.also { it.changeVisibility(isVisible = false) }
                 }
                 WidgetState.ACTIVE -> {
-                    et_year_of_birth.setBackgroundResource(R.drawable.rect_round_green)
+                    et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_green)
                     iv_status.also {
                         it.changeVisibility(isVisible = true)
                         it.setImageResource(R.drawable.ic_check_green_16dp)
                     }
                 }
                 WidgetState.ERROR -> {
-                    et_year_of_birth.setBackgroundResource(R.drawable.rect_round_orange)
+                    et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_orange)
                     iv_status.also {
                         it.changeVisibility(isVisible = true)
                         it.setImageResource(R.drawable.ic_error_red_16dp)
