@@ -8,7 +8,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewModel
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
@@ -68,8 +67,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 vm.onGenderSelect(Gender.FEMALE)
             }
         }
-
-        vm = viewModel(vmFactory) {}
 
         vm.loginButtonEnableState.observe(this, Observer { btn_login.isEnabled = it })
         vm.yearOfBirthEntryState.observe(this, Observer {
