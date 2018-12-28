@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = ProfileDbo.TABLE_NAME)
-data class ProfileDbo(@PrimaryKey @ColumnInfo(name = COLUMN_ID, index = true) val id: Int) {
+data class ProfileDbo(@PrimaryKey @ColumnInfo(name = COLUMN_ID, index = true) val id: String) {
 
     companion object {
         const val COLUMN_ID = "id"
