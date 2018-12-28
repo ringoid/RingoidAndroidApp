@@ -32,11 +32,11 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> {
-                btn_login.changeVisibility(isVisible = true)
+                btn_login.changeVisibility(isVisible = true, soft = true)
                 pb_login.changeVisibility(isVisible = false)
             }
             is ViewState.LOADING -> {
-                btn_login.changeVisibility(isVisible = false)
+                btn_login.changeVisibility(isVisible = false, soft = true)
                 pb_login.changeVisibility(isVisible = true)
             }
             is ViewState.ERROR -> {
