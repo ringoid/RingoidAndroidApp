@@ -122,6 +122,8 @@ ext {
     def module_utility = [[configuration: "implementation", dependency: project(modules.utility)]]
     def module_widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
+    def develop = module_base + module_data + module_domain + module_utility + module_widget
+
     /* Plugins */
     // --------------------------------------------------------------------------------------------
     xPlugins = [
@@ -245,7 +247,7 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += module_origin
+    authDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + support
 
     androidTestAuthDeps = androidTest
     testAuthDependencies = test
@@ -260,8 +262,7 @@ ext {
     /* Origin */
     // ------------------------------------------
     originDependencies = []
-    originDependencies += feature_auth + module_base + module_domain + module_utility + module_widget +
-                          android + arch + dagger + kotlin + log + rx + support
+    originDependencies += feature_auth + develop + android + arch + dagger + kotlin + log + rx + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [

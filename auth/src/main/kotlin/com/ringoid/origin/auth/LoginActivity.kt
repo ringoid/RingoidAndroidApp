@@ -1,4 +1,4 @@
-package com.ringoid.origin.view.auth
+package com.ringoid.origin.auth
 
 import android.os.Bundle
 import androidx.lifecycle.Observer
