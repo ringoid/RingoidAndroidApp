@@ -27,9 +27,9 @@ data class AuthCreateProfileEssence(
 
     companion object {
         const val COLUMN_BIRTH_YEAR = "yearOfBirth"
-        const val COLUMN_DT_LA = "1535120929"
-        const val COLUMN_DT_PN = "1535120929"
-        const val COLUMN_DT_TC = "1535120929"
+        const val COLUMN_DT_LA = "dtLA"
+        const val COLUMN_DT_PN = "dtPN"
+        const val COLUMN_DT_TC = "dtTC"
         const val COLUMN_LOCALE = "locale"
         const val COLUMN_SEX = "sex"
         const val COLUMN_DEVICE = "deviceModel"
