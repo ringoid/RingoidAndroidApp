@@ -3,6 +3,8 @@ package com.ringoid.base.view
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import com.ringoid.base.observe
+import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
 import dagger.android.AndroidInjection
@@ -30,8 +32,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         getLayoutId()?.let { setContentView(it) }
-//        vm = viewModel(klass = getVmClass(), factory = vmFactory) {
-//            observe(viewState) { onViewStateChange(it) }
-//        }
+        vm = viewModel(klass = getVmClass(), factory = vmFactory) {
+            observe(viewState) { onViewStateChange(it) }
+        }
     }
 }
