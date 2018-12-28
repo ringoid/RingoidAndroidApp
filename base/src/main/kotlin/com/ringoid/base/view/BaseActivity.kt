@@ -6,15 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
-import com.ringoid.base.viewmodel.ActivityDelegateVmFactory
 import com.ringoid.base.viewmodel.BaseViewModel
 import dagger.android.AndroidInjection
 import timber.log.Timber
+import javax.inject.Inject
 
 abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     protected lateinit var vm: T
-    protected val vmFactory: ViewModelProvider.Factory by ActivityDelegateVmFactory()
+    @Inject protected lateinit var vmFactory: ViewModelProvider.Factory
 
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
