@@ -7,7 +7,7 @@ open class BaseResponse(
     @SerializedName(COLUMN_ERROR_MESSAGE) val errorMessage: String = "") {
 
     companion object {
-        const val COLUMN_ERROR_CODE = ""
-        const val COLUMN_ERROR_MESSAGE = ""
+        const val COLUMN_ERROR_CODE = "errorCode"
+        const val COLUMN_ERROR_MESSAGE = "errorMessage"
     }
 }

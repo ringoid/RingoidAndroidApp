@@ -1,8 +1,8 @@
 package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
-import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
+import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -23,7 +23,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     /* User (Auth, Profile) */
     // --------------------------------------------------------------------------------------------
-    fun createUserProfile(essence: AuthCreateProfileEssence): Single<AuthCreateProfileResponse> =restAdapter.createUserProfile(essence.toBody())
+    fun createUserProfile(essence: AuthCreateProfileEssence): Single<AuthCreateProfileResponse> =
+        restAdapter.createUserProfile(essence.toBody())
 
     fun deleteUserProfile(accessToken: String): Single<BaseResponse> {
         val content = "{\"accessToken\":\"$accessToken\"}"

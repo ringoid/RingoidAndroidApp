@@ -55,7 +55,7 @@ class CloudModule {
     @Provides @Singleton
     fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit.Builder =
             Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
 }
