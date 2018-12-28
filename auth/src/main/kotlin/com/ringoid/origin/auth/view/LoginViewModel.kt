@@ -1,4 +1,4 @@
-package com.ringoid.origin.auth
+package com.ringoid.origin.auth.view
 
 import android.app.Application
 import android.os.Build
