@@ -29,7 +29,10 @@ class RingoidApplication : DaggerApplication() {
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
-        DaggerApplicationComponent.create()
+        DaggerApplicationComponent.builder()
+            .application(this)
+            .applicationContext(applicationContext)
+            .build()
 
     override fun onCreate() {
         super.onCreate()
