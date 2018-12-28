@@ -58,10 +58,14 @@ class LoginViewModel @Inject constructor(
 
     fun onYearOfBirthChange(text: String) {
         yearOfBirthEntryState.value =
-                text.toIntOrNull()
-                    ?.takeIf { isAdultAge(it, calendar) }
-                    ?.let { yearOfBirth = it ; WidgetState.ACTIVE }
-                    ?: WidgetState.ERROR
+                text.takeIf { it.isEmpty() }
+                    ?.let { WidgetState.NORMAL }
+                    ?: run {
+                        text.toIntOrNull()
+                            ?.takeIf { isAdultAge(it, calendar) }
+                            ?.let { yearOfBirth = it; WidgetState.ACTIVE }
+                            ?: WidgetState.ERROR
+                    }
 
         enableLoginButton()
     }
