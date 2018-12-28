@@ -17,8 +17,8 @@ import java.util.*
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
-    private val createUserProfileUseCase: CreateUserProfileUseCase,
-    app: Application) : BaseViewModel(app) {
+    private val createUserProfileUseCase: CreateUserProfileUseCase, app: Application)
+    : BaseViewModel(app) {
 
     val calendar by lazy { getApplication<RingoidApplication>().calendar }
 
