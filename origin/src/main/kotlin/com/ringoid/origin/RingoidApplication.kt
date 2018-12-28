@@ -1,11 +1,13 @@
 package com.ringoid.origin
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.crashlytics.android.Crashlytics
+import com.ringoid.origin.di.ApplicationComponent
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
+import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
@@ -13,8 +15,9 @@ import java.io.IOException
 import java.net.SocketException
 import java.util.*
 
-class RingoidApplication : Application() {
+class RingoidApplication : DaggerApplication() {
 
+    private var appComponent: ApplicationComponent? = null
     private var refWatcher: RefWatcher? = null
 
     val calendar = Calendar.getInstance()
@@ -24,6 +27,14 @@ class RingoidApplication : Application() {
             val app = context?.applicationContext as? RingoidApplication
             return app?.refWatcher
         }
+    }
+
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
+        appComponent ?: run { configureAppComponent() }
+
+    private fun configureAppComponent(): ApplicationComponent {
+        // TODO: configure
+        return appComponent!!
     }
 
     override fun onCreate() {
