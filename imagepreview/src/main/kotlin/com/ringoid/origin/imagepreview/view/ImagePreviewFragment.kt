@@ -1,4 +1,4 @@
-package com.ringoid.origin.view.image
+package com.ringoid.origin.imagepreview.view
 
 import com.ringoid.base.view.BaseFragment
 
