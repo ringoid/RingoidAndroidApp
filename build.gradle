@@ -1,9 +1,24 @@
 apply from: 'buildsystem/dependencies.gradle'
 
+static String getAppId(boolean isStaging) {
+    if (isStaging) return 'com.ringoid.app.staging'
+    return 'com.ringoid.app'
+}
+
+static String getApiUrl(boolean isStaging) {
+    if (isStaging) return '"https://stage.ringoidapp.com"'
+    return '"https://prod.ringoidapp.com"'
+}
+
+static String getVersionName(boolean isStaging, int major, int middle, int minor, int build) {
+    String version = "$major.$middle.$minor.$build"
+    if (isStaging) return "$version-staging"
+    return version
+}
+
 ext {
-    apiUrlProduction = '"https://prod.ringoidapp.com"'
-    apiUrlStaging = '"https://stage.ringoidapp.com"'
-    apiUrl = apiUrlStaging  // configurable
+    isStaging = true
+    apiUrl = getApiUrl(isStaging)
     host = '"ringoid.com"'
     authority = '"https://ringoid.com"'
     appnav = '"appnav://ringoid.com"'
@@ -31,6 +46,19 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+    }
+
+    ext {
+        majorVersion = 1
+        middleVersion = 0
+        minorVersion = 0
+        buildVersion = 86
+
+        androidApplicationId = getAppId(isStaging)
+        androidVersionCode = buildVersion
+        androidVersionName = getVersionName(isStaging, majorVersion, middleVersion, minorVersion, buildVersion)
+        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        testApplicationId = 'com.ringoid.app.test'
     }
 }
 

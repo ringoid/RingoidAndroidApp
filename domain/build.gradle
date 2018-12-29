@@ -3,20 +3,18 @@ rootProject.domainPlugins.each {
 }
 
 android {
-    compileSdkVersion 28
-
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.androidVersionCode
+        versionName rootProject.ext.androidVersionName
+        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
 
         buildConfigField 'String', 'API_URL', rootProject.ext.apiUrl
         buildConfigField 'String', 'APPNAV', rootProject.ext.appnav
         buildConfigField 'String', 'AUTHORITY', rootProject.ext.authority
         buildConfigField 'String', 'HOST', rootProject.ext.host
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {

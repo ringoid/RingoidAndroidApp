@@ -1,5 +1,10 @@
 buildscript {
     ext {
+        minSdkVersion = 21
+        targetSdkVersion = 28
+        compileSdkVersion = 28
+
+        // --------------------------------------
         androidAnnotationVersion = '1.0.1'
         androidAppCompatVersion = '1.0.2'
         androidCoreVersion = '1.0.1'
