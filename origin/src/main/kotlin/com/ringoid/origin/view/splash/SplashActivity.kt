@@ -1,11 +1,9 @@
 package com.ringoid.origin.view.splash
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.ringoid.base.view.SimpleBaseActivity
-import com.ringoid.domain.BuildConfig
+import com.ringoid.origin.navigation.navigate
 
 class SplashActivity : SimpleBaseActivity() {
 
@@ -15,9 +13,7 @@ class SplashActivity : SimpleBaseActivity() {
         super.onCreate(savedInstanceState)
 
         vm.accessToken.observe(this, Observer {
-            val path = it?.let { "/main" } ?: run { "/login" }
-            val url = Uri.parse("${BuildConfig.APPNAV}$path")
-            startActivity(Intent(Intent.ACTION_VIEW, url))
+            startActivity(navigate(path = it?.let { "/main" } ?: run { "/login" }))
             finish()
         })
         vm.obtainAccessToken()

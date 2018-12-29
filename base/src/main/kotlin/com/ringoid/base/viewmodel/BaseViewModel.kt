@@ -19,6 +19,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     protected val cs: CompositeDisposable = CompositeDisposable()  // for multiple subscriptions
 
     val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
+    val navigation: MutableLiveData<> by lazy { MutableLiveData<>() }
     val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
 
     /* Lifecycle */
