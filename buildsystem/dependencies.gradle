@@ -110,6 +110,8 @@ ext {
     modules = [
             app:     ':app',
             auth:    ':auth',
+            imagePreview: ':imagepreview',
+
             base:    ':base',
             data:    ':data',
             domain:  ':domain',
@@ -284,7 +286,22 @@ ext {
         xPlugins.kotlinAnnotation,
     ]
 
-    /* Origin */
+    /* Feature ImagePreview */
+    // ------------------------------------------
+    imagePreviewDependencies = []
+    imagePreviewDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
+
+    androidTestImagePreviewDeps = androidTest
+    testImagePreviewDependencies = test
+
+    imagePreviewPlugins = [
+        xPlugins.androidFeature,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAndroidExt,
+        xPlugins.kotlinAnnotation,
+    ]
+
+    /* Origin - base feature */
     // ------------------------------------------
     originDependencies = []
     originDependencies += feature_auth + develop + android + arch + dagger + kotlin + log + rx + rxBind + support

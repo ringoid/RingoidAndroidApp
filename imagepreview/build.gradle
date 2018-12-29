@@ -1,0 +1,37 @@
+rootProject.imagePreviewPlugins.each {
+    apply plugin: it
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.androidVersionCode
+        versionName rootProject.ext.androidVersionName
+        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
+    }
+    sourceSets {
+        main {
+            java.srcDirs += 'src/main/kotlin'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def imagePreviewDependencies = rootProject.ext.imagePreviewDependencies
+    def androidTestImagePreviewDeps = rootProject.ext.androidTestImagePreviewDeps
+    def testImagePreviewDependencies = rootProject.ext.testImagePreviewDependencies
+
+    imagePreviewDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testImagePreviewDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestImagePreviewDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}
