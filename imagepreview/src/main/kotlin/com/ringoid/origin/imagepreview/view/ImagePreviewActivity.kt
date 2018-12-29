@@ -1,5 +1,19 @@
 package com.ringoid.origin.imagepreview.view
 
-import com.ringoid.base.view.SimpleBaseActivity
+import android.os.Bundle
+import com.ringoid.origin.imagepreview.R
+import com.ringoid.origin.view.base.BaseHostActivity
 
-class ImagePreviewActivity : SimpleBaseActivity()
+class ImagePreviewActivity : BaseHostActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState ?: run {
+            val fragment = ImagePreviewFragment.newInstance()
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fl_container, fragment, ImagePreviewFragment.TAG)
+                .commitNow()
+        }
+    }
+}
