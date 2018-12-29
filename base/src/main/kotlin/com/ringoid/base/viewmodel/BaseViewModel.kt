@@ -10,6 +10,7 @@ import com.uber.autodispose.AutoDispose.autoDisposable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
+import kotlin.reflect.KFunction
 
 abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
@@ -19,7 +20,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     protected val cs: CompositeDisposable = CompositeDisposable()  // for multiple subscriptions
 
     val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
-    val navigation: MutableLiveData<> by lazy { MutableLiveData<>() }
+    val navigation: MutableLiveData<KFunction<*>> by lazy { MutableLiveData<KFunction<*>>() }
     val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
 
     /* Lifecycle */

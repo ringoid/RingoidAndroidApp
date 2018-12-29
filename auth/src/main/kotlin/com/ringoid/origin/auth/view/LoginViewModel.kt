@@ -10,8 +10,10 @@ import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
+import com.uber.autodispose.AutoDispose.autoDisposable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -46,9 +48,10 @@ class LoginViewModel @Inject constructor(
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
+            .`as`(autoDisposable(this))
             .subscribe({
                 Timber.d("Successfully logged in, current user: $it")
-                // TODO: proceed further screen
+                navigation.value = ExternalNavigator::openGalleryToGetImage
             }, Timber::e)
     }
 

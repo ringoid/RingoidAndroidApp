@@ -92,5 +92,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 else -> { /* no-op */ }
             }
         })
+        vm.navigation.observe(this, Observer { it.call(this) })
     }
 }
