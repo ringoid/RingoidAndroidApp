@@ -210,8 +210,11 @@ ext {
             [configuration: "implementation", dependency: d_rx.rxBinding],
             [configuration: "implementation", dependency: d_rx.rxBindCore],
             [configuration: "implementation", dependency: d_rx.rxBindCompat],
-            [configuration: "implementation", dependency: d_rx.autoDispose],
-            [configuration: "implementation", dependency: d_rx.autoDisposeAC],
+    ]
+
+    def autoDispose = [
+            [configuration: "api", dependency: d_rx.autoDispose],
+            [configuration: "api", dependency: d_rx.autoDisposeAC],
     ]
 
     def view = [
@@ -299,7 +302,7 @@ ext {
     /* Base */
     // ------------------------------------------
     baseDependencies = []
-    baseDependencies += module_data + module_domain + module_utility + android + arch + dagger + kotlin + log + rx
+    baseDependencies += module_data + module_domain + module_utility + android + arch + dagger + kotlin + log + rx + autoDispose
     testBaseDependencies = test
 
     basePlugins = [
