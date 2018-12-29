@@ -48,6 +48,7 @@ ext {
     ]
 
     d_libs = [
+            cropiwa:        "com.steelkiwi:cropiwa:${cropiwaVersion}",
             glide:          "com.github.bumptech.glide:glide:${glideVersion}",
             glideCompiler:  "com.github.bumptech.glide:compiler:${glideVersion}",
 
@@ -291,7 +292,9 @@ ext {
 
     /* Feature ImagePreview */
     // ------------------------------------------
-    imagePreviewDependencies = []
+    imagePreviewDependencies = [
+        [configuration: "implementation", dependency: d_libs.cropiwa],
+    ]
     imagePreviewDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
