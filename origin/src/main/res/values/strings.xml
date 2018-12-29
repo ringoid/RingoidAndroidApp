@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Ringoid</string>
 
+    <string name="common_choose_image">Choose Image</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
     
