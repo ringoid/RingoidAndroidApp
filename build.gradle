@@ -5,6 +5,8 @@ ext {
     apiUrlStaging = '"https://stage.ringoidapp.com"'
     apiUrl = apiUrlStaging  // configurable
     host = '"ringoid.com"'
+    authority = '"https://ringoid.com"'
+    appnav = '"appnav://ringoid.com"'
 }
 
 buildscript {
