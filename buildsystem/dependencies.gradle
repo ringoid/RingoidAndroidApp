@@ -37,6 +37,7 @@ ext {
     d_kotlin = [
             ktStdLib:     "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
             ktCoroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlinCoroutinesVersion}",
+            ktReflect:    "org.jetbrains.kotlin:kotlin-reflect:${kotlinReflectVersion}",
     ]
 
     d_dagger = [
@@ -182,6 +183,7 @@ ext {
     def kotlin = [
             [configuration: "implementation", dependency: d_kotlin.ktStdLib],
             [configuration: "implementation", dependency: d_kotlin.ktCoroutines],
+            [configuration: "implementation", dependency: d_kotlin.ktReflect],
     ]
 
     def log = [
