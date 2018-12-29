@@ -80,6 +80,7 @@ ext {
             rxBindCore:   "com.jakewharton.rxbinding3:rxbinding-core:${rxBindingVersion}",
             rxBindCompat: "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}",
             autoDispose:  "com.uber.autodispose:autodispose-android-ktx:${autoDisposeVersion}",
+            autoDisposeAC:"com.uber.autodispose:autodispose-android-archcomponents:${autoDisposeVersion}",
     ]
 
     d_test = [
@@ -210,6 +211,7 @@ ext {
             [configuration: "implementation", dependency: d_rx.rxBindCore],
             [configuration: "implementation", dependency: d_rx.rxBindCompat],
             [configuration: "implementation", dependency: d_rx.autoDispose],
+            [configuration: "implementation", dependency: d_rx.autoDisposeAC],
     ]
 
     def view = [

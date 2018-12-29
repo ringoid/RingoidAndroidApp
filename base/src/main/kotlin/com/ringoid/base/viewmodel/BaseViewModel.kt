@@ -1,18 +1,18 @@
 package com.ringoid.base.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
 import com.ringoid.domain.model.user.AccessToken
+import com.uber.autodispose.AutoDispose.autoDisposable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
 import javax.inject.Inject
 
-abstract class BaseViewModel(app: Application) : AndroidViewModel(app) {
+abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     @Inject lateinit var getUserAccessTokenUseCase: GetUserAccessTokenUseCase
 
@@ -34,6 +34,7 @@ abstract class BaseViewModel(app: Application) : AndroidViewModel(app) {
     // --------------------------------------------------------------------------------------------
     fun obtainAccessToken() {
         getUserAccessTokenUseCase.source(Params.EMPTY)
+            .`as`(autoDisposable(this))
             .subscribe({ accessToken.value = it }, Timber::e)
     }
 }
