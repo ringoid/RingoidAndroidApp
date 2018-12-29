@@ -3,8 +3,8 @@ apply from: 'buildsystem/dependencies.gradle'
 ext {
     apiUrlProduction = '"https://prod.ringoidapp.com"'
     apiUrlStaging = '"https://stage.ringoidapp.com"'
-
-    apiUrl = apiUrlStaging
+    apiUrl = apiUrlStaging  // configurable
+    host = '"ringoid.com"'
 }
 
 buildscript {
