@@ -13,7 +13,6 @@ import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
-import com.uber.autodispose.AutoDispose.autoDisposable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -35,6 +34,7 @@ class LoginViewModel @Inject constructor(
     private var yearOfBirth: Int = 0
 
     // --------------------------------------------------------------------------------------------
+    @Suppress("AutoDispose")
     fun login() {
         val essence = AuthCreateProfileEssence(
             yearOfBirth = yearOfBirth,

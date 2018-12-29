@@ -48,7 +48,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    @Suppress("CheckResult")
+    @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
