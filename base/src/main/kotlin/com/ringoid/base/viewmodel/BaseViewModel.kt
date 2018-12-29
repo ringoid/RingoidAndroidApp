@@ -9,7 +9,6 @@ import com.ringoid.domain.model.user.AccessToken
 import com.uber.autodispose.AutoDispose.autoDisposable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
@@ -19,7 +18,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     protected var subs: Disposable? = null  // for single subscription
     protected val cs: CompositeDisposable = CompositeDisposable()  // for multiple subscriptions
 
-    val accessToken: MutableLiveData<AccessToken> by lazy { MutableLiveData<AccessToken>() }
+    val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
     val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
 
     /* Lifecycle */
@@ -35,6 +34,6 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     fun obtainAccessToken() {
         getUserAccessTokenUseCase.source(Params.EMPTY)
             .`as`(autoDisposable(this))
-            .subscribe({ accessToken.value = it }, Timber::e)
+            .subscribe({ accessToken.value = it }, { accessToken.value = null })
     }
 }
