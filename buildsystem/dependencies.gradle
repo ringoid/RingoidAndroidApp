@@ -78,7 +78,8 @@ ext {
             rxAndroid:    "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
             rxBinding:    "com.jakewharton.rxbinding3:rxbinding:${rxBindingVersion}",
             rxBindCore:   "com.jakewharton.rxbinding3:rxbinding-core:${rxBindingVersion}",
-            rxBindCompat: "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}"
+            rxBindCompat: "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}",
+            autoDispose:  "com.uber.autodispose:autodispose-android-ktx:${autoDisposeVersion}",
     ]
 
     d_test = [
