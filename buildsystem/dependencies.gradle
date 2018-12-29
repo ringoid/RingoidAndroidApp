@@ -56,10 +56,6 @@ ext {
             gson:           "com.google.code.gson:gson:${gsonVersion}",
             jobQueue:       "com.birbit:android-priority-jobqueue:${jobQueueVersion}",
             workManager:    "com.evernote:android-job:${workManagerVersion}",
-
-            circularProgress: "com.mikhaellopez:circularprogressbar:${circularProgressVersion}",
-            overscroll:       "me.everything:overscroll-decor-android:${overscrollVersion}",
-            rvAnim:           "jp.wasabeef:recyclerview-animators:${rvAnimVersion}",
     ]
 
     d_network = [
@@ -96,6 +92,9 @@ ext {
     ]
 
     d_view = [
+            circularProgress: "com.mikhaellopez:circularprogressbar:${circularProgressVersion}",
+            overscroll:       "me.everything:overscroll-decor-android:${overscrollVersion}",
+            rvAnim:           "jp.wasabeef:recyclerview-animators:${rvAnimVersion}",
     ]
 
     d_support = [
@@ -207,6 +206,9 @@ ext {
     def rx = [
             [configuration: "implementation", dependency: d_rx.rx],
             [configuration: "implementation", dependency: d_rx.rxAndroid],
+    ]
+
+    def rxBind = [
             [configuration: "implementation", dependency: d_rx.rxBinding],
             [configuration: "implementation", dependency: d_rx.rxBindCore],
             [configuration: "implementation", dependency: d_rx.rxBindCompat],
@@ -218,6 +220,9 @@ ext {
     ]
 
     def view = [
+            [configuration: "implementation", dependency: d_view.circularProgress],
+            [configuration: "implementation", dependency: d_view.overscroll],
+            [configuration: "implementation", dependency: d_view.rvAnim],
     ]
 
     def support = [
@@ -247,7 +252,7 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = []
-    appDependencies += all_features + develop + android + dagger + kotlin + log + net + rx + room
+    appDependencies += all_features + develop + android + dagger + kotlin + log + net
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -265,7 +270,7 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + support
+    authDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
     testAuthDependencies = test
@@ -280,15 +285,15 @@ ext {
     /* Origin */
     // ------------------------------------------
     originDependencies = []
-    originDependencies += feature_auth + develop + android + arch + dagger + kotlin + log + rx + support
+    originDependencies += feature_auth + develop + android + arch + dagger + kotlin + log + rx + rxBind + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
-            [configuration: "kaptAndroidTest", dependency: d_dagger.daggerCompiler],
+        [configuration: "kaptAndroidTest", dependency: d_dagger.daggerCompiler],
     ]
     testOriginDependencies = test
     testOriginDependencies += [
-            [configuration: "kaptTest", dependency: d_dagger.daggerCompiler],
+        [configuration: "kaptTest", dependency: d_dagger.daggerCompiler],
     ]
 
     originPlugins = [
@@ -302,7 +307,7 @@ ext {
     /* Base */
     // ------------------------------------------
     baseDependencies = []
-    baseDependencies += module_data + module_domain + module_utility + android + arch + dagger + kotlin + log + rx + autoDispose
+    baseDependencies += module_domain + module_utility + android + arch + dagger + kotlin + log + autoDispose
     testBaseDependencies = test
 
     basePlugins = [
@@ -326,9 +331,9 @@ ext {
     /* Domain */
     // ------------------------------------------
     domainDependencies = [
-            [configuration: "implementation", dependency: d_libs.gson],
+        [configuration: "implementation", dependency: d_libs.gson],
     ]
-    domainDependencies += module_utility + kotlin + dagger + log + room + rx
+    domainDependencies += module_utility + kotlin + dagger + log + rx
     testDomainDependencies = test
 
     domainPlugins = [
