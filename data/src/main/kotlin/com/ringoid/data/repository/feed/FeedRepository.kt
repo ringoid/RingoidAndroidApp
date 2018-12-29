@@ -19,7 +19,7 @@ class FeedRepository @Inject constructor(
     // TODO: always check db first
     override fun getNewFaces(resolution: String, limit: Int): Single<Feed> =
         spm.accessToken()?.let {
-            cloud.getNewFaces(accessToken = it, resolution = resolution, limit = limit)
+            cloud.getNewFaces(accessToken = it.accessToken, resolution = resolution, limit = limit)
                  .map { it.map() }
         } ?: Single.error<Feed> { InvalidAccessTokenException() }
 }

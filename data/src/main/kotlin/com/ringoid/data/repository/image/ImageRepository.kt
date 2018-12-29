@@ -19,7 +19,7 @@ class ImageRepository @Inject constructor(
     // TODO: always check db first
     override fun getUserImages(resolution: String): Single<List<UserImage>> =
         spm.accessToken()?.let {
-            cloud.getUserImages(accessToken = it, resolution = resolution)
+            cloud.getUserImages(accessToken = it.accessToken, resolution = resolution)
                  .map { it.map() }
         } ?: Single.error<List<UserImage>> { InvalidAccessTokenException() }
 }
