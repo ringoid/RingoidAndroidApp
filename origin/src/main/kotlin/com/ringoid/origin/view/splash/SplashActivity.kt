@@ -10,7 +10,7 @@ class SplashActivity : SimpleBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val url = Uri.parse("${BuildConfig.APPNAV}/login")
+        val url = Uri.parse("${BuildConfig.APPNAV}/main")
         startActivity(Intent(Intent.ACTION_VIEW, url))
         finish()
     }
