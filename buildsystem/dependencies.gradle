@@ -209,6 +209,7 @@ ext {
             [configuration: "implementation", dependency: d_rx.rxBinding],
             [configuration: "implementation", dependency: d_rx.rxBindCore],
             [configuration: "implementation", dependency: d_rx.rxBindCompat],
+            [configuration: "implementation", dependency: d_rx.autoDispose],
     ]
 
     def view = [
