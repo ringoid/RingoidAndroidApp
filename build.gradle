@@ -6,8 +6,8 @@ static String getAppId(boolean isStaging) {
 }
 
 static String getApiUrl(boolean isStaging) {
-    if (isStaging) return '"https://stage.ringoidapp.com"'
-    return '"https://prod.ringoidapp.com"'
+    if (isStaging) return '"https://stage.ringoid.com"'
+    return '"https://prod.ringoid.com"'
 }
 
 static String getVersionName(boolean isStaging, int major, int middle, int minor, int build) {
