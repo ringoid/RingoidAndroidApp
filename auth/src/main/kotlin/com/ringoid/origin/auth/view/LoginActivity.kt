@@ -11,6 +11,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
+import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.inputDebounce
@@ -29,18 +30,22 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
+        fun onIdleState() {
+            btn_login.changeVisibility(isVisible = true, soft = true)
+            pb_login.changeVisibility(isVisible = false)
+        }
+
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.IDLE -> {
-                btn_login.changeVisibility(isVisible = true, soft = true)
-                pb_login.changeVisibility(isVisible = false)
-            }
+            is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> {
                 btn_login.changeVisibility(isVisible = false, soft = true)
                 pb_login.changeVisibility(isVisible = true)
             }
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
+                Dialogs.showTextDialog(this, titleResId = R.string.error_common, description = "DL TEXT FROM URL")
+                onIdleState()
             }
             else -> { /* no-op */ }
         }

@@ -2,9 +2,13 @@
 <resources>
     <string name="app_name">Ringoid</string>
 
+    <string name="button_close">Close</string>
+
     <string name="common_choose_image">Choose Image</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
+
+    <string name="error_common">Oops! Something went wrong.</string>
     
     <!-- Login screen -->
     <string name="login_button">Continue to upload photo</string>
