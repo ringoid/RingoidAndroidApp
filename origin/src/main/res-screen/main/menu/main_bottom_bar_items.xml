@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_feed"
+        android:icon="@drawable/ic_menu_explore_24dp"
+        android:title="@string/main_bottom_bar_menu_feed"/>
+
+    <item
+        android:id="@+id/item_lmm"
+        android:icon="@drawable/ic_menu_favorite_24dp"
+        android:title="@string/main_bottom_bar_menu_lmm"/>
+
+    <item
+        android:id="@+id/item_profile"
+        android:icon="@drawable/ic_menu_profile_24dp"
+        android:title="@string/main_bottom_bar_menu_profile"/>
+</menu>
