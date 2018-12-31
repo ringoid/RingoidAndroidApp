@@ -46,7 +46,7 @@ class LoginViewModel @Inject constructor(
 
         subs = createUserProfileUseCase.source(params = Params().put(essence))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSuccess { viewState.value = ViewState.CLOSE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .subscribe({
                 Timber.d("Successfully logged in, current user: $it")
