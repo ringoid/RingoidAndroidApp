@@ -11,6 +11,8 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
+import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -98,5 +100,12 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
         })
         vm.navigation.observe(this, Observer { it.call(this) })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            ExternalNavigator.RC_GALLERY_GET_IMAGE -> navigateAndClose(this, path = "/main")
+        }
     }
 }
