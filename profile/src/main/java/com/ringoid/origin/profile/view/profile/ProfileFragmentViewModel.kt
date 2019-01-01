@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.view
+package com.ringoid.origin.profile.view.profile
 
 import android.app.Application
 import com.ringoid.base.viewmodel.BaseViewModel

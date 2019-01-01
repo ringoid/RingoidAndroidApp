@@ -5,7 +5,7 @@ import android.content.Context
 import com.ringoid.origin.app.RingoidApplication
 import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.imagepreview.view.di.ImagePreviewActivityModule
-import com.ringoid.origin.profile.view.di.ProfileFragmentModule
+import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.view.splash.di.SplashActivityModule
 import dagger.BindsInstance

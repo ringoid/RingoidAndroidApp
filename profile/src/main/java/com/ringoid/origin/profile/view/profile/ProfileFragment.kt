@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.view
+package com.ringoid.origin.profile.view.profile
 
 import android.os.Bundle
 import android.view.View
@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class ProfileFragment : BaseFragment() {
 
     companion object {
-        fun newInstance(): ProfileFragment = ProfileFragment()
+        fun newInstance(): ProfileFragment =
+            ProfileFragment()
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_profile

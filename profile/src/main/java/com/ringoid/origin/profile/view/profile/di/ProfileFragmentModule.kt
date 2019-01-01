@@ -1,7 +1,7 @@
-package com.ringoid.origin.profile.view.di
+package com.ringoid.origin.profile.view.profile.di
 
 import androidx.fragment.app.Fragment
-import com.ringoid.origin.profile.view.ProfileFragment
+import com.ringoid.origin.profile.view.profile.ProfileFragment
 import dagger.Binds
 import dagger.Module
 import dagger.android.AndroidInjector

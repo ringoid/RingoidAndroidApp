@@ -19,7 +19,7 @@ class EmptyFragment : Fragment() {
         private const val BUNDLE_KEY_LAYOUT_RES_ID = "bundle_key_layout_res_id"
         private const val BUNDLE_KEY_EMPTY_TEXT_RES_ID = "bundle_key_empty_text_res_id"
 
-        fun newInstance(input: Input) =
+        fun newInstance(input: Input): EmptyFragment =
             EmptyFragment().apply {
                 arguments = Bundle().apply {
                     putInt(BUNDLE_KEY_LAYOUT_RES_ID, input.layoutResId)

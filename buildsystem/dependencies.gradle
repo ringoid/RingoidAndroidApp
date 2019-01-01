@@ -196,6 +196,11 @@ ext {
             [configuration: "implementation", dependency: d_libs.eventBus],
     ]
 
+    def glide = [
+            [configuration: "kapt", dependency: d_libs.glideCompiler],
+            [configuration: "implementation", dependency: d_libs.glide],
+    ]
+
     def kotlin = [
             [configuration: "implementation", dependency: d_kotlin.ktStdLib],
             [configuration: "implementation", dependency: d_kotlin.ktCoroutines],
@@ -416,7 +421,7 @@ ext {
     /* Utility */
     // ------------------------------------------
     utilityDependencies = []
-    utilityDependencies += android + kotlin + log + rx
+    utilityDependencies += android + kotlin + glide + log + rx
     testUtilityDependencies = test
 
     utilityPlugins = [
