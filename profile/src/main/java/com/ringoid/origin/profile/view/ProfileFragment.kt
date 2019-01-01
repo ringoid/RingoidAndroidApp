@@ -8,8 +8,6 @@ import com.ringoid.origin.profile.R
 class ProfileFragment : BaseFragment() {
 
     companion object {
-        const val TAG = "ProfileFragment_tag"
-
         fun newInstance(): ProfileFragment = ProfileFragment()
     }
 
