@@ -13,7 +13,8 @@ import com.ringoid.origin.R
 class EmptyFragment : Fragment() {
 
     companion object {
-        data class Input(@LayoutRes val layoutResId: Int, @StringRes val emptyTextResId: Int)
+        data class Input(@LayoutRes val layoutResId: Int = R.layout.fragment_empty_text,
+                         @StringRes val emptyTextResId: Int)
 
         private const val BUNDLE_KEY_LAYOUT_RES_ID = "bundle_key_layout_res_id"
         private const val BUNDLE_KEY_EMPTY_TEXT_RES_ID = "bundle_key_empty_text_res_id"

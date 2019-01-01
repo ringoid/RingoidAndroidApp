@@ -21,5 +21,5 @@
     <string name="main_bottom_bar_menu_profile">Profile</string>
 
     <!-- Profile screen -->
-    <string name="profile_empty_photos">Upload your photos so users can like you.</string>
+    <string name="profile_empty_images">Upload your photos so users can like you.</string>
 </resources>
