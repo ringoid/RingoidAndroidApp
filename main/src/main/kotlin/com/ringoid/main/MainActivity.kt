@@ -1,19 +1,18 @@
-package com.ringoid.origin.view.main
+package com.ringoid.main
 
 import android.os.Bundle
 import com.ncapdevi.fragnav.FragNavController
-import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
+import com.ringoid.origin.profile.view.ProfileFragment
 import com.ringoid.origin.view.feed.ExploreFragment
 import com.ringoid.origin.view.feed.LmmFragment
+import com.ringoid.origin.view.main.BaseMainActivity
 
-class MainActivity : BaseActivity<MainViewModel>() {
+class MainActivity : BaseMainActivity<MainViewModel>() {
 
     private lateinit var fragNav: FragNavController
 
     override fun getVmClass() = MainViewModel::class.java
-
-    override fun getLayoutId(): Int = R.layout.activity_main
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
