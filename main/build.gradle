@@ -1,4 +1,4 @@
-rootProject.basePlugins.each {
+rootProject.mainPlugins.each {
     apply plugin: it
 }
 
@@ -27,17 +27,17 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    def baseDependencies = rootProject.ext.baseDependencies
-    def androidTestBaseDeps = rootProject.ext.androidTestBaseDeps
-    def testBaseDependencies = rootProject.ext.testBaseDependencies
+    def mainDependencies = rootProject.ext.mainDependencies
+    def androidTestMainDeps = rootProject.ext.androidTestMainDeps
+    def testMainDependencies = rootProject.ext.testMainDependencies
 
-    baseDependencies.each {
+    mainDependencies.each {
         add(it.configuration, it.dependency, it.options)
     }
-    testBaseDependencies.each {
+    testMainDependencies.each {
         add(it.configuration, it.dependency, it.options)
     }
-    androidTestBaseDeps.each {
+    androidTestMainDeps.each {
         add(it.configuration, it.dependency, it.options)
     }
 }

@@ -118,6 +118,7 @@ ext {
             base:    ':base',
             data:    ':data',
             domain:  ':domain',
+            main:    ':main',
             origin:  ':origin',
             utility: ':utility',
             widget:  ':widget'
@@ -134,6 +135,7 @@ ext {
     def module_base = [[configuration: "implementation", dependency: project(modules.base)]]
     def module_data = [[configuration: "implementation", dependency: project(modules.data)]]
     def module_domain = [[configuration: "implementation", dependency: project(modules.domain)]]
+    def module_main = [[configuration: "implementation", dependency: project(modules.main)]]
     def module_origin = [[configuration: "implementation", dependency: project(modules.origin)]]
     def module_utility = [[configuration: "implementation", dependency: project(modules.utility)]]
     def module_widget = [[configuration: "implementation", dependency: project(modules.widget)]]
@@ -264,7 +266,7 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = []
-    appDependencies += all_features + develop + android + dagger + kotlin + log + net
+    appDependencies += all_features + module_main + develop + android + dagger + kotlin + log + net
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -279,6 +281,22 @@ ext {
         xPlugins.google,
     ]
 
+    /* Main */
+    // ------------------------------------------
+    mainDependencies = [
+        [configuration: "implementation", dependency: d_libs.fragNav]
+    ]
+    mainDependencies += all_features + develop + android + arch + dagger + kotlin + log + rx + rxBind
+
+    androidTestMainDeps = androidTest
+    testMainDependencies = test
+
+    mainPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
+    ]
+    
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
@@ -355,6 +373,8 @@ ext {
     // ------------------------------------------
     baseDependencies = []
     baseDependencies += module_domain + module_utility + android + arch + dagger + kotlin + log + autoDispose
+
+    androidTestBaseDeps = androidTest
     testBaseDependencies = test
 
     basePlugins = [
