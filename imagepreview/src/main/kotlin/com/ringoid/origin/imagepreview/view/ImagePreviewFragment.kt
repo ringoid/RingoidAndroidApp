@@ -9,4 +9,6 @@ class ImagePreviewFragment : BaseFragment() {
 
         fun newInstance(): ImagePreviewFragment = ImagePreviewFragment()
     }
+
+    override fun getLayoutId(): Int = 0
 }

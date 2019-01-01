@@ -19,4 +19,7 @@
     <string name="main_bottom_bar_menu_feed">New Faces</string>
     <string name="main_bottom_bar_menu_lmm">Likes</string>
     <string name="main_bottom_bar_menu_profile">Profile</string>
+
+    <!-- Profile screen -->
+    <string name="profile_empty_photos">Upload your photos so users can like you.</string>
 </resources>
