@@ -17,11 +17,16 @@ class ProfileFragment : BaseFragment() {
     override fun getLayoutId(): Int = R.layout.fragment_profile
 
     // --------------------------------------------------------------------------------------------
-    private val imagesAdapter = ImagePagerAdapter(fm = childFragmentManager,
-        emptyInput = EmptyFragment.Companion.Input(emptyTextResId = R.string.profile_empty_images))
+    private lateinit var imagesAdapter: ImagePagerAdapter
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        imagesAdapter = ImagePagerAdapter(fm = childFragmentManager,
+            emptyInput = EmptyFragment.Companion.Input(emptyTextResId = R.string.profile_empty_images))
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         vp_images.apply {
