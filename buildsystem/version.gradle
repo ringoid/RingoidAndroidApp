@@ -16,6 +16,8 @@ buildscript {
         androidRecyclerViewVersion = '1.0.0'
         androidViewPagerVersion = '1.0.0'
 
+        androidSupportLibraryVersion = '28.0.0'
+
         archComponentsVersion = '2.0.0'
         archComponentsVersionExp = '2.1.0-alpha01'
 

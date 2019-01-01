@@ -5,7 +5,7 @@ import com.ringoid.origin.profile.view.ProfileFragment
 import dagger.Binds
 import dagger.Module
 import dagger.android.AndroidInjector
-import dagger.android.FragmentKey
+import dagger.android.support.FragmentKey
 import dagger.multibindings.IntoMap
 
 @Module(subcomponents = [ProfileFragmentSubcomponent::class])

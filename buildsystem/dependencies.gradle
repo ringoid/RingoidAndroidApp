@@ -10,6 +10,8 @@ ext {
             core:       "androidx.core:core:${androidCoreVersion}",
             fragment:   "androidx.fragment:fragment:${androidFragmentVersion}",
             material:   "com.google.android.material:material:${androidMaterialVersion}",
+
+//            supportFragment: "com.android.support:support-fragment:${androidSupportLibraryVersion}",
     ]
 
     d_android_view = [
@@ -44,6 +46,7 @@ ext {
             dagger:                 "com.google.dagger:dagger:${daggerVersion}",
             daggerAndroid:          "com.google.dagger:dagger-android:${daggerVersion}",
             daggerAndroidProcessor: "com.google.dagger:dagger-android-processor:${daggerVersion}",
+            daggerAndroidSupport:   "com.google.dagger:dagger-android-support:${daggerVersion}",
             daggerCompiler:         "com.google.dagger:dagger-compiler:${daggerVersion}",
     ]
 
@@ -186,6 +189,7 @@ ext {
             [configuration: "kapt", dependency: d_dagger.daggerCompiler],
             [configuration: "implementation", dependency: d_dagger.dagger],
             [configuration: "implementation", dependency: d_dagger.daggerAndroid],
+            [configuration: "implementation", dependency: d_dagger.daggerAndroidSupport],
     ]
 
     def eventbus = [
