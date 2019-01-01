@@ -328,7 +328,9 @@ ext {
 
     /* Origin - base feature */
     // ------------------------------------------
-    originDependencies = []
+    originDependencies = [
+        [configuration: "implementation", dependency: d_libs.fragNav]
+    ]
     originDependencies += feature_auth + feature_imagePreview + feature_profile + develop + android + arch + dagger +
                           kotlin + log + rx + rxBind + support
 
