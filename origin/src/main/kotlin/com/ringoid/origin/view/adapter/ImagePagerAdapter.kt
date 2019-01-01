@@ -24,4 +24,9 @@ class ImagePagerAdapter(fm: FragmentManager, val emptyInput: EmptyFragment.Compa
         images.add(item)
         notifyDataSetChanged()
     }
+
+    fun remove(itemId: String) {
+        images.find { it.id == itemId }
+              ?.let { images.remove(it) ; notifyDataSetChanged() }
+    }
 }
