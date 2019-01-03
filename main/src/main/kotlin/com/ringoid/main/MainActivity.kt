@@ -4,8 +4,8 @@ import android.os.Bundle
 import com.ncapdevi.fragnav.FragNavController
 import com.ringoid.origin.R
 import com.ringoid.origin.profile.view.profile.ProfileFragment
-import com.ringoid.origin.view.feed.ExploreFragment
-import com.ringoid.origin.view.feed.LmmFragment
+import com.ringoid.origin.view.feed.explore.ExploreFragment
+import com.ringoid.origin.view.feed.lmm.LmmFragment
 import com.ringoid.origin.view.main.BaseMainActivity
 
 class MainActivity : BaseMainActivity<MainViewModel>() {
