@@ -8,12 +8,14 @@ import com.ringoid.origin.view.adapter.ImagePagerAdapter
 import com.ringoid.origin.view.common.EmptyFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-class ProfileFragment : BaseFragment() {
+class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
 
     companion object {
         fun newInstance(): ProfileFragment =
             ProfileFragment()
     }
+
+    override fun getVmClass(): Class<ProfileFragmentViewModel> = ProfileFragmentViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_profile
 

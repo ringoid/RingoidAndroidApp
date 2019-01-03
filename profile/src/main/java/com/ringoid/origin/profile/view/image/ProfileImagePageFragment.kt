@@ -9,7 +9,7 @@ import com.ringoid.origin.view.image.ImagePageFragment
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_profile_image_page.*
 
-class ProfileImagePageFragment : ImagePageFragment() {
+class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() {
 
     companion object {
         fun newInstance(image: Image): ProfileImagePageFragment =
@@ -17,6 +17,8 @@ class ProfileImagePageFragment : ImagePageFragment() {
                 arguments = Bundle().apply { putParcelable(BUNDLE_KEY_IMAGE, image) }
             }
     }
+
+    override fun getVmClass(): Class<ProfileImagePageViewModel> = ProfileImagePageViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_profile_image_page
 

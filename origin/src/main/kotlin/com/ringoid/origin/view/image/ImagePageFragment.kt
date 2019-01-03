@@ -5,19 +5,13 @@ import android.view.View
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.model.image.Image
 import com.ringoid.origin.R
-import com.ringoid.origin.R.id.iv_image
 import com.ringoid.utility.ImageLoader
 import kotlinx.android.synthetic.main.fragment_image_page.*
 
-open class ImagePageFragment : BaseFragment() {
+abstract class ImagePageFragment<T : ImagePageViewModel> : BaseFragment<T>() {
 
     companion object {
         const val BUNDLE_KEY_IMAGE = "bundle_key_image"
-
-        fun newInstance(image: Image): ImagePageFragment =
-            ImagePageFragment().apply {
-                arguments = Bundle().apply { putParcelable(BUNDLE_KEY_IMAGE, image) }
-            }
     }
 
     protected var image: Image? = null
