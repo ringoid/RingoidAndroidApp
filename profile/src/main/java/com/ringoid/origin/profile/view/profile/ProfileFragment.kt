@@ -26,7 +26,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imagesAdapter = ImagePagerAdapter(fm = childFragmentManager,
+        imagesAdapter = ProfileImagePagerAdapter(fm = childFragmentManager,
             emptyInput = EmptyFragment.Companion.Input(emptyTextResId = R.string.profile_empty_images))
     }
 
