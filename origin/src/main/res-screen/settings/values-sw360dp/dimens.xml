@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="settings_account_delete_info_margin_left">49dp</dimen>
+</resources>
