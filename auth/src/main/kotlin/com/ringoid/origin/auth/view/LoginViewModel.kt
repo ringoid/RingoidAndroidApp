@@ -21,7 +21,7 @@ class LoginViewModel @Inject constructor(
     private val createUserProfileUseCase: CreateUserProfileUseCase, app: Application)
     : BaseViewModel(app) {
 
-    val calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
+    private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
     val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
     val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
