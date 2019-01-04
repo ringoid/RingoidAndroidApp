@@ -22,4 +22,12 @@
 
     <!-- Profile screen -->
     <string name="profile_empty_images">Upload your photos so users can like you.</string>
+
+    <!-- Settings screen -->
+    <string name="settings_account_delete">Delete account</string>
+    <string name="settings_account_delete_info">If you don\'t use Ringoid for more than 16 days, your account will be automatically deleted.</string>
+    <string name="settings_app_info">Legal</string>
+    <string name="settings_support">Email support@ringoid.com</string>
+    <string name="settings_theme_dark">Dark theme</string>
+    <string name="settings_theme_light">Light theme</string>
 </resources>
