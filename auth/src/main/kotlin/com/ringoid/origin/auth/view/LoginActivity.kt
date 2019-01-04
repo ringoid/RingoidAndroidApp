@@ -1,6 +1,5 @@
 package com.ringoid.origin.auth.view
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
@@ -25,10 +24,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun getVmClass() = LoginViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.activity_login
-
-    companion object {
-        fun getCallingIntent(context: Context): Intent = Intent(context, LoginActivity::class.java)
-    }
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
