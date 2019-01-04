@@ -27,4 +27,9 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
                 initialize(index = FragNavController.TAB1, savedInstanceState = savedInstanceState)
             }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        fragNav.onSaveInstanceState(outState)
+    }
 }
