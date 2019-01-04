@@ -29,7 +29,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
                 rootFragments = getListOfRootFragment()
                 navigationStrategy = UnlimitedTabHistoryStrategy(object : FragNavSwitchController {
                     override fun switchTab(index: Int, transactionOptions: FragNavTransactionOptions?) {
-                        bottom_bar.selectedItemId
+                        bottom_bar.selectedItemId = indexToTabId(index)
                     }
                 })
                 initialize(index = FragNavController.TAB1, savedInstanceState = savedInstanceState)
@@ -40,4 +40,12 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
         super.onSaveInstanceState(outState)
         fragNav.onSaveInstanceState(outState)
     }
+
+    // --------------------------------------------------------------------------------------------
+    private fun indexToTabId(index: Int): Int =
+        when (index) {
+            1 -> R.id.item_lmm
+            2 -> R.id.item_profile
+            else -> R.id.item_feed
+        }
 }
