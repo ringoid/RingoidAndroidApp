@@ -30,6 +30,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
                         bottom_bar.selectedItemId = indexToTabId(index)
                     }
                 })
+                fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
+                createEager = true
                 initialize(index = FragNavController.TAB1, savedInstanceState = savedInstanceState)
             }
     }
