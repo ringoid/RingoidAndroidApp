@@ -1,4 +1,4 @@
-package com.ringoid.widget
+package com.ringoid.widget.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,6 +7,7 @@ import android.os.Build
 import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import com.ringoid.widget.R
 
 class ForegroundImageView : ImageView {
 
@@ -21,9 +22,12 @@ class ForegroundImageView : ImageView {
     }
 
     private fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.ForegroundImageView, defStyleAttr, 0)
+        val a = context.obtainStyledAttributes(attrs,
+            R.styleable.ForegroundImageView, defStyleAttr, 0)
         var foreground = a.getDrawable(R.styleable.ForegroundImageView_xForeground)
-        if (foreground == null) foreground = ContextCompat.getDrawable(context, R.drawable.transparent_overlay)
+        if (foreground == null) foreground = ContextCompat.getDrawable(context,
+            R.drawable.transparent_overlay
+        )
         setForegroundX(foreground)
         a.recycle()
     }
