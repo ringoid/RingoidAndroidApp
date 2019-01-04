@@ -19,6 +19,11 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fragNav = FragNavController(supportFragmentManager, R.id.fl_container)
-            .apply { rootFragments = listOf(ExploreFragment.newInstance(), LmmFragment.newInstance(), ProfileFragment.newInstance()) }
+            .apply {
+                rootFragments = listOf(
+                    ExploreFragment.newInstance(),
+                    LmmFragment.newInstance(),
+                    ProfileFragment.newInstance())
+            }
     }
 }
