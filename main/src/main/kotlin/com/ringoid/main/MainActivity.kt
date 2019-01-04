@@ -24,6 +24,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
                     ExploreFragment.newInstance(),
                     LmmFragment.newInstance(),
                     ProfileFragment.newInstance())
+                initialize(index = FragNavController.TAB1, savedInstanceState = savedInstanceState)
             }
     }
 }
