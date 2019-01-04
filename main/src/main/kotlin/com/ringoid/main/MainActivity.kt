@@ -10,7 +10,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
 
     override fun getVmClass() = MainViewModel::class.java
 
-    override fun getListOfRootFragment(): List<Fragment> =
+    override fun getListOfRootFragments(): List<Fragment> =
             listOf(
                 ExploreFragment.newInstance(),
                 LmmFragment.newInstance(),

@@ -8,8 +8,6 @@ import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
-import com.ringoid.origin.view.feed.explore.ExploreFragment
-import com.ringoid.origin.view.feed.lmm.LmmFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
@@ -18,7 +16,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
 
     override fun getLayoutId(): Int = R.layout.activity_main
 
-    protected abstract fun getListOfRootFragment(): List<Fragment>
+    protected abstract fun getListOfRootFragments(): List<Fragment>
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -26,7 +24,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
         super.onCreate(savedInstanceState)
         fragNav = FragNavController(supportFragmentManager, R.id.fl_container)
             .apply {
-                rootFragments = getListOfRootFragment()
+                rootFragments = getListOfRootFragments()
                 navigationStrategy = UnlimitedTabHistoryStrategy(object : FragNavSwitchController {
                     override fun switchTab(index: Int, transactionOptions: FragNavTransactionOptions?) {
                         bottom_bar.selectedItemId = indexToTabId(index)
