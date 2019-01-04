@@ -438,5 +438,6 @@ ext {
     widgetPlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
+        xPlugins.kotlinAndroidExt,
     ]
 }

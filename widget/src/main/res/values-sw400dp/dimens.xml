@@ -6,4 +6,7 @@
     <dimen name="std_margin_32">32dp</dimen>
     <dimen name="std_text_14">14dp</dimen>
     <dimen name="std_text_20">20dp</dimen>
+
+    <!-- Widget -->
+    <dimen name="icon_item_view_height">60dp</dimen>
 </resources>
