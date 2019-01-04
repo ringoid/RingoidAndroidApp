@@ -10,6 +10,7 @@
         <item name="colorAccent">?refColorAccent</item>
         <item name="colorPrimary">?refColorPrimary</item>
         <item name="colorPrimaryDark">?refColorPrimaryDark</item>
+        <item name="iconItemView">@style/IconItemView</item>
     </style>
 
     <style name="AppTheme" parent="Base.V0.AppTheme"/>

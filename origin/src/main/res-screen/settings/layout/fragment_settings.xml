@@ -6,4 +6,11 @@
 
     <include layout="@layout/toolbar"/>
 
+    <com.ringoid.widget.view.IconItemView
+        android:id="@+id/item_legal"
+        style="?attr/iconItemView"/>
+
+    <com.ringoid.widget.view.IconItemView
+        android:id="@+id/item_support"
+        style="?attr/iconItemView"/>
 </LinearLayout>

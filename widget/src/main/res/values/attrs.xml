@@ -4,8 +4,10 @@
         <attr name="refColorAccent" format="reference"/>
         <attr name="refColorPrimary" format="reference"/>
         <attr name="refColorPrimaryDark" format="reference"/>
+        <attr name="iconItemView" format="reference"/>
     </declare-styleable>
 
+    <!-- Widget -->
     <declare-styleable name="ForegroundImageView">
         <attr name="xForeground" format="reference"/>
     </declare-styleable>
