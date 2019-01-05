@@ -1,0 +1,43 @@
+rootProject.appSettingsPlugins.each {
+    apply plugin: it
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.androidVersionCode
+        versionName rootProject.ext.androidVersionName
+        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDirs += 'src/main/kotlin'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def appSettingsDependencies = rootProject.ext.appSettingsDependencies
+    def androidTestAppSettingsDeps = rootProject.ext.androidTestAppSettingsDeps
+    def testAppSettingsDependencies = rootProject.ext.testAppSettingsDependencies
+
+    appSettingsDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testAppSettingsDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestAppSettingsDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

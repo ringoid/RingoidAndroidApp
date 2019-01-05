@@ -113,10 +113,11 @@ ext {
     /* Modules */
     // --------------------------------------------------------------------------------------------
     modules = [
-            app:     ':app',
-            auth:    ':auth',
+            app:          ':app',
+            appSettings:  ':appsettings',
+            auth:         ':auth',
             imagePreview: ':imagepreview',
-            profile: ':profile',
+            profile:      ':profile',
 
             base:    ':base',
             data:    ':data',
@@ -131,6 +132,7 @@ ext {
     def feature_imagePreview = [[configuration: "feature", dependency: project(modules.imagePreview)]]
     def feature_profile = [[configuration: "feature", dependency: project(modules.profile)]]
 
+    def module_appSettings = [[onfiguration: "implementation", dependency: project(modules.appSettings)]]
     def module_auth = [[configuration: "implementation", dependency: project(modules.auth)]]
     def module_imagePreview = [[configuration: "implementation", dependency: project(modules.imagePreview)]]
     def module_profile = [[configuration: "implementation", dependency: project(modules.profile)]]
@@ -301,6 +303,20 @@ ext {
     testMainDependencies = test
 
     mainPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
+    ]
+
+    /* App Settings */
+    // ------------------------------------------
+    appSettingsDependencies = []
+    appSettingsDependencies += module_origin + develop + android + arch + dagger + kotlin + log
+
+    androidTestAppSettingsDeps = androidTest
+    testAppSettingsDependencies = test
+
+    appSettingsPlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAnnotation,
