@@ -281,7 +281,7 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = []
-    appDependencies += all_features + module_main + develop + android + dagger + kotlin + log + net
+    appDependencies += all_features + module_main + develop + android + dagger + kotlin + log + fragnav + net
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -313,7 +313,7 @@ ext {
     /* App Settings */
     // ------------------------------------------
     appSettingsDependencies = []
-    appSettingsDependencies += module_origin + develop + android + arch + dagger + kotlin + log + fragnav
+    appSettingsDependencies += module_origin + develop + android + arch + dagger + kotlin + log
 
     androidTestAppSettingsDeps = androidTest
     testAppSettingsDependencies = test
