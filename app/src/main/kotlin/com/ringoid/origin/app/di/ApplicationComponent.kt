@@ -8,6 +8,9 @@ import com.ringoid.origin.imagepreview.view.di.ImagePreviewActivityModule
 import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.view.splash.di.SplashActivityModule
+import com.ringoid.usersettings.view.debug.di.DebugFragmentModule
+import com.ringoid.usersettings.view.di.SettingsFragmentModule
+import com.ringoid.usersettings.view.info.di.SettingsAppInfoFragmentModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -17,8 +20,10 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
-                      ImagePreviewActivityModule::class, LoginActivityModule::class,
-                      MainActivityModule::class, ProfileFragmentModule::class,
+                      DebugFragmentModule::class, ImagePreviewActivityModule::class,
+                      LoginActivityModule::class, MainActivityModule::class,
+                      ProfileFragmentModule::class,
+                      SettingsFragmentModule::class, SettingsAppInfoFragmentModule::class,
                       SplashActivityModule::class])
 interface ApplicationComponent : AndroidInjector<RingoidApplication> {
 
