@@ -1,6 +1,7 @@
 package com.ringoid.origin.imagepreview.view
 
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.origin.imagepreview.R
 
 class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
 
@@ -12,5 +13,5 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
 
     override fun getVmClass(): Class<ImagePreviewViewModel> = ImagePreviewViewModel::class.java
 
-    override fun getLayoutId(): Int = 0
+    override fun getLayoutId(): Int = R.layout.fragment_image_preview
 }

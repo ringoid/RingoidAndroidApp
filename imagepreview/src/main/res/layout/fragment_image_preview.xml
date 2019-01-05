@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-</LinearLayout>
+    <include layout="@layout/toolbar"/>
+
+    <Button
+        android:id="@+id/btn_done"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:text="@string/image_preview_button"
+        android:textSize="@dimen/std_text_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/RaisedButton"/>
+
+    <com.steelkiwi.cropiwa.CropIwaView
+        android:id="@+id/crop_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/std_margin_16"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/btn_done"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:ci_aspect_ratio_h="4"
+        app:ci_aspect_ratio_w="3"
+        app:ci_border_color="?attr/refColorAccent"
+        app:ci_border_width="2dp"
+        app:ci_crop_scale="0.95"
+        app:ci_crop_shape="rectangle"
+        app:ci_draw_grid="false"
+        app:ci_dynamic_aspect_ratio="false"
+        app:ci_scale_enabled="true"
+        app:ci_translation_enabled="true"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
