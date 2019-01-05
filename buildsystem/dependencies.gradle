@@ -198,6 +198,10 @@ ext {
             [configuration: "implementation", dependency: d_libs.eventBus],
     ]
 
+    def fragnav = [
+            [configuration: "implementation", dependency: d_libs.fragNav]
+    ]
+
     def glide = [
             [configuration: "kapt", dependency: d_libs.glideCompiler],
             [configuration: "implementation", dependency: d_libs.glide],
@@ -294,10 +298,8 @@ ext {
 
     /* Main */
     // ------------------------------------------
-    mainDependencies = [
-        [configuration: "implementation", dependency: d_libs.fragNav]
-    ]
-    mainDependencies += all_features + develop + android + arch + dagger + kotlin + log + rx + rxBind
+    mainDependencies = []
+    mainDependencies += all_features + develop + android + arch + dagger + kotlin + log + fragnav + rx + rxBind
 
     androidTestMainDeps = androidTest
     testMainDependencies = test
@@ -311,7 +313,7 @@ ext {
     /* App Settings */
     // ------------------------------------------
     appSettingsDependencies = []
-    appSettingsDependencies += module_origin + develop + android + arch + dagger + kotlin + log
+    appSettingsDependencies += module_origin + develop + android + arch + dagger + kotlin + log + fragnav
 
     androidTestAppSettingsDeps = androidTest
     testAppSettingsDependencies = test
@@ -371,11 +373,9 @@ ext {
 
     /* Origin - base feature */
     // ------------------------------------------
-    originDependencies = [
-        [configuration: "implementation", dependency: d_libs.fragNav]
-    ]
+    originDependencies = []
     originDependencies += feature_auth + feature_imagePreview + feature_profile + develop + android + arch + dagger +
-                          kotlin + log + rx + rxBind + support
+                          kotlin + log + fragnav + rx + rxBind + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
