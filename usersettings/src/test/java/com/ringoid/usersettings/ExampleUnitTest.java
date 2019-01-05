@@ -1,4 +1,4 @@
-package com.ringoid.appsettings;
+package com.ringoid.usersettings;
 
 import org.junit.Test;
 

@@ -1,1 +1,1 @@
-include ':app', ':appsettings', ':auth', ':imagepreview', ':main', ':origin', ':base', ':domain', ':data', ':profile', ':widget', ':utility'
+include ':app', ':auth', ':imagepreview', ':main', ':origin', ':base', ':domain', ':data', ':profile', ':usersettings', ':utility', ':widget'

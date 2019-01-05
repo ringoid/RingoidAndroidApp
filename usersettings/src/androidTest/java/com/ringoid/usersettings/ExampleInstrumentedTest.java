@@ -1,4 +1,4 @@
-package com.ringoid.appsettings;
+package com.ringoid.usersettings;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.ringoid.appsettings.test", appContext.getPackageName());
+        assertEquals("com.ringoid.usersettings.test", appContext.getPackageName());
     }
 }

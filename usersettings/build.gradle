@@ -1,4 +1,4 @@
-rootProject.appSettingsPlugins.each {
+rootProject.userSettingsPlugins.each {
     apply plugin: it
 }
 
@@ -27,17 +27,17 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    def appSettingsDependencies = rootProject.ext.appSettingsDependencies
-    def androidTestAppSettingsDeps = rootProject.ext.androidTestAppSettingsDeps
-    def testAppSettingsDependencies = rootProject.ext.testAppSettingsDependencies
+    def userSettingsDependencies = rootProject.ext.userSettingsDependencies
+    def androidTestUserSettingsDeps = rootProject.ext.androidTestUserSettingsDeps
+    def testUserSettingsDependencies = rootProject.ext.testUserSettingsDependencies
 
-    appSettingsDependencies.each {
+    userSettingsDependencies.each {
         add(it.configuration, it.dependency, it.options)
     }
-    testAppSettingsDependencies.each {
+    testUserSettingsDependencies.each {
         add(it.configuration, it.dependency, it.options)
     }
-    androidTestAppSettingsDeps.each {
+    androidTestUserSettingsDeps.each {
         add(it.configuration, it.dependency, it.options)
     }
 }
