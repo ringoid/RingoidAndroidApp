@@ -57,5 +57,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
                     .build()
             )
         }
+        // TODO: send broadcast on image cropped - and set that image on profile screen
+        // TODO: close this ImagePreview screen immediately, doing cropping in background
     }
 }
