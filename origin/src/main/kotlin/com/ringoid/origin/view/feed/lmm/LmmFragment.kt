@@ -1,6 +1,7 @@
 package com.ringoid.origin.view.feed.lmm
 
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.origin.R
 
 class LmmFragment : BaseFragment<LmmViewModel>() {
 
@@ -10,5 +11,5 @@ class LmmFragment : BaseFragment<LmmViewModel>() {
 
     override fun getVmClass(): Class<LmmViewModel> = LmmViewModel::class.java
 
-    override fun getLayoutId(): Int = 0
+    override fun getLayoutId(): Int = R.layout.fragment_lmm
 }
