@@ -53,7 +53,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
             crop_view.crop(
                 CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
                     .setCompressFormat(Bitmap.CompressFormat.PNG)
-                    .setQuality(100) //Hint for lossy compression formats
+                    .setQuality(100) // hint for lossy compression formats
                     .build()
             )
         }
