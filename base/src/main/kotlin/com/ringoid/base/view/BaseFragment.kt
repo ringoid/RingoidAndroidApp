@@ -1,5 +1,6 @@
 package com.ringoid.base.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,17 +8,18 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModelProvider
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import dagger.android.support.AndroidSupportInjection
 import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     protected lateinit var vm: T
-    @Inject protected lateinit var vmFactory: ViewModelProvider.Factory
+    @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
 
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
@@ -31,6 +33,11 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(getLayoutId(), container, false)
