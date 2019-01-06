@@ -8,5 +8,5 @@ import dagger.android.AndroidInjector
 interface ProfileFragmentSubcomponent : AndroidInjector<ProfileFragment> {
 
     @Subcomponent.Builder
-    abstract class Builder : AndroidInjector.Builder<ProfileFragment>()
+    abstract class Builder : AndroidInjector.Builder<ProfileFragment>() {}
 }
