@@ -375,7 +375,7 @@ ext {
     // ------------------------------------------
     originDependencies = []
     originDependencies += feature_auth + feature_imagePreview + feature_profile + develop + android + arch + dagger +
-                          kotlin + log + fragnav + rx + rxBind + support
+                          kotlin + glide + log + fragnav + rx + rxBind + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
