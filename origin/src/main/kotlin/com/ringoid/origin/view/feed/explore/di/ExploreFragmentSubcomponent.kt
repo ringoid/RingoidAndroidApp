@@ -8,5 +8,5 @@ import dagger.android.AndroidInjector
 interface ExploreFragmentSubcomponent : AndroidInjector<ExploreFragment> {
 
     @Subcomponent.Builder
-    abstract class Builder : AndroidInjector.Builder<ExploreFragment>() {}
+    abstract class Builder : AndroidInjector.Builder<ExploreFragment>()
 }
