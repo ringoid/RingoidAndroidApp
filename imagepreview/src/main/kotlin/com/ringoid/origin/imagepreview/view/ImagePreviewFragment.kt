@@ -7,10 +7,12 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.imagepreview.R
+import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.randomString
 import com.steelkiwi.cropiwa.config.CropIwaSaveConfig
 import kotlinx.android.synthetic.main.fragment_image_preview.*
+import timber.log.Timber
 import java.io.File
 
 class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
@@ -19,10 +21,14 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         const val TAG = "ImagePreviewFragment_tag"
 
         private const val BUNDLE_KEY_IMAGE_URI = "bundle_key_image_uri"
+        private const val BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI = "bundle_key_flag_open_main_if_no_uri"
 
-        fun newInstance(uri: String): ImagePreviewFragment =
+        fun newInstance(uri: String?, needOpenMainScreenIfNoUri: Boolean): ImagePreviewFragment =
             ImagePreviewFragment().apply {
-                arguments = Bundle().apply { putString(BUNDLE_KEY_IMAGE_URI, uri) }
+                arguments = Bundle().apply {
+                    putString(BUNDLE_KEY_IMAGE_URI, uri)
+                    putBoolean(BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI, needOpenMainScreenIfNoUri)
+                }
             }
     }
 
@@ -44,6 +50,12 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         btn_done.clicks().compose(clickDebounce()).subscribe { cropImage() }
 
         uri?.let { crop_view.setImageUri(Uri.parse(it)) }
+           ?: run {
+               Timber.w("No image uri supplied on ImagePreview screen.")
+               arguments?.getBoolean(BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI)
+                             ?.takeIf { it }
+                             ?.let { navigateAndClose(this, path = "/main") }
+           }
     }
 
     // --------------------------------------------------------------------------------------------

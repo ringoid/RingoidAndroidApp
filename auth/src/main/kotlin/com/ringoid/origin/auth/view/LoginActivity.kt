@@ -8,6 +8,7 @@ import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
+import com.ringoid.origin.Extras
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.navigation.ExternalNavigator
@@ -100,7 +101,10 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            ExternalNavigator.RC_GALLERY_GET_IMAGE -> navigateAndClose(this, path = "/main")
+            ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
+                data?.putExtra(Extras.EXTRA_OPEN_MAIN_IF_NO_URI, true)
+                navigateAndClose(this, path = "/imagepreview", data = data)
+            }
         }
     }
 }
