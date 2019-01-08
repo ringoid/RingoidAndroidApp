@@ -26,6 +26,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         fun newInstance(uri: String?, needOpenMainScreenIfNoUri: Boolean): ImagePreviewFragment =
             ImagePreviewFragment().apply {
                 arguments = Bundle().apply {
+                    Timber.v("ImagePreview: uri=$uri, needOpenMainScreenIfNoUri=$needOpenMainScreenIfNoUri")
                     putString(BUNDLE_KEY_IMAGE_URI, uri)
                     putBoolean(BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI, needOpenMainScreenIfNoUri)
                 }
