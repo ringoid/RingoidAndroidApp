@@ -46,6 +46,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         uri = arguments?.getString(BUNDLE_KEY_IMAGE_URI)
     }
 
+    @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_done.clicks().compose(clickDebounce()).subscribe { cropImage() }

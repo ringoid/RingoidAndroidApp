@@ -4,7 +4,7 @@ import com.ringoid.origin.imagepreview.view.ImagePreviewActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-@Module
+@Module(subcomponents = [ImagePreviewActivitySubcomponent::class])
 abstract class ImagePreviewActivityModule {
 
     @ContributesAndroidInjector
