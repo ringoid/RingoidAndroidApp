@@ -42,10 +42,9 @@ class SharedPrefsManager @Inject constructor(context: Context) {
             .putString(SP_KEY_AUTH_ACCESS_TOKEN, accessToken)
             .apply()
     }
-
-    // --------------------------------------------------------------------------------------------
 }
 
+// --------------------------------------------------------------------------------------------
 inline fun SharedPrefsManager.accessCompletable(body: (it: AccessToken) -> Completable): Completable =
     accessToken()?.let { body(it) } ?: Completable.error { InvalidAccessTokenException() }
 

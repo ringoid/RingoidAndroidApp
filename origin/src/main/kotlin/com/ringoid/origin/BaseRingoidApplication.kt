@@ -27,8 +27,8 @@ abstract class BaseRingoidApplication : DaggerApplication() {
     override fun onCreate() {
         super.onCreate()
         if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
+            // This processSingle is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this processSingle.
             return
         }
         Timber.d("Starting ${javaClass.simpleName}")
