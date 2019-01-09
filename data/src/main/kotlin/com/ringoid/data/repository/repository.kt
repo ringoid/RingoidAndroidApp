@@ -11,7 +11,7 @@ import java.lang.Math.pow
 import java.util.concurrent.TimeUnit
 
 const val DEFAULT_RETRY_COUNT = 5
-const val DEFAULT_RETRY_DELAY = 1013
+const val DEFAULT_RETRY_DELAY = 55
 
 /* Retry with exponential backoff */
 // ------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Int) =
     { it: Flowable<Throwable> ->
         it.zipWith<Int, Int>(Flowable.range(1, count), BiFunction { t, i -> i })
             .flatMap { retryCount ->
-                val delayTime = pow(delay.toDouble(), retryCount.toDouble()).toLong()
+                val delayTime = delay * pow(5.0, retryCount.toDouble()).toLong()
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
             }
     }
