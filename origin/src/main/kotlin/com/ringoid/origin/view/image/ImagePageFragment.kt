@@ -27,6 +27,6 @@ abstract class ImagePageFragment<T : ImagePageViewModel> : BaseFragment<T>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        image?.let { ImageLoader.load(uri = it.uri, imageView = iv_image) }
+        image?.uri?.let { ImageLoader.load(uri = it, imageView = iv_image) }
     }
 }

@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.ringoid.domain.DomainUtil.BAD_ID
 
-data class Image(override val id: String, override val uri: String?) : IImage, Parcelable {
+data class Image(override val id: String, override val uri: String? = null) : IImage, Parcelable {
 
     private constructor(source: Parcel): this(id = source.readString() ?: BAD_ID, uri = source.readString())
 
