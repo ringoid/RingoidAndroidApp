@@ -72,8 +72,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
                 CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
                     .setCompressFormat(Bitmap.CompressFormat.PNG)
                     .setQuality(100) // hint for lossy compression formats
-                    .build()
-            )
+                    .build())
         }
         // TODO: send broadcast on image cropped - and set that image on profile screen
         // TODO: close this ImagePreview screen immediately, doing cropping in background
