@@ -1,9 +1,9 @@
 package com.ringoid.data.repository.user
 
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
+import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
-import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
@@ -16,8 +16,7 @@ import javax.inject.Singleton
 class UserRepository @Inject constructor(cloud: RingoidCloud, spm: SharedPrefsManager)
     : BaseRepository(cloud, spm), IUserRepository {
 
-    override fun accessToken(): Single<AccessToken> =
-        spm.accessToken()?.let { Single.just(it) } ?: Single.error(InvalidAccessTokenException())
+    override fun accessToken(): Single<AccessToken> = spm.accessSingle { Single.just(it) }
 
     // TODO: always check db first
     override fun createUserProfile(essence: AuthCreateProfileEssence): Single<CurrentUser> =

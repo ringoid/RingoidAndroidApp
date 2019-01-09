@@ -44,6 +44,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
                 override fun onCropSuccess(croppedUri: Uri) {
                     Timber.v("Image cropping has succeeded, uri: $croppedUri")
                     // TODO: save image to backend and local cache (repository) and set image
+                    vm.uploadImage(uri = croppedUri)
                 }
             })
         }

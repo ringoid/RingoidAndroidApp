@@ -2,9 +2,9 @@ package com.ringoid.data.repository.feed
 
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
+import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
-import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Single
@@ -18,8 +18,5 @@ class FeedRepository @Inject constructor(
 
     // TODO: always check db first
     override fun getNewFaces(resolution: String, limit: Int): Single<Feed> =
-        spm.accessToken()?.let {
-            cloud.getNewFaces(accessToken = it.accessToken, resolution = resolution, limit = limit)
-                 .map { it.map() }
-        } ?: Single.error<Feed> { InvalidAccessTokenException() }
+        spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit).map { it.map() } }
 }

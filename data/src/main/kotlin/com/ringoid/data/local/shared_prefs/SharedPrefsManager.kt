@@ -2,7 +2,9 @@ package com.ringoid.data.local.shared_prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.user.AccessToken
+import io.reactivex.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,4 +42,21 @@ class SharedPrefsManager @Inject constructor(context: Context) {
             .putString(SP_KEY_AUTH_ACCESS_TOKEN, accessToken)
             .apply()
     }
+
+    // --------------------------------------------------------------------------------------------
 }
+
+inline fun SharedPrefsManager.accessCompletable(body: (it: AccessToken) -> Completable): Completable =
+    accessToken()?.let { body(it) } ?: Completable.error { InvalidAccessTokenException() }
+
+inline fun <reified T> SharedPrefsManager.accessMaybe(body: (it: AccessToken) -> Maybe<T>): Maybe<T> =
+    accessToken()?.let { body(it) } ?: Maybe.error<T> { InvalidAccessTokenException() }
+
+inline fun <reified T> SharedPrefsManager.accessSingle(body: (it: AccessToken) -> Single<T>): Single<T> =
+    accessToken()?.let { body(it) } ?: Single.error<T> { InvalidAccessTokenException() }
+
+inline fun <reified T> SharedPrefsManager.accessFlowable(body: (it: AccessToken) -> Flowable<T>): Flowable<T> =
+    accessToken()?.let { body(it) } ?: Flowable.error<T> { InvalidAccessTokenException() }
+
+inline fun <reified T> SharedPrefsManager.accessObservable(body: (it: AccessToken) -> Observable<T>): Observable<T> =
+    accessToken()?.let { body(it) } ?: Observable.error<T> { InvalidAccessTokenException() }

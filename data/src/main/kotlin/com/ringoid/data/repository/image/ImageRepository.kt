@@ -2,9 +2,9 @@ package com.ringoid.data.repository.image
 
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
+import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
-import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
@@ -22,15 +22,10 @@ class ImageRepository @Inject constructor(
 
     // TODO: always check db first
     override fun getUserImages(resolution: String): Single<List<UserImage>> =
-        spm.accessToken()?.let {
-            cloud.getUserImages(accessToken = it.accessToken, resolution = resolution)
-                 .map { it.map() }
-        } ?: Single.error<List<UserImage>> { InvalidAccessTokenException() }
+        spm.accessSingle { cloud.getUserImages(it.accessToken, resolution).map { it.map() } }
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
-        spm.accessToken()?.let {
-            cloud.getImageUploadUrl(essence).map { it.map() }
-        } ?: Single.error<Image> { InvalidAccessTokenException() }
+        spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }
 
     override fun uploadImage(url: String, image: File): Completable =
         cloud.uploadImage(url = url, image = image)
