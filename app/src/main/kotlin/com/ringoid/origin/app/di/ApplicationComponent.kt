@@ -5,8 +5,8 @@ import android.content.Context
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.app.RingoidApplication
 import com.ringoid.origin.auth.di.LoginActivityModule
-import com.ringoid.origin.imagepreview.view.di.ImagePreviewActivityModule
-import com.ringoid.origin.imagepreview.view.di.ImagePreviewFragmentModule
+import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
+import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
 import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
 import com.ringoid.origin.view.feed.explore.di.ExploreFragmentModule
 import com.ringoid.origin.view.feed.lmm.di.LmmFragmentModule

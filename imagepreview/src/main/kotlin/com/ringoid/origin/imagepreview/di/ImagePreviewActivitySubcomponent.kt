@@ -1,4 +1,4 @@
-package com.ringoid.origin.imagepreview.view.di
+package com.ringoid.origin.imagepreview.di
 
 import com.ringoid.origin.imagepreview.view.ImagePreviewActivity
 import dagger.Subcomponent
