@@ -1,9 +1,11 @@
 package com.ringoid.data.repository.image
 
 import com.ringoid.data.local.database.dao.image.ImageDao
+import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
+import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
@@ -23,6 +25,9 @@ class ImageRepository @Inject constructor(
     // TODO: always check db first
     override fun getUserImages(resolution: String): Single<List<UserImage>> =
         spm.accessSingle { cloud.getUserImages(it.accessToken, resolution).map { it.map() } }
+
+    fun deleteUserImage(essence: ImageDeleteEssence): Completable =
+        spm.accessCompletable { cloud.deleteUserImage(essence) }
 
     // ------------------------------------------------------------------------
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
