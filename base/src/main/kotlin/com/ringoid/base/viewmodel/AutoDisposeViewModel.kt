@@ -25,18 +25,14 @@ abstract class AutoDisposeViewModel(app: Application): AndroidViewModel(app),
      * and then allows you to clean up any resources in the
      * [ViewModel.onCleared] method before it is destroyed.
      */
-    enum class ViewModelEvent {
-        CREATED, CLEARED
-    }
+    enum class ViewModelEvent { CREATED, CLEARED }
 
     /**
      * The observable representing the lifecycle of the [ViewModel].
      *
      * @return [Observable] modelling the [ViewModel] lifecycle.
      */
-    override fun lifecycle(): Observable<ViewModelEvent> {
-        return lifecycleEvents.hide()
-    }
+    override fun lifecycle(): Observable<ViewModelEvent> = lifecycleEvents.hide()
 
     /**
      * Returns a [CorrespondingEventsFunction] that maps the
@@ -44,13 +40,9 @@ abstract class AutoDisposeViewModel(app: Application): AndroidViewModel(app),
      *
      * @return function mapping the current event to terminal event.
      */
-    override fun correspondingEvents(): CorrespondingEventsFunction<ViewModelEvent> {
-        return CORRESPONDING_EVENTS
-    }
+    override fun correspondingEvents(): CorrespondingEventsFunction<ViewModelEvent> = CORRESPONDING_EVENTS
 
-    override fun peekLifecycle(): ViewModelEvent? {
-        return lifecycleEvents.value
-    }
+    override fun peekLifecycle(): ViewModelEvent? = lifecycleEvents.value
 
     /**
      * Emit the [ViewModelEvent.CLEARED] event to

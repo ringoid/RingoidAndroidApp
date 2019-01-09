@@ -15,5 +15,5 @@ class GetUserImagesUseCase @Inject constructor(private val repository: IImageRep
     : SingleUseCase<List<UserImage>>(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Single<List<UserImage>> =
-        params.processSingle<String, List<UserImage>>("resolution") { repository.getUserImages(resolution = it) }
+        params.processSingle("resolution", repository::getUserImages)
 }

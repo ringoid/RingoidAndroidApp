@@ -1,6 +1,5 @@
 package com.ringoid.origin.view.feed.explore
 
-import com.ringoid.origin.R
 import com.ringoid.origin.view.feed.FeedFragment
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
@@ -10,6 +9,4 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     }
 
     override fun getVmClass(): Class<ExploreViewModel> = ExploreViewModel::class.java
-
-    override fun getLayoutId(): Int = R.layout.fragment_explore
 }
