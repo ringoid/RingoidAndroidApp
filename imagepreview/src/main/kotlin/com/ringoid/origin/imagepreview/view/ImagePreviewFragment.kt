@@ -1,5 +1,6 @@
 package com.ringoid.origin.imagepreview.view
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -43,7 +44,9 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        uri = arguments?.getParcelable(BUNDLE_KEY_IMAGE_URI)
+        uri = arguments?.getParcelable<Uri>(BUNDLE_KEY_IMAGE_URI)?.also {
+            activity?.contentResolver?.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")

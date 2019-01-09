@@ -11,7 +11,7 @@ object ExternalNavigator {
     // --------------------------------------------------------------------------------------------
     fun openGalleryToGetImage(activity: Activity) {
         Intent().apply {
-            action = Intent.ACTION_GET_CONTENT
+            action = Intent.ACTION_OPEN_DOCUMENT
             type = "image/*"
         }.takeIf { it.resolveActivity(activity.packageManager) != null }
          ?.let {
