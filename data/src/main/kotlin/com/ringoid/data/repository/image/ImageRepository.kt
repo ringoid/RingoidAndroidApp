@@ -26,8 +26,8 @@ class ImageRepository @Inject constructor(
     override fun getUserImages(resolution: String): Single<List<UserImage>> =
         spm.accessSingle { cloud.getUserImages(it.accessToken, resolution).map { it.map() } }
 
-    fun deleteUserImage(essence: ImageDeleteEssence): Completable =
-        spm.accessSingle { cloud.deleteUserImage(essence) }.handleError()
+    override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
+        spm.accessSingle { cloud.deleteUserImage(essence) }.handleError().ignoreElement()
 
     // ------------------------------------------------------------------------
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
