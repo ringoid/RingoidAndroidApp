@@ -18,7 +18,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
         fun newInstance(): ProfileFragment = ProfileFragment()
     }
 
-    private lateinit var imagePreviewReceiver: CropIwaResultReceiver
+    private val imagePreviewReceiver = CropIwaResultReceiver()
 
     override fun getVmClass(): Class<ProfileFragmentViewModel> = ProfileFragmentViewModel::class.java
 
