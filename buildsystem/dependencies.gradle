@@ -344,7 +344,7 @@ ext {
     imagePreviewDependencies = [
         [configuration: "implementation", dependency: d_libs.cropiwa],
     ]
-    imagePreviewDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
+    imagePreviewDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
     testImagePreviewDependencies = test
