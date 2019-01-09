@@ -8,6 +8,7 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.imagepreview.R
+import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.randomString
@@ -22,14 +23,14 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         const val TAG = "ImagePreviewFragment_tag"
 
         private const val BUNDLE_KEY_IMAGE_URI = "bundle_key_image_uri"
-        private const val BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI = "bundle_key_flag_open_main_if_no_uri"
+        private const val BUNDLE_KEY_NAVIGATE_FROM = "bundle_key_navigate_from"
 
-        fun newInstance(uri: Uri?, needOpenMainScreenIfNoUri: Boolean): ImagePreviewFragment =
+        fun newInstance(uri: Uri?, navigateFrom: String): ImagePreviewFragment =
             ImagePreviewFragment().apply {
                 arguments = Bundle().apply {
-                    Timber.v("ImagePreview: uri=$uri, needOpenMainScreenIfNoUri=$needOpenMainScreenIfNoUri")
+                    Timber.v("ImagePreview: uri=$uri, navigateFrom=$navigateFrom")
                     putParcelable(BUNDLE_KEY_IMAGE_URI, uri)
-                    putBoolean(BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI, needOpenMainScreenIfNoUri)
+                    putString(BUNDLE_KEY_NAVIGATE_FROM, navigateFrom)
                 }
             }
     }
@@ -57,8 +58,8 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         uri?.let { crop_view.setImageUri(it) }
            ?: run {
                Timber.w("No image uri supplied on ImagePreview screen.")
-               arguments?.getBoolean(BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI)
-                             ?.takeIf { it }
+               arguments?.getString(BUNDLE_KEY_NAVIGATE_FROM)
+                             ?.takeIf { it == NavigateFrom.LOGIN }
                              ?.let { navigateAndClose(this, path = "/main") }
            }
     }
