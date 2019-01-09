@@ -12,7 +12,7 @@ fun navigate(path: String): Intent =
 
 fun navigate(activity: Activity, path: String, rc: Int = 0, data: Intent? = null) {
     Timber.v("navigate: path=$path, rc=$rc, data=$data")
-    val intent = navigate(path).apply { data?.let { putExtras(it) ; setData(it.data) } }
+    val intent = navigate(path)//.apply { data?.let { putExtras(it) ; setData(it.data) } }
     rc.takeIf { it != 0 }
       ?.let { activity.startActivityForResult(intent, rc) }
       ?: run { activity.startActivity(intent) }

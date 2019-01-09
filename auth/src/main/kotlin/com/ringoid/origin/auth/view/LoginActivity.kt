@@ -12,7 +12,7 @@ import com.ringoid.origin.Extras
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.navigation.ExternalNavigator
-import com.ringoid.origin.navigation.navigateAndClose
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -103,7 +103,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         when (requestCode) {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 data?.putExtra(Extras.EXTRA_OPEN_MAIN_IF_NO_URI, true)
-                navigateAndClose(this, path = "/imagepreview", data = data)
+                navigate(this, path = "/imagepreview", data = data)
             }
         }
     }

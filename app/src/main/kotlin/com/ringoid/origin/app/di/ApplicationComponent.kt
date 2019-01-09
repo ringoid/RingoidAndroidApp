@@ -2,11 +2,12 @@ package com.ringoid.origin.app.di
 
 import android.app.Application
 import android.content.Context
+import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.app.RingoidApplication
 import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.imagepreview.view.di.ImagePreviewActivityModule
+import com.ringoid.origin.imagepreview.view.di.ImagePreviewFragmentModule
 import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
-import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.view.feed.explore.di.ExploreFragmentModule
 import com.ringoid.origin.view.feed.lmm.di.LmmFragmentModule
 import com.ringoid.origin.view.feed.lmm.like.di.LikesFeedFragmentModule
@@ -27,7 +28,8 @@ import javax.inject.Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
                       ChatFragmentModule::class, DebugFragmentModule::class,
-                      ExploreFragmentModule::class, ImagePreviewActivityModule::class,
+                      ExploreFragmentModule::class,
+                      ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
                       LoginActivityModule::class, MainActivityModule::class,
                       MatchesFeedFragmentModule::class, MessagesFeedFragmentModule::class,
