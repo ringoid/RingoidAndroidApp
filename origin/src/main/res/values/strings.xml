@@ -9,6 +9,7 @@
     <string name="common_sex_female">Female</string>
 
     <string name="error_common">Oops! Something went wrong.</string>
+    <string name="error_crop_image">Failed to load and prepare image.</string>
 
     <!-- Image Preview screen -->
     <string name="image_preview_button">Crop &#38; Upload</string>

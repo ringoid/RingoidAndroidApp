@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.origin.GlideApp
 import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
@@ -64,15 +65,24 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
            }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        crop_view.setCropSaveCompleteListener(null)
+    }
+
     // --------------------------------------------------------------------------------------------
     private fun cropImage() {
         context?.let {
+            val context = it
             val destinationFile = File(it.filesDir, "${randomString()}.png")
-            crop_view.crop(
-                CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
+            crop_view.let {
+                val imageConfig = CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
                     .setCompressFormat(Bitmap.CompressFormat.PNG)
                     .setQuality(100) // hint for lossy compression formats
-                    .build())
+                    .build()
+                it.setCropSaveCompleteListener { GlideApp.with(context).load(destinationFile).preload() }
+                it.crop(imageConfig)
+            }
         }
         activity?.onBackPressed()  // close this ImagePreview screen immediately, doing cropping in background
     }

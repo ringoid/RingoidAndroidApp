@@ -358,7 +358,9 @@ ext {
     
     /* Feature Profile */
     // ------------------------------------------
-    profileDependencies = []
+    profileDependencies = [
+        [configuration: "implementation", dependency: d_libs.cropiwa],
+    ]
     profileDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
