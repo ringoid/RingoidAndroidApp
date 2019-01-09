@@ -24,6 +24,7 @@ class ImageRepository @Inject constructor(
     override fun getUserImages(resolution: String): Single<List<UserImage>> =
         spm.accessSingle { cloud.getUserImages(it.accessToken, resolution).map { it.map() } }
 
+    // ------------------------------------------------------------------------
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }
 

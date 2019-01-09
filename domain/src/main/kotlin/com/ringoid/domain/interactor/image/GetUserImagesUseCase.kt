@@ -1,3 +1,19 @@
 package com.ringoid.domain.interactor.image
 
-class GetUserImagesUseCase
+import com.ringoid.domain.executor.UseCasePostExecutor
+import com.ringoid.domain.executor.UseCaseThreadExecutor
+import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.interactor.base.SingleUseCase
+import com.ringoid.domain.interactor.base.processSingle
+import com.ringoid.domain.model.image.UserImage
+import com.ringoid.domain.repository.image.IImageRepository
+import io.reactivex.Single
+import javax.inject.Inject
+
+class GetUserImagesUseCase @Inject constructor(private val repository: IImageRepository,
+    threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
+    : SingleUseCase<List<UserImage>>(threadExecutor, postExecutor) {
+
+    override fun sourceImpl(params: Params): Single<List<UserImage>> =
+        params.processSingle<String, List<UserImage>>("resolution") { repository.getUserImages(resolution = it) }
+}

@@ -11,6 +11,7 @@ interface IImageRepository {
 
     fun getUserImages(resolution: String): Single<List<UserImage>>
 
+    // ------------------------------------------------------------------------
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image>
 
     fun uploadImage(url: String, image: File): Completable
