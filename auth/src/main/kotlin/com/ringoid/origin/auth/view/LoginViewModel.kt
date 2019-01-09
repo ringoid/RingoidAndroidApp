@@ -13,6 +13,7 @@ import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
+import com.uber.autodispose.AutoDispose.autoDisposable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -34,7 +35,6 @@ class LoginViewModel @Inject constructor(
     private var yearOfBirth: Int = 0
 
     // --------------------------------------------------------------------------------------------
-    @Suppress("AutoDispose")
     fun login() {
         val essence = AuthCreateProfileEssence(
             yearOfBirth = yearOfBirth,
@@ -44,10 +44,11 @@ class LoginViewModel @Inject constructor(
             device = String.format("%s, %d", Build.VERSION.RELEASE, Build.VERSION.SDK_INT),
             osVersion = String.format("%s, %s, %s", Build.MODEL, Build.MANUFACTURER, Build.PRODUCT))
 
-        subs = createUserProfileUseCase.source(params = Params().put(essence))
+        createUserProfileUseCase.source(params = Params().put(essence))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.CLOSE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
+            .`as`(autoDisposable(this))
             .subscribe({
                 Timber.d("Successfully logged in, current user: $it")
                 navigation.value = ExternalNavigator::openGalleryToGetImage
