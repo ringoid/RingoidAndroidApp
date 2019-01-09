@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.GlideApp
 import com.ringoid.origin.imagepreview.R
+import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.utility.clickDebounce
@@ -60,8 +61,11 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
            ?: run {
                Timber.w("No image uri supplied on ImagePreview screen.")
                arguments?.getString(BUNDLE_KEY_NAVIGATE_FROM)
-                             ?.takeIf { it == NavigateFrom.LOGIN }
-                             ?.let { navigateAndClose(this, path = "/main") }
+                             ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
+                             ?.let {
+                                 val data = Intent().putExtra(Extras.EXTRA_MAIN_TAB, NavigateFrom.MAIN_TAB_PROFILE)
+                                 navigateAndClose(this, path = "/main", payload = data)
+                             }
            }
     }
 

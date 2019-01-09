@@ -13,18 +13,19 @@ const val CONTENT_URI = "content_uri"
 private fun navigate(path: String): Intent =
     Intent(Intent.ACTION_VIEW, Uri.parse("${BuildConfig.APPNAV}$path"))
 
+private fun navigate(path: String, payload: Intent? = null): Intent =
+    navigate(path = path).apply { payload?.let { putExtras(it).putExtra(CONTENT_URI, it.data) } }
+
 fun navigate(activity: Activity, path: String, rc: Int = 0, payload: Intent? = null) {
     Timber.v("navigate: path=$path, rc=$rc, payload=$payload")
-    val intent = navigate(path).apply {
-        payload?.let { putExtras(it).putExtra(CONTENT_URI, it.data) }
-    }
+    val intent = navigate(path = path, payload = payload)
     rc.takeIf { it != 0 }
       ?.let { activity.startActivityForResult(intent, rc) }
       ?: run { activity.startActivity(intent) }
 }
 
-fun navigate(fragment: Fragment, path: String, rc: Int = 0) {
-    val intent = navigate(path)
+fun navigate(fragment: Fragment, path: String, rc: Int = 0, payload: Intent? = null) {
+    val intent = navigate(path = path, payload = payload)
     rc.takeIf { it != 0 }
         ?.let { fragment.startActivityForResult(intent, rc) }
         ?: run { fragment.startActivity(intent) }
@@ -35,7 +36,7 @@ fun navigateAndClose(activity: Activity, path: String, rc: Int = 0, payload: Int
     activity.finish()
 }
 
-fun navigateAndClose(fragment: Fragment, path: String, rc: Int = 0) {
-    navigate(fragment = fragment, path = path, rc = rc)
+fun navigateAndClose(fragment: Fragment, path: String, rc: Int = 0, payload: Intent? = null) {
+    navigate(fragment = fragment, path = path, rc = rc, payload = payload)
     fragment.activity?.finish()
 }
