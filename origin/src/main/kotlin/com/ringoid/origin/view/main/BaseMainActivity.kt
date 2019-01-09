@@ -9,8 +9,6 @@ import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
-import com.ringoid.origin.navigation.Extras
-import com.ringoid.origin.navigation.NavigateFrom
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -43,15 +41,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
                 createEager = true
                 initialize(index = FragNavController.TAB1, savedInstanceState = savedInstanceState)
             }
-
-        intent.getStringExtra(Extras.EXTRA_MAIN_TAB)?.let {
-            val index = when (it) {
-                NavigateFrom.MAIN_TAB_LMM -> 1
-                NavigateFrom.MAIN_TAB_PROFILE -> 2
-                else -> 0
-            }
-            fragNav.switchTab(index)
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

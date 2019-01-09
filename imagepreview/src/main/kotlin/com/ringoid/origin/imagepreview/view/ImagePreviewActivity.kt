@@ -1,6 +1,5 @@
 package com.ringoid.origin.imagepreview.view
 
-import android.content.Intent
 import android.os.Bundle
 import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.CONTENT_URI
@@ -27,10 +26,7 @@ class ImagePreviewActivity : BaseHostActivity() {
     override fun onBackPressed() {
         intent.getStringExtra(Extras.EXTRA_NAVIGATE_FROM)
               ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
-              ?.let {
-                  val data = Intent().putExtra(Extras.EXTRA_MAIN_TAB, NavigateFrom.MAIN_TAB_PROFILE)
-                  navigate(this, path = "/main", payload = data)
-              }
+              ?.let { navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
         super.onBackPressed()
     }
 }
