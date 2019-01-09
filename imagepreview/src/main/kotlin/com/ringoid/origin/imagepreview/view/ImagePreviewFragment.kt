@@ -74,7 +74,6 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
                     .setQuality(100) // hint for lossy compression formats
                     .build())
         }
-        // TODO: send broadcast on image cropped - and set that image on profile screen
-        // close this ImagePreview screen immediately, doing cropping in background
+        activity?.onBackPressed()  // close this ImagePreview screen immediately, doing cropping in background
     }
 }
