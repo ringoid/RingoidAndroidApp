@@ -23,17 +23,17 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         private const val BUNDLE_KEY_IMAGE_URI = "bundle_key_image_uri"
         private const val BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI = "bundle_key_flag_open_main_if_no_uri"
 
-        fun newInstance(uri: String?, needOpenMainScreenIfNoUri: Boolean): ImagePreviewFragment =
+        fun newInstance(uri: Uri?, needOpenMainScreenIfNoUri: Boolean): ImagePreviewFragment =
             ImagePreviewFragment().apply {
                 arguments = Bundle().apply {
                     Timber.v("ImagePreview: uri=$uri, needOpenMainScreenIfNoUri=$needOpenMainScreenIfNoUri")
-                    putString(BUNDLE_KEY_IMAGE_URI, uri)
+                    putParcelable(BUNDLE_KEY_IMAGE_URI, uri)
                     putBoolean(BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI, needOpenMainScreenIfNoUri)
                 }
             }
     }
 
-    protected var uri: String? = null
+    protected var uri: Uri? = null
 
     override fun getVmClass(): Class<ImagePreviewViewModel> = ImagePreviewViewModel::class.java
 
@@ -43,7 +43,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        uri = arguments?.getString(BUNDLE_KEY_IMAGE_URI)
+        uri = arguments?.getParcelable(BUNDLE_KEY_IMAGE_URI)
     }
 
     @Suppress("CheckResult", "AutoDispose")
@@ -51,7 +51,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         btn_done.clicks().compose(clickDebounce()).subscribe { cropImage() }
 
-        uri?.let { crop_view.setImageUri(Uri.parse(it)) }
+        uri?.let { crop_view.setImageUri(it) }
            ?: run {
                Timber.w("No image uri supplied on ImagePreview screen.")
                arguments?.getBoolean(BUNDLE_KEY_FLAG_OPEN_MAIN_IF_NO_URI)

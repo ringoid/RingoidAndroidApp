@@ -7,12 +7,17 @@ import androidx.fragment.app.Fragment
 import com.ringoid.domain.BuildConfig
 import timber.log.Timber
 
+// content://com.android.providers.media.documents/document/image:4561
+const val CONTENT_URI = "content_uri"
+
 fun navigate(path: String): Intent =
     Intent(Intent.ACTION_VIEW, Uri.parse("${BuildConfig.APPNAV}$path"))
 
-fun navigate(activity: Activity, path: String, rc: Int = 0, data: Intent? = null) {
-    Timber.v("navigate: path=$path, rc=$rc, data=$data")
-    val intent = navigate(path)//.apply { data?.let { putExtras(it) ; setData(it.data) } }
+fun navigate(activity: Activity, path: String, rc: Int = 0, payload: Intent? = null) {
+    Timber.v("navigate: path=$path, rc=$rc, payload=$payload")
+    val intent = navigate(path).apply {
+        payload?.let { putExtras(it).putExtra(CONTENT_URI, it.data) }
+    }
     rc.takeIf { it != 0 }
       ?.let { activity.startActivityForResult(intent, rc) }
       ?: run { activity.startActivity(intent) }
@@ -25,8 +30,8 @@ fun navigate(fragment: Fragment, path: String, rc: Int = 0) {
         ?: run { fragment.startActivity(intent) }
 }
 
-fun navigateAndClose(activity: Activity, path: String, rc: Int = 0, data: Intent? = null) {
-    navigate(activity = activity, path = path, rc = rc, data = data)
+fun navigateAndClose(activity: Activity, path: String, rc: Int = 0, payload: Intent? = null) {
+    navigate(activity = activity, path = path, rc = rc, payload = payload)
     activity.finish()
 }
 

@@ -103,7 +103,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         when (requestCode) {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 data?.putExtra(Extras.EXTRA_OPEN_MAIN_IF_NO_URI, true)
-                navigateAndClose(this, path = "/imagepreview", data = data)
+                navigateAndClose(this, path = "/imagepreview", payload = data)
             }
         }
     }
