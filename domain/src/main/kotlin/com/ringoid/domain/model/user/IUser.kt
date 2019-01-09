@@ -1,6 +1,5 @@
 package com.ringoid.domain.model.user
 
-interface IUser {
+import com.ringoid.domain.model.IModel
 
-    val id: String
-}
+interface IUser : IModel

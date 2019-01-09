@@ -4,9 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.ringoid.domain.DomainUtil.BAD_ID
 
-open class Image(val id: String, val uri: String) : Parcelable {
+data class Image(override val id: String, override val uri: String?) : IImage, Parcelable {
 
-    private constructor(source: Parcel): this(id = source.readString() ?: BAD_ID, uri = source.readString() ?: "")
+    private constructor(source: Parcel): this(id = source.readString() ?: BAD_ID, uri = source.readString())
 
     override fun describeContents(): Int = 0
 
