@@ -11,8 +11,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
 
     companion object {
-        fun newInstance(): ProfileFragment =
-            ProfileFragment()
+        fun newInstance(): ProfileFragment = ProfileFragment()
     }
 
     override fun getVmClass(): Class<ProfileFragmentViewModel> = ProfileFragmentViewModel::class.java
