@@ -26,7 +26,7 @@ class ImagePreviewActivity : BaseHostActivity() {
     override fun onBackPressed() {
         intent.getStringExtra(Extras.EXTRA_NAVIGATE_FROM)
               ?.takeIf { it == NavigateFrom.LOGIN }
-              ?.let { navigate(path = "/main") }
+              ?.let { navigate(this, path = "/main") }
         super.onBackPressed()
     }
 }

@@ -10,7 +10,7 @@ import timber.log.Timber
 // content://com.android.providers.media.documents/document/image:4561
 const val CONTENT_URI = "content_uri"
 
-fun navigate(path: String): Intent =
+private fun navigate(path: String): Intent =
     Intent(Intent.ACTION_VIEW, Uri.parse("${BuildConfig.APPNAV}$path"))
 
 fun navigate(activity: Activity, path: String, rc: Int = 0, payload: Intent? = null) {
