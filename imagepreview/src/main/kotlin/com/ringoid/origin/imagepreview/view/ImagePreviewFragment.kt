@@ -69,9 +69,9 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
            }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         crop_view.setCropSaveCompleteListener(null)
+        super.onDestroyView()
     }
 
     // --------------------------------------------------------------------------------------------
