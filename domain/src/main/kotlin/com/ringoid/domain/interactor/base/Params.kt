@@ -8,7 +8,8 @@ class Params {
 
     private val map: MutableMap<String, Any> = mutableMapOf()
 
-    fun get(key: String): Any? = map[key]
+    @Suppress("Unchecked_Cast")
+    fun <T> get(key: String): T? = map[key] as? T
 
     @Suppress("Unchecked_Cast")
     fun <T> get(klass: Class<T>): T? = map[klass.simpleName] as? T

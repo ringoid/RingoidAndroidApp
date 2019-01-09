@@ -41,15 +41,15 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     /* Actions */
     // --------------------------------------------------------------------------------------------
     fun commitActions(essence: CommitActionsEssence): Single<BaseResponse> =
-            restAdapter.commitActions(essence.toBody())
+        restAdapter.commitActions(essence.toBody())
 
     /* Image */
     // --------------------------------------------------------------------------------------------
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<ImageUploadUrlResponse> =
-            restAdapter.getImageUploadUrl(essence.toBody())
+        restAdapter.getImageUploadUrl(essence.toBody())
 
     fun getUserImages(accessToken: String, resolution: String): Single<UserImageListResponse> =
-            restAdapter.getUserImages(accessToken = accessToken, resolution = resolution)
+        restAdapter.getUserImages(accessToken = accessToken, resolution = resolution)
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
         restAdapter.deleteUserImage(essence.toBody())
@@ -62,10 +62,10 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     /* Feed */
     // --------------------------------------------------------------------------------------------
     fun getNewFaces(accessToken: String, resolution: String, limit: Int) =
-            restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution, limit = limit)
+        restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution, limit = limit)
 
     fun getLmm(accessToken: String, resolution: String, lastActionTime: Long) =
-            restAdapter.getLmm(accessToken = accessToken, resolution = resolution, lastActionTime = lastActionTime)
+        restAdapter.getLmm(accessToken = accessToken, resolution = resolution, lastActionTime = lastActionTime)
 
     /* Test */
     // --------------------------------------------------------------------------------------------
