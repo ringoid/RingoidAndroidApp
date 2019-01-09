@@ -13,6 +13,7 @@ class ProfileFragmentViewModel @Inject constructor(
     private val createImageUseCase: CreateImageUseCase, app: Application)
     : BaseViewModel(app) {
 
+    @Suppress("AutoDispose")
     fun uploadImage(uri: Uri) {
 //        val essence = ImageUploadUrlEssence()
 
