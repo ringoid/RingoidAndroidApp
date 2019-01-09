@@ -21,6 +21,11 @@ class Params {
         map[item.javaClass.simpleName] = item
         return this
     }
+
+    fun <T> put(key: String, item: T): Params {
+        map[key] = item as Any
+        return this
+    }
 }
 
 // ------------------------------------------------------------------------------------------------
