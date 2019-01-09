@@ -1,13 +1,13 @@
 package com.ringoid.data.repository.image
 
 import com.ringoid.data.local.database.dao.image.ImageDao
-import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.image.IImageRepository
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ImageRepository @Inject constructor(
-    private val local: ImageDao, cloud: RingoidCloud, spm: SharedPrefsManager)
+    private val local: ImageDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
     : BaseRepository(cloud, spm), IImageRepository {
 
     // TODO: always check db first

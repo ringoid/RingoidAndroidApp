@@ -6,7 +6,6 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.CreateImageUseCase
-import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -15,9 +14,9 @@ class ProfileFragmentViewModel @Inject constructor(
     : BaseViewModel(app) {
 
     fun uploadImage(uri: Uri) {
-        val essence = ImageUploadUrlEssence()
+//        val essence = ImageUploadUrlEssence()
 
-        val params = Params().put(essence)
+        val params = Params()//.put(essence)
 
         subs = createImageUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }

@@ -1,19 +1,19 @@
 package com.ringoid.data.repository.user
 
-import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
+import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.user.IUserRepository
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UserRepository @Inject constructor(cloud: RingoidCloud, spm: SharedPrefsManager)
+class UserRepository @Inject constructor(cloud: RingoidCloud, spm: ISharedPrefsManager)
     : BaseRepository(cloud, spm), IUserRepository {
 
     override fun accessToken(): Single<AccessToken> = spm.accessSingle { Single.just(it) }

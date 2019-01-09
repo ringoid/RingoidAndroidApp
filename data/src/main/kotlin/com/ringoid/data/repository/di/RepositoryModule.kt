@@ -1,6 +1,8 @@
 package com.ringoid.data.repository.di
 
 import com.ringoid.data.executor.di.UseCaseExecutorModule
+import com.ringoid.data.local.database.di.DatabaseModule
+import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.image.ImageRepository
@@ -14,7 +16,8 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module(includes = [RingoidCloudModule::class, UseCaseExecutorModule::class])
+@Module(includes = [RingoidCloudModule::class, DatabaseModule::class,
+                    SharedPrefsManagerModule::class, UseCaseExecutorModule::class])
 class RepositoryModule {
 
     @Provides @Singleton
