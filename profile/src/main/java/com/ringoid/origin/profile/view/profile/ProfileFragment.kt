@@ -58,6 +58,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
         super.onCreate(savedInstanceState)
         imagesAdapter = ProfileImagePagerAdapter(fm = childFragmentManager,
             emptyInput = EmptyFragment.Companion.Input(emptyTextResId = R.string.profile_empty_images))
+
         imagePreviewReceiver.apply {
             register(context)
             setListener(object : CropIwaResultReceiver.Listener {

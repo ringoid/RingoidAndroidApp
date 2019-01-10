@@ -27,6 +27,6 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
     @Suppress("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {  }
+        ibtn_delete_image.clicks().compose(clickDebounce()).subscribe { vm.deleteImage(image!!.id) }
     }
 }
