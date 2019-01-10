@@ -8,6 +8,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.image.Image
+import com.ringoid.domain.model.image.LocalImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.image.IImageRepository
@@ -41,23 +42,27 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
     }
 
     // ------------------------------------------------------------------------
-    override fun createImage(essence: ImageUploadUrlEssence, image: File): Single<Image> =
-        spm.accessSingle {
+    override fun createImage(essence: ImageUploadUrlEssence, image: File): Single<Image> {
+        val localImageRequest = CreateLocalImageRequest(image = LocalImage(file = image))
+        return spm.accessSingle {
             cloud.getImageUploadUrl(essence)
-                 .doOnSuccess {
-                     if (it.imageUri.isBlank()) {
-                         throw NullPointerException("Upload uri is null: $it")
-                     }
-                     requestSet.create(CreateImageRequest(image = it.map()))
-                 }
-                 .flatMap {
+                .doOnSubscribe { requestSet.create(localImageRequest) }
+                .doOnSuccess {
+                    if (it.imageUri.isBlank()) {
+                        throw NullPointerException("Upload uri is null: $it")
+                    }
+                    val request = CreateImageRequest(id = localImageRequest.id, image = it.map())
+                    requestSet.create(request)  // rewrite local image request with remote image request
+                }
+                .flatMap {
                     cloud.uploadImage(url = it.imageUri, image = image)
-                         .andThen(Single.just(it))
-                         .handleError()
-                         .map { it.map() }
-                 }
-                 .doOnSuccess { requestSet.fulfilled() }
+                        .andThen(Single.just(it))
+                        .handleError()
+                        .map { it.map() }
+                }
+                .doFinally { requestSet.fulfilled(localImageRequest.id) }
         }  // TODO: add request to set on subscribe
+    }
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }

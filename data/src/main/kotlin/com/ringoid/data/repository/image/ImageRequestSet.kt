@@ -1,7 +1,9 @@
 package com.ringoid.data.repository.image
 
+import android.net.Uri
 import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
 import io.reactivex.Observable
 import io.reactivex.SingleTransformer
@@ -23,6 +25,12 @@ class ImageRequestSet @Inject constructor() {
 
     fun create(request: CreateImageRequest) {
         created[request.id] = request
+    }
+
+    fun create(request: CreateLocalImageRequest) {
+        val uri = Uri.parse(request.image.file?.toURI().toString()).toString()
+        val image = Image(id = request.id, uri = uri)
+        created[request.id] = CreateImageRequest(id = request.id, image = image)
     }
 
     fun remove(request: DeleteImageRequest) {
