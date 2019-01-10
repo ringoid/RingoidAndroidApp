@@ -18,8 +18,8 @@ import javax.inject.Singleton
 @Singleton
 class ImageRequestSet @Inject constructor() {
 
-    private val created = mutableMapOf<Int, CreateImageRequest>()
-    private val removed = mutableMapOf<Int, DeleteImageRequest>()
+    private val created = mutableMapOf<String, CreateImageRequest>()
+    private val removed = mutableMapOf<String, DeleteImageRequest>()
 
     fun create(request: CreateImageRequest) {
         created[request.id] = request
@@ -29,7 +29,7 @@ class ImageRequestSet @Inject constructor() {
         removed[request.id] = request
     }
 
-    fun fulfilled(id: Int) {
+    fun fulfilled(id: String) {
         created.remove(id)
         removed.remove(id)
     }
