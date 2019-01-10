@@ -9,11 +9,11 @@ import javax.inject.Singleton
 @Singleton
 class ImageRequestSet @Inject constructor() {
 
-    private val added = mutableMapOf<Int, CreateImageRequest>()
+    private val created = mutableMapOf<Int, CreateImageRequest>()
     private val removed = mutableMapOf<Int, DeleteImageRequest>()
 
-    fun add(request: CreateImageRequest) {
-        added[request.id] = request
+    fun create(request: CreateImageRequest) {
+        created[request.id] = request
     }
 
     fun remove(request: DeleteImageRequest) {
@@ -21,9 +21,15 @@ class ImageRequestSet @Inject constructor() {
     }
 
     fun fulfilled(id: Int) {
-        added.remove(id)
+        created.remove(id)
         removed.remove(id)
     }
+
+    fun addCreatedImages(): SingleTransformer<List<IImage>, List<IImage>> =
+        SingleTransformer {
+            val createdImages = created.values.map { it.image }
+            it.map { it.toMutableList().apply { addAll(createdImages) } }
+        }
 
     fun filterOutRemovedImages(): SingleTransformer<List<IImage>, List<IImage>> =
         SingleTransformer {
