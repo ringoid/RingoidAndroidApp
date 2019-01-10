@@ -6,10 +6,12 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.image.Image
 import com.ringoid.origin.profile.R
+import com.ringoid.origin.profile.view.profile.IMAGE_DELETED
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.image.ImagePageFragment
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.snackbar
 import kotlinx.android.synthetic.main.fragment_profile_image_page.*
 
 class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() {
@@ -35,7 +37,11 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
         when (newState) {
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_image.changeVisibility(isVisible = true)
-            is ViewState.DONE -> {}  // TODO: notify image removed
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    IMAGE_DELETED -> snackbar(view, R.string.profile_image_deleted)
+                }  // TODO: notify image removed
+            }
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
                 Dialogs.showTextDialog(activity, titleResId = R.string.error_common, description = "DL TEXT FROM URL")
@@ -43,7 +49,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
             }
         }
     }
-    
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult", "AutoDispose")

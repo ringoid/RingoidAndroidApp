@@ -41,7 +41,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
             is ViewState.DONE -> {
                 when (newState.residual) {
                     IMAGE_CREATED -> snackbar(view, R.string.profile_image_created)
-                    IMAGE_DELETED -> snackbar(view, R.string.profile_image_deleted)
                 }
             }
             is ViewState.ERROR -> {
