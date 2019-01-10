@@ -1,6 +1,8 @@
 package com.ringoid.data.repository.image
 
+import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.domain.model.image.UserImage
 import io.reactivex.Observable
 import io.reactivex.SingleTransformer
 import javax.inject.Inject
@@ -49,6 +51,19 @@ class ImageRequestSet @Inject constructor() {
             }
         }
 
+    fun addCreatedImagesInResponse(): SingleTransformer<UserImageListResponse, List<UserImage>> =
+        SingleTransformer {
+            val createdIds = created.values.map { it.image.id }
+            val createdImages = created.values.map { UserImage.from(it.image) }
+            it.flatMap {
+                Observable.fromIterable(it.images)
+                    .filter { !createdIds.contains(it.id) }
+                    .map { it.map() }
+                    .toList(it.images.size)
+                    .map { it.toMutableList().apply { addAll(createdImages) } }
+            }
+        }
+
     fun filterOutRemovedImages(): SingleTransformer<List<IImage>, List<IImage>> =
         SingleTransformer {
             val removedIds = removed.values.map { it.imageId }
@@ -56,6 +71,17 @@ class ImageRequestSet @Inject constructor() {
                 Observable.fromIterable(it)
                     .filter { !removedIds.contains(it.id) }
                     .toList(it.size)
+            }
+        }
+
+    fun filterOutRemovedImagesInResponse(): SingleTransformer<UserImageListResponse, List<UserImage>> =
+        SingleTransformer {
+            val removedIds = removed.values.map { it.imageId }
+            it.flatMap {
+                Observable.fromIterable(it.images)
+                    .filter { !removedIds.contains(it.id) }
+                    .map { it.map() }
+                    .toList(it.images.size)
             }
         }
 }

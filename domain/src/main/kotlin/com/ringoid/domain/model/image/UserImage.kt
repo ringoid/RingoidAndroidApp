@@ -29,5 +29,7 @@ data class UserImage(
             override fun createFromParcel(source: Parcel): UserImage = UserImage(source)
             override fun newArray(size: Int): Array<UserImage?> = arrayOfNulls(size)
         }
+
+        fun from(image: IImage): UserImage = UserImage(id = image.id, uri = image.uri)
     }
 }

@@ -26,10 +26,9 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
     override fun getUserImages(resolution: String): Single<List<UserImage>> =
         spm.accessSingle {
             cloud.getUserImages(it.accessToken, resolution)
-                .map { it.map() }
-                .compose(requestSet.addCreatedImages())
+                .compose(requestSet.addCreatedImagesInResponse())
                 .compose(requestSet.filterOutRemovedImages())
-                .map { it.map { it as UserImage } }
+                .map { it.map { it as UserImage } }  // cast not losing fields in UserImage
         }
 
     override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
