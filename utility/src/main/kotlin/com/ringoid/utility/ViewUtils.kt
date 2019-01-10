@@ -25,10 +25,10 @@ fun Context.getSelectableItemBgResId(): Int {
 fun Context.getSelectableItemBg(): Drawable? = ContextCompat.getDrawable(this, getSelectableItemBgResId())
 
 // ------------------------------------------------------------------------------------------------
-fun snackbar(view: View, text: String, duration: Int = Snackbar.LENGTH_SHORT) {
-    Snackbar.make(view, text, duration).show()
+fun snackbar(view: View?, text: String, duration: Int = Snackbar.LENGTH_SHORT) {
+    view?.let { Snackbar.make(it, text, duration).show() }
 }
 
-fun snackbar(view: View, @StringRes textResId: Int, duration: Int = Snackbar.LENGTH_SHORT) {
-    Snackbar.make(view, textResId, duration).show()
+fun snackbar(view: View?, @StringRes textResId: Int, duration: Int = Snackbar.LENGTH_SHORT) {
+    view?.let { Snackbar.make(it, textResId, duration).show() }
 }

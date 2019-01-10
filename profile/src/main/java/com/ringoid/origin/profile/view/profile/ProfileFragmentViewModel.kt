@@ -21,13 +21,10 @@ class ProfileFragmentViewModel @Inject constructor(
 
             createImageUseCase.source(params = Params().put(essence).put("uri", uri))
                 .doOnSubscribe { viewState.value = ViewState.LOADING }
-                .doOnSuccess { viewState.value = ViewState.IDLE }
+                .doOnSuccess { viewState.value = ViewState.DONE(IMAGE_CREATED) }
                 .doOnError { viewState.value = ViewState.ERROR(it) }
                 .`as`(autoDisposable(this))
-                .subscribe({
-                    Timber.d("Successfully uploaded image: $it")
-                    // TODO: do smth on image uploaded
-                }, Timber::e)
+                .subscribe({ Timber.d("Successfully uploaded image: $it") }, Timber::e)
         }
     }
 }

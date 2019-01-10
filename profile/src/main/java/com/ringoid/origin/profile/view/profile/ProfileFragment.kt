@@ -4,9 +4,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.adapter.ImagePagerAdapter
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.snackbar
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -18,6 +21,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
         fun newInstance(): ProfileFragment = ProfileFragment()
     }
 
+    private lateinit var imagesAdapter: ImagePagerAdapter
     private val imagePreviewReceiver = CropIwaResultReceiver()
 
     override fun getVmClass(): Class<ProfileFragmentViewModel> = ProfileFragmentViewModel::class.java
@@ -25,7 +29,28 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
     override fun getLayoutId(): Int = R.layout.fragment_profile
 
     // --------------------------------------------------------------------------------------------
-    private lateinit var imagesAdapter: ImagePagerAdapter
+    override fun onViewStateChange(newState: ViewState) {
+        fun onIdleState() {
+            pb_profile.changeVisibility(isVisible = false)
+        }
+
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.IDLE -> onIdleState()
+            is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    IMAGE_CREATED -> snackbar(view, R.string.profile_image_created)
+                    IMAGE_DELETED -> snackbar(view, R.string.profile_image_deleted)
+                }
+            }
+            is ViewState.ERROR -> {
+                // TODO: analyze: newState.e
+                Dialogs.showTextDialog(activity, titleResId = R.string.error_common, description = "DL TEXT FROM URL")
+                onIdleState()
+            }
+        }
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -43,7 +68,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
 
                 override fun onCropSuccess(croppedUri: Uri) {
                     Timber.v("Image cropping has succeeded, uri: $croppedUri")
-                    // TODO: save image to backend and local cache (repository) and set image
+                    // TODO: save image local cache (repository) and set image
                     vm.uploadImage(uri = croppedUri)
                 }
             })

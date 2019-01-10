@@ -26,6 +26,8 @@
 
     <!-- Profile screen -->
     <string name="profile_empty_images">Upload your photos so users can like you.</string>
+    <string name="profile_image_created">Photo has been uploaded.</string>
+    <string name="profile_image_deleted">Photo has been removed.</string>
 
     <!-- Settings screen -->
     <string name="settings_account_delete">Delete account</string>

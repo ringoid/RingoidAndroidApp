@@ -23,6 +23,19 @@
         <item name="android:textSize">@dimen/std_text_14</item>
     </style>
 
+    <!-- ProgressBar -->
+    <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+
+    <style name="ProgressBar.Horizontal" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">4dp</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+
     <!-- TextView -->
     <style name="StdText">
         <item name="android:layout_width">wrap_content</item>
