@@ -6,6 +6,13 @@ import io.reactivex.SingleTransformer
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Collection of image requests (create, delete image) that has been issued but not yet finished
+ * with response. Actual response of list of images could then be filtered with this collection
+ * becoming actualized with the most recent user's actions on images - add whatever created images
+ * that hasn't been added on backend side yet, delete whatever deleted images that hasn't been
+ * deleted on backend side yet.
+ */
 @Singleton
 class ImageRequestSet @Inject constructor() {
 
