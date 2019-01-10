@@ -56,6 +56,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 
     // ------------------------------------------
     override fun onCreateImage() {
+        // TODO: move to newly added image page
         imagesAdapter.notifyDataSetChanged()
     }
 
