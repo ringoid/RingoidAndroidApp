@@ -32,6 +32,11 @@ class ImageRequestSet @Inject constructor() {
         removed.remove(id)
     }
 
+    fun clear() {
+        created.clear()
+        removed.clear()
+    }
+
     fun addCreatedImages(): SingleTransformer<List<IImage>, List<IImage>> =
         SingleTransformer {
             val createdIds = created.values.map { it.image.id }
