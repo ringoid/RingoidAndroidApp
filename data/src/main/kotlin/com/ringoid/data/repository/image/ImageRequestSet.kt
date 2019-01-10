@@ -27,8 +27,14 @@ class ImageRequestSet @Inject constructor() {
 
     fun addCreatedImages(): SingleTransformer<List<IImage>, List<IImage>> =
         SingleTransformer {
+            val createdIds = created.values.map { it.image.id }
             val createdImages = created.values.map { it.image }
-            it.map { it.toMutableList().apply { addAll(createdImages) } }
+            it.flatMap {
+                Observable.fromIterable(it)
+                    .filter { !createdIds.contains(it.id) }
+                    .toList(it.size)
+                    .map { it.toMutableList().apply { addAll(createdImages) } }
+            }
         }
 
     fun filterOutRemovedImages(): SingleTransformer<List<IImage>, List<IImage>> =
