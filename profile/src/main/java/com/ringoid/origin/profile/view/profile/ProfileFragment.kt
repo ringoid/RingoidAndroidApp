@@ -15,7 +15,7 @@ import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import kotlinx.android.synthetic.main.fragment_profile.*
 import timber.log.Timber
 
-class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
+class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragment {
 
     companion object {
         fun newInstance(): ProfileFragment = ProfileFragment()
@@ -40,7 +40,10 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
             is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    IMAGE_CREATED -> snackbar(view, R.string.profile_image_created)
+                    IMAGE_CREATED -> {
+                        snackbar(view, R.string.profile_image_created)
+                        onCreateImage()
+                    }
                 }
             }
             is ViewState.ERROR -> {
@@ -49,6 +52,15 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>() {
                 onIdleState()
             }
         }
+    }
+
+    // ------------------------------------------
+    override fun onCreateImage() {
+        imagesAdapter.notifyDataSetChanged()
+    }
+
+    override fun onDeleteImage() {
+        imagesAdapter.notifyDataSetChanged()
     }
 
     /* Lifecycle */

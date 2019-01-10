@@ -7,10 +7,12 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.image.Image
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.view.profile.IMAGE_DELETED
+import com.ringoid.origin.profile.view.profile.IProfileFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.image.ImagePageFragment
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.communicator
 import com.ringoid.utility.snackbar
 import kotlinx.android.synthetic.main.fragment_profile_image_page.*
 
@@ -39,8 +41,11 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
             is ViewState.LOADING -> pb_image.changeVisibility(isVisible = true)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    IMAGE_DELETED -> snackbar(view, R.string.profile_image_deleted)
-                }  // TODO: notify image removed
+                    IMAGE_DELETED -> {
+                        snackbar(view, R.string.profile_image_deleted)
+                        communicator(IProfileFragment::class.java)?.onDeleteImage()
+                    }
+                }
             }
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
