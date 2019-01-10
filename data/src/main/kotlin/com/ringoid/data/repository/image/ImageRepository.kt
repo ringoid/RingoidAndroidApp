@@ -49,6 +49,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                  .flatMap {
                     cloud.uploadImage(url = it.imageUri, image = image)
                          .andThen(Single.just(it))
+                         .handleError()
                          .map { it.map() }
                  }
         }
