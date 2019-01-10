@@ -7,7 +7,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.ISharedPrefsManager
-import com.uber.autodispose.AutoDispose.autoDisposable
+import com.uber.autodispose.lifecycle.autoDisposable
 import javax.inject.Inject
 import kotlin.reflect.KFunction
 
@@ -23,7 +23,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     // --------------------------------------------------------------------------------------------
     fun obtainAccessToken() {
         getUserAccessTokenUseCase.source(Params.EMPTY)
-            .`as`(autoDisposable(this))
+            .autoDisposable(this)
             .subscribe({ accessToken.value = it }, { accessToken.value = null })
     }
 }

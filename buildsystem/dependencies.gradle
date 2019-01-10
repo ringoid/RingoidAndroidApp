@@ -76,13 +76,14 @@ ext {
     ]
 
     d_rx = [
-            rx:           "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
-            rxAndroid:    "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
-            rxBinding:    "com.jakewharton.rxbinding3:rxbinding:${rxBindingVersion}",
-            rxBindCore:   "com.jakewharton.rxbinding3:rxbinding-core:${rxBindingVersion}",
-            rxBindCompat: "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}",
-            autoDispose:  "com.uber.autodispose:autodispose-android-ktx:${autoDisposeVersion}",
-            autoDisposeAC:"com.uber.autodispose:autodispose-android-archcomponents:${autoDisposeVersion}",
+            rx:             "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
+            rxAndroid:      "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
+            rxBinding:      "com.jakewharton.rxbinding3:rxbinding:${rxBindingVersion}",
+            rxBindCore:     "com.jakewharton.rxbinding3:rxbinding-core:${rxBindingVersion}",
+            rxBindCompat:   "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}",
+            autoDispose:    "com.uber.autodispose:autodispose-android-ktx:${autoDisposeVersion}",
+            autoDisposeAC:  "com.uber.autodispose:autodispose-android-archcomponents:${autoDisposeVersion}",
+            autoDisposeKt:  "com.uber.autodispose:autodispose-lifecycle-ktx:${autoDisposeVersion}",
     ]
 
     d_test = [
@@ -246,6 +247,7 @@ ext {
     def autoDispose = [
             [configuration: "api", dependency: d_rx.autoDispose],
             [configuration: "api", dependency: d_rx.autoDisposeAC],
+            [configuration: "api", dependency: d_rx.autoDisposeKt],
     ]
 
     def view = [

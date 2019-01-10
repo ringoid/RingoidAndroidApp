@@ -7,7 +7,7 @@ import com.ringoid.domain.interactor.image.DeleteUserImageUseCase
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.origin.profile.view.profile.IMAGE_DELETED
 import com.ringoid.origin.view.image.ImagePageViewModel
-import com.uber.autodispose.AutoDispose
+import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class ProfileImagePageViewModel @Inject constructor(
                 .doOnSubscribe { viewState.value = ViewState.LOADING }
                 .doOnComplete { viewState.value = ViewState.DONE(IMAGE_DELETED) }
                 .doOnError { viewState.value = ViewState.ERROR(it) }
-                .`as`(AutoDispose.autoDisposable(this))
+                .autoDisposable(this)
                 .subscribe({ Timber.d("Successfully deleted image: $it") }, Timber::e)
         }
     }

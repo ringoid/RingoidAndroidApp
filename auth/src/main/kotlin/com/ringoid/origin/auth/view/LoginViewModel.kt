@@ -13,7 +13,7 @@ import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
-import com.uber.autodispose.AutoDispose.autoDisposable
+import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -48,7 +48,7 @@ class LoginViewModel @Inject constructor(
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.CLOSE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
-            .`as`(autoDisposable(this))
+            .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully logged in, current user: $it")
                 navigation.value = ExternalNavigator::openGalleryToGetImage
