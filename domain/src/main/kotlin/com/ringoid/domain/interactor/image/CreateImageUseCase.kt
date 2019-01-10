@@ -22,9 +22,7 @@ class CreateImageUseCase @Inject constructor(private val repository: IImageRepos
         val image = params.get<Uri>("uri")?.let { File(it.path) } ?: throw MissingRequiredParamsException()
 
         return params.processSingle(ImageUploadUrlEssence::class.java) {
-            repository.getImageUploadUrl(it)
-                .doOnSuccess { if (it.uri.isNullOrBlank()) throw NullPointerException("Upload uri is null: $it") }
-                .flatMap { repository.uploadImage(it.uri!!, image).andThen(Single.just(it)) }
+            repository.createImage(essence = it, image = image)
         }
     }
 }

@@ -32,9 +32,27 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
         }
 
     override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
-        spm.accessSingle { cloud.deleteUserImage(essence) }.handleError().ignoreElement()
+        spm.accessSingle { cloud.deleteUserImage(essence) }
+            .doOnSubscribe { requestSet.remove(DeleteImageRequest(imageId = essence.imageId)) }
+            .handleError()
+            .ignoreElement()  // convert to Completable
 
     // ------------------------------------------------------------------------
+    override fun createImage(essence: ImageUploadUrlEssence, image: File): Single<Image> =
+        spm.accessSingle {
+            cloud.getImageUploadUrl(essence)
+                 .doOnSuccess {
+                     if (it.imageUri.isBlank()) {
+                         throw NullPointerException("Upload uri is null: $it")
+                     }
+                 }
+                 .flatMap {
+                    cloud.uploadImage(url = it.imageUri, image = image)
+                         .andThen(Single.just(it))
+                         .map { it.map() }
+                 }
+        }
+
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }
 

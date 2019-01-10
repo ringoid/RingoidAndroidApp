@@ -15,6 +15,8 @@ interface IImageRepository {
     fun deleteUserImage(essence: ImageDeleteEssence): Completable
 
     // ------------------------------------------------------------------------
+    fun createImage(essence: ImageUploadUrlEssence, image: File): Single<Image>
+
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image>
 
     fun uploadImage(url: String, image: File): Completable
