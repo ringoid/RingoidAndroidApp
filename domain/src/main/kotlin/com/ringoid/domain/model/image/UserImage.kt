@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.ringoid.domain.DomainUtil.BAD_ID
 
 data class UserImage(
-    val originId: String, val numberOfLikes: Int,
+    val originId: String = BAD_ID, val numberOfLikes: Int = 0,
     override val id: String, override val uri: String? = null) : IImage, Parcelable {
 
     private constructor(source: Parcel): this(
