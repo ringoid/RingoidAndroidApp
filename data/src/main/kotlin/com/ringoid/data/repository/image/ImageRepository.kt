@@ -45,6 +45,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                      if (it.imageUri.isBlank()) {
                          throw NullPointerException("Upload uri is null: $it")
                      }
+                     requestSet.create(CreateImageRequest(image = it.map()))
                  }
                  .flatMap {
                     cloud.uploadImage(url = it.imageUri, image = image)
@@ -52,7 +53,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                          .handleError()
                          .map { it.map() }
                  }
-        }
+        }  // TODO: add request to set on subscribe
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }
