@@ -31,11 +31,14 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                 .map { it.map { it as UserImage } }  // cast not losing fields in UserImage
         }
 
-    override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
-        spm.accessSingle { cloud.deleteUserImage(essence) }
-            .doOnSubscribe { requestSet.remove(DeleteImageRequest(imageId = essence.imageId)) }
+    override fun deleteUserImage(essence: ImageDeleteEssence): Completable {
+        val request = DeleteImageRequest(imageId = essence.imageId)
+        return spm.accessSingle { cloud.deleteUserImage(essence) }
+            .doOnSubscribe { requestSet.remove(request) }
+            .doFinally { requestSet.fulfilled(request.id) }
             .handleError()
             .ignoreElement()  // convert to Completable
+    }
 
     // ------------------------------------------------------------------------
     override fun createImage(essence: ImageUploadUrlEssence, image: File): Single<Image> =
@@ -53,6 +56,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                          .handleError()
                          .map { it.map() }
                  }
+                 .doOnSuccess { requestSet.fulfilled() }
         }  // TODO: add request to set on subscribe
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
