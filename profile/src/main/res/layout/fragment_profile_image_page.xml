@@ -5,6 +5,12 @@
 
     <include layout="@layout/fragment_image_page"/>
 
+    <ProgressBar
+        android:id="@+id/pb_image"
+        android:layout_gravity="top"
+        android:visibility="gone"
+        style="@style/ProgressBar.Horizontal"/>
+
     <ImageButton
         android:id="@+id/ibtn_delete_image"
         android:layout_width="wrap_content"
