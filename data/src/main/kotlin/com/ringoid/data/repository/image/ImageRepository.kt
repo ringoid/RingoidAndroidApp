@@ -36,7 +36,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
         val request = DeleteImageRequest(imageId = essence.imageId)
         return spm.accessSingle { cloud.deleteUserImage(essence) }
             .doOnSubscribe { requestSet.remove(request) }
-            .doFinally { requestSet.fulfilled(request.id) }
+            .doOnSuccess { requestSet.fulfilled(request.id) }
             .handleError()
             .ignoreElement()  // convert to Completable
     }
@@ -60,7 +60,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                         .handleError()
                         .map { it.map() }
                 }
-                .doFinally { requestSet.fulfilled(localImageRequest.id) }
+                .doOnSuccess { requestSet.fulfilled(localImageRequest.id) }
         }  // TODO: add request to set on subscribe
     }
 
