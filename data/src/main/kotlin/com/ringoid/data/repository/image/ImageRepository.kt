@@ -37,7 +37,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
         return spm.accessSingle { cloud.deleteUserImage(essence) }
             .doOnSubscribe { requestSet.remove(request) }
             .doOnSuccess { requestSet.fulfilled(request.id) }
-            .handleError()
+            .handleError()  // TODO: on fail - notify
             .ignoreElement()  // convert to Completable
     }
 
@@ -57,7 +57,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                 .flatMap {
                     cloud.uploadImage(url = it.imageUri, image = image)
                         .andThen(Single.just(it))
-                        .handleError()
+                        .handleError()  // TODO: on fail - notify
                         .map { it.map() }
                 }
                 .doOnSuccess { requestSet.fulfilled(localImageRequest.id) }
