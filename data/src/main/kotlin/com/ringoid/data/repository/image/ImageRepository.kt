@@ -24,7 +24,13 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
 
     // TODO: always check db first
     override fun getUserImages(resolution: String): Single<List<UserImage>> =
-        spm.accessSingle { cloud.getUserImages(it.accessToken, resolution).map { it.map() } }
+        spm.accessSingle {
+            cloud.getUserImages(it.accessToken, resolution)
+                .map { it.map() }
+                .compose(requestSet.addCreatedImages())
+                .compose(requestSet.filterOutRemovedImages())
+                .map { it.map { it as UserImage } }
+        }
 
     override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
         spm.accessSingle { cloud.deleteUserImage(essence) }.handleError().ignoreElement()
