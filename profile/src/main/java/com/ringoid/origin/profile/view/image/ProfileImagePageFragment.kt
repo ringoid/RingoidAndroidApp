@@ -24,7 +24,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    @Suppress("CheckResult")
+    @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ibtn_delete_image.clicks().compose(clickDebounce()).subscribe { vm.deleteImage(image!!.id) }
