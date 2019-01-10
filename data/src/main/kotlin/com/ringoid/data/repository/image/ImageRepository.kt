@@ -18,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ImageRepository @Inject constructor(
+class ImageRepository @Inject constructor(private val requestSet: ImageRequestSet,
     private val local: ImageDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
     : BaseRepository(cloud, spm), IImageRepository {
 
