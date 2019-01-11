@@ -7,6 +7,7 @@ import com.ringoid.origin.app.RingoidApplication
 import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
+import com.ringoid.origin.profile.view.image.di.ProfileImagePageFragmentModule
 import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
 import com.ringoid.origin.view.feed.explore.di.ExploreFragmentModule
 import com.ringoid.origin.view.feed.lmm.di.LmmFragmentModule
@@ -33,7 +34,7 @@ import javax.inject.Singleton
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
                       LoginActivityModule::class, MainActivityModule::class,
                       MatchesFeedFragmentModule::class, MessagesFeedFragmentModule::class,
-                      ProfileFragmentModule::class,
+                      ProfileFragmentModule::class, ProfileImagePageFragmentModule::class,
                       SettingsFragmentModule::class, SettingsAppInfoFragmentModule::class,
                       SplashActivityModule::class])
 interface ApplicationComponent : AndroidInjector<RingoidApplication> {
