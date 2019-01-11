@@ -21,7 +21,7 @@ class Params {
             ?.let { it.iterator().next().value as? T }
 
     fun put(item: Any): Params {
-        map[item.javaClass.simpleName] = item
+        item.javaClass.canonicalName?.let { map[it] = item }
         return this
     }
 
