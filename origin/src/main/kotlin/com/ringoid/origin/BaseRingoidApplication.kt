@@ -67,20 +67,20 @@ abstract class BaseRingoidApplication : DaggerApplication() {
             when (it) {
                 is UndeliverableException -> e = it.cause
                 is IOException, is SocketException -> {
-                    Timber.w("Fine, irrelevant network problem or API that throws on cancellation")
+                    Timber.w(it, "Fine, irrelevant network problem or API that throws on cancellation")
                     return@setErrorHandler
                 }
                 is InterruptedException -> {
-                    Timber.w("Fine, some blocking code was interrupted by a dispose call")
+                    Timber.w(it, "Fine, some blocking code was interrupted by a dispose call")
                     return@setErrorHandler
                 }
                 is NullPointerException, is IllegalArgumentException -> {
-                    Timber.e("That's likely a bug in the application")
+                    Timber.e(it, "That's likely a bug in the application")
                     Thread.currentThread().uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e)
                     return@setErrorHandler
                 }
                 is IllegalStateException -> {
-                    Timber.w("That's a bug in RxJava or in a custom operator")
+                    Timber.w(it, "That's a bug in RxJava or in a custom operator")
                     Thread.currentThread().uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e)
                     return@setErrorHandler
                 }
