@@ -23,7 +23,7 @@ interface RingoidRestAdapter {
     fun deleteUserProfile(@Body body: RequestBody): Single<BaseResponse>
 
     @GET("auth/get_settings")
-    fun getUserSettings(@Query("access_token") accessToken: String): Single<UserSettingsResponse>
+    fun getUserSettings(@Query("accessToken") accessToken: String): Single<UserSettingsResponse>
 
     @POST("auth/update_settings")
     fun updateUserSettings(@Body body: RequestBody): Single<BaseResponse>
@@ -39,7 +39,7 @@ interface RingoidRestAdapter {
     fun getImageUploadUrl(@Body body: RequestBody): Single<ImageUploadUrlResponse>
 
     @GET("image/get_own_photos")
-    fun getUserImages(@Query("access_token") accessToken: String,
+    fun getUserImages(@Query("accessToken") accessToken: String,
                       @Query("resolution") resolution: String): Single<UserImageListResponse>
 
     @POST("image/delete_photo")
@@ -51,12 +51,12 @@ interface RingoidRestAdapter {
     /* Feed */
     // --------------------------------------------------------------------------------------------
     @GET("feeds/get_new_faces")
-    fun getNewFaces(@Query("access_token") accessToken: String,
+    fun getNewFaces(@Query("accessToken") accessToken: String,
                     @Query("resolution") resolution: String?,
                     @Query("limit") limit: Int?): Single<FeedResponse>
 
     @GET("feeds/get_lmm")
-    fun getLmm(@Query("access_token") accessToken: String,
+    fun getLmm(@Query("accessToken") accessToken: String,
                @Query("resolution") resolution: String?,
                @Query("lastActionTime") lastActionTime: Long): Single<LmmResponse>
 
