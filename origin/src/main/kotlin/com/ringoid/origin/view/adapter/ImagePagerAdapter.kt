@@ -13,7 +13,7 @@ abstract class ImagePagerAdapter(fm: FragmentManager, val emptyInput: EmptyFragm
 
     protected abstract fun createImagePageFragment(image: IImage): ImagePageFragment<*>
 
-    override fun getCount(): Int = images.takeIf { !it.isEmpty() }?.let { it.size } ?: 1
+    override fun getCount(): Int = images.takeIf { !it.isEmpty() }?.size ?: 1
 
     override fun getItem(position: Int): Fragment =
         if (position == 0 && isEmpty()) EmptyFragment.newInstance(input = emptyInput)
