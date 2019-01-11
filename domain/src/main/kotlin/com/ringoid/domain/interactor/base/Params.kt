@@ -15,7 +15,10 @@ class Params {
     fun <T> get(key: String): T? = map[key] as? T
 
     @Suppress("Unchecked_Cast")
-    fun <T> get(klass: Class<T>): T? = map[klass.simpleName] as? T
+    fun <T> get(klass: Class<T>): T? =
+        map.filterKeys { klass.isAssignableFrom(Class.forName(it)) }
+            .takeIf { !it.isEmpty() }
+            ?.let { it.iterator().next().value as? T }
 
     fun put(item: Any): Params {
         map[item.javaClass.simpleName] = item
