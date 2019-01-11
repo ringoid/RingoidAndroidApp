@@ -75,7 +75,7 @@ abstract class BaseRingoidApplication : DaggerApplication() {
                     return@setErrorHandler
                 }
                 is NullPointerException, is IllegalArgumentException -> {
-                    Timber.w("That's likely a bug in the application")
+                    Timber.e("That's likely a bug in the application")
                     Thread.currentThread().uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e)
                     return@setErrorHandler
                 }
