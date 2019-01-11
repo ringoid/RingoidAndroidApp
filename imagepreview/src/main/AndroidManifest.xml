@@ -5,16 +5,6 @@
     <application>
         <activity
             android:name=".view.ImagePreviewActivity"
-            android:screenOrientation="portrait">
-
-            <!--<intent-filter android:autoVerify="true" android:order="3">-->
-                <!--<action android:name="android.intent.action.VIEW"/>-->
-                <!--<category android:name="android.intent.category.DEFAULT"/>-->
-
-                <!--<data android:host="ringoid.com"/>-->
-                <!--<data android:pathPrefix="/imagepreview"/>-->
-                <!--<data android:scheme="appnav"/>-->
-            <!--</intent-filter>-->
-        </activity>
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>

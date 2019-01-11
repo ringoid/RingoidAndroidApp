@@ -14,7 +14,6 @@ import com.ringoid.origin.R
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
-@AppNav("main")
 abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
 
     protected lateinit var fragNav: FragNavController

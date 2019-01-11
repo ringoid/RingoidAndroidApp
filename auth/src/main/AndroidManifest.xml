@@ -7,16 +7,6 @@
             android:name=".view.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
-            android:windowSoftInputMode="adjustResize">
-
-            <!--<intent-filter android:autoVerify="true" android:order="2">-->
-                <!--<action android:name="android.intent.action.VIEW"/>-->
-                <!--<category android:name="android.intent.category.DEFAULT"/>-->
-
-                <!--<data android:host="ringoid.com"/>-->
-                <!--<data android:pathPrefix="/login"/>-->
-                <!--<data android:scheme="appnav"/>-->
-            <!--</intent-filter>-->
-        </activity>
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 </manifest>

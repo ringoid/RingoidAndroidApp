@@ -2,13 +2,13 @@ package com.ringoid.main.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
+import com.ringoid.base.deeplink.AppNav
 import com.ringoid.origin.profile.view.profile.ProfileFragment
 import com.ringoid.origin.view.feed.explore.ExploreFragment
 import com.ringoid.origin.view.feed.lmm.LmmFragment
 import com.ringoid.origin.view.main.BaseMainActivity
 
-@DeepLink("https://ringoid.com")
+@AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
 
     override fun getVmClass() = MainViewModel::class.java
