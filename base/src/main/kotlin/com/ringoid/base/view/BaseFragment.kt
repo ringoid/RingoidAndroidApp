@@ -27,7 +27,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
-        Timber.v("View State transition to: $newState")
+        Timber.v("View State transition to: ${newState.javaClass.simpleName}")
         // override in subclasses
     }
 
