@@ -5,6 +5,7 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
@@ -26,7 +27,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
     : BaseRepository(cloud, spm), IImageRepository {
 
     // TODO: always check db first
-    override fun getUserImages(resolution: String?): Single<List<UserImage>> =
+    override fun getUserImages(resolution: ImageResolution?): Single<List<UserImage>> =
         spm.accessSingle {
             cloud.getUserImages(it.accessToken, resolution)
                 .compose(requestSet.addCreatedImagesInResponse())

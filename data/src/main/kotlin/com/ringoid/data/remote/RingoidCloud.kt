@@ -5,6 +5,7 @@ import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
+import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
@@ -48,8 +49,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<ImageUploadUrlResponse> =
         restAdapter.getImageUploadUrl(essence.toBody())
 
-    fun getUserImages(accessToken: String, resolution: String): Single<UserImageListResponse> =
-        restAdapter.getUserImages(accessToken = accessToken, resolution = resolution)
+    fun getUserImages(accessToken: String, resolution: ImageResolution?): Single<UserImageListResponse> =
+        restAdapter.getUserImages(accessToken = accessToken, resolution = resolution?.resolution)
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
         restAdapter.deleteUserImage(essence.toBody())
@@ -61,11 +62,11 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
-    fun getNewFaces(accessToken: String, resolution: String, limit: Int) =
-        restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution, limit = limit)
+    fun getNewFaces(accessToken: String, resolution: ImageResolution?, limit: Int?) =
+        restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution?.resolution, limit = limit)
 
-    fun getLmm(accessToken: String, resolution: String, lastActionTime: Long) =
-        restAdapter.getLmm(accessToken = accessToken, resolution = resolution, lastActionTime = lastActionTime)
+    fun getLmm(accessToken: String, resolution: ImageResolution?, lastActionTime: Long) =
+        restAdapter.getLmm(accessToken = accessToken, resolution = resolution?.resolution, lastActionTime = lastActionTime)
 
     /* Test */
     // --------------------------------------------------------------------------------------------

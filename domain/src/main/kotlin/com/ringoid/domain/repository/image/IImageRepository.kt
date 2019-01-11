@@ -1,5 +1,6 @@
 package com.ringoid.domain.repository.image
 
+import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
@@ -11,7 +12,7 @@ import java.io.File
 
 interface IImageRepository {
 
-    fun getUserImages(resolution: String?): Single<List<UserImage>>
+    fun getUserImages(resolution: ImageResolution?): Single<List<UserImage>>
 
     fun deleteUserImage(essence: ImageDeleteEssence): Completable
 

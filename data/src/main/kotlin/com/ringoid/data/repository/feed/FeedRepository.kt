@@ -4,6 +4,7 @@ import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
+import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.feed.IFeedRepository
@@ -17,6 +18,6 @@ class FeedRepository @Inject constructor(
     : BaseRepository(cloud, spm), IFeedRepository {
 
     // TODO: always check db first
-    override fun getNewFaces(resolution: String, limit: Int): Single<Feed> =
+    override fun getNewFaces(resolution: ImageResolution?, limit: Int?): Single<Feed> =
         spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit).map { it.map() } }
 }

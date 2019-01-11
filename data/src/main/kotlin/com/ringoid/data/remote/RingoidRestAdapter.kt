@@ -3,8 +3,8 @@ package com.ringoid.data.remote
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.LmmResponse
-import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
+import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
 import io.reactivex.Completable
@@ -40,7 +40,7 @@ interface RingoidRestAdapter {
 
     @GET("image/get_own_photos")
     fun getUserImages(@Query("access_token") accessToken: String,
-                      @Query("resolution") resolution: String): Single<UserImageListResponse>
+                      @Query("resolution") resolution: String?): Single<UserImageListResponse>
 
     @POST("image/delete_photo")
     fun deleteUserImage(@Body body: RequestBody): Single<BaseResponse>
@@ -52,12 +52,12 @@ interface RingoidRestAdapter {
     // --------------------------------------------------------------------------------------------
     @GET("feeds/get_new_faces")
     fun getNewFaces(@Query("access_token") accessToken: String,
-                    @Query("resolution") resolution: String,
-                    @Query("limit") limit: Int): Single<FeedResponse>
+                    @Query("resolution") resolution: String?,
+                    @Query("limit") limit: Int?): Single<FeedResponse>
 
     @GET("feeds/get_lmm")
     fun getLmm(@Query("access_token") accessToken: String,
-               @Query("resolution") resolution: String,
+               @Query("resolution") resolution: String?,
                @Query("lastActionTime") lastActionTime: Long): Single<LmmResponse>
 
     /* Test */
