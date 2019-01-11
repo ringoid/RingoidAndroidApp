@@ -3,15 +3,15 @@ package com.ringoid.origin.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.ringoid.domain.model.image.Image
+import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.image.ImagePageFragment
 
 abstract class ImagePagerAdapter(fm: FragmentManager, val emptyInput: EmptyFragment.Companion.Input) : FragmentStatePagerAdapter(fm) {
 
-    private val images: MutableList<Image> = mutableListOf()
+    private val images: MutableList<IImage> = mutableListOf()
 
-    protected abstract fun createImagePageFragment(image: Image): ImagePageFragment<*>
+    protected abstract fun createImagePageFragment(image: IImage): ImagePageFragment<*>
 
     override fun getCount(): Int = images.takeIf { !it.isEmpty() }?.let { it.size } ?: 1
 
@@ -22,7 +22,7 @@ abstract class ImagePagerAdapter(fm: FragmentManager, val emptyInput: EmptyFragm
     // --------------------------------------––-----––-––-––––--–----––----------------------------
     fun isEmpty(): Boolean = images.isEmpty()
 
-    fun add(item: Image) {
+    fun add(item: IImage) {
         images.add(item)
         notifyDataSetChanged()
     }
@@ -30,5 +30,13 @@ abstract class ImagePagerAdapter(fm: FragmentManager, val emptyInput: EmptyFragm
     fun remove(itemId: String) {
         images.find { it.id == itemId }
               ?.let { images.remove(it) ; notifyDataSetChanged() }
+    }
+
+    fun set(items: List<IImage>) {
+        images.let {
+            it.clear()
+            it.addAll(items)
+        }
+        notifyDataSetChanged()
     }
 }

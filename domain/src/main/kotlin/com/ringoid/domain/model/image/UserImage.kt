@@ -6,7 +6,7 @@ import com.ringoid.domain.DomainUtil.BAD_ID
 
 data class UserImage(
     val originId: String = BAD_ID, val numberOfLikes: Int = 0,
-    override val id: String, override val uri: String? = null) : IImage, Parcelable {
+    override val id: String, override val uri: String? = null) : IImage {
 
     private constructor(source: Parcel): this(
         id = source.readString() ?: BAD_ID, uri = source.readString(),

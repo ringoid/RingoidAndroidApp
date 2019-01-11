@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.model.image.Image
+import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.view.profile.IMAGE_DELETED
 import com.ringoid.origin.profile.view.profile.IProfileFragment
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_profile_image_page.*
 class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() {
 
     companion object {
-        fun newInstance(image: Image): ProfileImagePageFragment =
+        fun newInstance(image: IImage): ProfileImagePageFragment =
             ProfileImagePageFragment().apply {
                 arguments = Bundle().apply { putParcelable(BUNDLE_KEY_IMAGE, image) }
             }
