@@ -33,6 +33,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                 .compose(requestSet.addCreatedImagesInResponse())
                 .compose(requestSet.filterOutRemovedImages())
                 .map { it.map { it as UserImage } }  // cast not losing fields in UserImage
+                // TODO: update local cache
         }
 
     override fun deleteUserImage(essence: ImageDeleteEssence): Completable {
