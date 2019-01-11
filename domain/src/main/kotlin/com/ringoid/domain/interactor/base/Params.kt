@@ -16,9 +16,15 @@ class Params {
 
     @Suppress("Unchecked_Cast")
     fun <T> get(klass: Class<T>): T? =
-        map.filterKeys { klass.isAssignableFrom(Class.forName(it)) }
-            .takeIf { !it.isEmpty() }
-            ?.let { it.iterator().next().value as? T }
+        map.filterKeys {
+            try {
+                klass.isAssignableFrom(Class.forName(it))
+            } catch (e: ClassNotFoundException) {
+                false  // ignore params which don't represent any class
+            }
+        }
+        .takeIf { !it.isEmpty() }
+        ?.let { it.iterator().next().value as? T }
 
     fun put(item: Any): Params {
         item.javaClass.canonicalName?.let { map[it] = item }
