@@ -3,6 +3,7 @@ package com.ringoid.origin.profile.view.profile
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.profile.R
@@ -88,6 +89,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         }
 
         vm.getUserImages()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        vm.images.observe(viewLifecycleOwner, Observer { imagesAdapter.set(it) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
