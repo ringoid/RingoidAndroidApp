@@ -74,10 +74,10 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
     private fun cropImage() {
         context?.let {
             val context = it
-            val destinationFile = File(it.filesDir, "${randomString()}.png")
+            val destinationFile = File(it.filesDir, "${randomString()}.jpg")
             crop_view.let {
                 val imageConfig = CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
-                    .setCompressFormat(Bitmap.CompressFormat.PNG)
+                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
                     .setQuality(100) // hint for lossy compression formats
                     .build()
                 it.setCropSaveCompleteListener { GlideApp.with(context).load(destinationFile).preload() }
