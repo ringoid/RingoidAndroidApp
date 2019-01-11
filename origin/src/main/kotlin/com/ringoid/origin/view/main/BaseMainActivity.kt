@@ -63,6 +63,10 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
         Timber.v("Switched tab[$index]: ${fragment?.javaClass?.simpleName}")
     }
 
+    protected fun openTabByName(tabName: String) {
+        bottom_bar.selectedItemId = tabNameToId(tabName)
+    }
+
     // --------------------------------------------------------------------------------------------
     private fun indexToTabId(index: Int): Int =
         when (index) {
@@ -80,7 +84,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
             else -> 0
         }
 
-    protected fun tabNameToId(tabName: String): Int =
+    private fun tabNameToId(tabName: String): Int =
         when (tabName) {
             NavigateFrom.MAIN_TAB_FEED -> R.id.item_feed
             NavigateFrom.MAIN_TAB_LMM -> R.id.item_lmm

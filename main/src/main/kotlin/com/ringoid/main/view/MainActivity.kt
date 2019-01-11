@@ -7,7 +7,6 @@ import com.ringoid.origin.profile.view.profile.ProfileFragment
 import com.ringoid.origin.view.feed.explore.ExploreFragment
 import com.ringoid.origin.view.feed.lmm.LmmFragment
 import com.ringoid.origin.view.main.BaseMainActivity
-import kotlinx.android.synthetic.main.activity_main.*
 
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
@@ -24,6 +23,6 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent.extras?.getString("tab")?.let { bottom_bar.selectedItemId = tabNameToId(it) }
+        intent.extras?.getString("tab")?.let { openTabByName(it) }
     }
 }
