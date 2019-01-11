@@ -54,7 +54,7 @@ class ImageRequestSet @Inject constructor() {
             it.flatMap {
                 Observable.fromIterable(it)
                     .filter { !createdIds.contains(it.id) }
-                    .toList(it.size)
+                    .toList()
                     .map { it.toMutableList().apply { addAll(createdImages) } }
             }
         }
@@ -67,7 +67,7 @@ class ImageRequestSet @Inject constructor() {
                 Observable.fromIterable(it.images)
                     .filter { !createdIds.contains(it.id) }
                     .map { it.map() }
-                    .toList(it.images.size)
+                    .toList()
                     .map { it.toMutableList().apply { addAll(createdImages) } }
             }
         }
@@ -78,7 +78,7 @@ class ImageRequestSet @Inject constructor() {
             it.flatMap {
                 Observable.fromIterable(it)
                     .filter { !removedIds.contains(it.id) }
-                    .toList(it.size)
+                    .toList()
             }
         }
 
@@ -89,7 +89,7 @@ class ImageRequestSet @Inject constructor() {
                 Observable.fromIterable(it.images)
                     .filter { !removedIds.contains(it.id) }
                     .map { it.map() }
-                    .toList(it.images.size)
+                    .toList()
             }
         }
 }
