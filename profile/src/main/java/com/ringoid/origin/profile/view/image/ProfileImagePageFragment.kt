@@ -57,6 +57,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
 
     // ------------------------------------------
     override fun notifyUpdate(image: IImage) {
+        super.notifyUpdate(image)
         // TODO: reflect item change event - set number of likes
     }
 
