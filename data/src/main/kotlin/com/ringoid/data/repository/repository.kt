@@ -39,7 +39,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) 
                 val delayTime = delay * pow(5.0, retryCount.toDouble()).toLong()
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
             }
-    }
+    }  // TODO: handle fail all retries
 
 private fun expBackoffObservableImpl(count: Int, delay: Int, tag: String? = null) =
     { it: Observable<Throwable> ->
@@ -48,7 +48,7 @@ private fun expBackoffObservableImpl(count: Int, delay: Int, tag: String? = null
                 val delayTime = pow(delay.toDouble(), retryCount.toDouble()).toLong()
                 Observable.timer(delayTime, TimeUnit.MILLISECONDS)
             }
-    }
+    }  // TODO: handle fail all retries
 
 fun expBackoffCompletable(count: Int, delay: Int, tag: String? = null): CompletableTransformer =
     CompletableTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
