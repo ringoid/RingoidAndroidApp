@@ -55,10 +55,13 @@ ext {
     d_libs = [
             confetti:       "com.github.jinatonic.confetti:confetti:${confettiVersion}",
             cropiwa:        "com.steelkiwi:cropiwa:${cropiwaVersion}",
-            deeplink:       "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
-            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
             glide:          "com.github.bumptech.glide:glide:${glideVersion}",
             glideCompiler:  "com.github.bumptech.glide:compiler:${glideVersion}",
+
+//            deeplink:       "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
+//            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
+            deeplink:       "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:-SNAPSHOT",
+            deeplinkProcessor: "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch-processor:-SNAPSHOT",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
             fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
@@ -174,7 +177,7 @@ ext {
             [configuration: "implementation", dependency: d_android.appcompat],
             [configuration: "implementation", dependency: d_android.core],
             [configuration: "implementation", dependency: d_android.fragment],
-            [configuration: "implementation", dependency: d_android.supportLocalBroadcast],
+            [configuration: "implementation", dependency: d_android.localBroadcast],
             [configuration: "implementation", dependency: d_android.material],
             [configuration: "implementation", dependency: d_android_view.cardView],
             [configuration: "implementation", dependency: d_android_view.constraint],
