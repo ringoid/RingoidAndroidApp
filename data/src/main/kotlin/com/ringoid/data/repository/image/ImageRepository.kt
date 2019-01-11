@@ -48,7 +48,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
             cloud.getImageUploadUrl(essence)
                 .doOnSubscribe { requestSet.create(localImageRequest) }
                 .doOnSuccess {
-                    if (it.imageUri.isBlank()) {
+                    if (it.imageUri.isNullOrBlank()) {
                         throw NullPointerException("Upload uri is null: $it")
                     }
                     val request = CreateImageRequest(id = localImageRequest.id, image = it.map())
