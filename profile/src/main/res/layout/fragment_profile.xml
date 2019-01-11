@@ -24,20 +24,20 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        android:id="@+id/tabs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <include layout="@layout/toolbar_shadow"/>
 
     <ProgressBar
-            android:id="@+id/pb_profile"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            style="@style/ProgressBar.Horizontal"/>
+        android:id="@+id/pb_profile"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        style="@style/ProgressBar.Horizontal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
