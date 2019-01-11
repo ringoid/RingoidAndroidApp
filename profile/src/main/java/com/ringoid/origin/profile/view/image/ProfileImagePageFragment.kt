@@ -44,6 +44,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
                     IMAGE_DELETED -> {
                         snackbar(view, R.string.profile_image_deleted)
                         communicator(IProfileFragment::class.java)?.onDeleteImage()
+                        onIdleState()
                     }
                 }
             }

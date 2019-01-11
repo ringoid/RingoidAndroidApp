@@ -45,6 +45,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
                     IMAGE_CREATED -> {
                         snackbar(view, R.string.profile_image_created)
                         onCreateImage()
+                        onIdleState()
                     }
                 }
             }
