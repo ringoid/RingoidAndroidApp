@@ -55,6 +55,11 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
         }
     }
 
+    // ------------------------------------------
+    override fun notifyUpdate(image: IImage) {
+        // TODO: reflect item change event - set number of likes
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult", "AutoDispose")
