@@ -30,6 +30,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =
         spm.accessSingle {
             cloud.getUserImages(it.accessToken, resolution)
+                .handleError()  // TODO: on fail - notify
                 .compose(requestSet.addCreatedImagesInResponse())
                 .compose(requestSet.filterOutRemovedImages())
                 .map { it.map { it as UserImage } }  // cast not losing fields in UserImage

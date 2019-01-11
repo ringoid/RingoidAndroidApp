@@ -7,6 +7,7 @@ import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
 import io.reactivex.Observable
 import io.reactivex.SingleTransformer
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -49,6 +50,7 @@ class ImageRequestSet @Inject constructor() {
 
     fun addCreatedImages(): SingleTransformer<List<IImage>, List<IImage>> =
         SingleTransformer {
+            Timber.v("Response analysis: add images to response that have been created locally but not yet provided by the backend")
             val createdIds = created.values.map { it.image.id }
             val createdImages = created.values.map { it.image }
             it.flatMap {
@@ -61,6 +63,7 @@ class ImageRequestSet @Inject constructor() {
 
     fun addCreatedImagesInResponse(): SingleTransformer<UserImageListResponse, List<UserImage>> =
         SingleTransformer {
+            Timber.v("Response analysis: add images to response that have been created locally but not yet provided by the backend")
             val createdIds = created.values.map { it.image.id }
             val createdImages = created.values.map { UserImage.from(it.image) }
             it.flatMap {
@@ -74,6 +77,7 @@ class ImageRequestSet @Inject constructor() {
 
     fun filterOutRemovedImages(): SingleTransformer<List<IImage>, List<IImage>> =
         SingleTransformer {
+            Timber.v("Response analysis: remove images from response that have been deleted locally but not yet on the backend")
             val removedIds = removed.values.map { it.imageId }
             it.flatMap {
                 Observable.fromIterable(it)
@@ -84,6 +88,7 @@ class ImageRequestSet @Inject constructor() {
 
     fun filterOutRemovedImagesInResponse(): SingleTransformer<UserImageListResponse, List<UserImage>> =
         SingleTransformer {
+            Timber.v("Response analysis: remove images from response that have been deleted locally but not yet on the backend")
             val removedIds = removed.values.map { it.imageId }
             it.flatMap {
                 Observable.fromIterable(it.images)
