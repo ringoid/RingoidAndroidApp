@@ -56,8 +56,8 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                 }
                 .flatMap {
                     cloud.uploadImage(url = it.imageUri, image = image)
-                        .andThen(Single.just(it))
                         .handleError()  // TODO: on fail - notify
+                        .andThen(Single.just(it))
                         .map { it.map() }
                 }
                 .doOnSuccess { requestSet.fulfilled(localImageRequest.id) }

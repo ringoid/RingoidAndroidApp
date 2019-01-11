@@ -16,6 +16,9 @@ const val DEFAULT_RETRY_DELAY = 55
 
 /* Retry with exponential backoff */
 // ------------------------------------------------------------------------------------------------
+fun Completable.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY): Completable =
+    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffCompletable(count = count, delay = delay))
+
 inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY): Maybe<T> =
     doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffMaybe(count = count, delay = delay))
 
@@ -47,6 +50,9 @@ private fun expBackoffObservableImpl(count: Int, delay: Int) =
             }
     }
 
+fun expBackoffCompletable(count: Int, delay: Int): CompletableTransformer =
+    CompletableTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay)) }
+
 fun <T : BaseResponse> expBackoffMaybe(count: Int, delay: Int): MaybeTransformer<T, T> =
     MaybeTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay)) }
 
@@ -61,6 +67,8 @@ fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Int): ObservableT
 
 /* Api Error */
 // --------------------------------------------------------------------------------------------
+/** Completable.withApiError() cannot be provided because [BaseResponse] is required to extract [BaseResponse.errorCode],
+ *  which is not the case for [Completable] responses due to lack of response body. So no API error is that case. */
 inline fun <reified T : BaseResponse> Maybe<T>.withApiError(): Maybe<T> = compose(onApiErrorMaybe())
 inline fun <reified T : BaseResponse> Single<T>.withApiError(): Single<T> = compose(onApiErrorSingle())
 inline fun <reified T : BaseResponse> Flowable<T>.withApiError(): Flowable<T> = compose(onApiErrorFlowable())
@@ -87,12 +95,23 @@ fun <T : BaseResponse> onApiErrorObservable(): ObservableTransformer<T, T> =
 
 /* Network Error */
 // --------------------------------------------------------------------------------------------
+fun Completable.withNetError(): Completable = compose(onNetErrorCompletable())
 inline fun <reified T : BaseResponse> Maybe<T>.withNetError(): Maybe<T> = compose(onNetErrorMaybe())
 inline fun <reified T : BaseResponse> Single<T>.withNetError(): Single<T> = compose(onNetErrorSingle())
 inline fun <reified T : BaseResponse> Flowable<T>.withNetError(): Flowable<T> = compose(onNetErrorFlowable())
 inline fun <reified T : BaseResponse> Observable<T>.withNetError(): Observable<T> = compose(onNetErrorObservable())
 
 // ----------------------------------------------
+fun onNetErrorCompletable(): CompletableTransformer =
+    CompletableTransformer {
+        it.onErrorResumeNext { e: Throwable ->
+            when (e) {
+                is HttpException -> Completable.error(NetworkException(code = e.code()))
+                else -> Completable.error(e)  // including ApiException
+            }
+        }
+    }
+
 inline fun <reified T : BaseResponse> onNetErrorMaybe(): MaybeTransformer<T, T> =
     MaybeTransformer {
         it.onErrorResumeNext { e: Throwable ->
@@ -135,6 +154,9 @@ inline fun <reified T : BaseResponse> onNetErrorObservable(): ObservableTransfor
 
 /* Error handling */
 // --------------------------------------------------------------------------------------------
+fun Completable.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY): Completable =
+    withNetError().withRetry(count = count, delay = delay)
+
 inline fun <reified T : BaseResponse> Maybe<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY): Maybe<T> =
     withApiError().withNetError().withRetry(count = count, delay = delay)
 
