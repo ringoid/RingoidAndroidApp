@@ -10,4 +10,8 @@ open class BaseResponse(
         const val COLUMN_ERROR_CODE = "errorCode"
         const val COLUMN_ERROR_MESSAGE = "errorMessage"
     }
+
+    override fun toString(): String {
+        return "BaseResponse(errorCode='$errorCode', errorMessage='$errorMessage')"
+    }
 }
