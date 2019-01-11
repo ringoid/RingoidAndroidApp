@@ -34,7 +34,7 @@ class CloudModule {
             .log(Platform.INFO)
             .request("Request")
             .response("Response")
-            .addHeader("version", BuildConfig.VERSION_NAME)
+//            .addHeader("version", BuildConfig.VERSION_NAME)
             .build()
     }
 
