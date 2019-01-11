@@ -33,6 +33,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     override fun onViewStateChange(newState: ViewState) {
         fun onIdleState() {
             pb_profile.changeVisibility(isVisible = false)
+            swipe_refresh_layout.isRefreshing = false
         }
 
         super.onViewStateChange(newState)
@@ -97,6 +98,10 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        swipe_refresh_layout.apply {
+            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
+            setOnRefreshListener { vm.getUserImages() }
+        }
         vp_images.apply {
             adapter = imagesAdapter
             tabs.setupWithViewPager(this)
