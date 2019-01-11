@@ -1,13 +1,13 @@
 package com.ringoid.origin.view.feed
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.interactor.feed.GetNewFacesUseCase
+import com.ringoid.domain.model.feed.Feed
 
-open class FeedViewModel(private val getNewFacesUseCase: GetNewFacesUseCase, app: Application)
-    : BaseViewModel(app) {
+abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
-    fun getNewFaces() {
-        // TODO
-    }
+    val feed by lazy { MutableLiveData<Feed>() }
+
+    abstract fun getFeed()
 }
