@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
 
     <Button
         android:id="@+id/btn_done"
@@ -37,5 +37,7 @@
         app:ci_dynamic_aspect_ratio="false"
         app:ci_scale_enabled="true"
         app:ci_translation_enabled="true"/>
+
+    <include layout="@layout/toolbar_shadow"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

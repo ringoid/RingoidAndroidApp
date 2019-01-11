@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
 
     <com.ringoid.widget.view.IconItemView
         android:id="@+id/item_theme"
@@ -45,4 +45,7 @@
         android:gravity="start"
         android:text="@string/settings_account_delete_info"
         style="@style/StdText.Secondary"/>
+
+    <include layout="@layout/toolbar_shadow"/>
+
 </LinearLayout>
