@@ -67,7 +67,10 @@ inline fun <reified T : BaseResponse> Observable<T>.withApiError(): Observable<T
 
 // ----------------------------------------------
 private fun <T : BaseResponse> onApiErrorConsumer(): Consumer<in T> =
-    Consumer { it.takeIf { it.errorCode.isNotBlank() } ?.let { throw ApiException(code = it.errorCode, message = it.errorMessage) } }
+    Consumer {
+        it.takeIf { it.errorCode.isNotBlank() }
+          ?.let { throw ApiException(code = it.errorCode, message = it.errorMessage) }
+    }
 
 fun <T : BaseResponse> onApiErrorMaybe(): MaybeTransformer<T, T> =
     MaybeTransformer { it.doOnSuccess(onApiErrorConsumer()) }
