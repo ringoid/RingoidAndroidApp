@@ -9,9 +9,9 @@ import io.reactivex.schedulers.Schedulers
 abstract class SingleUseCase<T>(threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : UseCase(threadExecutor, postExecutor) {
 
-    protected abstract fun sourceImpl(params: Params): Single<T>
+    protected abstract fun sourceImpl(params: Params = Params()): Single<T>
 
-    fun source(params: Params): Single<T> = sourceImpl(params).compose(transformer())
+    fun source(params: Params = Params()): Single<T> = sourceImpl(params).compose(transformer())
 
     private fun transformer(): SingleTransformer<T, T> =
         SingleTransformer {

@@ -18,7 +18,7 @@ class ProfileFragmentViewModel @Inject constructor(
     app: Application) : BaseViewModel(app) {
 
     fun getUserImages() {
-        //
+        getUserImagesUseCase.source()
     }
 
     fun uploadImage(uri: Uri) {

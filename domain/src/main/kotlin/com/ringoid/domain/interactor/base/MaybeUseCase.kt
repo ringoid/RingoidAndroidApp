@@ -9,9 +9,9 @@ import io.reactivex.schedulers.Schedulers
 abstract class MaybeUseCase<T>(threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : UseCase(threadExecutor, postExecutor) {
 
-    protected abstract fun sourceImpl(): Maybe<T>
+    protected abstract fun sourceImpl(params: Params = Params()): Maybe<T>
 
-    fun source(): Maybe<T> = sourceImpl().compose(transformer())
+    fun source(params: Params = Params()): Maybe<T> = sourceImpl().compose(transformer())
 
     private fun transformer(): MaybeTransformer<T, T> =
         MaybeTransformer {

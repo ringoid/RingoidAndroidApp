@@ -9,9 +9,9 @@ import io.reactivex.schedulers.Schedulers
 abstract class FlowableUseCase<T>(threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : UseCase(threadExecutor, postExecutor) {
 
-    protected abstract fun sourceImpl(): Flowable<T>
+    protected abstract fun sourceImpl(params: Params = Params()): Flowable<T>
 
-    fun source(): Flowable<T> = sourceImpl().compose(transformer())
+    fun source(params: Params = Params()): Flowable<T> = sourceImpl().compose(transformer())
 
     private fun transformer(): FlowableTransformer<T, T> =
         FlowableTransformer {

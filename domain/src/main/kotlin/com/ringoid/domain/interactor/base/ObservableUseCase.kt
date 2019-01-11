@@ -9,9 +9,9 @@ import io.reactivex.schedulers.Schedulers
 abstract class ObservableUseCase<T>(threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : UseCase(threadExecutor, postExecutor) {
 
-    protected abstract fun sourceImpl(): Observable<T>
+    protected abstract fun sourceImpl(params: Params = Params()): Observable<T>
 
-    fun source(): Observable<T> = sourceImpl().compose(transformer())
+    fun source(params: Params = Params()): Observable<T> = sourceImpl().compose(transformer())
 
     private fun transformer(): ObservableTransformer<T, T> =
         ObservableTransformer {

@@ -9,9 +9,9 @@ import io.reactivex.schedulers.Schedulers
 abstract class CompletableUseCase(threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : UseCase(threadExecutor, postExecutor) {
 
-    protected abstract fun sourceImpl(params: Params): Completable
+    protected abstract fun sourceImpl(params: Params = Params()): Completable
 
-    fun source(params: Params): Completable = sourceImpl(params).compose(transformer())
+    fun source(params: Params = Params()): Completable = sourceImpl(params).compose(transformer())
 
     private fun transformer(): CompletableTransformer =
         CompletableTransformer {
