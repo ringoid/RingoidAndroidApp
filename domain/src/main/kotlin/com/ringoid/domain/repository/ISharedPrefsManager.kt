@@ -6,5 +6,7 @@ interface ISharedPrefsManager {
 
     fun accessToken(): AccessToken?
 
+    fun currentUserId(): String?
+
     fun saveUserProfile(userId: String, accessToken: String)
 }

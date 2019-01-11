@@ -31,10 +31,17 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     // --------------------------------------------------------------------------------------------
     override fun accessToken(): AccessToken? =
         sharedPreferences
+            .takeIf { it.contains(SP_KEY_AUTH_ACCESS_TOKEN) }
+            ?.let {
+                it.getString(SP_KEY_AUTH_ACCESS_TOKEN, null)
+                  ?.let { AccessToken(accessToken = it) }
+            }
+
+    override fun currentUserId(): String? =
+        sharedPreferences
             .takeIf { it.contains(SP_KEY_AUTH_USER_ID) }
             ?.let {
                 it.getString(SP_KEY_AUTH_USER_ID, null)
-                  ?.let { AccessToken(accessToken = it) }
             }
 
     override fun saveUserProfile(userId: String, accessToken: String) {
