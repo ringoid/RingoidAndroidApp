@@ -19,6 +19,13 @@ class ProfileFragmentViewModel @Inject constructor(
 
     fun getUserImages() {
         getUserImagesUseCase.source()
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .autoDisposable(this)
+            .subscribe({
+                // TODO: show images
+            }, Timber::e)
     }
 
     fun uploadImage(uri: Uri) {
