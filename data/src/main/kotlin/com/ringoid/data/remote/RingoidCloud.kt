@@ -49,8 +49,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<ImageUploadUrlResponse> =
         restAdapter.getImageUploadUrl(essence.toBody())
 
-    fun getUserImages(accessToken: String, resolution: ImageResolution?): Single<UserImageListResponse> =
-        restAdapter.getUserImages(accessToken = accessToken, resolution = resolution?.resolution)
+    fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
+        restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
         restAdapter.deleteUserImage(essence.toBody())

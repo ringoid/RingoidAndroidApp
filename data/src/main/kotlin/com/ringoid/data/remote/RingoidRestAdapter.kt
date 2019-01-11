@@ -40,7 +40,7 @@ interface RingoidRestAdapter {
 
     @GET("image/get_own_photos")
     fun getUserImages(@Query("access_token") accessToken: String,
-                      @Query("resolution") resolution: String?): Single<UserImageListResponse>
+                      @Query("resolution") resolution: String): Single<UserImageListResponse>
 
     @POST("image/delete_photo")
     fun deleteUserImage(@Body body: RequestBody): Single<BaseResponse>

@@ -8,6 +8,7 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.CreateImageUseCase
 import com.ringoid.domain.interactor.image.GetUserImagesUseCase
+import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.utility.extension
@@ -22,7 +23,7 @@ class ProfileFragmentViewModel @Inject constructor(
     val images by lazy { MutableLiveData<List<UserImage>>() }
 
     fun getUserImages() {
-        getUserImagesUseCase.source()
+        getUserImagesUseCase.source(params = Params().put(ImageResolution._1440x1920))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
