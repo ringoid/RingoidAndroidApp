@@ -7,6 +7,7 @@ import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import retrofit2.HttpException
+import timber.log.Timber
 import java.lang.Math.pow
 import java.util.concurrent.TimeUnit
 
@@ -16,16 +17,16 @@ const val DEFAULT_RETRY_DELAY = 55
 /* Retry with exponential backoff */
 // ------------------------------------------------------------------------------------------------
 inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY): Maybe<T> =
-    compose(expBackoffMaybe(count = count, delay = delay))
+    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffMaybe(count = count, delay = delay))
 
 inline fun <reified T : BaseResponse> Single<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY): Single<T> =
-    compose(expBackoffSingle(count = count, delay = delay))
+    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffSingle(count = count, delay = delay))
 
 inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY): Flowable<T> =
-    compose(expBackoffFlowable(count = count, delay = delay))
+    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffFlowable(count = count, delay = delay))
 
 inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY): Observable<T> =
-    compose(expBackoffObservable(count = count, delay = delay))
+    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffObservable(count = count, delay = delay))
 
 // ----------------------------------------------
 private fun expBackoffFlowableImpl(count: Int, delay: Int) =
