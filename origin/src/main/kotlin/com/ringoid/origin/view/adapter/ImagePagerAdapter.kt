@@ -7,7 +7,8 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.image.ImagePageFragment
 
-abstract class ImagePagerAdapter(fm: FragmentManager, val emptyInput: EmptyFragment.Companion.Input) : FragmentStatePagerAdapter(fm) {
+abstract class ImagePagerAdapter(fm: FragmentManager, private val emptyInput: EmptyFragment.Companion.Input)
+    : FragmentStatePagerAdapter(fm) {
 
     private val images: MutableList<IImage> = mutableListOf()
 
