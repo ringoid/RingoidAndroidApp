@@ -1,5 +1,6 @@
 package com.ringoid.origin.auth.view
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
@@ -105,8 +106,13 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
-                data?.putExtra(Extras.EXTRA_NAVIGATE_FROM, NavigateFrom.SCREEN_LOGIN)
-                navigateAndClose(this, path = "/imagepreview", payload = data)
+                when (resultCode) {
+                    Activity.RESULT_CANCELED -> navigateAndClose(this, path = "/main")
+                    Activity.RESULT_OK -> {
+                        data?.putExtra(Extras.EXTRA_NAVIGATE_FROM, NavigateFrom.SCREEN_LOGIN)
+                        navigateAndClose(this, path = "/imagepreview", payload = data)
+                    }
+                }
             }
         }
     }
