@@ -58,3 +58,34 @@ inline fun <reified T, reified R> Params.processObservable(key: String, body: (p
 
 inline fun <reified T, reified R> Params.processObservable(klass: Class<T>, body: (p: T) -> Observable<R>): Observable<R> =
     get(klass)?.let { body(it) } ?: Observable.error<R> { MissingRequiredParamsException() }
+
+// ----------------------------------------------
+inline fun <reified T> Params.optionalCompletable(key: String, body: (p: T?) -> Completable): Completable =
+    get<T>(key)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T> Params.optionalCompletable(klass: Class<T>, body: (p: T?) -> Completable): Completable =
+    get(klass)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T, reified R> Params.optionalMaybe(key: String, body: (p: T?) -> Maybe<R>): Maybe<R> =
+    get<T>(key)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T, reified R> Params.optionalMaybe(klass: Class<T>, body: (p: T?) -> Maybe<R>): Maybe<R> =
+    get(klass)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T, reified R> Params.optionalSingle(key: String, body: (p: T?) -> Single<R>): Single<R> =
+    get<T>(key)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T, reified R> Params.optionalSingle(klass: Class<T>, body: (p: T?) -> Single<R>): Single<R> =
+    get(klass)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T, reified R> Params.optionalFlowable(key: String, body: (p: T?) -> Flowable<R>): Flowable<R> =
+    get<T>(key)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T, reified R> Params.optionalFlowable(klass: Class<T>, body: (p: T?) -> Flowable<R>): Flowable<R> =
+    get(klass)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T, reified R> Params.optionalObservable(key: String, body: (p: T?) -> Observable<R>): Observable<R> =
+    get<T>(key)?.let { body(it) } ?: run { body(null) }
+
+inline fun <reified T, reified R> Params.optionalObservable(klass: Class<T>, body: (p: T?) -> Observable<R>): Observable<R> =
+    get(klass)?.let { body(it) } ?: run { body(null) }

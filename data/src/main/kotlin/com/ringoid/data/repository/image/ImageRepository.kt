@@ -26,7 +26,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
     : BaseRepository(cloud, spm), IImageRepository {
 
     // TODO: always check db first
-    override fun getUserImages(resolution: String): Single<List<UserImage>> =
+    override fun getUserImages(resolution: String?): Single<List<UserImage>> =
         spm.accessSingle {
             cloud.getUserImages(it.accessToken, resolution)
                 .compose(requestSet.addCreatedImagesInResponse())

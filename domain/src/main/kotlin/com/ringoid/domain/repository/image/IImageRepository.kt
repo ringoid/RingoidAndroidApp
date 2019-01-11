@@ -11,7 +11,7 @@ import java.io.File
 
 interface IImageRepository {
 
-    fun getUserImages(resolution: String): Single<List<UserImage>>
+    fun getUserImages(resolution: String?): Single<List<UserImage>>
 
     fun deleteUserImage(essence: ImageDeleteEssence): Completable
 
