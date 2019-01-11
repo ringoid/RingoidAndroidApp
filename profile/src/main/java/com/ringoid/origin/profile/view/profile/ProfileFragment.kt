@@ -86,6 +86,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
                 }
             })
         }
+
+        vm.getUserImages()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

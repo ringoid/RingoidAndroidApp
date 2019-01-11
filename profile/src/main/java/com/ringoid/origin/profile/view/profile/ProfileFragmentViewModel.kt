@@ -6,6 +6,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.CreateImageUseCase
+import com.ringoid.domain.interactor.image.GetUserImagesUseCase
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -13,7 +14,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileFragmentViewModel @Inject constructor(
-    private val createImageUseCase: CreateImageUseCase, app: Application) : BaseViewModel(app) {
+    private val createImageUseCase: CreateImageUseCase, private val getUserImagesUseCase: GetUserImagesUseCase,
+    app: Application) : BaseViewModel(app) {
+
+    fun getUserImages() {
+        //
+    }
 
     fun uploadImage(uri: Uri) {
         spm.accessToken()?.let {
