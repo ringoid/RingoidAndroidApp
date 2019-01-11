@@ -2,16 +2,19 @@ package com.ringoid.origin.view.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
+import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
+@AppNav("main")
 abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>() {
 
     protected lateinit var fragNav: FragNavController

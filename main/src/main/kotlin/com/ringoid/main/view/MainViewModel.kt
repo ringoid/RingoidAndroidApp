@@ -1,4 +1,4 @@
-package com.ringoid.main
+package com.ringoid.main.view
 
 import android.app.Application
 import com.ringoid.origin.view.main.BaseMainViewModel

@@ -5,6 +5,8 @@ buildscript {
         compileSdkVersion = 28
 
         // --------------------------------------
+        jetpackVersion = '1.0.0'
+
         androidAnnotationVersion = '1.0.1'
         androidAppCompatVersion = '1.0.2'
         androidCoreVersion = '1.0.1'
@@ -29,6 +31,7 @@ buildscript {
 
         confettiVersion = '1.1.1'
         cropiwaVersion = '1.0.3'
+        deeplinkVersion = '3.1.1'
         glideVersion = '4.8.0'
         eventBusVersion = '3.1.1'
         fragNavVersion = '3.0.0'

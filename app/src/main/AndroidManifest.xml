@@ -8,5 +8,19 @@
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme">
+
+        <activity
+                android:name=".deeplink.DeepLinkHandlerActivity"
+                android:theme="@android:style/Theme.NoDisplay">
+
+            <intent-filter android:autoVerify="true" android:order="1">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:host="ringoid.com"/>
+                <data android:scheme="appnav"/>
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

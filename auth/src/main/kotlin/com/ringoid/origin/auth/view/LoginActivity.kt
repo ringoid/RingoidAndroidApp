@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
+import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
@@ -21,6 +22,7 @@ import com.ringoid.utility.inputDebounce
 import com.ringoid.widget.WidgetState
 import kotlinx.android.synthetic.main.activity_login.*
 
+@AppNav("login")
 class LoginActivity : BaseActivity<LoginViewModel>() {
 
     override fun getVmClass() = LoginViewModel::class.java

@@ -1,6 +1,6 @@
 package com.ringoid.main.di
 
-import com.ringoid.main.MainActivity
+import com.ringoid.main.view.MainActivity
 import dagger.Subcomponent
 import dagger.android.AndroidInjector
 

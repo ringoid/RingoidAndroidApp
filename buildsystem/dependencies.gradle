@@ -9,9 +9,11 @@ ext {
             appcompat:  "androidx.appcompat:appcompat:${androidAppCompatVersion}",
             core:       "androidx.core:core:${androidCoreVersion}",
             fragment:   "androidx.fragment:fragment:${androidFragmentVersion}",
+            localBroadcast: "androidx.localbroadcastmanager:localbroadcastmanager:${jetpackVersion}",
             material:   "com.google.android.material:material:${androidMaterialVersion}",
 
 //            supportFragment: "com.android.support:support-fragment:${androidSupportLibraryVersion}",
+            supportLocalBroadcast: "com.android.support:localbroadcastmanager:${androidSupportLibraryVersion}",
     ]
 
     d_android_view = [
@@ -53,6 +55,8 @@ ext {
     d_libs = [
             confetti:       "com.github.jinatonic.confetti:confetti:${confettiVersion}",
             cropiwa:        "com.steelkiwi:cropiwa:${cropiwaVersion}",
+            deeplink:       "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
+            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
             glide:          "com.github.bumptech.glide:glide:${glideVersion}",
             glideCompiler:  "com.github.bumptech.glide:compiler:${glideVersion}",
 
@@ -170,6 +174,7 @@ ext {
             [configuration: "implementation", dependency: d_android.appcompat],
             [configuration: "implementation", dependency: d_android.core],
             [configuration: "implementation", dependency: d_android.fragment],
+            [configuration: "implementation", dependency: d_android.supportLocalBroadcast],
             [configuration: "implementation", dependency: d_android.material],
             [configuration: "implementation", dependency: d_android_view.cardView],
             [configuration: "implementation", dependency: d_android_view.constraint],
@@ -193,6 +198,11 @@ ext {
             [configuration: "implementation", dependency: d_dagger.dagger],
             [configuration: "implementation", dependency: d_dagger.daggerAndroid],
             [configuration: "implementation", dependency: d_dagger.daggerAndroidSupport],
+    ]
+
+    def deeplink = [
+            [configuration: "kapt", dependency: d_libs.deeplinkProcessor],
+            [configuration: "implementation", dependency: d_libs.deeplink],
     ]
 
     def eventbus = [
@@ -283,7 +293,7 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = []
-    appDependencies += all_features + module_main + develop + android + dagger + kotlin + log + fragnav + net + room
+    appDependencies += all_features + module_main + develop + android + dagger + deeplink + kotlin + log + fragnav + net + room
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -301,7 +311,7 @@ ext {
     /* Main */
     // ------------------------------------------
     mainDependencies = []
-    mainDependencies += all_features + develop + android + arch + dagger + kotlin + log + fragnav + rx + rxBind
+    mainDependencies += all_features + develop + android + arch + dagger + deeplink + kotlin + log + fragnav + rx + rxBind
 
     androidTestMainDeps = androidTest
     testMainDependencies = test
@@ -315,7 +325,7 @@ ext {
     /* User Settings */
     // ------------------------------------------
     userSettingsDependencies = []
-    userSettingsDependencies += module_origin + develop + android + arch + dagger + kotlin + log
+    userSettingsDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test
@@ -329,7 +339,7 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
+    authDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
     testAuthDependencies = test
@@ -346,7 +356,7 @@ ext {
     imagePreviewDependencies = [
         [configuration: "implementation", dependency: d_libs.cropiwa],
     ]
-    imagePreviewDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind
+    imagePreviewDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
     testImagePreviewDependencies = test
@@ -379,7 +389,7 @@ ext {
     // ------------------------------------------
     originDependencies = []
     originDependencies += feature_auth + feature_imagePreview + feature_profile + develop + android + arch + dagger +
-                          kotlin + glide + log + fragnav + rx + rxBind + support
+                          deeplink + kotlin + glide + log + fragnav + rx + rxBind + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
@@ -401,7 +411,7 @@ ext {
     /* Base */
     // ------------------------------------------
     baseDependencies = []
-    baseDependencies += module_domain + module_utility + android + arch + dagger + kotlin + log + autoDispose
+    baseDependencies += module_domain + module_utility + android + arch + dagger + deeplink + kotlin + log + autoDispose
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test

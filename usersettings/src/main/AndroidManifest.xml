@@ -1,2 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ringoid.usersettings"/>
+          package="com.ringoid.usersettings">
+
+    <application>
+        <activity
+            android:name=".view.SettingsActivity"
+            android:screenOrientation="portrait">
+        </activity>
+    </application>
+</manifest>

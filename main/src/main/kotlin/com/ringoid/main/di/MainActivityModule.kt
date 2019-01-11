@@ -1,7 +1,7 @@
 package com.ringoid.main.di
 
 import android.app.Activity
-import com.ringoid.main.MainActivity
+import com.ringoid.main.view.MainActivity
 import dagger.Binds
 import dagger.Module
 import dagger.android.ActivityKey

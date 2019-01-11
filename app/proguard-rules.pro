@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep @interface com.airbnb.deeplinkdispatch.DeepLink
+-keepclasseswithmembers class * {
+    @com.airbnb.deeplinkdispatch.DeepLink <methods>;
+}
+

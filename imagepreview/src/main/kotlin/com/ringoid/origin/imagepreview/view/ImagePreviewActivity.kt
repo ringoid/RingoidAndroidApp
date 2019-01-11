@@ -1,6 +1,7 @@
 package com.ringoid.origin.imagepreview.view
 
 import android.os.Bundle
+import com.ringoid.base.deeplink.AppNav
 import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.CONTENT_URI
 import com.ringoid.origin.navigation.Extras
@@ -8,6 +9,7 @@ import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.base.BaseHostActivity
 
+@AppNav("imagepreview")
 class ImagePreviewActivity : BaseHostActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
