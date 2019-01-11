@@ -1,7 +1,6 @@
 package com.ringoid.domain.model.essence.image
 
 import com.google.gson.annotations.SerializedName
-import com.ringoid.domain.model.IEssence
 import com.ringoid.utility.randomString
 
 /**
@@ -13,12 +12,15 @@ import com.ringoid.utility.randomString
  */
 data class ImageUploadUrlEssence(
     @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String,
-    @SerializedName(COLUMN_CLIENT_IMAGE_ID) val clientImageId: String = randomString(),
-    @SerializedName(COLUMN_EXTENSION) val extension: String) : IEssence {
+    @SerializedName(COLUMN_CLIENT_IMAGE_ID) override val clientImageId: String = randomString(),
+    @SerializedName(COLUMN_EXTENSION) override val extension: String) : IImageUploadUrlEssence {
 
     companion object {
         const val COLUMN_ACCESS_TOKEN = "accessToken"
         const val COLUMN_CLIENT_IMAGE_ID = "clientPhotoId"
         const val COLUMN_EXTENSION = "extension"
+
+        fun from(essence: ImageUploadUrlEssenceUnauthorized, accessToken: String): ImageUploadUrlEssence =
+            ImageUploadUrlEssence(accessToken = accessToken, clientImageId = essence.clientImageId, extension = essence.extension)
     }
 }

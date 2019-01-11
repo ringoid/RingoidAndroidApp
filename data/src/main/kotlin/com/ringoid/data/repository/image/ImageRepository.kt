@@ -5,8 +5,10 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
+import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.LocalImage
 import com.ringoid.domain.model.image.UserImage
@@ -42,10 +44,15 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
     }
 
     // ------------------------------------------------------------------------
-    override fun createImage(essence: ImageUploadUrlEssence, image: File): Single<Image> {
+    override fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image> {
         val localImageRequest = CreateLocalImageRequest(image = LocalImage(file = image))
         return spm.accessSingle {
-            cloud.getImageUploadUrl(essence)
+            val xessence = when (essence) {
+                is ImageUploadUrlEssence -> essence  // for ImageUploadUrlEssence with access token supplied
+                is ImageUploadUrlEssenceUnauthorized -> ImageUploadUrlEssence.from(essence, it.accessToken)
+                else -> throw IllegalArgumentException("Unsupported implementation of IImageUploadUrlEssence for createImage()")
+            }
+            cloud.getImageUploadUrl(xessence)
                 .doOnSubscribe { requestSet.create(localImageRequest) }
                 .doOnSuccess {
                     if (it.imageUri.isNullOrBlank()) {

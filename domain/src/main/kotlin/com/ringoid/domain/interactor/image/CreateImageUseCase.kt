@@ -7,6 +7,7 @@ import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.interactor.base.processSingle
+import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.repository.image.IImageRepository
@@ -21,7 +22,7 @@ class CreateImageUseCase @Inject constructor(private val repository: IImageRepos
     override fun sourceImpl(params: Params): Single<Image> {
         val image = params.get<Uri>("uri")?.let { File(it.path) } ?: throw MissingRequiredParamsException()
 
-        return params.processSingle(ImageUploadUrlEssence::class.java) {
+        return params.processSingle(IImageUploadUrlEssence::class.java) {
             repository.createImage(essence = it, image = image)
         }
     }
