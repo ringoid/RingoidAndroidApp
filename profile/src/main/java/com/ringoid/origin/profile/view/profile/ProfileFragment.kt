@@ -92,7 +92,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vm.images.observe(viewLifecycleOwner, Observer { imagesAdapter.set(it) })
-//        vm.getUserImages()
+        vm.getUserImages()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
