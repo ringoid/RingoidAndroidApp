@@ -11,7 +11,7 @@ import timber.log.Timber
 import java.lang.Math.pow
 import java.util.concurrent.TimeUnit
 
-const val DEFAULT_RETRY_COUNT = 5
+const val DEFAULT_RETRY_COUNT = 2
 const val DEFAULT_RETRY_DELAY = 55
 
 /* Retry with exponential backoff */
@@ -34,7 +34,7 @@ inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = DEFAU
 // ----------------------------------------------
 private fun expBackoffFlowableImpl(count: Int, delay: Int) =
     { it: Flowable<Throwable> ->
-        it.zipWith<Int, Int>(Flowable.range(1, count), BiFunction { t, i -> i })
+        it.zipWith<Int, Int>(Flowable.range(1, count), BiFunction { _: Throwable, i -> i })
             .flatMap { retryCount ->
                 val delayTime = delay * pow(5.0, retryCount.toDouble()).toLong()
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
@@ -43,7 +43,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Int) =
 
 private fun expBackoffObservableImpl(count: Int, delay: Int) =
     { it: Observable<Throwable> ->
-        it.zipWith<Int, Int>(Observable.range(1, count), BiFunction { t, i -> i })
+        it.zipWith<Int, Int>(Observable.range(1, count), BiFunction { _: Throwable, i -> i })
             .flatMap { retryCount ->
                 val delayTime = pow(delay.toDouble(), retryCount.toDouble()).toLong()
                 Observable.timer(delayTime, TimeUnit.MILLISECONDS)
