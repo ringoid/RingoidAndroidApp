@@ -26,7 +26,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         private const val BUNDLE_KEY_IMAGE_URI = "bundle_key_image_uri"
         private const val BUNDLE_KEY_NAVIGATE_FROM = "bundle_key_navigate_from"
 
-        fun newInstance(uri: Uri?, navigateFrom: String): ImagePreviewFragment =
+        fun newInstance(uri: Uri?, navigateFrom: String? = null): ImagePreviewFragment =
             ImagePreviewFragment().apply {
                 arguments = Bundle().apply {
                     Timber.v("ImagePreview: uri=$uri, navigateFrom=$navigateFrom")
