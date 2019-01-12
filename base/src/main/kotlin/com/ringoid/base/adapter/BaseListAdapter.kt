@@ -1,12 +1,28 @@
 package com.ringoid.base.adapter
 
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 
-abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: DiffUtil.ItemCallback<T>)
+abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
     : ListAdapter<T, VH>(diffCb) {
+
+    @LayoutRes protected abstract fun getLayoutId(): Int
+
+    protected abstract fun instantiateViewHolder(view: View): VH
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val view = LayoutInflater.from(parent.context).inflate(getLayoutId(), parent, false)
+        return instantiateViewHolder(view)
+    }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         holder.bind(getItem(position))
     }
 }
+
+// ------------------------------------------------------------------------------------------------
+abstract class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>()

@@ -7,7 +7,11 @@ import com.bumptech.glide.request.RequestOptions
 
 object ImageLoader {
 
-    fun load(uri: String, imageView: ImageView) {
+    fun load(uri: String?, imageView: ImageView) {
+        if (uri.isNullOrBlank()) {
+            return
+        }
+
         val progress = CircularProgressDrawable(imageView.context)
             .apply {
                 strokeWidth = 5f
