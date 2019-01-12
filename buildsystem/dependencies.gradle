@@ -334,7 +334,7 @@ ext {
     testUserSettingsDependencies = test
 
     userSettingsPlugins = [
-        xPlugins.androidLib,
+        xPlugins.androidFeature,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAnnotation,
     ]
