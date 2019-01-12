@@ -17,8 +17,7 @@ class FeedAdapter(private var viewPool: RecyclerView.RecycledViewPool? = null)
 
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
 
-    override fun instantiateViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool?)
-            : ProfileViewHolder = ProfileViewHolder(view, viewPool)
+    override fun instantiateViewHolder(view: View): ProfileViewHolder = ProfileViewHolder(view, viewPool)
 
     fun submit(feed: Feed) {
         submitList(feed.profiles)
