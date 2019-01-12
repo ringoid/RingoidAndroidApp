@@ -7,14 +7,19 @@ import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.Profile
 import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
 
-class ProfileViewHolder(view: View) : BaseViewHolder<Profile>(view) {
+class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+    : BaseViewHolder<Profile>(view) {
 
     private val profileImageAdapter = ProfileImageAdapter()
 
     init {
         itemView.rv_items.apply {
             adapter = profileImageAdapter
+            isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            setHasFixedSize(true)
+            setRecycledViewPool(viewPool)
+            setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
         }
     }
 

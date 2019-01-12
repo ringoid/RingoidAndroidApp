@@ -11,8 +11,7 @@ import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
-    protected val feedAdapter: FeedAdapter =
-        FeedAdapter()
+    protected val feedAdapter: FeedAdapter = FeedAdapter()  // TODO: pass common pool
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
@@ -32,7 +31,10 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
         }
         rv_items.apply {
             adapter = feedAdapter
+            isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+//            setRecycledViewPool(viewPool)  // TODO: use pool for feeds
         }
     }
 }
