@@ -6,12 +6,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.R
-import com.ringoid.origin.view.adapter.FeedAdapter
+import com.ringoid.origin.view.adapter.feed.FeedAdapter
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
-    protected val feedAdapter: FeedAdapter = FeedAdapter()
+    protected val feedAdapter: FeedAdapter =
+        FeedAdapter()
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 

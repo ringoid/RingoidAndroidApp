@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/feed_profile_image_height">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_items"
+    <com.ringoid.widget.view.ForegroundImageView
+        android:id="@id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"/>
+        android:scaleType="centerCrop"
+        app:xForeground="?selectableItemBackgroundBorderless"/>
 </FrameLayout>

@@ -1,4 +1,4 @@
-package com.ringoid.origin.view.adapter
+package com.ringoid.origin.view.adapter.feed
 
 import android.view.View
 import com.ringoid.base.adapter.BaseDiffCallback
@@ -11,7 +11,8 @@ class FeedAdapter : BaseListAdapter<Profile, ProfileViewHolder>(ProfileDiffCallb
 
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
 
-    override fun instantiateViewHolder(view: View): ProfileViewHolder = ProfileViewHolder(view)
+    override fun instantiateViewHolder(view: View): ProfileViewHolder =
+        ProfileViewHolder(view)
 
     fun submit(feed: Feed) {
         submitList(feed.profiles)
