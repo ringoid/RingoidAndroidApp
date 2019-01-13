@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.feed.adapter.FeedAdapter
 import kotlinx.android.synthetic.main.fragment_feed.*
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
@@ -36,7 +35,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
 //            setRecycledViewPool(viewPool)  // TODO: use pool for feeds
-            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+//            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
     }
 }

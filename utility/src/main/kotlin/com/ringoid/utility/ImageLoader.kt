@@ -7,7 +7,7 @@ import com.bumptech.glide.request.RequestOptions
 
 object ImageLoader {
 
-    fun load(uri: String?, imageView: ImageView) {
+    fun load(uri: String?, imageView: ImageView, options: RequestOptions? = null) {
         if (uri.isNullOrBlank()) {
             return
         }
@@ -22,7 +22,7 @@ object ImageLoader {
         // TODO: add retry logic
         Glide.with(imageView)
             .load(uri)
-            .apply(RequestOptions().placeholder(progress))
+            .apply(RequestOptions().placeholder(progress).apply { options?.let { apply(it) } })
             .into(imageView)
     }
 }
