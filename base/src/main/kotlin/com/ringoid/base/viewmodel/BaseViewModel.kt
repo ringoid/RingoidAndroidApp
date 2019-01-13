@@ -1,6 +1,7 @@
 package com.ringoid.base.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
@@ -12,6 +13,8 @@ import javax.inject.Inject
 import kotlin.reflect.KFunction
 
 abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
+
+    protected val context: Context = app.applicationContext
 
     @Inject lateinit var getUserAccessTokenUseCase: GetUserAccessTokenUseCase
     @Inject lateinit var spm: ISharedPrefsManager

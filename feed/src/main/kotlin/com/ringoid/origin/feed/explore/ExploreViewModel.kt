@@ -4,7 +4,7 @@ import android.app.Application
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetNewFacesUseCase
-import com.ringoid.domain.misc.ImageResolution
+import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.feed.FeedViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
@@ -14,7 +14,11 @@ class ExploreViewModel @Inject constructor(private val getNewFacesUseCase: GetNe
     : FeedViewModel(app) {
 
     override fun getFeed() {
-        getNewFacesUseCase.source(params = Params().put(ImageResolution._1440x1920).put("limit", 20))
+        val params = Params()
+            .put(ScreenHelper.getLargestPossibleImageResolution(context))
+            .put("limit", 20)
+
+        getNewFacesUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }

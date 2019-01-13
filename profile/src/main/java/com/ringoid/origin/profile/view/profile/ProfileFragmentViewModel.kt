@@ -8,9 +8,9 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.CreateImageUseCase
 import com.ringoid.domain.interactor.image.GetUserImagesUseCase
-import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -24,7 +24,9 @@ class ProfileFragmentViewModel @Inject constructor(
     val images by lazy { MutableLiveData<List<UserImage>>() }
 
     fun getUserImages() {
-        getUserImagesUseCase.source(params = Params().put(ImageResolution._1440x1920))
+        val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+
+        getUserImagesUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
