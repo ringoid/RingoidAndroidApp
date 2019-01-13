@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="fab" type="id"/>
     <item name="iv_image" type="id"/>
     <item name="tv_empty" type="id"/>
 </resources>

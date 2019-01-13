@@ -11,6 +11,7 @@ import com.ringoid.domain.interactor.image.GetUserImagesUseCase
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
@@ -40,5 +41,10 @@ class ProfileFragmentViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ Timber.d("Successfully uploaded image: $it") }, Timber::e)
+    }
+
+    // ------------------------------------------
+    fun onAddImage() {
+        navigation.value = ExternalNavigator::openGalleryToGetImageFragment
     }
 }

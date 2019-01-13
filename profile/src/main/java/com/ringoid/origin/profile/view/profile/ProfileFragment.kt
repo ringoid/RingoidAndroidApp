@@ -1,16 +1,22 @@
 package com.ringoid.origin.profile.view.profile
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.adapter.ImagePagerAdapter
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.snackbar
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -91,14 +97,27 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> navigate(this, path = "/imagepreview", payload = data)
+                }
+            }
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vm.images.observe(viewLifecycleOwner, Observer { imagesAdapter.set(it) })
         vm.getUserImages()
     }
 
+    @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fab.clicks().compose(clickDebounce()).subscribe { vm.onAddImage() }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setOnRefreshListener { vm.getUserImages() }

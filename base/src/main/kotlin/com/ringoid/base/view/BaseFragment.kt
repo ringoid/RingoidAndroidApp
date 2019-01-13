@@ -56,7 +56,10 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onActivityCreated(savedInstanceState)
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // tie observer to view's lifecycle rather than Fragment's one
-            viewLifecycleOwner.observe(viewState) { onViewStateChange(it) }
+            viewLifecycleOwner.apply {
+                observe(viewState) { onViewStateChange(it) }
+                observe(navigation) { it.call(this@BaseFragment) }
+            }
         }
     }
 }
