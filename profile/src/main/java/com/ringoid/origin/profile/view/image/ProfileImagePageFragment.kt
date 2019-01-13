@@ -67,6 +67,12 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ibtn_delete_image.clicks().compose(clickDebounce()).subscribe { vm.deleteImage(image!!.id) }
+        ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
+            Dialogs.showTextDialog(activity, titleResId = R.string.profile_dialog_delete_image_title,
+                descriptionResId = R.string.profile_dialog_delete_image_description,
+                positiveBtnLabelResId = R.string.button_delete,
+                negativeBtnLabelResId = R.string.button_cancel,
+                positiveListener = { _, _ -> vm.deleteImage(image!!.id) })
+        }
     }
 }

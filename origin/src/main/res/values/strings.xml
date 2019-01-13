@@ -2,7 +2,9 @@
 <resources>
     <string name="app_name">Ringoid</string>
 
+    <string name="button_cancel">Cancel</string>
     <string name="button_close">Close</string>
+    <string name="button_delete">Delete</string>
 
     <string name="common_choose_image">Choose Image</string>
     <string name="common_sex_male">Male</string>
@@ -25,6 +27,8 @@
     <string name="main_bottom_bar_menu_profile">Profile</string>
 
     <!-- Profile screen -->
+    <string name="profile_dialog_delete_image_title">Delete this photo?</string>
+    <string name="profile_dialog_delete_image_description">This action can not be undone.</string>
     <string name="profile_empty_images">Upload your photos so users can like you.</string>
     <string name="profile_image_created">Photo has been uploaded.</string>
     <string name="profile_image_deleted">Photo has been removed.</string>
