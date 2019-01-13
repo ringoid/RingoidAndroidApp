@@ -376,7 +376,7 @@ ext {
     profileDependencies = [
         [configuration: "implementation", dependency: d_libs.cropiwa],
     ]
-    profileDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
+    profileDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind + view
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
@@ -392,7 +392,7 @@ ext {
     // ------------------------------------------
     originDependencies = []
     originDependencies += feature_auth + feature_imagePreview + feature_profile + develop + android + arch + dagger +
-                          deeplink + kotlin + glide + log + fragnav + rx + rxBind + support
+                          deeplink + kotlin + glide + log + fragnav + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.Profile
 import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<Profile>(view) {
@@ -20,6 +21,7 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
             setHasFixedSize(true)
             setRecycledViewPool(viewPool)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
+            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
     }
 
