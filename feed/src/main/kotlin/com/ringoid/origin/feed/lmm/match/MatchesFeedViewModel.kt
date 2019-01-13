@@ -1,0 +1,12 @@
+package com.ringoid.origin.feed.lmm.match
+
+import android.app.Application
+import com.ringoid.origin.feed.FeedViewModel
+import javax.inject.Inject
+
+class MatchesFeedViewModel @Inject constructor(app: Application) : FeedViewModel(app) {
+
+    override fun getFeed() {
+        // TODO
+    }
+}

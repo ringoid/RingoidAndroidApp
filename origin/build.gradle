@@ -23,7 +23,6 @@ android {
         main {
             java.srcDirs += 'src/main/kotlin'
             res.srcDirs = ['src/main/res', 'src/main/res-screen',
-                           'src/main/res-screen/feed',
                            'src/main/res-screen/image',
                            'src/main/res-screen/main',
                            'src/main/res-screen/messenger',
