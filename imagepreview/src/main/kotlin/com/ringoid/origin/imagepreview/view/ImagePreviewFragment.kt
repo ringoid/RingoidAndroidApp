@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.GlideApp
@@ -55,6 +56,20 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_done.clicks().compose(clickDebounce()).subscribe { cropImage() }
+
+        (toolbar as Toolbar).apply {
+            inflateMenu(R.menu.menu_close)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_close -> { activity?.onBackPressed() ; true }
+                    else -> false
+                }
+            }
+            setNavigationOnClickListener {
+                vm.onNavigateBack()
+                activity?.onBackPressed()
+            }
+        }
 
         uri?.let { crop_view.setImageUri(it) }
            ?: run {
