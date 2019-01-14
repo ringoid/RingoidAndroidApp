@@ -136,7 +136,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         vp_images.apply {
             adapter = imagesAdapter
             tabs.setViewPager(this)
-            OverScrollDecoratorHelper.setUpOverScroll(this)
+//            OverScrollDecoratorHelper.setUpOverScroll(this)
         }
     }
 
