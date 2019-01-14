@@ -16,6 +16,7 @@ import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.communicator
 import com.ringoid.utility.randomString
 import com.steelkiwi.cropiwa.config.CropIwaSaveConfig
 import kotlinx.android.synthetic.main.fragment_image_preview.*
@@ -40,7 +41,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
             }
     }
 
-    protected var uri: Uri? = null
+    private var uri: Uri? = null
 
     override fun getVmClass(): Class<ImagePreviewViewModel> = ImagePreviewViewModel::class.java
 
@@ -60,9 +61,8 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         when (requestCode) {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        uri = data?.data?.also { crop_view?.setImageUri(it) }
-                    }
+                    Activity.RESULT_CANCELED -> onClose()
+                    Activity.RESULT_OK -> uri = data?.data?.also { crop_view?.setImageUri(it) }
                 }
             }
         }
@@ -78,11 +78,11 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
             setBackgroundColor(ContextCompat.getColor(context, R.color.black))
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.menu_close -> { activity?.onBackPressed() ; true }
+                    R.id.menu_close -> { onClose() ; true }
                     else -> false
                 }
             }
-            setNavigationOnClickListener { vm.onNavigateBack() }
+            setNavigationOnClickListener {  onNavigateBack() }
         }
 
         uri?.let { crop_view.setImageUri(it) }
@@ -113,6 +113,14 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
                 it.crop(imageConfig)
             }
         }
-        activity?.onBackPressed()  // close this ImagePreview screen immediately, doing cropping in background
+        onClose()  // close this ImagePreview screen immediately, doing cropping in background
+    }
+
+    private fun onClose() {
+        communicator(IImagePreviewActivity::class.java)?.onClose()
+    }
+
+    internal fun onNavigateBack() {
+        vm.onNavigateBack()
     }
 }

@@ -10,8 +10,10 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.base.BaseHostActivity
 
 @AppNav("imagepreview")
-class ImagePreviewActivity : BaseHostActivity() {
+class ImagePreviewActivity : BaseHostActivity(), IImagePreviewActivity {
 
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState ?: run {
@@ -26,9 +28,15 @@ class ImagePreviewActivity : BaseHostActivity() {
     }
 
     override fun onBackPressed() {
+        (supportFragmentManager.findFragmentByTag(ImagePreviewFragment.TAG) as? ImagePreviewFragment)
+            ?.onNavigateBack()
+    }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onClose() {
         intent.getStringExtra(Extras.EXTRA_NAVIGATE_FROM)
-              ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
-              ?.let { navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
+            ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
+            ?.let { navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
         super.onBackPressed()  // close ImagePreview screen
     }
 }
