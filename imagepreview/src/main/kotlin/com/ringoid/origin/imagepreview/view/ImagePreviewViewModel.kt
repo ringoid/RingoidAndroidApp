@@ -8,6 +8,6 @@ import javax.inject.Inject
 class ImagePreviewViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
 
     fun onNavigateBack() {
-        navigation.value = ExternalNavigator::openGalleryToGetImage
+        navigation.value = ExternalNavigator::openGalleryToGetImageFragment
     }
 }

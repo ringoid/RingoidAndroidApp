@@ -1,5 +1,6 @@
 package com.ringoid.origin.imagepreview.view
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -11,6 +12,8 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.GlideApp
 import com.ringoid.origin.imagepreview.R
+import com.ringoid.origin.navigation.CONTENT_URI
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.utility.clickDebounce
@@ -53,6 +56,20 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        uri = data?.getParcelableExtra<Uri?>(CONTENT_URI)
+                            ?.also { crop_view?.setImageUri(it) }
+                    }
+                }
+            }
+        }
+    }
+
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,11 +84,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
                     else -> false
                 }
             }
-            setNavigationOnClickListener {
-                // TODO: working badly
-                vm.onNavigateBack()
-                activity?.onBackPressed()
-            }
+            setNavigationOnClickListener { vm.onNavigateBack() }
         }
 
         uri?.let { crop_view.setImageUri(it) }
