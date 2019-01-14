@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 ./gradlew clean
-./gradlew assembleProdRelease
+./gradlew assembleRelease
 ./sign_apk.sh $@
 
