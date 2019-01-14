@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:layout_marginBottom="@dimen/profile_image_margin_bottom"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -28,28 +27,53 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/std_margin_16"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@id/fab"
+    <ImageButton
+        android:id="@+id/ibtn_add_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/std_margin_16"
         android:layout_marginEnd="@dimen/std_margin_16"
-        android:alpha="0.8"
-        android:elevation="6dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="@null"
         android:src="@drawable/ic_add_white_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <include layout="@layout/toolbar_shadow"/>
+    <ImageButton
+        android:id="@+id/ibtn_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_settings_white_24dp"
+        app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_like_white_24px"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintTop_toBottomOf="@id/ibtn_settings"
+        app:layout_constraintBottom_toTopOf="@id/ibtn_add_image"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout"
+        style="@style/Underscore"/>
 
     <ProgressBar
         android:id="@+id/pb_profile"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toTopOf="parent"
         style="@style/ProgressBar.Horizontal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -126,7 +126,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.clicks().compose(clickDebounce()).subscribe { vm.onAddImage() }
+        ibtn_add_image.clicks().compose(clickDebounce()).subscribe { vm.onAddImage() }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setOnRefreshListener { vm.getUserImages() }
