@@ -3,7 +3,7 @@ package com.ringoid.origin.view.splash
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.ringoid.base.view.SimpleBaseActivity
-import com.ringoid.origin.navigation.navigateAndClose
+import com.ringoid.origin.navigation.splash
 
 class SplashActivity : SimpleBaseActivity() {
 
@@ -13,7 +13,7 @@ class SplashActivity : SimpleBaseActivity() {
         super.onCreate(savedInstanceState)
 
         vm.accessToken.observe(this, Observer {
-            navigateAndClose(this, path = it?.let { "/main" } ?: run { "/login" })
+            splash(this, path = it?.let { "/main" } ?: run { "/login" })
         })
         vm.obtainAccessToken()
     }
