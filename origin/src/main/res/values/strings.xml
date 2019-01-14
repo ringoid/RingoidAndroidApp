@@ -40,4 +40,9 @@
     <string name="settings_support">Email support@ringoid.com</string>
     <string name="settings_theme_dark">Dark theme</string>
     <string name="settings_theme_light">Light theme</string>
+
+    <!-- Web Page screen -->
+    <string name="web_page_licenses">Attribution</string>
+    <string name="web_page_privacy">Privacy Policy</string>
+    <string name="web_page_terms">Terms of Service</string>
 </resources>

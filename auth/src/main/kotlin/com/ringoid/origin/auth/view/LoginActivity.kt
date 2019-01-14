@@ -12,11 +12,9 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
-import com.ringoid.origin.navigation.ExternalNavigator
-import com.ringoid.origin.navigation.Extras
-import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.navigateAndClose
+import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.utility.AutoLinkMovementMethod
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.inputDebounce
@@ -72,6 +70,11 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 tv_sex_male.isSelected = false
                 tv_sex_female.isSelected = true
                 vm.onGenderSelect(Gender.FEMALE)
+            }
+        }
+        tv_terms.movementMethod = object : AutoLinkMovementMethod() {
+            override fun processUrl(url: String) {
+                navigate(this@LoginActivity, path = "/webpage?url=$url")
             }
         }
 

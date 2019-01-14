@@ -32,6 +32,7 @@ abstract class BaseRingoidApplication : DaggerApplication() {
             return
         }
         Timber.d("Starting ${javaClass.simpleName}")
+        initializeResources()
         initializeLeakDetection()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeRxErrorHandler()
@@ -57,6 +58,12 @@ abstract class BaseRingoidApplication : DaggerApplication() {
         } else {
             Timber.plant(CrashlyticsTree())
         }
+    }
+
+    /* Resources */
+    // ------------------------------------------------------------------------
+    private fun initializeResources() {
+        AppRes.init(applicationContext)
     }
 
     /* Rx */

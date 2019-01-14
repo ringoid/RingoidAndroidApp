@@ -26,7 +26,7 @@ import java.io.File
 class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
 
     companion object {
-        const val TAG = "ImagePreviewFragment_tag"
+        internal const val TAG = "ImagePreviewFragment_tag"
 
         private const val BUNDLE_KEY_IMAGE_URI = "bundle_key_image_uri"
         private const val BUNDLE_KEY_NAVIGATE_FROM = "bundle_key_navigate_from"
@@ -82,7 +82,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
                     else -> false
                 }
             }
-            setNavigationOnClickListener {  onNavigateBack() }
+            setNavigationOnClickListener { onNavigateBack() }
         }
 
         uri?.let { crop_view.setImageUri(it) }
