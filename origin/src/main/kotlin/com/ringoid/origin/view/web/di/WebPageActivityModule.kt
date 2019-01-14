@@ -4,7 +4,7 @@ import com.ringoid.origin.view.web.WebPageActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-@Module
+@Module(subcomponents = [WebPageFragmentSubcomponent::class])
 abstract class WebPageActivityModule {
 
     @ContributesAndroidInjector
