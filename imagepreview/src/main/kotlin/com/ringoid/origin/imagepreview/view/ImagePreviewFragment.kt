@@ -113,6 +113,8 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
                 it.crop(imageConfig)
             }
         }
+
+        activity?.setResult(Activity.RESULT_OK)  // close with result
         onClose()  // close this ImagePreview screen immediately, doing cropping in background
     }
 

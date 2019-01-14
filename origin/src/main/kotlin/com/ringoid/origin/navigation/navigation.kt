@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment
 import com.ringoid.domain.BuildConfig
 import timber.log.Timber
 
+const val RC_IMAGE_PREVIEW = 10000
+
+// ------------------------------------------------------------------------------------------------
 // content://com.android.providers.media.documents/document/image:4561
 const val CONTENT_URI = "content_uri"
 

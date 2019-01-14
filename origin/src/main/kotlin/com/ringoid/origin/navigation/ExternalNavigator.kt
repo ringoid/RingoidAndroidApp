@@ -7,7 +7,7 @@ import com.ringoid.origin.R
 
 object ExternalNavigator {
 
-    const val RC_GALLERY_GET_IMAGE = 10000
+    const val RC_GALLERY_GET_IMAGE = 9900
 
     // --------------------------------------------------------------------------------------------
     fun openGalleryToGetImage(activity: Activity) {

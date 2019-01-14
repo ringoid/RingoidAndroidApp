@@ -10,6 +10,8 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.navigation.NavigateFrom
+import com.ringoid.origin.navigation.RC_IMAGE_PREVIEW
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.adapter.ImagePagerAdapter
@@ -93,6 +95,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
                     Timber.v("Image cropping has succeeded, uri: $croppedUri")
                     // TODO: save image local cache (repository) and set image
                     vm.uploadImage(uri = croppedUri)
+                    // TODO: on cache changed - askToAddAnotherImage()
                 }
             })
         }
@@ -103,7 +106,12 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         when (requestCode) {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 when (resultCode) {
-                    Activity.RESULT_OK -> navigate(this, path = "/imagepreview", payload = data)
+                    Activity.RESULT_OK -> navigate(this, path = "/imagepreview", rc = RC_IMAGE_PREVIEW, payload = data)
+                }
+            }
+            RC_IMAGE_PREVIEW -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> askToAddAnotherImage()
                 }
             }
         }
@@ -133,5 +141,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     override fun onDestroy() {
         super.onDestroy()
         imagePreviewReceiver.unregister(context)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun askToAddAnotherImage() {
+        Dialogs.showTextDialog(activity, titleResId = R.string.profile_dialog_image_another_title,
+            positiveBtnLabelResId = R.string.profile_dialog_image_another_button_add,
+            negativeBtnLabelResId = R.string.profile_dialog_image_another_button_cancel,
+            positiveListener = { dialog, _ -> vm.onAddImage() },
+            negativeListener = { dialog, _ -> navigate(this@ProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
     }
 }
