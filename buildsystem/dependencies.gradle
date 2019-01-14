@@ -107,6 +107,8 @@ ext {
 
     d_view = [
             circularProgress: "com.mikhaellopez:circularprogressbar:${circularProgressVersion}",
+            dotsIndicator:    "me.relex:circleindicator:${dotsIndicatorVersion}",
+            dotsIndicatorFix: "com.afollestad:viewpagerdots:${dotsIndicatorFixVersion}",
             overscroll:       "me.everything:overscroll-decor-android:${overscrollVersion}",
             rvAnim:           "jp.wasabeef:recyclerview-animators:${rvAnimVersion}",
     ]
@@ -268,6 +270,8 @@ ext {
 
     def view = [
             [configuration: "implementation", dependency: d_view.circularProgress],
+            [configuration: "implementation", dependency: d_view.dotsIndicator],
+            [configuration: "implementation", dependency: d_view.dotsIndicatorFix],
             [configuration: "implementation", dependency: d_view.overscroll],
             [configuration: "implementation", dependency: d_view.rvAnim],
     ]

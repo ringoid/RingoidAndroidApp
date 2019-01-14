@@ -22,7 +22,6 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.snackbar
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import kotlinx.android.synthetic.main.fragment_profile.*
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 
 class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragment {
@@ -119,7 +118,10 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        vm.images.observe(viewLifecycleOwner, Observer { imagesAdapter.set(it) })
+        vm.images.observe(viewLifecycleOwner, Observer {
+            imagesAdapter.set(it)
+            tabs.setViewPager(vp_images)
+        })
         vm.getUserImages()
     }
 
@@ -133,7 +135,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         }
         vp_images.apply {
             adapter = imagesAdapter
-            tabs.setupWithViewPager(this)
+            tabs.setViewPager(this)
             OverScrollDecoratorHelper.setUpOverScroll(this)
         }
     }

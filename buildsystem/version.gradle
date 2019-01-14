@@ -41,6 +41,8 @@ buildscript {
         workManagerVersion = '1.3.0-alpha09'
 
         circularProgressVersion = '2.0.0'
+        dotsIndicatorVersion = '2.1.0'
+        dotsIndicatorFixVersion = '1.0.0'
         overscrollVersion = '1.0.4'
         rvAnimVersion = '3.0.0'
 

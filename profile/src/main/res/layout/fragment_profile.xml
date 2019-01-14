@@ -22,13 +22,14 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.tabs.TabLayout
+    <me.relex.circleindicator.CircleIndicator
         android:id="@+id/tabs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/profile_tab_layout_height"
         android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_8"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:ci_gravity="center_vertical|start"/>
 
     <ImageButton
         android:id="@+id/ibtn_add_image"
