@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.GlideApp
@@ -59,6 +60,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
 
         (toolbar as Toolbar).apply {
             inflateMenu(R.menu.menu_close)
+            setBackgroundColor(ContextCompat.getColor(context, R.color.black))
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_close -> { activity?.onBackPressed() ; true }
@@ -66,6 +68,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
                 }
             }
             setNavigationOnClickListener {
+                // TODO: working badly
                 vm.onNavigateBack()
                 activity?.onBackPressed()
             }
