@@ -2,6 +2,7 @@
 <resources>
     <dimen name="std_btn_height">42dp</dimen>
     <dimen name="std_margin_8">7dp</dimen>
+    <dimen name="std_margin_12">11dp</dimen>
     <dimen name="std_margin_16">14dp</dimen>
     <dimen name="std_margin_32">28dp</dimen>
     <dimen name="std_text_14">12dp</dimen>
