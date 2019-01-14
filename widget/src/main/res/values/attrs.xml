@@ -15,6 +15,7 @@
     <declare-styleable name="IconItemView">
         <attr name="icon_item_color" format="reference"/>
         <attr name="icon_item_icon" format="reference"/>
+        <attr name="icon_item_hide_icon" format="boolean"/>
         <attr name="icon_item_text" format="reference|string"/>
     </declare-styleable>
 </resources>

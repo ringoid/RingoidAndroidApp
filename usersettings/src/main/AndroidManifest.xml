@@ -7,5 +7,10 @@
             android:name=".view.SettingsActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".view.info.SettingsAppInfoActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 </manifest>

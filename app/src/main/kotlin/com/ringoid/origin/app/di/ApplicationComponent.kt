@@ -19,7 +19,9 @@ import com.ringoid.origin.view.splash.di.SplashActivityModule
 import com.ringoid.origin.view.web.di.WebPageActivityModule
 import com.ringoid.origin.view.web.di.WebPageFragmentModule
 import com.ringoid.usersettings.view.debug.di.DebugFragmentModule
+import com.ringoid.usersettings.view.di.SettingsActivityModule
 import com.ringoid.usersettings.view.di.SettingsFragmentModule
+import com.ringoid.usersettings.view.info.di.SettingsAppInfoActivityModule
 import com.ringoid.usersettings.view.info.di.SettingsAppInfoFragmentModule
 import dagger.BindsInstance
 import dagger.Component
@@ -37,7 +39,8 @@ import javax.inject.Singleton
                       LoginActivityModule::class, MainActivityModule::class,
                       MatchesFeedFragmentModule::class, MessagesFeedFragmentModule::class,
                       ProfileFragmentModule::class, ProfileImagePageFragmentModule::class,
-                      SettingsFragmentModule::class, SettingsAppInfoFragmentModule::class,
+                      SettingsActivityModule::class, SettingsFragmentModule::class,
+                      SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
                       SplashActivityModule::class,
                       WebPageActivityModule::class, WebPageFragmentModule::class])
 interface ApplicationComponent : AndroidInjector<RingoidApplication> {

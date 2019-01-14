@@ -129,6 +129,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ibtn_add_image.clicks().compose(clickDebounce()).subscribe { vm.onAddImage() }
+        ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setOnRefreshListener { vm.getUserImages() }

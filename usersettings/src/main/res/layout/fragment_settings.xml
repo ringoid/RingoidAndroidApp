@@ -17,7 +17,7 @@
 
     <com.ringoid.widget.view.IconItemView
         android:id="@+id/item_legal"
-        app:icon_item_icon="@drawable/ic_privacy_policy_grey_24dp"
+        app:icon_item_hide_icon="false"
         app:icon_item_text="@string/settings_app_info"
         style="?attr/iconItemView"/>
 
@@ -25,7 +25,7 @@
 
     <com.ringoid.widget.view.IconItemView
         android:id="@+id/item_support"
-        app:icon_item_icon="@drawable/ic_settings_feedback_grey_24dp"
+        app:icon_item_hide_icon="false"
         app:icon_item_text="@string/settings_support"
         style="?attr/iconItemView"/>
 
@@ -40,12 +40,10 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_marginStart="@dimen/settings_account_delete_info_margin_left"
+        android:layout_marginStart="@dimen/settings_item_aligned_margin_left"
         android:layout_marginEnd="@dimen/std_margin_16"
         android:gravity="start"
         android:text="@string/settings_account_delete_info"
         style="@style/StdText.Secondary"/>
-
-    <include layout="@layout/toolbar_shadow"/>
 
 </LinearLayout>

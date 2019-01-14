@@ -1,7 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
+
+    <com.ringoid.widget.view.LabelIconItemView
+        android:id="@+id/item_about"
+        app:icon_item_text="@string/settings_info_about"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.IconItemView
+        android:id="@+id/item_privacy"
+        app:icon_item_text="@string/settings_info_privacy"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.IconItemView
+        android:id="@+id/item_terms"
+        app:icon_item_text="@string/settings_info_terms"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.IconItemView
+        android:id="@+id/item_licenses"
+        app:icon_item_text="@string/settings_info_licenses"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.IconItemView
+        android:id="@+id/item_email_officer"
+        app:icon_item_text="@string/settings_info_email_officer"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:gravity="start"
+        android:paddingStart="4dp"
+        android:text="@string/settings_info_customer_info"
+        style="@style/StdText.Primary"/>
+
+    <TextView
+        android:id="@+id/tv_customer_id"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:gravity="start"
+        android:paddingStart="4dp"
+        style="@style/StdText.Secondary"/>
 
 </LinearLayout>

@@ -19,6 +19,12 @@
         android:gravity="center_vertical|start"
         style="@style/StdText.Secondary"/>
 
+    <TextView
+        android:id="@+id/tv_label"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="@dimen/std_margin_8"
+        style="@style/StdText.Secondary"/>
+
     <ImageView
         android:id="@+id/iv_action"
         android:layout_width="wrap_content"

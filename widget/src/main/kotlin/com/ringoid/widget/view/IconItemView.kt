@@ -6,14 +6,17 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.TypedArrayUtils.getResourceId
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.getSelectableItemBg
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_icon_item_view_layout.view.*
 
-class IconItemView : LinearLayout {
+open class IconItemView : LinearLayout {
+
+    protected var hideIcon: Boolean = true
 
     constructor(context: Context): this(context, null)
 
@@ -23,14 +26,22 @@ class IconItemView : LinearLayout {
         init(context, attributes, defStyleAttr)
     }
 
+    @LayoutRes
+    protected open fun getLayoutId(): Int = R.layout.widget_icon_item_view_layout
+
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
         val sidePadding = resources.getDimensionPixelSize(R.dimen.std_text_20)
         background = context.getSelectableItemBg()
-        orientation = LinearLayout.VERTICAL
+        isClickable = true
+        isFocusable = true
+        orientation = LinearLayout.HORIZONTAL
         setPadding(sidePadding, paddingTop, sidePadding, paddingBottom)
-        LayoutInflater.from(context).inflate(R.layout.widget_icon_item_view_layout, this, true)
+
+        LayoutInflater.from(context).inflate(getLayoutId(), this, true)
+
         context.obtainStyledAttributes(attributes, R.styleable.IconItemView, defStyleAttr, R.style.IconItemView)
             .apply {
+                hideIcon = getBoolean(R.styleable.IconItemView_icon_item_hide_icon, true)
                 setLabelColorRes(colorResId = getResourceId(R.styleable.IconItemView_icon_item_color, R.color.secondary_text))
                 setIcon(resId = getResourceId(R.styleable.IconItemView_icon_item_icon, 0))
                 getResourceId(R.styleable.IconItemView_icon_item_text, 0)
@@ -43,7 +54,9 @@ class IconItemView : LinearLayout {
     /* API */
     // --------------------------------------------------------------------------------------------
     fun setIcon(@DrawableRes resId: Int) {
-        iv_icon.setImageResource(resId)
+        resId.takeIf { it != 0 }
+            ?.let { iv_icon.setImageResource(it) }
+            ?: run { iv_icon.changeVisibility(isVisible = false, soft = !hideIcon) }
     }
 
     fun setLabelColorRes(@ColorRes colorResId: Int) {

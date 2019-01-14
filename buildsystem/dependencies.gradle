@@ -335,7 +335,7 @@ ext {
     /* User Settings */
     // ------------------------------------------
     userSettingsDependencies = []
-    userSettingsDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log
+    userSettingsDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test
@@ -343,6 +343,7 @@ ext {
     userSettingsPlugins = [
         xPlugins.androidFeature,
         xPlugins.kotlinAndroid,
+        xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
     ]
     
