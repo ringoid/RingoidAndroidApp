@@ -32,7 +32,6 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
-        isAfterOnSaveInstanceState = false
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         getLayoutId()?.let { setContentView(it) }
@@ -40,6 +39,11 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
             observe(viewState) { onViewStateChange(it) }
             observe(navigation) { it.call(this@BaseActivity) }
         }
+    }
+
+    override fun onStart() {
+        isAfterOnSaveInstanceState = false
+        super.onStart()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
