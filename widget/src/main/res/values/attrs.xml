@@ -4,6 +4,8 @@
         <attr name="refColorAccent" format="reference"/>
         <attr name="refColorPrimary" format="reference"/>
         <attr name="refColorPrimaryDark" format="reference"/>
+        <attr name="refTextColorPrimary" format="reference"/>
+        <attr name="refTextColorSecondary" format="reference"/>
         <attr name="iconItemView" format="reference"/>
     </declare-styleable>
 
