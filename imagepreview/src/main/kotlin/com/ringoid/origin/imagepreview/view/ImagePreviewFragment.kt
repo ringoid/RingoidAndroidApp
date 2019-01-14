@@ -12,7 +12,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.GlideApp
 import com.ringoid.origin.imagepreview.R
-import com.ringoid.origin.navigation.CONTENT_URI
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
@@ -62,8 +61,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
-                        uri = data?.getParcelableExtra<Uri?>(CONTENT_URI)
-                            ?.also { crop_view?.setImageUri(it) }
+                        uri = data?.data?.also { crop_view?.setImageUri(it) }
                     }
                 }
             }
