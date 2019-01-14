@@ -5,39 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
-
-    <Button
-        android:id="@+id/btn_done"
-        android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/std_margin_16"
-        android:layout_marginStart="@dimen/std_margin_16"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        android:text="@string/image_preview_button"
-        android:textSize="@dimen/std_text_20"
-        app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/RaisedButton"/>
-
     <com.steelkiwi.cropiwa.CropIwaView
         android:id="@+id/crop_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/std_margin_16"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toTopOf="@id/btn_done"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:ci_aspect_ratio_h="4"
         app:ci_aspect_ratio_w="3"
         app:ci_border_color="?attr/refColorAccent"
-        app:ci_border_width="2dp"
-        app:ci_crop_scale="0.95"
+        app:ci_border_width="4dp"
         app:ci_crop_shape="rectangle"
         app:ci_draw_grid="false"
         app:ci_dynamic_aspect_ratio="false"
         app:ci_scale_enabled="true"
         app:ci_translation_enabled="true"/>
 
-    <include layout="@layout/toolbar_shadow"/>
+    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

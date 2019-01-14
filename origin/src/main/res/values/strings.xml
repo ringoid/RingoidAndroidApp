@@ -5,6 +5,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_close">Close</string>
     <string name="button_delete">Delete</string>
+    <string name="button_done">Done</string>
 
     <string name="common_choose_image">Choose Image</string>
     <string name="common_sex_male">Male</string>
@@ -14,7 +15,6 @@
     <string name="error_crop_image">Failed to load and prepare image.</string>
 
     <!-- Image Preview screen -->
-    <string name="image_preview_button">Crop &#38; Upload</string>
     
     <!-- Login screen -->
     <string name="login_button">Continue to upload photo</string>

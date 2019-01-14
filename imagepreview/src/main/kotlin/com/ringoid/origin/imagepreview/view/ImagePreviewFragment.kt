@@ -8,14 +8,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.GlideApp
 import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
-import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import com.ringoid.utility.randomString
 import com.steelkiwi.cropiwa.config.CropIwaSaveConfig
@@ -71,14 +69,12 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_done.clicks().compose(clickDebounce()).subscribe { cropImage() }
-
         (toolbar as Toolbar).apply {
-            inflateMenu(R.menu.menu_close)
-            setBackgroundColor(ContextCompat.getColor(context, R.color.black))
+            inflateMenu(R.menu.menu_done)
+            setBackgroundColor(ContextCompat.getColor(context, R.color.semitransparent_soft))
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.menu_close -> { onClose() ; true }
+                    R.id.menu_done -> { cropImage() ; true }
                     else -> false
                 }
             }
