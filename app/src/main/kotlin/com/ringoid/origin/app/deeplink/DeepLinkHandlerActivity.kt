@@ -7,6 +7,8 @@ import com.ringoid.main.deeplink.MainDeepLinkModule
 import com.ringoid.main.deeplink.MainDeepLinkModuleLoader
 import com.ringoid.origin.auth.deeplink.AuthDeepLinkModule
 import com.ringoid.origin.auth.deeplink.AuthDeepLinkModuleLoader
+import com.ringoid.origin.deeplink.OriginDeepLinkModule
+import com.ringoid.origin.deeplink.OriginDeepLinkModuleLoader
 import com.ringoid.origin.imagepreview.deeplink.ImagePreviewDeepLinkModule
 import com.ringoid.origin.imagepreview.deeplink.ImagePreviewDeepLinkModuleLoader
 import com.ringoid.usersettings.deeplink.UserSettingsDeepLinkModule
@@ -14,7 +16,7 @@ import com.ringoid.usersettings.deeplink.UserSettingsDeepLinkModuleLoader
 
 @DeepLinkHandler(value = [AppDeepLinkModule::class, AuthDeepLinkModule::class,
                           ImagePreviewDeepLinkModule::class, MainDeepLinkModule::class,
-                          UserSettingsDeepLinkModule::class])
+                          OriginDeepLinkModule::class, UserSettingsDeepLinkModule::class])
 class DeepLinkHandlerActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +24,7 @@ class DeepLinkHandlerActivity : Activity() {
         val deepLinkDelegate = DeepLinkDelegate(
             AppDeepLinkModuleLoader(), AuthDeepLinkModuleLoader(),
             ImagePreviewDeepLinkModuleLoader(), MainDeepLinkModuleLoader(),
-            UserSettingsDeepLinkModuleLoader())
+            OriginDeepLinkModuleLoader(), UserSettingsDeepLinkModuleLoader())
         /**
          * Delegate the deep link handling to DeepLinkDispatch.
          * It will start the correct Activity based on the incoming Intent URI

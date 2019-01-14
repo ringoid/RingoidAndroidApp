@@ -46,7 +46,7 @@ class WebPageFragment : BaseFragment<WebPageViewModel>() {
                 AppRes.WEB_URL_TERMS -> R.string.web_page_terms
                 else -> R.string.app_name
             }
-            
+
             setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(titleResId)
         }
