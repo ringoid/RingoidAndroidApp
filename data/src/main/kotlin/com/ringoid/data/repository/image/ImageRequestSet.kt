@@ -50,10 +50,10 @@ class ImageRequestSet @Inject constructor() {
 
     fun addCreatedImages(): SingleTransformer<List<IImage>, List<IImage>> =
         SingleTransformer {
-            Timber.v("Response analysis: add images to response that have been created locally but not yet provided by the backend")
             val createdIds = created.values.map { it.image.id }
             val createdImages = created.values.map { it.image }
             it.flatMap {
+                Timber.v("Response analysis: add images to response that have been created locally but not yet provided by the backend")
                 Observable.fromIterable(it)
                     .filter { !createdIds.contains(it.id) }
                     .toList()
@@ -63,10 +63,10 @@ class ImageRequestSet @Inject constructor() {
 
     fun addCreatedImagesInResponse(): SingleTransformer<UserImageListResponse, List<UserImage>> =
         SingleTransformer {
-            Timber.v("Response analysis: add images to response that have been created locally but not yet provided by the backend")
             val createdIds = created.values.map { it.image.id }
             val createdImages = created.values.map { UserImage.from(it.image) }
             it.flatMap {
+                Timber.v("Response analysis: add images to response that have been created locally but not yet provided by the backend")
                 Observable.fromIterable(it.images)
                     .filter { !createdIds.contains(it.id) }
                     .map { it.map() }
@@ -77,9 +77,9 @@ class ImageRequestSet @Inject constructor() {
 
     fun filterOutRemovedImages(): SingleTransformer<List<IImage>, List<IImage>> =
         SingleTransformer {
-            Timber.v("Response analysis: remove images from response that have been deleted locally but not yet on the backend")
             val removedIds = removed.values.map { it.imageId }
             it.flatMap {
+                Timber.v("Response analysis: remove images from response that have been deleted locally but not yet on the backend")
                 Observable.fromIterable(it)
                     .filter { !removedIds.contains(it.id) }
                     .toList()
@@ -88,9 +88,9 @@ class ImageRequestSet @Inject constructor() {
 
     fun filterOutRemovedImagesInResponse(): SingleTransformer<UserImageListResponse, List<UserImage>> =
         SingleTransformer {
-            Timber.v("Response analysis: remove images from response that have been deleted locally but not yet on the backend")
             val removedIds = removed.values.map { it.imageId }
             it.flatMap {
+                Timber.v("Response analysis: remove images from response that have been deleted locally but not yet on the backend")
                 Observable.fromIterable(it.images)
                     .filter { !removedIds.contains(it.id) }
                     .map { it.map() }
