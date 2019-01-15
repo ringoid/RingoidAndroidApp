@@ -16,9 +16,6 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
 
-    var isAfterOnSaveInstanceState: Boolean = false
-        private set
-
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
     @LayoutRes protected open fun getLayoutId(): Int? = null  // null means no layout
@@ -39,15 +36,5 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
             observe(viewState) { onViewStateChange(it) }
             observe(navigation) { it.call(this@BaseActivity) }
         }
-    }
-
-    override fun onStart() {
-        isAfterOnSaveInstanceState = false
-        super.onStart()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        isAfterOnSaveInstanceState = true
     }
 }

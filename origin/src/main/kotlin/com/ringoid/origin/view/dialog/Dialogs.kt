@@ -52,8 +52,7 @@ object Dialogs {
                        @StringRes negativeBtnLabelResId: Int = 0,
                        positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
                        negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) {
-        activity?.takeIf { !it.isAfterOnSaveInstanceState }
-                ?.let {
+        activity?.let {
                     getTextDialog(it, titleResId, description,
                         positiveBtnLabelResId, negativeBtnLabelResId,
                         positiveListener, negativeListener).show()
