@@ -5,12 +5,12 @@ import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.repository.image.IImageRepository
+import com.ringoid.domain.repository.image.IUserImageRepository
 import io.reactivex.Completable
 import java.io.File
 import javax.inject.Inject
 
-class UploadImageUseCase @Inject constructor(private val repository: IImageRepository,
+class UploadImageUseCase @Inject constructor(private val repository: IUserImageRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {
 

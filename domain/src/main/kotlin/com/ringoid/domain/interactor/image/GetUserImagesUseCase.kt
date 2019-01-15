@@ -7,11 +7,11 @@ import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.image.UserImage
-import com.ringoid.domain.repository.image.IImageRepository
+import com.ringoid.domain.repository.image.IUserImageRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
-class GetUserImagesUseCase @Inject constructor(private val repository: IImageRepository,
+class GetUserImagesUseCase @Inject constructor(private val repository: IUserImageRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<List<UserImage>>(threadExecutor, postExecutor) {
 

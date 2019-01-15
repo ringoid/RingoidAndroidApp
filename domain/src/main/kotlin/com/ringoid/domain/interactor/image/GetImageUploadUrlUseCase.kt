@@ -7,11 +7,11 @@ import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.image.Image
-import com.ringoid.domain.repository.image.IImageRepository
+import com.ringoid.domain.repository.image.IUserImageRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
-class GetImageUploadUrlUseCase @Inject constructor(private val repository: IImageRepository,
+class GetImageUploadUrlUseCase @Inject constructor(private val repository: IUserImageRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<Image>(threadExecutor, postExecutor) {
 

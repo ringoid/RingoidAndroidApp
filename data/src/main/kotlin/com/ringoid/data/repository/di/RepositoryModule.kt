@@ -5,11 +5,11 @@ import com.ringoid.data.local.database.di.DatabaseModule
 import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.repository.feed.FeedRepository
-import com.ringoid.data.repository.image.ImageRepository
+import com.ringoid.data.repository.image.UserImageRepository
 import com.ringoid.data.repository.messenger.MessengerRepository
 import com.ringoid.data.repository.user.UserRepository
 import com.ringoid.domain.repository.feed.IFeedRepository
-import com.ringoid.domain.repository.image.IImageRepository
+import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.domain.repository.user.IUserRepository
 import dagger.Module
@@ -24,7 +24,7 @@ class RepositoryModule {
     fun provideFeeRepository(repository: FeedRepository): IFeedRepository = repository
 
     @Provides @Singleton
-    fun provideImageRepository(repository: ImageRepository): IImageRepository = repository
+    fun provideImageRepository(repository: UserImageRepository): IUserImageRepository = repository
 
     @Provides @Singleton
     fun provideMessengerRepository(repository: MessengerRepository): IMessengerRepository = repository

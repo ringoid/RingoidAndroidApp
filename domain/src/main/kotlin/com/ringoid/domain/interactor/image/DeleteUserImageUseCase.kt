@@ -6,11 +6,11 @@ import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.processCompletable
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
-import com.ringoid.domain.repository.image.IImageRepository
+import com.ringoid.domain.repository.image.IUserImageRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
-class DeleteUserImageUseCase@Inject constructor(private val repository: IImageRepository,
+class DeleteUserImageUseCase@Inject constructor(private val repository: IUserImageRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {
 

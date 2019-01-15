@@ -16,19 +16,20 @@ import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.LocalImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.repository.ISharedPrefsManager
-import com.ringoid.domain.repository.image.IImageRepository
+import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.utility.uriString
 import io.reactivex.Completable
 import io.reactivex.Single
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-class ImageRepository @Inject constructor(private val requestSet: ImageRequestSet,
-    private val local: ImageDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
-    : BaseRepository(cloud, spm), IImageRepository {
+class UserImageRepository @Inject constructor(private val requestSet: ImageRequestSet,
+    @Named("user") private val local: ImageDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
+    : BaseRepository(cloud, spm), IUserImageRepository {
 
     // TODO: always check db first
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =

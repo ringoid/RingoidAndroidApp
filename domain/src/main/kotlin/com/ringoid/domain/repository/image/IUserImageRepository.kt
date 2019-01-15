@@ -10,7 +10,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import java.io.File
 
-interface IImageRepository {
+interface IUserImageRepository {
 
     fun getUserImages(resolution: ImageResolution): Single<List<UserImage>>
 
