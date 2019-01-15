@@ -10,7 +10,10 @@ import com.ringoid.origin.profile.view.profile.IMAGE_DELETED
 import com.ringoid.origin.profile.view.profile.IProfileFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.image.ImagePageFragment
-import com.ringoid.utility.*
+import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.communicator
+import com.ringoid.utility.snackbar
 import kotlinx.android.synthetic.main.fragment_profile_image_page.*
 
 class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() {
@@ -64,7 +67,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ibtn_delete_image.touchExtend().clicks().compose(clickDebounce()).subscribe {
+        ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
             Dialogs.showTextDialog(activity, titleResId = R.string.profile_dialog_delete_image_title,
                 descriptionResId = R.string.profile_dialog_delete_image_description,
                 positiveBtnLabelResId = R.string.button_delete,

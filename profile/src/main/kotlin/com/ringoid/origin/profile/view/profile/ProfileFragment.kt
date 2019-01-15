@@ -20,7 +20,6 @@ import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.snackbar
-import com.ringoid.utility.touchExtend
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import kotlinx.android.synthetic.main.fragment_profile.*
 import timber.log.Timber
@@ -124,8 +123,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ibtn_add_image.touchExtend().clicks().compose(clickDebounce()).subscribe { vm.onAddImage() }
-        ibtn_settings.touchExtend(500).clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
+        ibtn_add_image.clicks().compose(clickDebounce()).subscribe { vm.onAddImage() }
+        ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setOnRefreshListener { vm.getUserImages() }
