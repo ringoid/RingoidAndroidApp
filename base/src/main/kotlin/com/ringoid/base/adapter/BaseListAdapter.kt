@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
     : ListAdapter<T, VH>(diffCb) {
@@ -16,11 +17,18 @@ abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallba
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
         LayoutInflater.from(parent.context).inflate(getLayoutId(), parent, false)
-            .let { instantiateViewHolder(it) }
+            .let { instantiateViewHolder(it).apply { setOnClickListener(getOnItemClickListener(this)) } }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         holder.bind(getItem(position))
     }
+
+    // --------------------------------------------------------------------------------------------
+    var itemClickListener: ((model: T, position: Int) -> Unit)? = null
+
+    protected fun getOnItemClickListener(vh: BaseViewHolder<T>) = wrapOnItemClickListener(vh, itemClickListener)
+    protected fun wrapOnItemClickListener(vh: BaseViewHolder<T>, l: ((model: T, position: Int) -> Unit)?) =
+        View.OnClickListener { vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(getItem(it), it) } }
 }
 
 // ------------------------------------------------------------------------------------------------
