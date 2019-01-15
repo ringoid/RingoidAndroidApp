@@ -37,7 +37,6 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
 
     override fun getUserImage(id: String): Single<UserImage> = local.userImage(id).map { it.map() }
 
-    // TODO: always check db first
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =
         spm.accessSingle {
             cloud.getUserImages(it.accessToken, resolution)
