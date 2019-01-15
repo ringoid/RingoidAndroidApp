@@ -456,7 +456,7 @@ ext {
     /* Base */
     // ------------------------------------------
     baseDependencies = []
-    baseDependencies += module_domain + module_utility + android + arch + dagger + deeplink + kotlin + log + autoDispose
+    baseDependencies += module_domain + module_utility + android + arch + dagger + deeplink + kotlin + log + autoDispose + rx + rxBind
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test

@@ -2,10 +2,15 @@ package com.ringoid.base.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.utility.clickDebounce
 
 abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
 
     abstract fun bind(model: T)
 
-    open fun setOnClickListener(l: View.OnClickListener?) {}
+    @Suppress("CheckResult")
+    open fun setOnClickListener(l: View.OnClickListener?) {
+        itemView.clicks().compose(clickDebounce()).subscribe { l?.onClick(itemView) }
+    }
 }

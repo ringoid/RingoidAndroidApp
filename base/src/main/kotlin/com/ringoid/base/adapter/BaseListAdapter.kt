@@ -26,8 +26,8 @@ abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallba
     // --------------------------------------------------------------------------------------------
     var itemClickListener: ((model: T, position: Int) -> Unit)? = null
 
-    protected fun getOnItemClickListener(vh: BaseViewHolder<T>) = wrapOnItemClickListener(vh, itemClickListener)
-    protected fun wrapOnItemClickListener(vh: BaseViewHolder<T>, l: ((model: T, position: Int) -> Unit)?) =
+    protected fun getOnItemClickListener(vh: VH) = wrapOnItemClickListener(vh, itemClickListener)
+    protected open fun wrapOnItemClickListener(vh: VH, l: ((model: T, position: Int) -> Unit)?) =
         View.OnClickListener { vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(getItem(it), it) } }
 }
 

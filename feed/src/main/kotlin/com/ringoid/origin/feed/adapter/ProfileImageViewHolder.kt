@@ -18,26 +18,32 @@ class ProfileImageViewHolder(view: View) : BaseViewHolder<Image>(view) {
         ImageLoader.load(model.uri, itemView.iv_image,
             options = RequestOptions()
                 .override(itemView.width, itemView.height)
-                .centerCrop()
-        )
+                .centerCrop())
+
+        setLiked(isLiked = model.isLiked)
     }
 
     private fun setLiked(isLiked: Boolean) {
-        itemView.iv_like.setImageResource(if (isLiked) R.drawable.ic_like_red_36dp else R.drawable.ic_like_outline_white_36dp)
+        itemView.ibtn_like.setImageResource(if (isLiked) R.drawable.ic_like_red_36dp else R.drawable.ic_like_outline_white_36dp)
     }
 
     // --------------------------------------------------------------------------------------------
     private var animation: LikeAnimation? = null
 
-    private fun showLikeAnimationSmall(liked: Boolean) {
-        setLiked(liked)
+    internal fun animateLike(isLiked: Boolean) {
+        showLikeAnimation()
+        showLikeAnimationSmall(isLiked)
+    }
+
+    private fun showLikeAnimationSmall(isLiked: Boolean) {
+        setLiked(isLiked = isLiked)
         ScaleAnimation(0.7f, 1f, 0.7f, 1f,
             Animation.RELATIVE_TO_SELF, 0.5f,
             Animation.RELATIVE_TO_SELF, 0.5f)
             .apply {
                 duration = 250
                 interpolator = OvershootInterpolator()
-            }.let { itemView.iv_like.startAnimation(it) }
+            }.let { itemView.ibtn_like.startAnimation(it) }
     }
 
     private fun showLikeAnimation() {
