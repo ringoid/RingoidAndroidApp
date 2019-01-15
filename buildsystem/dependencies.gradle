@@ -127,6 +127,7 @@ ext {
             auth:         ':auth',
             feed:         ':feed',
             imagePreview: ':imagepreview',
+            messenger:    ':messenger',
             profile:      ':profile',
             userSettings: ':usersettings',
 
@@ -142,11 +143,13 @@ ext {
     def feature_auth = [[configuration: "feature", dependency: project(modules.auth)]]
     def feature_feed = [[configuration: "feature", dependency: project(modules.feed)]]
     def feature_imagePreview = [[configuration: "feature", dependency: project(modules.imagePreview)]]
+    def feature_messenger = [[configuration: "feature", dependency: project(modules.messenger)]]
     def feature_profile = [[configuration: "feature", dependency: project(modules.profile)]]
 
     def module_auth = [[configuration: "implementation", dependency: project(modules.auth)]]
     def module_feed = [[configuration: "implementation", dependency: project(modules.feed)]]
     def module_imagePreview = [[configuration: "implementation", dependency: project(modules.imagePreview)]]
+    def module_messenger = [[configuration: "implementation", dependency: project(modules.messenger)]]
     def module_profile = [[configuration: "implementation", dependency: project(modules.profile)]]
     def module_userSettings = [[configuration: "implementation", dependency: project(modules.userSettings)]]
 
@@ -159,7 +162,8 @@ ext {
     def module_widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
     def develop = module_base + module_data + module_domain + module_utility + module_widget
-    def all_features = module_auth + module_feed + module_imagePreview + module_profile + module_userSettings + module_origin
+    def all_features = module_auth + module_feed + module_imagePreview + module_messenger + module_profile +
+                       module_userSettings + module_origin
 
     /* Plugins */
     // --------------------------------------------------------------------------------------------
@@ -392,6 +396,21 @@ ext {
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
+    ]
+
+    /* Feature Messenger */
+    // ------------------------------------------
+    messengerDependencies = []
+    messengerDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind + view
+
+    androidTestMessengerDeps = androidTest
+    testMessengerDependencies = test
+
+    messengerPlugins = [
+            xPlugins.androidFeature,
+            xPlugins.kotlinAndroid,
+            xPlugins.kotlinAndroidExt,
+            xPlugins.kotlinAnnotation,
     ]
     
     /* Feature Profile */

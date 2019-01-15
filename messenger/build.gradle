@@ -1,0 +1,37 @@
+rootProject.messengerPlugins.each {
+    apply plugin: it
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.androidVersionCode
+        versionName rootProject.ext.androidVersionName
+        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
+    }
+    sourceSets {
+        main {
+            java.srcDirs += 'src/main/kotlin'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def messengerDependencies = rootProject.ext.messengerDependencies
+    def androidTestMessengerDeps = rootProject.ext.androidTestMessengerDeps
+    def testMessengerDependencies = rootProject.ext.testMessengerDependencies
+
+    messengerDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testMessengerDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestMessengerDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}
