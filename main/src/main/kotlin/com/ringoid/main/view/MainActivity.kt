@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.origin.feed.explore.ExploreFragment
 import com.ringoid.origin.feed.lmm.LmmFragment
+import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.profile.view.profile.ProfileFragment
 import com.ringoid.origin.view.main.BaseMainActivity
 
@@ -17,6 +18,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
             listOf(
                 ExploreFragment.newInstance(),
                 LmmFragment.newInstance(),
+                ChatFragment.newInstance(),
                 ProfileFragment.newInstance())
 
     /* Lifecycle */
