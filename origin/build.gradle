@@ -25,7 +25,6 @@ android {
             res.srcDirs = ['src/main/res', 'src/main/res-screen',
                            'src/main/res-screen/image',
                            'src/main/res-screen/main',
-                           'src/main/res-screen/messenger',
                            'src/main/res-screen/splash',
                            'src/main/res-screen/user',
                            'src/main/res-screen/web']

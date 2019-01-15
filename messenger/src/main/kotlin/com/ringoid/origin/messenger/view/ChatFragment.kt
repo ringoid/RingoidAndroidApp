@@ -1,4 +1,4 @@
-package com.ringoid.origin.view.messenger
+package com.ringoid.origin.messenger.view
 
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.R

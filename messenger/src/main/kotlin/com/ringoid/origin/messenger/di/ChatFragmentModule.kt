@@ -1,6 +1,6 @@
-package com.ringoid.origin.view.messenger.di
+package com.ringoid.origin.messenger.di
 
-import com.ringoid.origin.view.messenger.ChatFragment
+import com.ringoid.origin.messenger.view.ChatFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
