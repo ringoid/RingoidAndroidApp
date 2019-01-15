@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="feed_profile_image_height">420dp</dimen>
+    <dimen name="std_image_height">428dp</dimen>
 </resources>

@@ -10,8 +10,7 @@ import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
-    protected val feedAdapter: FeedAdapter =
-        FeedAdapter()  // TODO: pass common pool
+    protected val feedAdapter: FeedAdapter = FeedAdapter()  // TODO: pass common pool
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
