@@ -72,7 +72,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
         when (index) {
             0 -> R.id.item_feed
             1 -> R.id.item_lmm
-            2 -> R.id.item_profile
+            2 -> R.id.item_messages
+            3 -> R.id.item_profile
             else -> R.id.item_feed
         }
 
@@ -80,7 +81,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
         when (tabId) {
             R.id.item_feed -> 0
             R.id.item_lmm -> 1
-            R.id.item_profile -> 2
+            R.id.item_messages -> 2
+            R.id.item_profile -> 3
             else -> 0
         }
 
@@ -88,6 +90,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
         when (tabName) {
             NavigateFrom.MAIN_TAB_FEED -> R.id.item_feed
             NavigateFrom.MAIN_TAB_LMM -> R.id.item_lmm
+            NavigateFrom.MAIN_TAB_MESSENGER -> R.id.item_messages
             NavigateFrom.MAIN_TAB_PROFILE -> R.id.item_profile
             else -> throw IllegalArgumentException("Unknown tab name: $tabName")
         }
