@@ -55,13 +55,13 @@ class WebPageFragment : BaseFragment<WebPageViewModel>() {
             webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
-                    pb_web.changeVisibility(isVisible = newProgress < 100)
+                    pb_web?.changeVisibility(isVisible = newProgress < 100)
                 }
             }
             webViewClient = object : WebViewClient() {
                 override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError) {
                     super.onReceivedError(view, request, error)
-                    pb_web.changeVisibility(isVisible = false)
+                    pb_web?.changeVisibility(isVisible = false)
                     snackbar(view, R.string.error_common)
                 }
             }
