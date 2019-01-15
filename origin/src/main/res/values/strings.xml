@@ -24,6 +24,7 @@
     <!-- Main screen -->
     <string name="main_bottom_bar_menu_feed">New Faces</string>
     <string name="main_bottom_bar_menu_lmm">Likes</string>
+    <string name="main_bottom_bar_menu_messages">Messages</string>
     <string name="main_bottom_bar_menu_profile">Profile</string>
 
     <!-- Profile screen -->
