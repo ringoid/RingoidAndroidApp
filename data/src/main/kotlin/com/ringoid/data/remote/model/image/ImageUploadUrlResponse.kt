@@ -17,7 +17,7 @@ import com.ringoid.domain.model.image.Image
 class ImageUploadUrlResponse(
     @SerializedName(COLUMN_CLIENT_IMAGE_ID) val clientImageId: String,
     @SerializedName(COLUMN_ORIGIN_IMAGE_ID) val originImageId: String,
-    @SerializedName(COLUMN_IMAGE_URI) val imageUri: String,
+    @SerializedName(COLUMN_IMAGE_URI) val imageUri: String?,
     errorCode: String = "", errorMessage: String = "")
     : BaseResponse(errorCode, errorMessage), Mappable<Image> {
 

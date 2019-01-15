@@ -65,7 +65,7 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                     requestSet.create(request)  // rewrite local image request with remote image request
                 }
                 .flatMap {
-                    cloud.uploadImage(url = it.imageUri, image = image)
+                    cloud.uploadImage(url = it.imageUri!!, image = image)
                         .handleError()  // TODO: on fail - notify
                         .andThen(Single.just(it))
                         .map { it.map() }
