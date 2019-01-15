@@ -8,10 +8,17 @@ import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.subjects.PublishSubject
 import java.io.File
 
 interface IUserImageRepository {
 
+    val imageCreate: PublishSubject<String>
+    val imageDelete: PublishSubject<String>
+    val imageIdChange: PublishSubject<String>
+    val imagesRefresh: PublishSubject<Int>
+
+    // --------------------------------------------------------------------------------------------
     fun getUserImages(resolution: ImageResolution): Single<List<UserImage>>
 
     fun deleteUserImage(essence: ImageDeleteEssence): Completable

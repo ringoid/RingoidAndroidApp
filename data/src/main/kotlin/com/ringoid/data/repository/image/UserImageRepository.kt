@@ -20,6 +20,7 @@ import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.utility.uriString
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -30,6 +31,11 @@ import javax.inject.Singleton
 class UserImageRepository @Inject constructor(private val requestSet: ImageRequestSet,
     @Named("user") private val local: ImageDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
     : BaseRepository(cloud, spm), IUserImageRepository {
+
+    override val imageCreate: PublishSubject<String> = PublishSubject.create<String>()
+    override val imageDelete: PublishSubject<String> = PublishSubject.create<String>()
+    override val imageIdChange: PublishSubject<String> = PublishSubject.create<String>()
+    override val imagesRefresh: PublishSubject<Int> = PublishSubject.create<Int>()
 
     // TODO: always check db first
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =
@@ -44,7 +50,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                     local.apply {
                         deleteAllImages()  // refresh the whole cache with the remote cloud
                         addUserImages(it.map { UserImageDbo.from(it) })
-                        // TODO: notify database changed
+                        imagesRefresh.onNext(it.size)  // notify database changed
                     }
                 }
         }
@@ -56,7 +62,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                 .doOnSubscribe {
                     // TODO: possibly old id
                     local.deleteImage(id = essence.imageId)
-                    // TODO: notify database changed
+                    imageDelete.onNext(essence.imageId)  // notify database changed
                 }
         }
         .doOnSubscribe { requestSet.remove(request) }
@@ -79,7 +85,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                 .doOnSubscribe {
                     requestSet.create(localImageRequest)
                     local.addImage(ImageDbo(profileId = accessToken.userId, id = localImageRequest.id, uri = image.uriString()))
-                    // TODO: notify database changed
+                    imageCreate.onNext(localImageRequest.id)  // notify database changed
                 }
                 .doOnSuccess { image ->
                     if (image.imageUri.isNullOrBlank()) {
@@ -92,7 +98,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                     local.deleteImage(id = localImageRequest.id)
                          .takeIf { it == 1 }
                          ?.let { local.addImage(ImageDbo(profileId = accessToken.userId, id = image.originImageId, uri = image.imageUri)) }
-                    // TODO: notify image id change in database
+                    imageIdChange.onNext(image.originImageId)  // notify image id change in database
                 }
                 .flatMap {
                     cloud.uploadImage(url = it.imageUri!!, image = image)
@@ -101,7 +107,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                         .map { it.map() }
                 }
                 .doOnSuccess { requestSet.fulfilled(localImageRequest.id) }
-        }  // TODO: add request to set on subscribe
+        }  // TODO: add request to 'requestSet', on subscribe
     }
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
