@@ -99,6 +99,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                          ?.let { local.addImage(UserImageDbo(id = image.originImageId, uri = image.imageUri, originId = image.originImageId)) }
                     imageIdChange.onNext(image.clientImageId to image.originImageId)  // notify image id change in database
                 }
+                // TODO: on fail getImageUploadUrl
                 .flatMap {
                     cloud.uploadImage(url = it.imageUri!!, image = image)
                         .handleError()  // TODO: on fail - notify and delete added item in Db
