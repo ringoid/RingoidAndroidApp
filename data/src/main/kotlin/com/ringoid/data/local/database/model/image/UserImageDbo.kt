@@ -8,7 +8,7 @@ import com.ringoid.domain.model.image.UserImage
 @Entity(tableName = UserImageDbo.TABLE_NAME)
 class UserImageDbo(
     @ColumnInfo(name = COLUMN_ORIGIN_ID) val originId: String,
-    @ColumnInfo(name = COLUMN_NUMBER_LIKES) val numberOfLikes: Int,
+    @ColumnInfo(name = COLUMN_NUMBER_LIKES) val numberOfLikes: Int = 0,
     id: String, uri: String?) : BaseImageDbo(id = id, uri = uri), Mappable<UserImage> {
 
     companion object {

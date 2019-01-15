@@ -1,7 +1,6 @@
 package com.ringoid.data.repository.image
 
 import com.ringoid.data.local.database.dao.image.ImageDao
-import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -74,7 +73,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
 
     // ------------------------------------------------------------------------
     override fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image> {
-        val localImageRequest = CreateLocalImageRequest(image = LocalImage(file = image))
+        val localImageRequest = CreateLocalImageRequest(id = essence.clientImageId, image = LocalImage(file = image))
         return spm.accessSingle { accessToken ->
             val xessence = when (essence) {
                 is ImageUploadUrlEssence -> essence  // for ImageUploadUrlEssence with access token supplied
@@ -85,8 +84,8 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
             cloud.getImageUploadUrl(xessence)
                 .doOnSubscribe {
                     requestSet.create(localImageRequest)
-                    local.addImage(ImageDbo(profileId = accessToken.userId, id = localImageRequest.id, uri = image.uriString()))
-                    imageCreate.onNext(localImageRequest.id)  // notify database changed
+                    local.addImage(UserImageDbo(id = xessence.clientImageId, uri = image.uriString(), originId = xessence.clientImageId))
+                    imageCreate.onNext(xessence.clientImageId)  // notify database changed
                 }
                 .doOnSuccess { image ->
                     if (image.imageUri.isNullOrBlank()) {
@@ -96,10 +95,10 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                     requestSet.create(request)  // rewrite local image request with remote image request
 
                     // replace local id with remote-generated id for local image in cache
-                    local.deleteImage(id = localImageRequest.id)
+                    local.deleteImage(id = image.clientImageId)
                          .takeIf { it == 1 }
-                         ?.let { local.addImage(ImageDbo(profileId = accessToken.userId, id = image.originImageId, uri = image.imageUri)) }
-                    imageIdChange.onNext(localImageRequest.id to image.originImageId)  // notify image id change in database
+                         ?.let { local.addImage(UserImageDbo(id = image.originImageId, uri = image.imageUri, originId = image.originImageId)) }
+                    imageIdChange.onNext(image.clientImageId to image.originImageId)  // notify image id change in database
                 }
                 .flatMap {
                     cloud.uploadImage(url = it.imageUri!!, image = image)

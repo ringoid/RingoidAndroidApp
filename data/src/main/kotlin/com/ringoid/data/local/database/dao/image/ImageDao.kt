@@ -2,7 +2,6 @@ package com.ringoid.data.local.database.dao.image
 
 import androidx.room.*
 import com.ringoid.data.local.database.model.image.BaseImageDbo
-import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -17,7 +16,7 @@ interface ImageDao {
     fun userImages(): Observable<List<UserImageDbo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addImage(image: ImageDbo)
+    fun addImage(image: UserImageDbo)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addUserImages(images: Collection<UserImageDbo>)
@@ -29,5 +28,5 @@ interface ImageDao {
     fun deleteImage(id: String): Int
 
     @Delete
-    fun deleteImage(image: ImageDbo): Int
+    fun deleteImage(image: UserImageDbo): Int
 }
