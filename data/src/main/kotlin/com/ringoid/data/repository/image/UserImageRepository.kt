@@ -107,7 +107,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                         .map { it.map() }
                 }
                 .doOnSuccess { requestSet.fulfilled(localImageRequest.id) }
-        }  // TODO: add request to 'requestSet', on subscribe
+        }
     }
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
