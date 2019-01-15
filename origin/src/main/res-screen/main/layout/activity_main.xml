@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:minHeight="@dimen/main_bottom_bar_height"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:labelVisibilityMode="unlabeled"
         app:menu="@menu/main_bottom_bar_items"/>
 
     <View
