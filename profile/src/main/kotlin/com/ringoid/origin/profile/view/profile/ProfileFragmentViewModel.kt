@@ -7,6 +7,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.CreateUserImageUseCase
+import com.ringoid.domain.interactor.image.GetUserImageByIdUseCase
 import com.ringoid.domain.interactor.image.GetUserImagesUseCase
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
@@ -14,25 +15,38 @@ import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileFragmentViewModel @Inject constructor(
-    private val createUserImageUseCase: CreateUserImageUseCase, private val getUserImagesUseCase: GetUserImagesUseCase,
+    private val createUserImageUseCase: CreateUserImageUseCase, private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
+    private val getUserImagesUseCase: GetUserImagesUseCase,
     app: Application) : BaseViewModel(app) {
 
+    val imageCreated by lazy { MutableLiveData<UserImage>() }
+    val imageDeleted by lazy { MutableLiveData<String>() }
+    val imageIdChanged by lazy { MutableLiveData<Pair<String, String>>() }
     val images by lazy { MutableLiveData<List<UserImage>>() }
 
     init {
         createUserImageUseCase.repository.imageCreate
             .autoDisposable(this)
-            .subscribe {  }
+            .subscribe {
+                getUserImageByIdUseCase.source(Params().put("id", it))
+                    .autoDisposable(this)
+                    .subscribe({ imageCreated.value = it }, Timber::e)
+            }
+
         createUserImageUseCase.repository.imageDelete
+            .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
-            .subscribe {  }
+            .subscribe({ imageDeleted.value = it }, Timber::e)
+
         createUserImageUseCase.repository.imageIdChange
+            .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
-            .subscribe {  }
+            .subscribe({ imageIdChanged.value = it }, Timber::e)
     }
 
     fun getUserImages() {

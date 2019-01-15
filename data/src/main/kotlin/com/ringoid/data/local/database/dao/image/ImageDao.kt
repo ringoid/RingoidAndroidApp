@@ -5,9 +5,13 @@ import com.ringoid.data.local.database.model.image.BaseImageDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import io.reactivex.Observable
+import io.reactivex.Single
 
 @Dao
 interface ImageDao {
+
+    @Query("SELECT * FROM ${UserImageDbo.TABLE_NAME} WHERE ${BaseImageDbo.COLUMN_ID} = :id")
+    fun userImage(id: String): Single<UserImageDbo>
 
     @Query("SELECT * FROM ${UserImageDbo.TABLE_NAME}")
     fun userImages(): Observable<List<UserImageDbo>>

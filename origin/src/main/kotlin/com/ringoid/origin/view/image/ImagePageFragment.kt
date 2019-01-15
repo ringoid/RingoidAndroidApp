@@ -22,6 +22,7 @@ abstract class ImagePageFragment<T : ImagePageViewModel> : BaseFragment<T>(), Im
 
     // --------------------------------------------------------------------------------------------
     override fun notifyUpdate(image: IImage) {
+        this.image = image  // refresh image model
         image.uri?.let { ImageLoader.load(uri = it, imageView = iv_image) }
     }
 

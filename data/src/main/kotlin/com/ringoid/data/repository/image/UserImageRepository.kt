@@ -32,9 +32,11 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
     @Named("user") private val local: ImageDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
     : BaseRepository(cloud, spm), IUserImageRepository {
 
-    override val imageCreate: PublishSubject<String> = PublishSubject.create<String>()
-    override val imageDelete: PublishSubject<String> = PublishSubject.create<String>()
-    override val imageIdChange: PublishSubject<String> = PublishSubject.create<String>()
+    override val imageCreate = PublishSubject.create<String>()
+    override val imageDelete = PublishSubject.create<String>()
+    override val imageIdChange = PublishSubject.create<Pair<String, String>>()
+
+    override fun getUserImage(id: String): Single<UserImage> = local.userImage(id).map { it.map() }
 
     // TODO: always check db first
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =
@@ -97,7 +99,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                     local.deleteImage(id = localImageRequest.id)
                          .takeIf { it == 1 }
                          ?.let { local.addImage(ImageDbo(profileId = accessToken.userId, id = image.originImageId, uri = image.imageUri)) }
-                    imageIdChange.onNext(image.originImageId)  // notify image id change in database
+                    imageIdChange.onNext(localImageRequest.id to image.originImageId)  // notify image id change in database
                 }
                 .flatMap {
                     cloud.uploadImage(url = it.imageUri!!, image = image)

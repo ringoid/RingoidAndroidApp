@@ -13,7 +13,7 @@ class SplashActivity : SimpleBaseActivity() {
         super.onCreate(savedInstanceState)
 
         vm.accessToken.observe(this, Observer {
-            splash(this, path = it?.let { "/main" } ?: run { "/login" })
+            splash(this, path = "/login")//it?.let { "/main" } ?: run { "/login" })
         })
         vm.obtainAccessToken()
     }

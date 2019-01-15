@@ -12,6 +12,9 @@ data class UserImage(
         id = source.readString() ?: BAD_ID, uri = source.readString(),
         originId = source.readString() ?: BAD_ID, numberOfLikes = source.readInt())
 
+    override fun copyWithId(id: String): IImage =
+        UserImage(originId = originId, numberOfLikes = numberOfLikes, id = id, uri = uri)
+
     override fun describeContents(): Int = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

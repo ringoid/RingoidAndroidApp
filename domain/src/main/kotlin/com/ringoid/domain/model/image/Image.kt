@@ -8,6 +8,8 @@ data class Image(override val id: String, override val uri: String? = null) : II
 
     private constructor(source: Parcel): this(id = source.readString() ?: BAD_ID, uri = source.readString())
 
+    override fun copyWithId(id: String): IImage = Image(id = id, uri = uri)
+
     override fun describeContents(): Int = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

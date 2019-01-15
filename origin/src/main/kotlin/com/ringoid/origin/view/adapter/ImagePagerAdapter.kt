@@ -56,6 +56,13 @@ abstract class ImagePagerAdapter(fm: FragmentManager, private val emptyInput: Em
         notifyDataSetChanged()
     }
 
+    fun prepend(item: IImage) {
+        checkValidState()
+        images.add(0, item)
+        structuralChange = true
+        notifyDataSetChanged()
+    }
+
     fun remove(itemId: String) {
         checkValidState()
         images.find { it.id == itemId }
@@ -73,6 +80,20 @@ abstract class ImagePagerAdapter(fm: FragmentManager, private val emptyInput: Em
             it.clear()
             it.addAll(items)
         }
+        notifyDataSetChanged()
+    }
+
+    fun updateItemId(oldId: String, newId: String) {
+        checkValidState()
+        images.indexOfFirst { it.id == oldId }
+              .takeIf { it != -1 }
+              ?.let {
+                  images.apply {
+                      val item = get(it)
+                      removeAt(it)
+                      add(it, item.copyWithId(newId))
+                  }
+              }
         notifyDataSetChanged()
     }
 
