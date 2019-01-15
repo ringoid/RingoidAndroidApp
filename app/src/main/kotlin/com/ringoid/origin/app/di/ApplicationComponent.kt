@@ -9,12 +9,11 @@ import com.ringoid.origin.feed.explore.di.ExploreFragmentModule
 import com.ringoid.origin.feed.lmm.di.LmmFragmentModule
 import com.ringoid.origin.feed.lmm.like.di.LikesFeedFragmentModule
 import com.ringoid.origin.feed.lmm.match.di.MatchesFeedFragmentModule
-import com.ringoid.origin.feed.lmm.message.di.MessagesFeedFragmentModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
+import com.ringoid.origin.messenger.di.MessengerFragmentModule
 import com.ringoid.origin.profile.view.image.di.ProfileImagePageFragmentModule
 import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
-import com.ringoid.origin.messenger.di.MessengerFragmentModule
 import com.ringoid.origin.view.splash.di.SplashActivityModule
 import com.ringoid.origin.view.web.di.WebPageActivityModule
 import com.ringoid.origin.view.web.di.WebPageFragmentModule
@@ -32,12 +31,11 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
-                      MessengerFragmentModule::class, DebugFragmentModule::class,
-                      ExploreFragmentModule::class,
+                      DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
                       LoginActivityModule::class, MainActivityModule::class,
-                      MatchesFeedFragmentModule::class, MessagesFeedFragmentModule::class,
+                      MatchesFeedFragmentModule::class, MessengerFragmentModule::class,
                       ProfileFragmentModule::class, ProfileImagePageFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
