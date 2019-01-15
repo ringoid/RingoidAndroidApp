@@ -92,7 +92,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 
                 override fun onCropSuccess(croppedUri: Uri) {
                     Timber.v("Image cropping has succeeded, uri: $croppedUri")
-                    // TODO: save image local cache (repository) and set image
                     vm.uploadImage(uri = croppedUri)
                     askToAddAnotherImage()
                 }

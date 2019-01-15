@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "76c4067171c2f25089bfe5d671b26cd2",
+    "identityHash": "40025860e9a44831287a88a160a00451",
     "entities": [
       {
         "tableName": "Images",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`profileId` TEXT NOT NULL, `id` TEXT NOT NULL, `uri` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`profileId`) REFERENCES `Profiles`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`profileId` TEXT NOT NULL, `id` TEXT NOT NULL, `uri` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`profileId`) REFERENCES `Profiles`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "profileId",
@@ -24,7 +24,7 @@
             "fieldPath": "uri",
             "columnName": "uri",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -120,7 +120,7 @@
       },
       {
         "tableName": "UserImages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`originPhotoId` TEXT NOT NULL, `likes` INTEGER NOT NULL, `id` TEXT NOT NULL, `uri` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`originPhotoId` TEXT NOT NULL, `likes` INTEGER NOT NULL, `id` TEXT NOT NULL, `uri` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "originId",
@@ -144,7 +144,7 @@
             "fieldPath": "uri",
             "columnName": "uri",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -159,7 +159,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"76c4067171c2f25089bfe5d671b26cd2\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"40025860e9a44831287a88a160a00451\")"
     ]
   }
 }

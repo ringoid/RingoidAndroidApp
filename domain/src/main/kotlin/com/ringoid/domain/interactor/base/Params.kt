@@ -35,6 +35,8 @@ class Params {
         map[key] = item as Any
         return this
     }
+
+    override fun toString(): String = map.toList().joinToString { "[${it.first}:${it.second}]" }
 }
 
 // ------------------------------------------------------------------------------------------------
