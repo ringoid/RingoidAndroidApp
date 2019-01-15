@@ -51,9 +51,12 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
     override fun deleteUserImage(essence: ImageDeleteEssence): Completable {
         val request = DeleteImageRequest(imageId = essence.imageId)
         return spm.accessSingle {
-            local.deleteImage(id = essence.imageId)
-            // TODO: notify database changed
             cloud.deleteUserImage(essence)
+                .doOnSubscribe {
+                    // TODO: possibly old id
+                    local.deleteImage(id = essence.imageId)
+                    // TODO: notify database changed
+                }
         }
         .doOnSubscribe { requestSet.remove(request) }
         .doOnSuccess { requestSet.fulfilled(request.id) }
@@ -71,11 +74,12 @@ class ImageRepository @Inject constructor(private val requestSet: ImageRequestSe
                 else -> throw IllegalArgumentException("Unsupported implementation of IImageUploadUrlEssence for createImage()")
             }
 
-            local.addImage(ImageDbo(profileId = accessToken.userId, id = localImageRequest.id, uri = image.uriString()))
-            // TODO: notify database changed
-
             cloud.getImageUploadUrl(xessence)
-                .doOnSubscribe { requestSet.create(localImageRequest) }
+                .doOnSubscribe {
+                    requestSet.create(localImageRequest)
+                    local.addImage(ImageDbo(profileId = accessToken.userId, id = localImageRequest.id, uri = image.uriString()))
+                    // TODO: notify database changed
+                }
                 .doOnSuccess { image ->
                     if (image.imageUri.isNullOrBlank()) {
                         throw NullPointerException("Upload uri is null: $image")
