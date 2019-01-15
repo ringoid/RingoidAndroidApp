@@ -1,8 +1,10 @@
 package com.ringoid.utility
 
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
+import android.view.TouchDelegate
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -12,6 +14,21 @@ import com.google.android.material.snackbar.Snackbar
 // ------------------------------------------------------------------------------------------------
 fun View.changeVisibility(isVisible: Boolean, soft: Boolean = false) {
     visibility = if (isVisible) View.VISIBLE else if (soft) View.INVISIBLE else View.GONE
+}
+
+fun View.touchExtend(size: Int = 100): View {
+    (parent as? View)?.let { parent ->
+        parent.post {
+            val rect = Rect()
+            getHitRect(rect)
+            rect.left += size / 2
+            rect.top += size / 2
+            rect.right += size / 2
+            rect.bottom += size / 2
+            parent.touchDelegate = TouchDelegate(rect, this@touchExtend)
+        }
+    }
+    return this
 }
 
 // ------------------------------------------------------------------------------------------------
