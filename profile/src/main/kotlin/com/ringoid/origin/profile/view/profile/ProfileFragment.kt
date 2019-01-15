@@ -116,10 +116,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             imageCreated.observe(viewLifecycleOwner, Observer { imagesAdapter.prepend(item = it) })
             imageDeleted.observe(viewLifecycleOwner, Observer { imagesAdapter.remove(itemId = it) })
             imageIdChanged.observe(viewLifecycleOwner, Observer { imagesAdapter.updateItemId(oldId = it.first, newId = it.second) })
-            images.observe(viewLifecycleOwner, Observer {
-                imagesAdapter.set(it)
-                tabs.setViewPager(vp_images)
-            })
+            images.observe(viewLifecycleOwner, Observer { imagesAdapter.set(it) })
             getUserImages()
         }
     }
@@ -134,7 +131,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             setOnRefreshListener { vm.getUserImages() }
         }
         vp_images.apply {
-            adapter = imagesAdapter
+            adapter = imagesAdapter.also { it.tabsObserver = tabs.dataSetObserver }
             tabs.setViewPager(this)
 //            OverScrollDecoratorHelper.setUpOverScroll(this)
         }

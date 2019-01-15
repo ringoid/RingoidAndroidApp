@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.adapter
 
+import android.database.DataSetObserver
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -18,6 +19,7 @@ abstract class ImagePagerAdapter(fm: FragmentManager, private val emptyInput: Em
 
     private val images: MutableList<IImage> = mutableListOf()
     private var structuralChange: Boolean = false
+    var tabsObserver: DataSetObserver? = null
 
     protected abstract fun createImagePageFragment(image: IImage): ImagePageFragment<*>
 
@@ -101,6 +103,7 @@ abstract class ImagePagerAdapter(fm: FragmentManager, private val emptyInput: Em
     // --------------------------------------––-----––-––-––––--–----––----------------------------
     override fun notifyDataSetChanged() {
         super.notifyDataSetChanged()
+        tabsObserver?.onChanged()
         structuralChange = false  // consume previous change, if any
     }
 
