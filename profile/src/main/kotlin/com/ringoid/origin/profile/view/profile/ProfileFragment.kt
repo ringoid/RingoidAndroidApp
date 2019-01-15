@@ -94,7 +94,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
                     Timber.v("Image cropping has succeeded, uri: $croppedUri")
                     // TODO: save image local cache (repository) and set image
                     vm.uploadImage(uri = croppedUri)
-                    // TODO: on cache changed - askToAddAnotherImage()
+                    askToAddAnotherImage()
                 }
             })
         }
@@ -106,11 +106,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 when (resultCode) {
                     Activity.RESULT_OK -> navigate(this, path = "/imagepreview", rc = RC_IMAGE_PREVIEW, payload = data)
-                }
-            }
-            RC_IMAGE_PREVIEW -> {
-                when (resultCode) {
-                    Activity.RESULT_OK -> askToAddAnotherImage()
                 }
             }
         }
@@ -151,7 +146,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         Dialogs.showTextDialog(activity, titleResId = R.string.profile_dialog_image_another_title,
             positiveBtnLabelResId = R.string.profile_dialog_image_another_button_add,
             negativeBtnLabelResId = R.string.profile_dialog_image_another_button_cancel,
-            positiveListener = { dialog, _ -> vm.onAddImage() },
-            negativeListener = { dialog, _ -> navigate(this@ProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
+            positiveListener = { _, _ -> vm.onAddImage() },
+            negativeListener = { _, _ -> navigate(this@ProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
     }
 }
