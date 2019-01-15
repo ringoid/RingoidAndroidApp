@@ -51,7 +51,7 @@
         android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_settings_white_24dp"/>
+        app:srcCompat="@drawable/ic_settings_white_36dp"/>
 
     <ImageView
         android:id="@+id/iv_likes"
@@ -63,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@id/ibtn_settings"
         app:layout_constraintBottom_toTopOf="@id/ibtn_add_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_like_white_24px"/>
+        app:srcCompat="@drawable/ic_like_white_36dp"/>
 
     <View
         app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout"
