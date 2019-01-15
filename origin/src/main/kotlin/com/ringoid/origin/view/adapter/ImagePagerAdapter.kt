@@ -27,17 +27,17 @@ abstract class ImagePagerAdapter(fm: FragmentManager, private val emptyInput: Em
         if (position == 0 && isEmpty()) EmptyFragment.newInstance(input = emptyInput)
         else createImagePageFragment(images[position])
 
-    override fun getItemPosition(`object`: Any): Int =
-        if (structuralChange) PagerAdapter.POSITION_NONE
-        else {
-            when (`object`) {
-                is IImagePage -> {
-                    `object`.notifyUpdate(image = images[`object`.adapterPosition])
-                    super.getItemPosition(`object`)
-                }
-                else -> PagerAdapter.POSITION_NONE
-            }
-        }
+    override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
+//        if (structuralChange) PagerAdapter.POSITION_NONE
+//        else {
+//            when (`object`) {
+//                is IImagePage -> {
+//                    `object`.notifyUpdate(image = images[`object`.adapterPosition])
+//                    super.getItemPosition(`object`)
+//                }
+//                else -> PagerAdapter.POSITION_NONE
+//            }
+//        }
 
     // --------------------------------------––-----––-––-––––--–----––----------------------------
     fun isEmpty(): Boolean = images.isEmpty()
