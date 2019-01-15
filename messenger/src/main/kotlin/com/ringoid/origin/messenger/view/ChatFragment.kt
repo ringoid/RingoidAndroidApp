@@ -1,7 +1,7 @@
 package com.ringoid.origin.messenger.view
 
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.origin.R
+import com.ringoid.origin.messenger.R
 
 class ChatFragment : BaseFragment<ChatViewModel>() {
 
