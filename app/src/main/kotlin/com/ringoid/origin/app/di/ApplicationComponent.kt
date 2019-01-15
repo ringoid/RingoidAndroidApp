@@ -14,7 +14,7 @@ import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
 import com.ringoid.origin.profile.view.image.di.ProfileImagePageFragmentModule
 import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
-import com.ringoid.origin.messenger.di.ChatFragmentModule
+import com.ringoid.origin.messenger.di.MessengerFragmentModule
 import com.ringoid.origin.view.splash.di.SplashActivityModule
 import com.ringoid.origin.view.web.di.WebPageActivityModule
 import com.ringoid.origin.view.web.di.WebPageFragmentModule
@@ -32,7 +32,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
-                      ChatFragmentModule::class, DebugFragmentModule::class,
+                      MessengerFragmentModule::class, DebugFragmentModule::class,
                       ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
