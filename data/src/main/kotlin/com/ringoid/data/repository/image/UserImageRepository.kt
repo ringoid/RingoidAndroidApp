@@ -35,7 +35,6 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
     override val imageCreate: PublishSubject<String> = PublishSubject.create<String>()
     override val imageDelete: PublishSubject<String> = PublishSubject.create<String>()
     override val imageIdChange: PublishSubject<String> = PublishSubject.create<String>()
-    override val imagesRefresh: PublishSubject<Int> = PublishSubject.create<Int>()
 
     // TODO: always check db first
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =
@@ -50,7 +49,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                     local.apply {
                         deleteAllImages()  // refresh the whole cache with the remote cloud
                         addUserImages(it.map { UserImageDbo.from(it) })
-                        imagesRefresh.onNext(it.size)  // notify database changed
+                        // though database has changed, result is used upstream
                     }
                 }
         }

@@ -14,7 +14,7 @@ import io.reactivex.Single
 import java.io.File
 import javax.inject.Inject
 
-class CreateUserImageUseCase @Inject constructor(private val repository: IUserImageRepository,
+class CreateUserImageUseCase @Inject constructor(val repository: IUserImageRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<Image>(threadExecutor, postExecutor) {
 

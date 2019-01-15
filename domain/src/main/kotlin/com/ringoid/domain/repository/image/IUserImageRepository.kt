@@ -12,7 +12,6 @@ interface IUserImageRepository : IImageRepository {
     val imageCreate: PublishSubject<String>
     val imageDelete: PublishSubject<String>
     val imageIdChange: PublishSubject<String>
-    val imagesRefresh: PublishSubject<Int>
 
     // --------------------------------------------------------------------------------------------
     fun getUserImages(resolution: ImageResolution): Single<List<UserImage>>

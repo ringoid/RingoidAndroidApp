@@ -23,6 +23,18 @@ class ProfileFragmentViewModel @Inject constructor(
 
     val images by lazy { MutableLiveData<List<UserImage>>() }
 
+    init {
+        createUserImageUseCase.repository.imageCreate
+            .autoDisposable(this)
+            .subscribe {  }
+        createUserImageUseCase.repository.imageDelete
+            .autoDisposable(this)
+            .subscribe {  }
+        createUserImageUseCase.repository.imageIdChange
+            .autoDisposable(this)
+            .subscribe {  }
+    }
+
     fun getUserImages() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
