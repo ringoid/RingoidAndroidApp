@@ -1,5 +1,6 @@
 package com.ringoid.data.remote.model.image
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.model.Mappable
@@ -17,7 +18,7 @@ import com.ringoid.domain.model.mapList
  * }
  */
 class UserImageListResponse(
-    @SerializedName(COLUMN_IMAGES) val images: List<UserImageEntity> = emptyList(),
+    @Expose @SerializedName(COLUMN_IMAGES) val images: List<UserImageEntity> = emptyList(),
     errorCode: String = "", errorMessage: String = "")
     : BaseResponse(errorCode, errorMessage), Mappable<List<UserImage>> {
 

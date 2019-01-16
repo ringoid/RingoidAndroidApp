@@ -1,5 +1,6 @@
 package com.ringoid.data.remote.model.feed
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
 
@@ -14,10 +15,10 @@ import com.ringoid.data.remote.model.BaseResponse
  * }
  */
 class LmmResponse(
-    @SerializedName(COLUMN_LIKES) val likes: List<FeedItemEntity> = emptyList(),
-    @SerializedName(COLUMN_MATCHES) val matches: List<FeedItemEntity> = emptyList(),
-    @SerializedName(COLUMN_MESSAGES) val messages: List<FeedItemEntity> = emptyList(),
-    @SerializedName(COLUMN_REPEAT_AFTER_SEC) val repeatAfterSec: Int,
+    @Expose @SerializedName(COLUMN_LIKES) val likes: List<FeedItemEntity> = emptyList(),
+    @Expose @SerializedName(COLUMN_MATCHES) val matches: List<FeedItemEntity> = emptyList(),
+    @Expose @SerializedName(COLUMN_MESSAGES) val messages: List<FeedItemEntity> = emptyList(),
+    @Expose @SerializedName(COLUMN_REPEAT_AFTER_SEC) val repeatAfterSec: Int,
     errorCode: String = "", errorMessage: String = "") : BaseResponse(errorCode, errorMessage) {
 
     companion object {

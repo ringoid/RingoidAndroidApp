@@ -1,5 +1,6 @@
 package com.ringoid.domain.model.actions
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.action_storage.TriggerStrategy
 import com.ringoid.domain.model.IEssence
@@ -16,11 +17,11 @@ sealed class BaseActionObject
  * }
  */
 open class ActionObject(
-    @SerializedName(COLUMN_ACTION_TIME) val actionTime: Long = System.currentTimeMillis(),
-    @SerializedName(COLUMN_ACTION_TYPE) val actionType: String,
-    @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: String,
-    @SerializedName(COLUMN_TARGET_IMAGE_ID) val targetImageId: String,
-    @SerializedName(COLUMN_TARGET_USER_ID) val targetUserId: String,
+    @Expose @SerializedName(COLUMN_ACTION_TIME) val actionTime: Long = System.currentTimeMillis(),
+    @Expose @SerializedName(COLUMN_ACTION_TYPE) val actionType: String,
+    @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: String,
+    @Expose @SerializedName(COLUMN_TARGET_IMAGE_ID) val targetImageId: String,
+    @Expose @SerializedName(COLUMN_TARGET_USER_ID) val targetUserId: String,
     val triggerStrategies: List<TriggerStrategy> = emptyList())
     : BaseActionObject(), IEssence {
 

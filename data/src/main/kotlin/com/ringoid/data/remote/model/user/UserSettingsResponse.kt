@@ -1,5 +1,6 @@
 package com.ringoid.data.remote.model.user
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
 
@@ -15,11 +16,11 @@ import com.ringoid.data.remote.model.BaseResponse
  * }
  */
 class UserSettingsResponse(
-    @SerializedName(COLUMN_PUSH_LIKES) val pushLikes: Boolean = false,
-    @SerializedName(COLUMN_PUSH_MATCHES) val pushMatches: Boolean = false,
-    @SerializedName(COLUMN_PUSH_MESSAGES) val pushMessages: Boolean = false,
-    @SerializedName(COLUMN_PUSH_SAFE_DISTANCE) val safeDistance: Int = 0,
-    @SerializedName(COLUMN_PUSH_WHO_CAN_SEE_PHOTO) val whoCanSeePhoto: String = "",
+    @Expose @SerializedName(COLUMN_PUSH_LIKES) val pushLikes: Boolean = false,
+    @Expose @SerializedName(COLUMN_PUSH_MATCHES) val pushMatches: Boolean = false,
+    @Expose @SerializedName(COLUMN_PUSH_MESSAGES) val pushMessages: Boolean = false,
+    @Expose @SerializedName(COLUMN_PUSH_SAFE_DISTANCE) val safeDistance: Int = 0,
+    @Expose @SerializedName(COLUMN_PUSH_WHO_CAN_SEE_PHOTO) val whoCanSeePhoto: String = "",
     errorCode: String = "", errorMessage: String = "") : BaseResponse(errorCode, errorMessage) {
 
     companion object {

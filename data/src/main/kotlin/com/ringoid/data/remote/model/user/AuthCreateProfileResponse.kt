@@ -1,5 +1,6 @@
 package com.ringoid.data.remote.model.user
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.model.Mappable
@@ -14,8 +15,8 @@ import com.ringoid.domain.model.user.CurrentUser
  * }
  */
 class AuthCreateProfileResponse(
-    @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String = "",
-    @SerializedName(COLUMN_USER_ID) val userId: String = "",
+    @Expose @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String = "",
+    @Expose @SerializedName(COLUMN_USER_ID) val userId: String = "",
     errorCode: String = "", errorMessage: String = "")
     : BaseResponse(errorCode, errorMessage), Mappable<CurrentUser> {
 

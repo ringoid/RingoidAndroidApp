@@ -1,5 +1,6 @@
 package com.ringoid.data.remote.model.feed
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.model.Mappable
@@ -33,7 +34,7 @@ import com.ringoid.domain.model.feed.Feed
  * }
  */
 class FeedResponse(
-    @SerializedName(COLUMN_PROFILES) val profiles: List<ProfileEntity> = emptyList(),
+    @Expose @SerializedName(COLUMN_PROFILES) val profiles: List<ProfileEntity> = emptyList(),
     errorCode: String = "", errorMessage: String = "")
     : BaseResponse(errorCode, errorMessage), Mappable<Feed> {
 

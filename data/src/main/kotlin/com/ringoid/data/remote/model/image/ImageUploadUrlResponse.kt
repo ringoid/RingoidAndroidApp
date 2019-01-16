@@ -1,5 +1,6 @@
 package com.ringoid.data.remote.model.image
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.model.Mappable
@@ -15,9 +16,9 @@ import com.ringoid.domain.model.image.Image
  * }
  */
 class ImageUploadUrlResponse(
-    @SerializedName(COLUMN_CLIENT_IMAGE_ID) val clientImageId: String,
-    @SerializedName(COLUMN_ORIGIN_IMAGE_ID) val originImageId: String,
-    @SerializedName(COLUMN_IMAGE_URI) val imageUri: String?,
+    @Expose @SerializedName(COLUMN_CLIENT_IMAGE_ID) val clientImageId: String,
+    @Expose @SerializedName(COLUMN_ORIGIN_IMAGE_ID) val originImageId: String,
+    @Expose @SerializedName(COLUMN_IMAGE_URI) val imageUri: String?,
     errorCode: String = "", errorMessage: String = "")
     : BaseResponse(errorCode, errorMessage), Mappable<Image> {
 

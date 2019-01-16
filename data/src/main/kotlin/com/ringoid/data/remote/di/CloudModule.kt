@@ -23,6 +23,7 @@ class CloudModule {
     @Provides @Singleton
     fun provideGson(): Gson =
         GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             .create()
 
