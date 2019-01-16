@@ -20,10 +20,12 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
         }
 
     // --------------------------------------------------------------------------------------------
-    override fun wrapOnItemClickListener(vh: ProfileImageViewHolder, l: ((model: ProfileImageVO, position: Int) -> Unit)?): View.OnClickListener {
+    override fun getOnItemClickListener(vh: ProfileImageViewHolder): View.OnClickListener {
         val xl: ((model: ProfileImageVO, position: Int) -> Unit)? = { model: ProfileImageVO, position: Int ->
-            vh.animateLike(isLiked = !model.isLiked)
-            l?.invoke(model, position)
+            val isLiked = !model.isLiked
+            vh.animateLike(isLiked = isLiked)
+            model.isLiked = isLiked
+            itemClickListener?.invoke(model, position)
         }
         return super.wrapOnItemClickListener(vh, xl)
     }

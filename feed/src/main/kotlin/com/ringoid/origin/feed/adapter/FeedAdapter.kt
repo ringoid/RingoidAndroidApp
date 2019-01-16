@@ -8,12 +8,14 @@ import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
+import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
 
 class FeedAdapter(private var viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseListAdapter<Profile, ProfileViewHolder>(ProfileDiffCallback()) {
 
+    var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
     var settingsClickListener: ((model: Profile, position: Int) -> Unit)? = null
 
     init {
@@ -24,6 +26,7 @@ class FeedAdapter(private var viewPool: RecyclerView.RecycledViewPool? = null)
 
     override fun instantiateViewHolder(view: View): ProfileViewHolder =
         ProfileViewHolder(view, viewPool).apply {
+            onLikeImageListener = this@FeedAdapter.onLikeImageListener
             itemView.ibtn_settings.clicks().compose(clickDebounce())
                 .subscribe { wrapOnItemClickListener(this, settingsClickListener).onClick(itemView.ibtn_settings) }
         }

@@ -12,7 +12,13 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<Profile>(view) {
 
-    private val profileImageAdapter = ProfileImageAdapter()
+    internal var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
+        set(value) {
+            field = value
+            profileImageAdapter.itemClickListener = value
+        }
+
+    private val profileImageAdapter = ProfileImageAdapter().apply { itemClickListener = onLikeImageListener }
 
     init {
         itemView.rv_items.apply {

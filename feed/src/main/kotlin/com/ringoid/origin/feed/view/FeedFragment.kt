@@ -8,13 +8,19 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
+import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.dialog.Dialogs
 import kotlinx.android.synthetic.main.fragment_feed.*
+import timber.log.Timber
 
 abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     protected val feedAdapter: FeedAdapter = FeedAdapter()  // TODO: pass common pool
         .apply {
+            onLikeImageListener = { model: ProfileImageVO, _ ->
+                Timber.i("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
+                // TODO: react on like unlike
+            }
             settingsClickListener = { model: Profile, _ ->
                 Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.block_profile_array),
                     l = { _, which: Int ->
