@@ -7,6 +7,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.BuildConfig
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
@@ -48,6 +49,10 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
                 )
             }
             setLabel(BuildConfig.VERSION_NAME)
+        }
+        item_email_officer.clicks().compose(clickDebounce()).subscribe {
+            val subject = String.format(AppRes.EMAIL_OFFICER_MAIL_SUBJECT, tv_customer_id.text)
+            ExternalNavigator.openEmailComposer(this, email = "data.protection@ringoid.com", subject = subject)
         }
         item_licenses.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_LICENSES}") }
         item_privacy.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_PRIVACY}") }

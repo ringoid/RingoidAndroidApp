@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.BuildConfig
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.usersettings.R
@@ -37,14 +38,9 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
 
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe {
-            val subject = String.format(
-                "Ringoid Android App %s [%s, %s, %s] [%s, %s]",
-                BuildConfig.VERSION_NAME,
-                Build.MODEL,
-                Build.MANUFACTURER,
-                Build.PRODUCT,
-                Build.VERSION.RELEASE,
-                Build.VERSION.SDK_INT)
+            val appInfo = "${BuildConfig.VERSION_NAME}, [${Build.MODEL}, ${Build.MANUFACTURER}, ${Build.PRODUCT}], " +
+                          "[${Build.VERSION.RELEASE}, ${Build.VERSION.SDK_INT}]"
+            val subject = String.format(AppRes.EMAIL_SUPPORT_MAIL_SUBJECT, appInfo)
             ExternalNavigator.openEmailComposer(this, email = "support@ringoid.com", subject = subject)
         }
     }
