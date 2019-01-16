@@ -65,8 +65,8 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                 }
         }
         .doOnSubscribe { requestSet.remove(request) }
-        .doOnSuccess { requestSet.fulfilled(request.id) }
         .handleError()  // TODO: on fail - notify and restore delete item in Db
+        .doOnSuccess { requestSet.fulfilled(request.id) }
         .ignoreElement()  // convert to Completable
     }
 
