@@ -77,7 +77,7 @@ inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = 
 // ----------------------------------------------
 private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer<in T> =
     Consumer {
-        it.takeIf { it.errorCode.isNotBlank() }
+        it.takeIf { !it.errorCode.isNullOrBlank() }
           ?.let { throw ApiException(code = it.errorCode, message = it.errorMessage, tag = tag) }
     }
 
