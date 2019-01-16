@@ -38,7 +38,8 @@ class UserRepository @Inject constructor(
 
     override fun deleteUserProfile(): Completable =
         spm.accessSingle { cloud.deleteUserProfile(accessToken = it.accessToken) }
-            .doOnSubscribe {
+            .handleError()  // TODO: notify on error
+            .doOnSuccess {
                 spm.apply {
                     currentUserId()?.let {
                         local.deleteUserProfile(userId = it)
@@ -46,6 +47,5 @@ class UserRepository @Inject constructor(
                     }
                 }
             }
-            .handleError()  // TODO: notify on error
             .ignoreElement()  // convert to Completable
 }

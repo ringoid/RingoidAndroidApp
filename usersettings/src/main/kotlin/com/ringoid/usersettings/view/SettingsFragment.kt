@@ -14,6 +14,7 @@ import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings.*
 
@@ -31,9 +32,19 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
+        fun onIdleState() {
+            pb_settings.changeVisibility(isVisible = false, soft = true)
+        }
+
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.CLOSE -> logout(this)
+            is ViewState.LOADING -> pb_settings.changeVisibility(isVisible = true)
+            is ViewState.ERROR -> {
+                // TODO: analyze: newState.e
+                Dialogs.showTextDialog(activity, titleResId = R.string.error_common, description = "DL TEXT FROM URL")
+                onIdleState()
+            }
             else -> { /* no-op */ }
         }
     }

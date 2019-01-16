@@ -7,6 +7,12 @@
 
     <include layout="@layout/toolbar" android:id="@id/toolbar"/>
 
+    <ProgressBar
+        android:id="@+id/pb_settings"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/ProgressBar.Horizontal"/>
+
     <com.ringoid.widget.view.IconItemView
         android:id="@+id/item_theme"
         app:icon_item_icon="@drawable/ic_settings_theme_grey_24dp"
