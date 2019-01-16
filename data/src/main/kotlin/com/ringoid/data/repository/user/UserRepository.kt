@@ -1,5 +1,6 @@
 package com.ringoid.data.repository.user
 
+import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.model.feed.ProfileDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
@@ -17,8 +18,9 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepository @Inject constructor(
-    @Named("user") private val local: UserDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
-    : BaseRepository(cloud, spm), IUserRepository {
+    @Named("user") private val local: UserDao, cloud: RingoidCloud,
+    spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    : BaseRepository(cloud, spm, aObjPool), IUserRepository {
 
     override fun accessToken(): Single<AccessToken> = spm.accessSingle { Single.just(it) }
 

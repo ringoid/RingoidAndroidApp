@@ -1,5 +1,6 @@
 package com.ringoid.data.repository.di
 
+import com.ringoid.data.action_storage.di.ActionObjectPoolModule
 import com.ringoid.data.executor.di.UseCaseExecutorModule
 import com.ringoid.data.local.database.di.DatabaseModule
 import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
@@ -16,7 +17,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module(includes = [RingoidCloudModule::class, DatabaseModule::class,
+@Module(includes = [RingoidCloudModule::class, ActionObjectPoolModule::class, DatabaseModule::class,
                     SharedPrefsManagerModule::class, UseCaseExecutorModule::class])
 class RepositoryModule {
 

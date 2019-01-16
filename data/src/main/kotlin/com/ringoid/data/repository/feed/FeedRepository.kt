@@ -1,5 +1,6 @@
 package com.ringoid.data.repository.feed
 
+import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -14,10 +15,11 @@ import javax.inject.Singleton
 
 @Singleton
 class FeedRepository @Inject constructor(
-    private val local: FeedDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
-    : BaseRepository(cloud, spm), IFeedRepository {
+    private val local: FeedDao, cloud: RingoidCloud,
+    spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
-    // TODO: always check db first, supply lastActionTime != 0
+    // TODO: always check db first
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = 0L).map { it.map() } }
 }

@@ -1,5 +1,6 @@
 package com.ringoid.data.repository.image
 
+import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
@@ -28,8 +29,9 @@ import javax.inject.Singleton
 
 @Singleton
 class UserImageRepository @Inject constructor(private val requestSet: ImageRequestSet,
-    @Named("user") private val local: ImageDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
-    : BaseRepository(cloud, spm), IUserImageRepository {
+    @Named("user") private val local: ImageDao, cloud: RingoidCloud,
+    spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
 
     override val imageCreate = PublishSubject.create<String>()
     override val imageDelete = PublishSubject.create<String>()

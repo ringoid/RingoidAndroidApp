@@ -1,5 +1,6 @@
 package com.ringoid.data.repository.messenger
 
+import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
@@ -13,8 +14,9 @@ import javax.inject.Singleton
 
 @Singleton
 class MessengerRepository @Inject constructor(
-    private val local: MessageDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
-    : BaseRepository(cloud, spm), IMessengerRepository {
+    private val local: MessageDao, cloud: RingoidCloud,
+    spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
     // TODO: get rid of 'single()'
     override fun getMessages(peerId: String): Single<List<Message>> =
