@@ -2,13 +2,44 @@ package com.ringoid.origin.navigation
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.ringoid.origin.R
 
 object ExternalNavigator {
 
+    const val RC_EMAIL_SEND = 9800
     const val RC_GALLERY_GET_IMAGE = 9900
 
+    /* Email */
+    // --------------------------------------------------------------------------------------------
+    fun openEmailComposer(activity: Activity, email: String, subject: String) {
+        openEmailComposerIntent(email = email, subject = subject)
+            .takeIf { it.resolveActivity(activity.packageManager) != null }
+            ?.let {
+                val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email))
+                activity.startActivityForResult(intent, RC_EMAIL_SEND)
+            }
+    }
+
+    fun openEmailComposer(fragment: Fragment, email: String, subject: String) {
+        fragment.activity?.let { activity ->
+            openEmailComposerIntent(email = email, subject = subject)
+                .takeIf { it.resolveActivity(activity.packageManager) != null }
+                ?.let {
+                    val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email))
+                    fragment.startActivityForResult(intent, RC_EMAIL_SEND)
+                }
+        }
+    }
+
+    private fun openEmailComposerIntent(email: String, subject: String): Intent =
+        Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$email")).apply {
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+            putExtra(Intent.EXTRA_TEXT, "")
+        }
+
+    /* Camera and Gallery */
     // --------------------------------------------------------------------------------------------
     fun openGalleryToGetImage(activity: Activity) {
         openGalleryToGetImageIntent()
