@@ -1,6 +1,6 @@
 package com.ringoid.origin.feed.view.explore.di
 
-import com.ringoid.origin.feed.explore.ExploreFragment
+import com.ringoid.origin.feed.view.explore.ExploreFragment
 import dagger.Subcomponent
 import dagger.android.AndroidInjector
 

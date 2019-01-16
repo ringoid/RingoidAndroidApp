@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.lmm
+package com.ringoid.origin.feed.view.lmm
 
 import android.app.Application
 import com.ringoid.base.viewmodel.BaseViewModel

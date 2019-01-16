@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.lmm
+package com.ringoid.origin.feed.view.lmm
 
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.feed.R

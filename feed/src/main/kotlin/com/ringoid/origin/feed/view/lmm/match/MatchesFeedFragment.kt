@@ -1,7 +1,7 @@
-package com.ringoid.origin.feed.lmm.match
+package com.ringoid.origin.feed.view.lmm.match
 
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.FeedFragment
+import com.ringoid.origin.feed.view.FeedFragment
 
 class MatchesFeedFragment : FeedFragment<MatchesFeedViewModel>() {
 

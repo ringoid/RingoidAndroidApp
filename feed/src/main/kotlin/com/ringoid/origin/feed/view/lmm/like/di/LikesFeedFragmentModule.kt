@@ -1,6 +1,6 @@
-package com.ringoid.origin.feed.lmm.like.di
+package com.ringoid.origin.feed.view.lmm.like.di
 
-import com.ringoid.origin.feed.lmm.like.LikesFeedFragment
+import com.ringoid.origin.feed.view.lmm.like.LikesFeedFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

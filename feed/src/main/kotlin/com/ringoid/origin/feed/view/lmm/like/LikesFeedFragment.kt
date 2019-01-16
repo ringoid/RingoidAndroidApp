@@ -1,7 +1,7 @@
-package com.ringoid.origin.feed.lmm.like
+package com.ringoid.origin.feed.view.lmm.like
 
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.FeedFragment
+import com.ringoid.origin.feed.view.FeedFragment
 
 class LikesFeedFragment : FeedFragment<LikesFeedViewModel>() {
 

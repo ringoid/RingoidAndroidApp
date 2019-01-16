@@ -1,6 +1,6 @@
-package com.ringoid.origin.feed.lmm.match.di
+package com.ringoid.origin.feed.view.lmm.match.di
 
-import com.ringoid.origin.feed.lmm.match.MatchesFeedFragment
+import com.ringoid.origin.feed.view.lmm.match.MatchesFeedFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

@@ -1,7 +1,7 @@
-package com.ringoid.origin.feed.lmm.like
+package com.ringoid.origin.feed.view.lmm.like
 
 import android.app.Application
-import com.ringoid.origin.feed.FeedViewModel
+import com.ringoid.origin.feed.view.FeedViewModel
 import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(app: Application) : FeedViewModel(app) {
