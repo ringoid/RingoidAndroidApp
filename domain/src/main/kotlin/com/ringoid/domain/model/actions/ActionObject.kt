@@ -16,7 +16,7 @@ sealed class BaseActionObject
  * }
  */
 open class ActionObject(
-    @SerializedName(COLUMN_ACTION_TIME) val actionTime: Long,
+    @SerializedName(COLUMN_ACTION_TIME) val actionTime: Long = System.currentTimeMillis(),
     @SerializedName(COLUMN_ACTION_TYPE) val actionType: String,
     @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: String,
     @SerializedName(COLUMN_TARGET_IMAGE_ID) val targetImageId: String,
