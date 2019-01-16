@@ -46,6 +46,20 @@ fun navigateAndClose(fragment: Fragment, path: String, rc: Int = 0, payload: Int
 }
 
 // ----------------------------------------------------------------------------
+private fun logoutIntent(): Intent =
+    navigate(path = "/login").apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    }
+
+fun logout(activity: Activity) {
+    logoutIntent().let { activity.startActivity(it) }
+}
+
+fun logout(fragment: Fragment) {
+    logoutIntent().let { fragment.startActivity(it) }
+}
+
 fun splash(activity: Activity, path: String) {
     navigate(path = path, uri = "splash://ringoid.com").let(activity::startActivity)
     activity.finish()

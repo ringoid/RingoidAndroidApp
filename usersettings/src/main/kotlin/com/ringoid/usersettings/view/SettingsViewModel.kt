@@ -14,12 +14,9 @@ class SettingsViewModel @Inject constructor(
 
     fun deleteAccount() {
         deleteUserProfileUseCase.source()
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnComplete { viewState.value = ViewState.CLOSE }
+            .doOnSubscribe { viewState.value = ViewState.CLOSE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({
-                // TODO: close and logout
-            }, Timber::e)
+            .subscribe({ Timber.i("Successfully deleted user account") }, Timber::e)
     }
 }

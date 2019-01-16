@@ -7,8 +7,10 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.BuildConfig
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
@@ -26,6 +28,15 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
     override fun getVmClass(): Class<SettingsViewModel> = SettingsViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.CLOSE -> logout(this)
+            else -> { /* no-op */ }
+        }
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
