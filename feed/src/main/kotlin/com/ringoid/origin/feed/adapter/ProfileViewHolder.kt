@@ -25,6 +25,7 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
             adapter = profileImageAdapter
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                .also { it.initialPrefetchItemCount = 2 }
             setHasFixedSize(true)
             setRecycledViewPool(viewPool)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
