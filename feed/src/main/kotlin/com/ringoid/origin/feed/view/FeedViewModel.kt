@@ -16,9 +16,9 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
     abstract fun getFeedName(): String
 
     fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
-        else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
-        .also { actionObjectPool.put(it) }
+        val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
+                   else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
+        actionObjectPool.put(aobj)
     }
 
     fun onBlock(profileId: String, imageId: String) {
