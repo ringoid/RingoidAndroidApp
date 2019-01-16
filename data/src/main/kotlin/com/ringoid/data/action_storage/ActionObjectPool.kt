@@ -68,8 +68,7 @@ class ActionObjectPool @Inject constructor(
             strategies[key]  // previously stored strategies
                 ?.find { it is CountFromLast }?.let { it as CountFromLast }
                 ?.takeIf { it.count > numbers[key] ?: 0 }  // test hit the threshold
-                ?.let { Timber.v("Count strategy not satisfied yet at $aobj") }
-                ?: run {
+                ?.let {
                     Timber.v("Count strategy has just satisfied at $aobj")
                     trigger()
                     return
