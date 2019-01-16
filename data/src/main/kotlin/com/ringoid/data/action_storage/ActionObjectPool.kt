@@ -1,7 +1,12 @@
 package com.ringoid.data.action_storage
 
+import com.ringoid.data.local.shared_prefs.SharedPrefsManager
+import com.ringoid.data.local.shared_prefs.accessSingle
+import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.model.actions.ActionObject
+import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -12,7 +17,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ActionObjectPool @Inject constructor() : IActionObjectPool {
+class ActionObjectPool @Inject constructor(
+    private val cloud: RingoidCloud, private val spm: SharedPrefsManager)
+    : IActionObjectPool {
 
     companion object {
         private const val CAPACITY = 100
@@ -102,13 +109,22 @@ class ActionObjectPool @Inject constructor() : IActionObjectPool {
         }
     }
 
-    @Synchronized
+    @Synchronized @Suppress("CheckResult")
     override fun trigger() {
         Timber.v("Triggering...")
-        // TODO: send request of the whole queue
-        queue.clear()
-        numbers.clear()
-        strategies.clear()
-        timers.forEach { it.value?.dispose() }.also { timers.clear() }
+        spm.accessSingle { accessToken ->
+            val essence = CommitActionsEssence(accessToken.accessToken, queue)
+            cloud.commitActions(essence)
+        }
+        .doOnSuccess {
+            Timber.v("Successfully committed all actions")
+            queue.clear()
+            numbers.clear()
+            strategies.clear()
+            timers.forEach { it.value?.dispose() }.also { timers.clear() }
+        }
+        .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
+        .subscribe({ Timber.v("Triggering... finished") }, Timber::e)
+        // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
     }
 }

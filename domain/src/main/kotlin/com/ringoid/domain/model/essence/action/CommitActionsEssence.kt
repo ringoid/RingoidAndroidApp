@@ -6,7 +6,7 @@ import com.ringoid.domain.model.actions.ActionObject
 
 data class CommitActionsEssence(
     @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String,
-    @SerializedName(COLUMN_ACTIONS) val actions: List<ActionObject>) : IEssence {
+    @SerializedName(COLUMN_ACTIONS) val actions: Collection<ActionObject>) : IEssence {
 
     companion object {
         const val COLUMN_ACCESS_TOKEN = "accessToken"
