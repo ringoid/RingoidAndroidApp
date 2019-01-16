@@ -5,13 +5,31 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
+import com.ringoid.origin.view.dialog.Dialogs
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     protected val feedAdapter: FeedAdapter = FeedAdapter()  // TODO: pass common pool
+        .apply {
+            settingsClickListener = { model: Profile, _ ->
+                Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.block_profile_array),
+                    l = { _, which: Int ->
+                        when (which) {
+                            0 -> {} // TODO: block
+                            1 -> Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.report_profile_array),
+                                l = { _, which: Int ->
+                                    when (which) {
+                                        // TODO: reason of report
+                                    }
+                                })
+                        }
+                    })
+            }
+        }
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 

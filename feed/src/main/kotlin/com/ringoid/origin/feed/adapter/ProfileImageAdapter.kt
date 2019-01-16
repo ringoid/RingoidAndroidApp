@@ -1,11 +1,12 @@
 package com.ringoid.origin.feed.adapter
 
 import android.view.View
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
-import com.ringoid.domain.model.image.Image
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
 class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHolder>(ProfileImageDiffCallback()) {
@@ -14,7 +15,8 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
 
     override fun instantiateViewHolder(view: View): ProfileImageViewHolder =
         ProfileImageViewHolder(view).apply {
-            itemView.ibtn_like.setOnClickListener(getOnItemClickListener(this))
+            itemView.ibtn_like.clicks().compose(clickDebounce())
+                .subscribe { getOnItemClickListener(this).onClick(itemView.ibtn_like) }
         }
 
     // --------------------------------------------------------------------------------------------

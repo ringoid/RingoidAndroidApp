@@ -14,6 +14,21 @@
     <string name="error_common">Oops! Something went wrong.</string>
     <string name="error_crop_image">Failed to load and prepare image.</string>
 
+    <!-- Feed screen -->
+    <string-array name="block_profile_array">
+        <item>Block</item>
+        <item>Block &#38; Report</item>
+    </string-array>
+
+    <string-array name="report_profile_array">
+        <item>Inappropriate content</item>
+        <item>Stolen photos, Copyright infringement</item>
+        <item>Spam, Advertising, Commercial activity</item>
+        <item>Human and sex trafficking, Criminal activity</item>
+        <item>Underage users, Child exploitation</item>
+        <item>Harassment or threats, Abuse</item>
+    </string-array>
+
     <!-- Image Preview screen -->
     
     <!-- Login screen -->
