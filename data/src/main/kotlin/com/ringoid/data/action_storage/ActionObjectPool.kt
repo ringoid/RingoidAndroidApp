@@ -1,9 +1,6 @@
 package com.ringoid.data.action_storage
 
-import com.ringoid.domain.action_storage.CountFromLast
-import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.action_storage.Immediate
-import com.ringoid.domain.action_storage.TriggerStrategy
+import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.model.actions.*
 import timber.log.Timber
 import java.util.*
@@ -21,6 +18,7 @@ class ActionObjectPool @Inject constructor() : IActionObjectPool {
 
     private val numbers = mutableMapOf<Class<ActionObject>, Int>()
     private val strategies = mutableMapOf<Class<ActionObject>, List<TriggerStrategy>>()
+    private val timers = mutableMapOf<Class<ActionObject>, Int>()
 
     @Synchronized
     override fun put(aobj: ActionObject) {
@@ -56,7 +54,7 @@ class ActionObjectPool @Inject constructor() : IActionObjectPool {
              */
             strategies[key]  // previously stored strategies
                 ?.find { it is CountFromLast }?.let { it as CountFromLast }
-                ?.takeIf { it.count > numbers[key] ?: 0 }
+                ?.takeIf { it.count > numbers[key] ?: 0 }  // test hit the threshold
                 ?.let { Timber.v("Count strategy not satisfied yet at $aobj") }
                 ?: run {
                     Timber.v("Count strategy has just satisfied at $aobj")
@@ -64,7 +62,26 @@ class ActionObjectPool @Inject constructor() : IActionObjectPool {
                     return
                 }
 
+            /**
+             * Check whether [DelayFromLast] strategy is present - that means that previous object
+             * had established that strategy and it's timer threshold. Since a new [aobj] is coming,
+             * timer must be dropped to '0', because delay is always considered since last incoming
+             * [aobj] of [key] class.
+             *
+             * [ActionObject.triggerStrategies] of an incoming [aobj] could differ from previous
+             * strategies, for example - it may not contain [DelayFromLast] strategy, i.e. cancelling
+             * it for any future incoming objects.
+             *
+             * If the [DelayFromLast] has been cancelled like that, corresponding timer is stopped
+             * and hence - won't trigger until the strategy is restored. On strategy restore - new
+             * threshold will be set and timer will start from '0', as normal.
+             */
+            strategies[key]  // previously stored strategies
+                ?.find { it is DelayFromLast }
+                ?.let { timers[key] = 0 }  // drop timer since new aobj comes up
+
             strategies[key] = aobj.triggerStrategies  // update strategies from incoming aobj
+            // TODO set delay threshold
         }
 
         when (aobj) {
