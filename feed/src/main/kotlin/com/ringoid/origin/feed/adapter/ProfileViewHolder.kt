@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.Profile
+import com.ringoid.origin.feed.model.ProfileImageVO
 import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
@@ -26,6 +27,7 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
     }
 
     override fun bind(model: Profile) {
-        profileImageAdapter.submitList(model.images)
+        // TODO: supply isLiked on images in FeedResponse -> ProfileEntity
+        profileImageAdapter.submitList(model.images.map { ProfileImageVO(image = it) })
     }
 }

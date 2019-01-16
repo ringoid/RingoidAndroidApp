@@ -5,7 +5,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetNewFacesUseCase
 import com.ringoid.origin.ScreenHelper
-import com.ringoid.origin.feed.FeedViewModel
+import com.ringoid.origin.feed.view.FeedViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject

@@ -5,9 +5,10 @@ import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.domain.model.image.Image
 import com.ringoid.origin.feed.R
+import com.ringoid.origin.feed.model.ProfileImageVO
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
-class ProfileImageAdapter : BaseListAdapter<Image, ProfileImageViewHolder>(ProfileImageDiffCallback()) {
+class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHolder>(ProfileImageDiffCallback()) {
 
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
@@ -17,8 +18,8 @@ class ProfileImageAdapter : BaseListAdapter<Image, ProfileImageViewHolder>(Profi
         }
 
     // --------------------------------------------------------------------------------------------
-    override fun wrapOnItemClickListener(vh: ProfileImageViewHolder, l: ((model: Image, position: Int) -> Unit)?): View.OnClickListener {
-        val xl: ((model: Image, position: Int) -> Unit)? = { model: Image, position: Int ->
+    override fun wrapOnItemClickListener(vh: ProfileImageViewHolder, l: ((model: ProfileImageVO, position: Int) -> Unit)?): View.OnClickListener {
+        val xl: ((model: ProfileImageVO, position: Int) -> Unit)? = { model: ProfileImageVO, position: Int ->
             vh.animateLike(isLiked = !model.isLiked)
             l?.invoke(model, position)
         }
@@ -27,9 +28,9 @@ class ProfileImageAdapter : BaseListAdapter<Image, ProfileImageViewHolder>(Profi
 }
 
 // ------------------------------------------------------------------------------------------------
-class ProfileImageDiffCallback : BaseDiffCallback<Image>() {
+class ProfileImageDiffCallback : BaseDiffCallback<ProfileImageVO>() {
 
-    override fun areItemsTheSame(oldItem: Image, newItem: Image): Boolean = oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: ProfileImageVO, newItem: ProfileImageVO): Boolean = oldItem.image.id == newItem.image.id
 
-    override fun areContentsTheSame(oldItem: Image, newItem: Image): Boolean = oldItem == newItem  // as 'data class'
+    override fun areContentsTheSame(oldItem: ProfileImageVO, newItem: ProfileImageVO): Boolean = oldItem == newItem  // as 'data class'
 }

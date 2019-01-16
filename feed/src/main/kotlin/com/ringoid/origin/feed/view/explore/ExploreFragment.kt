@@ -2,7 +2,7 @@ package com.ringoid.origin.feed.view.explore
 
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.R
-import com.ringoid.origin.feed.FeedFragment
+import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import kotlinx.android.synthetic.main.fragment_feed.*
 
