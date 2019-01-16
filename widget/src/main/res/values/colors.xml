@@ -34,7 +34,7 @@
     <color name="orange_dark">#ff9900</color>
     <color name="raspberry">#ff5771</color>
     <color name="raspberry_saturated">#E91E63</color>
-    <color name="semitransparent">#88000000</color>
+    <color name="semitransparent">#7f000000</color>
     <color name="semitransparent_soft">#1d000000</color>
     <color name="sky">#27a4dd</color>
     <color name="steel">#75888e</color>
@@ -43,7 +43,7 @@
     <color name="tiffany">#81d8d1</color>
     <color name="underscore">#f2f2f2</color>
     <color name="warning">#ff9900</color>
-    <color name="white_transparent">#70ffffff</color>
+    <color name="white_transparent">#4fffffff</color>
 
     <array name="swipe_refresh_colors">
         <item name="progress_1">@color/accent</item>
