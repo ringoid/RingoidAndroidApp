@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.explore.di
+package com.ringoid.origin.feed.view.explore.di
 
 import com.ringoid.origin.feed.explore.ExploreFragment
 import dagger.Subcomponent

@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed
+package com.ringoid.origin.feed.view
 
 import android.os.Bundle
 import android.view.View

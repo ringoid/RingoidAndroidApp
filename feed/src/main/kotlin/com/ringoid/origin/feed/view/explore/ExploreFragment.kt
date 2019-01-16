@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.explore
+package com.ringoid.origin.feed.view.explore
 
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.R
