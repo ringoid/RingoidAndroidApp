@@ -122,6 +122,7 @@ class ActionObjectPool @Inject constructor(
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSuccess {
             Timber.v("Successfully committed all [${queue.size}] actions")
+            // TODO: response clears all aobjs added between request and response
             lastActionTime = it.lastActionTime
             queue.clear()
             numbers.clear()
