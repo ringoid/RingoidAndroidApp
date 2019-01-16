@@ -6,5 +6,5 @@ import io.reactivex.Single
 
 interface IFeedRepository {
 
-    fun getNewFaces(resolution: ImageResolution?, limit: Int?): Single<Feed>
+    fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
 }

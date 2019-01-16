@@ -18,6 +18,6 @@ class FeedRepository @Inject constructor(
     : BaseRepository(cloud, spm), IFeedRepository {
 
     // TODO: always check db first, supply lastActionTime != 0
-    override fun getNewFaces(resolution: ImageResolution?, limit: Int?): Single<Feed> =
+    override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = 0L).map { it.map() } }
 }
