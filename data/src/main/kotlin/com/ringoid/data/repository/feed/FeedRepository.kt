@@ -21,5 +21,6 @@ class FeedRepository @Inject constructor(
 
     // TODO: always check db first
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
-        spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = 0L).map { it.map() } }
+        spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
+            .map { it.map() } }
 }
