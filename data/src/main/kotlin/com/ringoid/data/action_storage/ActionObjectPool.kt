@@ -120,14 +120,16 @@ class ActionObjectPool @Inject constructor(
         }
         .subscribeOn(Schedulers.io())
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
-        .doOnSuccess {
-            Timber.v("Successfully committed all [${queue.size}] actions")
-            // TODO: response clears all aobjs added between request and response
-            lastActionTime = it.lastActionTime
+        .doOnSubscribe {
+            // TODO: cache the queue to restore later in case of failure all retries
             queue.clear()
             numbers.clear()
             strategies.clear()
             timers.forEach { it.value?.dispose() }.also { timers.clear() }
+        }
+        .doOnSuccess {
+            Timber.v("Successfully committed all [${queue.size}] actions")
+            lastActionTime = it.lastActionTime
         }
         .subscribe({ Timber.v("Triggering... finished, last action time: ${it.lastActionTime}") }, Timber::e)
         // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
