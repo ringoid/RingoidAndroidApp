@@ -1,5 +1,6 @@
 package com.ringoid.domain.model.essence.image
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.model.IEssence
 
@@ -10,8 +11,8 @@ import com.ringoid.domain.model.IEssence
  * }
  */
 data class ImageDeleteEssence(
-    @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String,
-    @SerializedName(COLUMN_IMAGE_ID) val imageId: String) : IEssence {
+    @Expose @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String,
+    @Expose @SerializedName(COLUMN_IMAGE_ID) val imageId: String) : IEssence {
 
     companion object {
         const val COLUMN_ACCESS_TOKEN = "accessToken"
