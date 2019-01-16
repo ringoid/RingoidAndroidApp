@@ -33,7 +33,6 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
     }
 
     override fun bind(model: Profile) {
-        // TODO: supply isLiked on images in FeedResponse -> ProfileEntity
-        profileImageAdapter.submitList(model.images.map { ProfileImageVO(image = it) })
+        profileImageAdapter.submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
     }
 }
