@@ -31,4 +31,6 @@ open class ActionObject(
         const val COLUMN_TARGET_IMAGE_ID = "targetPhotoId"
         const val COLUMN_TARGET_USER_ID = "targetUserId"
     }
+
+    override fun toString(): String = "${javaClass.simpleName}(actionTime=$actionTime, actionType='$actionType', sourceFeed='$sourceFeed', targetImageId='$targetImageId', targetUserId='$targetUserId', triggerStrategies=$triggerStrategies)"
 }
