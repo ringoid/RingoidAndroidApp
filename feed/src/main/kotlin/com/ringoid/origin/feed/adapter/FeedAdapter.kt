@@ -17,13 +17,6 @@ class FeedAdapter(private var viewPool: RecyclerView.RecycledViewPool? = null)
 
     var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
     var settingsClickListener: ((model: Profile, position: Int, positionOfImage: Int) -> Unit)? = null
-        set(value) {
-            field = value
-            wrapSettingsClickListener = { model: Profile, position: Int ->
-                settingsClickListener?.invoke(model, position, getCurrentImagePosition())
-            }
-        }
-    private var wrapSettingsClickListener: ((model: Profile, position: Int) -> Unit)? = null
 
     init {
         viewPool = viewPool ?: RecyclerView.RecycledViewPool()
@@ -34,6 +27,10 @@ class FeedAdapter(private var viewPool: RecyclerView.RecycledViewPool? = null)
     override fun instantiateViewHolder(view: View): ProfileViewHolder =
         ProfileViewHolder(view, viewPool).apply {
             onLikeImageListener = this@FeedAdapter.onLikeImageListener
+            val wrapSettingsClickListener: ((model: Profile, position: Int) -> Unit)? =
+                { model: Profile, position: Int ->
+                    settingsClickListener?.invoke(model, position, getCurrentImagePosition())
+                }
             itemView.ibtn_settings.clicks().compose(clickDebounce())
                 .subscribe { wrapOnItemClickListener(this, wrapSettingsClickListener).onClick(itemView.ibtn_settings) }
         }

@@ -24,11 +24,12 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
             settingsClickListener = { model: Profile, _, positionOfImage: Int ->
                 Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.block_profile_array),
                     l = { _, which: Int ->
+                        val image = model.images[positionOfImage]
                         when (which) {
-                            0 -> vm.onBlock(profileId = model.id, imageId = "")
+                            0 -> vm.onBlock(profileId = model.id, imageId = image.id)
                             1 -> Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.report_profile_array),
                                 l = { _, number: Int ->
-                                    vm.onReport(profileId = model.id, imageId = "", reasonNumber = (number + 1) * 10)
+                                    vm.onReport(profileId = model.id, imageId = image.id, reasonNumber = (number + 1) * 10)
                                 })
                         }
                     })
