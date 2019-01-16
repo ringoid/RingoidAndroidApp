@@ -35,4 +35,7 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
     override fun bind(model: Profile) {
         profileImageAdapter.submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
     }
+
+    internal fun getCurrentImagePosition(): Int =
+        (itemView.rv_items.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 }

@@ -21,7 +21,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                 Timber.i("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
                 vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
             }
-            settingsClickListener = { model: Profile, _ ->
+            settingsClickListener = { model: Profile, _, positionOfImage: Int ->
                 Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.block_profile_array),
                     l = { _, which: Int ->
                         when (which) {
