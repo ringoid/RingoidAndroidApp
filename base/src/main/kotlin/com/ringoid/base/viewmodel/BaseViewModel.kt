@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
 import com.ringoid.domain.model.user.AccessToken
@@ -17,6 +18,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     protected val context: Context = app.applicationContext
 
     @Inject lateinit var getUserAccessTokenUseCase: GetUserAccessTokenUseCase
+    @Inject lateinit var actionObjectPool: IActionObjectPool
     @Inject lateinit var spm: ISharedPrefsManager
 
     val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
