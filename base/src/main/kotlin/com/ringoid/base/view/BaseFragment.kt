@@ -21,6 +21,9 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
 
+    var isOnSaveInstanceState = false
+        private set
+
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
     @LayoutRes protected abstract fun getLayoutId(): Int
@@ -61,5 +64,15 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
                 observe(navigation) { it.call(this@BaseFragment) }
             }
         }
+    }
+
+    override fun onResume() {
+        isOnSaveInstanceState = false
+        super.onResume()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        isOnSaveInstanceState = true
+        super.onSaveInstanceState(outState)
     }
 }

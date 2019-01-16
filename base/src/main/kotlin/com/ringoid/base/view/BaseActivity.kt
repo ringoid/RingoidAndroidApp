@@ -16,6 +16,9 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
 
+    var isDestroying = false
+        private set
+
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
     @LayoutRes protected open fun getLayoutId(): Int? = null  // null means no layout
@@ -29,6 +32,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
+        isDestroying = false
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         getLayoutId()?.let { setContentView(it) }
@@ -36,5 +40,10 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
             observe(viewState) { onViewStateChange(it) }
             observe(navigation) { it.call(this@BaseActivity) }
         }
+    }
+
+    override fun onDestroy() {
+        isDestroying = true
+        super.onDestroy()
     }
 }

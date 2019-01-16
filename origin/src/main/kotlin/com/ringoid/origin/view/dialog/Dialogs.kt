@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import com.ringoid.base.isActivityDestroyed
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
 
@@ -52,7 +53,8 @@ object Dialogs {
                        @StringRes negativeBtnLabelResId: Int = 0,
                        positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
                        negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) {
-        activity?.let {
+        activity?.takeIf { !it.isActivityDestroyed() }
+                ?.let {
                     getTextDialog(it, titleResId, description,
                         positiveBtnLabelResId, negativeBtnLabelResId,
                         positiveListener, negativeListener).show()
@@ -81,4 +83,11 @@ object Dialogs {
                 ?: getTextDialog(activity, titleResId, description,
                     positiveBtnLabelResId, negativeBtnLabelResId,
                     positiveListener, negativeListener).show()
+
+    // --------------------------------------------------------------------------------------------
+    fun getSingleChoiceDialog(activity: Activity?, items: Array<String>, l: ((dialog: DialogInterface, which: Int) -> Unit)? = null): AlertDialog? =
+        activity?.let { AlertDialog.Builder(it).setItems(items, l).create() }
+
+    fun showSingleChoiceDialog(activity: Activity?, items: Array<String>, l: ((dialog: DialogInterface, which: Int) -> Unit)? = null): AlertDialog? =
+        activity?.takeIf { !it.isActivityDestroyed() }?.let { getSingleChoiceDialog(activity, items, l) }
 }
