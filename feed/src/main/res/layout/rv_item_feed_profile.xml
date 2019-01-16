@@ -40,4 +40,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_more_white_36dp"/>
 
+    <View
+        android:id="@+id/underscore"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/Underscore"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
