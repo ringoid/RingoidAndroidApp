@@ -53,12 +53,13 @@ interface RingoidRestAdapter {
     @GET("feeds/get_new_faces")
     fun getNewFaces(@Query("accessToken") accessToken: String,
                     @Query("resolution") resolution: String?,
-                    @Query("limit") limit: Int?): Single<FeedResponse>
+                    @Query("limit") limit: Int?,
+                    @Query("lastActionTime") lastActionTime: Long = 0L): Single<FeedResponse>
 
     @GET("feeds/get_lmm")
     fun getLmm(@Query("accessToken") accessToken: String,
                @Query("resolution") resolution: String?,
-               @Query("lastActionTime") lastActionTime: Long): Single<LmmResponse>
+               @Query("lastActionTime") lastActionTime: Long = 0L): Single<LmmResponse>
 
     /* Test */
     // --------------------------------------------------------------------------------------------

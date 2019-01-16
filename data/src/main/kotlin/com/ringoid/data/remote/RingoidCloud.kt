@@ -62,10 +62,10 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
-    fun getNewFaces(accessToken: String, resolution: ImageResolution?, limit: Int?) =
-        restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution?.resolution, limit = limit)
+    fun getNewFaces(accessToken: String, resolution: ImageResolution?, limit: Int?, lastActionTime: Long = 0L) =
+        restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution?.resolution, limit = limit, lastActionTime = lastActionTime)
 
-    fun getLmm(accessToken: String, resolution: ImageResolution?, lastActionTime: Long) =
+    fun getLmm(accessToken: String, resolution: ImageResolution?, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution?.resolution, lastActionTime = lastActionTime)
 
     /* Test */

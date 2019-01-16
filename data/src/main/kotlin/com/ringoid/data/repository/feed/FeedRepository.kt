@@ -17,7 +17,7 @@ class FeedRepository @Inject constructor(
     private val local: FeedDao, cloud: RingoidCloud, spm: ISharedPrefsManager)
     : BaseRepository(cloud, spm), IFeedRepository {
 
-    // TODO: always check db first
+    // TODO: always check db first, supply lastActionTime != 0
     override fun getNewFaces(resolution: ImageResolution?, limit: Int?): Single<Feed> =
-        spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit).map { it.map() } }
+        spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = 0L).map { it.map() } }
 }
