@@ -6,11 +6,13 @@ import com.ringoid.data.local.database.model.feed.ProfileDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
+import com.ringoid.data.repository.handleError
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.user.IUserRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
@@ -26,10 +28,24 @@ class UserRepository @Inject constructor(
 
     // TODO: always check db first
     override fun createUserProfile(essence: AuthCreateProfileEssence): Single<CurrentUser> =
-            cloud.createUserProfile(essence)
-                 .doOnSuccess {
-                     spm.saveUserProfile(userId = it.userId, accessToken = it.accessToken)
-                     local.addUserProfile(ProfileDbo(id = it.userId))
-                 }
-                 .map { it.map() }
+        cloud.createUserProfile(essence)
+             .handleError()  // TODO: notify on error
+             .doOnSuccess {
+                 spm.saveUserProfile(userId = it.userId, accessToken = it.accessToken)
+                 local.addUserProfile(ProfileDbo(id = it.userId))
+             }
+             .map { it.map() }
+
+    override fun deleteUserProfile(): Completable =
+        spm.accessSingle { cloud.deleteUserProfile(accessToken = it.accessToken) }
+            .doOnSubscribe {
+                spm.apply {
+                    currentUserId()?.let {
+                        local.deleteUserProfile(userId = it)
+                        deleteUserProfile(userId = it)
+                    }
+                }
+            }
+            .handleError()  // TODO: notify on error
+            .ignoreElement()  // convert to Completable
 }

@@ -9,4 +9,6 @@ interface ISharedPrefsManager {
     fun currentUserId(): String?
 
     fun saveUserProfile(userId: String, accessToken: String)
+
+    fun deleteUserProfile(userId: String)
 }

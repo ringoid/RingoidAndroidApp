@@ -10,6 +10,7 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -36,6 +37,12 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
             setTitle(R.string.settings_title)
         }
 
+        item_delete_account.clicks().compose(clickDebounce()).subscribe {
+            Dialogs.showTextDialog(activity, titleResId = R.string.settings_account_delete_dialog_title,
+                descriptionResId = R.string.settings_account_delete_dialog_description,
+                positiveBtnLabelResId = R.string.button_delete, negativeBtnLabelResId = R.string.button_cancel,
+                positiveListener = { _, _ -> vm.deleteAccount() })
+        }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe {
             val appInfo = "${BuildConfig.VERSION_NAME}, [${Build.MODEL}, ${Build.MANUFACTURER}, ${Build.PRODUCT}], " +

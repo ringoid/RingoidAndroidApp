@@ -50,6 +50,13 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
             .putString(SP_KEY_AUTH_ACCESS_TOKEN, accessToken)
             .apply()
     }
+
+    override fun deleteUserProfile(userId: String) {
+        sharedPreferences.edit()
+            .remove(SP_KEY_AUTH_USER_ID)
+            .remove(SP_KEY_AUTH_ACCESS_TOKEN)
+            .apply()
+    }
 }
 
 // --------------------------------------------------------------------------------------------
