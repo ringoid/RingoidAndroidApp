@@ -58,7 +58,7 @@
     <string name="settings_app_info">Legal</string>
     <string name="settings_support">Email support@ringoid.com</string>
     <string name="settings_title">Settings</string>
-    <string name="settings_theme_dark">Dark theme</string>
+    <string name="settings_theme_dark">Night Mode</string>
     <string name="settings_theme_light">Light theme</string>
 
     <!-- Settings Info screen -->
