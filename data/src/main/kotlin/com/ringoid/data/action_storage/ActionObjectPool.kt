@@ -1,7 +1,7 @@
 package com.ringoid.data.action_storage
 
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.model.actions.ActionObject
+import com.ringoid.domain.model.actions.*
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.inject.Inject
@@ -14,6 +14,13 @@ class ActionObjectPool @Inject constructor() : IActionObjectPool {
 
     fun put(aobj: ActionObject) {
         queue.offer(aobj)
-        // TODO
+
+        when (aobj) {
+            is BlockActionObject -> {}
+            is LikeActionObject, is UnlikeActionObject -> {}
+            is MessageActionObject -> {}
+            is OpenChatActionObject -> {}
+            is ViewActionObject -> {}
+        }
     }
 }
