@@ -5,8 +5,8 @@ import com.ringoid.domain.action_storage.Immediate
 
 class MessageActionObject(
     @SerializedName(COLUMN_TEXT) val text: String,
-    actionTime: Long, actionType: String, sourceFeed: String, targetImageId: String, targetUserId: String)
-    : ActionObject(actionTime = actionTime, actionType = actionType, sourceFeed = sourceFeed,
+    actionTime: Long, sourceFeed: String, targetImageId: String, targetUserId: String)
+    : ActionObject(actionTime = actionTime, actionType = "MESSAGE", sourceFeed = sourceFeed,
                    targetImageId = targetImageId, targetUserId = targetUserId,
                    triggerStrategies = listOf(Immediate)) {
 

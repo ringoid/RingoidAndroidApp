@@ -6,8 +6,8 @@ import com.ringoid.domain.action_storage.DelayFromLast
 
 class LikeActionObject(
     @SerializedName(COLUMN_LIKE_COUNT) val likeCount: Int = 1,
-    actionTime: Long, actionType: String, sourceFeed: String, targetImageId: String, targetUserId: String)
-    : ActionObject(actionTime = actionTime, actionType = actionType, sourceFeed = sourceFeed,
+    actionTime: Long, sourceFeed: String, targetImageId: String, targetUserId: String)
+    : ActionObject(actionTime = actionTime, actionType = "LIKE", sourceFeed = sourceFeed,
                    targetImageId = targetImageId, targetUserId = targetUserId,
                    triggerStrategies = listOf(CountFromLast(), DelayFromLast())) {
 

@@ -5,8 +5,8 @@ import com.ringoid.domain.action_storage.Immediate
 
 class BlockActionObject(
     @SerializedName(COLUMN_NUMBER_BLOCK_REASON) val numberOfBlockReason: Int,
-    actionTime: Long, actionType: String, sourceFeed: String, targetImageId: String, targetUserId: String)
-    : ActionObject(actionTime = actionTime, actionType = actionType, sourceFeed = sourceFeed,
+    actionTime: Long, sourceFeed: String, targetImageId: String, targetUserId: String)
+    : ActionObject(actionTime = actionTime, actionType = "BLOCK", sourceFeed = sourceFeed,
                    targetImageId = targetImageId, targetUserId = targetUserId,
                    triggerStrategies = listOf(Immediate)) {
 
