@@ -119,6 +119,7 @@ class ActionObjectPool @Inject constructor(
             val essence = CommitActionsEssence(accessToken.accessToken, queue)
             cloud.commitActions(essence)
         }
+        .subscribeOn(Schedulers.io())
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSuccess {
             Timber.v("Successfully committed all [${queue.size}] actions")
