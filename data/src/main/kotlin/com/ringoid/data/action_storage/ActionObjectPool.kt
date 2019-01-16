@@ -116,6 +116,7 @@ class ActionObjectPool @Inject constructor(
             val essence = CommitActionsEssence(accessToken.accessToken, queue)
             cloud.commitActions(essence)
         }
+        .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSuccess {
             Timber.v("Successfully committed all actions")
             queue.clear()
@@ -123,7 +124,6 @@ class ActionObjectPool @Inject constructor(
             strategies.clear()
             timers.forEach { it.value?.dispose() }.also { timers.clear() }
         }
-        .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .subscribe({ Timber.v("Triggering... finished, last action time: ${it.lastActionTime}") }, Timber::e)
         // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
     }
