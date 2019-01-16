@@ -1,6 +1,7 @@
 package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
@@ -31,7 +32,7 @@ interface RingoidRestAdapter {
     /* Actions */
     // --------------------------------------------------------------------------------------------
     @POST("actions/actions")
-    fun commitActions(@Body body: RequestBody): Single<BaseResponse>
+    fun commitActions(@Body body: RequestBody): Single<CommitActionsResponse>
 
     /* Image */
     // --------------------------------------------------------------------------------------------

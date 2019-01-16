@@ -1,6 +1,7 @@
 package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
@@ -41,7 +42,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
-    fun commitActions(essence: CommitActionsEssence): Single<BaseResponse> =
+    fun commitActions(essence: CommitActionsEssence): Single<CommitActionsResponse> =
         restAdapter.commitActions(essence.toBody())
 
     /* Image */
