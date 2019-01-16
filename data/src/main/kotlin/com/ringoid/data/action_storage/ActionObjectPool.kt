@@ -26,6 +26,8 @@ class ActionObjectPool @Inject constructor(
     }
 
     private val queue: Queue<ActionObject> = ArrayDeque()
+    var lastActionTime: Long = 0L
+        private set
 
     private val numbers = mutableMapOf<Class<ActionObject>, Int>()
     private val strategies = mutableMapOf<Class<ActionObject>, List<TriggerStrategy>>()
@@ -111,14 +113,16 @@ class ActionObjectPool @Inject constructor(
 
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
-        Timber.v("Triggering...")
+        lastActionTime = queue.peek()?.actionTime ?: 0L
+        Timber.v("Triggering... queue size [${queue.size}], last action time: $lastActionTime")
         spm.accessSingle { accessToken ->
             val essence = CommitActionsEssence(accessToken.accessToken, queue)
             cloud.commitActions(essence)
         }
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSuccess {
-            Timber.v("Successfully committed all actions")
+            Timber.v("Successfully committed all [${queue.size}] actions")
+            lastActionTime = it.lastActionTime
             queue.clear()
             numbers.clear()
             strategies.clear()
