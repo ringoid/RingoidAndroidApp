@@ -1,9 +1,13 @@
 package com.ringoid.data.action_storage
 
 import com.ringoid.domain.action_storage.*
-import com.ringoid.domain.model.actions.*
+import com.ringoid.domain.model.actions.ActionObject
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,7 +22,7 @@ class ActionObjectPool @Inject constructor() : IActionObjectPool {
 
     private val numbers = mutableMapOf<Class<ActionObject>, Int>()
     private val strategies = mutableMapOf<Class<ActionObject>, List<TriggerStrategy>>()
-    private val timers = mutableMapOf<Class<ActionObject>, Int>()
+    private val timers = mutableMapOf<Class<ActionObject>, Disposable?>()
 
     @Synchronized
     override fun put(aobj: ActionObject) {
@@ -78,18 +82,23 @@ class ActionObjectPool @Inject constructor() : IActionObjectPool {
              */
             strategies[key]  // previously stored strategies
                 ?.find { it is DelayFromLast }
-                ?.let { timers[key] = 0 }  // drop timer since new aobj comes up
+                ?.let {
+                    // drop timer since new aobj comes up
+                    timers[key]?.dispose()
+                    timers[key] = null
+                }
 
             strategies[key] = aobj.triggerStrategies  // update strategies from incoming aobj
-            // TODO set delay threshold
-        }
 
-        when (aobj) {
-            is BlockActionObject -> {}
-            is LikeActionObject, is UnlikeActionObject -> {}
-            is MessageActionObject -> {}
-            is OpenChatActionObject -> {}
-            is ViewActionObject -> {}
+            timers[key] = strategies[key]  // new strategies
+                ?.find { it is DelayFromLast }?.let { it as DelayFromLast }
+                ?.let {
+                    // schedule timer to trigger after delay
+                    Observable.timer(it.delay, TimeUnit.SECONDS)
+                        .subscribeOn(Schedulers.io())
+                        .doOnComplete(this::trigger)
+                        .subscribe({ Timber.v("Delay strategy has just satisfied at $aobj") }, Timber::e)
+                }
         }
     }
 
@@ -100,5 +109,6 @@ class ActionObjectPool @Inject constructor() : IActionObjectPool {
         queue.clear()
         numbers.clear()
         strategies.clear()
+        timers.forEach { it.value?.dispose() }.also { timers.clear() }
     }
 }
