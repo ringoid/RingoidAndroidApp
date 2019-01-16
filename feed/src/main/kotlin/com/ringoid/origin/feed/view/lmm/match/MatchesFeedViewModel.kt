@@ -9,4 +9,6 @@ class MatchesFeedViewModel @Inject constructor(app: Application) : FeedViewModel
     override fun getFeed() {
         // TODO
     }
+
+    override fun getFeedName(): String = "messages"
 }

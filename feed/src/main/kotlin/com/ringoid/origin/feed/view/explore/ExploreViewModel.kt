@@ -25,4 +25,6 @@ class ExploreViewModel @Inject constructor(private val getNewFacesUseCase: GetNe
             .autoDisposable(this)
             .subscribe({ feed.value = it }, Timber::e)
     }
+
+    override fun getFeedName(): String = "new_faces"
 }

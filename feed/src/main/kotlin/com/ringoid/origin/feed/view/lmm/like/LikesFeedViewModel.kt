@@ -9,4 +9,6 @@ class LikesFeedViewModel @Inject constructor(app: Application) : FeedViewModel(a
     override fun getFeed() {
         // TODO
     }
+
+    override fun getFeedName(): String = "who_liked_me"
 }
