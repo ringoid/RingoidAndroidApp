@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.Profile
+import com.ringoid.origin.feed.OriginR_array
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -52,12 +53,12 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                     vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
                 }
                 settingsClickListener = { model: Profile, _, positionOfImage: Int ->
-                    Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.block_profile_array),
+                    Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(OriginR_array.block_profile_array),
                         l = { _, which: Int ->
                             val image = model.images[positionOfImage]
                             when (which) {
                                 0 -> vm.onBlock(profileId = model.id, imageId = image.id)
-                                1 -> Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.report_profile_array),
+                                1 -> Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(OriginR_array.report_profile_array),
                                     l = { _, number: Int ->
                                         vm.onReport(profileId = model.id, imageId = image.id, reasonNumber = (number + 1) * 10)
                                     })
