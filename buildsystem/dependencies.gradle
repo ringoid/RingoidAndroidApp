@@ -434,8 +434,8 @@ ext {
     /* Origin - base feature */
     // ------------------------------------------
     originDependencies = []
-    originDependencies += feature_auth + feature_feed + feature_imagePreview + feature_profile + develop + android +
-            arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind + support
+    originDependencies += feature_auth + feature_feed + feature_imagePreview + feature_messenger + feature_profile +
+            develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
