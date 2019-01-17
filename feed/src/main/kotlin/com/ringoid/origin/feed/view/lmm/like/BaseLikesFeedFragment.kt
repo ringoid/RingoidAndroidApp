@@ -8,8 +8,10 @@ import com.ringoid.origin.feed.view.FeedViewModel
 
 abstract class BaseLikesFeedFragment<T : FeedViewModel> : FeedFragment<T>() {
 
+    abstract fun instantiateFeedAdapter(): LikeFeedAdapter
+
     override fun createFeedAdapter(): FeedAdapter =
-        LikeFeedAdapter().apply {
+        instantiateFeedAdapter().apply {
             messageClickListener = { model: Profile, _ ->
                 // TODO: open chat
             }

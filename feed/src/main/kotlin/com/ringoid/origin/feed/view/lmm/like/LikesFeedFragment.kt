@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import com.ringoid.base.observe
+import com.ringoid.origin.feed.adapter.lmm.like.LikeFeedAdapter
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -15,6 +16,8 @@ class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel>() {
     }
 
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
+
+    override fun instantiateFeedAdapter(): LikeFeedAdapter = LikeFeedAdapter()
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import com.ringoid.base.observe
+import com.ringoid.origin.feed.adapter.lmm.like.LikeFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.match.MatchFeedAdapter
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.like.BaseLikesFeedFragment
 import com.ringoid.utility.communicator
@@ -16,6 +18,8 @@ class MatchesFeedFragment : BaseLikesFeedFragment<MatchesFeedViewModel>() {
     }
 
     override fun getVmClass(): Class<MatchesFeedViewModel> = MatchesFeedViewModel::class.java
+
+    override fun instantiateFeedAdapter(): LikeFeedAdapter = MatchFeedAdapter()
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
