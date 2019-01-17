@@ -22,7 +22,7 @@ function getBuildCode() {
 ./gradlew clean
 ./gradlew assembleRelease
 ./sign_apk.sh $@
-for FILE in `find ./release/ -name "prod*-aligned-signed.apk" -type f`
+for FILE in `find ./release/ -name "*-aligned-signed.apk" -type f`
 do
 	filename=$(basename $FILE)
 	echo "DEPLOY: ${filename}"
