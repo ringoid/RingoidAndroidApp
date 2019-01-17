@@ -22,10 +22,6 @@ class LmmFragment : BaseFragment<LmmViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
