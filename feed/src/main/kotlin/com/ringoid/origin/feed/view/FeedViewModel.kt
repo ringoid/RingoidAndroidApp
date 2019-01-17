@@ -12,7 +12,7 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
     val feed by lazy { MutableLiveData<Feed>() }
 
-    abstract fun getFeed()
+    abstract fun getFeed()  // call it in proper place in subclasses of [FeedFragment]
     abstract fun getFeedName(): String
 
     fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
