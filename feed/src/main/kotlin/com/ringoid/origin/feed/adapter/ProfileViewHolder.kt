@@ -24,7 +24,7 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
     init {
         val snapHelper = PagerSnapHelper()
         itemView.rv_items.apply {
-            adapter = profileImageAdapter
+            adapter = profileImageAdapter.also { it.tabsObserver = itemView.tabs.adapterDataObserver }
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 .also { it.initialPrefetchItemCount = 2 }

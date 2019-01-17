@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.adapter
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
@@ -11,6 +12,8 @@ import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
 class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHolder>(ProfileImageDiffCallback()) {
 
+    var tabsObserver: RecyclerView.AdapterDataObserver? = null
+
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
     override fun instantiateViewHolder(view: View): ProfileImageViewHolder =
@@ -18,6 +21,11 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
             itemView.ibtn_like.clicks().compose(clickDebounce())
                 .subscribe { getOnItemClickListener(this).onClick(itemView.ibtn_like) }
         }
+
+    override fun submitList(list: List<ProfileImageVO>?) {
+        super.submitList(list)
+        tabsObserver?.onChanged()
+    }
 
     // --------------------------------------------------------------------------------------------
     override fun getOnItemClickListener(vh: ProfileImageViewHolder): View.OnClickListener {
