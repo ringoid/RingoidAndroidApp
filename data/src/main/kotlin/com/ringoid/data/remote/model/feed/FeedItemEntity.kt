@@ -4,6 +4,11 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.remote.model.messenger.MessageEntity
+import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.mapList
+import com.ringoid.domain.model.messenger.Message
+import com.ringoid.utility.randomLong
 
 /**
  * {
@@ -21,13 +26,20 @@ import com.ringoid.data.remote.model.messenger.MessageEntity
  * }
  */
 class FeedItemEntity(
-    @Expose @SerializedName(COLUMN_FLAG_NOT_SEEN) val notSeen: Boolean,
+    @Expose @SerializedName(COLUMN_FLAG_NOT_SEEN) val isNotSeen: Boolean,
     @Expose @SerializedName(COLUMN_MESSAGES) val messages: List<MessageEntity> = emptyList(),
     id: String, sortPosition: Int, images: List<ImageEntity> = emptyList())
-    : ProfileEntity(id = id, sortPosition = sortPosition, images = images) {
+    : BaseProfileEntity<FeedItem>(id = id, sortPosition = sortPosition, images = images) {
 
     companion object {
         const val COLUMN_FLAG_NOT_SEEN = "notSeen"
         const val COLUMN_MESSAGES = "messages"
     }
+
+    override fun map(): FeedItem =
+        FeedItem(id = id, isNotSeen = isNotSeen, images = images.mapList(),
+                 messages = messages.map { message ->
+                     val peerId = id.takeIf { message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
+                     Message(id = randomLong(), peerId = peerId, text = message.text)
+                 })
 }

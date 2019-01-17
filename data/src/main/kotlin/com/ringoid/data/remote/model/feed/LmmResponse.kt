@@ -3,6 +3,9 @@ package com.ringoid.data.remote.model.feed
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.domain.model.Mappable
+import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.mapList
 
 /**
  * {
@@ -19,7 +22,8 @@ class LmmResponse(
     @Expose @SerializedName(COLUMN_MATCHES) val matches: List<FeedItemEntity> = emptyList(),
     @Expose @SerializedName(COLUMN_MESSAGES) val messages: List<FeedItemEntity> = emptyList(),
     @Expose @SerializedName(COLUMN_REPEAT_AFTER_SEC) val repeatAfterSec: Int,
-    errorCode: String = "", errorMessage: String = "") : BaseResponse(errorCode, errorMessage) {
+    errorCode: String = "", errorMessage: String = "")
+    : BaseResponse(errorCode, errorMessage), Mappable<Lmm> {
 
     companion object {
         const val COLUMN_LIKES = "likesYou"
@@ -27,4 +31,6 @@ class LmmResponse(
         const val COLUMN_MESSAGES = "messages"
         const val COLUMN_REPEAT_AFTER_SEC = "repeatRequestAfterSec"
     }
+
+    override fun map(): Lmm = Lmm(likes = likes.mapList(), matches = matches.mapList(), messages = messages.mapList())
 }

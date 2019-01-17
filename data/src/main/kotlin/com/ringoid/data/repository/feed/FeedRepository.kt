@@ -7,6 +7,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
+import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Single
@@ -23,4 +24,8 @@ class FeedRepository @Inject constructor(
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
             .map { it.map() } }
+
+    override fun getLmm(resolution: ImageResolution): Single<Lmm> =
+        spm.accessSingle { cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
+            .map { it.map() }}
 }
