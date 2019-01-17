@@ -10,7 +10,7 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
 
-class LikeFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null) : FeedAdapter(imagesViewPool) {
+open class LikeFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null) : FeedAdapter(imagesViewPool) {
 
     var messageClickListener: ((model: Profile, position: Int) -> Unit)? = null
 
