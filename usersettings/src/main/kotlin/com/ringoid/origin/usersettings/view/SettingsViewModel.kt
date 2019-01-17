@@ -1,4 +1,4 @@
-package com.ringoid.usersettings.view
+package com.ringoid.origin.usersettings.view
 
 import android.app.Application
 import com.ringoid.base.view.ViewState

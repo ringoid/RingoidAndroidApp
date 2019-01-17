@@ -1,4 +1,4 @@
-package com.ringoid.usersettings.view.debug
+package com.ringoid.origin.usersettings.view.debug
 
 import android.app.Application
 import com.ringoid.base.viewmodel.BaseViewModel

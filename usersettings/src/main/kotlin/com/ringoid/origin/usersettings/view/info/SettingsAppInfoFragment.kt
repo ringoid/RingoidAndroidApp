@@ -1,4 +1,4 @@
-package com.ringoid.usersettings.view.info
+package com.ringoid.origin.usersettings.view.info
 
 import android.os.Bundle
 import android.view.View
@@ -9,8 +9,8 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.BuildConfig
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.usersettings.OriginR_string
 import com.ringoid.usersettings.R
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings_app_info.*
@@ -20,7 +20,8 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
     companion object {
         internal const val TAG = "SettingsAppInfoFragment_tag"
 
-        fun newInstance(): SettingsAppInfoFragment = SettingsAppInfoFragment()
+        fun newInstance(): SettingsAppInfoFragment =
+            SettingsAppInfoFragment()
     }
 
     override fun getVmClass(): Class<SettingsAppInfoViewModel> = SettingsAppInfoViewModel::class.java

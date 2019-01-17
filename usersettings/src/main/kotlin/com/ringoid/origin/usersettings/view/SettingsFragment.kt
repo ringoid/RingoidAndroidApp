@@ -1,4 +1,4 @@
-package com.ringoid.usersettings.view
+package com.ringoid.origin.usersettings.view
 
 import android.os.Build
 import android.os.Bundle
@@ -12,8 +12,8 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.usersettings.OriginR_string
 import com.ringoid.usersettings.R
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -24,7 +24,8 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
     companion object {
         internal const val TAG = "SettingsFragment_tag"
 
-        fun newInstance(): SettingsFragment = SettingsFragment()
+        fun newInstance(): SettingsFragment =
+            SettingsFragment()
     }
 
     override fun getVmClass(): Class<SettingsViewModel> = SettingsViewModel::class.java

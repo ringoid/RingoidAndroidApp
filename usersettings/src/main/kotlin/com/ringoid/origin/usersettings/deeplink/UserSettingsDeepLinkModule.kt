@@ -1,4 +1,4 @@
-package com.ringoid.usersettings.deeplink
+package com.ringoid.origin.usersettings.deeplink
 
 import com.airbnb.deeplinkdispatch.DeepLinkModule
 

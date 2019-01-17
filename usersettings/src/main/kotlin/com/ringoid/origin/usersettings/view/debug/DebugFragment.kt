@@ -1,4 +1,4 @@
-package com.ringoid.usersettings.view.debug
+package com.ringoid.origin.usersettings.view.debug
 
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.usersettings.R
