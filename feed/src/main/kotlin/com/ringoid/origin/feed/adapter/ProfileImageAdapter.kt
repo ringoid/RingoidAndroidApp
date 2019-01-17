@@ -21,7 +21,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
     override fun instantiateViewHolder(view: View): ProfileImageViewHolder =
         ProfileImageViewHolder(view).also { vh ->
             vh.itemView.ibtn_like.apply {
-                changeVisibility(isVisible = isLikeButtonVisible, soft = true)
+                changeVisibility(isVisible = isLikeButtonVisible)
                 clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(vh.itemView.ibtn_like) }
             }
         }
