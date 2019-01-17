@@ -6,7 +6,7 @@ CURL=curl
 SERVER_ENDPOINT=https://rink.hockeyapp.net/api/2
 
 # Put your HockeyApp APP_TOKEN here. Find it in your HockeyApp account settings.
-APP_TOKEN="9ac1cc3e-a76f-4bd9-88a4-9dc72d438f84"
+APP_TOKEN="eceebb5c4fd144429d86542ee9a30765"
 
 # ipa - required, file data of the .ipa for iOS, .app.zip for OS X, or .apk file for Android
 IPA=$1
