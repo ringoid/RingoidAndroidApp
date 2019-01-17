@@ -9,7 +9,7 @@
         <item name="android:minHeight">@dimen/std_btn_height</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/flat_button_text_color</item>
-        <item name="android:textSize">@dimen/std_text_14</item>
+        <item name="android:textSize">@dimen/std_text_18</item>
     </style>
 
     <style name="RaisedButton" parent="@style/Widget.AppCompat.Button">
@@ -20,7 +20,7 @@
         <item name="android:minHeight">@dimen/std_btn_height</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/std_text_14</item>
+        <item name="android:textSize">@dimen/std_text_18</item>
     </style>
 
     <!-- ProgressBar -->
