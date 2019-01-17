@@ -37,8 +37,11 @@ class LmmFragment : BaseFragment<LmmViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        vm.feed.observe(viewLifecycleOwner, Observer {  })  // TODO: pass data to subscreens
-        vm.getFeed()
+        vm.apply {
+            feedLikes.observe(viewLifecycleOwner, Observer { })
+            feedMatches.observe(viewLifecycleOwner, Observer {  })
+            getFeed()
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")
