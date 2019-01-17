@@ -29,7 +29,10 @@ class LmmFragment : BaseFragment<LmmViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vp_pages.adapter = lmmPagesAdapter
+        vp_pages.apply {
+            adapter = lmmPagesAdapter
+            offscreenPageLimit = 2
+        }
         btn_tab_likes.clicks().compose(clickDebounce()).subscribe { vp_pages.currentItem = 0 }
         btn_tab_matches.clicks().compose(clickDebounce()).subscribe { vp_pages.currentItem = 1 }
     }
