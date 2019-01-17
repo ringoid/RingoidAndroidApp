@@ -132,6 +132,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         }
         vp_images.apply {
             adapter = imagesAdapter.also { it.tabsObserver = tabs.dataSetObserver }
+            offscreenPageLimit = 4
             tabs.setViewPager(this)
 //            OverScrollDecoratorHelper.setUpOverScroll(this)
         }
