@@ -7,5 +7,5 @@ class MatchesFeedFragment : FeedFragment<MatchesFeedViewModel>() {
 
     override fun getVmClass(): Class<MatchesFeedViewModel> = MatchesFeedViewModel::class.java
 
-    override fun getLayoutId(): Int = R.layout.fragment_matches_feed
+    override fun getLayoutId(): Int = R.layout.fragment_feed
 }

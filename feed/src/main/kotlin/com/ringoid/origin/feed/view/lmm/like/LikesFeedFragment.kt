@@ -10,7 +10,7 @@ class LikesFeedFragment : FeedFragment<LikesFeedViewModel>() {
 
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
 
-    override fun getLayoutId(): Int = R.layout.fragment_likes_feed
+    override fun getLayoutId(): Int = R.layout.fragment_feed
 
     override fun createFeedAdapter(): FeedAdapter =
         LikeFeedAdapter().apply {
