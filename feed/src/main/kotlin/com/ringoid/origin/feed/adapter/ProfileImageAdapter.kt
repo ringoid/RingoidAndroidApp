@@ -7,19 +7,23 @@ import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
 class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHolder>(ProfileImageDiffCallback()) {
 
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
+    internal var isLikeButtonVisible = true
 
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
     override fun instantiateViewHolder(view: View): ProfileImageViewHolder =
-        ProfileImageViewHolder(view).apply {
-            itemView.ibtn_like.clicks().compose(clickDebounce())
-                .subscribe { getOnItemClickListener(this).onClick(itemView.ibtn_like) }
+        ProfileImageViewHolder(view).also { vh ->
+            vh.itemView.ibtn_like.apply {
+                changeVisibility(isVisible = isLikeButtonVisible, soft = true)
+                clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(vh.itemView.ibtn_like) }
+            }
         }
 
     override fun submitList(list: List<ProfileImageVO>?) {

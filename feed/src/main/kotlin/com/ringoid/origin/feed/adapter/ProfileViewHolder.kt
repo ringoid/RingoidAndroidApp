@@ -19,7 +19,7 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
             profileImageAdapter.itemClickListener = value
         }
 
-    private val profileImageAdapter = ProfileImageAdapter().apply { itemClickListener = onLikeImageListener }
+    internal val profileImageAdapter = ProfileImageAdapter().apply { itemClickListener = onLikeImageListener }
 
     init {
         val snapHelper = PagerSnapHelper()
