@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="LoginTheme" parent="AppTheme">
-        <item name="refColorPrimary">@color/grass</item>
-        <item name="refColorPrimaryDark">@color/light_grey</item>
-    </style>
-</resources>
