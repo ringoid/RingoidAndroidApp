@@ -16,7 +16,7 @@
         android:scrollbarSize="4dp"
         android:scrollbars="horizontal"/>
 
-    <me.relex.circleindicator.CircleIndicator
+    <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="@dimen/feed_tab_layout_height"

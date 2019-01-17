@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.Profile
@@ -21,11 +22,14 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
     private val profileImageAdapter = ProfileImageAdapter().apply { itemClickListener = onLikeImageListener }
 
     init {
+        val snapHelper = PagerSnapHelper()
         itemView.rv_items.apply {
             adapter = profileImageAdapter
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 .also { it.initialPrefetchItemCount = 2 }
+            snapHelper.attachToRecyclerView(this)
+            itemView.tabs.attachToRecyclerView(this, snapHelper)
             setHasFixedSize(true)
             setRecycledViewPool(viewPool)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
