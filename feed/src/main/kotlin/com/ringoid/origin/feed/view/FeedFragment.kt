@@ -51,7 +51,6 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vm.feed.observe(viewLifecycleOwner, Observer { feedAdapter.submit(it) })
-        vm.getFeed()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

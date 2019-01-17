@@ -1,5 +1,6 @@
 package com.ringoid.origin.feed.view.explore
 
+import android.os.Bundle
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.R
 import com.ringoid.origin.feed.view.FeedFragment
@@ -34,4 +35,8 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        vm.getFeed()
+    }
 }
