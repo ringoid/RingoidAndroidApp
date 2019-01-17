@@ -378,9 +378,7 @@ ext {
 
     /* Feature ImagePreview */
     // ------------------------------------------
-    imagePreviewDependencies = [
-        [configuration: "implementation", dependency: d_libs.cropiwa],
-    ]
+    imagePreviewDependencies = []
     imagePreviewDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
@@ -410,9 +408,7 @@ ext {
     
     /* Feature Profile */
     // ------------------------------------------
-    profileDependencies = [
-        [configuration: "implementation", dependency: d_libs.cropiwa],
-    ]
+    profileDependencies = []
     profileDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
@@ -427,7 +423,9 @@ ext {
 
     /* Origin - base feature */
     // ------------------------------------------
-    originDependencies = []
+    originDependencies = [
+        [configuration: "api", dependency: d_libs.cropiwa],
+    ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
                           support + view
 
