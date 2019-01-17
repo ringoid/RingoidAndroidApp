@@ -37,4 +37,5 @@ hs_err_pid*
 .DS_Store
 /build
 /captures
+/release
 .externalNativeBuild
