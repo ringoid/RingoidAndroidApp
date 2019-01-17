@@ -140,12 +140,6 @@ ext {
             widget:  ':widget'
     ]
 
-    def feature_auth = [[configuration: "feature", dependency: project(modules.auth)]]
-    def feature_feed = [[configuration: "feature", dependency: project(modules.feed)]]
-    def feature_imagePreview = [[configuration: "feature", dependency: project(modules.imagePreview)]]
-    def feature_messenger = [[configuration: "feature", dependency: project(modules.messenger)]]
-    def feature_profile = [[configuration: "feature", dependency: project(modules.profile)]]
-
     def module_auth = [[configuration: "implementation", dependency: project(modules.auth)]]
     def module_feed = [[configuration: "implementation", dependency: project(modules.feed)]]
     def module_imagePreview = [[configuration: "implementation", dependency: project(modules.imagePreview)]]
@@ -434,8 +428,7 @@ ext {
     /* Origin - base feature */
     // ------------------------------------------
     originDependencies = []
-    originDependencies += feature_auth + feature_feed + feature_imagePreview + feature_messenger + feature_profile +
-            develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind + support
+    originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind + support
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
