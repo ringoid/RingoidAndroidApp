@@ -15,7 +15,7 @@ import kotlin.reflect.KFunction
 
 abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
-    protected val context: Context = app.applicationContext
+    protected val context: Context by lazy { app.applicationContext }
 
     @Inject lateinit var getUserAccessTokenUseCase: GetUserAccessTokenUseCase
     @Inject lateinit var actionObjectPool: IActionObjectPool

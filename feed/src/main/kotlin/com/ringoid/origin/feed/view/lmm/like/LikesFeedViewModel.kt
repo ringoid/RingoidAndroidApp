@@ -7,7 +7,7 @@ import javax.inject.Inject
 class LikesFeedViewModel @Inject constructor(app: Application) : FeedViewModel(app) {
 
     override fun getFeed() {
-        // TODO
+        // TODO: get only likes part of Lmm here
     }
 
     override fun getFeedName(): String = "who_liked_me"
