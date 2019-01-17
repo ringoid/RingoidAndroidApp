@@ -6,6 +6,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.model.actions.ActionObject
+import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -36,6 +37,15 @@ class ActionObjectPool @Inject constructor(
     @Synchronized
     override fun put(aobj: ActionObject) {
         Timber.v("Put action object: $aobj")
+        when (aobj) {
+            is ViewActionObject -> { /* no-op */ }
+            else -> {
+                val viewAobj = ViewActionObject(actionTime = aobj.actionTime, sourceFeed = aobj.sourceFeed,
+                    targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId,
+                    triggerStrategies = emptyList() /* no trigger strategies for synthetic action object */)
+                queue.offer(viewAobj)
+            }
+        }
         queue.offer(aobj)
 
         if (queue.size >= CAPACITY || aobj.triggerStrategies.contains(Immediate)) {

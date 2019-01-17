@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 class OpenChatActionObject(
     @Expose @SerializedName(COLUMN_OPEN_CHAT_COUNT) val count: Int = 1,
-    @Expose @SerializedName(COLUMN_OPEN_CHAT_TIME_MILLIS) val timeInMillis: Long,
+    @Expose @SerializedName(COLUMN_OPEN_CHAT_TIME_MILLIS) val timeInMillis: Long = 1,
     actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String)
     : ActionObject(actionTime = actionTime, actionType = "OPEN_CHAT", sourceFeed = sourceFeed,
