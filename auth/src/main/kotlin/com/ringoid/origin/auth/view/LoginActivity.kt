@@ -10,6 +10,7 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
+import com.ringoid.origin.auth.OriginR_string
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.navigation.*
@@ -44,7 +45,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.showTextDialog(this, titleResId = R.string.error_common, description = "DL TEXT FROM URL")
+                Dialogs.showTextDialog(this, titleResId = OriginR_string.error_common, description = "DL TEXT FROM URL")
                 onIdleState()
             }
             else -> { /* no-op */ }
