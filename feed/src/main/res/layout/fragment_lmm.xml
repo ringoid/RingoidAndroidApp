@@ -16,7 +16,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/std_btn_height"
+        android:layout_height="@dimen/lmm_top_gradient_height"
         android:background="@drawable/top_gradient_black"
         app:layout_constraintTop_toTopOf="parent"/>
 
