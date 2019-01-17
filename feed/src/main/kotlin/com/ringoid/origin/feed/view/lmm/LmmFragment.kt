@@ -16,7 +16,7 @@ class LmmFragment : BaseFragment<LmmViewModel>() {
         fun newInstance(): LmmFragment = LmmFragment()
     }
 
-    private val lmmPagesAdapter = LmmPagerAdapter(childFragmentManager)
+    private lateinit var lmmPagesAdapter: LmmPagerAdapter
 
     override fun getVmClass(): Class<LmmViewModel> = LmmViewModel::class.java
 
@@ -30,6 +30,11 @@ class LmmFragment : BaseFragment<LmmViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lmmPagesAdapter = LmmPagerAdapter(childFragmentManager)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vm.feed.observe(viewLifecycleOwner, Observer {  })  // TODO: pass data to subscreens
