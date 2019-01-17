@@ -1,11 +1,8 @@
 package com.ringoid.origin.feed.view.lmm.match
 
-import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.feed.view.lmm.like.BaseLikesFeedFragment
 
-class MatchesFeedFragment : FeedFragment<MatchesFeedViewModel>() {
+class MatchesFeedFragment : BaseLikesFeedFragment<MatchesFeedViewModel>() {
 
     override fun getVmClass(): Class<MatchesFeedViewModel> = MatchesFeedViewModel::class.java
-
-    override fun getLayoutId(): Int = R.layout.fragment_feed
 }
