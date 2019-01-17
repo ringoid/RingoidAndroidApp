@@ -11,7 +11,7 @@ import androidx.viewpager.widget.ViewPager
  */
 class DisableSwipeViewPager : ViewPager {
 
-    private var disable: Boolean = false
+    private var disable: Boolean = true
 
     constructor(context: Context): this(context, null)
 
