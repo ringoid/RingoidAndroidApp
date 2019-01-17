@@ -11,6 +11,9 @@ abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
 
     @Suppress("CheckResult")
     open fun setOnClickListener(l: View.OnClickListener?) {
-        itemView.clicks().compose(clickDebounce()).subscribe { l?.onClick(itemView) }
+        itemView.apply {
+            isClickable = l != null
+            clicks().compose(clickDebounce()).subscribe { l?.onClick(this) }
+        }
     }
 }

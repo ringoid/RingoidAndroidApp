@@ -33,6 +33,7 @@ open class FeedAdapter(private var imagesViewPool: RecyclerView.RecycledViewPool
                 }
             itemView.ibtn_settings.clicks().compose(clickDebounce())
                 .subscribe { wrapOnItemClickListener(this, wrapSettingsClickListener).onClick(itemView.ibtn_settings) }
+            setOnClickListener(null)  // clicks on the whole feed's item is no-op
         }
 
     fun submit(feed: Feed) {
