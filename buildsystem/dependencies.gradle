@@ -267,11 +267,11 @@ ext {
     ]
 
     def view = [
-            [configuration: "implementation", dependency: d_view.circularProgress],
-            [configuration: "implementation", dependency: d_view.dotsIndicator],
-            [configuration: "implementation", dependency: d_view.dotsIndicatorFix],
-            [configuration: "implementation", dependency: d_view.overscroll],
-            [configuration: "implementation", dependency: d_view.rvAnim],
+            [configuration: "api", dependency: d_view.circularProgress],
+            [configuration: "api", dependency: d_view.dotsIndicator],
+            [configuration: "api", dependency: d_view.dotsIndicatorFix],
+            [configuration: "api", dependency: d_view.overscroll],
+            [configuration: "api", dependency: d_view.rvAnim],
     ]
 
     def support = [
@@ -364,7 +364,7 @@ ext {
     /* Feature Feed */
     // ------------------------------------------
     feedDependencies = []
-    feedDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind + view
+    feedDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind
 
     androidTestFeedDeps = androidTest
     testFeedDependencies = test
@@ -396,7 +396,7 @@ ext {
     /* Feature Messenger */
     // ------------------------------------------
     messengerDependencies = []
-    messengerDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind + view
+    messengerDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test
@@ -413,7 +413,7 @@ ext {
     profileDependencies = [
         [configuration: "implementation", dependency: d_libs.cropiwa],
     ]
-    profileDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind + view
+    profileDependencies += module_origin + develop + android + arch + dagger + kotlin + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
@@ -428,7 +428,8 @@ ext {
     /* Origin - base feature */
     // ------------------------------------------
     originDependencies = []
-    originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind + support
+    originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
+                          support + view
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
