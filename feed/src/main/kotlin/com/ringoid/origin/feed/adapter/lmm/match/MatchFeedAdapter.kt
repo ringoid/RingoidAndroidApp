@@ -13,6 +13,6 @@ class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null) : 
         super.instantiateViewHolder(view).also { vh ->
             vh.profileImageAdapter.isLikeButtonVisible = false
             (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
-                ?.apply { horizontalBias = 0.28f }?.let { vh.itemView.ibtn_message.layoutParams = it }
+                ?.apply { verticalBias = 0.28f }?.let { vh.itemView.ibtn_message.layoutParams = it }
         }
 }
