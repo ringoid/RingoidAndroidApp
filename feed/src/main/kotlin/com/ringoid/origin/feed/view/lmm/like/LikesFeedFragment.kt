@@ -1,9 +1,12 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
+import com.ringoid.base.observe
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.utility.communicator
+import kotlinx.android.synthetic.main.fragment_feed.*
 
 class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel>() {
 
@@ -19,7 +22,16 @@ class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel>() {
         super.onActivityCreated(savedInstanceState)
         communicator(ILmmFragment::class.java)
             ?.getViewModel()
-            ?.feedLikes?.observe(viewLifecycleOwner,
-                Observer { feedAdapter.submitList(it.map { it.profile() }) })
+            ?.apply {
+                viewLifecycleOwner.observe(viewState, this@LikesFeedFragment::onViewStateChange)
+                feedLikes.observe(viewLifecycleOwner, Observer { feedAdapter.submitList(it.map { it.profile() }) })
+            }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        swipe_refresh_layout.apply {
+            setOnRefreshListener { communicator(ILmmFragment::class.java)?.onRefresh() }
+        }
     }
 }

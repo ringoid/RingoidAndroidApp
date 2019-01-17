@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.R
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_lmm.*
@@ -25,9 +24,8 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun getViewModel(): LmmViewModel = vm
 
     // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        // TODO
+    override fun onRefresh() {
+        vm.getFeed()
     }
 
     /* Lifecycle */

@@ -5,4 +5,5 @@ import com.ringoid.utility.ICommunicator
 interface ILmmFragment : ICommunicator {
 
     fun getViewModel(): LmmViewModel
+    fun onRefresh()
 }

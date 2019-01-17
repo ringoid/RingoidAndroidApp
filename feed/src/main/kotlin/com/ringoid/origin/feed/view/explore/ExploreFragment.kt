@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
+import android.view.View
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.R
 import com.ringoid.origin.feed.view.FeedFragment
@@ -38,5 +39,13 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vm.getFeed()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        swipe_refresh_layout.apply {
+//            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
+            setOnRefreshListener { vm.getFeed() }
+        }
     }
 }
