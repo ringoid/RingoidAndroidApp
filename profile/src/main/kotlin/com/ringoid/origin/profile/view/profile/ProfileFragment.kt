@@ -13,6 +13,7 @@ import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.RC_IMAGE_PREVIEW
 import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.adapter.ImagePagerAdapter
 import com.ringoid.origin.view.common.EmptyFragment
@@ -51,7 +52,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             is ViewState.DONE -> {
                 when (newState.residual) {
                     IMAGE_CREATED -> {
-                        snackbar(view, R.string.profile_image_created)
+                        snackbar(view, OriginR_string.profile_image_created)
                         onCreateImage()
                         onIdleState()
                     }
@@ -59,7 +60,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             }
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.showTextDialog(activity, titleResId = R.string.error_common, description = "DL TEXT FROM URL")
+                Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_common, description = "DL TEXT FROM URL")
                 onIdleState()
             }
         }
@@ -80,14 +81,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imagesAdapter = ProfileImagePagerAdapter(fm = childFragmentManager,
-            emptyInput = EmptyFragment.Companion.Input(emptyTextResId = R.string.profile_empty_images))
+            emptyInput = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
 
         imagePreviewReceiver.apply {
             register(context)
             setListener(object : CropIwaResultReceiver.Listener {
                 override fun onCropFailed(e: Throwable) {
                     Timber.e(e, "Image crop has failed")
-                    view?.let { snackbar(it, R.string.error_crop_image) }
+                    view?.let { snackbar(it, OriginR_string.error_crop_image) }
                 }
 
                 override fun onCropSuccess(croppedUri: Uri) {
@@ -145,9 +146,9 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 
     // --------------------------------------------------------------------------------------------
     private fun askToAddAnotherImage() {
-        Dialogs.showTextDialog(activity, titleResId = R.string.profile_dialog_image_another_title,
-            positiveBtnLabelResId = R.string.profile_dialog_image_another_button_add,
-            negativeBtnLabelResId = R.string.profile_dialog_image_another_button_cancel,
+        Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title,
+            positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
+            negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
             positiveListener = { _, _ -> vm.onAddImage() },
             negativeListener = { _, _ -> navigate(this@ProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
     }

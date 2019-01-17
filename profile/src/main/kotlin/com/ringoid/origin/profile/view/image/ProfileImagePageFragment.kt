@@ -5,6 +5,7 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.view.profile.IMAGE_DELETED
 import com.ringoid.origin.profile.view.profile.IProfileFragment
@@ -42,7 +43,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
             is ViewState.DONE -> {
                 when (newState.residual) {
                     IMAGE_DELETED -> {
-                        snackbar(view, R.string.profile_image_deleted)
+                        snackbar(view, OriginR_string.profile_image_deleted)
                         communicator(IProfileFragment::class.java)?.onDeleteImage()
                         onIdleState()
                     }
@@ -50,7 +51,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
             }
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.showTextDialog(activity, titleResId = R.string.error_common, description = "DL TEXT FROM URL")
+                Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_common, description = "DL TEXT FROM URL")
                 onIdleState()
             }
         }
@@ -68,10 +69,10 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
-            Dialogs.showTextDialog(activity, titleResId = R.string.profile_dialog_delete_image_title,
-                descriptionResId = R.string.profile_dialog_delete_image_description,
-                positiveBtnLabelResId = R.string.button_delete,
-                negativeBtnLabelResId = R.string.button_cancel,
+            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_delete_image_title,
+                descriptionResId = OriginR_string.profile_dialog_delete_image_description,
+                positiveBtnLabelResId = OriginR_string.button_delete,
+                negativeBtnLabelResId = OriginR_string.button_cancel,
                 positiveListener = { _, _ -> vm.deleteImage(image!!.id) })
         }
     }
