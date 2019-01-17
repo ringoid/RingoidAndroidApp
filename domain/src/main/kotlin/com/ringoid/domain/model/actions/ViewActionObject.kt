@@ -7,7 +7,7 @@ import com.ringoid.domain.action_storage.VIEW_DELAY_ON_TRIGGER
 
 class ViewActionObject(
     @Expose @SerializedName(COLUMN_VIEW_COUNT) val count: Int = 1,
-    @Expose @SerializedName(COLUMN_VIEW_TIME_SEC) val timeInSeconds: Int,
+    @Expose @SerializedName(COLUMN_VIEW_TIME_MILLIS) val timeInMillis: Long,
     actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String)
     : ActionObject(actionTime = actionTime, actionType = "VIEW", sourceFeed = sourceFeed,
@@ -16,6 +16,6 @@ class ViewActionObject(
 
     companion object {
         const val COLUMN_VIEW_COUNT = "viewCount"
-        const val COLUMN_VIEW_TIME_SEC = "viewTimeSec"
+        const val COLUMN_VIEW_TIME_MILLIS = "viewTimeMillis"
     }
 }
