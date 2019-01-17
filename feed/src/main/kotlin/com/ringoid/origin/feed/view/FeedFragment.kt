@@ -5,6 +5,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
@@ -21,6 +22,24 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
     protected open fun createFeedAdapter(): FeedAdapter = FeedAdapter()  // TODO: pass common pool
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        fun onIdleState() {
+            swipe_refresh_layout.isRefreshing = false
+        }
+
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.IDLE -> onIdleState()
+            is ViewState.LOADING -> swipe_refresh_layout.isRefreshing = true
+            is ViewState.ERROR -> {
+                // TODO: analyze: newState.e
+                Dialogs.showTextDialog(activity, titleResId = com.ringoid.origin.R.string.error_common, description = "DL TEXT FROM URL")
+                onIdleState()
+            }
+        }
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -55,10 +74,6 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        swipe_refresh_layout.apply {
-//            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            setOnRefreshListener { vm.getFeed() }
-        }
         rv_items.apply {
             adapter = feedAdapter
             isNestedScrollingEnabled = false
