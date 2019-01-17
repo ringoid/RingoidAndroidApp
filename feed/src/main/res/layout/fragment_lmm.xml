@@ -14,6 +14,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/std_btn_height"
+        android:background="@drawable/top_gradient_black"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <Button
         android:id="@+id/btn_tab_likes"
         android:background="?selectableItemBackground"
