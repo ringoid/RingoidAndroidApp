@@ -52,8 +52,4 @@ dependencies {
     }
 
     application project(':app')
-    feature project(":feed")
-    feature project(":imagepreview")
-    feature project(":messenger")
-    feature project(":profile")
 }
