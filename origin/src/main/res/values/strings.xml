@@ -31,6 +31,10 @@
     </string-array>
 
     <!-- Image Preview screen -->
+
+    <!-- Lmm screen -->
+    <string name="lmm_tab_likes">Likes You</string>
+    <string name="lmm_tab_matches">Matches</string>
     
     <!-- Login screen -->
     <string name="login_button">Continue to upload photo</string>
