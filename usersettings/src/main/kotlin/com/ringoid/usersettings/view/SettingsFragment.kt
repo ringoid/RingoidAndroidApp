@@ -13,6 +13,7 @@ import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.usersettings.OriginR_string
 import com.ringoid.usersettings.R
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -42,7 +43,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
             is ViewState.LOADING -> pb_settings.changeVisibility(isVisible = true)
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.showTextDialog(activity, titleResId = R.string.error_common, description = "DL TEXT FROM URL")
+                Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_common, description = "DL TEXT FROM URL")
                 onIdleState()
             }
             else -> { /* no-op */ }
@@ -56,13 +57,13 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
             setNavigationOnClickListener { activity?.onBackPressed() }
-            setTitle(R.string.settings_title)
+            setTitle(OriginR_string.settings_title)
         }
 
         item_delete_account.clicks().compose(clickDebounce()).subscribe {
-            Dialogs.showTextDialog(activity, titleResId = R.string.settings_account_delete_dialog_title,
-                descriptionResId = R.string.settings_account_delete_dialog_description,
-                positiveBtnLabelResId = R.string.button_delete, negativeBtnLabelResId = R.string.button_cancel,
+            Dialogs.showTextDialog(activity, titleResId = OriginR_string.settings_account_delete_dialog_title,
+                descriptionResId = OriginR_string.settings_account_delete_dialog_description,
+                positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
                 positiveListener = { _, _ -> vm.deleteAccount() })
         }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }

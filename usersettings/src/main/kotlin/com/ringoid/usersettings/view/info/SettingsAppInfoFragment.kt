@@ -10,6 +10,7 @@ import com.ringoid.origin.BuildConfig
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.usersettings.OriginR_string
 import com.ringoid.usersettings.R
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings_app_info.*
@@ -38,14 +39,14 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
             setNavigationOnClickListener { activity?.onBackPressed() }
-            setTitle(R.string.settings_info_title)
+            setTitle(OriginR_string.settings_info_title)
         }
 
         item_about.apply {
             clicks().compose(clickDebounce()).subscribe {
                 Dialogs.showTextDialog(
-                    activity, titleResId = R.string.settings_info_about_dialog_title,
-                    descriptionResId = R.string.settings_info_about_dialog_description
+                    activity, titleResId = OriginR_string.settings_info_about_dialog_title,
+                    descriptionResId = OriginR_string.settings_info_about_dialog_description
                 )
             }
             setLabel(BuildConfig.VERSION_NAME)
