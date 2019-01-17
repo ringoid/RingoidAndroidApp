@@ -1,8 +1,7 @@
 package com.ringoid.origin.imagepreview.view
 
-import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.CONTENT_URI
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.NavigateFrom
@@ -12,21 +11,14 @@ import com.ringoid.origin.view.base.BaseHostActivity
 @AppNav("imagepreview")
 class ImagePreviewActivity : BaseHostActivity(), IImagePreviewActivity {
 
+    override fun getFragmentTag(): String = ImagePreviewFragment.TAG
+    override fun instantiateFragment(): Fragment =
+        ImagePreviewFragment.newInstance(
+            uri = intent.getParcelableExtra(CONTENT_URI),
+            navigateFrom = intent.getStringExtra(Extras.EXTRA_NAVIGATE_FROM))
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        savedInstanceState ?: run {
-            val fragment = ImagePreviewFragment.newInstance(
-                uri = intent.getParcelableExtra(CONTENT_URI),
-                navigateFrom = intent.getStringExtra(Extras.EXTRA_NAVIGATE_FROM))
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fl_container, fragment, ImagePreviewFragment.TAG)
-                .commitNow()
-        }
-    }
-
     override fun onBackPressed() {
         (supportFragmentManager.findFragmentByTag(ImagePreviewFragment.TAG) as? ImagePreviewFragment)
             ?.onNavigateBack()
