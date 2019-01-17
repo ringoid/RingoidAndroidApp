@@ -15,31 +15,39 @@ import timber.log.Timber
 
 abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
-    protected val feedAdapter: FeedAdapter = FeedAdapter()  // TODO: pass common pool
-        .apply {
-            onLikeImageListener = { model: ProfileImageVO, _ ->
-                Timber.i("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
-                vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
-            }
-            settingsClickListener = { model: Profile, _, positionOfImage: Int ->
-                Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.block_profile_array),
-                    l = { _, which: Int ->
-                        val image = model.images[positionOfImage]
-                        when (which) {
-                            0 -> vm.onBlock(profileId = model.id, imageId = image.id)
-                            1 -> Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.report_profile_array),
-                                l = { _, number: Int ->
-                                    vm.onReport(profileId = model.id, imageId = image.id, reasonNumber = (number + 1) * 10)
-                                })
-                        }
-                    })
-            }
-        }
+    protected lateinit var feedAdapter: FeedAdapter
+        private set
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
+    protected open fun createFeedAdapter(): FeedAdapter = FeedAdapter()  // TODO: pass common pool
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        feedAdapter = createFeedAdapter()
+            .apply {
+                onLikeImageListener = { model: ProfileImageVO, _ ->
+                    Timber.i("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
+                    vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
+                }
+                settingsClickListener = { model: Profile, _, positionOfImage: Int ->
+                    Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.block_profile_array),
+                        l = { _, which: Int ->
+                            val image = model.images[positionOfImage]
+                            when (which) {
+                                0 -> vm.onBlock(profileId = model.id, imageId = image.id)
+                                1 -> Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(R.array.report_profile_array),
+                                    l = { _, number: Int ->
+                                        vm.onReport(profileId = model.id, imageId = image.id, reasonNumber = (number + 1) * 10)
+                                    })
+                            }
+                        })
+                }
+            }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vm.feed.observe(viewLifecycleOwner, Observer { feedAdapter.submit(it) })

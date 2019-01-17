@@ -37,6 +37,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_more_white_36dp"/>
 
+    <ImageButton
+        android:id="@+id/ibtn_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:background="?selectableItemBackground"
+        android:contentDescription="@null"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_chat_bubble_outline_white_36dp"/>
+
     <View
         android:id="@+id/underscore"
         android:background="@android:color/black"
