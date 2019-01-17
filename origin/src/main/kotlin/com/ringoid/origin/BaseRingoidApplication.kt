@@ -3,9 +3,11 @@ package com.ringoid.origin
 import android.content.Context
 import android.util.Log
 import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.support.DaggerApplication
+import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
@@ -34,6 +36,7 @@ abstract class BaseRingoidApplication : DaggerApplication() {
         Timber.d("Starting ${javaClass.simpleName}")
         initializeResources()
 //        initializeLeakDetection()
+        initializeCrashlytics()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeRxErrorHandler()
     }
@@ -98,6 +101,13 @@ abstract class BaseRingoidApplication : DaggerApplication() {
 
     /* Crashlytics */
     // --------------------------------------------------------------------------------------------
+    private fun initializeCrashlytics() {
+        val core = CrashlyticsCore.Builder()
+            .disabled(BuildConfig.DEBUG)
+            .build()
+        Fabric.with(this, Crashlytics.Builder().core(core).build())
+    }
+
     /**
      * {@see https://blog.xmartlabs.com/2015/07/09/Android-logging-with-Crashlytics-and-Timber/}
      * Comment: [Timber.Tree] only supplies the tag when it was explicitly set.
