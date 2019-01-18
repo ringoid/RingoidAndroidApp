@@ -34,6 +34,10 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         // override in subclasses
     }
 
+    open fun onTabTransaction() {
+        // override in subclasses
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onAttach(context: Context) {
