@@ -76,7 +76,7 @@
     <string name="settings_info_customer_info">Customer ID</string>
     <string name="settings_info_email_officer">Email Data Protection Officer</string>
     <string name="settings_info_email_officer_mail_subject">Dear Data Protection Officer,\n\nMy Customer ID is %s\n\n</string>
-    <string name="settings_info_licenses">Licenses</string>
+    <string name="settings_info_licenses">Open&#45;source Licenses</string>
     <string name="settings_info_privacy">Privacy Policy</string>
     <string name="settings_info_terms">Terms of Service</string>
     <string name="settings_info_title">Legal</string>
