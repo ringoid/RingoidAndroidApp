@@ -67,6 +67,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // tie observer to view's lifecycle rather than Fragment's one
             viewLifecycleOwner.apply {
+                subscribeOnBusEvents()
                 observe(viewState, this@BaseFragment::onViewStateChange)
                 observe(navigation) { it.call(this@BaseFragment) }
             }
@@ -81,5 +82,10 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         isOnSaveInstanceState = true
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        vm.unsubscribeFromBusEvents()
     }
 }

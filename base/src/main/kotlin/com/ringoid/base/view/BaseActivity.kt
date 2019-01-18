@@ -37,6 +37,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         getLayoutId()?.let { setContentView(it) }
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
+            subscribeOnBusEvents()
             observe(viewState) { onViewStateChange(it) }
             observe(navigation) { it.call(this@BaseActivity) }
         }
@@ -45,5 +46,6 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     override fun onDestroy() {
         isDestroying = true
         super.onDestroy()
+        vm.unsubscribeFromBusEvents()
     }
 }

@@ -3,6 +3,8 @@ package com.ringoid.origin.profile.view.profile
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
@@ -74,5 +76,10 @@ class ProfileFragmentViewModel @Inject constructor(
     // ------------------------------------------
     fun onAddImage() {
         navigation.value = ExternalNavigator::openGalleryToGetImageFragment
+    }
+
+    fun onRefresh() {
+        getUserImages()
+        Bus.post(event = BusEvent.RefreshOnProfile)
     }
 }

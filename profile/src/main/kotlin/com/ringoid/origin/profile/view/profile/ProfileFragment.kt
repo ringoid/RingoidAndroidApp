@@ -129,7 +129,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            setOnRefreshListener { vm.getUserImages() }
+            setOnRefreshListener { vm.onRefresh() }
         }
         vp_images.apply {
             adapter = imagesAdapter.also { it.tabsObserver = tabs.dataSetObserver }

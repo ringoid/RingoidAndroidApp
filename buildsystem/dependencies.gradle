@@ -211,10 +211,6 @@ ext {
             [configuration: "implementation", dependency: d_libs.deeplink],
     ]
 
-    def eventbus = [
-            [configuration: "implementation", dependency: d_libs.eventBus],
-    ]
-
     def fragnav = [
             [configuration: "implementation", dependency: d_libs.fragNav]
     ]
@@ -448,7 +444,9 @@ ext {
 
     /* Base */
     // ------------------------------------------
-    baseDependencies = []
+    baseDependencies = [
+        [configuration: "api", dependency: d_libs.eventBus]
+    ]
     baseDependencies += module_domain + module_utility + android + arch + dagger + deeplink + kotlin + log + autoDispose + rx + rxBind
 
     androidTestBaseDeps = androidTest
