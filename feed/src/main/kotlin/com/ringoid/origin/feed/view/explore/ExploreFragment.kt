@@ -16,7 +16,9 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onTabTransaction() {
         super.onTabTransaction()
-        vm.onRefresh()  // purge feed when Main tab has switched back to Explore screen
+        if (isActivityCreated) {
+            vm.onRefresh()  // purge feed when Main tab has switched back to Explore screen
+        }
     }
 
     /* Lifecycle */

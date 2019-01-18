@@ -21,6 +21,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
 
+    var isActivityCreated = false
+        private set
     var isOnSaveInstanceState = false
         private set
 
@@ -61,6 +63,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
      */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        isActivityCreated = true
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // tie observer to view's lifecycle rather than Fragment's one
             viewLifecycleOwner.apply {
