@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
@@ -11,12 +12,20 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.navigation.NavigateFrom
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
 abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
+
+    object InternalNavigator {
+        fun openProfileScreen(fragment: Fragment) {
+            navigate(fragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}")
+        }
+    }
 
     protected lateinit var feedAdapter: FeedAdapter
         private set

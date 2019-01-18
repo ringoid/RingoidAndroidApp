@@ -5,15 +5,13 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.UnlikeActionObject
-import com.ringoid.origin.navigation.ExternalNavigator
 
 abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
     abstract fun getFeedName(): String
 
     fun onAddImage() {
-        // TODO: redirect on Profile screen and call onAddImage()
-        navigation.value = ExternalNavigator::openGalleryToGetImageFragment
+        navigation.value = FeedFragment.InternalNavigator::openProfileScreen
     }
 
     fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
