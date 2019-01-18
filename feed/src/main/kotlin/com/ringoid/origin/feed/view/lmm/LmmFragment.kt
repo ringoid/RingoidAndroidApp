@@ -1,11 +1,13 @@
 package com.ringoid.origin.feed.view.lmm
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.feed.R
+import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_lmm.*
 
@@ -52,7 +54,15 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             adapter = lmmPagesAdapter
             offscreenPageLimit = 2
         }
-        btn_tab_likes.clicks().compose(clickDebounce()).subscribe { vp_pages.currentItem = 0 }
-        btn_tab_matches.clicks().compose(clickDebounce()).subscribe { vp_pages.currentItem = 1 }
+        btn_tab_likes.clicks().compose(clickDebounce()).subscribe {
+            btn_tab_likes.changeTypeface(style = Typeface.BOLD, isSelected = true)
+            btn_tab_matches.changeTypeface()
+            vp_pages.currentItem = 0
+        }
+        btn_tab_matches.clicks().compose(clickDebounce()).subscribe {
+            btn_tab_likes.changeTypeface()
+            btn_tab_matches.changeTypeface(style = Typeface.BOLD, isSelected = true)
+            vp_pages.currentItem = 1
+        }
     }
 }

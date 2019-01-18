@@ -2,10 +2,12 @@ package com.ringoid.utility
 
 import android.content.Context
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.view.TouchDelegate
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -29,6 +31,11 @@ fun View.touchExtend(size: Int = 100): View {
         }
     }
     return this
+}
+
+fun TextView.changeTypeface(tf: Typeface? = null, style: Int = Typeface.NORMAL, isSelected: Boolean = false) {
+    this.isSelected = isSelected
+    setTypeface(tf, style)
 }
 
 // ------------------------------------------------------------------------------------------------
