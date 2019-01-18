@@ -17,6 +17,7 @@ open class LikeFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
     override fun instantiateViewHolder(view: View): ProfileViewHolder =
         super.instantiateViewHolder(view).also { vh ->
             vh.itemView.ibtn_message.apply {
+                // TODO: show message button only after like tap
                 changeVisibility(isVisible = true)
                 clicks().compose(clickDebounce())
                     .subscribe { wrapOnItemClickListener(vh, messageClickListener).onClick(vh.itemView.ibtn_message) }
