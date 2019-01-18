@@ -6,9 +6,5 @@ import javax.inject.Inject
 
 class MatchesFeedViewModel @Inject constructor(app: Application) : FeedViewModel(app) {
 
-    override fun getFeed() {
-        // TODO: get only matches part of lmm here
-    }
-
     override fun getFeedName(): String = "messages"
 }

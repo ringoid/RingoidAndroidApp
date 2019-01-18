@@ -1,19 +1,19 @@
 package com.ringoid.origin.feed.view
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.UnlikeActionObject
-import com.ringoid.domain.model.feed.Feed
+import com.ringoid.origin.navigation.ExternalNavigator
 
 abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
-    val feed by lazy { MutableLiveData<Feed>() }
-
-    abstract fun getFeed()  // call it in proper place in subclasses of [FeedFragment]
     abstract fun getFeedName(): String
+
+    fun onAddImage() {
+        navigation.value = ExternalNavigator::openGalleryToGetImageFragment
+    }
 
     fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)

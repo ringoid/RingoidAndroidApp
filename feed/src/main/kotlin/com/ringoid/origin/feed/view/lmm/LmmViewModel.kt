@@ -9,6 +9,8 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.ScreenHelper
+import com.ringoid.origin.feed.view.IFeedViewModel
+import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -44,15 +46,21 @@ class LmmViewModel @Inject constructor(private val getLmmUseCase: GetLmmUseCase,
             }, Timber::e)
     }
 
+    // ------------------------------------------
     fun clearScreen(mode: Int) {
         viewState.value = ViewState.CLEAR(mode)
     }
 
     fun onRefresh() {
+        if (notImages) {
+            viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+            return
+        }
         clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
         getFeed()
     }
 
+    // ------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
         Timber.d("Received bus event: $event")

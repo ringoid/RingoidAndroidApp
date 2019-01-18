@@ -3,11 +3,11 @@ package com.ringoid.origin.feed.view
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.OriginR_array
+import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -47,6 +47,17 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                         .commitNowAllowingStateLoss()
                 }
             }
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    NO_IMAGES_IN_PROFILE -> {
+                        Dialogs.showTextDialog(activity,
+                            descriptionResId = OriginR_string.feed_explore_dialog_no_user_photo_description,
+                            positiveBtnLabelResId = OriginR_string.button_later,
+                            negativeBtnLabelResId = OriginR_string.button_add_photo,
+                            negativeListener = { _, _ -> vm.onAddImage() })
+                    }
+                }
+            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> swipe_refresh_layout.isRefreshing = true
             is ViewState.ERROR -> {
@@ -81,11 +92,6 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                         })
                 }
             }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.feed, feedAdapter::submit)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
