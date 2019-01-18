@@ -9,6 +9,9 @@ import io.reactivex.Single
 @Dao
 interface ImageDao {
 
+    @Query("SELECT COUNT(*) FROM ${UserImageDbo.TABLE_NAME}")
+    fun countUserImages(): Single<Int>
+
     @Query("SELECT * FROM ${UserImageDbo.TABLE_NAME} WHERE ${BaseImageDbo.COLUMN_ID} = :id")
     fun userImage(id: String): Single<UserImageDbo>
 

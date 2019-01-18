@@ -14,6 +14,8 @@ interface IUserImageRepository : IImageRepository {
     val imageIdChange: PublishSubject<Pair<String, String>>
 
     // --------------------------------------------------------------------------------------------
+    fun countUserImages(): Single<Int>
+
     fun getUserImage(id: String): Single<UserImage>
 
     fun getUserImages(resolution: ImageResolution): Single<List<UserImage>>

@@ -37,6 +37,8 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
     override val imageDelete = PublishSubject.create<String>()
     override val imageIdChange = PublishSubject.create<Pair<String, String>>()
 
+    override fun countUserImages(): Single<Int> = local.countUserImages()
+
     override fun getUserImage(id: String): Single<UserImage> = local.userImage(id).map { it.map() }
 
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =

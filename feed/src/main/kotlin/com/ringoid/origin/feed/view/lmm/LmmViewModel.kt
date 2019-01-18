@@ -7,9 +7,9 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
+import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.ScreenHelper
-import com.ringoid.origin.feed.view.IFeedViewModel
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
@@ -17,7 +17,9 @@ import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
-class LmmViewModel @Inject constructor(private val getLmmUseCase: GetLmmUseCase, app: Application) : BaseViewModel(app) {
+class LmmViewModel @Inject constructor(
+    private val getLmmUseCase: GetLmmUseCase, private val countUserImagesUseCase: CountUserImagesUseCase,
+    app: Application) : BaseViewModel(app) {
 
     val feedLikes by lazy { MutableLiveData<List<FeedItem>>() }
     val feedMatches by lazy { MutableLiveData<List<FeedItem>>() }
@@ -52,12 +54,17 @@ class LmmViewModel @Inject constructor(private val getLmmUseCase: GetLmmUseCase,
     }
 
     fun onRefresh() {
-        if (notImages) {
-            viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
-            return
-        }
-        clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
-        getFeed()
+        countUserImagesUseCase.source()
+            .map { it > 0 }  // user has images in profile
+            .autoDisposable(this)
+            .subscribe({
+                if (it) {
+                    clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
+                    getFeed()
+                } else {
+                    viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+                }
+            }, Timber::e)
     }
 
     // ------------------------------------------

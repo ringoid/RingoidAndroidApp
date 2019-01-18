@@ -10,7 +10,7 @@ import com.ringoid.domain.repository.image.IUserImageRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
-class DeleteUserImageUseCase@Inject constructor(private val repository: IUserImageRepository,
+class DeleteUserImageUseCase @Inject constructor(private val repository: IUserImageRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {
 
