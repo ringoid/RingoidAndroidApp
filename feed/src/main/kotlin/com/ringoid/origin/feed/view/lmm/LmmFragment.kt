@@ -30,6 +30,11 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         vm.onRefresh()
     }
 
+    override fun onTabReselect() {
+        super.onTabReselect()
+        vp_pages?.let { selectPage(it.currentItem xor 1) }
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,15 +59,21 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             adapter = lmmPagesAdapter
             offscreenPageLimit = 2
         }
-        btn_tab_likes.clicks().compose(clickDebounce()).subscribe {
-            btn_tab_likes.changeTypeface(style = Typeface.BOLD, isSelected = true)
-            btn_tab_matches.changeTypeface()
-            vp_pages.currentItem = 0
+        btn_tab_likes.clicks().compose(clickDebounce()).subscribe { selectPage(0) }
+        btn_tab_matches.clicks().compose(clickDebounce()).subscribe { selectPage(1) }
+    }
+
+    private fun selectPage(position: Int) {
+        when (position) {
+            0 -> {
+                btn_tab_likes?.changeTypeface(style = Typeface.BOLD, isSelected = true)
+                btn_tab_matches?.changeTypeface()
+            }
+            1 -> {
+                btn_tab_likes?.changeTypeface()
+                btn_tab_matches?.changeTypeface(style = Typeface.BOLD, isSelected = true)
+            }
         }
-        btn_tab_matches.clicks().compose(clickDebounce()).subscribe {
-            btn_tab_likes.changeTypeface()
-            btn_tab_matches.changeTypeface(style = Typeface.BOLD, isSelected = true)
-            vp_pages.currentItem = 1
-        }
+        vp_pages?.currentItem = position
     }
 }
