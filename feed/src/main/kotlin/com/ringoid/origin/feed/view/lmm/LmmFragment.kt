@@ -61,6 +61,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         }
         btn_tab_likes.clicks().compose(clickDebounce()).subscribe { selectPage(0) }
         btn_tab_matches.clicks().compose(clickDebounce()).subscribe { selectPage(1) }
+        selectPage(position = 0)
     }
 
     private fun selectPage(position: Int) {
