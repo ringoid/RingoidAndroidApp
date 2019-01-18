@@ -16,6 +16,7 @@ import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
@@ -39,6 +40,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onIdleState() {
+            fl_empty_container.changeVisibility(isVisible = false, soft = true)
             swipe_refresh_layout.isRefreshing = false
         }
 
@@ -49,6 +51,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                 onIdleState()
 
                 getEmptyStateInput(newState.mode)?.let {
+                    fl_empty_container.changeVisibility(isVisible = true)
                     val emptyFragment = EmptyFragment.newInstance(it)
                     childFragmentManager
                         .beginTransaction()
