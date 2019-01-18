@@ -20,7 +20,10 @@ class ExploreViewModel @Inject constructor(private val getNewFacesUseCase: GetNe
 
         getNewFacesUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSuccess {
+                viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
+                                  else ViewState.IDLE
+            }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ feed.value = it }, Timber::e)
@@ -28,8 +31,12 @@ class ExploreViewModel @Inject constructor(private val getNewFacesUseCase: GetNe
 
     override fun getFeedName(): String = "new_faces"
 
+    fun clearScreen(mode: Int) {
+        viewState.value = ViewState.CLEAR(mode)
+    }
+
     fun onRefresh() {
-        viewState.value = ViewState.CLEAR
+        clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
         getFeed()
     }
 }

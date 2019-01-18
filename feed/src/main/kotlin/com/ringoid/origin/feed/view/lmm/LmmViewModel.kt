@@ -19,13 +19,23 @@ class LmmViewModel @Inject constructor(private val getLmmUseCase: GetLmmUseCase,
 
     val feedLikes by lazy { MutableLiveData<List<FeedItem>>() }
     val feedMatches by lazy { MutableLiveData<List<FeedItem>>() }
+    val emptyStateLikes: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
+    val emptyStateMatches: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
 
-    fun getFeed() {
+    private fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
         getLmmUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSuccess {
+                viewState.value = ViewState.IDLE
+                if (it.isLikesEmpty()) {
+                    emptyStateLikes.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
+                }
+                if (it.isMatchesEmpty()) {
+                    emptyStateMatches.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
+                }
+            }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
@@ -34,8 +44,12 @@ class LmmViewModel @Inject constructor(private val getLmmUseCase: GetLmmUseCase,
             }, Timber::e)
     }
 
+    fun clearScreen(mode: Int) {
+        viewState.value = ViewState.CLEAR(mode)
+    }
+
     fun onRefresh() {
-        viewState.value = ViewState.CLEAR
+        clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
         getFeed()
     }
 

@@ -2,7 +2,10 @@ package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
 import android.view.View
+import com.ringoid.base.view.ViewState
+import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.view.common.EmptyFragment
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
@@ -13,11 +16,22 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     override fun getVmClass(): Class<ExploreViewModel> = ExploreViewModel::class.java
 
+    override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
+        when (mode) {
+            ViewState.CLEAR.MODE_EMPTY_DATA -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_explore_empty_no_data)
+            ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_explore_empty_need_refresh)
+            else -> null
+        }
+
     // --------------------------------------------------------------------------------------------
     override fun onTabTransaction() {
         super.onTabTransaction()
         if (isActivityCreated) {
-            vm.onRefresh()  // purge feed when Main tab has switched back to Explore screen
+            /**
+             * Purge feed when Main tab has switched back to Explore screen,
+             * swipe-to-refresh is required to get need data.
+             */
+            vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
         }
     }
 
@@ -25,7 +39,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        vm.getFeed()
+        vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -16,6 +16,8 @@ class EmptyFragment : Fragment() {
         data class Input(@LayoutRes val layoutResId: Int = R.layout.fragment_empty_text,
                          @StringRes val emptyTextResId: Int)
 
+        const val TAG = "EmptyFragment_tag"
+
         private const val BUNDLE_KEY_LAYOUT_RES_ID = "bundle_key_layout_res_id"
         private const val BUNDLE_KEY_EMPTY_TEXT_RES_ID = "bundle_key_empty_text_res_id"
 

@@ -11,6 +11,7 @@ import com.ringoid.origin.feed.OriginR_array
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -24,6 +25,8 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     protected open fun createFeedAdapter(): FeedAdapter = FeedAdapter()  // TODO: pass common pool
 
+    protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
+
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onIdleState() {
@@ -32,7 +35,18 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.CLEAR -> feedAdapter.clear()
+            is ViewState.CLEAR -> {
+                feedAdapter.clear()
+                onIdleState()
+
+                getEmptyStateInput(newState.mode)?.let {
+                    val emptyFragment = EmptyFragment.newInstance(it)
+                    childFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
+                        .commitNowAllowingStateLoss()
+                }
+            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> swipe_refresh_layout.isRefreshing = true
             is ViewState.ERROR -> {

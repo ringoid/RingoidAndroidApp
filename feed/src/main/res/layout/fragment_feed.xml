@@ -5,14 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.ringoid.widget.view.GestureEnhancedRecyclerView
-        android:id="@+id/rv_items"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:scrollbarAlwaysDrawHorizontalTrack="true"
-        android:scrollbarThumbHorizontal="@color/white_transparent"
-        android:scrollbarSize="4dp"
-        android:scrollbars="horizontal"/>
+        android:layout_height="match_parent">
+
+        <com.ringoid.widget.view.GestureEnhancedRecyclerView
+            android:id="@+id/rv_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbarAlwaysDrawHorizontalTrack="true"
+            android:scrollbarThumbHorizontal="@color/white_transparent"
+            android:scrollbarSize="4dp"
+            android:scrollbars="horizontal"/>
+
+        <FrameLayout
+            android:id="@+id/fl_empty_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+    </FrameLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

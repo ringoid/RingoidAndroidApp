@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.R
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.clickDebounce
@@ -49,7 +50,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
          * so it is safe to access [vm] of this parent Fragment from [Fragment.onActivityCreated]
          * of it's child Fragments.
          */
-        vm.getFeed()
+        vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 
     @Suppress("CheckResult", "AutoDispose")

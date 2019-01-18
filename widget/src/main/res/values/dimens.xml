@@ -6,6 +6,7 @@
     <dimen name="std_margin_12">9dp</dimen>
     <dimen name="std_margin_16">12dp</dimen>
     <dimen name="std_margin_32">24dp</dimen>
+    <dimen name="std_margin_40">32dp</dimen>
     <dimen name="std_text_14">11sp</dimen>
     <dimen name="std_text_16">12sp</dimen>
     <dimen name="std_text_18">14sp</dimen>
