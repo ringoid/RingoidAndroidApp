@@ -25,7 +25,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     // --------------------------------------------------------------------------------------------
     override fun onRefresh() {
-        vm.getFeed()
+        vm.onRefresh()
     }
 
     /* Lifecycle */

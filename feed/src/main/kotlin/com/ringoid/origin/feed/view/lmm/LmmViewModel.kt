@@ -30,4 +30,9 @@ class LmmViewModel @Inject constructor(private val getLmmUseCase: GetLmmUseCase,
                 feedMatches.value = it.matches
             }, Timber::e)
     }
+
+    fun onRefresh() {
+        viewState.value = ViewState.CLEAR
+        getFeed()
+    }
 }
