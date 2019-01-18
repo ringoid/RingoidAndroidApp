@@ -39,6 +39,10 @@ open class FeedAdapter(private var imagesViewPool: RecyclerView.RecycledViewPool
     fun submit(feed: Feed) {
         submitList(feed.profiles)
     }
+
+    fun clear() {
+        submitList(emptyList())
+    }
 }
 
 // ------------------------------------------------------------------------------------------------

@@ -24,7 +24,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            setOnRefreshListener { vm.getFeed() }
+            setOnRefreshListener { vm.onRefresh() }
         }
     }
 }

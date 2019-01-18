@@ -32,6 +32,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
         super.onViewStateChange(newState)
         when (newState) {
+            is ViewState.CLEAR -> feedAdapter.clear()
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> swipe_refresh_layout.isRefreshing = true
             is ViewState.ERROR -> {

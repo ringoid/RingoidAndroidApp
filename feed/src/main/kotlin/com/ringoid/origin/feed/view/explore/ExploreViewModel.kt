@@ -27,4 +27,9 @@ class ExploreViewModel @Inject constructor(private val getNewFacesUseCase: GetNe
     }
 
     override fun getFeedName(): String = "new_faces"
+
+    fun onRefresh() {
+        viewState.value = ViewState.CLEAR
+        getFeed()
+    }
 }

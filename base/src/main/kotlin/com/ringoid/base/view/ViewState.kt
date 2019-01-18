@@ -6,6 +6,7 @@ open class Residual : IResidual()
 sealed class ViewState {
     object IDLE : ViewState()
     object LOADING : ViewState()
+    object CLEAR : ViewState()
     object CLOSE : ViewState()
     object PAGING : ViewState()
 
