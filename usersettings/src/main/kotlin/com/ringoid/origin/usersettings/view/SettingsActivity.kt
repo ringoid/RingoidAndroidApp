@@ -8,6 +8,5 @@ import com.ringoid.origin.view.base.BaseHostActivity
 class SettingsActivity : BaseHostActivity() {
 
     override fun getFragmentTag(): String = SettingsFragment.TAG
-    override fun instantiateFragment(): Fragment =
-        SettingsFragment.newInstance()
+    override fun instantiateFragment(): Fragment = SettingsFragment.newInstance()
 }

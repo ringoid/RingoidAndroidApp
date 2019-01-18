@@ -7,8 +7,6 @@ import com.ringoid.origin.view.base.BaseHostActivity
 @AppNav("settings_info")
 class SettingsAppInfoActivity : BaseHostActivity() {
 
-    override fun getFragmentTag(): String =
-        SettingsAppInfoFragment.TAG
-    override fun instantiateFragment(): Fragment =
-        SettingsAppInfoFragment.newInstance()
+    override fun getFragmentTag(): String = SettingsAppInfoFragment.TAG
+    override fun instantiateFragment(): Fragment = SettingsAppInfoFragment.newInstance()
 }
