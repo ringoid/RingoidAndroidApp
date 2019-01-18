@@ -11,7 +11,7 @@ import com.ringoid.origin.R
 object Dialogs {
 
     // --------------------------------------------------------------------------------------------
-    fun getTextDialog(activity: Activity?, @StringRes titleResId: Int, @StringRes descriptionResId: Int,
+    fun getTextDialog(activity: Activity?, @StringRes titleResId: Int = 0, @StringRes descriptionResId: Int,
                       @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                       @StringRes negativeBtnLabelResId: Int = 0,
                       positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
@@ -19,18 +19,22 @@ object Dialogs {
         getTextDialog(activity, titleResId, activity?.resources?.getString(descriptionResId),
             positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
 
-    fun getTextDialog(activity: Activity?, @StringRes titleResId: Int, description: String? = null,
+    fun getTextDialog(activity: Activity?, @StringRes titleResId: Int = 0, description: String? = null,
                       @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                       @StringRes negativeBtnLabelResId: Int = 0,
                       positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
                       negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null): AlertDialog =
         activity?.let {
             val builder = AlertDialog.Builder(activity)
-                .setTitle(titleResId)
-                .setPositiveButton(positiveBtnLabelResId, positiveListener)
 
+            if (titleResId != 0) {
+                builder.also { it.setTitle(titleResId) }
+            }
             if (!description.isNullOrBlank()) {
                 builder.also { it.setMessage(description) }
+            }
+            if (positiveBtnLabelResId != 0) {
+                builder.also { it.setPositiveButton(positiveBtnLabelResId, positiveListener) }
             }
             if (negativeBtnLabelResId != 0) {
                 builder.also { it.setNegativeButton(negativeBtnLabelResId, negativeListener) }
@@ -39,16 +43,16 @@ object Dialogs {
             builder.create()
         } ?: throw NullPointerException("Unable to show dialog: Activity is null")
 
-    fun showTextDialog(activity: BaseActivity<*>?, @StringRes titleResId: Int, @StringRes descriptionResId: Int,
+    fun showTextDialog(activity: BaseActivity<*>?, @StringRes titleResId: Int = 0, @StringRes descriptionResId: Int = 0,
                        @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                        @StringRes negativeBtnLabelResId: Int = 0,
                        positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
                        negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) {
-        showTextDialog(activity, titleResId, activity?.resources?.getString(descriptionResId),
+        showTextDialog(activity, titleResId, descriptionResId.takeIf { it != 0}?.let { activity?.resources?.getString(it) },
             positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
     }
 
-    fun showTextDialog(activity: BaseActivity<*>?, @StringRes titleResId: Int, description: String? = null,
+    fun showTextDialog(activity: BaseActivity<*>?, @StringRes titleResId: Int = 0, description: String? = null,
                        @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                        @StringRes negativeBtnLabelResId: Int = 0,
                        positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
@@ -61,15 +65,15 @@ object Dialogs {
                 }
     }
 
-    fun showTextDialog(activity: Activity?, @StringRes titleResId: Int, @StringRes descriptionResId: Int,
+    fun showTextDialog(activity: Activity?, @StringRes titleResId: Int = 0, @StringRes descriptionResId: Int = 0,
                        @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                        @StringRes negativeBtnLabelResId: Int = 0,
                        positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
                        negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
-        showTextDialog(activity, titleResId, activity?.resources?.getString(descriptionResId),
+        showTextDialog(activity, titleResId, descriptionResId.takeIf { it != 0 }?.let { activity?.resources?.getString(it) },
             positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
 
-    fun showTextDialog(activity: Activity?, @StringRes titleResId: Int, description: String? = null,
+    fun showTextDialog(activity: Activity?, @StringRes titleResId: Int = 0, description: String? = null,
                        @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                        @StringRes negativeBtnLabelResId: Int = 0,
                        positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,

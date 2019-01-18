@@ -10,6 +10,7 @@ sealed class ViewState {
     object IDLE : ViewState()
     object LOADING : ViewState()
     object CLOSE : ViewState()
+    object DIALOG : ViewState()
     object PAGING : ViewState()
 
     data class CLEAR(val mode: Int = MODE_DEFAULT) : ViewState() {

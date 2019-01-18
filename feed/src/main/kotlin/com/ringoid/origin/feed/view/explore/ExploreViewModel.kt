@@ -6,6 +6,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetNewFacesUseCase
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,11 +32,19 @@ class ExploreViewModel @Inject constructor(private val getNewFacesUseCase: GetNe
 
     override fun getFeedName(): String = "new_faces"
 
+    // ------------------------------------------
+    fun onAddImage() {
+        navigation.value = ExternalNavigator::openGalleryToGetImageFragment
+    }
+
     fun clearScreen(mode: Int) {
         viewState.value = ViewState.CLEAR(mode)
     }
 
     fun onRefresh() {
+        if (notImages) {
+            //
+        }
         clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
         getFeed()
     }

@@ -1,11 +1,17 @@
 package com.ringoid.origin.feed.view.explore
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.navigation.RC_IMAGE_PREVIEW
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.dialog.Dialogs
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
@@ -24,6 +30,17 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         }
 
     // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DIALOG -> {
+                Dialogs.showTextDialog(activity, descriptionResId = OriginR_string.feed_explore_dialog_no_user_photo_description,
+                    positiveBtnLabelResId = OriginR_string.button_later, negativeBtnLabelResId = OriginR_string.button_add_photo,
+                    negativeListener = { _, _ -> vm.onAddImage() })
+            }
+        }
+    }
+
     override fun onTabTransaction() {
         super.onTabTransaction()
         if (isActivityCreated) {
@@ -37,6 +54,17 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> navigate(this, path = "/imagepreview", rc = RC_IMAGE_PREVIEW, payload = data)
+                }
+            }
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)

@@ -146,7 +146,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 
     // --------------------------------------------------------------------------------------------
     private fun askToAddAnotherImage() {
-        Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title,
+        Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
             negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
             positiveListener = { _, _ -> vm.onAddImage() },

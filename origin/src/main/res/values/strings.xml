@@ -2,10 +2,12 @@
 <resources>
     <string name="app_name">Ringoid</string>
 
+    <string name="button_add_photo">Add photo</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_close">Close</string>
     <string name="button_delete">Delete</string>
     <string name="button_done">Done</string>
+    <string name="button_later">Maybe later</string>
 
     <string name="common_choose_image">Choose Image</string>
     <string name="common_compose_email">Send Email</string>
@@ -30,6 +32,7 @@
         <item>Harassment or threats, Abuse</item>
     </string-array>
 
+    <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover others, like and message them?\nWithout your photo, no one can see you</string>
     <string name="feed_explore_empty_need_refresh">Pull to refresh to discover users nearby</string>
     <string name="feed_explore_empty_no_data">No one new around\n\nUsers of the opposite sex will appear here</string>
     <string name="feed_likes_you_empty_need_refresh">Pull to refresh to see who likes you</string>
