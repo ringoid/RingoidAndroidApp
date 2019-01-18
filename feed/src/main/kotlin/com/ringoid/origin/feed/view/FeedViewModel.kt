@@ -12,6 +12,7 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
     abstract fun getFeedName(): String
 
     fun onAddImage() {
+        // TODO: redirect on Profile screen and call onAddImage()
         navigation.value = ExternalNavigator::openGalleryToGetImageFragment
     }
 
