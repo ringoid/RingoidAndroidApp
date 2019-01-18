@@ -2,8 +2,8 @@ package com.ringoid.origin.feed.view
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.Profile
@@ -85,7 +85,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        vm.feed.observe(viewLifecycleOwner, Observer { feedAdapter.submit(it) })
+        viewLifecycleOwner.observe(vm.feed, feedAdapter::submit)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

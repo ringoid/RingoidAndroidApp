@@ -5,8 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.navigation.ExternalNavigator
@@ -113,13 +113,13 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        vm.apply {
-            imageCreated.observe(viewLifecycleOwner, Observer { imagesAdapter.prepend(item = it) ; vp_images.currentItem = 0 })
-            imageDeleted.observe(viewLifecycleOwner, Observer { imagesAdapter.remove(itemId = it) })
-            imageIdChanged.observe(viewLifecycleOwner, Observer { imagesAdapter.updateItemId(oldId = it.first, newId = it.second) })
-            images.observe(viewLifecycleOwner, Observer { imagesAdapter.set(it) })
-            getUserImages()
+        viewLifecycleOwner.apply {
+            observe(vm.imageCreated) { imagesAdapter.prepend(item = it) ; vp_images.currentItem = 0 }
+            observe(vm.imageDeleted, imagesAdapter::remove)
+            observe(vm.imageIdChanged, imagesAdapter::updateItemId)
+            observe(vm.images, imagesAdapter::set)
         }
+        vm.getUserImages()
     }
 
     @Suppress("CheckResult", "AutoDispose")

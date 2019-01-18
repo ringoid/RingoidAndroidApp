@@ -99,6 +99,10 @@ abstract class ImagePagerAdapter(fm: FragmentManager, private val emptyInput: Em
         notifyDataSetChanged()
     }
 
+    fun updateItemId(ids: Pair<String, String>) {
+        updateItemId(oldId = ids.first, newId = ids.second)
+    }
+
     /* Internal */
     // --------------------------------------––-----––-––-––––--–----––----------------------------
     override fun notifyDataSetChanged() {
