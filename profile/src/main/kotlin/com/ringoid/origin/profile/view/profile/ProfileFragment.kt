@@ -77,9 +77,13 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     }
 
     // ------------------------------------------
-    override fun onTabTransaction() {
-        super.onTabTransaction()
-        Timber.v("HELLO")
+    override fun onTabTransaction(payload: String?) {
+        super.onTabTransaction(payload)
+        payload?.let {
+            when (it) {
+                NavigateFrom.PAYLOAD_PROFILE_ADD_IMAGE -> vm.onAddImage()
+            }
+        }
     }
 
     /* Lifecycle */

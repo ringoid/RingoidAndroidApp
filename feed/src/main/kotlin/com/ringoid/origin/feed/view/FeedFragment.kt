@@ -24,7 +24,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     object InternalNavigator {
         fun openProfileScreen(fragment: Fragment) {
-            navigate(fragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}")
+            navigate(fragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${NavigateFrom.PAYLOAD_PROFILE_ADD_IMAGE}")
         }
     }
 

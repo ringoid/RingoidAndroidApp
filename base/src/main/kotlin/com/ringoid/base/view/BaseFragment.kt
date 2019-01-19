@@ -41,7 +41,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         // override in subclasses
     }
 
-    open fun onTabTransaction() {
+    open fun onTabTransaction(payload: String?) {
+        Timber.v("onTabTransaction, payload: $payload")
         // override in subclasses
     }
 

@@ -20,6 +20,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
 
     protected lateinit var fragNav: FragNavController
 
+    private var tabPayload: String? = null  // payload to pass to subscreen on tab switch
+
     override fun getLayoutId(): Int = R.layout.activity_main
 
     protected abstract fun getListOfRootFragments(): List<Fragment>
@@ -52,12 +54,12 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
 
-        intent.extras?.getString("tab")?.let { openTabByName(it) }
+        processExtras(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.extras?.getString("tab")?.let { openTabByName(it) }
+        processExtras(intent)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -66,12 +68,24 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
     }
 
     // --------------------------------------------------------------------------------------------
+    private fun processExtras(intent: Intent) {
+        intent.extras?.apply {
+            getString("tab")
+                ?.let {
+                    tabPayload = getString("tabPayload")
+                    openTabByName(it)
+                }
+        }
+    }
+
+    // ------------------------------------------
     override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
     }
 
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
-        Timber.v("Switched tab[$index]: ${fragment?.javaClass?.simpleName}")
-        (fragment as? BaseFragment<*>)?.onTabTransaction()
+        Timber.v("Switched tab[$index]: ${fragment?.javaClass?.simpleName}, payload: $tabPayload")
+        (fragment as? BaseFragment<*>)?.onTabTransaction(payload = tabPayload)
+        tabPayload = null  // consume tab payload on the opened tab
     }
 
     protected fun openTabByName(tabName: String) {
