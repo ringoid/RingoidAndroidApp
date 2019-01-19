@@ -5,6 +5,7 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.UnlikeActionObject
+import com.ringoid.origin.view.common.visibility_tracker.VisibilityState
 
 abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
@@ -29,5 +30,9 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
             numberOfBlockReason = reasonNumber, sourceFeed = getFeedName(),
             targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
+    }
+
+    fun onView(state: VisibilityState) {
+        // TODO: post VIEW aobj properly
     }
 }

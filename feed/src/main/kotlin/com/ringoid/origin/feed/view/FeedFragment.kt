@@ -15,8 +15,10 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
@@ -30,6 +32,8 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     protected lateinit var feedAdapter: FeedAdapter
         private set
+    private val trackingBus: TrackingBus =
+        TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
@@ -104,6 +108,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                             }
                         })
                 }
+                trackingBus = this@FeedFragment.trackingBus
             }
     }
 
@@ -117,5 +122,15 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 //            setRecycledViewPool(viewPool)  // TODO: use pool for feeds
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        trackingBus.subscribe()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingBus.unsubscribe()
     }
 }

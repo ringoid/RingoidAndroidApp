@@ -9,6 +9,7 @@ import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
 
@@ -23,6 +24,7 @@ open class FeedAdapter(private var imagesViewPool: RecyclerView.RecycledViewPool
 
     var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
     var settingsClickListener: ((model: Profile, position: Int, positionOfImage: Int) -> Unit)? = null
+    internal var trackingBus: TrackingBus? = null
 
     init {
         imagesViewPool = imagesViewPool ?: RecyclerView.RecycledViewPool()
@@ -33,6 +35,7 @@ open class FeedAdapter(private var imagesViewPool: RecyclerView.RecycledViewPool
     override fun instantiateViewHolder(view: View): ProfileViewHolder =
         ProfileViewHolder(view, viewPool = imagesViewPool).apply {
             onLikeImageListener = this@FeedAdapter.onLikeImageListener
+            trackingBus = this@FeedAdapter.trackingBus
             val wrapSettingsClickListener: ((model: Profile, position: Int) -> Unit)? =
                 { model: Profile, position: Int ->
                     settingsClickListener?.invoke(model, position, getCurrentImagePosition())
