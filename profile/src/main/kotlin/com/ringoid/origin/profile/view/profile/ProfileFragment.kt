@@ -76,6 +76,12 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         imagesAdapter.notifyDataSetChanged()
     }
 
+    // ------------------------------------------
+    override fun onTabTransaction() {
+        super.onTabTransaction()
+        Timber.v("HELLO")
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {

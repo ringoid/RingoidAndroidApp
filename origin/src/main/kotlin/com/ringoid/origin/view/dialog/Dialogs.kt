@@ -26,20 +26,10 @@ object Dialogs {
                       negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null): AlertDialog =
         activity?.let {
             val builder = AlertDialog.Builder(activity)
-
-            if (titleResId != 0) {
-                builder.also { it.setTitle(titleResId) }
-            }
-            if (!description.isNullOrBlank()) {
-                builder.also { it.setMessage(description) }
-            }
-            if (positiveBtnLabelResId != 0) {
-                builder.also { it.setPositiveButton(positiveBtnLabelResId, positiveListener) }
-            }
-            if (negativeBtnLabelResId != 0) {
-                builder.also { it.setNegativeButton(negativeBtnLabelResId, negativeListener) }
-            }
-
+            titleResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setTitle(resId) } }
+            description.takeIf { !it.isNullOrBlank() }?.let { str -> builder.also { it.setMessage(str) } }
+            positiveBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setPositiveButton(resId, positiveListener) } }
+            negativeBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setNegativeButton(resId, negativeListener) } }
             builder.create()
         } ?: throw NullPointerException("Unable to show dialog: Activity is null")
 
