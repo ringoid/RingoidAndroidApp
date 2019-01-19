@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.ncapdevi.fragnav.FragNavController
@@ -50,6 +51,13 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
             setOnNavigationItemSelectedListener { fragNav.switchTab(tabIdToIndex(it.itemId)) ; true }
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
+
+        intent.extras?.getString("tab")?.let { openTabByName(it) }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.extras?.getString("tab")?.let { openTabByName(it) }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
