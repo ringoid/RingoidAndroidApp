@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
@@ -25,6 +26,11 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         }
 
     // --------------------------------------------------------------------------------------------
+    override fun onTabReselect() {
+        super.onTabReselect()
+        (rv_items?.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(0, 0)
+    }
+
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
         if (isActivityCreated) {
