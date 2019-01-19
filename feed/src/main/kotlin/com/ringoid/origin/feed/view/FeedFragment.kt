@@ -67,6 +67,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                             positiveBtnLabelResId = OriginR_string.button_later,
                             negativeBtnLabelResId = OriginR_string.button_add_photo,
                             negativeListener = { _, _ -> vm.onAddImage() })
+                        swipe_refresh_layout.isRefreshing = false
                     }
                 }
             }
