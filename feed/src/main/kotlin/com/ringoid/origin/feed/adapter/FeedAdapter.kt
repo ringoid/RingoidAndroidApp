@@ -15,6 +15,12 @@ import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
 open class FeedAdapter(private var imagesViewPool: RecyclerView.RecycledViewPool? = null)
     : BaseListAdapter<Profile, ProfileViewHolder>(ProfileDiffCallback()) {
 
+    companion object {
+        const val VIEW_TYPE_NORMAL = 0
+        const val VIEW_TYPE_LOADING = 1
+        const val VIEW_TYPE_FEED_END = 2
+    }
+
     var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
     var settingsClickListener: ((model: Profile, position: Int, positionOfImage: Int) -> Unit)? = null
 
