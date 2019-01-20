@@ -32,6 +32,13 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
     }
 
     // --------------------------------------------------------------------------------------------
+    internal fun getItemExposed(position: Int): ProfileImageVO = getItem(position)
+    internal fun getItemsExposed(from: Int, to: Int): List<ProfileImageVO> {
+        val list = mutableListOf<ProfileImageVO>()
+        for (i in from..to) list.add(getItem(i))
+        return list
+    }
+
     override fun getOnItemClickListener(vh: ProfileImageViewHolder): View.OnClickListener {
         val xl: ((model: ProfileImageVO, position: Int) -> Unit)? = { model: ProfileImageVO, position: Int ->
             val isLiked = !model.isLiked

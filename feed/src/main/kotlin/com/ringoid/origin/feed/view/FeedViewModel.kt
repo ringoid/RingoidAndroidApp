@@ -5,9 +5,12 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.UnlikeActionObject
-import com.ringoid.origin.view.common.visibility_tracker.VisibilityState
+import com.ringoid.domain.model.actions.ViewActionObject
+import com.ringoid.origin.feed.model.ProfileImageVO
 
 abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
+
+    private val viewActionObjectBuffer = mutableListOf<ViewActionObject>()
 
     abstract fun getFeedName(): String
 
@@ -26,13 +29,15 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
     }
 
     fun onReport(profileId: String, imageId: String, reasonNumber: Int) {
-        BlockActionObject(
-            numberOfBlockReason = reasonNumber, sourceFeed = getFeedName(),
-            targetImageId = imageId, targetUserId = profileId)
+        BlockActionObject(numberOfBlockReason = reasonNumber,
+            sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
     }
 
-    fun onView(state: VisibilityState) {
-        // TODO: post VIEW aobj properly
+    fun onView(items: Collection<ProfileImageVO>) {
+        items.forEach {
+            val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(), targetImageId = it.image.id, targetUserId = it.profileId)
+            viewActionObjectBuffer.add(aobj)
+        }
     }
 }

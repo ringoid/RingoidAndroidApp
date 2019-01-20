@@ -32,7 +32,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     protected lateinit var feedAdapter: FeedAdapter
         private set
-    private val trackingBus: TrackingBus =
+    private val trackingBus: TrackingBus<Collection<ProfileImageVO>> =
         TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
