@@ -11,6 +11,7 @@ import com.ringoid.utility.collection.EqualRange
 
 abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
+    private var prevRange: Pair<Int, Int>? = null
     private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
 
     abstract fun getFeedName(): String
@@ -42,11 +43,13 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {
+        // TODO: get difference for prevRanger and items.range() and consume VIEW aobjs
         items.forEach {
             addViewObjectToBuffer(ViewActionObject(
                 timeInMillis = 0L, sourceFeed = getFeedName(),
                 targetImageId = it.image.id, targetUserId = it.profileId))
         }
+        prevRange = items.range()
     }
 
     // --------------------------------------------------------------------------------------------

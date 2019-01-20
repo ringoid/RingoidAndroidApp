@@ -1,6 +1,8 @@
 package com.ringoid.utility.collection
 
-class EqualRange<T>(private val from: Int, private val to: Int, items: Collection<T>) : ArrayList<T>(items) {
+class EqualRange<T>(val from: Int, val to: Int, items: Collection<T>) : ArrayList<T>(items) {
+
+    fun range(): Pair<Int, Int> = from to to
 
     @Suppress("Unchecked_Cast")
     override fun equals(other: Any?): Boolean{
