@@ -11,7 +11,7 @@ import com.ringoid.utility.collection.EqualRange
 
 abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
-    private val viewActionObjectBuffer = mutableListOf<ViewActionObject>()
+    private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
 
     abstract fun getFeedName(): String
 
@@ -20,6 +20,7 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
     }
 
     fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
+        advanceAndPushViewObject(imageId to profileId, recreate = true)
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
                    else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
@@ -30,6 +31,7 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
     }
 
     fun onReport(profileId: String, imageId: String, reasonNumber: Int) {
+        advanceAndPushViewObject(imageId to profileId)
         BlockActionObject(numberOfBlockReason = reasonNumber,
             sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
@@ -37,8 +39,29 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
     fun onView(items: EqualRange<ProfileImageVO>) {
         items.forEach {
-            val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(), targetImageId = it.image.id, targetUserId = it.profileId)
-            viewActionObjectBuffer.add(aobj)
+            addViewObjectToBuffer(ViewActionObject(
+                timeInMillis = 0L, sourceFeed = getFeedName(),
+                targetImageId = it.image.id, targetUserId = it.profileId))
         }
     }
+
+    // --------------------------------------------------------------------------------------------
+    private fun advanceAndPushViewObject(key: Pair<String, String>, recreate: Boolean = false) {
+        viewActionObjectBuffer.let { val aobj = it[key]?.advance() ; it.remove(key) ; aobj }
+            ?.takeIf { recreate }
+            ?.let { addViewObjectToBuffer(it) }
+    }
+
+    private fun advanceAndPushViewObjects() {
+        viewActionObjectBuffer.apply {
+            values.forEach { it.advance() ; actionObjectPool.put(it) }
+            clear()
+        }
+    }
+
+    private fun addViewObjectToBuffer(aobj: ViewActionObject) {
+        viewActionObjectBuffer[aobj.targetImageId to aobj.targetUserId] = aobj
+    }
+
+    // TODO: advance, push & remove VIEW when left from visibility roi
 }
