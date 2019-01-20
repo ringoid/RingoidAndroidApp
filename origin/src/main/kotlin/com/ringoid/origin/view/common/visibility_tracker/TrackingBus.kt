@@ -6,8 +6,9 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
-class TrackingBus<T>(val onSuccess: Consumer<T>, val onError: Consumer<Throwable>,
-                     val timeout: Long = VIEW_EVENT_START_THRESHOLD) {
+class TrackingBus<T>(
+    val onSuccess: Consumer<T>, val onError: Consumer<Throwable>,
+    val timeout: Long = VIEW_EVENT_START_THRESHOLD) {
 
     companion object {
         const val VIEW_EVENT_START_THRESHOLD = 50L  // in millis

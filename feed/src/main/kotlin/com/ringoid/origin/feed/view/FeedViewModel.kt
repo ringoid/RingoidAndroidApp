@@ -7,6 +7,7 @@ import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.UnlikeActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.utility.collection.EqualRange
 
 abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
@@ -34,7 +35,7 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
             .also { actionObjectPool.put(it) }
     }
 
-    fun onView(items: Collection<ProfileImageVO>) {
+    fun onView(items: EqualRange<ProfileImageVO>) {
         items.forEach {
             val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(), targetImageId = it.image.id, targetUserId = it.profileId)
             viewActionObjectBuffer.add(aobj)

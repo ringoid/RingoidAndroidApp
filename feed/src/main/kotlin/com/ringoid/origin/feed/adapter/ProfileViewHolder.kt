@@ -8,6 +8,7 @@ import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
+import com.ringoid.utility.collection.EqualRange
 import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
@@ -21,7 +22,7 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
         }
 
     internal val profileImageAdapter = ProfileImageAdapter().apply { itemClickListener = onLikeImageListener }
-    internal var trackingBus: TrackingBus<Collection<ProfileImageVO>>? = null
+    internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     init {
         val snapHelper = PagerSnapHelper()
@@ -41,9 +42,10 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
                 override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(rv, dx, dy)
                     (rv.layoutManager as? LinearLayoutManager)?.let {
-                        val items = profileImageAdapter.getItemsExposed(
-                            from = it.findFirstVisibleItemPosition(), to = it.findLastVisibleItemPosition())
-                        trackingBus?.postViewEvent(items)
+                        val from = it.findFirstVisibleItemPosition()
+                        val to = it.findLastVisibleItemPosition()
+                        val items = profileImageAdapter.getItemsExposed(from = from, to = to)
+                        trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
                     }
                 }
             })

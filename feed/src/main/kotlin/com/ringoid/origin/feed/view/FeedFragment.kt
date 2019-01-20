@@ -18,6 +18,7 @@ import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.collection.EqualRange
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -32,7 +33,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     protected lateinit var feedAdapter: FeedAdapter
         private set
-    private val trackingBus: TrackingBus<Collection<ProfileImageVO>> =
+    private val trackingBus: TrackingBus<EqualRange<ProfileImageVO>> =
         TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
