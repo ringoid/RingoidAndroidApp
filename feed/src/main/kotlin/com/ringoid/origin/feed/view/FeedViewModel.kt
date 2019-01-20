@@ -38,6 +38,7 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
         BlockActionObject(numberOfBlockReason = reasonNumber,
             sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
+        // TODO: remove profile from feed, filter it from backend response in future
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {
