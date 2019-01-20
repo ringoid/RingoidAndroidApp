@@ -15,10 +15,13 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
     abstract fun getFeedName(): String
 
+    // --------------------------------------------------------------------------------------------
     fun onAddImage() {
         navigation.value = FeedFragment.InternalNavigator::openProfileScreen
     }
 
+    /* Action Objects */
+    // --------------------------------------------------------------------------------------------
     fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         advanceAndPushViewObject(imageId to profileId, recreate = true)
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
