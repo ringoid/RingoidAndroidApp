@@ -10,7 +10,8 @@ import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.ScreenHelper
-import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
+import com.ringoid.origin.feed.view.common.FeedControllerDelegate
+import com.ringoid.origin.feed.view.common.IFeedController
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -19,14 +20,16 @@ import javax.inject.Inject
 
 class LmmViewModel @Inject constructor(
     private val getLmmUseCase: GetLmmUseCase, private val countUserImagesUseCase: CountUserImagesUseCase,
-    app: Application) : BaseViewModel(app) {
+    app: Application) : BaseViewModel(app), IFeedController {
+
+    private val delegate = FeedControllerDelegate(this, countUserImagesUseCase)
 
     val feedLikes by lazy { MutableLiveData<List<FeedItem>>() }
     val feedMatches by lazy { MutableLiveData<List<FeedItem>>() }
     val emptyStateLikes: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
     val emptyStateMatches: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
 
-    private fun getFeed() {
+    override fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
         getLmmUseCase.source(params = params)
@@ -49,23 +52,12 @@ class LmmViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    fun clearScreen(mode: Int) {
-        viewState.value = ViewState.CLEAR(mode)
+    override fun clearScreen(mode: Int) {
+        delegate.clearScreen(mode)
     }
 
-    fun onRefresh() {
-        countUserImagesUseCase.source()
-            .map { it > 0 }  // user has images in profile
-            .autoDisposable(this)
-            .subscribe({
-                if (it) {
-                    actionObjectPool.trigger()
-                    clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
-                    getFeed()
-                } else {
-                    viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
-                }
-            }, Timber::e)
+    override fun onRefresh() {
+        delegate.onRefresh()
     }
 
     // ------------------------------------------

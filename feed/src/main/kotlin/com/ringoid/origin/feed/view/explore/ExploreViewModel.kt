@@ -9,18 +9,21 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
+import com.ringoid.origin.feed.view.common.FeedControllerDelegate
+import com.ringoid.origin.feed.view.common.IFeedController
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase, private val countUserImagesUseCase: CountUserImagesUseCase,
-    app: Application) : FeedViewModel(app) {
+    app: Application) : FeedViewModel(app), IFeedController {
+
+    private val delegate = FeedControllerDelegate(this, countUserImagesUseCase)
 
     val feed by lazy { MutableLiveData<Feed>() }
 
-    private fun getFeed() {
+    override fun getFeed() {
         val params = Params()
             .put(ScreenHelper.getLargestPossibleImageResolution(context))
             .put("limit", 20)
@@ -39,22 +42,11 @@ class ExploreViewModel @Inject constructor(
     override fun getFeedName(): String = "new_faces"
 
     // ------------------------------------------
-    fun clearScreen(mode: Int) {
-        viewState.value = ViewState.CLEAR(mode)
+    override fun clearScreen(mode: Int) {
+        delegate.clearScreen(mode)
     }
 
-    fun onRefresh() {
-        countUserImagesUseCase.source()
-            .map { it > 0 }  // user has images in profile
-            .autoDisposable(this)
-            .subscribe({
-                if (it) {
-                    actionObjectPool.trigger()
-                    clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
-                    getFeed()
-                } else {
-                    viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
-                }
-            }, Timber::e)
+    override fun onRefresh() {
+        delegate.onRefresh()
     }
 }
