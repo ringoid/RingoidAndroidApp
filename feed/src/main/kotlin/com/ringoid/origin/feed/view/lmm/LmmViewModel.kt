@@ -59,6 +59,7 @@ class LmmViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 if (it) {
+                    actionObjectPool.trigger()
                     clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
                     getFeed()
                 } else {
