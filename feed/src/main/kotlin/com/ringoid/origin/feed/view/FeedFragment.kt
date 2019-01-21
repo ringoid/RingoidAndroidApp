@@ -65,7 +65,10 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
             }
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    NO_IMAGES_IN_PROFILE -> {
+                    is BLOCK_PROFILE -> {
+                        // TODO: on block - remove feed item
+                    }
+                    is NO_IMAGES_IN_PROFILE -> {
                         Dialogs.showTextDialog(activity,
                             descriptionResId = OriginR_string.feed_explore_dialog_no_user_photo_description,
                             positiveBtnLabelResId = OriginR_string.button_later,

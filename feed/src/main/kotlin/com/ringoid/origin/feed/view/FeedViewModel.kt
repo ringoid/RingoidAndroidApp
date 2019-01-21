@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view
 
 import android.app.Application
+import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
@@ -48,7 +49,9 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
         BlockActionObject(numberOfBlockReason = reasonNumber,
             sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
-        // TODO: remove profile from feed, filter it from backend response in future
+
+        // remove profile from feed, filter it from backend responses in future
+        viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {
