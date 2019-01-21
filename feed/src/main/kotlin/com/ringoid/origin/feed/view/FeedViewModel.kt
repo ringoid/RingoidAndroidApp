@@ -52,6 +52,7 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
         // remove profile from feed, filter it from backend responses in future
         viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
+        // TODO: cache removed profile id
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {

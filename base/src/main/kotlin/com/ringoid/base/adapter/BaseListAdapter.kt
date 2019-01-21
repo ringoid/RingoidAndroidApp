@@ -4,12 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
-    : ListAdapter<T, VH>(diffCb) {
+    : OriginListAdapter<T, VH>(diffCb) {
 
     @LayoutRes protected abstract fun getLayoutId(): Int
 
@@ -30,6 +28,3 @@ abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallba
     protected open fun wrapOnItemClickListener(vh: VH, l: ((model: T, position: Int) -> Unit)?) =
         View.OnClickListener { vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(getItem(it), it) } }
 }
-
-// ------------------------------------------------------------------------------------------------
-abstract class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>()

@@ -66,7 +66,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is BLOCK_PROFILE -> {
-                        // TODO: on block - remove feed item
+                        feedAdapter.remove { it.id == (newState.residual as BLOCK_PROFILE).profileId }
                     }
                     is NO_IMAGES_IN_PROFILE -> {
                         Dialogs.showTextDialog(activity,
