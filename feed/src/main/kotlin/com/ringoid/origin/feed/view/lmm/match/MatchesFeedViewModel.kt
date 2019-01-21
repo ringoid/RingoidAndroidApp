@@ -6,8 +6,8 @@ import com.ringoid.origin.feed.view.FeedViewModel
 import javax.inject.Inject
 
 class MatchesFeedViewModel @Inject constructor(
-    cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    app: Application) : FeedViewModel(cacheBlockedProfileIdUseCase, app) {
+    cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase, app: Application)
+    : FeedViewModel(cacheBlockedProfileIdUseCase, app) {
 
     override fun getFeedName(): String = "messages"
 }

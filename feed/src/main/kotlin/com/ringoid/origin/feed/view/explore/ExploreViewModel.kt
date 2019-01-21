@@ -19,8 +19,8 @@ import javax.inject.Inject
 class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    countUserImagesUseCase: CountUserImagesUseCase,
-    app: Application) : FeedViewModel(cacheBlockedProfileIdUseCase, app), IFeedController {
+    countUserImagesUseCase: CountUserImagesUseCase, app: Application)
+    : FeedViewModel(cacheBlockedProfileIdUseCase, app), IFeedController {
 
     private val delegate = FeedControllerDelegate(this, countUserImagesUseCase)
 

@@ -11,6 +11,7 @@ import com.ringoid.origin.feed.OriginR_array
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
+import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigate
@@ -37,7 +38,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
-    protected open fun createFeedAdapter(): FeedAdapter = FeedAdapter()  // TODO: pass common pool
+    protected open fun createFeedAdapter(): BaseFeedAdapter<*, *> = FeedAdapter()  // TODO: pass common pool
 
     protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
 
@@ -92,7 +93,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        feedAdapter = createFeedAdapter()
+        feedAdapter = (createFeedAdapter() as FeedAdapter)
             .apply {
                 onLikeImageListener = { model: ProfileImageVO, _ ->
                     Timber.i("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
