@@ -4,9 +4,13 @@
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="refColorAccent">@color/accent</item>
-        <item name="refColorPrimary">@color/primary</item>
-        <item name="refColorPrimaryDark">@color/primary_dark</item>
+        <item name="refColorAccent">@color/grass</item>
+        <item name="refColorPrimary">@color/steel</item>
+        <item name="refColorPrimaryDark">@color/agat</item>
+        <item name="refColorBottomBarIcon">@color/bottom_bar_icon_black</item>
+        <item name="refColorUnderscore">@color/underscore</item>
+        <item name="refTextColorPrimary">@color/primary_text</item>
+        <item name="refTextColorSecondary">@color/secondary_text</item>
         <item name="colorAccent">?refColorAccent</item>
         <item name="colorPrimary">?refColorPrimary</item>
         <item name="colorPrimaryDark">?refColorPrimaryDark</item>
@@ -14,16 +18,33 @@
     </style>
 
     <style name="Base.V0.AppTheme.Light">
-        <item name="refTextColorPrimary">@color/primary_text</item>
-        <item name="refTextColorSecondary">@color/secondary_text</item>
+        <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_black_24dp</item>
+        <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_black_24dp</item>
+        <item name="refDrawableBottomBarMessenger">@drawable/ic_menu_messages_black_24dp</item>
+        <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_black_24dp</item>
+        <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
+        <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
+        <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_24dp</item>
     </style>
 
     <style name="Base.V0.AppTheme.Dark">
+        <item name="android:windowBackground">@color/grey</item>
+        <item name="refColorBottomBarIcon">@color/bottom_bar_icon_white</item>
+        <item name="refColorUnderscore">@color/underscore_dark</item>
+        <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_24dp</item>
+        <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_24dp</item>
+        <item name="refDrawableBottomBarMessenger">@drawable/ic_menu_messages_24dp</item>
+        <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_24dp</item>
+        <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>
+        <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_white_24dp</item>
+        <item name="refColorPrimary">@android:color/black</item>
+        <item name="refColorPrimaryDark">@android:color/black</item>
         <item name="refTextColorPrimary">@android:color/white</item>
         <item name="refTextColorSecondary">@color/secondary_text_light</item>
     </style>
 
-    <style name="AppTheme" parent="Base.V0.AppTheme.Light"/>
+    <style name="AppTheme" parent="Base.V0.AppTheme.Dark"/>
 
     <!-- Screen themes -->
     <style name="LoginTheme" parent="AppTheme">

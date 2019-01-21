@@ -15,7 +15,7 @@
 
     <com.ringoid.widget.view.IconItemView
         android:id="@+id/item_theme"
-        app:icon_item_icon="@drawable/ic_settings_theme_grey_24dp"
+        app:icon_item_icon="?attr/refDrawableThemeSwitch"
         app:icon_item_text="@string/settings_theme_dark"
         style="?attr/iconItemView"/>
 

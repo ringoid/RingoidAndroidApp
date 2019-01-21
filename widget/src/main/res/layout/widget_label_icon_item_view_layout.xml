@@ -31,5 +31,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
         android:contentDescription="@null"
-        app:srcCompat="@drawable/ic_keyboard_arrow_right_24dp"/>
+        app:srcCompat="?attr/refItemViewArrow"/>
 </merge>

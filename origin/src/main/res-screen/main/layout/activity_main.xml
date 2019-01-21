@@ -22,11 +22,12 @@
         android:minHeight="@dimen/main_bottom_bar_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:labelVisibilityMode="unlabeled"
+        app:itemIconTint="@drawable/main_bottom_bar_items_selector"
         app:menu="@menu/main_bottom_bar_items"/>
 
     <View
         android:id="@+id/underscore"
         android:background="@color/white_transparent"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"
-        style="@style/Underscore"/>
+        style="@style/Underscore.Match"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

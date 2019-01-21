@@ -24,8 +24,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
     companion object {
         internal const val TAG = "SettingsFragment_tag"
 
-        fun newInstance(): SettingsFragment =
-            SettingsFragment()
+        fun newInstance(): SettingsFragment = SettingsFragment()
     }
 
     override fun getVmClass(): Class<SettingsViewModel> = SettingsViewModel::class.java

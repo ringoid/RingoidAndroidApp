@@ -4,6 +4,8 @@
         <attr name="refColorAccent" format="reference"/>
         <attr name="refColorPrimary" format="reference"/>
         <attr name="refColorPrimaryDark" format="reference"/>
+        <attr name="refColorBottomBarIcon" format="reference"/>
+        <attr name="refColorUnderscore" format="reference"/>
         <attr name="refTextColorPrimary" format="reference"/>
         <attr name="refTextColorSecondary" format="reference"/>
         <attr name="iconItemView" format="reference"/>
@@ -19,5 +21,6 @@
         <attr name="icon_item_icon" format="reference"/>
         <attr name="icon_item_hide_icon" format="boolean"/>
         <attr name="icon_item_text" format="reference|string"/>
+        <attr name="refItemViewArrow" format="reference"/>
     </declare-styleable>
 </resources>

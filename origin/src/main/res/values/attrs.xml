@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Drawables">
+        <attr name="refDrawableBottomBarExplore" format="reference"/>
+        <attr name="refDrawableBottomBarLmm" format="reference"/>
+        <attr name="refDrawableBottomBarMessenger" format="reference"/>
+        <attr name="refDrawableBottomBarProfile" format="reference"/>
+        <attr name="refDrawableNavigationArrow" format="reference"/>
+        <attr name="refDrawableThemeSwitch" format="reference"/>
+    </declare-styleable>
+</resources>

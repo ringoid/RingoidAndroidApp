@@ -4,6 +4,8 @@
     <color name="primary_dark">#512DA8</color>
     <color name="primary_light">#D1C4E9</color>
     <color name="accent">#03A9F4</color>
+    <color name="bottom_bar_icon_black">#aa000000</color>
+    <color name="bottom_bar_icon_white">#aaffffff</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="secondary_text_light">#4C6277</color>
@@ -42,7 +44,8 @@
     <color name="steel_transparent">#3375888e</color>
     <color name="teal">#abf1cf</color>
     <color name="tiffany">#81d8d1</color>
-    <color name="underscore">#f2f2f2</color>
+    <color name="underscore">#21f2f2f2</color>
+    <color name="underscore_dark">#21CDCED3</color>
     <color name="unpressed">#dbdbdb</color>
     <color name="warning">#ff9900</color>
     <color name="white_transparent">#4fffffff</color>
