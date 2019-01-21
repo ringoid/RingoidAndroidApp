@@ -1,6 +1,5 @@
 package com.ringoid.origin.feed.adapter
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
@@ -8,16 +7,15 @@ import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.IProfile
-import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
-abstract class BaseFeedAdapter<T : IProfile, VH : BaseViewHolder<T>>(
+abstract class BaseFeedAdapter<T : IProfile, VH>(
     private var imagesViewPool: RecyclerView.RecycledViewPool? = null, diffCb: BaseDiffCallback<T>)
-    : BaseListAdapter<T, VH>(diffCb) {
+    : BaseListAdapter<T, VH>(diffCb) where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
 
     companion object {
         const val VIEW_TYPE_NORMAL = 0

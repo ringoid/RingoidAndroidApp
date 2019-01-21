@@ -15,7 +15,7 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 
 open class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseViewHolder<Profile>(view) {
+    : BaseViewHolder<Profile>(view), IFeedViewHolder {
 
     internal var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
         set(value) {
@@ -25,7 +25,7 @@ open class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
 
     val profileImageAdapter = ProfileImageAdapter()
         .apply { itemClickListener = onLikeImageListener }
-    internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
+    override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     init {
         val snapHelper = PagerSnapHelper()
@@ -60,6 +60,6 @@ open class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
         profileImageAdapter.submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
     }
 
-    internal fun getCurrentImagePosition(): Int =
+    override fun getCurrentImagePosition(): Int =
         (itemView.rv_items.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 }
