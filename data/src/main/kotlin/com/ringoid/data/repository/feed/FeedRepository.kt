@@ -6,6 +6,8 @@ import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.model.feed.FeedResponse
+import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
@@ -15,6 +17,7 @@ import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -37,12 +40,45 @@ class FeedRepository @Inject constructor(
     // ------------------------------------------
     // TODO: always check db first
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
-        spm.accessSingle { cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
-            .map { it.map() } }
+        spm.accessSingle {
+            cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
+                 .filterBlockedProfilesFeed()
+                 .map { it.map() }
+        }
 
     override fun getLmm(resolution: ImageResolution): Single<Lmm> =
-        spm.accessSingle { cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
-            .map { it.map() }}
+        spm.accessSingle {
+            cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
+                 .filterBlockedProfilesLmm()
+                 .map { it.map() }
+        }
 
     // --------------------------------------------------------------------------------------------
+    private fun Single<FeedResponse>.filterBlockedProfilesFeed(): Single<FeedResponse> =
+        toObservable()
+        .withLatestFrom(getBlockedProfileIds().toObservable(),
+            BiFunction { feed: FeedResponse, blockedIds: List<String> ->
+                blockedIds
+                    .takeIf { !it.isEmpty() }
+                    ?.let {
+                        val l = feed.profiles.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        feed.copyWith(profiles = l)
+                    } ?: feed
+            })
+        .single(FeedResponse()  /* by default - empty feed */)
+
+    private fun Single<LmmResponse>.filterBlockedProfilesLmm(): Single<LmmResponse> =
+        toObservable()
+        .withLatestFrom(getBlockedProfileIds().toObservable(),
+            BiFunction { lmm: LmmResponse, blockedIds: List<String> ->
+                blockedIds
+                    .takeIf { !it.isEmpty() }
+                    ?.let {
+                        val likes = lmm.likes.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        val matches = lmm.matches.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        val messages = lmm.messages.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        lmm.copyWith(likes = likes, matches = matches, messages = messages)
+                    } ?: lmm
+            })
+        .single(LmmResponse()  /* by default - empty lmm */)
 }

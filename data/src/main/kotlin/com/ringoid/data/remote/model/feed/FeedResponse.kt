@@ -38,6 +38,9 @@ class FeedResponse(
     errorCode: String = "", errorMessage: String = "")
     : BaseResponse(errorCode, errorMessage), Mappable<Feed> {
 
+    fun copyWith(profiles: List<ProfileEntity> = this.profiles): FeedResponse =
+        FeedResponse(profiles = profiles, errorCode = errorCode, errorMessage = errorMessage)
+
     companion object {
         const val COLUMN_PROFILES = "profiles"
     }
