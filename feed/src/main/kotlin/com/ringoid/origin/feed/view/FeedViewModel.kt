@@ -8,14 +8,23 @@ import com.ringoid.domain.model.actions.UnlikeActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.collection.EqualRange
+import timber.log.Timber
 
 abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
 
-    private var prevRange: Pair<Int, Int>? = null
+    private var prevRange: EqualRange<ProfileImageVO>? = null
     private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
 
     abstract fun getFeedName(): String
 
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onCleared() {
+        super.onCleared()
+        advanceAndPushViewObjects()
+        prevRange = null
+    }
+    
     // --------------------------------------------------------------------------------------------
     fun onAddImage() {
         navigation.value = FeedFragment.InternalNavigator::openProfileScreen
@@ -43,18 +52,29 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {
-        // TODO: get difference for prevRanger and items.range() and consume VIEW aobjs
+        prevRange?.delta(items)?.let {
+            Timber.v("Excluded items in range [${it.range()}], consume VIEW action objects")
+            advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
+        }
+
         items.forEach {
             addViewObjectToBuffer(ViewActionObject(
                 timeInMillis = 0L, sourceFeed = getFeedName(),
                 targetImageId = it.image.id, targetUserId = it.profileId))
         }
-        prevRange = items.range()
+        prevRange = items
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun advanceAndPushViewObject(key: Pair<String, String>, recreate: Boolean = false) {
-        viewActionObjectBuffer.let { val aobj = it[key]?.advance() ; it.remove(key) ; aobj }
+    private fun advanceAndPushViewObject(key: Pair<String, String>): ViewActionObject? =
+        viewActionObjectBuffer.let {
+            val aobj = it[key]?.advance()
+            it.remove(key)
+            aobj
+        }?.also { actionObjectPool.put(it) }
+
+    private fun advanceAndPushViewObject(key: Pair<String, String>, recreate: Boolean) {
+        advanceAndPushViewObject(key)
             ?.takeIf { recreate }
             ?.let { addViewObjectToBuffer(it) }
     }
@@ -66,9 +86,11 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
         }
     }
 
+    private fun advanceAndPushViewObjects(keys: Collection<Pair<String, String>>) {
+        keys.forEach { advanceAndPushViewObject(it) }
+    }
+
     private fun addViewObjectToBuffer(aobj: ViewActionObject) {
         viewActionObjectBuffer[aobj.targetImageId to aobj.targetUserId] = aobj
     }
-
-    // TODO: advance, push & remove VIEW when left from visibility roi
 }
