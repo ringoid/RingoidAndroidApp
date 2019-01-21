@@ -53,18 +53,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_settings_white_36dp"/>
 
-    <ImageView
-        android:id="@+id/iv_likes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        android:contentDescription="@null"
-        app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintTop_toBottomOf="@id/ibtn_settings"
-        app:layout_constraintBottom_toTopOf="@id/ibtn_add_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_like_white_36dp"/>
-
     <View
         app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout"
         style="@style/Underscore"/>

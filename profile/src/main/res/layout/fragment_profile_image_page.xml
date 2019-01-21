@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <include layout="@layout/fragment_image_page"/>
 
     <ProgressBar
         android:id="@+id/pb_image"
-        android:layout_gravity="top"
         android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
         style="@style/ProgressBar.Horizontal"/>
 
     <ImageButton
         android:id="@+id/ibtn_delete_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|end"
-        android:layout_marginBottom="@dimen/std_margin_16"
         android:layout_marginEnd="@dimen/std_margin_16"
         android:background="?selectableItemBackground"
         android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_delete_white_36dp"/>
-</FrameLayout>
+
+    <ImageView
+        android:id="@+id/iv_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:contentDescription="@null"
+        app:layout_constraintVertical_bias="0.7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ibtn_delete_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_like_white_36dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
