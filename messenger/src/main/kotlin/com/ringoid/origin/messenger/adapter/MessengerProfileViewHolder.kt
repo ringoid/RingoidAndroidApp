@@ -2,13 +2,9 @@ package com.ringoid.origin.messenger.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.ringoid.domain.model.feed.Profile
-import com.ringoid.origin.feed.adapter.FeedViewHolder
+import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 
-class MessengerProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : FeedViewHolder(view, viewPool) {
+class MessengerViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+    : BaseFeedViewHolder<FeedItem>(view, viewPool)
 
-    override fun bind(model: Profile) {
-        super.bind(model)
-    }
-}
