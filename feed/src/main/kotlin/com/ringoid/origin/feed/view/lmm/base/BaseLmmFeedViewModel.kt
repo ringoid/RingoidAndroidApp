@@ -8,6 +8,7 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -29,6 +30,7 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
             .subscribe({ feed.value = it }, Timber::e)
     }
 
+    protected abstract fun isLmmEmpty(lmm: Lmm): Boolean
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
 
     override fun getFeed() {
@@ -37,8 +39,8 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
         getLmmUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
-                viewState.value = if (it.isMessagesEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
-                else ViewState.IDLE
+                viewState.value = if (isLmmEmpty(it)) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
+                                  else ViewState.IDLE
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
