@@ -22,7 +22,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
         ProfileImageViewHolder(view).also { vh ->
             vh.itemView.ibtn_like.apply {
                 changeVisibility(isVisible = isLikeButtonVisible)
-                clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(vh.itemView.ibtn_like) }
+                clicks().compose(clickDebounce()).subscribe { getOnLikeButtonClickListener(vh).onClick(vh.itemView.ibtn_like) }
             }
         }
 
@@ -39,15 +39,21 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
         return list
     }
 
-    override fun getOnItemClickListener(vh: ProfileImageViewHolder): View.OnClickListener {
-        val xl: ((model: ProfileImageVO, position: Int) -> Unit)? = { model: ProfileImageVO, position: Int ->
-            val isLiked = !model.isLiked
-            vh.animateLike(isLiked = isLiked)
-            model.isLiked = isLiked
-            itemClickListener?.invoke(model, position)
-        }
-        return super.wrapOnItemClickListener(vh, xl)
-    }
+    // ------------------------------------------
+    override fun getOnItemClickListener(vh: ProfileImageViewHolder): View.OnClickListener =
+        super.wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))
+
+    private fun getOnLikeButtonClickListener(vh: ProfileImageViewHolder): View.OnClickListener =
+        super.wrapOnItemClickListener(vh, getLikeClickListener(vh))
+
+    private fun getLikeClickListener(vh: ProfileImageViewHolder, setAlwaysLiked: Boolean = false)
+        : ((model: ProfileImageVO, position: Int) -> Unit)? =
+            { model: ProfileImageVO, position: Int ->
+                val isLiked = if (setAlwaysLiked) true else !model.isLiked
+                vh.animateLike(isLiked = isLiked)
+                model.isLiked = isLiked
+                itemClickListener?.invoke(model, position)
+            }
 }
 
 // ------------------------------------------------------------------------------------------------
