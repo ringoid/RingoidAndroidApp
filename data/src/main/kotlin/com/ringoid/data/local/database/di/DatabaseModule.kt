@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.ringoid.data.local.database.RingoidDatabase
 import com.ringoid.data.local.database.UserRingoidDatabase
 import com.ringoid.data.local.database.dao.feed.FeedDao
+import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
@@ -42,4 +43,7 @@ class DatabaseModule {
 
     @Provides @Singleton @Named("user")
     fun provideUserDao(database: UserRingoidDatabase): UserDao = database.userDao()
+
+    @Provides @Singleton @Named("user")
+    fun provideUserFeedDao(database: UserRingoidDatabase): UserFeedDao = database.userFeedDao()
 }

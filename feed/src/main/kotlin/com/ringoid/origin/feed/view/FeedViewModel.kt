@@ -3,15 +3,20 @@ package com.ringoid.origin.feed.view
 import android.app.Application
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.UnlikeActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.collection.EqualRange
+import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 
-abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
+abstract class FeedViewModel(
+    private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
+    app: Application) : BaseViewModel(app) {
 
     private var prevRange: EqualRange<ProfileImageVO>? = null
     private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
@@ -51,8 +56,12 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
             .also { actionObjectPool.put(it) }
 
         // remove profile from feed, filter it from backend responses in future
-        viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
-        // TODO: cache removed profile id
+        cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .autoDisposable(this)
+            .subscribe({
+                viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
+            }, Timber::e)
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {

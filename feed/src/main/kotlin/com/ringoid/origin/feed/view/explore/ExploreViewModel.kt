@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.GetNewFacesUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.Feed
@@ -16,8 +17,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-    private val getNewFacesUseCase: GetNewFacesUseCase, countUserImagesUseCase: CountUserImagesUseCase,
-    app: Application) : FeedViewModel(app), IFeedController {
+    private val getNewFacesUseCase: GetNewFacesUseCase,
+    cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
+    countUserImagesUseCase: CountUserImagesUseCase,
+    app: Application) : FeedViewModel(cacheBlockedProfileIdUseCase, app), IFeedController {
 
     private val delegate = FeedControllerDelegate(this, countUserImagesUseCase)
 
