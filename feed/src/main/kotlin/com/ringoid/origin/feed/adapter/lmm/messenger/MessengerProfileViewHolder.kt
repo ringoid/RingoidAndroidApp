@@ -1,4 +1,4 @@
-package com.ringoid.origin.messenger.adapter
+package com.ringoid.origin.feed.adapter.lmm.messenger
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

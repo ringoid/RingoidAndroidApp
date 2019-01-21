@@ -11,7 +11,7 @@ import com.ringoid.origin.feed.view.lmm.like.di.LikesFeedFragmentModule
 import com.ringoid.origin.feed.view.lmm.match.di.MatchesFeedFragmentModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
-import com.ringoid.origin.messenger.di.MessengerFragmentModule
+import com.ringoid.origin.feed.view.lmm.messenger.di.MessengerFragmentModule
 import com.ringoid.origin.profile.view.image.di.ProfileImagePageFragmentModule
 import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule

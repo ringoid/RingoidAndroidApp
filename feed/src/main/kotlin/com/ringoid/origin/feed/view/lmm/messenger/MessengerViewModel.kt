@@ -1,4 +1,4 @@
-package com.ringoid.origin.messenger.view
+package com.ringoid.origin.feed.view.lmm.messenger
 
 import android.app.Application
 import com.ringoid.base.viewmodel.BaseViewModel
