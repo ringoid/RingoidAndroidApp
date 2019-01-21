@@ -14,7 +14,7 @@ import com.ringoid.utility.collection.EqualRange
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 abstract class BaseFeedAdapter<T : IProfile, VH>(
-    private var imagesViewPool: RecyclerView.RecycledViewPool? = null, diffCb: BaseDiffCallback<T>)
+    imagesViewPool: RecyclerView.RecycledViewPool? = null, diffCb: BaseDiffCallback<T>)
     : BaseListAdapter<T, VH>(diffCb) where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
 
     companion object {
@@ -26,8 +26,11 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(
     var settingsClickListener: ((model: T, position: Int, positionOfImage: Int) -> Unit)? = null
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
+    protected var imagesViewPool: RecyclerView.RecycledViewPool? = null
+        private set
+
     init {
-        imagesViewPool = imagesViewPool ?: RecyclerView.RecycledViewPool()
+        this.imagesViewPool = imagesViewPool ?: RecyclerView.RecycledViewPool()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
