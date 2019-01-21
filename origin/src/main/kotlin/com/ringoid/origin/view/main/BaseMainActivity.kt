@@ -145,6 +145,9 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
         menuView?.getChildAt(tabIdToIndex(R.id.item_messenger))
                 ?.let { it as? BottomNavigationItemView }
                 ?.addView(badgeMessenger)
+
+        showBadgeOnLmm(isVisible = false)
+        showBadgeOnMessenger(isVisible = false)
     }
 
     protected fun showBadgeOnLmm(isVisible: Boolean) {
