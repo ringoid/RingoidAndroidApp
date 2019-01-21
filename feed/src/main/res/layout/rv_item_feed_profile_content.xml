@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarThumbHorizontal="@color/white_transparent"
+        android:scrollbarSize="4dp"
+        android:scrollbars="horizontal"/>
+
+    <me.relex.circleindicator.CircleIndicator2
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/feed_tab_layout_height"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_8"
+        app:layout_constraintTop_toTopOf="parent"
+        app:ci_gravity="center_vertical|start"/>
+
+    <ImageButton
+        android:id="@+id/ibtn_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:background="?selectableItemBackground"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_more_white_36dp"/>
+
+    <View
+        android:id="@+id/underscore"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/Underscore"/>
+</merge>

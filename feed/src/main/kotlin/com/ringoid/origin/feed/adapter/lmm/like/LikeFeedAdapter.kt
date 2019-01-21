@@ -4,15 +4,18 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.domain.model.feed.Profile
+import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.adapter.ProfileViewHolder
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
-import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
+import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 open class LikeFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null) : FeedAdapter(imagesViewPool) {
 
     var messageClickListener: ((model: Profile, position: Int) -> Unit)? = null
+
+    override fun getLayoutId(): Int = R.layout.rv_item_lmm_profile
 
     override fun instantiateViewHolder(view: View): ProfileViewHolder =
         super.instantiateViewHolder(view).also { vh ->

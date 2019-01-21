@@ -12,7 +12,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
-import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
+import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 open class FeedAdapter(private var imagesViewPool: RecyclerView.RecycledViewPool? = null)
     : BaseListAdapter<Profile, ProfileViewHolder>(ProfileDiffCallback()) {

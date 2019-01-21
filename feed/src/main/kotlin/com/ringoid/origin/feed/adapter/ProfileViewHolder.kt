@@ -9,11 +9,11 @@ import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.collection.EqualRange
-import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
+import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 
-class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+open class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<Profile>(view) {
 
     internal var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null

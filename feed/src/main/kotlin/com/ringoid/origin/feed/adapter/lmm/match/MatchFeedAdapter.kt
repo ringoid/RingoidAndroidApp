@@ -5,7 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.origin.feed.adapter.ProfileViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.LikeFeedAdapter
-import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
+import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null) : LikeFeedAdapter(imagesViewPool) {
 
