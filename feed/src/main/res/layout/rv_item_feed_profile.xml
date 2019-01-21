@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/std_image_height"
-        android:foreground="?selectableItemBackground">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/std_image_height"
+    android:foreground="?selectableItemBackground">
 
     <include layout="@layout/rv_item_feed_profile_content"/>
 

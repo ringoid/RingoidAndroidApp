@@ -22,7 +22,7 @@ open class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool
             profileImageAdapter.itemClickListener = value
         }
 
-    internal val profileImageAdapter = ProfileImageAdapter().apply { itemClickListener = onLikeImageListener }
+    val profileImageAdapter = ProfileImageAdapter().apply { itemClickListener = onLikeImageListener }
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     init {

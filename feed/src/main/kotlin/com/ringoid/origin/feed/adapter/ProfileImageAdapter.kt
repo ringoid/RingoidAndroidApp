@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHolder>(ProfileImageDiffCallback()) {
 
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
-    internal var isLikeButtonVisible = true
+    var isLikeButtonVisible = true
 
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
