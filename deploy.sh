@@ -34,9 +34,9 @@ do
 		buildVariant="*staging*"
 	fi
 	buildCode=$(getBuildCode $filename)
-	if [[ "$TO_SLACK" == true ]]
-	then
+#	if [[ "$TO_SLACK" == true ]]
+#	then
 		echo $(slackPost $buildVariant $buildCode $url)
-	fi
+#	fi
 done
 
