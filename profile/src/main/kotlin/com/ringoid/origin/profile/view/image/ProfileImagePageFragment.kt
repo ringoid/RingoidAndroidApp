@@ -42,7 +42,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
             is ViewState.LOADING -> pb_image.changeVisibility(isVisible = true)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    IMAGE_DELETED -> {
+                    is IMAGE_DELETED -> {
                         snackbar(view, OriginR_string.profile_image_deleted)
                         communicator(IProfileFragment::class.java)?.onDeleteImage()
                         onIdleState()

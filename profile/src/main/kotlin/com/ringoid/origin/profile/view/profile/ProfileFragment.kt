@@ -51,7 +51,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    IMAGE_CREATED -> {
+                    is IMAGE_CREATED -> {
                         snackbar(view, OriginR_string.profile_image_created)
                         onCreateImage()
                         onIdleState()
