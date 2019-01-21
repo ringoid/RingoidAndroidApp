@@ -5,6 +5,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
+import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.UnlikeActionObject
@@ -17,11 +18,13 @@ import timber.log.Timber
 
 abstract class FeedViewModel(
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    app: Application) : BaseViewModel(app) {
+    private val countUserImagesUseCase: CountUserImagesUseCase, app: Application)
+    : BaseViewModel(app) {
 
     private var prevRange: EqualRange<ProfileImageVO>? = null
     private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
 
+    abstract fun getFeed()
     abstract fun getFeedName(): String
 
     /* Lifecycle */
@@ -35,6 +38,25 @@ abstract class FeedViewModel(
     // --------------------------------------------------------------------------------------------
     fun onAddImage() {
         navigation.value = BaseFeedFragment.InternalNavigator::openProfileScreen
+    }
+
+    fun clearScreen(mode: Int) {
+        viewState.value = ViewState.CLEAR(mode)
+    }
+
+    fun onRefresh() {
+        countUserImagesUseCase.source()
+            .map { it > 0 }  // user has images in profile
+            .autoDisposable(this)
+            .subscribe({
+                if (it) {
+                    actionObjectPool.trigger()
+                    clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
+                    getFeed()
+                } else {
+                    viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+                }
+            }, Timber::e)
     }
 
     /* Action Objects */

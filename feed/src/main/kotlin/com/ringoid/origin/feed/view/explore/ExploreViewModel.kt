@@ -10,8 +10,6 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.common.FeedControllerDelegate
-import com.ringoid.origin.feed.view.common.IFeedController
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,9 +18,7 @@ class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
-    : FeedViewModel(cacheBlockedProfileIdUseCase, app), IFeedController {
-
-    private val delegate = FeedControllerDelegate(this, countUserImagesUseCase)
+    : FeedViewModel(cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
 
     val feed by lazy { MutableLiveData<Feed>() }
 
@@ -43,13 +39,4 @@ class ExploreViewModel @Inject constructor(
     }
 
     override fun getFeedName(): String = "new_faces"
-
-    // ------------------------------------------
-    override fun clearScreen(mode: Int) {
-        delegate.clearScreen(mode)
-    }
-
-    override fun onRefresh() {
-        delegate.onRefresh()
-    }
 }

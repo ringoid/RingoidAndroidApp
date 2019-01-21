@@ -3,16 +3,14 @@ package com.ringoid.origin.feed.view.lmm
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.R
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_lmm.*
 
-class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
+class LmmFragment : BaseFragment<LmmViewModel>() {
 
     companion object {
         fun newInstance(): LmmFragment = LmmFragment()
@@ -24,13 +22,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun getLayoutId(): Int = R.layout.fragment_lmm
 
-    override fun getViewModel(): LmmViewModel = vm
-
     // --------------------------------------------------------------------------------------------
-    override fun onRefresh() {
-        vm.onRefresh()
-    }
-
     override fun onTabReselect() {
         super.onTabReselect()
         vp_pages?.let { selectPage(it.currentItem xor 1) }
@@ -41,16 +33,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lmmPagesAdapter = LmmPagerAdapter(childFragmentManager)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        /**
-         * Parent Fragment calls [Fragment.onActivityCreated] before any of child Fragment,
-         * so it is safe to access [vm] of this parent Fragment from [Fragment.onActivityCreated]
-         * of it's child Fragments.
-         */
-        vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 
     @Suppress("CheckResult", "AutoDispose")

@@ -132,6 +132,10 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
 //            setRecycledViewPool(viewPool)  // TODO: use pool for feeds
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
+        swipe_refresh_layout.apply {
+//            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
+            setOnRefreshListener { vm.onRefresh() }
+        }
     }
 
     override fun onResume() {
