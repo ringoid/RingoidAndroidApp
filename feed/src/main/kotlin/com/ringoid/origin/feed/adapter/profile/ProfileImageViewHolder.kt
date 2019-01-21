@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.adapter
+package com.ringoid.origin.feed.adapter.profile
 
 import android.view.View
 import android.view.animation.Animation
@@ -6,7 +6,6 @@ import android.view.animation.OvershootInterpolator
 import android.view.animation.ScaleAnimation
 import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseViewHolder
-import com.ringoid.domain.model.image.Image
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.anim.LikeAnimation
 import com.ringoid.origin.feed.model.ProfileImageVO

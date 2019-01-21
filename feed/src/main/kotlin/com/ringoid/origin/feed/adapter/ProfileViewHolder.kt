@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.Profile
+import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.collection.EqualRange
@@ -22,7 +23,8 @@ open class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool
             profileImageAdapter.itemClickListener = value
         }
 
-    val profileImageAdapter = ProfileImageAdapter().apply { itemClickListener = onLikeImageListener }
+    val profileImageAdapter = ProfileImageAdapter()
+        .apply { itemClickListener = onLikeImageListener }
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     init {
