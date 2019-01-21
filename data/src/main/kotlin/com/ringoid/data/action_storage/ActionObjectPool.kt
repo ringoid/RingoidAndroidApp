@@ -122,6 +122,11 @@ class ActionObjectPool @Inject constructor(
 
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
+        if (queue.isEmpty()) {
+            Timber.v("Triggering empty queue - no-op")
+            return
+        }
+
         lastActionTime = queue.peek()?.actionTime ?: 0L
         Timber.v("Triggering... queue size [${queue.size}], last action time: $lastActionTime")
         spm.accessSingle { accessToken ->
