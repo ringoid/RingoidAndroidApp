@@ -26,10 +26,7 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({
-                Timber.v("Received update lmm feed: $it")
-                feed.value = it
-            }, Timber::e)
+            .subscribe({ feed.value = it }, Timber::e)
     }
 
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
