@@ -18,7 +18,7 @@ import timber.log.Timber
 abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<T>(view), IFeedViewHolder {
 
-    val profileImageAdapter = ProfileImageAdapter()
+    internal val profileImageAdapter = ProfileImageAdapter()
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     init {
