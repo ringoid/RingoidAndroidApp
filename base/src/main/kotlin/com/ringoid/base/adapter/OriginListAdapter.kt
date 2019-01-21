@@ -9,7 +9,7 @@ abstract class OriginListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCall
 
     /* Data Access */
     // --------------------------------------------------------------------------------------------
-    fun submitList(list: List<T>?) {
+    open fun submitList(list: List<T>?) {
         helper.submitList(list)
     }
 

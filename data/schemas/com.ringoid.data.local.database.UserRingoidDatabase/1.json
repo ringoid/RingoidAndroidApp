@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "806a829e4e3187978d1cc134321bb771",
+    "identityHash": "6e1304a07dac37b5cb26d5bba7e933cb",
     "entities": [
       {
         "tableName": "Images",
@@ -87,6 +87,35 @@
         "foreignKeys": []
       },
       {
+        "tableName": "ProfileIds",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_ProfileIds_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE  INDEX `index_ProfileIds_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
         "tableName": "UserImages",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`originPhotoId` TEXT NOT NULL, `likes` INTEGER NOT NULL, `id` TEXT NOT NULL, `uri` TEXT, PRIMARY KEY(`id`))",
         "fields": [
@@ -127,7 +156,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"806a829e4e3187978d1cc134321bb771\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6e1304a07dac37b5cb26d5bba7e933cb\")"
     ]
   }
 }

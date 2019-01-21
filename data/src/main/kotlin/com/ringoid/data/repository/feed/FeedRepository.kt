@@ -43,4 +43,6 @@ class FeedRepository @Inject constructor(
     override fun getLmm(resolution: ImageResolution): Single<Lmm> =
         spm.accessSingle { cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
             .map { it.map() }}
+
+    // --------------------------------------------------------------------------------------------
 }
