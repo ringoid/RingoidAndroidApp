@@ -15,7 +15,7 @@ import com.ringoid.utility.collection.EqualRange
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 open class FeedAdapter(private var imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseListAdapter<Profile, ProfileViewHolder>(ProfileDiffCallback()) {
+    : BaseListAdapter<Profile, FeedViewHolder>(ProfileDiffCallback()) {
 
     companion object {
         const val VIEW_TYPE_NORMAL = 0
@@ -33,8 +33,8 @@ open class FeedAdapter(private var imagesViewPool: RecyclerView.RecycledViewPool
 
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
 
-    override fun instantiateViewHolder(view: View): ProfileViewHolder =
-        ProfileViewHolder(view, viewPool = imagesViewPool).apply {
+    override fun instantiateViewHolder(view: View): FeedViewHolder =
+        FeedViewHolder(view, viewPool = imagesViewPool).apply {
             onLikeImageListener = this@FeedAdapter.onLikeImageListener
             trackingBus = this@FeedAdapter.trackingBus
             val wrapSettingsClickListener: ((model: Profile, position: Int) -> Unit)? =

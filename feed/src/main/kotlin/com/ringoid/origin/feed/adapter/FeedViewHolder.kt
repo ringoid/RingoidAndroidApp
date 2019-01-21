@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 
-open class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+open class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<Profile>(view) {
 
     internal var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null

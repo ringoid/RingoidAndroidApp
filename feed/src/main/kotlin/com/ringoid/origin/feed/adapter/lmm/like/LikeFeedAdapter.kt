@@ -6,7 +6,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.FeedAdapter
-import com.ringoid.origin.feed.adapter.ProfileViewHolder
+import com.ringoid.origin.feed.adapter.FeedViewHolder
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
@@ -17,7 +17,7 @@ open class LikeFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
 
     override fun getLayoutId(): Int = R.layout.rv_item_lmm_profile
 
-    override fun instantiateViewHolder(view: View): ProfileViewHolder =
+    override fun instantiateViewHolder(view: View): FeedViewHolder =
         super.instantiateViewHolder(view).also { vh ->
             vh.itemView.ibtn_message.apply {
                 // TODO: show message button only after like tap
