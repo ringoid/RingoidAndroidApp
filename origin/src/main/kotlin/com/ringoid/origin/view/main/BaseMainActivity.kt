@@ -26,6 +26,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
 
     protected abstract fun getListOfRootFragments(): List<Fragment>
 
+    protected fun bottomBar() = bottom_bar
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -38,7 +38,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
         getLayoutId()?.let { setContentView(it) }
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             subscribeOnBusEvents()
-            observe(viewState) { onViewStateChange(it) }
+            observe(viewState, ::onViewStateChange)
             observe(navigation) { it.call(this@BaseActivity) }
         }
     }

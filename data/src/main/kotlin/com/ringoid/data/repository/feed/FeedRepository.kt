@@ -20,6 +20,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -43,6 +44,7 @@ class FeedRepository @Inject constructor(
     override val feedLikes = BehaviorSubject.create<List<FeedItem>>()
     override val feedMatches = BehaviorSubject.create<List<FeedItem>>()
     override val feedMessages = BehaviorSubject.create<List<FeedItem>>()
+    override val hasNotSeenLmm = PublishSubject.create<Boolean>()
 
     // TODO: always check db first
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
@@ -61,6 +63,7 @@ class FeedRepository @Inject constructor(
                      feedLikes.onNext(it.likes)
                      feedMatches.onNext(it.matches)
                      feedMessages.onNext(it.messages)
+                     hasNotSeenLmm.onNext(it.hasNotSeenItems())
                  }
         }
 
