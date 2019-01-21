@@ -108,13 +108,13 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                             }
                         })
                 }
-                trackingBus = this@FeedFragment.trackingBus
             }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         trackingBus = TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
+        feedAdapter.trackingBus = this@FeedFragment.trackingBus
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
