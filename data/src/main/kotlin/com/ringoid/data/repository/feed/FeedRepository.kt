@@ -11,6 +11,7 @@ import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
+import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -18,6 +19,7 @@ import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -37,7 +39,11 @@ class FeedRepository @Inject constructor(
     override fun deleteBlockedProfileIds(): Completable =
         Completable.fromCallable { cache.deleteBlockedProfileIds() }
 
-    // ------------------------------------------
+    // --------------------------------------------------------------------------------------------
+    override val feedLikes = BehaviorSubject.create<List<FeedItem>>()
+    override val feedMatches = BehaviorSubject.create<List<FeedItem>>()
+    override val feedMessages = BehaviorSubject.create<List<FeedItem>>()
+
     // TODO: always check db first
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         spm.accessSingle {
@@ -51,6 +57,11 @@ class FeedRepository @Inject constructor(
             cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
                  .filterBlockedProfilesLmm()
                  .map { it.map() }
+                 .doOnSuccess {
+                     feedLikes.onNext(it.likes)
+                     feedMatches.onNext(it.matches)
+                     feedMessages.onNext(it.messages)
+                 }
         }
 
     // --------------------------------------------------------------------------------------------
