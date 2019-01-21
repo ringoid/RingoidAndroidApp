@@ -52,10 +52,13 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {
-        prevRange?.delta(items)?.let {
-            Timber.v("Excluded items in range [${it.range()}], consume VIEW action objects")
-            advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
-        }
+        Timber.v("Incoming visible items: $items")
+        prevRange?.delta(items)
+            ?.takeIf { !it.isRangeEmpty() }
+            ?.let {
+                Timber.v("Excluded items in range [${it.range()}], consume VIEW action objects")
+                advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
+            }
 
         items.forEach {
             addViewObjectToBuffer(ViewActionObject(

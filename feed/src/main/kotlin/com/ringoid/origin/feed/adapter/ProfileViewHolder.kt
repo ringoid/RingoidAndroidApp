@@ -11,6 +11,7 @@ import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.collection.EqualRange
 import kotlinx.android.synthetic.main.rv_item_feed_profile.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
+import timber.log.Timber
 
 class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<Profile>(view) {
@@ -45,6 +46,7 @@ class ProfileViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = n
                         val from = it.findFirstVisibleItemPosition()
                         val to = it.findLastVisibleItemPosition()
                         val items = profileImageAdapter.getItemsExposed(from = from, to = to)
+                        Timber.v("Visible items [${items.size}] [$from, $to]: $items")
                         trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
                     }
                 }
