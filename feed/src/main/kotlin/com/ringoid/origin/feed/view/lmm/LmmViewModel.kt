@@ -19,7 +19,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class LmmViewModel @Inject constructor(
-    private val getLmmUseCase: GetLmmUseCase, private val countUserImagesUseCase: CountUserImagesUseCase,
+    private val getLmmUseCase: GetLmmUseCase, countUserImagesUseCase: CountUserImagesUseCase,
     app: Application) : BaseViewModel(app), IFeedController {
 
     private val delegate = FeedControllerDelegate(this, countUserImagesUseCase)

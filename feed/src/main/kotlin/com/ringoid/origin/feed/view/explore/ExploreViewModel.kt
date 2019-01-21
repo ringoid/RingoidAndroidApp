@@ -16,7 +16,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-    private val getNewFacesUseCase: GetNewFacesUseCase, private val countUserImagesUseCase: CountUserImagesUseCase,
+    private val getNewFacesUseCase: GetNewFacesUseCase, countUserImagesUseCase: CountUserImagesUseCase,
     app: Application) : FeedViewModel(app), IFeedController {
 
     private val delegate = FeedControllerDelegate(this, countUserImagesUseCase)
