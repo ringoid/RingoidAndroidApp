@@ -11,9 +11,7 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
-class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHolder>(
-    ProfileImageDiffCallback()
-) {
+class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHolder>(ProfileImageDiffCallback()) {
 
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
     var isLikeButtonVisible = true
