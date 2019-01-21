@@ -11,7 +11,7 @@ import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
-class GetLmmUseCase @Inject constructor(private val repository: IFeedRepository,
+class GetLmmUseCase @Inject constructor(val repository: IFeedRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<Lmm>(threadExecutor, postExecutor) {
 
