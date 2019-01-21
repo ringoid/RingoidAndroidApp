@@ -30,6 +30,7 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
             .subscribe({ feed.value = it }, Timber::e)
     }
 
+    protected open fun doOnSuccess(lmm: Lmm) {}
     protected abstract fun isLmmEmpty(lmm: Lmm): Boolean
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
 
@@ -41,6 +42,7 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
             .doOnSuccess {
                 viewState.value = if (isLmmEmpty(it)) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
                                   else ViewState.IDLE
+                doOnSuccess(it)
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)

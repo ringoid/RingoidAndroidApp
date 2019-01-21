@@ -4,13 +4,15 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.feed.R
 import com.ringoid.utility.changeTypeface
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_lmm.*
 
-class LmmFragment : BaseFragment<LmmViewModel>() {
+class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     companion object {
         fun newInstance(): LmmFragment = LmmFragment()
@@ -23,6 +25,15 @@ class LmmFragment : BaseFragment<LmmViewModel>() {
     override fun getLayoutId(): Int = R.layout.fragment_lmm
 
     // --------------------------------------------------------------------------------------------
+    override fun showBadgeOnLikes(isVisible: Boolean) {
+        badge_likes.changeVisibility(isVisible, soft = true)
+    }
+
+    override fun showBadgeOnMatches(isVisible: Boolean) {
+        badge_matches.changeVisibility(isVisible, soft = true)
+    }
+
+    // ------------------------------------------
     override fun onTabReselect() {
         super.onTabReselect()
         vp_pages?.let { selectPage(it.currentItem xor 1) }
@@ -33,6 +44,14 @@ class LmmFragment : BaseFragment<LmmViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lmmPagesAdapter = LmmPagerAdapter(childFragmentManager)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewLifecycleOwner.apply {
+            observe(vm.badgeLikes, ::showBadgeOnLikes)
+            observe(vm.badgeMatches, ::showBadgeOnMatches)
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")

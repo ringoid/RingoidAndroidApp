@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
@@ -14,6 +15,13 @@ class LikesFeedViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase, cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
     : BaseLmmFeedViewModel(getLmmUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
+
+    val badgeLikes by lazy { MutableLiveData<Boolean>() }
+
+    override fun doOnSuccess(lmm: Lmm) {
+        super.doOnSuccess(lmm)
+        badgeLikes.value = lmm.newLikesCount() > 0
+    }
 
     override fun isLmmEmpty(lmm: Lmm): Boolean = lmm.isLikesEmpty()
 
