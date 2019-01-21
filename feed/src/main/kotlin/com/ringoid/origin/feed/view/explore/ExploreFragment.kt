@@ -46,7 +46,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.feed, feedAdapter::submit)
+        viewLifecycleOwner.observe(vm.feed) { feedAdapter.submitList(it.profiles) }
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 

@@ -10,6 +10,7 @@ import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.UnlikeActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.base.BaseFeedFragment
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
@@ -33,7 +34,7 @@ abstract class FeedViewModel(
 
     // --------------------------------------------------------------------------------------------
     fun onAddImage() {
-        navigation.value = FeedFragment.InternalNavigator::openProfileScreen
+        navigation.value = BaseFeedFragment.InternalNavigator::openProfileScreen
     }
 
     /* Action Objects */
