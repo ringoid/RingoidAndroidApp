@@ -33,8 +33,7 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
 
     protected lateinit var feedAdapter: FeedAdapter
         private set
-    private val trackingBus: TrackingBus<EqualRange<ProfileImageVO>> =
-        TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
+    private lateinit var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
@@ -111,6 +110,11 @@ abstract class FeedFragment<T : FeedViewModel> : BaseFragment<T>() {
                 }
                 trackingBus = this@FeedFragment.trackingBus
             }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        trackingBus = TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

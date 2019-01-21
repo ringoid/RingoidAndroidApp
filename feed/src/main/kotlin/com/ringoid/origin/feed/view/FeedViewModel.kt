@@ -24,7 +24,7 @@ abstract class FeedViewModel(app: Application) : BaseViewModel(app) {
         advanceAndPushViewObjects()
         prevRange = null
     }
-    
+
     // --------------------------------------------------------------------------------------------
     fun onAddImage() {
         navigation.value = FeedFragment.InternalNavigator::openProfileScreen
