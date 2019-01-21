@@ -21,7 +21,8 @@ interface IFeedRepository {
     val feedLikes: BehaviorSubject<List<FeedItem>>
     val feedMatches: BehaviorSubject<List<FeedItem>>
     val feedMessages: BehaviorSubject<List<FeedItem>>
-    val hasNotSeenLmm: PublishSubject<Boolean>
+    val lmmChanged: PublishSubject<Boolean>
+    val newMessages: PublishSubject<Boolean>
 
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
 

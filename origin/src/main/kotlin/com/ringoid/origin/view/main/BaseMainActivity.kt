@@ -2,7 +2,11 @@ package com.ringoid.origin.view.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
@@ -12,6 +16,7 @@ import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
+import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -19,6 +24,9 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
     FragNavController.TransactionListener {
 
     protected lateinit var fragNav: FragNavController
+
+    private lateinit var badgeLmm: View
+    private lateinit var badgeMessenger: View
 
     private var tabPayload: String? = null  // payload to pass to subscreen on tab switch
 
@@ -32,6 +40,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initView()
+
         fragNav = FragNavController(supportFragmentManager, R.id.fl_container)
             .apply {
                 rootFragments = getListOfRootFragments()
@@ -99,7 +109,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
         when (index) {
             0 -> R.id.item_feed
             1 -> R.id.item_lmm
-            2 -> R.id.item_messages
+            2 -> R.id.item_messenger
             3 -> R.id.item_profile
             else -> R.id.item_feed
         }
@@ -108,7 +118,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
         when (tabId) {
             R.id.item_feed -> 0
             R.id.item_lmm -> 1
-            R.id.item_messages -> 2
+            R.id.item_messenger -> 2
             R.id.item_profile -> 3
             else -> 0
         }
@@ -117,8 +127,31 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
         when (tabName) {
             NavigateFrom.MAIN_TAB_FEED -> R.id.item_feed
             NavigateFrom.MAIN_TAB_LMM -> R.id.item_lmm
-            NavigateFrom.MAIN_TAB_MESSENGER -> R.id.item_messages
+            NavigateFrom.MAIN_TAB_MESSENGER -> R.id.item_messenger
             NavigateFrom.MAIN_TAB_PROFILE -> R.id.item_profile
             else -> throw IllegalArgumentException("Unknown tab name: $tabName")
         }
+
+    // --------------------------------------------------------------------------------------------
+    private fun initView() {
+        val menuView = bottom_bar.getChildAt(0) as? BottomNavigationMenuView
+        badgeLmm = LayoutInflater.from(this).inflate(R.layout.main_menu_badge, menuView, false)
+        badgeMessenger = LayoutInflater.from(this).inflate(R.layout.main_menu_badge, menuView, false)
+
+        menuView?.getChildAt(tabIdToIndex(R.id.item_lmm))
+                ?.let { it as? BottomNavigationItemView }
+                ?.addView(badgeLmm)
+
+        menuView?.getChildAt(tabIdToIndex(R.id.item_messenger))
+                ?.let { it as? BottomNavigationItemView }
+                ?.addView(badgeMessenger)
+    }
+
+    protected fun showBadgeOnLmm(isVisible: Boolean) {
+        badgeLmm.changeVisibility(isVisible, soft = true)
+    }
+
+    protected fun showBadgeOnMessenger(isVisible: Boolean) {
+        badgeMessenger.changeVisibility(isVisible, soft = true)
+    }
 }

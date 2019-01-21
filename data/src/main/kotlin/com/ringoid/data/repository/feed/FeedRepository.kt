@@ -44,7 +44,8 @@ class FeedRepository @Inject constructor(
     override val feedLikes = BehaviorSubject.create<List<FeedItem>>()
     override val feedMatches = BehaviorSubject.create<List<FeedItem>>()
     override val feedMessages = BehaviorSubject.create<List<FeedItem>>()
-    override val hasNotSeenLmm = PublishSubject.create<Boolean>()
+    override val lmmChanged = PublishSubject.create<Boolean>()
+    override val newMessages = PublishSubject.create<Boolean>()
 
     // TODO: always check db first
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
@@ -63,7 +64,8 @@ class FeedRepository @Inject constructor(
                      feedLikes.onNext(it.likes)
                      feedMatches.onNext(it.matches)
                      feedMessages.onNext(it.messages)
-                     hasNotSeenLmm.onNext(it.hasNotSeenItems())
+                     lmmChanged.onNext(it.containsNotSeenItems())
+                     // TODO: newMessages
                  }
         }
 

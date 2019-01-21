@@ -8,5 +8,5 @@ data class Lmm(val likes: List<FeedItem>, val matches: List<FeedItem>, val messa
 
     fun newLikesCount(): Int = likes.count { it.isNotSeen }
     fun newMatchesCount(): Int = matches.count { it.isNotSeen }
-    fun hasNotSeenItems(): Boolean = newLikesCount() > 0 || newMatchesCount() > 0
+    fun containsNotSeenItems(): Boolean = newLikesCount() > 0 || newMatchesCount() > 0
 }

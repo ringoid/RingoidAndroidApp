@@ -13,11 +13,17 @@ class MainViewModel @Inject constructor(getLmmUseCase: GetLmmUseCase, app: Appli
     : BaseMainViewModel(app) {
 
     val badgeLmm by lazy { MutableLiveData<Boolean>() }
+    val badgeMessenger by lazy { MutableLiveData<Boolean>() }
 
     init {
-        getLmmUseCase.repository.hasNotSeenLmm
+        getLmmUseCase.repository.lmmChanged
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeLmm.value = it }, Timber::e)
+
+        getLmmUseCase.repository.newMessages
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ badgeMessenger.value = it }, Timber::e)
     }
 }

@@ -11,7 +11,7 @@
         android:title="@string/main_bottom_bar_menu_lmm"/>
 
     <item
-        android:id="@+id/item_messages"
+        android:id="@+id/item_messenger"
         android:icon="@drawable/ic_menu_messages_24dp"
         android:title="@string/main_bottom_bar_menu_messages"/>
 
