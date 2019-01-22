@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.DialogInterface
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentActivity
 import com.ringoid.base.isActivityDestroyed
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
+import com.ringoid.utility.randomLong
 
 object Dialogs {
 
@@ -132,6 +134,14 @@ object Dialogs {
         activity?.takeIf { !it.isActivityDestroyed() }?.let { getSingleChoiceDialog(activity, items, l)?.show() }
 
     // --------------------------------------------------------------------------------------------
-    fun errorDialog(activity: Activity?, e: Throwable? = null) =
-        showTextDialog(activity, R.string.error_common, "")
+    fun errorDialog(activity: FragmentActivity?, e: Throwable? = null) {
+        activity
+            ?.takeIf { !it.isActivityDestroyed() }
+            ?.let {
+                val hash = randomLong().also { registry.add(it) }
+                StatusDialog.newInstance(titleResId = R.string.error_common)
+                    .apply { dialog?.setOnDismissListener { registry.remove(hash) } }
+                    .also { it.show(activity.supportFragmentManager, "${StatusDialog.TAG}_$hash") }
+            }
+    }
 }

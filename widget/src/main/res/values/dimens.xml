@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="std_btn_height">37dp</dimen>
+    <dimen name="std_dialog_height">160dp</dimen>
     <dimen name="std_icon_24">19dp</dimen>
     <dimen name="std_margin_8">6dp</dimen>
     <dimen name="std_margin_12">9dp</dimen>
     <dimen name="std_margin_16">12dp</dimen>
+    <dimen name="std_margin_20">16dp</dimen>
     <dimen name="std_margin_32">24dp</dimen>
     <dimen name="std_margin_40">32dp</dimen>
     <dimen name="std_text_14">11sp</dimen>
