@@ -22,6 +22,7 @@
 
     <Button
         android:id="@+id/btn_tab_likes"
+        android:layout_marginEnd="@dimen/std_margin_8"
         android:background="?selectableItemBackground"
         android:text="@string/lmm_tab_likes"
         android:textColor="@color/tab_button_text_color"
@@ -42,8 +43,21 @@
         app:layout_constraintTop_toTopOf="@id/btn_tab_likes"
         app:layout_constraintEnd_toEndOf="@id/btn_tab_likes"/>
 
+    <View
+        android:id="@+id/tab_delim"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="?attr/refColorUnderscore"
+        app:layout_constraintTop_toTopOf="@id/btn_tab_likes"
+        app:layout_constraintBottom_toBottomOf="@id/btn_tab_likes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <Button
         android:id="@+id/btn_tab_matches"
+        android:layout_marginStart="@dimen/std_margin_8"
         android:background="?selectableItemBackground"
         android:text="@string/lmm_tab_matches"
         android:textColor="@color/tab_button_text_color"
