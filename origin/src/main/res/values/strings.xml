@@ -98,7 +98,7 @@
     <string name="settings_info_title">Legal</string>
 
     <!-- Web Page screen -->
-    <string name="web_page_licenses">Attribution</string>
+    <string name="web_page_licenses">Open&#45;source Licenses</string>
     <string name="web_page_privacy">Privacy Policy</string>
     <string name="web_page_terms">Terms of Service</string>
 </resources>
