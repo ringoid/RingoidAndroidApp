@@ -76,7 +76,7 @@
     <!-- Settings screen -->
     <string name="settings_account_delete">Delete Account</string>
     <string name="settings_account_delete_info">If you don\'t use Ringoid for more than 16 days, your account will be automatically deleted.</string>
-    <string name="settings_account_delete_dialog_description">This action can not be undone.</string>
+    <string name="settings_account_delete_dialog_description">There is no undo.</string>
     <string name="settings_account_delete_dialog_title">Delete Account?</string>
     <string name="settings_app_info">Legal</string>
     <string name="settings_support">Email support@ringoid.com</string>
