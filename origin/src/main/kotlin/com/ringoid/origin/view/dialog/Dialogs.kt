@@ -32,7 +32,12 @@ object Dialogs {
                 dialog.dismiss()
             }
 
-    data class HashAlertDialog(val dialog: AlertDialog, val hash: Long)
+    data class HashAlertDialog(val dialog: AlertDialog, val hash: Long) {
+
+        init {
+            dialog.setOnDismissListener { registry.remove(hash) }
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     private fun getTextDialog(
@@ -55,8 +60,8 @@ object Dialogs {
             val builder = AlertDialog.Builder(activity)
             titleResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setTitle(resId) } }
             description.takeIf { !it.isNullOrBlank() }?.let { str -> builder.also { it.setMessage(str) } }
-            positiveBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setPositiveButton(resId, wrapListener(hash, positiveListener)) } }
-            negativeBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setNegativeButton(resId, wrapListener(hash, negativeListener)) } }
+            positiveBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setPositiveButton(resId, positiveListener) } }
+            negativeBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setNegativeButton(resId, negativeListener) } }
             HashAlertDialog(dialog = builder.create(), hash = hash)
         } ?: throw NullPointerException("Unable to show dialog: Activity is null")
 
