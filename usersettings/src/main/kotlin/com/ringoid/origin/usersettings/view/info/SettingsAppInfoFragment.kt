@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.DomainUtil.CLIPBOARD_KEY_CUSTOMER_ID
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.BuildConfig
 import com.ringoid.origin.navigation.ExternalNavigator
@@ -13,6 +14,8 @@ import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.copyToClipboard
+import com.ringoid.utility.toast
 import kotlinx.android.synthetic.main.fragment_settings_app_info.*
 
 class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
@@ -31,7 +34,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        tv_customer_id.text = vm.spm.currentUserId() ?: ""
+        item_customer_id.setLabel(vm.spm.currentUserId() ?: "")
     }
 
     @Suppress("CheckResult", "AutoDispose")
@@ -50,8 +53,14 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
             }
             setLabel(BuildConfig.VERSION_NAME)
         }
+        item_customer_id.clicks().compose(clickDebounce()).subscribe {
+            context?.let {
+                it.copyToClipboard(key = CLIPBOARD_KEY_CUSTOMER_ID, value = item_customer_id.getLabel().toString())
+                toast(it, OriginR_string.common_clipboard)
+            }
+        }
         item_email_officer.clicks().compose(clickDebounce()).subscribe {
-            val subject = String.format(AppRes.EMAIL_OFFICER_MAIL_SUBJECT, tv_customer_id.text)
+            val subject = String.format(AppRes.EMAIL_OFFICER_MAIL_SUBJECT, item_customer_id.getLabel())
             ExternalNavigator.openEmailComposer(this, email = "data.protection@ringoid.com", subject = subject)
         }
         item_licenses.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_LICENSES}") }

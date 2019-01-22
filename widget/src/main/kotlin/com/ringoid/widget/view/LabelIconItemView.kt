@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_label_icon_item_view_layout.view.*
 
-class LabelIconItemView : IconItemView {
+open class LabelIconItemView : IconItemView {
 
     constructor(context: Context): this(context, null)
 
@@ -18,6 +18,8 @@ class LabelIconItemView : IconItemView {
 
     /* API */
     // --------------------------------------------------------------------------------------------
+    fun getLabel(): CharSequence = tv_label.text
+
     fun setLabel(@StringRes resId: Int) {
         tv_label.setText(resId)
     }

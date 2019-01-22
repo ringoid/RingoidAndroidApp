@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -55,4 +56,8 @@ fun snackbar(view: View?, text: String, duration: Int = Snackbar.LENGTH_SHORT) {
 
 fun snackbar(view: View?, @StringRes textResId: Int, duration: Int = Snackbar.LENGTH_SHORT) {
     view?.let { Snackbar.make(it, textResId, duration).show() }
+}
+
+fun toast(context: Context, @StringRes textResId: Int, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context, textResId, duration).show()
 }

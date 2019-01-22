@@ -1,5 +1,9 @@
 package com.ringoid.utility
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
@@ -28,11 +32,30 @@ abstract class AutoLinkMovementMethod : LinkMovementMethod() {
             val off = layout.getOffsetForHorizontal(line, x.toFloat())
 
             val link = buffer.getSpans(off, off, URLSpan::class.java)
-            if (link.size != 0) {
+            if (link.isNotEmpty()) {
                 processUrl(link[0].url)
                 return true
             }
         }
         return super.onTouchEvent(widget, buffer, event)
     }
+}
+
+/* Clipboard */
+// --------------------------------------------------------------------------------------------
+fun Context.copyToClipboard(key: String, value: String) {
+    (getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager)
+        ?.primaryClip = ClipData.newPlainText(key, value)
+}
+
+fun Context.pasteFromClipboard(key: String): String {
+    val stringBuilder = StringBuilder()
+    (getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager)
+        ?.primaryClip
+        ?.let {
+            for (i in 0 until it.itemCount) {
+                stringBuilder.append(it.getItemAt(i).text)
+            }
+        }
+    return stringBuilder.toString()
 }

@@ -42,22 +42,8 @@
 
     <View style="@style/Underscore"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginStart="@dimen/std_margin_16"
-        android:gravity="start"
-        android:paddingStart="4dp"
-        android:text="@string/settings_info_customer_info"
-        style="@style/StdText.Primary"/>
-
-    <TextView
-        android:id="@+id/tv_customer_id"
-        android:layout_width="match_parent"
-        android:layout_marginStart="@dimen/std_margin_16"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        android:gravity="start"
-        android:paddingStart="4dp"
-        style="@style/StdText.Secondary"/>
-
+    <com.ringoid.widget.view.SubLabelIconItemView
+        android:id="@+id/item_customer_id"
+        app:icon_item_text="@string/settings_info_customer_info"
+        style="?attr/iconItemView"/>
 </LinearLayout>

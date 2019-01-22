@@ -10,6 +10,7 @@
     <string name="button_later">Maybe later</string>
 
     <string name="common_choose_image">Choose Image</string>
+    <string name="common_clipboard">Copied to clipboard</string>
     <string name="common_compose_email">Send Email</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
