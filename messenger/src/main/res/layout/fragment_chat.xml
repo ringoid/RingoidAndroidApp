@@ -23,9 +23,13 @@
             android:background="@android:color/transparent"
             android:gravity="center_vertical|start"
             android:hint="@string/chat_message_edit_text_hint"
-            android:inputType="text"
+            android:imeOptions="flagNoPersonalizedLearning"
+            android:inputType="textMultiLine"
+            android:maxLines="4"
             android:paddingStart="@dimen/std_margin_16"
-            android:paddingEnd="@dimen/std_margin_16"/>
+            android:paddingEnd="@dimen/std_margin_16"
+            android:shadowColor="@color/text_shadow"
+            android:shadowRadius="6"/>
 
         <ImageButton
             android:id="@+id/ibtn_message_send"
