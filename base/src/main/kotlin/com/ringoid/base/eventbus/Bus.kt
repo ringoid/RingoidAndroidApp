@@ -11,11 +11,15 @@ object Bus {
     }
 
     fun subscribeOnBusEvents(subscriber: Any) {
-        EventBus.getDefault().register(subscriber)
+        if (!EventBus.getDefault().isRegistered(subscriber)) {
+            EventBus.getDefault().register(subscriber)
+        }
     }
 
     fun unsubscribeFromBusEvents(subscriber: Any) {
-        EventBus.getDefault().unregister(subscriber)
+        if (EventBus.getDefault().isRegistered(subscriber)) {
+            EventBus.getDefault().unregister(subscriber)
+        }
     }
 
     fun isSubscribed(subscriber: Any): Boolean = EventBus.getDefault().isRegistered(subscriber)
