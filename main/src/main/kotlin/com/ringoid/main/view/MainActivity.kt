@@ -8,7 +8,7 @@ import com.ringoid.origin.feed.view.explore.ExploreFragment
 import com.ringoid.origin.feed.view.lmm.LmmFragment
 import com.ringoid.origin.feed.view.lmm.messenger.MessengerFragment
 import com.ringoid.origin.messenger.view.ChatFragment
-import com.ringoid.origin.profile.view.profile.ProfileFragment
+import com.ringoid.origin.profile.view.profile.UserProfileFragment
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.main.IMainActivity
 
@@ -22,7 +22,7 @@ class MainActivity : BaseMainActivity<MainViewModel>(), IMainActivity {
                 ExploreFragment.newInstance(),
                 LmmFragment.newInstance(),
                 MessengerFragment.newInstance(),
-                ProfileFragment.newInstance())
+                UserProfileFragment.newInstance())
 
     // --------------------------------------------------------------------------------------------
     override fun openChat(peerId: String) {

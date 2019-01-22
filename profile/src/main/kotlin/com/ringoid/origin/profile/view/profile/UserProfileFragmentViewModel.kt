@@ -9,8 +9,10 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.CreateUserImageUseCase
+import com.ringoid.domain.interactor.image.DeleteUserImageUseCase
 import com.ringoid.domain.interactor.image.GetUserImageByIdUseCase
 import com.ringoid.domain.interactor.image.GetUserImagesUseCase
+import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.ScreenHelper
@@ -21,8 +23,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-class ProfileFragmentViewModel @Inject constructor(
-    private val createUserImageUseCase: CreateUserImageUseCase, private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
+class UserProfileFragmentViewModel @Inject constructor(
+    private val createUserImageUseCase: CreateUserImageUseCase,
+    private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
+    private val deleteUserImageUseCase: DeleteUserImageUseCase,
     private val getUserImagesUseCase: GetUserImagesUseCase,
     app: Application) : BaseViewModel(app) {
 
@@ -60,6 +64,19 @@ class ProfileFragmentViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ images.value = it }, Timber::e)
+    }
+
+    fun deleteImage(id: String) {
+        spm.accessToken()?.let {
+            val essence = ImageDeleteEssence(accessToken = it.accessToken, imageId = id)
+
+            deleteUserImageUseCase.source(params = Params().put(essence))
+                .doOnSubscribe { viewState.value = ViewState.LOADING }
+                .doOnComplete { viewState.value = ViewState.DONE(IMAGE_DELETED) }
+                .doOnError { viewState.value = ViewState.ERROR(it) }
+                .autoDisposable(this)
+                .subscribe({ Timber.d("Successfully deleted image: $it") }, Timber::e)
+        }
     }
 
     fun uploadImage(uri: Uri) {

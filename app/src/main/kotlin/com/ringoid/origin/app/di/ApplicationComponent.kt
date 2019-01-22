@@ -13,8 +13,7 @@ import com.ringoid.origin.feed.view.lmm.messenger.di.MessengerFragmentModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
 import com.ringoid.origin.messenger.di.ChatFragmentModule
-import com.ringoid.origin.profile.view.image.di.ProfileImagePageFragmentModule
-import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
+import com.ringoid.origin.profile.view.profile.di.UserProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
 import com.ringoid.origin.usersettings.view.di.SettingsActivityModule
 import com.ringoid.origin.usersettings.view.di.SettingsFragmentModule
@@ -38,7 +37,7 @@ import javax.inject.Singleton
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
                       LoginActivityModule::class, MainActivityModule::class,
                       MatchesFeedFragmentModule::class, MessengerFragmentModule::class,
-                      ProfileFragmentModule::class, ProfileImagePageFragmentModule::class,
+                      UserProfileFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
                       SplashActivityModule::class,

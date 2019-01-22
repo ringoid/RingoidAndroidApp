@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
+    <FrameLayout
+        android:id="@+id/fl_empty_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
@@ -13,21 +23,27 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-        
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/vp_images"
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_items"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbarAlwaysDrawHorizontalTrack="true"
+            android:scrollbarThumbHorizontal="@color/white_transparent"
+            android:scrollbarSize="4dp"
+            android:scrollbars="horizontal"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <me.relex.circleindicator.CircleIndicator
+    <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="@dimen/profile_tab_layout_height"
         android:layout_marginTop="@dimen/std_margin_16"
         android:layout_marginStart="@dimen/std_margin_8"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:ci_gravity="center_vertical|start"/>
 
     <ImageButton

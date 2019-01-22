@@ -5,14 +5,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
-import com.ringoid.origin.view.adapter.ImagePagerAdapter
+import com.ringoid.origin.profile.view.adapter.UserProfileImageAdapter
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
@@ -20,20 +24,21 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.snackbar
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import kotlinx.android.synthetic.main.fragment_profile.*
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 
-class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragment {
+class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
     companion object {
-        fun newInstance(): ProfileFragment = ProfileFragment()
+        fun newInstance(): UserProfileFragment = UserProfileFragment()
     }
 
     private var shouldAskToAddAnotherImage: Boolean = false
 
-    private lateinit var imagesAdapter: ImagePagerAdapter
+    private lateinit var imagesAdapter: UserProfileImageAdapter
     private val imagePreviewReceiver = CropIwaResultReceiver()
 
-    override fun getVmClass(): Class<ProfileFragmentViewModel> = ProfileFragmentViewModel::class.java
+    override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_profile
 
@@ -51,8 +56,12 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is IMAGE_CREATED -> {
-                        //snackbar(view, OriginR_string.profile_image_created)
-                        onCreateImage()
+//                        snackbar(view, OriginR_string.profile_image_created)
+                        rv_items.smoothScrollToPosition(0)
+                        onIdleState()
+                    }
+                    is IMAGE_DELETED -> {
+//                        snackbar(view, OriginR_string.profile_image_deleted)
                         onIdleState()
                     }
                 }
@@ -63,16 +72,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
                 onIdleState()
             }
         }
-    }
-
-    // ------------------------------------------
-    override fun onCreateImage() {
-        // TODO: move to newly added image page
-        imagesAdapter.notifyDataSetChanged()
-    }
-
-    override fun onDeleteImage() {
-        imagesAdapter.notifyDataSetChanged()
     }
 
     // ------------------------------------------
@@ -90,8 +89,16 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imagesAdapter = ProfileImagePagerAdapter(fm = childFragmentManager,
-            emptyInput = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
+        imagesAdapter = UserProfileImageAdapter().apply {
+            onDeleteImageListener = { model: UserImage, _ ->
+                Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_delete_image_title,
+                    descriptionResId = OriginR_string.profile_dialog_delete_image_description,
+                    positiveBtnLabelResId = OriginR_string.button_delete,
+                    negativeBtnLabelResId = OriginR_string.button_cancel,
+                    positiveListener = { _, _ -> vm.deleteImage(model.id) })
+            }
+            onEmptyImagesListener = ::showEmptyStub
+        }
 
         imagePreviewReceiver.apply {
             register(context)
@@ -124,10 +131,10 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.imageCreated) { imagesAdapter.prepend(item = it) ; vp_images.currentItem = 0 }
+            observe(vm.imageCreated, imagesAdapter::prepend)
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.imageIdChanged, imagesAdapter::updateItemId)
-            observe(vm.images, imagesAdapter::set)
+            observe(vm.images, imagesAdapter::submitList)
         }
         vm.getUserImages()
     }
@@ -141,11 +148,17 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setOnRefreshListener { vm.onRefresh() }
         }
-        vp_images.apply {
-            adapter = imagesAdapter.also { it.tabsObserver = tabs.dataSetObserver }
-            offscreenPageLimit = 4
-            tabs.setViewPager(this)
-//            OverScrollDecoratorHelper.setUpOverScroll(this)
+        val snapHelper = PagerSnapHelper()
+        rv_items.apply {
+            adapter = imagesAdapter.also { it.tabsObserver = tabs.adapterDataObserver }
+            isNestedScrollingEnabled = false
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            snapHelper.attachToRecyclerView(this)
+            tabs.attachToRecyclerView(this, snapHelper)
+            setHasFixedSize(true)
+//            setRecycledViewPool(viewPool)
+            setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
+            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
     }
 
@@ -165,6 +178,22 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
             negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
             positiveListener = { _, _ -> vm.onAddImage() },
-            negativeListener = { _, _ -> navigate(this@ProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
+            negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
+    }
+
+    private fun showEmptyStub(needShow: Boolean) {
+        fl_empty_container.changeVisibility(isVisible = needShow)
+        if (!needShow) {
+            return
+        }
+
+        EmptyFragment.Companion.Input(emptyTextResId = R.string.profile_empty_images)
+            .apply {
+                val emptyFragment = EmptyFragment.newInstance(this)
+                childFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
+                    .commitNowAllowingStateLoss()
+            }
     }
 }
