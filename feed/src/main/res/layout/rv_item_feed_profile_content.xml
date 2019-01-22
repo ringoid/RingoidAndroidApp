@@ -37,6 +37,7 @@
 
     <View
         android:id="@+id/underscore"
+        android:layout_height="2dp"
         android:background="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         style="@style/Underscore"/>
