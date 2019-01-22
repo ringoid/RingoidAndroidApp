@@ -3,10 +3,7 @@ package com.ringoid.origin.imagepreview.view
 import androidx.fragment.app.Fragment
 import com.ringoid.base.BuildConfig
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.origin.navigation.CONTENT_URI
-import com.ringoid.origin.navigation.Extras
-import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.BaseHostActivity
 
 @AppNav("imagepreview")
@@ -30,10 +27,14 @@ class ImagePreviewActivity : BaseHostActivity(), IImagePreviewActivity {
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun onClose() {
+    override fun onClose(withImageAdded: Boolean) {
         intent.getStringExtra(Extras.EXTRA_NAVIGATE_FROM)
               ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
-              ?.let { navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
+              ?.let {
+                  val payload = if (withImageAdded) "&tabPayload=${Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED}"
+                                else ""
+                  navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}$payload")
+              }
         super.onBackPressed()  // close ImagePreview screen
     }
 }

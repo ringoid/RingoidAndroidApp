@@ -28,6 +28,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         fun newInstance(): ProfileFragment = ProfileFragment()
     }
 
+    private var shoulAskToAddAnotherImage: Boolean = false
+
     private lateinit var imagesAdapter: ImagePagerAdapter
     private val imagePreviewReceiver = CropIwaResultReceiver()
 
@@ -78,6 +80,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         super.onTabTransaction(payload)
         payload?.let {
             when (it) {
+                Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { shoulAskToAddAnotherImage = true }
                 Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> vm.onAddImage()
             }
         }
@@ -153,6 +156,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
 
     // --------------------------------------------------------------------------------------------
     private fun askToAddAnotherImage() {
+        if (!shoulAskToAddAnotherImage) {
+            return
+        }
+
+        shoulAskToAddAnotherImage = false  // ask only once per session
         Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
             negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,

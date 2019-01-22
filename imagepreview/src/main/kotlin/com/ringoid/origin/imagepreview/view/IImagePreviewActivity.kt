@@ -4,5 +4,5 @@ import com.ringoid.utility.ICommunicator
 
 internal interface IImagePreviewActivity : ICommunicator {
 
-    fun onClose()
+    fun onClose(withImageAdded: Boolean = false)
 }

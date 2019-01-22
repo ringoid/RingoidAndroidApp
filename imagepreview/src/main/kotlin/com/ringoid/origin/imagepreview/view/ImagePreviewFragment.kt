@@ -111,11 +111,11 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         }
 
         activity?.setResult(Activity.RESULT_OK)  // close with result
-        onClose()  // close this ImagePreview screen immediately, doing cropping in background
+        onClose(true)  // close this ImagePreview screen immediately, doing cropping in background
     }
 
-    private fun onClose() {
-        communicator(IImagePreviewActivity::class.java)?.onClose()
+    private fun onClose(withImageAdded: Boolean = false) {
+        communicator(IImagePreviewActivity::class.java)?.onClose(withImageAdded)
     }
 
     internal fun onNavigateBack() {
