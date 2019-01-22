@@ -51,7 +51,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is IMAGE_CREATED -> {
-                        snackbar(view, OriginR_string.profile_image_created)
+                        //snackbar(view, OriginR_string.profile_image_created)
                         onCreateImage()
                         onIdleState()
                     }

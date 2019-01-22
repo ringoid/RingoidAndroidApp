@@ -14,7 +14,6 @@ import com.ringoid.origin.view.image.ImagePageFragment
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
-import com.ringoid.utility.snackbar
 import kotlinx.android.synthetic.main.fragment_profile_image_page.*
 
 class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() {
@@ -43,7 +42,7 @@ class ProfileImagePageFragment : ImagePageFragment<ProfileImagePageViewModel>() 
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is IMAGE_DELETED -> {
-                        snackbar(view, OriginR_string.profile_image_deleted)
+                        //snackbar(view, OriginR_string.profile_image_deleted)
                         communicator(IProfileFragment::class.java)?.onDeleteImage()
                         onIdleState()
                     }
