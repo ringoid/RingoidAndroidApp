@@ -7,7 +7,8 @@
         <item name="refColorAccent">@color/grass</item>
         <item name="refColorPrimary">@color/steel</item>
         <item name="refColorPrimaryDark">@color/agat</item>
-        <item name="refColorBottomBarIcon">@color/bottom_bar_icon_black</item>
+        <item name="refColorBottomBarIcon">@color/black_half</item>
+        <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_black</item>
         <item name="refColorUnderscore">@color/underscore</item>
         <item name="refTextColorPrimary">@color/primary_text</item>
         <item name="refTextColorSecondary">@color/secondary_text</item>
@@ -29,7 +30,8 @@
 
     <style name="Base.V0.AppTheme.Dark">
         <item name="android:windowBackground">@color/grey</item>
-        <item name="refColorBottomBarIcon">@color/bottom_bar_icon_white</item>
+        <item name="refColorBottomBarIcon">@color/white_half</item>
+        <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_white</item>
         <item name="refColorUnderscore">@color/underscore_dark</item>
         <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_24dp</item>
         <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_24dp</item>

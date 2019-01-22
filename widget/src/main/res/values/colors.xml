@@ -4,8 +4,8 @@
     <color name="primary_dark">#512DA8</color>
     <color name="primary_light">#D1C4E9</color>
     <color name="accent">#03A9F4</color>
-    <color name="bottom_bar_icon_black">#aa000000</color>
-    <color name="bottom_bar_icon_white">#aaffffff</color>
+    <color name="bottom_bar_icon_black">#ff000000</color>
+    <color name="bottom_bar_icon_white">#ffffffff</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="secondary_text_light">#4C6277</color>
@@ -15,6 +15,7 @@
     <color name="agat">#626f7e</color>
     <color name="aquamarine">#5df2d6</color>
     <color name="black">#000000</color>
+    <color name="black_half">#aa000000</color>
     <color name="facebook">#4267b2</color>
     <color name="female_pink">#ff62ab</color>
     <color name="grass">#64aa0a</color>
@@ -49,6 +50,7 @@
     <color name="unpressed">#dbdbdb</color>
     <color name="warning">#ff9900</color>
     <color name="white_transparent">#4fffffff</color>
+    <color name="white_half">#aaffffff</color>
 
     <array name="swipe_refresh_colors">
         <item name="progress_1">@color/accent</item>
