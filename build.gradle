@@ -60,6 +60,9 @@ allprojects {
         androidVersionName = getVersionName(isStaging, majorVersion, middleVersion, minorVersion, buildVersion)
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         testApplicationId = 'com.ringoid.app.test'
+
+        // app configuration
+        backToGalleryFromImagePreview = false
     }
 }
 

@@ -10,6 +10,8 @@ android {
         versionCode rootProject.ext.androidVersionCode
         versionName rootProject.ext.androidVersionName
         testInstrumentationRunner rootProject.ext.testInstrumentationRunner
+
+        buildConfigField 'boolean', 'BACK_TO_GALLERY_FROM_IMAGE_PREVIEW', "$rootProject.ext.backToGalleryFromImagePreview"
     }
     buildTypes {
         release {

@@ -1,6 +1,7 @@
 package com.ringoid.origin.imagepreview.view
 
 import androidx.fragment.app.Fragment
+import com.ringoid.base.BuildConfig
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.origin.navigation.CONTENT_URI
 import com.ringoid.origin.navigation.Extras
@@ -20,8 +21,12 @@ class ImagePreviewActivity : BaseHostActivity(), IImagePreviewActivity {
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onBackPressed() {
-        (supportFragmentManager.findFragmentByTag(ImagePreviewFragment.TAG) as? ImagePreviewFragment)
-            ?.onNavigateBack()
+        if (BuildConfig.BACK_TO_GALLERY_FROM_IMAGE_PREVIEW) {
+            (supportFragmentManager.findFragmentByTag(ImagePreviewFragment.TAG) as? ImagePreviewFragment)
+                ?.onNavigateBack()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     // --------------------------------------------------------------------------------------------
