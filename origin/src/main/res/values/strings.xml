@@ -36,7 +36,7 @@
         <item>Harassment or threats, Abuse</item>
     </string-array>
 
-    <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover others, like and message them?\nWithout your photo, no one can see you</string>
+    <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover, like and message others?\n\nAdd photo so others can like you</string>
     <string name="feed_explore_empty_need_refresh">Pull to refresh to\ndiscover users nearby</string>
     <string name="feed_explore_empty_no_data">No one new around</string>
     <string name="feed_likes_you_empty_need_refresh">Pull to refresh to\nsee who likes you</string>

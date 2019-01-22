@@ -78,9 +78,9 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     is NO_IMAGES_IN_PROFILE -> {
                         Dialogs.showTextDialog(activity,
                             descriptionResId = OriginR_string.feed_explore_dialog_no_user_photo_description,
-                            positiveBtnLabelResId = OriginR_string.button_later,
-                            negativeBtnLabelResId = OriginR_string.button_add_photo,
-                            negativeListener = { _, _ -> vm.onAddImage() })
+                            positiveBtnLabelResId = OriginR_string.button_add_photo,
+                            negativeBtnLabelResId = OriginR_string.button_later,
+                            positiveListener = { _, _ -> vm.onAddImage() })
                         swipe_refresh_layout.isRefreshing = false
                     }
                 }
