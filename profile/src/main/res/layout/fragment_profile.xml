@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
@@ -35,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/std_margin_12"
         android:layout_marginEnd="@dimen/std_margin_12"
-        android:background="?selectableItemBackground"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/std_margin_16"
         android:layout_marginEnd="@dimen/std_margin_16"
-        android:background="?selectableItemBackground"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
         app:layout_constraintEnd_toEndOf="parent"
