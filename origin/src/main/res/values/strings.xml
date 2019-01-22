@@ -38,14 +38,14 @@
 
     <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover others, like and message them?\nWithout your photo, no one can see you</string>
     <string name="feed_explore_empty_need_refresh">Pull to refresh to\ndiscover users nearby</string>
-    <string name="feed_explore_empty_no_data">No one new around\n\nUsers of the opposite sex will appear here</string>
+    <string name="feed_explore_empty_no_data">No one new around</string>
     <string name="feed_likes_you_empty_need_refresh">Pull to refresh to\nsee who likes you</string>
-    <string name="feed_likes_you_empty_no_data">Users who like you will appear here\n\nYou can like them back (to match) and message from here</string>
+    <string name="feed_likes_you_empty_no_data">Users who like you will appear here</string>
     <string name="feed_list_end_item_label">No one else around</string>
     <string name="feed_matches_empty_need_refresh">Pull to refresh to\nsee your matches</string>
-    <string name="feed_matches_empty_no_data">Users that you like and who like you (mutal likes) will appear here\n\nYou can message your matches from here</string>
+    <string name="feed_matches_empty_no_data">Users that you like and who like you (mutual likes) will appear here</string>
     <string name="feed_messages_empty_need_refresh">Pull to refresh to\nsee who messages you</string>
-    <string name="feed_messages_empty_no_data">Your matches who messaged you will appear here\n\nYou can read their messages and reply from here</string>
+    <string name="feed_messages_empty_no_data">Messages from your matches will appear here</string>
 
     <!-- Image Preview screen -->
 
