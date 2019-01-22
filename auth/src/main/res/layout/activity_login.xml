@@ -18,6 +18,8 @@
             android:layout_marginBottom="@dimen/std_margin_16"
             android:layout_marginStart="@dimen/std_margin_16"
             android:layout_marginEnd="@dimen/std_margin_16"
+            android:paddingTop="@dimen/std_margin_16"
+            android:paddingBottom="@dimen/std_margin_16"
             android:text="@string/login_button"
             android:textSize="@dimen/std_text_20"
             app:layout_constraintBottom_toBottomOf="parent"
