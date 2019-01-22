@@ -68,7 +68,7 @@
     <string name="profile_dialog_delete_image_description">This action can not be undone.</string>
     <string name="profile_dialog_image_another_button_add">Add another photo</string>
     <string name="profile_dialog_image_another_button_cancel">Discover new faces</string>
-    <string name="profile_dialog_image_another_title">What to do next?</string>
+    <string name="profile_dialog_image_another_title">What do you want to do next?</string>
     <string name="profile_empty_images">Add your photo to\nsee how many likes you get</string>
     <string name="profile_image_created">Photo has been uploaded.</string>
     <string name="profile_image_deleted">Photo has been removed.</string>
