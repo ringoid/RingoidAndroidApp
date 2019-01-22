@@ -54,7 +54,7 @@
 
     <View
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
-        style="@style/Underscore.Match"/>
+        style="@style/Underscore"/>
 
     <ImageButton
         android:id="@+id/ibtn_chat_close"

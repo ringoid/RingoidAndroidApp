@@ -28,5 +28,5 @@
     <View
         android:id="@+id/underscore"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"
-        style="@style/Underscore.Match"/>
+        style="@style/Underscore"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
