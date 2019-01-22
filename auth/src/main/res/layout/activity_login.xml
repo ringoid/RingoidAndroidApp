@@ -58,6 +58,7 @@
             android:paddingBottom="@dimen/std_margin_16"
             android:paddingStart="@dimen/std_margin_32"
             android:paddingEnd="@dimen/std_margin_32"
+            android:textColor="?attr/refTextColorPrimary"
             android:textSize="@dimen/login_year_of_birth_et_text_size"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintTop_toTopOf="parent"
