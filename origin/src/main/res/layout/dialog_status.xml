@@ -7,7 +7,6 @@
     android:layout_height="@dimen/std_dialog_height"
     android:layout_marginStart="@dimen/std_margin_32"
     android:layout_marginEnd="@dimen/std_margin_32"
-    android:orientation="vertical"
     android:padding="@dimen/std_margin_20">
 
     <TextView

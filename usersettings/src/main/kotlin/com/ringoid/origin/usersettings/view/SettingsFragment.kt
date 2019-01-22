@@ -61,11 +61,10 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
         }
 
         item_delete_account.clicks().compose(clickDebounce()).subscribe {
-//            Dialogs.showTextDialog(activity, titleResId = OriginR_string.settings_account_delete_dialog_title,
-//                descriptionResId = OriginR_string.settings_account_delete_dialog_description,
-//                positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
-//                positiveListener = { _, _ -> vm.deleteAccount() })
-            Dialogs.errorDialog(activity)
+            Dialogs.showTextDialog(activity, titleResId = OriginR_string.settings_account_delete_dialog_title,
+                descriptionResId = OriginR_string.settings_account_delete_dialog_description,
+                positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
+                positiveListener = { _, _ -> vm.deleteAccount() })
         }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe {
