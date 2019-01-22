@@ -86,7 +86,6 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.LOADING -> swipe_refresh_layout.isRefreshing = true
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
                 Dialogs.errorDialog(activity, newState.e)
