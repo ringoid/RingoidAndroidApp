@@ -46,8 +46,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
             clicks().compose(clickDebounce()).subscribe {
                 Dialogs.showTextDialog(
                     activity, titleResId = OriginR_string.settings_info_about_dialog_title,
-                    descriptionResId = OriginR_string.settings_info_about_dialog_description
-                )
+                    descriptionResId = OriginR_string.settings_info_about_dialog_description)
             }
             setLabel(BuildConfig.VERSION_NAME)
         }

@@ -80,7 +80,7 @@ object Dialogs {
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) {
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
         activity?.takeIf { !it.isActivityDestroyed() }
                 ?.let {
                     val dialog = getTextDialog(it, titleResId, description,
@@ -89,8 +89,8 @@ object Dialogs {
                     registry.takeIf { !it.contains(dialog.hash) }
                                 ?.add(dialog.hash)
                                 ?.also { dialog.dialog.show() }
+                    dialog
                 }
-    }
 
     fun showTextDialog(
             activity: Activity?, @StringRes titleResId: Int = 0, @StringRes descriptionResId: Int = 0,
@@ -121,6 +121,7 @@ object Dialogs {
                     registry.takeIf { !it.contains(dialog.hash) }
                                 ?.add(dialog.hash)
                                 ?.also { dialog.dialog.show() }
+                    dialog
                 }
 
     // --------------------------------------------------------------------------------------------
