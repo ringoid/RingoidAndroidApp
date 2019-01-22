@@ -6,7 +6,6 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 interface IFeedRepository {
@@ -18,9 +17,9 @@ interface IFeedRepository {
     fun deleteBlockedProfileIds(): Completable
 
     // --------------------------------------------------------------------------------------------
-    val feedLikes: BehaviorSubject<List<FeedItem>>
-    val feedMatches: BehaviorSubject<List<FeedItem>>
-    val feedMessages: BehaviorSubject<List<FeedItem>>
+    val feedLikes: PublishSubject<List<FeedItem>>
+    val feedMatches: PublishSubject<List<FeedItem>>
+    val feedMessages: PublishSubject<List<FeedItem>>
     val lmmChanged: PublishSubject<Boolean>
     val newMessages: PublishSubject<Boolean>
 

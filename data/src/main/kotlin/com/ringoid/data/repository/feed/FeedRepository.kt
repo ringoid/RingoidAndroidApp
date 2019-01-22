@@ -19,7 +19,6 @@ import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import javax.inject.Named
@@ -41,9 +40,9 @@ class FeedRepository @Inject constructor(
         Completable.fromCallable { cache.deleteBlockedProfileIds() }
 
     // --------------------------------------------------------------------------------------------
-    override val feedLikes = BehaviorSubject.create<List<FeedItem>>()
-    override val feedMatches = BehaviorSubject.create<List<FeedItem>>()
-    override val feedMessages = BehaviorSubject.create<List<FeedItem>>()
+    override val feedLikes = PublishSubject.create<List<FeedItem>>()
+    override val feedMatches = PublishSubject.create<List<FeedItem>>()
+    override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
     override val newMessages = PublishSubject.create<Boolean>()
 
