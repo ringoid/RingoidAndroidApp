@@ -9,10 +9,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
-import com.ringoid.origin.navigation.ExternalNavigator
-import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.RC_IMAGE_PREVIEW
-import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.adapter.ImagePagerAdapter
@@ -81,7 +78,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
         super.onTabTransaction(payload)
         payload?.let {
             when (it) {
-                NavigateFrom.PAYLOAD_PROFILE_ADD_IMAGE -> vm.onAddImage()
+                Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> vm.onAddImage()
             }
         }
     }

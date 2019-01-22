@@ -7,7 +7,10 @@ object NavigateFrom {
     const val MAIN_TAB_MESSENGER = "messenger"
     const val MAIN_TAB_PROFILE = "profile"
 
-    const val PAYLOAD_PROFILE_ADD_IMAGE = "profile_add_image"
-
     const val SCREEN_LOGIN = "login"
+}
+
+object Payload {
+
+    const val PAYLOAD_PROFILE_REQUEST_ADD_IMAGE = "payload_profile_request_add_image"
 }

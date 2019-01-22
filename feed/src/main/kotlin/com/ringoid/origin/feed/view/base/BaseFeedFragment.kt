@@ -18,6 +18,7 @@ import com.ringoid.origin.feed.view.BLOCK_PROFILE
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
 import com.ringoid.origin.navigation.NavigateFrom
+import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
@@ -33,7 +34,7 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
 
     object InternalNavigator {
         fun openProfileScreen(fragment: Fragment) {
-            navigate(fragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${NavigateFrom.PAYLOAD_PROFILE_ADD_IMAGE}")
+            navigate(fragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}")
         }
     }
 

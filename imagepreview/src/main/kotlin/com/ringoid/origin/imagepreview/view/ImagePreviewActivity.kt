@@ -32,8 +32,8 @@ class ImagePreviewActivity : BaseHostActivity(), IImagePreviewActivity {
     // --------------------------------------------------------------------------------------------
     override fun onClose() {
         intent.getStringExtra(Extras.EXTRA_NAVIGATE_FROM)
-            ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
-            ?.let { navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
+              ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
+              ?.let { navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
         super.onBackPressed()  // close ImagePreview screen
     }
 }
