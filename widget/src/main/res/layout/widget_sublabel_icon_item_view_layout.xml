@@ -27,7 +27,7 @@
 
         <TextView
             android:id="@+id/tv_label"
-            android:layout_gravity="center_vertical|end"
+            android:layout_gravity="center_vertical|start"
             android:layout_marginEnd="@dimen/std_margin_8"
             style="@style/StdText.Secondary"/>
     </LinearLayout>
