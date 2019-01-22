@@ -130,4 +130,8 @@ object Dialogs {
 
     fun showSingleChoiceDialog(activity: Activity?, items: Array<String>, l: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
         activity?.takeIf { !it.isActivityDestroyed() }?.let { getSingleChoiceDialog(activity, items, l)?.show() }
+
+    // --------------------------------------------------------------------------------------------
+    fun errorDialog(activity: Activity?, e: Throwable? = null) =
+        showTextDialog(activity, R.string.error_common, "")
 }

@@ -43,7 +43,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
             is ViewState.LOADING -> pb_settings.changeVisibility(isVisible = true)
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_common, description = "DL TEXT FROM URL")
+                Dialogs.errorDialog(activity, newState.e)
                 onIdleState()
             }
             else -> { /* no-op */ }

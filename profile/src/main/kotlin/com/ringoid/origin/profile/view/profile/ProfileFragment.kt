@@ -59,7 +59,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(), IProfileFragme
             }
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_common, description = "DL TEXT FROM URL")
+                Dialogs.errorDialog(activity, newState.e)
                 onIdleState()
             }
         }
