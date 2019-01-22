@@ -8,7 +8,7 @@ class RequestHeaderInterceptor : IRequestHeaderInterceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-            .addHeader("x-ringoid-android-buildnum", "${BuildConfig.MINOR_VERSION}")
+            .addHeader("x-ringoid-android-buildnum", "${BuildConfig.BUILD_NUMBER}")
             .addHeader("Content-Type", "application/json")
             .build()
         return chain.proceed(request)

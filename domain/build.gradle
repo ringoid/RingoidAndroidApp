@@ -11,7 +11,7 @@ android {
         versionName rootProject.ext.androidVersionName
         testInstrumentationRunner rootProject.ext.testInstrumentationRunner
 
-        buildConfigField 'int', 'MINOR_VERSION', "$rootProject.ext.minorVersion"
+        buildConfigField 'int', 'BUILD_NUMBER', "$rootProject.ext.buildVersion"
         buildConfigField 'String', 'API_URL', rootProject.ext.apiUrl
         buildConfigField 'String', 'APPNAV', rootProject.ext.appnav
         buildConfigField 'String', 'AUTHORITY', rootProject.ext.authority
