@@ -20,8 +20,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
     companion object {
         internal const val TAG = "SettingsAppInfoFragment_tag"
 
-        fun newInstance(): SettingsAppInfoFragment =
-            SettingsAppInfoFragment()
+        fun newInstance(): SettingsAppInfoFragment = SettingsAppInfoFragment()
     }
 
     override fun getVmClass(): Class<SettingsAppInfoViewModel> = SettingsAppInfoViewModel::class.java
