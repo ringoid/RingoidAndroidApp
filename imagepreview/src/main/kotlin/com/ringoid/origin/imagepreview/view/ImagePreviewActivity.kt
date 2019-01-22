@@ -22,7 +22,7 @@ class ImagePreviewActivity : BaseHostActivity(), IImagePreviewActivity {
             (supportFragmentManager.findFragmentByTag(ImagePreviewFragment.TAG) as? ImagePreviewFragment)
                 ?.onNavigateBack()
         } else {
-            super.onBackPressed()
+            onClose()
         }
     }
 
