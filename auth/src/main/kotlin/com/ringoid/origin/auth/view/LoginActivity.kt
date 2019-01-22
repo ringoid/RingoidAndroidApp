@@ -110,7 +110,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         when (requestCode) {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 when (resultCode) {
-                    Activity.RESULT_CANCELED -> navigateAndClose(this, path = "/main")
+                    Activity.RESULT_CANCELED -> navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}")
                     Activity.RESULT_OK -> {
                         data?.putExtra(Extras.EXTRA_NAVIGATE_FROM, NavigateFrom.SCREEN_LOGIN)
                         navigateAndClose(this, path = "/imagepreview", payload = data)
