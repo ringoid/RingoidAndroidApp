@@ -6,6 +6,8 @@ import com.ringoid.origin.feed.adapter.lmm.LmmViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
+import com.ringoid.origin.view.main.IMainActivity
+import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : LmmViewHolder>
@@ -18,7 +20,7 @@ abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : LmmViewHold
             messageClickListener = { model: FeedItem, position: Int ->
                 (rv_items.layoutManager as LinearLayoutManager)
                     .scrollToPositionWithOffset(position, 0)
-                // TOO: open chat
+                communicator(IMainActivity::class.java)?.openChat(peerId = model.id)
             }
         }
 }

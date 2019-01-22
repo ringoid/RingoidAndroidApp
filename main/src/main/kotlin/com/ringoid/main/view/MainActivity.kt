@@ -7,11 +7,13 @@ import com.ringoid.base.observe
 import com.ringoid.origin.feed.view.explore.ExploreFragment
 import com.ringoid.origin.feed.view.lmm.LmmFragment
 import com.ringoid.origin.feed.view.lmm.messenger.MessengerFragment
+import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.profile.view.profile.ProfileFragment
 import com.ringoid.origin.view.main.BaseMainActivity
+import com.ringoid.origin.view.main.IMainActivity
 
 @AppNav("main")
-class MainActivity : BaseMainActivity<MainViewModel>() {
+class MainActivity : BaseMainActivity<MainViewModel>(), IMainActivity {
 
     override fun getVmClass() = MainViewModel::class.java
 
@@ -21,6 +23,15 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
                 LmmFragment.newInstance(),
                 MessengerFragment.newInstance(),
                 ProfileFragment.newInstance())
+
+    // --------------------------------------------------------------------------------------------
+    override fun openChat(peerId: String) {
+        fragNav.pushFragment(ChatFragment.newInstance(peerId))
+    }
+
+    override fun popScreen() {
+        fragNav.popFragment()
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

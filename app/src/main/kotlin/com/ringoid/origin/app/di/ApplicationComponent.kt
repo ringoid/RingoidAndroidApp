@@ -9,9 +9,10 @@ import com.ringoid.origin.feed.view.explore.di.ExploreFragmentModule
 import com.ringoid.origin.feed.view.lmm.di.LmmFragmentModule
 import com.ringoid.origin.feed.view.lmm.like.di.LikesFeedFragmentModule
 import com.ringoid.origin.feed.view.lmm.match.di.MatchesFeedFragmentModule
+import com.ringoid.origin.feed.view.lmm.messenger.di.MessengerFragmentModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
-import com.ringoid.origin.feed.view.lmm.messenger.di.MessengerFragmentModule
+import com.ringoid.origin.messenger.di.ChatFragmentModule
 import com.ringoid.origin.profile.view.image.di.ProfileImagePageFragmentModule
 import com.ringoid.origin.profile.view.profile.di.ProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
@@ -31,6 +32,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
+                      ChatFragmentModule::class,
                       DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
