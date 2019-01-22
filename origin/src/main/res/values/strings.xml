@@ -24,7 +24,7 @@
     <!-- Feed screen -->
     <string-array name="block_profile_array">
         <item>Block</item>
-        <item>Block &#38; Report</item>
+        <item>Report &#38; Block</item>
     </string-array>
 
     <string-array name="report_profile_array">
