@@ -33,6 +33,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/ProgressBar"/>
 
-    <include layout="@layout/toolbar_shadow"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
