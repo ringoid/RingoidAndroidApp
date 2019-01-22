@@ -119,4 +119,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
         }
     }
+
+    override fun onBackPressed() {
+        finish()
+    }
 }
