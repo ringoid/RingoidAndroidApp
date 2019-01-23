@@ -3,6 +3,7 @@ package com.ringoid.origin.view.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
@@ -17,6 +18,7 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.getAttributeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -62,7 +64,11 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
             }
 
         bottom_bar.apply {
-            setOnNavigationItemSelectedListener { fragNav.switchTab(tabIdToIndex(it.itemId)) ; true }
+            setOnNavigationItemSelectedListener {
+                changeMenuItemAppearance(it)
+                fragNav.switchTab(tabIdToIndex(it.itemId))
+                    true
+            }
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
 
@@ -105,13 +111,24 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
     }
 
     // --------------------------------------------------------------------------------------------
+    private fun changeMenuItemAppearance(item: MenuItem) {
+        if (bottom_bar.selectedItemId == item.itemId) {
+            return  // no change
+        }
+
+        val prevItem = bottom_bar.menu.findItem(bottom_bar.selectedItemId)
+        prevItem.icon = getAttributeDrawable(tabIdToAttr(prevItem.itemId).first)
+        item.icon = getAttributeDrawable(tabIdToAttr(item.itemId).second)
+    }
+
+    // ------------------------------------------
     private fun indexToTabId(index: Int): Int =
         when (index) {
             0 -> R.id.item_feed
             1 -> R.id.item_lmm
             2 -> R.id.item_messenger
             3 -> R.id.item_profile
-            else -> R.id.item_feed
+            else -> throw IllegalArgumentException("Index of tab exceeds bounds: $index")
         }
 
     private fun tabIdToIndex(tabId: Int): Int =
@@ -120,7 +137,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
             R.id.item_lmm -> 1
             R.id.item_messenger -> 2
             R.id.item_profile -> 3
-            else -> 0
+            else -> throw IllegalArgumentException("Unknown tab id: $tabId")
         }
 
     private fun tabNameToId(tabName: String): Int =
@@ -130,6 +147,15 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
             NavigateFrom.MAIN_TAB_MESSENGER -> R.id.item_messenger
             NavigateFrom.MAIN_TAB_PROFILE -> R.id.item_profile
             else -> throw IllegalArgumentException("Unknown tab name: $tabName")
+        }
+
+    private fun tabIdToAttr(tabId: Int): Pair<Int, Int> =
+        when (tabId) {
+            R.id.item_feed -> R.attr.refDrawableBottomBarExplore to R.attr.refDrawableBottomBarExplore
+            R.id.item_lmm -> R.attr.refDrawableBottomBarLmm to R.attr.refDrawableBottomBarLmmPressed
+            R.id.item_messenger -> R.attr.refDrawableBottomBarMessenger to R.attr.refDrawableBottomBarMessengerPressed
+            R.id.item_profile -> R.attr.refDrawableBottomBarProfile to R.attr.refDrawableBottomBarProfilePressed
+            else -> throw IllegalArgumentException("Unknown tab id: $tabId")
         }
 
     // --------------------------------------------------------------------------------------------
