@@ -90,7 +90,7 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
             is ViewState.IDLE -> onIdleState()
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.errorDialog(activity, newState.e)
+                Dialogs.errorDialog(this, newState.e)
                 onIdleState()
             }
         }

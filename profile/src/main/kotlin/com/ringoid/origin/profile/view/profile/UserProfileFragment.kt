@@ -55,7 +55,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.errorDialog(activity, newState.e)
+                Dialogs.errorDialog(this, newState.e)
                 onIdleState()
             }
         }
@@ -102,8 +102,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 }
             })
         }
-
-        Dialogs.errorDialog(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

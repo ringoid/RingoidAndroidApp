@@ -43,7 +43,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
             is ViewState.LOADING -> pb_settings.changeVisibility(isVisible = true)
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
-                Dialogs.errorDialog(activity, newState.e)
+                Dialogs.errorDialog(this, newState.e)
                 onIdleState()
             }
             else -> { /* no-op */ }
