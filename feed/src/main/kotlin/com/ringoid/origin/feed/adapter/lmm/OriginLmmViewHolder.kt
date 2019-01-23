@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControlls
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControlls
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
@@ -20,10 +20,10 @@ abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledView
     : BaseFeedViewHolder<FeedItem>(view, viewPool) {
 
     override fun bind(model: FeedItem, payloads: List<Any>) {
-        if (payloads.contains(FeedViewHolderHideControlls)) {
+        if (payloads.contains(FeedViewHolderHideControls)) {
             itemView.ibtn_message.changeVisibility(isVisible = false)
         }
-        if (payloads.contains(FeedViewHolderShowControlls)) {
+        if (payloads.contains(FeedViewHolderShowControls)) {
             itemView.ibtn_message.changeVisibility(isVisible = true)
         }
         super.bind(model, payloads)

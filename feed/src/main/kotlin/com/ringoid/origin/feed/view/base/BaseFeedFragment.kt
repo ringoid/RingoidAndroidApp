@@ -12,6 +12,8 @@ import com.ringoid.origin.feed.OriginR_array
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.BLOCK_PROFILE
@@ -111,17 +113,23 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
             .apply {
                 settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
                     scrollToTopOfItemAtPosition(position)
+                    notifyItemChanged(position, FeedViewHolderHideControls)
                     Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(OriginR_array.block_profile_array),
                         l = { _, which: Int ->
                             val image = model.images[positionOfImage]
                             when (which) {
-                                0 -> vm.onBlock(profileId = model.id, imageId = image.id)
+                                0 -> {
+                                    vm.onBlock(profileId = model.id, imageId = image.id)
+                                    notifyItemChanged(position, FeedViewHolderShowControls)
+                                }
                                 1 -> Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(OriginR_array.report_profile_array),
                                     l = { _, number: Int ->
                                         vm.onReport(profileId = model.id, imageId = image.id, reasonNumber = (number + 1) * 10)
+                                        notifyItemChanged(position, FeedViewHolderShowControls)
                                     })
                             }
                         })
+                    // on dialog dismiss = show controls back
                 }
             }
     }

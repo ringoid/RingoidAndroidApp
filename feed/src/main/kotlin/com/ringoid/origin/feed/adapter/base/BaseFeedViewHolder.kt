@@ -66,14 +66,14 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
     }
 
     override fun bind(model: T, payloads: List<Any>) {
-        if (payloads.contains(FeedViewHolderHideControlls)) {
+        if (payloads.contains(FeedViewHolderHideControls)) {
             itemView.apply {
                 tabs.changeVisibility(isVisible = false)
                 ibtn_settings.changeVisibility(isVisible = false)
             }
             return
         }
-        if (payloads.contains(FeedViewHolderShowControlls)) {
+        if (payloads.contains(FeedViewHolderShowControls)) {
             itemView.apply {
                 tabs.changeVisibility(isVisible = true)
                 ibtn_settings.changeVisibility(isVisible = true)
