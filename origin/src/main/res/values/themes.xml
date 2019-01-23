@@ -26,6 +26,7 @@
         <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_black_24dp</item>
         <item name="refDrawableBottomBarMessenger">@drawable/ic_menu_messages_black_24dp</item>
         <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_black_24dp</item>
+        <item name="refDrawableMenuInternet">@drawable/ic_internet_black_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_24dp</item>
@@ -41,6 +42,7 @@
         <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_24dp</item>
         <item name="refDrawableBottomBarMessenger">@drawable/ic_menu_messages_24dp</item>
         <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_24dp</item>
+        <item name="refDrawableMenuInternet">@drawable/ic_internet_white_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_white_24dp</item>

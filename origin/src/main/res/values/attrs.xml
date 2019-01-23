@@ -5,6 +5,7 @@
         <attr name="refDrawableBottomBarLmm" format="reference"/>
         <attr name="refDrawableBottomBarMessenger" format="reference"/>
         <attr name="refDrawableBottomBarProfile" format="reference"/>
+        <attr name="refDrawableMenuInternet" format="reference"/>
         <attr name="refDrawableNavigationArrow" format="reference"/>
         <attr name="refDrawableThemeSwitch" format="reference"/>
     </declare-styleable>

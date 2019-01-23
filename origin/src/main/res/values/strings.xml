@@ -3,6 +3,7 @@
     <string name="app_name">Ringoid</string>
 
     <string name="button_add_photo">Add photo</string>
+    <string name="button_browser">Open in browser</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_close">Close</string>
     <string name="button_delete">Delete</string>

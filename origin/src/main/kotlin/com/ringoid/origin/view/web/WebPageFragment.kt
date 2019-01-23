@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.snackbar
 import kotlinx.android.synthetic.main.fragment_web.*
@@ -47,6 +48,13 @@ class WebPageFragment : BaseFragment<WebPageViewModel>() {
                 else -> R.string.app_name
             }
 
+            inflateMenu(R.menu.menu_internet)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_internet -> ExternalNavigator.openBrowser(activity, webUrl)
+                }
+                true
+            }
             setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(titleResId)
         }

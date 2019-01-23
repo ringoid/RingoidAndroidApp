@@ -58,6 +58,10 @@ fun snackbar(view: View?, @StringRes textResId: Int, duration: Int = Snackbar.LE
     view?.let { Snackbar.make(it, textResId, duration).show() }
 }
 
+fun toast(context: Context, text: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context, text, duration).show()
+}
+
 fun toast(context: Context, @StringRes textResId: Int, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(context, textResId, duration).show()
 }
