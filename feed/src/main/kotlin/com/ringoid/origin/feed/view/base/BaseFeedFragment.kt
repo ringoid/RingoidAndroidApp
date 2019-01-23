@@ -131,11 +131,11 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     Timber.e(e) ; throw e
                 }
 
-                val position = data.getBundleExtra("out").getInt("position", 0)
+                val position = data.extras!!.getInt("position", 0)
 
                 if (resultCode == Activity.RESULT_OK) {
-                    val imageId = data.getBundleExtra("out").getString("imageId")!!
-                    val profileId = data.getBundleExtra("out").getString("profileId")!!
+                    val imageId = data.extras!!.getString("imageId")!!
+                    val profileId = data.extras!!.getString("profileId")!!
 
                     if (data.hasExtra(Extras.OUT_EXTRA_REPORT_REASON)) {
                         val reasonNumber = (data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0) + 1) * 10
