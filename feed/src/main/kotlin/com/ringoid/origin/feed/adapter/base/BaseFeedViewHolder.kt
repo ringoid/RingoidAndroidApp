@@ -9,6 +9,7 @@ import com.ringoid.domain.model.feed.IProfile
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -65,6 +66,20 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
     }
 
     override fun bind(model: T, payloads: List<Any>) {
+        if (payloads.contains(FeedViewHolderHideControlls)) {
+            itemView.apply {
+                tabs.changeVisibility(isVisible = false)
+                ibtn_settings.changeVisibility(isVisible = false)
+            }
+            return
+        }
+        if (payloads.contains(FeedViewHolderShowControlls)) {
+            itemView.apply {
+                tabs.changeVisibility(isVisible = true)
+                ibtn_settings.changeVisibility(isVisible = true)
+            }
+            return
+        }
         profileImageAdapter.submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
     }
 
