@@ -7,7 +7,11 @@ import com.ringoid.domain.model.image.UserImage
 import com.ringoid.utility.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_user_profile_image.view.*
 
-open class UserProfileImageViewHolder(view: View) : BaseViewHolder<UserImage>(view) {
+interface IUserProfileImageViewHolder
+
+abstract class BaseUserProfileImageViewHolder(view: View) : BaseViewHolder<UserImage>(view), IUserProfileImageViewHolder
+
+class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(view) {
 
     override fun bind(model: UserImage) {
         ImageLoader.load(uri = model.uri, imageView = itemView.iv_image,
@@ -17,7 +21,7 @@ open class UserProfileImageViewHolder(view: View) : BaseViewHolder<UserImage>(vi
     }
 }
 
-class HeaderUserProfileImageViewHolder(view: View) : UserProfileImageViewHolder(view) {
+class HeaderUserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(view) {
 
     override fun bind(model: UserImage) {
         // no-op

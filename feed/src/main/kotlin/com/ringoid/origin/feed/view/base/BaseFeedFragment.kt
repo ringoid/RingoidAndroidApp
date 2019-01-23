@@ -11,8 +11,8 @@ import com.ringoid.domain.model.feed.IProfile
 import com.ringoid.origin.feed.OriginR_array
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.adapter.IFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
+import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.BLOCK_PROFILE
 import com.ringoid.origin.feed.view.FeedViewModel

@@ -8,12 +8,12 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.FeedItemDiffCallback
-import com.ringoid.origin.feed.adapter.lmm.LmmViewHolder
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-abstract class BaseLikeFeedAdapter<VH : LmmViewHolder>(imagesViewPool: RecyclerView.RecycledViewPool? = null)
+abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesViewPool: RecyclerView.RecycledViewPool? = null)
     : BaseFeedAdapter<FeedItem, VH>(imagesViewPool, FeedItemDiffCallback()) {
 
     var messageClickListener: ((model: FeedItem, position: Int) -> Unit)? = null

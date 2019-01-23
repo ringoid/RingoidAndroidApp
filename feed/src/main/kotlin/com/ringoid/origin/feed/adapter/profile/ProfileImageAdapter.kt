@@ -12,14 +12,14 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
-class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHolder>(ProfileImageDiffCallback()) {
+class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageViewHolder>(ProfileImageDiffCallback()) {
 
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
     var isLikeButtonVisible = true
 
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
-    override fun instantiateViewHolder(view: View): ProfileImageViewHolder =
+    override fun instantiateViewHolder(view: View): BaseProfileImageViewHolder =
         ProfileImageViewHolder(view).also { vh ->
             vh.itemView.ibtn_like.apply {
                 changeVisibility(isVisible = isLikeButtonVisible)
@@ -42,13 +42,13 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
     }
 
     // ------------------------------------------
-    override fun getOnItemClickListener(vh: ProfileImageViewHolder): View.OnClickListener =
+    override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
         super.wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))
 
-    private fun getOnLikeButtonClickListener(vh: ProfileImageViewHolder): View.OnClickListener =
+    private fun getOnLikeButtonClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
         super.wrapOnItemClickListener(vh, getLikeClickListener(vh))
 
-    private fun getLikeClickListener(vh: ProfileImageViewHolder, setAlwaysLiked: Boolean = false)
+    private fun getLikeClickListener(vh: BaseProfileImageViewHolder, setAlwaysLiked: Boolean = false)
         : ((model: ProfileImageVO, position: Int) -> Unit)? =
             { model: ProfileImageVO, position: Int ->
                 val isLiked = if (setAlwaysLiked) true else !model.isLiked

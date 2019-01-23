@@ -7,7 +7,6 @@ import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.IProfile
-import com.ringoid.origin.feed.adapter.IFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.clickDebounce

@@ -4,12 +4,12 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.messenger.MessengerFeedAdapter
-import com.ringoid.origin.feed.adapter.lmm.messenger.MessengerViewHolder
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 
-class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, MessengerViewHolder>() {
+class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, OriginFeedViewHolder<FeedItem>>() {
 
     companion object {
         fun newInstance(): MessengerFragment = MessengerFragment()
@@ -17,7 +17,7 @@ class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, MessengerViewH
 
     override fun getVmClass(): Class<MessengerViewModel> = MessengerViewModel::class.java
 
-    override fun createFeedAdapter(): BaseFeedAdapter<FeedItem, MessengerViewHolder> = MessengerFeedAdapter()
+    override fun createFeedAdapter(): BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>> = MessengerFeedAdapter()
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {

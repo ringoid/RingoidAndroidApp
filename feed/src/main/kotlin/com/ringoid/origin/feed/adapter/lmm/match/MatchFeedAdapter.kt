@@ -3,13 +3,15 @@ package com.ringoid.origin.feed.adapter.lmm.match
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseLikeFeedAdapter<MatchFeedViewHolder>(imagesViewPool) {
+    : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool) {
 
-    override fun instantiateViewHolder(view: View): MatchFeedViewHolder =
+    override fun instantiateViewHolder(view: View): BaseMatchFeedViewHolder =
         MatchFeedViewHolder(view).also { vh ->
             vh.profileImageAdapter.isLikeButtonVisible = false
             (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)

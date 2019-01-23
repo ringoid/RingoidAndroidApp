@@ -2,7 +2,7 @@ package com.ringoid.origin.feed.view.lmm.like
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.origin.feed.adapter.lmm.LmmViewHolder
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
@@ -10,7 +10,7 @@ import com.ringoid.origin.view.main.IMainActivity
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_feed.*
 
-abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : LmmViewHolder>
+abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedViewHolder<FeedItem>>
     : BaseLmmFeedFragment<VM, VH>() {
 
     abstract fun instantiateFeedAdapter(): BaseLikeFeedAdapter<VH>

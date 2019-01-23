@@ -7,17 +7,18 @@ import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.ProfileDiffCallback
 import com.ringoid.origin.feed.model.ProfileImageVO
 
 class FeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedAdapter<Profile, FeedViewHolder>(imagesViewPool, ProfileDiffCallback()) {
+    : BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>>(imagesViewPool, ProfileDiffCallback()) {
 
     var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
 
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
 
-    override fun instantiateViewHolder(view: View): FeedViewHolder =
+    override fun instantiateViewHolder(view: View): OriginFeedViewHolder<Profile> =
         FeedViewHolder(view, viewPool = imagesViewPool).apply {
             onLikeImageListener = this@FeedAdapter.onLikeImageListener
         }

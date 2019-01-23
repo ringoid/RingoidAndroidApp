@@ -3,15 +3,17 @@ package com.ringoid.origin.feed.view.lmm.like
 import android.os.Bundle
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.LikeFeedAdapter
-import com.ringoid.origin.feed.adapter.lmm.like.LikeFeedViewHolder
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.communicator
 
-class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel, LikeFeedViewHolder>() {
+class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel, OriginFeedViewHolder<FeedItem>>() {
 
     companion object {
         fun newInstance(): LikesFeedFragment = LikesFeedFragment()
@@ -19,7 +21,7 @@ class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel, LikeFeedView
 
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
 
-    override fun instantiateFeedAdapter(): BaseLikeFeedAdapter<LikeFeedViewHolder> = LikeFeedAdapter()
+    override fun instantiateFeedAdapter(): BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>> = LikeFeedAdapter()
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {

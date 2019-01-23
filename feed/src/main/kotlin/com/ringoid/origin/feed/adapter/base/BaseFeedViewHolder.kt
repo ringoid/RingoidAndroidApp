@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.IProfile
-import com.ringoid.origin.feed.adapter.IFeedViewHolder
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
@@ -15,8 +14,23 @@ import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 
-abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+interface IFeedViewHolder {
+
+    var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>?
+
+    fun getCurrentImagePosition(): Int
+}
+
+abstract class OriginFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<T>(view), IFeedViewHolder {
+
+    override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
+
+    override fun getCurrentImagePosition(): Int = 0
+}
+
+abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+    : OriginFeedViewHolder<T>(view, viewPool) {
 
     internal val profileImageAdapter = ProfileImageAdapter()
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null

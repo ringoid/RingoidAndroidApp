@@ -12,7 +12,14 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
-open class ProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view) {
+interface IProfileImageViewHolder {
+
+    fun animateLike(isLiked: Boolean)
+}
+
+abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view), IProfileImageViewHolder
+
+class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
 
     override fun bind(model: ProfileImageVO) {
         ImageLoader.load(model.image.uri, itemView.iv_image,
@@ -30,7 +37,7 @@ open class ProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(v
     // --------------------------------------------------------------------------------------------
     private var animation: LikeAnimation? = null
 
-    internal fun animateLike(isLiked: Boolean) {
+    override fun animateLike(isLiked: Boolean) {
         showLikeAnimation()
         showLikeAnimationSmall(isLiked)
     }
@@ -52,7 +59,11 @@ open class ProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(v
     }
 }
 
-class HeaderProfileImageViewHolder(view: View) : ProfileImageViewHolder(view) {
+class HeaderProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
+
+    override fun animateLike(isLiked: Boolean) {
+        // no-op
+    }
 
     override fun bind(model: ProfileImageVO) {
         // no-op

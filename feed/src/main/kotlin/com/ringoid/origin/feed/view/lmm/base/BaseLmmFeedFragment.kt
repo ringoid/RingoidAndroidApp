@@ -5,7 +5,7 @@ import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.origin.feed.adapter.IFeedViewHolder
+import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.view.base.BaseFeedFragment
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
