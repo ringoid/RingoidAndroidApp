@@ -39,12 +39,10 @@ class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity
         super.onCreate(savedInstanceState)
         savedInstanceState ?: run {
             if (intent.dataString?.contains("block_dialog") == true) {
-                blockDialog = BlockBottomSheetDialog.newInstance()
-                    .also { it.showNow(supportFragmentManager, BlockBottomSheetDialog.TAG) }
+                createBlockDialogIfNeed()
             }
             if (intent.dataString?.contains("report_dialog") == true) {
-                reportDialog = ReportBottomSheetDialog.newInstance()
-                    .also { it.showNow(supportFragmentManager, ReportBottomSheetDialog.TAG) }
+                createReportDialogIfNeed()
             }
         }
     }
@@ -57,5 +55,20 @@ class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity
         super.onDestroy()
         blockDialog = null
         reportDialog = null
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun createBlockDialogIfNeed() {
+        if (blockDialog == null) {
+            blockDialog = BlockBottomSheetDialog.newInstance()
+                .also { it.showNow(supportFragmentManager, BlockBottomSheetDialog.TAG) }
+        }
+    }
+
+    private fun createReportDialogIfNeed() {
+        if (reportDialog == null) {
+            reportDialog = ReportBottomSheetDialog.newInstance()
+                .also { it.showNow(supportFragmentManager, ReportBottomSheetDialog.TAG) }
+        }
     }
 }
