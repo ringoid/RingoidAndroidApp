@@ -17,7 +17,6 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.copyToClipboard
 import com.ringoid.utility.toast
 import kotlinx.android.synthetic.main.fragment_settings_app_info.*
-import kotlinx.android.synthetic.main.fragment_settings_app_info.view.*
 
 class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
 
@@ -60,9 +59,9 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
         }
         item_debug.apply {
             changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
-            debug_underscore.changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
             clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsAppInfoFragment, path="/debug") }
         }
+        debug_underscore.changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
         item_email_officer.clicks().compose(clickDebounce()).subscribe {
             val subject = String.format(AppRes.EMAIL_OFFICER_MAIL_SUBJECT, item_customer_id.getLabel())
             ExternalNavigator.openEmailComposer(this, email = "data.protection@ringoid.com", subject = subject)
