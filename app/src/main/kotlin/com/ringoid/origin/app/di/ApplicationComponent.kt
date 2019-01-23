@@ -5,6 +5,7 @@ import android.content.Context
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.app.RingoidApplication
 import com.ringoid.origin.auth.di.LoginActivityModule
+import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetActivityModule
 import com.ringoid.origin.feed.view.explore.di.ExploreFragmentModule
 import com.ringoid.origin.feed.view.lmm.di.LmmFragmentModule
 import com.ringoid.origin.feed.view.lmm.like.di.LikesFeedFragmentModule
@@ -31,7 +32,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
-                      ChatFragmentModule::class,
+                      BlockBottomSheetActivityModule::class, ChatFragmentModule::class,
                       DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
