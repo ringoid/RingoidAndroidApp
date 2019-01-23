@@ -56,7 +56,7 @@
     <style name="AppTheme" parent="Base.V0.AppTheme.Dark"/>
 
     <style name="AppTheme.Transparent">
-        <item name="android:windowBackground">@color/semitransparent_soft</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <!-- Screen themes -->

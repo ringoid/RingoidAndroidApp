@@ -37,18 +37,14 @@ class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState ?: run {
-            when (intent.action) {
-                "block_dialog" -> {
-                    blockDialog = BlockBottomSheetDialog.newInstance()
-                    blockDialog
-                }
-                "report_dialog" -> {
-                    reportDialog = ReportBottomSheetDialog.newInstance()
-                    reportDialog
-                }
-                else -> null
+            if (intent.dataString?.contains("block_dialog") == true) {
+                blockDialog = BlockBottomSheetDialog.newInstance()
+                    .also { it.showNow(supportFragmentManager, BlockBottomSheetDialog.TAG) }
             }
-            ?.showNow(supportFragmentManager, BlockBottomSheetDialog.TAG)
+            if (intent.dataString?.contains("report_dialog") == true) {
+                reportDialog = ReportBottomSheetDialog.newInstance()
+                    .also { it.showNow(supportFragmentManager, ReportBottomSheetDialog.TAG) }
+            }
         }
     }
 
