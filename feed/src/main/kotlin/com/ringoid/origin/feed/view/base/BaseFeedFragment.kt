@@ -140,14 +140,13 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     if (data.hasExtra(Extras.OUT_EXTRA_REPORT_REASON)) {
                         val reasonNumber = (data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0) + 1) * 10
                         vm.onReport(profileId = profileId, imageId = imageId, reasonNumber = reasonNumber)
-                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
                     } else {
                         vm.onBlock(profileId = profileId, imageId = imageId)
-                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
                     }
+                } else {
+                    // on dialog dismiss = show controls back
+                    feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
                 }
-                // on dialog dismiss = show controls back
-                feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
             }
         }
     }
