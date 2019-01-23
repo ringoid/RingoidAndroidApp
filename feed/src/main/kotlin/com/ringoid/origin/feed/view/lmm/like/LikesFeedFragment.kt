@@ -7,7 +7,6 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
-import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.LikeFeedAdapter
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.view.common.EmptyFragment
@@ -35,5 +34,9 @@ class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel, OriginFeedVi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.observe(vm.badgeLikes) { communicator(ILmmFragment::class.java)?.showBadgeOnLikes(it) }
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
     }
 }

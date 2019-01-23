@@ -30,17 +30,6 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         (rv_items?.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(0, 0)
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (isActivityCreated && hidden) {
-            /**
-             * Purge feed when Main tab has switched back to Explore screen,
-             * swipe-to-refresh is required to get need data.
-             */
-            vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
-        }
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
