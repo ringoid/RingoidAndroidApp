@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
     : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool) {
 
-    override fun instantiateViewHolder(view: View): BaseMatchFeedViewHolder =
+    override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
         MatchFeedViewHolder(view).also { vh ->
             vh.profileImageAdapter.isLikeButtonVisible = false
             (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
