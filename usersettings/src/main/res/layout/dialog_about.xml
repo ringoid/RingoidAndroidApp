@@ -17,6 +17,7 @@
         style="@style/StdText.Primary"/>
 
     <TextView
+        android:id="@+id/tv_description"
         android:layout_marginTop="@dimen/std_margin_16"
         android:layout_marginStart="@dimen/std_margin_24"
         android:layout_marginEnd="@dimen/std_margin_24"
