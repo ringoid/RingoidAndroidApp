@@ -1,5 +1,6 @@
 package com.ringoid.origin.feed.view.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,10 +26,7 @@ class BlockBottomSheetDialog : BaseDialogFragment() {
     // --------------------------------------------------------------------------------------------
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog?.apply {
-            setCanceledOnTouchOutside(true)
-            setOnCancelListener { close() }
-        }
+        dialog?.setCanceledOnTouchOutside(true)
         return inflater.inflate(R.layout.dialog_bottom_sheet_block, container, false)
     }
 
@@ -43,6 +41,11 @@ class BlockBottomSheetDialog : BaseDialogFragment() {
             communicator(IBlockBottomSheetActivity::class.java)?.onReportSheetOpen()
             dismiss()
         }
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        close()
     }
 
     // ------------------------------------------

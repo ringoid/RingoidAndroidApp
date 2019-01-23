@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.origin.navigation.Extras
+import com.ringoid.utility.delay
 
 @AppNav("block_dialog", "report_dialog")
 class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity {
@@ -16,7 +17,7 @@ class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity
     // --------------------------------------------------------------------------------------------
     override fun onClose() {
         setResultExposed(currentResult, Intent().putExtra("out", intent.extras))
-        finish()
+        delay { finish() }
     }
 
     // ------------------------------------------

@@ -26,6 +26,7 @@ import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.delay
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -113,8 +114,10 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
                 settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
                     val image = model.images[positionOfImage]
                     scrollToTopOfItemAtPosition(position)
-                    notifyItemChanged(position, FeedViewHolderHideControls)
-                    navigate(this@BaseFeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}", rc = RequestCode.RC_BLOCK_DIALOG)
+                    delay {
+                        notifyItemChanged(position, FeedViewHolderHideControls)
+                        navigate(this@BaseFeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}", rc = RequestCode.RC_BLOCK_DIALOG)
+                    }
                 }
             }
     }
