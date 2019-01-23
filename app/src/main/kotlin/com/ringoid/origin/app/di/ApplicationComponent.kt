@@ -15,6 +15,7 @@ import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
 import com.ringoid.origin.messenger.di.ChatFragmentModule
 import com.ringoid.origin.profile.view.profile.di.UserProfileFragmentModule
+import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
 import com.ringoid.origin.usersettings.view.di.SettingsActivityModule
 import com.ringoid.origin.usersettings.view.di.SettingsFragmentModule
@@ -33,7 +34,7 @@ import javax.inject.Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
                       BlockBottomSheetActivityModule::class, ChatFragmentModule::class,
-                      DebugFragmentModule::class, ExploreFragmentModule::class,
+                      DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
                       LoginActivityModule::class, MainActivityModule::class,

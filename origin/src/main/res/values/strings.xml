@@ -102,6 +102,7 @@
     <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2018.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
     <string name="settings_info_about_dialog_title">Ringoid App</string>
     <string name="settings_info_customer_info">Customer ID</string>
+    <string name="settings_info_debug">Debug</string>
     <string name="settings_info_email_officer">Email Data Protection Officer</string>
     <string name="settings_info_email_officer_mail_subject">Dear Data Protection Officer,\n\nMy Customer ID is %s\n\n</string>
     <string name="settings_info_licenses">Open&#45;source Licenses</string>

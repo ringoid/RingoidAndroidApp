@@ -4,13 +4,15 @@
 
     <application>
         <activity
+            android:name="com.ringoid.origin.usersettings.view.debug.DebugActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name="com.ringoid.origin.usersettings.view.SettingsActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name="com.ringoid.origin.usersettings.view.info.SettingsAppInfoActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>

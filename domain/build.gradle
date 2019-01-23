@@ -12,6 +12,7 @@ android {
         testInstrumentationRunner rootProject.ext.testInstrumentationRunner
 
         buildConfigField 'int', 'BUILD_NUMBER', "$rootProject.ext.buildVersion"
+        buildConfigField 'boolean', 'IS_STAGING', "$rootProject.ext.isStaging"
         buildConfigField 'String', 'API_URL', rootProject.ext.apiUrl
         buildConfigField 'String', 'APPNAV', rootProject.ext.appnav
         buildConfigField 'String', 'AUTHORITY', rootProject.ext.authority

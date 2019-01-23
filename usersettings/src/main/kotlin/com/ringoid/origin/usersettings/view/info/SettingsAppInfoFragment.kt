@@ -12,10 +12,12 @@ import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.usersettings.R
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.copyToClipboard
 import com.ringoid.utility.toast
 import kotlinx.android.synthetic.main.fragment_settings_app_info.*
+import kotlinx.android.synthetic.main.fragment_settings_app_info.view.*
 
 class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
 
@@ -55,6 +57,11 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
                 it.copyToClipboard(key = CLIPBOARD_KEY_CUSTOMER_ID, value = item_customer_id.getLabel().toString())
                 toast(it, OriginR_string.common_clipboard)
             }
+        }
+        item_debug.apply {
+            changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
+            debug_underscore.changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
+            clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsAppInfoFragment, path="/debug") }
         }
         item_email_officer.clicks().compose(clickDebounce()).subscribe {
             val subject = String.format(AppRes.EMAIL_OFFICER_MAIL_SUBJECT, item_customer_id.getLabel())
