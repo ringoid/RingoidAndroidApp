@@ -9,11 +9,14 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.AndroidInjection
 import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
+
+    protected val scopeProvider by lazy { AndroidLifecycleScopeProvider.from(this) }
 
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>

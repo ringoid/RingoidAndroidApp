@@ -10,7 +10,11 @@ import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.utility.readFromUrl
+import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.dialog_status.*
+import timber.log.Timber
 
 class StatusDialog : SimpleBaseDialogFragment() {
 
@@ -38,6 +42,11 @@ class StatusDialog : SimpleBaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tv_dialog_title.setText(arguments?.getInt(BUNDLE_KEY_TITLE_RES_ID) ?: R.string.error_common)
-        tv_dialog_status.text = AppRes.WEB_URL_ERROR_STATUS.readFromUrl()
+
+        AppRes.WEB_URL_ERROR_STATUS.readFromUrl()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(scopeProvider)
+            .subscribe({ tv_dialog_status.text = it }, Timber::e)
     }
 }
