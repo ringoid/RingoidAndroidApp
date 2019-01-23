@@ -4,6 +4,8 @@ import com.ringoid.utility.ICommunicator
 
 interface ILmmFragment : ICommunicator {
 
+    fun accessViewModel(): LmmViewModel
+
     fun showBadgeOnLikes(isVisible: Boolean)
     fun showBadgeOnMatches(isVisible: Boolean)
 }

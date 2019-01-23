@@ -18,6 +18,7 @@ class LmmViewModel @Inject constructor(
 
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
     val badgeMatches by lazy { MutableLiveData<Boolean>() }
+    val listScrolls by lazy { MutableLiveData<Int>() }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
@@ -35,5 +36,10 @@ class LmmViewModel @Inject constructor(
             }
             .autoDisposable(this)
             .subscribe({ Timber.v("Lmm has been refreshed") }, Timber::e)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    fun onTabReselect() {
+        listScrolls.value = 0  // scroll to top position
     }
 }

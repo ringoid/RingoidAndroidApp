@@ -25,6 +25,8 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun getLayoutId(): Int = R.layout.fragment_lmm
 
     // --------------------------------------------------------------------------------------------
+    override fun accessViewModel(): LmmViewModel = vm
+
     override fun showBadgeOnLikes(isVisible: Boolean) {
         badge_likes.changeVisibility(isVisible, soft = true)
     }
@@ -52,6 +54,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             observe(vm.badgeLikes, ::showBadgeOnLikes)
             observe(vm.badgeMatches, ::showBadgeOnMatches)
         }
+        selectPage(position = 0)
     }
 
     @Suppress("CheckResult", "AutoDispose")
@@ -63,7 +66,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         }
         btn_tab_likes.clicks().compose(clickDebounce()).subscribe { selectPage(0) }
         btn_tab_matches.clicks().compose(clickDebounce()).subscribe { selectPage(1) }
-        selectPage(position = 0)
     }
 
     private fun selectPage(position: Int) {
@@ -77,6 +79,12 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
                 btn_tab_matches?.changeTypeface(style = Typeface.BOLD, isSelected = true)
             }
         }
+
+        if (vp_pages?.currentItem == position) {
+            // current position reselected
+            vm.onTabReselect()
+        }
+
         vp_pages?.currentItem = position
     }
 }

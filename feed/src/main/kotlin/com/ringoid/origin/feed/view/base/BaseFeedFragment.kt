@@ -94,6 +94,11 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
         }
     }
 
+    // ------------------------------------------
+    protected fun scrollListToPosition(position: Int) {
+        rv_items.smoothScrollToPosition(position)
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
