@@ -1,5 +1,7 @@
 package com.ringoid.base.view
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +19,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
 
     var isDestroying = false
+        private set
+    protected var currentResult: Int = Activity.RESULT_CANCELED
         private set
 
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
@@ -47,5 +51,11 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
         isDestroying = true
         super.onDestroy()
         vm.unsubscribeFromBusEvents()
+    }
+
+    // --------------------------------------------------------------------------------------------
+    protected fun setResultExposed(resultCode: Int, data: Intent?) {
+        currentResult = resultCode
+        setResult(resultCode, data)
     }
 }
