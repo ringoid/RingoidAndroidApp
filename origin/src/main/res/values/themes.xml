@@ -34,7 +34,7 @@
 
     <style name="Base.V0.AppTheme.Dark">
         <item name="android:colorEdgeEffect">@android:color/white</item>
-        <item name="android:windowBackground">@color/grey</item>
+        <item name="android:windowBackground">@color/brown</item>
         <item name="refColorBottomBarIcon">@color/white_half</item>
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_white</item>
         <item name="refColorUnderscore">@color/underscore_dark</item>

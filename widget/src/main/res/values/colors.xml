@@ -8,7 +8,7 @@
     <color name="bottom_bar_icon_white">#ffffffff</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
-    <color name="secondary_text_light">#4C6277</color>
+    <color name="secondary_text_light">#8B8B8B</color>
     <color name="text_shadow">#434343</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
@@ -17,6 +17,7 @@
     <color name="aquamarine">#5df2d6</color>
     <color name="black">#000000</color>
     <color name="black_half">#aa000000</color>
+    <color name="brown">#282828</color>
     <color name="facebook">#4267b2</color>
     <color name="female_pink">#ff62ab</color>
     <color name="grass">#64aa0a</color>
