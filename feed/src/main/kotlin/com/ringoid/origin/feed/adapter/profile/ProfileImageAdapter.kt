@@ -26,10 +26,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
             }
         }
 
-    override fun submitList(list: List<ProfileImageVO>?) {
-        super.submitList(list)
-        tabsObserver?.onChanged()
-    }
+    override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 
     // --------------------------------------------------------------------------------------------
     internal fun getItemExposed(position: Int): ProfileImageVO = getItem(position)

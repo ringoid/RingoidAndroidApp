@@ -24,15 +24,19 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, UserProfileImageViewH
                 .subscribe { wrapOnItemClickListener(vh, onDeleteImageListener).onClick(vh.itemView.ibtn_delete_image) }
         }
 
+    override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
+
+    /* Data Access */
+    // --------------------------------------------------------------------------------------------
     fun remove(imageId: String) {
-        getItems().find { it.id == imageId }
+        getItems()
+            .find { it.id == imageId }
             ?.let { submitList(ArrayList(getItems()).apply { remove(it) }) }
     }
 
     override fun submitList(list: List<UserImage>?) {
         super.submitList(list)
         onEmptyImagesListener?.invoke(list.isNullOrEmpty())
-        tabsObserver?.onChanged()
     }
 
     fun updateItemId(ids: Pair<String, String>) {

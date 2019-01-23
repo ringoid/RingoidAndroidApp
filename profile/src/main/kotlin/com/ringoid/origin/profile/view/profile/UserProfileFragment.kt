@@ -57,7 +57,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 when (newState.residual) {
                     is IMAGE_CREATED -> {
 //                        snackbar(view, OriginR_string.profile_image_created)
-                        rv_items.smoothScrollToPosition(0)
                         onIdleState()
                     }
                     is IMAGE_DELETED -> {
@@ -131,7 +130,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.imageCreated, imagesAdapter::prepend)
+            observe(vm.imageCreated, imagesAdapter::prepend) { rv_items.post { rv_items.smoothScrollToPosition(0) } }
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.imageIdChanged, imagesAdapter::updateItemId)
             observe(vm.images, imagesAdapter::submitList)
