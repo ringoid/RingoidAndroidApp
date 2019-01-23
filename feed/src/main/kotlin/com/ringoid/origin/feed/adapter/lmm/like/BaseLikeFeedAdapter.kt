@@ -23,6 +23,10 @@ abstract class BaseLikeFeedAdapter<VH : LmmViewHolder>(imagesViewPool: RecyclerV
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
         super.onCreateViewHolder(parent, viewType)
             .also { vh ->
+                if (viewType != VIEW_TYPE_NORMAL) {
+                    return@also
+                }
+
                 vh.itemView.ibtn_message.apply {
                     // TODO: show message button only after like tap
                     changeVisibility(isVisible = true)

@@ -34,15 +34,19 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        super.onCreateViewHolder(parent, viewType).apply {
-            trackingBus = this@BaseFeedAdapter.trackingBus
+        super.onCreateViewHolder(parent, viewType).also { vh ->
+            if (viewType != VIEW_TYPE_NORMAL) {
+                return@also
+            }
+
+            vh.trackingBus = this@BaseFeedAdapter.trackingBus
             val wrapSettingsClickListener: ((model: T, position: Int) -> Unit)? =
                 { model: T, position: Int ->
-                    settingsClickListener?.invoke(model, position, getCurrentImagePosition())
+                    settingsClickListener?.invoke(model, position, vh.getCurrentImagePosition())
                 }
-            itemView.ibtn_settings.clicks().compose(clickDebounce())
-                .subscribe { wrapOnItemClickListener(this, wrapSettingsClickListener).onClick(itemView.ibtn_settings) }
-            setOnClickListener(null)  // clicks on the whole feed's item is no-op
+            vh.itemView.ibtn_settings.clicks().compose(clickDebounce())
+                .subscribe { wrapOnItemClickListener(vh, wrapSettingsClickListener).onClick(vh.itemView.ibtn_settings) }
+            vh.setOnClickListener(null)  // clicks on the whole feed's item is no-op
         }
 
     fun clear() {

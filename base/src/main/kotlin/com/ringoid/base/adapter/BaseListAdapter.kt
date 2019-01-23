@@ -13,9 +13,14 @@ abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallba
 
     protected abstract fun instantiateViewHolder(view: View): VH
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        LayoutInflater.from(parent.context).inflate(getLayoutId(), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val layoutResId = when (viewType) {
+            VIEW_TYPE_HEADER -> getHeaderLayoutResId()
+            else -> getLayoutId()
+        }
+        return LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
             .let { instantiateViewHolder(it).apply { setOnClickListener(getOnItemClickListener(this)) } }
+    }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         holder.bind(getItem(position))
