@@ -29,7 +29,11 @@ abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallba
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.bind(getItem(position))
+        onBindViewHolder(holder, position, payloads = emptyList())
+    }
+
+    override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
+        holder.bind(getItem(position), payloads)
     }
 
     // --------------------------------------------------------------------------------------------

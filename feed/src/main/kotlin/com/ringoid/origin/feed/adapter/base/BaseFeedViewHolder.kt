@@ -64,7 +64,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         }
     }
 
-    override fun bind(model: T) {
+    override fun bind(model: T, payloads: List<Any>) {
         profileImageAdapter.submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
     }
 

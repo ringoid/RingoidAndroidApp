@@ -24,7 +24,7 @@ class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder<Profile>(view), IF
 
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
-    override fun bind(model: Profile) {
+    override fun bind(model: Profile, payloads: List<Any>) {
         // no-op
     }
 

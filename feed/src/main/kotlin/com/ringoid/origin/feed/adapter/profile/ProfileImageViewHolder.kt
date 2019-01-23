@@ -21,7 +21,7 @@ abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileIm
 
 class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
 
-    override fun bind(model: ProfileImageVO) {
+    override fun bind(model: ProfileImageVO, payloads: List<Any>) {
         ImageLoader.load(model.image.uri, itemView.iv_image,
             options = RequestOptions()
                 .override(itemView.width, itemView.height)
@@ -65,7 +65,7 @@ class HeaderProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view
         // no-op
     }
 
-    override fun bind(model: ProfileImageVO) {
+    override fun bind(model: ProfileImageVO, payloads: List<Any>) {
         // no-op
     }
 }

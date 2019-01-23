@@ -19,7 +19,7 @@ class LikeFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
 class HeaderLikeFeedViewHolder(view: View) : OriginLikeFeedViewHolder(view) {
 
-    override fun bind(model: FeedItem) {
+    override fun bind(model: FeedItem, payloads: List<Any>) {
         // no-op
     }
 }

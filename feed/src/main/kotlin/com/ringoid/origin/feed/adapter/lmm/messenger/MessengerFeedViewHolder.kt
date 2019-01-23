@@ -19,7 +19,7 @@ class MessengerViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
 
 class HeaderMessengerViewHolder(view: View) : OriginMessengerViewHolder(view), IMessengerViewHolder {
 
-    override fun bind(model: FeedItem) {
+    override fun bind(model: FeedItem, payloads: List<Any>) {
         // no-op
     }
 }

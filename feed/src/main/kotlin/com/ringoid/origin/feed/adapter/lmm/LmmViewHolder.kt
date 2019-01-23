@@ -17,7 +17,7 @@ abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledView
 
 open class HeaderLmmViewHolder(view: View) : BaseViewHolder<FeedItem>(view), ILmmViewHolder {
 
-    override fun bind(model: FeedItem) {
+    override fun bind(model: FeedItem, payloads: List<Any>) {
         // no-op
     }
 }

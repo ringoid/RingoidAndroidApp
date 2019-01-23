@@ -7,7 +7,7 @@ import com.ringoid.utility.clickDebounce
 
 abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
 
-    abstract fun bind(model: T)
+    abstract fun bind(model: T, payloads: List<Any>)
 
     @Suppress("CheckResult")
     open fun setOnClickListener(l: View.OnClickListener?) {

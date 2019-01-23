@@ -19,7 +19,7 @@ class MatchFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
 
 class HeaderMatchFeedViewHolder(view: View) : OriginMatchFeedViewHolder(view), IMatchFeedViewHolder {
 
-    override fun bind(model: FeedItem) {
+    override fun bind(model: FeedItem, payloads: List<Any>) {
         // no-op
     }
 }
