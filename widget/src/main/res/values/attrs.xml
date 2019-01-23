@@ -14,6 +14,10 @@
     </declare-styleable>
 
     <!-- Widget -->
+    <declare-styleable name="ExtendImageButton">
+        <attr name="xbtnSrc" format="reference"/>
+    </declare-styleable>
+
     <declare-styleable name="ForegroundImageView">
         <attr name="xForeground" format="reference"/>
     </declare-styleable>

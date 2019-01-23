@@ -23,17 +23,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:ci_gravity="center_vertical|start"/>
 
-    <ImageButton
+    <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@null"
+        android:paddingTop="@dimen/std_margin_16"
+        android:paddingBottom="@dimen/std_margin_24"
+        android:paddingStart="@dimen/std_margin_24"
+        android:paddingEnd="@dimen/std_margin_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_more_white_36dp"/>
+        app:xbtnSrc="@drawable/ic_more_white_36dp"/>
 
     <View
         android:id="@+id/underscore"

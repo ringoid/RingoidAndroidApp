@@ -498,7 +498,7 @@ ext {
     /* Widget */
     // ------------------------------------------
     widgetDependencies = []
-    widgetDependencies += module_utility + android + kotlin + log
+    widgetDependencies += module_utility + android + kotlin + log + rx + rxBind
     testWidgetDependencies = test
 
     widgetPlugins = [

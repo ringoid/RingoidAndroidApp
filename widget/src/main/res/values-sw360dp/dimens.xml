@@ -8,6 +8,7 @@
     <dimen name="std_margin_12">11dp</dimen>
     <dimen name="std_margin_16">14dp</dimen>
     <dimen name="std_margin_20">18dp</dimen>
+    <dimen name="std_margin_24">21dp</dimen>
     <dimen name="std_margin_32">28dp</dimen>
     <dimen name="std_margin_40">36dp</dimen>
     <dimen name="std_text_14">12sp</dimen>

@@ -8,16 +8,18 @@
 
     <include layout="@layout/rv_item_feed_profile_content"/>
 
-    <ImageView
+    <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/iv_messages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        android:contentDescription="@null"
+        android:paddingTop="@dimen/std_margin_24"
+        android:paddingBottom="@dimen/std_margin_24"
+        android:paddingStart="@dimen/std_margin_24"
+        android:paddingEnd="@dimen/std_margin_16"
         app:layout_constraintVertical_bias="0.28"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_messenger_fill_white_36dp"/>
+        app:xbtnSrc="@drawable/ic_messenger_fill_white_36dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
