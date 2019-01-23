@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
+import com.ringoid.domain.model.image.EmptyUserImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.profile.R
 import com.ringoid.utility.clickDebounce
@@ -25,6 +26,9 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, UserProfileImageViewH
         }
 
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
+
+    // ------------------------------------------
+    override fun getHeaderItem(): UserImage = EmptyUserImage
 
     /* Data Access */
     // --------------------------------------------------------------------------------------------

@@ -3,6 +3,7 @@ package com.ringoid.domain.model.image
 import android.os.Parcel
 import android.os.Parcelable
 import com.ringoid.domain.DomainUtil.BAD_ID
+import com.ringoid.utility.randomString
 
 data class Image(override val id: String, override val uri: String? = null) : IImage {
 
@@ -27,3 +28,5 @@ data class Image(override val id: String, override val uri: String? = null) : II
         }
     }
 }
+
+val EmptyImage = Image(id = randomString(), uri = null)

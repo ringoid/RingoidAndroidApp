@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.adapter.lmm.like
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.domain.model.feed.EmptyFeedItem
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
@@ -29,4 +30,8 @@ abstract class BaseLikeFeedAdapter<VH : LmmViewHolder>(imagesViewPool: RecyclerV
                         .subscribe { wrapOnItemClickListener(vh, messageClickListener).onClick(vh.itemView.ibtn_message) }
                 }
             }
+
+    // ------------------------------------------
+    override fun getHeaderItem(): FeedItem = EmptyFeedItem
+    override fun getHeaderLayoutResId(): Int = R.layout.rv_item_feed_lmm_header
 }

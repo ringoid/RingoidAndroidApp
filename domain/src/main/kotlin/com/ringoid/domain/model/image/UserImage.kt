@@ -3,6 +3,7 @@ package com.ringoid.domain.model.image
 import android.os.Parcel
 import android.os.Parcelable
 import com.ringoid.domain.DomainUtil.BAD_ID
+import com.ringoid.utility.randomString
 
 data class UserImage(
     val originId: String = BAD_ID, val numberOfLikes: Int = 0,
@@ -36,3 +37,5 @@ data class UserImage(
         fun from(image: IImage): UserImage = UserImage(id = image.id, uri = image.uri)
     }
 }
+
+val EmptyUserImage = UserImage(id = randomString(), uri = null)

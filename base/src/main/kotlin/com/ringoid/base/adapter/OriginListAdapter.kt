@@ -1,9 +1,15 @@
 package com.ringoid.base.adapter
 
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
 
 abstract class OriginListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
     : RecyclerView.Adapter<VH>() {
+
+    companion object {
+        const val VIEW_TYPE_NORMAL = 0
+        const val VIEW_TYPE_HEADER = 1
+    }
 
     private val helper = AsyncListDiffer<T>(
         ExposedAdapterListUpdateCallback(this, exposedCb = { getExposedCb()?.invoke() }),
@@ -36,10 +42,24 @@ abstract class OriginListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCall
     }
 
     // ------------------------------------------
-    protected fun getItem(position: Int): T = helper.currentList[position]
-    protected fun getItems() = helper.currentList
+    protected fun getItem(position: Int): T {
+        if (withHeader() && position == 0) {
+            return getHeaderItem()
+        }
+        return helper.currentList[if (withHeader()) position - 1 else position]
+    }
 
-    override fun getItemCount(): Int = helper.currentList.size
+    protected fun getItems() = helper.currentList
+    protected abstract fun getHeaderItem(): T
+
+    override fun getItemCount(): Int = (if (withHeader()) 1 else 0) + helper.currentList.size
+    override fun getItemViewType(position: Int): Int =
+        if (withHeader() && position == 0) VIEW_TYPE_HEADER else VIEW_TYPE_NORMAL
+
+    // ------------------------------------------
+    @LayoutRes protected open fun getHeaderLayoutResId(): Int = 0
+
+    private fun withHeader(): Boolean = getHeaderLayoutResId() != 0
 }
 
 // ------------------------------------------------------------------------------------------------

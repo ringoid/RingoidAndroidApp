@@ -19,9 +19,8 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(
     : BaseListAdapter<T, VH>(diffCb) where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
 
     companion object {
-        const val VIEW_TYPE_NORMAL = 0
-        const val VIEW_TYPE_LOADING = 1
-        const val VIEW_TYPE_FEED_END = 2
+        const val VIEW_TYPE_LOADING = 2
+        const val VIEW_TYPE_FEED_END = 3
     }
 
     var settingsClickListener: ((model: T, position: Int, positionOfImage: Int) -> Unit)? = null
