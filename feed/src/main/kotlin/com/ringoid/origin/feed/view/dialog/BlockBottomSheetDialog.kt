@@ -25,7 +25,7 @@ class BlockBottomSheetDialog : BaseDialogFragment() {
     // --------------------------------------------------------------------------------------------
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.apply {
+        dialog?.apply {
             setCanceledOnTouchOutside(true)
             setOnCancelListener { close() }
         }

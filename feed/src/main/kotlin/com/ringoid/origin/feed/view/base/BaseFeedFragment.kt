@@ -1,5 +1,7 @@
 package com.ringoid.origin.feed.view.base
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -8,7 +10,6 @@ import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.IProfile
-import com.ringoid.origin.feed.OriginR_array
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
@@ -19,9 +20,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.BLOCK_PROFILE
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
-import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.Payload
-import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
@@ -112,26 +111,42 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
         feedAdapter = createFeedAdapter()
             .apply {
                 settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
+                    val image = model.images[positionOfImage]
                     scrollToTopOfItemAtPosition(position)
                     notifyItemChanged(position, FeedViewHolderHideControls)
-                    Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(OriginR_array.block_profile_array),
-                        l = { _, which: Int ->
-                            val image = model.images[positionOfImage]
-                            when (which) {
-                                0 -> {
-                                    vm.onBlock(profileId = model.id, imageId = image.id)
-                                    notifyItemChanged(position, FeedViewHolderShowControls)
-                                }
-                                1 -> Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(OriginR_array.report_profile_array),
-                                    l = { _, number: Int ->
-                                        vm.onReport(profileId = model.id, imageId = image.id, reasonNumber = (number + 1) * 10)
-                                        notifyItemChanged(position, FeedViewHolderShowControls)
-                                    })
-                            }
-                        })
-                    // on dialog dismiss = show controls back
+                    navigate(this@BaseFeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}", rc = RequestCode.RC_BLOCK_DIALOG)
                 }
             }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            RequestCode.RC_BLOCK_DIALOG -> {
+                if (data == null) {
+                    val e = NullPointerException("No output from Block/Report dialog - this is an error!")
+                    Timber.e(e) ; throw e
+                }
+
+                val position = data.getBundleExtra("out").getInt("position", 0)
+
+                if (resultCode == Activity.RESULT_OK) {
+                    val imageId = data.getBundleExtra("out").getString("imageId")!!
+                    val profileId = data.getBundleExtra("out").getString("profileId")!!
+
+                    if (data.hasExtra(Extras.OUT_EXTRA_REPORT_REASON)) {
+                        val reasonNumber = (data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0) + 1) * 10
+                        vm.onReport(profileId = profileId, imageId = imageId, reasonNumber = reasonNumber)
+                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+                    } else {
+                        vm.onBlock(profileId = profileId, imageId = imageId)
+                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+                    }
+                }
+                // on dialog dismiss = show controls back
+                feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

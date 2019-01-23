@@ -5,13 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.SimpleBaseActivity
+import com.ringoid.origin.navigation.Extras
 
 @AppNav("block_dialog", "report_dialog")
 class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity {
-
-    companion object {
-        const val OUT_EXTRA_REPORT_REASON = "out_extra_report_reason"
-    }
 
     private var blockDialog: BlockBottomSheetDialog? = null
     private var reportDialog: ReportBottomSheetDialog? = null
@@ -23,11 +20,11 @@ class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity
 
     // ------------------------------------------
     override fun onBlock() {
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK, Intent().putExtra("out", intent.extras))
     }
 
     override fun onReport(reason: Int) {
-        setResult(Activity.RESULT_OK, Intent().putExtra(OUT_EXTRA_REPORT_REASON, reason))
+        setResult(Activity.RESULT_OK, Intent().putExtra(Extras.OUT_EXTRA_REPORT_REASON, reason).putExtra("out", intent.extras))
     }
 
     override fun onReportSheetOpen() {
