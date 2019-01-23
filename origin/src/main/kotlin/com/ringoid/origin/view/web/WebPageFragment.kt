@@ -67,7 +67,7 @@ class WebPageFragment : BaseFragment<WebPageViewModel>() {
                 }
             }
             webViewClient = object : WebViewClient() {
-                override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError) {
+                override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
                     super.onReceivedError(view, request, error)
                     pb_web?.changeVisibility(isVisible = false)
                     snackbar(view, R.string.error_common)

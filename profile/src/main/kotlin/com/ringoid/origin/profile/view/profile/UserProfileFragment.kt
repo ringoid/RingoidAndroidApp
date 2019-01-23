@@ -102,6 +102,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 }
             })
         }
+
+        Dialogs.errorDialog(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

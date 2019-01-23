@@ -9,6 +9,7 @@ import androidx.annotation.StringRes
 import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
+import com.ringoid.utility.readFromUrl
 import kotlinx.android.synthetic.main.dialog_status.*
 
 class StatusDialog : SimpleBaseDialogFragment() {
@@ -37,6 +38,6 @@ class StatusDialog : SimpleBaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tv_dialog_title.setText(arguments?.getInt(BUNDLE_KEY_TITLE_RES_ID) ?: R.string.error_common)
-        wv_status.loadUrl(AppRes.WEB_URL_ERROR_STATUS)
+        tv_dialog_status.text = AppRes.WEB_URL_ERROR_STATUS.readFromUrl()
     }
 }
