@@ -26,7 +26,7 @@ abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledView
         fun showControls() {
             itemView.ibtn_message.changeVisibility(isVisible = true)
         }
-        
+
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
         } else {

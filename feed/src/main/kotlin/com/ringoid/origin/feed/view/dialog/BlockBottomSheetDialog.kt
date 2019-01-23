@@ -38,8 +38,8 @@ class BlockBottomSheetDialog : BaseDialogFragment() {
             close()
         }
         btn_report.clicks().compose(clickDebounce()).subscribe {
-            communicator(IBlockBottomSheetActivity::class.java)?.onReportSheetOpen()
             dismiss()
+            communicator(IBlockBottomSheetActivity::class.java)?.onReportSheetOpen()
         }
     }
 
