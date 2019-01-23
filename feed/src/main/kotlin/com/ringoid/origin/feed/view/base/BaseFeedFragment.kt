@@ -131,7 +131,7 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     Timber.e(e) ; throw e
                 }
 
-                val position = data.extras!!.getInt("position", 0)
+                val position = data.extras!!.getString("position", "0").toInt()
 
                 if (resultCode == Activity.RESULT_OK) {
                     val imageId = data.extras!!.getString("imageId")!!

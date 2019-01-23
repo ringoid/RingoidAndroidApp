@@ -56,6 +56,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     // --------------------------------------------------------------------------------------------
     protected fun setResultExposed(resultCode: Int, data: Intent?) {
         currentResult = resultCode
+        Timber.v("ResC=$resultCode, data=$data [${data?.extras}]")
         setResult(resultCode, data)
     }
 }

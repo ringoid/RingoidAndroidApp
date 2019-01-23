@@ -16,17 +16,17 @@ class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity
 
     // --------------------------------------------------------------------------------------------
     override fun onClose() {
-        setResultExposed(currentResult, Intent().putExtras(intent))
+        setResultExposed(currentResult, Intent().putExtras(intent.extras))
         delay { finish() }
     }
 
     // ------------------------------------------
     override fun onBlock() {
-        setResultExposed(Activity.RESULT_OK, Intent().putExtras(intent))
+        setResultExposed(Activity.RESULT_OK, Intent().putExtras(intent.extras))
     }
 
     override fun onReport(reason: Int) {
-        setResultExposed(Activity.RESULT_OK, Intent().putExtras(intent).putExtra(Extras.OUT_EXTRA_REPORT_REASON, reason))
+        setResultExposed(Activity.RESULT_OK, Intent().putExtras(intent.extras).putExtra(Extras.OUT_EXTRA_REPORT_REASON, reason))
     }
 
     override fun onReportSheetOpen() {
