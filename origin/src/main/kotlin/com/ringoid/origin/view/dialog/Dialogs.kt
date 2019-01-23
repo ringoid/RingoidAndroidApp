@@ -43,7 +43,7 @@ object Dialogs {
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun getTextDialog(
+    fun getTextDialog(
             activity: Activity?, @StringRes titleResId: Int = 0, @StringRes descriptionResId: Int,
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
@@ -52,7 +52,7 @@ object Dialogs {
         getTextDialog(activity, titleResId, activity?.resources?.getString(descriptionResId),
             positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
 
-    private fun getTextDialog(
+    fun getTextDialog(
             activity: Activity?, @StringRes titleResId: Int = 0, description: String? = null,
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,

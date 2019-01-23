@@ -11,6 +11,7 @@
         <attr name="refTextColorPrimary" format="reference"/>
         <attr name="refTextColorSecondary" format="reference"/>
         <attr name="iconItemView" format="reference"/>
+        <attr name="flatButtonBg" format="reference"/>
     </declare-styleable>
 
     <!-- Widget -->

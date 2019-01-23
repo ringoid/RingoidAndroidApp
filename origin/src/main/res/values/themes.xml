@@ -19,6 +19,7 @@
         <item name="colorPrimary">?refColorPrimary</item>
         <item name="colorPrimaryDark">?refColorPrimaryDark</item>
         <item name="iconItemView">@style/IconItemView</item>
+        <item name="flatButtonBg">@drawable/flat_button_bg_white</item>
     </style>
 
     <style name="Base.V0.AppTheme.Light">
@@ -57,6 +58,7 @@
         <item name="refColorPrimaryDark">@android:color/black</item>
         <item name="refTextColorPrimary">@android:color/white</item>
         <item name="refTextColorSecondary">@color/secondary_text_light</item>
+        <item name="flatButtonBg">@drawable/flat_button_bg_black</item>
     </style>
 
     <style name="AppTheme" parent="Base.V0.AppTheme.Dark"/>

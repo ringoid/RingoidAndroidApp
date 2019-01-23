@@ -11,7 +11,6 @@ import com.ringoid.origin.BuildConfig
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.usersettings.OriginR_string
-import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.copyToClipboard
@@ -47,9 +46,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
 
         item_about.apply {
             clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showTextDialog(
-                    activity, titleResId = OriginR_string.settings_info_about_dialog_title,
-                    descriptionResId = OriginR_string.settings_info_about_dialog_description)
+                AboutDialog.newInstance().showNow(childFragmentManager, AboutDialog.TAG)
             }
             setLabel(BuildConfig.VERSION_NAME)
         }

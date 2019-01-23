@@ -4,7 +4,7 @@
     <style name="FlatButton" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/flat_button_bg_transparent</item>
+        <item name="android:background">?attr/flatButtonBg</item>
         <item name="android:gravity">center</item>
         <item name="android:minHeight">@dimen/std_btn_height</item>
         <item name="android:textAllCaps">false</item>

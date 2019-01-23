@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_dialog_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/refColorBg"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_marginTop="@dimen/std_margin_24"
+        android:layout_marginStart="@dimen/std_margin_24"
+        android:layout_marginEnd="@dimen/std_margin_24"
+        android:gravity="center_vertical|start"
+        android:text="@string/settings_info_about_dialog_title"
+        android:textSize="@dimen/std_text_22"
+        android:textStyle="bold"
+        style="@style/StdText.Primary"/>
+
+    <TextView
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_24"
+        android:layout_marginEnd="@dimen/std_margin_24"
+        android:gravity="start"
+        android:text="@string/settings_info_about_dialog_description"
+        style="@style/StdText.Primary"/>
+
+    <Button
+        android:id="@+id/btn_close"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginBottom="@dimen/std_margin_8"
+        android:layout_marginEnd="@dimen/std_margin_8"
+        android:text="@string/button_close"
+        android:textAllCaps="true"
+        style="@style/FlatButton"/>
+</LinearLayout>
