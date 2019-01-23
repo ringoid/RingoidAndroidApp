@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.annotation.StringRes
-import androidx.fragment.app.DialogFragment
+import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import kotlinx.android.synthetic.main.dialog_status.*
 
-class StatusDialog : DialogFragment() {
+class StatusDialog : SimpleBaseDialogFragment() {
 
     companion object {
         const val TAG = "StatusDialog_tag"

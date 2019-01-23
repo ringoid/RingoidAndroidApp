@@ -1,3 +1,3 @@
 package com.ringoid.base.view
 
-class SimpleBaseDialogFragment : BaseDialogFragment()
+open class SimpleBaseDialogFragment : BaseDialogFragment()
