@@ -16,8 +16,8 @@
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
 
-    <string name="error_common">Oops! Something went wrong.</string>
-    <string name="error_crop_image">Failed to load and prepare image.</string>
+    <string name="error_common">Oops! Something went wrong</string>
+    <string name="error_crop_image">Failed to load and prepare image</string>
 
     <!-- Chat screem -->
     <string name="chat_message_edit_text_hint">Type some text&#8230;</string>
