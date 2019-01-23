@@ -20,11 +20,20 @@ abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledView
     : BaseFeedViewHolder<FeedItem>(view, viewPool) {
 
     override fun bind(model: FeedItem, payloads: List<Any>) {
-        if (payloads.contains(FeedViewHolderHideControls)) {
+        fun hideControls() {
             itemView.ibtn_message.changeVisibility(isVisible = false)
         }
-        if (payloads.contains(FeedViewHolderShowControls)) {
+        fun showControls() {
             itemView.ibtn_message.changeVisibility(isVisible = true)
+        }
+        
+        if (payloads.contains(FeedViewHolderHideControls)) {
+            hideControls()
+        } else {
+            showControls()
+        }
+        if (payloads.contains(FeedViewHolderShowControls)) {
+            showControls()
         }
         super.bind(model, payloads)
     }
