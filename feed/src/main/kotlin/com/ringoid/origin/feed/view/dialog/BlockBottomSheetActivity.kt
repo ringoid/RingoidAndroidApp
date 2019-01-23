@@ -52,6 +52,10 @@ class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity
         }
     }
 
+    override fun onBackPressed() {
+        onClose()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         blockDialog = null
