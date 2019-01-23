@@ -7,4 +7,6 @@ class LikeFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
     : BaseLikeFeedAdapter<LikeFeedViewHolder>(imagesViewPool) {
 
     override fun instantiateViewHolder(view: View): LikeFeedViewHolder = LikeFeedViewHolder(view)
+
+    override fun instantiateHeaderViewHolder(view: View) = HeaderLikeFeedViewHolder(view)
 }

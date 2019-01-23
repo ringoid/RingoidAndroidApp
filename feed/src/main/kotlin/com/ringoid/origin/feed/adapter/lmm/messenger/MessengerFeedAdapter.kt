@@ -21,6 +21,8 @@ class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
             vh.setOnClickListener(wrapOnItemClickListener(vh, openChatListener))
         }
 
+    override fun instantiateHeaderViewHolder(view: View): MessengerViewHolder = HeaderMessengerViewHolder(view)
+
     // ------------------------------------------
     override fun getHeaderItem(): FeedItem = EmptyFeedItem
 }

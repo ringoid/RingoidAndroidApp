@@ -15,4 +15,6 @@ class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
             (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
                 ?.apply { verticalBias = 0.28f }?.let { vh.itemView.ibtn_message.layoutParams = it }
         }
+
+    override fun instantiateHeaderViewHolder(view: View) = HeaderMatchFeedViewHolder(view)
 }

@@ -15,3 +15,10 @@ open class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
             profileImageAdapter.itemClickListener = value
         }
 }
+
+class HeaderFeedViewHolder(view: View) : FeedViewHolder(view) {
+
+    override fun bind(model: Profile) {
+        // no-op
+    }
+}

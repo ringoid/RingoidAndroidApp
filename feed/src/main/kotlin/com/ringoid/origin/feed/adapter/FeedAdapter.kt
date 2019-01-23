@@ -22,6 +22,8 @@ class FeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
             onLikeImageListener = this@FeedAdapter.onLikeImageListener
         }
 
+    override fun instantiateHeaderViewHolder(view: View) = HeaderFeedViewHolder(view)
+
     fun submit(feed: Feed) {
         submitList(feed.profiles)
     }

@@ -27,6 +27,8 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, ProfileImageViewHold
             }
         }
 
+    override fun instantiateHeaderViewHolder(view: View) = HeaderProfileImageViewHolder(view)
+
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 
     // --------------------------------------------------------------------------------------------

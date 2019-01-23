@@ -25,6 +25,8 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, UserProfileImageViewH
                 .subscribe { wrapOnItemClickListener(vh, onDeleteImageListener).onClick(vh.itemView.ibtn_delete_image) }
         }
 
+    override fun instantiateHeaderViewHolder(view: View) = HeaderUserProfileImageViewHolder(view)
+
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 
     // ------------------------------------------

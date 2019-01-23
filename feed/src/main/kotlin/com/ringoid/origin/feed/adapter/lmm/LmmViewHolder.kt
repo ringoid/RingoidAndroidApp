@@ -7,3 +7,10 @@ import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 
 open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseFeedViewHolder<FeedItem>(view, viewPool)
+
+class HeaderLmmViewHolder(view: View) : LmmViewHolder(view) {
+
+    override fun bind(model: FeedItem) {
+        // no-op
+    }
+}
