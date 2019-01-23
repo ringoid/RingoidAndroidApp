@@ -30,6 +30,7 @@ class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity
     }
 
     override fun onReportSheetOpen() {
+        createReportDialogIfNeed()
         reportDialog?.showNow(supportFragmentManager, ReportBottomSheetDialog.TAG)
     }
 
