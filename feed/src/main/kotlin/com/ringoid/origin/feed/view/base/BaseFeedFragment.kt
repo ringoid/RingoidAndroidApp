@@ -99,13 +99,18 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
         rv_items.smoothScrollToPosition(position)
     }
 
+    protected fun scrollToTopOfItemAtPosition(position: Int) {
+        (rv_items.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter()
             .apply {
-                settingsClickListener = { model: T, _, positionOfImage: Int ->
+                settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
+                    scrollToTopOfItemAtPosition(position)
                     Dialogs.showSingleChoiceDialog(activity, resources.getStringArray(OriginR_array.block_profile_array),
                         l = { _, which: Int ->
                             val image = model.images[positionOfImage]
