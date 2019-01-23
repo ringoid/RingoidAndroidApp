@@ -34,9 +34,9 @@ fun View.touchExtend(size: Int = 100): View {
     (parent as? View)?.let { parent ->
         parent.post {
             val rect = Rect()
-            getHitRect(rect)
-            rect.left += size / 2
-            rect.top += size / 2
+            this@touchExtend.getHitRect(rect)
+            rect.left -= size / 2
+            rect.top -= size / 2
             rect.right += size / 2
             rect.bottom += size / 2
             parent.touchDelegate = TouchDelegate(rect, this@touchExtend)
