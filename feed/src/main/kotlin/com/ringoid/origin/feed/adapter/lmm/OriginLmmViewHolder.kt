@@ -9,7 +9,7 @@ import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 
 interface ILmmViewHolder
 
-abstract class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+abstract class OriginLmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : OriginFeedViewHolder<FeedItem>(view, viewPool)
 
 abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)

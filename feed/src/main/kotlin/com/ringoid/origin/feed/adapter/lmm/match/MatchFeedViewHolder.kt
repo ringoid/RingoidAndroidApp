@@ -4,12 +4,12 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmViewHolder
-import com.ringoid.origin.feed.adapter.lmm.LmmViewHolder
+import com.ringoid.origin.feed.adapter.lmm.OriginLmmViewHolder
 
 interface IMatchFeedViewHolder
 
 abstract class OriginMatchFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : LmmViewHolder(view, viewPool)
+    : OriginLmmViewHolder(view, viewPool)
 
 abstract class BaseMatchFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseLmmViewHolder(view, viewPool)
