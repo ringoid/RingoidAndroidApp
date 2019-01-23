@@ -30,9 +30,9 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         (rv_items?.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(0, 0)
     }
 
-    override fun onTabTransaction(payload: String?) {
-        super.onTabTransaction(payload)
-        if (isActivityCreated) {
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (isActivityCreated && hidden) {
             /**
              * Purge feed when Main tab has switched back to Explore screen,
              * swipe-to-refresh is required to get need data.
