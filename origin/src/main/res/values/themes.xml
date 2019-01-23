@@ -3,9 +3,10 @@
     <style name="Base.V0.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:textColorHint">?refTextColorPrimary</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">?refColorBg</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="refColorBg">@android:color/white</item>
         <item name="refColorAccent">@color/grass</item>
         <item name="refColorPrimary">@color/steel</item>
         <item name="refColorPrimaryDark">@color/agat</item>
@@ -34,7 +35,6 @@
 
     <style name="Base.V0.AppTheme.Dark">
         <item name="android:colorEdgeEffect">@android:color/white</item>
-        <item name="android:windowBackground">@color/brown</item>
         <item name="refColorBottomBarIcon">@color/white_half</item>
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_white</item>
         <item name="refColorUnderscore">@color/underscore_dark</item>
@@ -46,6 +46,7 @@
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_white_24dp</item>
+        <item name="refColorBg">@color/brown</item>
         <item name="refColorPrimary">@android:color/black</item>
         <item name="refColorPrimaryDark">@android:color/black</item>
         <item name="refTextColorPrimary">@android:color/white</item>
@@ -53,6 +54,10 @@
     </style>
 
     <style name="AppTheme" parent="Base.V0.AppTheme.Dark"/>
+
+    <style name="AppTheme.Transparent">
+        <item name="android:windowBackground">@color/semitransparent_soft</item>
+    </style>
 
     <!-- Screen themes -->
     <style name="LoginTheme" parent="AppTheme">

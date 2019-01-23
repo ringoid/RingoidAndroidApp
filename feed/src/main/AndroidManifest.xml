@@ -1,2 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ringoid.origin.feed"/>
+          package="com.ringoid.origin.feed">
+
+    <application>
+        <activity
+            android:name=".view.dialog.BlockBottomSheetActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transparent"/>
+    </application>
+</manifest>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="Main">
+        <attr name="refColorBg" format="reference"/>
         <attr name="refColorAccent" format="reference"/>
         <attr name="refColorPrimary" format="reference"/>
         <attr name="refColorPrimaryDark" format="reference"/>
