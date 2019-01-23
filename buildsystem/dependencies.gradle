@@ -360,7 +360,7 @@ ext {
     /* Feature Feed */
     // ------------------------------------------
     feedDependencies = []
-    feedDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind
+    feedDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
 
     androidTestFeedDeps = androidTest
     testFeedDependencies = test

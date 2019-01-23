@@ -9,12 +9,14 @@ import com.ringoid.origin.auth.deeplink.AuthDeepLinkModule
 import com.ringoid.origin.auth.deeplink.AuthDeepLinkModuleLoader
 import com.ringoid.origin.deeplink.OriginDeepLinkModule
 import com.ringoid.origin.deeplink.OriginDeepLinkModuleLoader
+import com.ringoid.origin.feed.deeplink.FeedDeepLinkModule
+import com.ringoid.origin.feed.deeplink.FeedDeepLinkModuleLoader
 import com.ringoid.origin.imagepreview.deeplink.ImagePreviewDeepLinkModule
 import com.ringoid.origin.imagepreview.deeplink.ImagePreviewDeepLinkModuleLoader
 import com.ringoid.origin.usersettings.deeplink.UserSettingsDeepLinkModule
 import com.ringoid.origin.usersettings.deeplink.UserSettingsDeepLinkModuleLoader
 
-@DeepLinkHandler(value = [AppDeepLinkModule::class, AuthDeepLinkModule::class,
+@DeepLinkHandler(value = [AppDeepLinkModule::class, AuthDeepLinkModule::class, FeedDeepLinkModule::class,
                           ImagePreviewDeepLinkModule::class, MainDeepLinkModule::class,
                           OriginDeepLinkModule::class, UserSettingsDeepLinkModule::class])
 class DeepLinkHandlerActivity : Activity() {
@@ -22,7 +24,7 @@ class DeepLinkHandlerActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val deepLinkDelegate = DeepLinkDelegate(
-            AppDeepLinkModuleLoader(), AuthDeepLinkModuleLoader(),
+            AppDeepLinkModuleLoader(), AuthDeepLinkModuleLoader(), FeedDeepLinkModuleLoader(),
             ImagePreviewDeepLinkModuleLoader(), MainDeepLinkModuleLoader(),
             OriginDeepLinkModuleLoader(), UserSettingsDeepLinkModuleLoader()
         )
