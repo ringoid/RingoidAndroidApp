@@ -72,7 +72,7 @@ class UserProfileFragmentViewModel @Inject constructor(
 
             deleteUserImageUseCase.source(params = Params().put(essence))
                 .doOnSubscribe { viewState.value = ViewState.LOADING }
-                .doOnComplete { viewState.value = ViewState.DONE(IMAGE_DELETED) }
+                .doOnComplete { viewState.value = ViewState.IDLE }
                 .doOnError { viewState.value = ViewState.ERROR(it) }
                 .autoDisposable(this)
                 .subscribe({ Timber.d("Successfully deleted image: $it") }, Timber::e)
@@ -84,7 +84,7 @@ class UserProfileFragmentViewModel @Inject constructor(
 
         createUserImageUseCase.source(params = Params().put(essence).put("uri", uri))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.DONE(IMAGE_CREATED) }
+            .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ Timber.d("Successfully uploaded image: $it") }, Timber::e)

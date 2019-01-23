@@ -53,18 +53,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         when (newState) {
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is IMAGE_CREATED -> {
-//                        snackbar(view, OriginR_string.profile_image_created)
-                        onIdleState()
-                    }
-                    is IMAGE_DELETED -> {
-//                        snackbar(view, OriginR_string.profile_image_deleted)
-                        onIdleState()
-                    }
-                }
-            }
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
                 Dialogs.errorDialog(activity, newState.e)
