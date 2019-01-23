@@ -71,10 +71,12 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     private fun selectPage(position: Int) {
         when (position) {
             0 -> {
+                lmmPagesAdapter.accessItem(1)?.userVisibleHint = false
                 btn_tab_likes?.changeTypeface(style = Typeface.BOLD, isSelected = true)
                 btn_tab_matches?.changeTypeface()
             }
             1 -> {
+                lmmPagesAdapter.accessItem(0)?.userVisibleHint = false
                 btn_tab_likes?.changeTypeface()
                 btn_tab_matches?.changeTypeface(style = Typeface.BOLD, isSelected = true)
             }
@@ -85,6 +87,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             vm.onTabReselect()
         }
 
+        lmmPagesAdapter.accessItem(position)?.userVisibleHint = true
         vp_pages?.currentItem = position
     }
 }

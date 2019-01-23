@@ -35,8 +35,4 @@ class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel, OriginFeedVi
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.observe(vm.badgeLikes) { communicator(ILmmFragment::class.java)?.showBadgeOnLikes(it) }
     }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-    }
 }
