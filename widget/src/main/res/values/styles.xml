@@ -54,6 +54,10 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="ChatDialog" parent="AppDialog.FullScreen.Transparent">
+        <item name="android:windowSoftInputMode">stateAlwaysVisible|adjustResize</item>
+    </style>
+
     <!-- TextView -->
     <style name="StdText">
         <item name="android:layout_width">wrap_content</item>

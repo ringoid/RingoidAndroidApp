@@ -1,13 +1,10 @@
 package com.ringoid.origin.messenger.view
 
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.origin.messenger.R
@@ -38,17 +35,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-        Dialog(activity!!, R.style.AppDialog_FullScreen_Transparent)
+        Dialog(activity!!, R.style.ChatDialog)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = super.onCreateView(inflater, container, savedInstanceState)
-        dialog?.window?.apply {
-            //showKeyboard()
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-        return rootView//?.apply { setOnClickListener { dismiss() } }
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        super.onCreateView(inflater, container, savedInstanceState)
+            ?.apply { setOnClickListener { dismiss() } }
 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
