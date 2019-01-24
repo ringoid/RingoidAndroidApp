@@ -61,7 +61,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.messages, chatAdapter::submitList)
+        viewLifecycleOwner.observe(vm.messages, chatAdapter::submitList) {
+            rv_chat_messages.scrollToPosition(it.size - 1)
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")
