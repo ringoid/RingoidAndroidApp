@@ -40,7 +40,7 @@ class DebugRepository @Inject constructor(
 
     override fun requestWithUnsupportedAppVersion(): Completable {
         val cloud = DaggerCloudComponent.builder()
-            .cloudModule(CloudModule(BuildConfig.BUILD_NUMBER - 1))
+            .cloudModule(CloudModule(BuildConfig.BUILD_NUMBER / 2))
             .ringoidCloudModule(RingoidCloudModule())
             .build()
             .cloud()
