@@ -19,8 +19,15 @@
     <string name="error_common">Oops! Something went wrong</string>
     <string name="error_crop_image">Failed to load and prepare image</string>
 
-    <!-- Chat screem -->
+    <!-- Chat screen -->
     <string name="chat_message_edit_text_hint">Type some text&#8230;</string>
+
+    <!-- Debug screen -->
+    <string name="debug_item_response_error_http">Response code not 200</string>
+    <string name="debug_item_response_error_invalid_token">Invalid Access Token</string>
+    <string name="debug_item_response_error_old_app_version">Too old app version</string>
+    <string name="debug_item_response_error_server">Internal Server error</string>
+    <string name="debug_item_response_error_timeout">Response timed out</string>
 
     <!-- Feed screen -->
     <string name="block_profile_button_block">Block</string>
