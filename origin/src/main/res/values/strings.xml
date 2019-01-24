@@ -30,6 +30,7 @@
     <string name="debug_item_response_error_request_params">Wrong request params</string>
     <string name="debug_item_response_error_server">Internal Server error</string>
     <string name="debug_item_response_error_timeout">Response timed out</string>
+    <string name="debug_title">Debug Menu</string>
 
     <!-- Feed screen -->
     <string name="block_profile_button_block">Block</string>

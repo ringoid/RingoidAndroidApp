@@ -2,9 +2,11 @@ package com.ringoid.origin.usersettings.view.debug
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
 import com.ringoid.utility.changeVisibility
@@ -46,6 +48,11 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (toolbar as Toolbar).apply {
+            setNavigationOnClickListener { activity?.onBackPressed() }
+            setTitle(OriginR_string.debug_title)
+        }
+
         item_error_http.clicks().compose(clickDebounce()).subscribe {  }
         item_error_token.clicks().compose(clickDebounce()).subscribe { vm.requestWithInvalidAccessToken() }
         item_error_token_expired.clicks().compose(clickDebounce()).subscribe { vm.requestWithExpiredAccessToken() }
