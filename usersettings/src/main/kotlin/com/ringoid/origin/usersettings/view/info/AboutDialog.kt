@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.navigation.navigate
@@ -23,12 +24,14 @@ class AboutDialog : SimpleBaseDialogFragment() {
         fun newInstance(): AboutDialog = AboutDialog()
     }
 
+    @LayoutRes
+    override fun getLayoutId(): Int = R.layout.dialog_about
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.dialog_about, container, false)
-            .apply { setOnClickListener { dismiss() } }
+        return super.onCreateView(inflater, container, savedInstanceState)
+            ?.apply { setOnClickListener { dismiss() } }
     }
 
     @Suppress("CheckResult", "AutoDispose")

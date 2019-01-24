@@ -6,6 +6,8 @@ import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.app.RingoidApplication
 import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetActivityModule
+import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetDialogModule
+import com.ringoid.origin.feed.view.dialog.di.ReportBottomSheetDialogModule
 import com.ringoid.origin.feed.view.explore.di.ExploreFragmentModule
 import com.ringoid.origin.feed.view.lmm.di.LmmFragmentModule
 import com.ringoid.origin.feed.view.lmm.like.di.LikesFeedFragmentModule
@@ -19,8 +21,10 @@ import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
 import com.ringoid.origin.usersettings.view.di.SettingsActivityModule
 import com.ringoid.origin.usersettings.view.di.SettingsFragmentModule
+import com.ringoid.origin.usersettings.view.info.di.AboutDialogModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoActivityModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoFragmentModule
+import com.ringoid.origin.view.dialog.di.StatusDialogModule
 import com.ringoid.origin.view.splash.di.SplashActivityModule
 import com.ringoid.origin.view.web.di.WebPageActivityModule
 import com.ringoid.origin.view.web.di.WebPageFragmentModule
@@ -33,7 +37,9 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
-                      BlockBottomSheetActivityModule::class, ChatFragmentModule::class,
+                      AboutDialogModule::class,
+                      BlockBottomSheetActivityModule::class, BlockBottomSheetDialogModule::class,
+                      ReportBottomSheetDialogModule::class, ChatFragmentModule::class,
                       DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
@@ -42,7 +48,7 @@ import javax.inject.Singleton
                       UserProfileFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
-                      SplashActivityModule::class,
+                      SplashActivityModule::class, StatusDialogModule::class,
                       WebPageActivityModule::class, WebPageFragmentModule::class])
 interface ApplicationComponent : AndroidInjector<RingoidApplication> {
 

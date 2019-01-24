@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
@@ -22,12 +23,15 @@ class BlockBottomSheetDialog : SimpleBaseDialogFragment() {
         fun newInstance(): BlockBottomSheetDialog = BlockBottomSheetDialog()
     }
 
+    @LayoutRes
+    override fun getLayoutId(): Int = R.layout.dialog_bottom_sheet_block
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
+        val rootView = super.onCreateView(inflater, container, savedInstanceState)
         dialog?.setCanceledOnTouchOutside(true)
-        return inflater.inflate(R.layout.dialog_bottom_sheet_block, container, false)
+        return rootView
     }
 
     @Suppress("CheckResult", "AutoDispose")
