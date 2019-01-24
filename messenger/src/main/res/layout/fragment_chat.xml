@@ -48,19 +48,24 @@
             app:srcCompat="@drawable/ic_send_white_36dp"/>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_chat_messages"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@color/white_transparent"
-        android:paddingStart="@dimen/std_margin_16"
-        android:paddingEnd="@dimen/std_margin_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chat_messages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            android:scrollbarThumbVertical="@color/white_transparent"
+            android:paddingStart="@dimen/std_margin_16"
+            android:paddingEnd="@dimen/std_margin_16"/>
+    </FrameLayout>
 
     <View
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
