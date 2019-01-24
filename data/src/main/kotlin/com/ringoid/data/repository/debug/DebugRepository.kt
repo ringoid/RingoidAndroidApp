@@ -13,6 +13,8 @@ import com.ringoid.data.remote.di.DaggerCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.data.repository.withApiError
+import com.ringoid.data.repository.withNetError
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
@@ -47,7 +49,7 @@ class DebugRepository @Inject constructor(
 
         return spm.accessCompletable {
             cloud.getNewFaces(it.accessToken, ImageResolution._480x640, 20, lastActionTime = aObjPool.lastActionTime)
-                .handleError()
+                .withApiError().withNetError()  // TODO: retry swallows exception an throws NoSuchElement
                 .map { it.map() }
                 .ignoreElement()  // convert to Completable
         }

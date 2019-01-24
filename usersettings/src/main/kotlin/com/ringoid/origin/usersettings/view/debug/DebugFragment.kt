@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.exception.ApiException
 import com.ringoid.origin.navigation.blockingErrorScreen
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.view.dialog.Dialogs
@@ -37,9 +38,14 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_debug.changeVisibility(isVisible = true)
             is ViewState.ERROR -> {
-                // TODO: analyze: newState.e
-                if (false) {
-                    blockingErrorScreen(this, path="/old_version")
+                if (newState.e is ApiException) {
+                    val code = (newState.e as ApiException).code
+                    when (code) {
+                        ApiException.OLD_APP_VERSION -> {
+                            blockingErrorScreen(this, path="/old_version")
+                            return
+                        }
+                    }
                 }
                 Dialogs.errorDialog(this, newState.e)
                 onIdleState()
