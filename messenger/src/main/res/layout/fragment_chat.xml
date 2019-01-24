@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -10,6 +10,7 @@
         android:id="@+id/ll_text_input"
         android:layout_width="match_parent"
         android:layout_height="@dimen/chat_text_input_container_height"
+        android:layout_gravity="bottom"
         android:background="@drawable/bottom_gradient_black"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -42,11 +43,10 @@
             app:srcCompat="@drawable/ic_send_white_36dp"/>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
         android:id="@+id/rv_chat_messages"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:scrollbars="vertical"
         android:scrollbarThumbVertical="@color/white_transparent"
@@ -65,6 +65,7 @@
         android:id="@+id/ibtn_chat_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
         android:layout_marginTop="@dimen/std_margin_16"
         android:layout_marginStart="@dimen/std_margin_16"
         android:background="?selectableItemBackground"
@@ -77,6 +78,7 @@
         android:id="@+id/ibtn_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
         android:layout_marginTop="@dimen/std_margin_16"
         android:layout_marginEnd="@dimen/std_margin_16"
         android:background="?selectableItemBackground"
@@ -84,4 +86,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_more_white_36dp"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

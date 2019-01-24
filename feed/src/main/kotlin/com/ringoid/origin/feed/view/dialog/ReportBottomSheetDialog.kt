@@ -6,15 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.BottomSheet
+import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.feed.R
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.dialog_bottom_sheet_report.*
 
 @BottomSheet(true)
-class ReportBottomSheetDialog : BaseDialogFragment() {
+class ReportBottomSheetDialog : SimpleBaseDialogFragment() {
 
     companion object {
         const val TAG = "ReportBottomSheetDialog_tag"

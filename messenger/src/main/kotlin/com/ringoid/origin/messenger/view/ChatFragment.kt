@@ -3,14 +3,16 @@ package com.ringoid.origin.messenger.view
 import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.messenger.R
+import com.ringoid.origin.messenger.R.id.ibtn_chat_close
 import com.ringoid.origin.view.main.IMainActivity
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_chat.*
 
-class ChatFragment : BaseFragment<ChatViewModel>() {
+class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     companion object {
         private const val BUNDLE_KEY_PEER_ID = "bundle_key_peer_id"
