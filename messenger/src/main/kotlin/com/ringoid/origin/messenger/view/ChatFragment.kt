@@ -7,8 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.origin.messenger.R
+import com.ringoid.origin.view.main.IMainActivity
+import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.communicator
 import com.ringoid.utility.showKeyboard
 import kotlinx.android.synthetic.main.fragment_chat.*
 
@@ -57,8 +61,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 //                false
 //            }
         }
-//        ibtn_chat_close.clicks().compose(clickDebounce()).subscribe {
-//            communicator(IMainActivity::class.java)?.popScreen()
-//        }
+        ibtn_chat_close.clicks().compose(clickDebounce()).subscribe {
+            communicator(IMainActivity::class.java)?.popScreen()
+        }
     }
 }
