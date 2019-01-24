@@ -24,13 +24,13 @@ abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedV
             messageClickListener = { model: FeedItem, position: Int ->
                 scrollToTopOfItemAtPosition(position)
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
-                openChat(peerId = model.id)
+                openChat(peerId = model.id, position = position)
             }
         }
 
     // --------------------------------------------------------------------------------------------
-    override fun onDialogDismiss(tag: String) {
-        super.onDialogDismiss(tag)
+    override fun onDialogDismiss(tag: String, position: Int) {
+        super.onDialogDismiss(tag, position)
         when (tag) {
             ChatFragment.TAG -> communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
         }

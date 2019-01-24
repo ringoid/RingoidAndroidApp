@@ -29,12 +29,14 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         const val TAG = "ChatFragment_tag"
 
         private const val BUNDLE_KEY_PEER_ID = "bundle_key_peer_id"
+        private const val BUNDLE_KEY_POSITION_IN_FEED = "bundle_key_position_in_feed"
         private const val BUNDLE_KEY_TAG = "bundle_key_tag"
 
-        fun newInstance(peerId: String, tag: String = TAG): ChatFragment =
+        fun newInstance(peerId: String, position: Int = DomainUtil.BAD_POSITION, tag: String = TAG): ChatFragment =
             ChatFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_PEER_ID, peerId)
+                    putInt(BUNDLE_KEY_POSITION_IN_FEED, position)
                     putString(BUNDLE_KEY_TAG, tag)
                 }
             }
@@ -103,7 +105,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        val position = arguments?.getInt(BUNDLE_KEY_POSITION_IN_FEED, DomainUtil.BAD_POSITION) ?: DomainUtil.BAD_POSITION
         val tag = arguments?.getString(BUNDLE_KEY_TAG, TAG) ?: TAG
-        communicator(IDialogCallback::class.java)?.onDialogDismiss(tag = tag)
+        communicator(IDialogCallback::class.java)?.onDialogDismiss(position = position, tag = tag)
     }
 }

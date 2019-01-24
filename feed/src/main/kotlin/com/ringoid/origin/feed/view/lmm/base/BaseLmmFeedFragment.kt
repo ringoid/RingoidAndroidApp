@@ -4,7 +4,10 @@ import android.os.Bundle
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.messenger.view.ChatFragment
@@ -15,16 +18,23 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
     where VH : BaseViewHolder<FeedItem>, VH : IFeedViewHolder {
 
     // --------------------------------------------------------------------------------------------
-    override fun onDialogDismiss(tag: String) {
+    override fun onDialogDismiss(tag: String, position: Int) {
+        if (position == DomainUtil.BAD_POSITION) {
+            return
+        }
+
         when (tag) {
-            ChatFragment.TAG -> {}  // TODO: restore feed item controls visibility
+            ChatFragment.TAG -> feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
         }
     }
 
-    protected fun openChat(peerId: String, tag: String = ChatFragment.TAG) {
+    protected fun openChat(peerId: String, position: Int, tag: String = ChatFragment.TAG) {
         childFragmentManager.let {
             it.findFragmentByTag(tag)
-                ?: ChatFragment.newInstance(peerId = peerId, tag = tag).showNow(it, tag)
+                ?: run {
+                    feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
+                    ChatFragment.newInstance(peerId = peerId, position = position, tag = tag).showNow(it, tag)
+                }
         }
     }
 

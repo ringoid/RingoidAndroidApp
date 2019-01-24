@@ -4,5 +4,5 @@ import com.ringoid.utility.ICommunicator
 
 interface IDialogCallback : ICommunicator {
 
-    fun onDialogDismiss(tag: String)
+    fun onDialogDismiss(tag: String, position: Int)
 }
