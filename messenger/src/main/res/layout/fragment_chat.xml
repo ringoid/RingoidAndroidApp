@@ -36,7 +36,7 @@
             <requestFocus/>
         </EditText>
 
-        <ImageButton
+        <com.ringoid.widget.view.ExtendImageButton
             android:id="@+id/ibtn_message_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:paddingBottom="@dimen/std_margin_8"
             android:paddingStart="@dimen/std_margin_8"
             android:paddingEnd="@dimen/std_margin_8"
-            app:srcCompat="@drawable/ic_send_white_36dp"/>
+            app:xbtnSrc="@drawable/ic_send_white_36dp"/>
     </LinearLayout>
 
     <FrameLayout
