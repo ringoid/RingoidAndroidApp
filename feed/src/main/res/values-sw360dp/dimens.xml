@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dialog_bottom_sheet_block_height">85dp</dimen>
+    <dimen name="dialog_bottom_sheet_block_height">106dp</dimen>
     <dimen name="dialog_bottom_sheet_report_height">315dp</dimen>
 
     <dimen name="feed_item_end_height">110dp</dimen>

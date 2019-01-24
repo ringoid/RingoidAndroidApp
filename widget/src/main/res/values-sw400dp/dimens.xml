@@ -3,6 +3,7 @@
     <dimen name="std_btn_height">48dp</dimen>
     <dimen name="std_dialog_height">200dp</dimen>
     <dimen name="std_dialog_width">390dp</dimen>
+    <dimen name="std_element_height">60dp</dimen>
     <dimen name="std_icon_24">24dp</dimen>
     <dimen name="std_icon_36">36dp</dimen>
     <dimen name="std_margin_8">8dp</dimen>

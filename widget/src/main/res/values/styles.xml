@@ -12,6 +12,10 @@
         <item name="android:textSize">@dimen/std_text_18</item>
     </style>
 
+    <style name="FlatButton.Tall">
+        <item name="android:minHeight">@dimen/std_element_height</item>
+    </style>
+
     <style name="RaisedButton" parent="@style/Widget.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
