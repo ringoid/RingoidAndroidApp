@@ -2,13 +2,18 @@ package com.ringoid.origin.messenger.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.EmptyMessage
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.messenger.R
+import com.ringoid.utility.clickDebounce
+import kotlinx.android.synthetic.main.rv_item_chat_item.view.*
 
 class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCallback()) {
+
+    var onMessageClickListener: ((model: Message, position: Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -16,7 +21,11 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
             R.layout.rv_item_chat_item -> PeerChatViewHolder(view)
             R.layout.rv_item_my_chat_item -> MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
-        }.apply { setOnClickListener(getOnItemClickListener(this)) }
+        }.also { vh->
+            vh.setOnClickListener(getOnItemClickListener(vh))
+            vh.itemView.tv_chat_message.clicks().compose(clickDebounce())
+                .subscribe { wrapOnItemClickListener(vh, onMessageClickListener).onClick(vh.itemView.tv_chat_message) }
+        }
     }
 
     override fun getItemViewType(position: Int): Int =

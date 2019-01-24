@@ -46,7 +46,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         chatAdapter = ChatAdapter().apply {
-            itemClickListener = { model: Message, _ ->
+            itemClickListener = { _, _ -> dismiss() }
+            onMessageClickListener = { model: Message, _ ->
                 context?.copyToClipboard(DomainUtil.CLIPBOARD_KEY_CHAT_MESSAGE, model.text)
                 context?.toast(OriginR_string.common_clipboard)
             }
