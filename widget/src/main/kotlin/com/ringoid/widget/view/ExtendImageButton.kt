@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.getSelectableItemBg
+import com.ringoid.utility.getSelectableItemBgBorderless
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_extend_image_button.view.*
 
@@ -23,8 +23,8 @@ class ExtendImageButton : FrameLayout {
 
     // --------------------------------------------------------------------------------------------
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
-        background = context.getSelectableItemBg()
-        foreground = context.getSelectableItemBg()
+        background = context.getSelectableItemBgBorderless()
+        foreground = context.getSelectableItemBgBorderless()
         isClickable = true
         isFocusable = true
 

@@ -58,7 +58,15 @@ fun Context.getSelectableItemBgResId(): Int {
     return typedValue.resourceId
 }
 
+@DrawableRes
+fun Context.getSelectableItemBgBorderlessResId(): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, typedValue, true)
+    return typedValue.resourceId
+}
+
 fun Context.getSelectableItemBg(): Drawable? = ContextCompat.getDrawable(this, getSelectableItemBgResId())
+fun Context.getSelectableItemBgBorderless(): Drawable? = ContextCompat.getDrawable(this, getSelectableItemBgBorderlessResId())
 
 fun Context.getAttributeColor(attributeId: Int): Int {
     val typedValue = TypedValue()
