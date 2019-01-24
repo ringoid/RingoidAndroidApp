@@ -8,8 +8,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,7 +17,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat_messages"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="500dp"
             android:clipToPadding="false"
             android:scrollbars="vertical"
             android:scrollbarThumbVertical="@color/white_transparent"
@@ -90,6 +89,7 @@
             android:shadowColor="@color/text_shadow"
             android:shadowRadius="6"
             android:textColor="?attr/refTextColorPrimary">
+            <requestFocus/>
         </EditText>
 
         <com.ringoid.widget.view.ExtendImageButton
