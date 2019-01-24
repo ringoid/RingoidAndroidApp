@@ -3,7 +3,7 @@
     <item>
         <selector>
             <item android:drawable="@drawable/rect_round_inactive" android:state_enabled="false"/>
-            <item android:drawable="@drawable/rect_round_accent"/>
+            <item android:drawable="@drawable/rect_round_accent_solid"/>
         </selector>
     </item>
 </ripple>
