@@ -19,6 +19,7 @@ class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
         MessengerViewHolder(view, viewPool = imagesViewPool).also { vh ->
             vh.profileImageAdapter.isLikeButtonVisible = false
+            // TODO: this must be set on image, no here
             vh.setOnClickListener(wrapOnItemClickListener(vh, openChatListener))
         }
 
