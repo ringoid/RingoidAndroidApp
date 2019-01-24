@@ -1,13 +1,11 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
-import kotlinx.android.synthetic.main.fragment_feed.*
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
@@ -27,7 +25,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onTabReselect() {
         super.onTabReselect()
-        (rv_items?.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(0, 0)
+        scrollToTopOfItemAtPosition(0)
     }
 
     /* Lifecycle */
