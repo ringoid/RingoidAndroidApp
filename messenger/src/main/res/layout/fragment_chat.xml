@@ -25,6 +25,7 @@
             android:hint="@string/chat_message_edit_text_hint"
             android:imeOptions="flagNoPersonalizedLearning"
             android:inputType="textMultiLine"
+            android:maxLength="1000"
             android:maxLines="4"
             android:paddingStart="@dimen/std_margin_16"
             android:paddingEnd="@dimen/std_margin_16"
