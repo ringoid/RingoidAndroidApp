@@ -44,7 +44,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
         dialog?.window?.apply {
             //showKeyboard()
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
         return rootView//?.apply { setOnClickListener { dismiss() } }
@@ -54,7 +54,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         et_message.apply {
-            requestFocus()
+//            requestFocus()
 //            setOnKeyPreImeListener { keyCode, event ->
 //                if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
 //                    dismiss()

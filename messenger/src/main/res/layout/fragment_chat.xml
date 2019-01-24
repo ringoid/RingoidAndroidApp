@@ -9,6 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_weight="1"
         android:background="@color/grass"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
@@ -90,7 +91,6 @@
             android:shadowColor="@color/text_shadow"
             android:shadowRadius="6"
             android:textColor="?attr/refTextColorPrimary">
-            <requestFocus/>
         </EditText>
 
         <com.ringoid.widget.view.ExtendImageButton
