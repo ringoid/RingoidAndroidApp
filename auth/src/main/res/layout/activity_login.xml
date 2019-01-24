@@ -46,7 +46,7 @@
             android:textColor="@color/grey_middle"
             app:layout_constraintBottom_toTopOf="@id/btn_login"/>
 
-        <EditText
+        <com.ringoid.widget.view.KeyEditText
             android:id="@+id/et_year_of_birth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,7 +66,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/ll_sex_container"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent">
+            <requestFocus/>
+        </com.ringoid.widget.view.KeyEditText>
 
         <ImageView
             android:id="@+id/iv_status"

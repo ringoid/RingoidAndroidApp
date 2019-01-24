@@ -3,6 +3,7 @@ package com.ringoid.origin.auth.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.lifecycle.Observer
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -57,7 +58,16 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
-        et_year_of_birth.textChanges().compose(inputDebounce()).subscribe { vm.onYearOfBirthChange(it.toString()) }
+        et_year_of_birth.apply {
+            requestFocus()
+            setOnKeyPreImeListener { keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
+                    finish()
+                }
+                false
+            }
+            textChanges().compose(inputDebounce()).subscribe { vm.onYearOfBirthChange(it.toString()) }
+        }
         tv_sex_male.clicks().compose(clickDebounce()).subscribe {
             tv_sex_male.takeIf { it.isSelected } ?: run {
                 tv_sex_male.isSelected = true
