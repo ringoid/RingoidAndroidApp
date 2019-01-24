@@ -16,7 +16,7 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
             R.layout.rv_item_chat_item -> PeerChatViewHolder(view)
             R.layout.rv_item_my_chat_item -> MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
-        }
+        }.apply { setOnClickListener(getOnItemClickListener(this)) }
     }
 
     override fun getItemViewType(position: Int): Int =
