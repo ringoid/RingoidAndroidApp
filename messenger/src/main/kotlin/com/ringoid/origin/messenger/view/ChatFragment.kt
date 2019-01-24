@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.view.main.IMainActivity
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
-import com.ringoid.utility.showKeyboard
 import kotlinx.android.synthetic.main.fragment_chat.*
 
 class ChatFragment : BaseDialogFragment<ChatViewModel>() {
@@ -43,7 +43,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
         dialog?.window?.apply {
-            showKeyboard()
+            //showKeyboard()
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
         return rootView//?.apply { setOnClickListener { dismiss() } }
