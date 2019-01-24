@@ -35,6 +35,14 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         badge_matches.changeVisibility(isVisible, soft = true)
     }
 
+    override fun showTabs(isVisible: Boolean) {
+        badge_likes.changeVisibility(isVisible)
+        badge_matches.changeVisibility(isVisible)
+        btn_tab_likes.changeVisibility(isVisible)
+        btn_tab_matches.changeVisibility(isVisible)
+        tab_delim.changeVisibility(isVisible)
+    }
+
     // ------------------------------------------
     override fun onTabReselect() {
         super.onTabReselect()

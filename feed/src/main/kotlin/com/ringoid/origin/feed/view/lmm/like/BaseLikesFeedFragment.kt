@@ -23,6 +23,7 @@ abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedV
         instantiateFeedAdapter().apply {
             messageClickListener = { model: FeedItem, position: Int ->
                 scrollToTopOfItemAtPosition(position)
+                communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
                 communicator(IMainActivity::class.java)?.openChat(peerId = model.id)
             }
         }
