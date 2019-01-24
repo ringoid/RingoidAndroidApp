@@ -26,7 +26,10 @@ class MainActivity : BaseMainActivity<MainViewModel>(), IMainActivity {
 
     // --------------------------------------------------------------------------------------------
     override fun openChat(peerId: String) {
-        fragNav.pushFragment(ChatFragment.newInstance(peerId))
+        supportFragmentManager.also { fm ->
+            fm.findFragmentByTag(ChatFragment.TAG)
+                ?: ChatFragment.newInstance(peerId).showNow(fm, ChatFragment.TAG)
+        }
     }
 
     override fun popScreen() {

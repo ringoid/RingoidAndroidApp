@@ -40,6 +40,20 @@
         <item name="android:indeterminate">true</item>
     </style>
 
+    <!-- Dialog -->
+    <style name="AppDialog" parent="Theme.AppCompat.Dialog"/>
+
+    <style name="AppDialog.FullScreen">
+        <item name="android:windowBackground">?attr/refColorBg</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="AppDialog.FullScreen.Transparent">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <!-- TextView -->
     <style name="StdText">
         <item name="android:layout_width">wrap_content</item>

@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/rv_chat_messages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@color/white_transparent"
+        android:paddingStart="@dimen/std_margin_16"
+        android:paddingEnd="@dimen/std_margin_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ll_text_input"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        app:layout_constraintBottom_toTopOf="@id/ll_text_input"
+        style="@style/Underscore"/>
 
     <LinearLayout
         android:id="@+id/ll_text_input"
         android:layout_width="match_parent"
         android:layout_height="@dimen/chat_text_input_container_height"
-        android:layout_gravity="bottom"
         android:background="@drawable/bottom_gradient_black"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -31,59 +50,48 @@
             android:paddingStart="@dimen/std_margin_16"
             android:paddingEnd="@dimen/std_margin_16"
             android:shadowColor="@color/text_shadow"
-            android:shadowRadius="6"/>
+            android:shadowRadius="6"
+            android:textColor="?attr/refTextColorPrimary">
+            <requestFocus/>
+        </EditText>
 
         <ImageButton
             android:id="@+id/ibtn_message_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="?selectableItemBackground"
-            android:contentDescription="@null"
+            android:paddingTop="@dimen/std_margin_8"
+            android:paddingBottom="@dimen/std_margin_8"
+            android:paddingStart="@dimen/std_margin_8"
+            android:paddingEnd="@dimen/std_margin_8"
             app:srcCompat="@drawable/ic_send_white_36dp"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/rv_chat_messages"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@color/white_transparent"
-        android:paddingStart="@dimen/std_margin_16"
-        android:paddingEnd="@dimen/std_margin_16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ll_text_input"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <View
-        app:layout_constraintBottom_toTopOf="@id/ll_text_input"
-        style="@style/Underscore"/>
 
-    <ImageButton
-        android:id="@+id/ibtn_chat_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|start"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginStart="@dimen/std_margin_16"
-        android:background="?selectableItemBackground"
-        android:contentDescription="@null"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_close_white_24dp"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/ibtn_chat_close"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="top|start"-->
+        <!--android:layout_marginTop="@dimen/std_margin_16"-->
+        <!--android:layout_marginStart="@dimen/std_margin_16"-->
+        <!--android:background="?selectableItemBackground"-->
+        <!--android:contentDescription="@null"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:srcCompat="@drawable/ic_close_white_24dp"/>-->
 
-    <ImageButton
-        android:id="@+id/ibtn_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        android:background="?selectableItemBackground"
-        android:contentDescription="@null"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_more_white_36dp"/>
-</FrameLayout>
+    <!--<ImageButton-->
+        <!--android:id="@+id/ibtn_settings"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="top|end"-->
+        <!--android:layout_marginTop="@dimen/std_margin_16"-->
+        <!--android:layout_marginEnd="@dimen/std_margin_16"-->
+        <!--android:background="?selectableItemBackground"-->
+        <!--android:contentDescription="@null"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:srcCompat="@drawable/ic_more_white_36dp"/>-->
+</LinearLayout>

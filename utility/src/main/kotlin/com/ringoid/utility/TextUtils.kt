@@ -8,6 +8,11 @@ import android.text.Spannable
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.MotionEvent
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 
 abstract class AutoLinkMovementMethod : LinkMovementMethod() {
@@ -58,4 +63,21 @@ fun Context.pasteFromClipboard(key: String): String {
             }
         }
     return stringBuilder.toString()
+}
+
+/* Keyboard */
+// --------------------------------------------------------------------------------------------
+fun EditText.showKeyboard() {
+    requestFocus()
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, InputMethodManager.SHOW_FORCED)
+}
+
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun Window.showKeyboard() {
+    setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 }
