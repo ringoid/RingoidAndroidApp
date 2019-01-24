@@ -54,7 +54,8 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="ChatDialog" parent="AppDialog.FullScreen.Transparent">
+    <style name="ChatDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">stateAlwaysVisible|adjustResize</item>
     </style>
 
