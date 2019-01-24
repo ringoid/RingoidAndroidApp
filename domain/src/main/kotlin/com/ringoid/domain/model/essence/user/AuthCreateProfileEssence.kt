@@ -3,6 +3,7 @@ package com.ringoid.domain.model.essence.user
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.model.IEssence
+import java.util.*
 
 /**
  * {
@@ -18,13 +19,13 @@ import com.ringoid.domain.model.IEssence
  */
 data class AuthCreateProfileEssence(
     @Expose @SerializedName(COLUMN_BIRTH_YEAR) val yearOfBirth: Int,
-    @Expose @SerializedName(COLUMN_DT_LA) val dtLegalAge: Long,
+    @Expose @SerializedName(COLUMN_DT_LA) val dtLegalAge: Long = System.currentTimeMillis(),
     @Expose @SerializedName(COLUMN_DT_PN) val dtPrivacy: Long = dtLegalAge,
     @Expose @SerializedName(COLUMN_DT_TC) val dtTCs: Long = dtLegalAge,
-    @Expose @SerializedName(COLUMN_LOCALE) val locale: String,
+    @Expose @SerializedName(COLUMN_LOCALE) val locale: String = Locale.getDefault().language,
     @Expose @SerializedName(COLUMN_SEX) val sex: String,
-    @Expose @SerializedName(COLUMN_DEVICE) val device: String,
-    @Expose @SerializedName(COLUMN_OS_VERSION) val osVersion: String) : IEssence {
+    @Expose @SerializedName(COLUMN_DEVICE) val device: String = "",
+    @Expose @SerializedName(COLUMN_OS_VERSION) val osVersion: String = "") : IEssence {
 
     companion object {
         const val COLUMN_BIRTH_YEAR = "yearOfBirth"

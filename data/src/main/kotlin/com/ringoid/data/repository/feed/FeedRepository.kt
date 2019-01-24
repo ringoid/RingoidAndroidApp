@@ -9,6 +9,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.repository.BaseRepository
+import com.ringoid.data.repository.handleError
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
@@ -50,6 +51,7 @@ class FeedRepository @Inject constructor(
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
+                 .handleError()
                  .filterBlockedProfilesFeed()
                  .map { it.map() }
         }
@@ -57,6 +59,7 @@ class FeedRepository @Inject constructor(
     override fun getLmm(resolution: ImageResolution): Single<Lmm> =
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
+                 .handleError()
                  .filterBlockedProfilesLmm()
                  .map { it.map() }
                  .doOnSuccess {

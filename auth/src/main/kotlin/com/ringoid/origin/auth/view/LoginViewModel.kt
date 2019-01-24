@@ -38,8 +38,6 @@ class LoginViewModel @Inject constructor(
     fun login() {
         val essence = AuthCreateProfileEssence(
             yearOfBirth = yearOfBirth,
-            dtLegalAge = System.currentTimeMillis(),
-            locale = Locale.getDefault().language,
             sex = gender?.string ?: Gender.MALE.string /* safe null-check */,
             device = String.format("%s, %d", Build.VERSION.RELEASE, Build.VERSION.SDK_INT),
             osVersion = String.format("%s, %s, %s", Build.MODEL, Build.MANUFACTURER, Build.PRODUCT))
