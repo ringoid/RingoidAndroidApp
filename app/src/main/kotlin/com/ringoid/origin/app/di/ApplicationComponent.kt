@@ -2,6 +2,8 @@ package com.ringoid.origin.app.di
 
 import android.app.Application
 import android.content.Context
+import com.ringoid.data.remote.di.CloudModule
+import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.app.RingoidApplication
 import com.ringoid.origin.auth.di.LoginActivityModule
@@ -56,5 +58,7 @@ interface ApplicationComponent : AndroidInjector<RingoidApplication> {
     abstract class Builder : AndroidInjector.Builder<RingoidApplication>() {
         @BindsInstance abstract fun application(app: Application): Builder
         @BindsInstance abstract fun applicationContext(context: Context): Builder
+        abstract fun cloudModule(cloudModule: CloudModule): Builder
+        abstract fun ringoidCloudModule(ringoidCloudModule: RingoidCloudModule): Builder
     }
 }

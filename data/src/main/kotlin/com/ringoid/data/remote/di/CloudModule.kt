@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-class CloudModule {
+class CloudModule(private val appVersion: Int) {
 
     @Provides @Singleton
     fun provideGson(): Gson =
@@ -41,7 +41,7 @@ class CloudModule {
 
     @Provides @Singleton
     fun provideRequestHeaderInterceptor(): IRequestHeaderInterceptor =
-        RequestHeaderInterceptor()
+        RequestHeaderInterceptor(appVersion = appVersion)
 
     @Provides @Singleton
     fun provideOkHttpClient(requestInterceptor: IRequestHeaderInterceptor,

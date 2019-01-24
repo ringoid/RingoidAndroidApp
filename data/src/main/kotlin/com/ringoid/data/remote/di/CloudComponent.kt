@@ -5,7 +5,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [CloudModule::class])
+@Component(modules = [RingoidCloudModule::class])
 interface CloudComponent {
 
     fun cloud(): RingoidCloud

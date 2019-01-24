@@ -8,8 +8,12 @@ import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.di.CloudModule
+import com.ringoid.data.remote.di.DaggerCloudComponent
+import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -35,7 +39,11 @@ class DebugRepository @Inject constructor(
             .ignoreElement()  // convert to Completable
 
     override fun requestWithUnsupportedAppVersion(): Completable {
-        // TODO:
+        val cloud = DaggerCloudComponent.builder()
+            .cloudModule(CloudModule(BuildConfig.BUILD_NUMBER - 1))
+            .ringoidCloudModule(RingoidCloudModule())
+            .build()
+            .cloud()
         return spm.accessCompletable {
             cloud.getNewFaces(it.accessToken, ImageResolution._480x640, 20, lastActionTime = aObjPool.lastActionTime)
                 .handleError()
