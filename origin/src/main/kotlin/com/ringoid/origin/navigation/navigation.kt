@@ -46,11 +46,21 @@ fun navigateAndClose(fragment: Fragment, path: String, rc: Int = 0, payload: Int
 }
 
 // ----------------------------------------------------------------------------
-private fun logoutIntent(): Intent =
-    navigate(path = "/login").apply {
+private fun blockingScreenIntent(path: String): Intent =
+    navigate(path = path).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
     }
+
+private fun logoutIntent(): Intent = blockingScreenIntent(path = "/login")
+
+fun blockingErrorScreen(activity: Activity, path: String) {
+    blockingScreenIntent(path).let { activity.startActivity(it) }
+}
+
+fun blockingErrorScreen(fragment: Fragment, path: String) {
+    blockingScreenIntent(path).let { fragment.startActivity(it) }
+}
 
 fun logout(activity: Activity) {
     logoutIntent().let { activity.startActivity(it) }

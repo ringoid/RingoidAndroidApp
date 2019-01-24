@@ -32,6 +32,9 @@
     <string name="debug_item_response_error_timeout">Response timed out</string>
     <string name="debug_title">Debug Menu</string>
 
+    <!-- Error screen -->
+    <string name="error_screen_old_app_version_button_label">Open Google Play</string>
+
     <!-- Feed screen -->
     <string name="block_profile_button_block">Block</string>
     <string name="block_profile_button_report">Report &#38; Block</string>

@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.navigation.blockingErrorScreen
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
@@ -37,6 +38,9 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
             is ViewState.LOADING -> pb_debug.changeVisibility(isVisible = true)
             is ViewState.ERROR -> {
                 // TODO: analyze: newState.e
+                if (false) {
+                    blockingErrorScreen(this, path="/old_version")
+                }
                 Dialogs.errorDialog(this, newState.e)
                 onIdleState()
             }

@@ -44,6 +44,7 @@ class DebugRepository @Inject constructor(
             .ringoidCloudModule(RingoidCloudModule())
             .build()
             .cloud()
+
         return spm.accessCompletable {
             cloud.getNewFaces(it.accessToken, ImageResolution._480x640, 20, lastActionTime = aObjPool.lastActionTime)
                 .handleError()

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btn_google_play"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/std_margin_24"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:paddingTop="@dimen/std_margin_16"
+        android:paddingBottom="@dimen/std_margin_16"
+        android:text="@string/error_screen_old_app_version_button_label"
+        android:textSize="@dimen/std_text_20"
+        style="@style/RaisedButton"/>
+</FrameLayout>

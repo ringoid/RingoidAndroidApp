@@ -1,6 +1,8 @@
 package com.ringoid.origin.navigation
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
@@ -100,4 +102,19 @@ object ExternalNavigator {
             action = Intent.ACTION_OPEN_DOCUMENT
             type = "image/*"
         }
+
+    /* Google Play */
+    // --------------------------------------------------------------------------------------------
+    /**
+     * https://play.google.com/store/apps/details?id=PACKAGE_NAME
+     *
+     * @see https://stackoverflow.com/questions/10816757/rate-this-app-link-in-google-play-store-app-on-the-phone
+     */
+    fun openGooglePlay(context: Context) {
+        try {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.packageName)))
+        } catch (e: ActivityNotFoundException) {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + context.packageName)))
+        }
+    }
 }

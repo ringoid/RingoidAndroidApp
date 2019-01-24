@@ -6,6 +6,11 @@
 
     <application>
         <activity
+            android:name=".view.error.OldAppVersionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"/>
+
+        <activity
             android:name=".view.splash.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
