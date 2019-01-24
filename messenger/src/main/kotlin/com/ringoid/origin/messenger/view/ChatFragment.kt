@@ -15,6 +15,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
+import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.clickDebounce
@@ -62,7 +63,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-        Dialog(activity!!, R.style.ChatDialog)
+        Dialog(activity!!, WidgetR_style.ChatDialog)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         super.onCreateView(inflater, container, savedInstanceState)
