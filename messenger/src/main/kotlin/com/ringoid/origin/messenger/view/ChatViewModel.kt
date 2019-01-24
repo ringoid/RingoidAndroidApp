@@ -23,6 +23,16 @@ class ChatViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "Howdy. Have a plans for tonight?"),
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "Glad to see you"),
             Message(peerId = "peer1", text = "Okay at 19:30 pm!"),
+            Message(peerId = "peer1", text = "Go to eat food!"),
+            Message(peerId = "peer1", text = "Hello!"),
+            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "Howdy. Have a plans for tonight?"),
+            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "Glad to see you"),
+            Message(peerId = "peer1", text = "Okay at 19:30 pm!"),
+            Message(peerId = "peer1", text = "Go to eat food!"),
+            Message(peerId = "peer1", text = "Hello!"),
+            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "Howdy. Have a plans for tonight?"),
+            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "Glad to see you"),
+            Message(peerId = "peer1", text = "Okay at 19:30 pm!"),
             Message(peerId = "peer1", text = "Go to eat food!"))
     }
 }
