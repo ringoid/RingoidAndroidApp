@@ -34,6 +34,9 @@ abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedV
         when (tag) {
             ChatFragment.TAG -> communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
         }
+        if (position == 1) {
+            scrollToTopOfItemAtPosition(0)
+        }
     }
 
     /* Lifecycle */
