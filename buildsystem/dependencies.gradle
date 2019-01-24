@@ -360,7 +360,8 @@ ext {
     /* Feature Feed */
     // ------------------------------------------
     feedDependencies = []
-    feedDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
+    feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink + kotlin +
+                        glide + log + rx + rxBind
 
     androidTestFeedDeps = androidTest
     testFeedDependencies = test
@@ -390,7 +391,7 @@ ext {
     /* Feature Messenger */
     // ------------------------------------------
     messengerDependencies = []
-    messengerDependencies += module_feed + module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind
+    messengerDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test

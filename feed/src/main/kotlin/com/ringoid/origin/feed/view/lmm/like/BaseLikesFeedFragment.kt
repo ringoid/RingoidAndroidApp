@@ -11,7 +11,7 @@ import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
-import com.ringoid.origin.view.main.IMainActivity
+import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.utility.communicator
 
 abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedViewHolder<FeedItem>>
@@ -24,9 +24,17 @@ abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedV
             messageClickListener = { model: FeedItem, position: Int ->
                 scrollToTopOfItemAtPosition(position)
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
-                communicator(IMainActivity::class.java)?.openChat(peerId = model.id)
+                openChat(peerId = model.id)
             }
         }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onDialogDismiss(tag: String) {
+        super.onDialogDismiss(tag)
+        when (tag) {
+            ChatFragment.TAG -> communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
+        }
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

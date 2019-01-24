@@ -25,19 +25,34 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun getLayoutId(): Int = R.layout.fragment_lmm
 
     // --------------------------------------------------------------------------------------------
+    // TODO: save that fields onSaveInstanceState() for later restore
+    private var badge_likes_visibilityPrev: Boolean = false
+    private var badge_matches_visibilityPrev: Boolean = false
+
     override fun accessViewModel(): LmmViewModel = vm
 
     override fun showBadgeOnLikes(isVisible: Boolean) {
+        badge_likes_visibilityPrev = isVisible
         badge_likes.changeVisibility(isVisible, soft = true)
     }
 
     override fun showBadgeOnMatches(isVisible: Boolean) {
+        badge_matches_visibilityPrev = isVisible
         badge_matches.changeVisibility(isVisible, soft = true)
     }
 
     override fun showTabs(isVisible: Boolean) {
-        badge_likes.changeVisibility(isVisible)
-        badge_matches.changeVisibility(isVisible)
+        if (isVisible) {
+            if (badge_likes_visibilityPrev) {
+                badge_likes.changeVisibility(isVisible)
+            }
+            if (badge_matches_visibilityPrev) {
+                badge_matches.changeVisibility(isVisible)
+            }
+        } else {
+            badge_likes.changeVisibility(isVisible)
+            badge_matches.changeVisibility(isVisible)
+        }
         btn_tab_likes.changeVisibility(isVisible)
         btn_tab_matches.changeVisibility(isVisible)
         tab_delim.changeVisibility(isVisible)

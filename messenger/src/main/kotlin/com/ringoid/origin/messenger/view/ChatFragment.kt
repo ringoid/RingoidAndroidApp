@@ -1,6 +1,7 @@
 package com.ringoid.origin.messenger.view
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -15,7 +16,9 @@ import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.adapter.ChatAdapter
+import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.communicator
 import com.ringoid.utility.copyToClipboard
 import com.ringoid.utility.toast
 import kotlinx.android.synthetic.main.fragment_chat.*
@@ -26,11 +29,13 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         const val TAG = "ChatFragment_tag"
 
         private const val BUNDLE_KEY_PEER_ID = "bundle_key_peer_id"
+        private const val BUNDLE_KEY_TAG = "bundle_key_tag"
 
-        fun newInstance(peerId: String): ChatFragment =
+        fun newInstance(peerId: String, tag: String = TAG): ChatFragment =
             ChatFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_PEER_ID, peerId)
+                    putString(BUNDLE_KEY_TAG, tag)
                 }
             }
     }
@@ -94,5 +99,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onStart() {
         super.onStart()
         vm.getMessages()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        val tag = arguments?.getString(BUNDLE_KEY_TAG, TAG) ?: TAG
+        communicator(IDialogCallback::class.java)?.onDialogDismiss(tag = tag)
     }
 }
