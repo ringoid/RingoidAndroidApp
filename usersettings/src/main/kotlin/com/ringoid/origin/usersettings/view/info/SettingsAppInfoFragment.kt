@@ -54,7 +54,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
         item_customer_id.clicks().compose(clickDebounce()).subscribe {
             context?.let {
                 it.copyToClipboard(key = CLIPBOARD_KEY_CUSTOMER_ID, value = item_customer_id.getLabel().toString())
-                toast(it, OriginR_string.common_clipboard)
+                it.toast(OriginR_string.common_clipboard)
             }
         }
         item_debug.apply {

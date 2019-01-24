@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="7dp"
+    android:layout_marginBottom="7dp"
+    android:background="@drawable/widget_chat_blob_peer"
+    android:paddingTop="@dimen/std_margin_12"
+    android:paddingBottom="@dimen/std_margin_12"
+    android:paddingStart="@dimen/std_margin_16"
+    android:paddingEnd="@dimen/std_margin_16">
+
+    <TextView
+        android:id="@id/tv_chat_message"
+        android:layout_gravity="center_vertical|start"
+        android:textColor="@android:color/black"
+        style="@style/StdText.Primary"/>
+</FrameLayout>

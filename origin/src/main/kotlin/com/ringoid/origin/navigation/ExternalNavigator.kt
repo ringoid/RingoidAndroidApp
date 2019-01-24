@@ -38,7 +38,7 @@ object ExternalNavigator {
             } else {
                 // TODO: localize
                 val message = "No Activity was found to open Browser!"
-                Timber.e(message); toast(context, message)
+                Timber.e(message); context.toast(message)
             }
         } else {
             Timber.e("Input url [%s] is invalid !", url)

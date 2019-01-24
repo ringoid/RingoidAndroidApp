@@ -1,10 +1,16 @@
 package com.ringoid.base.adapter
 
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
+import com.ringoid.domain.model.IListModel
 
-abstract class OriginListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
+abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
     : RecyclerView.Adapter<VH>() {
+
+    init {
+        setHasStableIds(true)
+    }
 
     companion object {
         const val VIEW_TYPE_NORMAL = 0
@@ -14,6 +20,15 @@ abstract class OriginListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCall
     private val helper = AsyncListDiffer<T>(
         ExposedAdapterListUpdateCallback(this, exposedCb = { getExposedCb()?.invoke() }),
         AsyncDifferConfig.Builder(diffCb).build())
+
+    // --------------------------------------------------------------------------------------------
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        onBindViewHolder(holder, position, payloads = emptyList())
+    }
+
+    override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
+        holder.bind(getItem(position), payloads)
+    }
 
     /**
      * Exposed callback is called when asynchronous DiffUtil finishes it's computations on background
@@ -26,6 +41,13 @@ abstract class OriginListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCall
      * such callback could be properly defined in subclasses of this [OriginListAdapter].
      */
     protected open fun getExposedCb(): (() -> Unit)? = null
+
+    // --------------------------------------------------------------------------------------------
+    var itemClickListener: ((model: T, position: Int) -> Unit)? = null
+
+    protected open fun getOnItemClickListener(vh: VH) = wrapOnItemClickListener(vh, itemClickListener)
+    protected open fun wrapOnItemClickListener(vh: VH, l: ((model: T, position: Int) -> Unit)?) =
+        View.OnClickListener { vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(getItem(it), it) } }
 
     /* Data Access */
     // --------------------------------------------------------------------------------------------
@@ -42,6 +64,8 @@ abstract class OriginListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCall
     }
 
     // ------------------------------------------
+    override fun getItemId(position: Int): Long = getItem(position).getModelId()
+
     protected fun getItem(position: Int): T {
         if (withHeader() && position == 0) {
             return getHeaderItem()

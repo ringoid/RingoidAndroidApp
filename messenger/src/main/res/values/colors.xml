@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chat_blob_my">#7FF2F2F2</color>
+    <color name="chat_blob_peer">#7FE0FFC5</color>
+</resources>

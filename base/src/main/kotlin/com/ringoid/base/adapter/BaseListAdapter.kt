@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
+import com.ringoid.domain.model.IListModel
 
-abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
+abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
     : OriginListAdapter<T, VH>(diffCb) {
 
     @LayoutRes protected abstract fun getLayoutId(): Int
@@ -27,19 +27,4 @@ abstract class BaseListAdapter<T, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallba
             else -> instantiateViewHolder(view).apply { setOnClickListener(getOnItemClickListener(this)) }
         }
     }
-
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        onBindViewHolder(holder, position, payloads = emptyList())
-    }
-
-    override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
-        holder.bind(getItem(position), payloads)
-    }
-
-    // --------------------------------------------------------------------------------------------
-    var itemClickListener: ((model: T, position: Int) -> Unit)? = null
-
-    protected open fun getOnItemClickListener(vh: VH) = wrapOnItemClickListener(vh, itemClickListener)
-    protected open fun wrapOnItemClickListener(vh: VH, l: ((model: T, position: Int) -> Unit)?) =
-        View.OnClickListener { vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(getItem(it), it) } }
 }
