@@ -12,9 +12,10 @@ class ChatViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
     val messages by lazy { MutableLiveData<List<Message>>() }
 
     fun getMessages() {
-        // TODO
+        // TODO: get messages properly
+        // TODO: the most recent message is the first one in list, positions ascending and message age is also ascending
         messages.value = listOf(
-            Message(peerId = "peer1", text = "1!"),
+            Message(peerId = "peer1", text = "1!"),  // NEW
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "1 Howdy. Have a plans for tonight?"),
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "1 Glad to see you"),
             Message(peerId = "peer1", text = "1 Okay at 19:30 pm!"),
@@ -33,6 +34,6 @@ class ChatViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "4 Howdy. Have a plans for tonight?"),
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "4 Glad to see you"),
             Message(peerId = "peer1", text = "4 Okay at 19:30 pm!"),
-            Message(peerId = "peer1", text = "4 Go to eat food!"))
+            Message(peerId = "peer1", text = "4 Go to eat food!"))  // OLD
     }
 }
