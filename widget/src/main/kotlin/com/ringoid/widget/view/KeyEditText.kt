@@ -3,15 +3,15 @@ package com.ringoid.widget.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.KeyEvent
-import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
 
-class KeyEditText : EditText {
+class KeyEditText : AppCompatEditText {
 
     private var listener: ((keyCode: Int, event: KeyEvent) -> Boolean)? = null
 
-    constructor(context: Context): this(context, null)
+    constructor(context: Context): super(context)
 
-    constructor(context: Context, attributes: AttributeSet?): this(context, attributes, 0)
+    constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
 
     constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int): super(context, attributes, defStyleAttr)
 

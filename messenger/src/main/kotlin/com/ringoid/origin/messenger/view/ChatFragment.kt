@@ -2,6 +2,7 @@ package com.ringoid.origin.messenger.view
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,13 +71,13 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         et_message.apply {
-//            requestFocus()
-//            setOnKeyPreImeListener { keyCode, event ->
-//                if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
-//                    dismiss()
-//                }
-//                false
-//            }
+            requestFocus()
+            setOnKeyPreImeListener { keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
+                    dismiss()
+                }
+                false
+            }
         }
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { dismiss() }
         rv_chat_messages.apply {
