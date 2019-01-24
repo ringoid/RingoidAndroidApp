@@ -3,15 +3,29 @@ package com.ringoid.origin.feed.view.explore
 import android.os.Bundle
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.feed.adapter.FeedAdapter
+import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
+import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.base.BaseFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import timber.log.Timber
 
-class ExploreFragment : FeedFragment<ExploreViewModel>() {
+class ExploreFragment : BaseFeedFragment<ExploreViewModel, Profile, OriginFeedViewHolder<Profile>>() {
 
     companion object {
         fun newInstance(): ExploreFragment = ExploreFragment()
     }
+
+    override fun createFeedAdapter(): BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>> =
+        FeedAdapter().apply {
+            onLikeImageListener = { model: ProfileImageVO, _ ->
+                Timber.i("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
+                vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
+            }
+        }
 
     override fun getVmClass(): Class<ExploreViewModel> = ExploreViewModel::class.java
 
