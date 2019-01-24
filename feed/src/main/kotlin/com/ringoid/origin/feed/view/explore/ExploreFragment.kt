@@ -9,11 +9,11 @@ import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.base.BaseFeedFragment
+import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import timber.log.Timber
 
-class ExploreFragment : BaseFeedFragment<ExploreViewModel, Profile, OriginFeedViewHolder<Profile>>() {
+class ExploreFragment : FeedFragment<ExploreViewModel, Profile, OriginFeedViewHolder<Profile>>() {
 
     companion object {
         fun newInstance(): ExploreFragment = ExploreFragment()

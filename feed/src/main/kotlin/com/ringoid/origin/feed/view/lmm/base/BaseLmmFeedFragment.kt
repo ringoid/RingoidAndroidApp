@@ -6,10 +6,10 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
-import com.ringoid.origin.feed.view.base.BaseFeedFragment
+import com.ringoid.origin.feed.view.FeedFragment
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
-    : BaseFeedFragment<VM, FeedItem, VH>() where VH : BaseViewHolder<FeedItem>, VH : IFeedViewHolder {
+    : FeedFragment<VM, FeedItem, VH>() where VH : BaseViewHolder<FeedItem>, VH : IFeedViewHolder {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

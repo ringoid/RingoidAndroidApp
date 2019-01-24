@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.view.base
+package com.ringoid.origin.feed.view
 
 import android.app.Activity
 import android.content.Intent
@@ -17,9 +17,6 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.BLOCK_PROFILE
-import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
@@ -31,7 +28,7 @@ import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
-abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
+abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
     : BaseFragment<VM>() where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
 
     object InternalNavigator {
@@ -127,7 +124,7 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     scrollToTopOfItemAtPosition(position)
                     delay {
                         notifyItemChanged(position, FeedViewHolderHideControls)
-                        navigate(this@BaseFeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}", rc = RequestCode.RC_BLOCK_DIALOG)
+                        navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}", rc = RequestCode.RC_BLOCK_DIALOG)
                     }
                 }
             }
@@ -165,7 +162,7 @@ abstract class BaseFeedFragment<VM : FeedViewModel, T : IProfile, VH>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         trackingBus = TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
-        feedAdapter.trackingBus = this@BaseFeedFragment.trackingBus
+        feedAdapter.trackingBus = this@FeedFragment.trackingBus
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
