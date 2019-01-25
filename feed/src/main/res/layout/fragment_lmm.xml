@@ -45,10 +45,8 @@
 
     <View
         android:id="@+id/tab_delim"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_width="2dp"
+        android:layout_height="8dp"
         android:background="?attr/refColorUnderscore"
         app:layout_constraintTop_toTopOf="@id/btn_tab_likes"
         app:layout_constraintBottom_toBottomOf="@id/btn_tab_likes"
