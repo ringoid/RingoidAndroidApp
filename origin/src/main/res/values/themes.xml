@@ -76,8 +76,11 @@
 
     <style name="AppTheme.Transparent.Semi">
         <item name="android:windowBackground">@color/semitransparent</item>
-        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
     <!-- Screen themes -->
