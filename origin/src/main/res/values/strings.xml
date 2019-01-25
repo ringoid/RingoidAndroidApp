@@ -23,6 +23,7 @@
     <string name="chat_message_edit_text_hint">Type some text&#8230;</string>
 
     <!-- Debug screen -->
+    <string name="debug_email_support_button_label">Email support</string>
     <string name="debug_item_response_error_http">Response code not 200</string>
     <string name="debug_item_response_error_expired_token">Expired Access Token</string>
     <string name="debug_item_response_error_invalid_token">Invalid Access Token</string>

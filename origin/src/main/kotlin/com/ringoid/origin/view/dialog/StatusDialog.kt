@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
+import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.readFromUrl
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,8 +37,10 @@ class StatusDialog : SimpleBaseDialogFragment() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        btn_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this); dismiss() }
         tv_dialog_title.setText(arguments?.getInt(BUNDLE_KEY_TITLE_RES_ID) ?: R.string.error_common)
 
         AppRes.WEB_URL_ERROR_STATUS.readFromUrl()

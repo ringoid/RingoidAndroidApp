@@ -5,9 +5,12 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.text.TextUtils
 import android.webkit.URLUtil
 import androidx.fragment.app.Fragment
+import com.ringoid.base.BuildConfig
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.utility.toast
 import timber.log.Timber
@@ -67,6 +70,13 @@ object ExternalNavigator {
                     fragment.startActivityForResult(intent, RC_EMAIL_SEND)
                 }
         }
+    }
+
+    fun emailSupportTeam(fragment: Fragment) {
+        val appInfo = "${BuildConfig.VERSION_NAME}, [${Build.MODEL}, ${Build.MANUFACTURER}, ${Build.PRODUCT}], " +
+                "[${Build.VERSION.RELEASE}, ${Build.VERSION.SDK_INT}]"
+        val subject = String.format(AppRes.EMAIL_SUPPORT_MAIL_SUBJECT, appInfo)
+        openEmailComposer(fragment, email = "support@ringoid.com", subject = subject)
     }
 
     private fun openEmailComposerIntent(email: String, subject: String): Intent =
