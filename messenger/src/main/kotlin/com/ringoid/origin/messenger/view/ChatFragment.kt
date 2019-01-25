@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseDialogFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
@@ -21,6 +23,7 @@ import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.fragment_chat.*
@@ -44,16 +47,38 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             }
     }
 
+    private var peerId: String = BAD_ID
     private lateinit var chatAdapter: ChatAdapter
 
     override fun getVmClass(): Class<ChatViewModel> = ChatViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_chat
 
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        fun onIdleState() {
+            pb_chat.changeVisibility(isVisible = false, soft = true)
+        }
+
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.IDLE -> onIdleState()
+            is ViewState.LOADING -> pb_chat.changeVisibility(isVisible = true)
+            is ViewState.ERROR -> {
+                // TODO: analyze: newState.e
+                Dialogs.errorDialog(this, newState.e)
+                onIdleState()
+            }
+        }
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        peerId = arguments?.getString(BUNDLE_KEY_PEER_ID, BAD_ID) ?: BAD_ID
+
         chatAdapter = ChatAdapter().apply {
             itemClickListener = { _, _ -> closeChat() }
             onMessageClickListener = { model: Message, _ ->
@@ -72,8 +97,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.messages, chatAdapter::submitList) {
-            rv_chat_messages.scrollToPosition(0)
+        viewLifecycleOwner.apply {
+            observe(vm.messages, chatAdapter::submitList) { scrollToTopOfItemAtPosition(0) }
+            observe(vm.sentMessage, ::putMyMessage)
         }
     }
 
@@ -102,6 +128,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 false
             }
         }
+        ibtn_message_send.clicks().compose(clickDebounce()).subscribe { vm.sendMessage(peerId, et_message.text.toString()) }
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe {
             showChatControls(isVisible = false)
@@ -135,6 +162,14 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         dismiss()
     }
 
+    private fun scrollListToPosition(position: Int) {
+        rv_chat_messages.smoothScrollToPosition(position)
+    }
+
+    private fun scrollToTopOfItemAtPosition(position: Int) {
+        (rv_chat_messages.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+    }
+
     private fun showChatControls(isVisible: Boolean) {
         if (isVisible) {
             et_message.showKeyboard()
@@ -145,5 +180,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ibtn_settings.changeVisibility(isVisible, soft = true)
         ll_text_input.changeVisibility(isVisible, soft = true)
         rv_chat_messages.changeVisibility(isVisible, soft = true)
+    }
+
+    // ------------------------------------------
+    private fun putMyMessage(message: Message) {
+        et_message.setText("")  // clear text input
+        scrollListToPosition(0)
+        chatAdapter.prepend(message)
     }
 }

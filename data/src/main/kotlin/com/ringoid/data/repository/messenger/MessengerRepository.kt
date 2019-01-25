@@ -4,6 +4,8 @@ import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
+import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -18,7 +20,11 @@ class MessengerRepository @Inject constructor(
     spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
-    // TODO: get rid of 'single()'
     override fun getMessages(peerId: String): Single<List<Message>> =
-            local.messages(peerId).single(emptyList()).map { it.mapList() }
+            local.messages(peerId).map { it.mapList() }
+
+    override fun sendMessage(essence: MessageEssence): Single<Message> {
+        // TODO: send message to Cloud
+        return Single.just(Message(peerId = DomainUtil.CURRENT_USER_ID, text = essence.text))
+    }
 }

@@ -53,6 +53,12 @@
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
         style="@style/Underscore"/>
 
+    <ProgressBar
+        android:id="@+id/pb_chat"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/ll_text_input"
+        style="@style/ProgressBar.Horizontal"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chat_messages"
         android:layout_width="0dp"
