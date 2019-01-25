@@ -2,9 +2,7 @@ package com.ringoid.origin.feed.view.dialog
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
@@ -28,12 +26,6 @@ class ReportBottomSheetDialog : SimpleBaseDialogFragment() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = super.onCreateView(inflater, container, savedInstanceState)
-        dialog?.setCanceledOnTouchOutside(true)
-        return rootView
-    }
-
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

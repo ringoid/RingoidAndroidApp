@@ -1,2 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ringoid.origin.profile"/>
+          package="com.ringoid.origin.profile">
+
+    <application>
+        <activity
+            android:name=".view.dialog.DeleteUserProfileImageActivity"
+            android:theme="@style/AppTheme.Transparent"/>
+    </application>
+</manifest>

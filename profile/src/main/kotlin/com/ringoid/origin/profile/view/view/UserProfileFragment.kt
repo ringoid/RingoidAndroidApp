@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.view.profile
+package com.ringoid.origin.profile.view.view
 
 import android.app.Activity
 import android.content.Intent
@@ -78,11 +78,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onCreate(savedInstanceState)
         imagesAdapter = UserProfileImageAdapter().apply {
             onDeleteImageListener = { model: UserImage, _ ->
-                Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_delete_image_title,
-                    descriptionResId = OriginR_string.profile_dialog_delete_image_description,
-                    positiveBtnLabelResId = OriginR_string.button_delete,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { _, _ -> vm.deleteImage(model.id) })
+                navigate(this@UserProfileFragment, path = "/delete_image?imageId=${model.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
             }
             onEmptyImagesListener = ::showEmptyStub
         }
@@ -110,6 +106,16 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 when (resultCode) {
                     Activity.RESULT_OK -> navigate(this, path = "/imagepreview", rc = RC_IMAGE_PREVIEW, payload = data)
+                }
+            }
+            RequestCode.RC_DELETE_IMAGE_DIALOG -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data == null) {
+                        val e = NullPointerException("No output image id from Delete Image dialog - this is an error!")
+                        Timber.e(e) ; throw e
+                    }
+
+                    vm.deleteImage(id = data.getStringExtra("imageId"))
                 }
             }
         }

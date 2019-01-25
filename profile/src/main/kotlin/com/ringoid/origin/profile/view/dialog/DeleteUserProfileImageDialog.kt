@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.view.dialog
+package com.ringoid.origin.profile.view.dialog
 
 import android.content.DialogInterface
 import android.os.Bundle
@@ -7,35 +7,31 @@ import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
-import com.ringoid.origin.feed.R
+import com.ringoid.origin.profile.R
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
-import kotlinx.android.synthetic.main.dialog_bottom_sheet_block.*
+import kotlinx.android.synthetic.main.dialog_delete_user_profile_image.*
 
 @BottomSheet(true)
-class BlockBottomSheetDialog : SimpleBaseDialogFragment() {
+class DeleteUserProfileImageDialog : SimpleBaseDialogFragment() {
 
     companion object {
-        const val TAG = "BlockBottomSheetDialog_tag"
+        const val TAG = "DeleteUserProfileImage_tag"
 
-        fun newInstance(): BlockBottomSheetDialog = BlockBottomSheetDialog()
+        fun newInstance(): DeleteUserProfileImageDialog = DeleteUserProfileImageDialog()
     }
 
     @LayoutRes
-    override fun getLayoutId(): Int = R.layout.dialog_bottom_sheet_block
+    override fun getLayoutId(): Int = R.layout.dialog_delete_user_profile_image
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_block.clicks().compose(clickDebounce()).subscribe {
-            communicator(IBlockBottomSheetActivity::class.java)?.onBlock()
+        btn_delete_image.clicks().compose(clickDebounce()).subscribe {
+            communicator(IDeleteUserProfileImageActivity::class.java)?.onImageDelete()
             close()
-        }
-        btn_report.clicks().compose(clickDebounce()).subscribe {
-            dismiss()
-            communicator(IBlockBottomSheetActivity::class.java)?.onReportSheetOpen()
         }
     }
 
@@ -46,6 +42,6 @@ class BlockBottomSheetDialog : SimpleBaseDialogFragment() {
 
     // ------------------------------------------
     private fun close() {
-        communicator(IBlockBottomSheetActivity::class.java)?.onClose()
+        communicator(IDeleteUserProfileImageActivity::class.java)?.onClose()
     }
 }

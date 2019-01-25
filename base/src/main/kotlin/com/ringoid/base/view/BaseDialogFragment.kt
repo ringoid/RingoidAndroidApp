@@ -64,7 +64,10 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.apply {
+            setCanceledOnTouchOutside(true)
+            window?.requestFeature(Window.FEATURE_NO_TITLE)
+        }
         return inflater.inflate(getLayoutId(), container, false)
     }
 
