@@ -24,8 +24,6 @@ class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
             vh.profileImageAdapter.isLikeButtonVisible = false
             vh.itemView.ibtn_message.clicks().compose(clickDebounce())
                 .subscribe { wrapOnItemClickListener(vh, messageClickListener).onClick(vh.itemView.ibtn_message) }
-            // TODO: this must be set on image, no here
-//            vh.setOnClickListener(wrapOnItemClickListener(vh, messageClickListener))
         }
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderMessengerViewHolder(view)
