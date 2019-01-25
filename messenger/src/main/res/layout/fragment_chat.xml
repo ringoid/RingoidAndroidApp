@@ -10,7 +10,7 @@
         android:id="@+id/ll_text_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_gradient_black"
+        android:background="@drawable/chat_edit_text_bg"
         android:minHeight="@dimen/chat_text_input_container_height"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">

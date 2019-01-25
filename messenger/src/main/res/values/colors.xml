@@ -2,4 +2,5 @@
 <resources>
     <color name="chat_blob_my">#7FF2F2F2</color>
     <color name="chat_blob_peer">#7FE0FFC5</color>
+    <color name="chat_edit_text_bg_color">#701f262c</color>
 </resources>
