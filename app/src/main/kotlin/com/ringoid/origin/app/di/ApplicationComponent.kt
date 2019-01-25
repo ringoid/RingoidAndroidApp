@@ -18,9 +18,9 @@ import com.ringoid.origin.feed.view.lmm.messenger.di.MessengerFragmentModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
 import com.ringoid.origin.messenger.di.ChatFragmentModule
-import com.ringoid.origin.profile.view.dialog.di.DeleteUserProfileImageActivityModule
-import com.ringoid.origin.profile.view.dialog.di.DeleteUserProfileImageDialogModule
-import com.ringoid.origin.profile.view.view.di.UserProfileFragmentModule
+import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageActivityModule
+import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageDialogModule
+import com.ringoid.origin.profile.view.di.UserProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
 import com.ringoid.origin.usersettings.view.di.SettingsActivityModule

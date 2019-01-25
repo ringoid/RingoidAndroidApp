@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.view.view
+package com.ringoid.origin.profile.view
 
 import android.app.Application
 import android.net.Uri

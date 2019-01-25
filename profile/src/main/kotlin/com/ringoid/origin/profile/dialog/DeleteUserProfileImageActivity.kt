@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.view.dialog
+package com.ringoid.origin.profile.dialog
 
 import android.app.Activity
 import android.content.Intent

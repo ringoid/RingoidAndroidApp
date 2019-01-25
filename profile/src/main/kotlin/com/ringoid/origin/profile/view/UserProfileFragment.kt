@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.view.view
+package com.ringoid.origin.profile.view
 
 import android.app.Activity
 import android.content.Intent
@@ -16,7 +16,7 @@ import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
-import com.ringoid.origin.profile.view.adapter.UserProfileImageAdapter
+import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility

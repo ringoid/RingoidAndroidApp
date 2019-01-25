@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.view.adapter
+package com.ringoid.origin.profile.adapter
 
 import android.view.View
 import com.bumptech.glide.request.RequestOptions

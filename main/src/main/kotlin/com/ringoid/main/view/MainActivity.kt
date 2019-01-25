@@ -7,7 +7,7 @@ import com.ringoid.base.observe
 import com.ringoid.origin.feed.view.explore.ExploreFragment
 import com.ringoid.origin.feed.view.lmm.LmmFragment
 import com.ringoid.origin.feed.view.lmm.messenger.MessengerFragment
-import com.ringoid.origin.profile.view.view.UserProfileFragment
+import com.ringoid.origin.profile.view.UserProfileFragment
 import com.ringoid.origin.view.main.BaseMainActivity
 
 @AppNav("main")
