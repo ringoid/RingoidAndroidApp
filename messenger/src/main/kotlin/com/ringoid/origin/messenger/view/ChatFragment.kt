@@ -6,8 +6,12 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseDialogFragment
@@ -92,10 +96,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         Dialog(activity!!, WidgetR_style.ChatDialog)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        super.onCreateView(inflater, container, savedInstanceState)
-            ?.apply { setOnClickListener { closeChat() } }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
@@ -143,6 +143,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     stackFromEnd = true
                 }
             addItemDecoration(TopBottomDividerItemDecoration(context, R.dimen.chat_blob_divider_height))
+            setOnTouchListener(ChatTouchListener())
         }
     }
 
@@ -188,5 +189,24 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         et_message.setText("")  // clear text input
         scrollListToPosition(0)
         chatAdapter.prepend(message)
+    }
+
+    // ------------------------------------------
+    private inner class ChatTouchListener : View.OnTouchListener {
+        private var lastAction: Int = MotionEvent.ACTION_DOWN
+
+        @Suppress("ClickableViewAccessibility")
+        override fun onTouch(v: View, event: MotionEvent): Boolean =
+            if (event.action == MotionEvent.ACTION_UP &&
+                (lastAction == MotionEvent.ACTION_DOWN ||
+                    (v.takeIf { it is RecyclerView }
+                      ?.let { it as? RecyclerView }
+                      ?.let { lastAction == MotionEvent.ACTION_MOVE && it.adapter?.itemCount == 0 }) == true)) {
+                closeChat()
+                true
+            } else {
+                lastAction = event.action
+                false
+            }
     }
 }
