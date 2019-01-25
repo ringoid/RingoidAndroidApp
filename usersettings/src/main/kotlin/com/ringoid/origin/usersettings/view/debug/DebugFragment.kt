@@ -30,7 +30,7 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onIdleState() {
-            pb_debug.changeVisibility(isVisible = false)
+            pb_debug.changeVisibility(isVisible = false, soft = true)
         }
 
         super.onViewStateChange(newState)
