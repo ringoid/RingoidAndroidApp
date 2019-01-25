@@ -33,9 +33,9 @@ class LikeAnimation(private val view: View) {
             addAnimation(animationAlphaOut)
             fillAfter = true
             setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {}
-                override fun onAnimationRepeat(animation: Animation?) {}
-                override fun onAnimationEnd(animation: Animation?) {
+                override fun onAnimationStart(animation: Animation) {}
+                override fun onAnimationRepeat(animation: Animation) {}
+                override fun onAnimationEnd(animation: Animation) {
                     this@LikeAnimation.cancel()
                 }
             })
