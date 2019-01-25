@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
+import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Message
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -46,8 +48,10 @@ class ChatViewModel @Inject constructor(private val sendMessageToPeerUseCase: Se
     }
 
     @Suppress("CheckResult")
-    fun sendMessage(peerId: String, text: String) {
-        sendMessageToPeerUseCase.source(params = Params().put(MessageEssence(peerId = peerId, text = text)))
+    fun sendMessage(peerId: String, imageId: String = BAD_ID, text: String) {
+        val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = "messages", targetImageId = imageId, targetUserId = peerId)
+        val message = MessageEssence(peerId = peerId, text = text, aObjEssence = essence)
+        sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }

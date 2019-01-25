@@ -129,7 +129,10 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 false
             }
         }
-        ibtn_message_send.clicks().compose(clickDebounce()).subscribe { vm.sendMessage(peerId, et_message.text.toString()) }
+        ibtn_message_send.clicks().compose(clickDebounce()).subscribe {
+            val imageId = (payload as? ChatPayload)?.peerImageId ?: BAD_ID
+            vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString())
+        }
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe {
             showChatControls(isVisible = false)
