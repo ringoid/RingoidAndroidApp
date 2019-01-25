@@ -2,6 +2,10 @@ rootProject.appPlugins.each {
     apply plugin: it
 }
 
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {

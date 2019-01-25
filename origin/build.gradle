@@ -2,10 +2,6 @@ rootProject.originPlugins.each {
     apply plugin: it
 }
 
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
-
 android {
     baseFeature true
 

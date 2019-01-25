@@ -298,7 +298,7 @@ ext {
     // ------------------------------------------
     appDependencies = []
     appDependencies += all_features + module_main + module_data + develop + android + dagger + deeplink + kotlin + log +
-                       fragnav + net + room
+                       fragnav + net + room + support
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -307,6 +307,7 @@ ext {
         xPlugins.androidApp,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAnnotation,
+        xPlugins.fabric,
     ]
 
     appPluginsAtBottom = [
@@ -367,10 +368,10 @@ ext {
     testFeedDependencies = test
 
     feedPlugins = [
-            xPlugins.androidFeature,
-            xPlugins.kotlinAndroid,
-            xPlugins.kotlinAndroidExt,
-            xPlugins.kotlinAnnotation,
+        xPlugins.androidFeature,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAndroidExt,
+        xPlugins.kotlinAnnotation,
     ]
 
     /* Feature ImagePreview */
@@ -397,10 +398,10 @@ ext {
     testMessengerDependencies = test
 
     messengerPlugins = [
-            xPlugins.androidFeature,
-            xPlugins.kotlinAndroid,
-            xPlugins.kotlinAndroidExt,
-            xPlugins.kotlinAnnotation,
+        xPlugins.androidFeature,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAndroidExt,
+        xPlugins.kotlinAnnotation,
     ]
     
     /* Feature Profile */
@@ -412,10 +413,10 @@ ext {
     testProfileDependencies = test
 
     profilePlugins = [
-            xPlugins.androidFeature,
-            xPlugins.kotlinAndroid,
-            xPlugins.kotlinAndroidExt,
-            xPlugins.kotlinAnnotation,
+        xPlugins.androidFeature,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAndroidExt,
+        xPlugins.kotlinAnnotation,
     ]
 
     /* Origin - base feature */
@@ -440,7 +441,6 @@ ext {
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
-        xPlugins.fabric,
     ]
 
     /* Base */

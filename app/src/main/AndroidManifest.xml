@@ -12,8 +12,8 @@
         android:theme="@style/AppTheme">
 
         <activity
-                android:name=".deeplink.DeepLinkHandlerActivity"
-                android:theme="@android:style/Theme.NoDisplay">
+            android:name=".deeplink.DeepLinkHandlerActivity"
+            android:theme="@android:style/Theme.NoDisplay">
 
             <intent-filter android:autoVerify="true" android:order="1">
                 <action android:name="android.intent.action.VIEW"/>
@@ -23,5 +23,21 @@
                 <data android:scheme="appnav"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.ringoid.origin.view.splash.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="89dbf76a6060d765a50797055e5dbedaf7e0062d"/>
     </application>
 </manifest>
