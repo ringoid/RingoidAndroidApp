@@ -114,7 +114,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     reverseLayout = true
                     stackFromEnd = true
                 }
-            setOnClickListener { closeChat() }
         }
     }
 
