@@ -21,6 +21,7 @@
 
     <!-- Chat screen -->
     <string name="chat_message_edit_text_hint">Type some text&#8230;</string>
+    <string name="chat_message_sent">Message sent</string>
 
     <!-- Debug screen -->
     <string name="debug_email_support_button_label">Email support</string>

@@ -80,6 +80,8 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     override fun getItemViewType(position: Int): Int =
         if (withHeader() && position == 0) VIEW_TYPE_HEADER else VIEW_TYPE_NORMAL
 
+    fun isEmpty(): Boolean = helper.currentList.isEmpty()
+
     // ------------------------------------------
     @LayoutRes protected open fun getHeaderLayoutResId(): Int = 0
 

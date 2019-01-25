@@ -53,7 +53,7 @@ class ChatViewModel @Inject constructor(private val sendMessageToPeerUseCase: Se
         val message = MessageEssence(peerId = peerId, text = text, aObjEssence = essence)
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT) }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ sentMessage.value = it }, Timber::e)
