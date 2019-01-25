@@ -57,7 +57,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
         when (newState) {
             is ViewState.CLEAR -> {
                 feedAdapter.clear()
-                
+
                 getEmptyStateInput(newState.mode)?.let {
                     onIdleState()
                     fl_empty_container.changeVisibility(isVisible = true)

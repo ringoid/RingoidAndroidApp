@@ -29,6 +29,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
     }
 
     protected fun openChat(peerId: String, position: Int, tag: String = ChatFragment.TAG) {
+        scrollToTopOfItemAtPosition(position)
         childFragmentManager.let {
             it.findFragmentByTag(tag)
                 ?: run {

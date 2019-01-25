@@ -17,7 +17,12 @@ class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, OriginFeedView
 
     override fun getVmClass(): Class<MessengerViewModel> = MessengerViewModel::class.java
 
-    override fun createFeedAdapter(): BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>> = MessengerFeedAdapter()
+    override fun createFeedAdapter(): BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>> =
+        MessengerFeedAdapter().apply {
+            messageClickListener = { model: FeedItem, position: Int ->
+                openChat(peerId = model.id, position = position)
+            }
+        }
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {

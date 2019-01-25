@@ -22,7 +22,6 @@ abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedV
     override fun createFeedAdapter(): BaseLikeFeedAdapter<VH> =
         instantiateFeedAdapter().apply {
             messageClickListener = { model: FeedItem, position: Int ->
-                scrollToTopOfItemAtPosition(position)
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
                 openChat(peerId = model.id, position = position)
             }
