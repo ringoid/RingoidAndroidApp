@@ -18,6 +18,7 @@
 
     <TextView
         android:id="@+id/tv_dialog_status"
+        android:layout_width="match_parent"
         android:layout_marginTop="@dimen/std_margin_16"
         android:gravity="center_vertical|start"
         tools:text="@string/error_common"
