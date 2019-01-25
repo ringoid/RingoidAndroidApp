@@ -111,6 +111,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         }
 
         lmmPagesAdapter.accessItem(position)?.userVisibleHint = true
-        vp_pages?.currentItem = position
+        vp_pages?.setCurrentItem(position, false)
     }
 }
