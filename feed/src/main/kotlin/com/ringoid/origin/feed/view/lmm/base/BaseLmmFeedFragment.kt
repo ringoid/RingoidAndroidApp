@@ -34,7 +34,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
             it.findFragmentByTag(tag)
                 ?: run {
                     feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
-                    ChatFragment.newInstance(peerId = peerId, position = position, tag = tag).showNow(it, tag)
+                    ChatFragment.newInstance(peerId = peerId, position = position, tag = tag).show(it, tag)
                 }
         }
     }
