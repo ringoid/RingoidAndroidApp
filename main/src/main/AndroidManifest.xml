@@ -7,7 +7,7 @@
             android:name=".view.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustPan">
 
             <intent-filter android:autoVerify="true" android:order="1">
                 <action android:name="android.intent.action.VIEW"/>
