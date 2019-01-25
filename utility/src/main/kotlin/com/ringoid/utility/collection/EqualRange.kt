@@ -46,7 +46,7 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
          * [a  [c   d]  b] => [a  c)(d  b]
          */
         if (new.from in from..to && to > new.to) {
-            val l = subList(from, new.from + 1).apply { addAll(subList(to + 1, to)) }
+            val l = subList(from, new.from + 1).apply { addAll(subList(new.to + 1, to + 1)) }
             return EqualRange(from, from + l.size + 1, l)
         }
         /**
