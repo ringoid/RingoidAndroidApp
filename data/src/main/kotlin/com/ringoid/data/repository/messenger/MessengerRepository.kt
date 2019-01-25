@@ -5,6 +5,8 @@ import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.DomainUtil.BAD_ID
+import com.ringoid.domain.model.actions.MessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
@@ -24,7 +26,8 @@ class MessengerRepository @Inject constructor(
             local.messages(peerId).map { it.mapList() }
 
     override fun sendMessage(essence: MessageEssence): Single<Message> {
-        // TODO: send message to Cloud
+        aObjPool.put(MessageActionObject(text = essence.text, sourceFeed = essence.aObjEssence?.sourceFeed ?: "",
+            targetImageId = essence.aObjEssence?.targetImageId ?: BAD_ID, targetUserId = essence.aObjEssence?.targetUserId ?: BAD_ID))
         return Single.just(Message(peerId = DomainUtil.CURRENT_USER_ID, text = essence.text))
     }
 }

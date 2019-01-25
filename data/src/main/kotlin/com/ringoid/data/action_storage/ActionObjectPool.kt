@@ -18,8 +18,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ActionObjectPool @Inject constructor(
-    private val cloud: RingoidCloud, private val spm: SharedPrefsManager)
+class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, private val spm: SharedPrefsManager)
     : IActionObjectPool {
 
     companion object {
