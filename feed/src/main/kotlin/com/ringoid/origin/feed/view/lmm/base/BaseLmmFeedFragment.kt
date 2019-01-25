@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.base
 
 import android.os.Bundle
+import android.os.Parcelable
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
@@ -11,6 +12,7 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.messenger.view.ChatFragment
+import com.ringoid.origin.messenger.view.ChatPayload
 import com.ringoid.origin.view.dialog.IDialogCallback
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
@@ -18,23 +20,31 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
     where VH : BaseViewHolder<FeedItem>, VH : IFeedViewHolder {
 
     // --------------------------------------------------------------------------------------------
-    override fun onDialogDismiss(tag: String, position: Int) {
-        if (position == DomainUtil.BAD_POSITION) {
-            return
-        }
+    override fun onDialogDismiss(tag: String, payload: Parcelable?) {
+        (payload as? ChatPayload)
+            ?.let {
+                if (it.position == DomainUtil.BAD_POSITION) {
+                    return
+                }
 
-        when (tag) {
-            ChatFragment.TAG -> feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
-        }
+                when (tag) {
+                    ChatFragment.TAG -> {
+                        vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
+                        feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                    }
+                }
+            }
     }
 
-    protected fun openChat(peerId: String, position: Int, tag: String = ChatFragment.TAG) {
-        scrollToTopOfItemAtPosition(position)
+    protected fun openChat(position: Int, peerId: String, imageId: String, tag: String = ChatFragment.TAG) {
         childFragmentManager.let {
             it.findFragmentByTag(tag)
                 ?: run {
+                    val payload = ChatPayload(position = position, peerId = peerId, peerImageId = imageId)
+                    vm.onChatOpen(profileId = peerId, imageId = imageId)
+                    scrollToTopOfItemAtPosition(position)
                     feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
-                    ChatFragment.newInstance(peerId = peerId, position = position, tag = tag).show(it, tag)
+                    ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(it, tag)
                 }
         }
     }

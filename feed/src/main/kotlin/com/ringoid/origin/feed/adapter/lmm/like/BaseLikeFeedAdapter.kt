@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesViewPool: RecyclerView.RecycledViewPool? = null)
     : BaseFeedAdapter<FeedItem, VH>(imagesViewPool, FeedItemDiffCallback()) {
 
-    var messageClickListener: ((model: FeedItem, position: Int) -> Unit)? = null
+    var messageClickListener: ((model: FeedItem, position: Int, positionOfImage: Int) -> Unit)? = null
 
     override fun getLayoutId(): Int = R.layout.rv_item_lmm_profile
 
@@ -27,11 +27,15 @@ abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesVi
                     return@also
                 }
 
+                val wrapMessageClickListener: ((model: FeedItem, position: Int) -> Unit)? =
+                    { model: FeedItem, position: Int ->
+                        messageClickListener?.invoke(model, position, vh.getCurrentImagePosition())
+                    }
                 vh.itemView.ibtn_message.apply {
                     // TODO: show message button only after like tap
                     changeVisibility(isVisible = true)
                     clicks().compose(clickDebounce())
-                        .subscribe { wrapOnItemClickListener(vh, messageClickListener).onClick(vh.itemView.ibtn_message) }
+                        .subscribe { wrapOnItemClickListener(vh, wrapMessageClickListener).onClick(vh.itemView.ibtn_message) }
                 }
             }
 

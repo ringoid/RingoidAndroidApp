@@ -19,8 +19,8 @@ class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, OriginFeedView
 
     override fun createFeedAdapter(): BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>> =
         MessengerFeedAdapter().apply {
-            messageClickListener = { model: FeedItem, position: Int ->
-                openChat(peerId = model.id, position = position)
+            messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
+                openChat(peerId = model.id, position = position, imageId = model.images[positionOfImage].id)
             }
         }
 

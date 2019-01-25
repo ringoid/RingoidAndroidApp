@@ -6,10 +6,7 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
-import com.ringoid.domain.model.actions.BlockActionObject
-import com.ringoid.domain.model.actions.LikeActionObject
-import com.ringoid.domain.model.actions.UnlikeActionObject
-import com.ringoid.domain.model.actions.ViewActionObject
+import com.ringoid.domain.model.actions.*
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -22,6 +19,8 @@ abstract class FeedViewModel(
 
     private var prevRange: EqualRange<ProfileImageVO>? = null
     private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
+
+    private val openChatTimers = mutableMapOf<Pair<String, String>, Long>()
 
     abstract fun getFeed()
     abstract fun getFeedName(): String
@@ -65,6 +64,21 @@ abstract class FeedViewModel(
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
                    else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
+    }
+
+    fun onChatOpen(profileId: String, imageId: String) {
+        openChatTimers[profileId to imageId] = System.currentTimeMillis()  // record open chat time
+    }
+
+    fun onChatClose(profileId: String, imageId: String) {
+        val chatTime = openChatTimers
+            .takeIf { it.containsKey(profileId to imageId) }
+            ?.let { it[profileId to imageId] }
+            ?.let { System.currentTimeMillis() - it }
+            ?: 0L  // weird, chat was closed but it's open timestamp hadn't been recorded
+        advanceAndPushViewObject(imageId to profileId)
+        OpenChatActionObject(timeInMillis = chatTime, sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
+            .also { actionObjectPool.put(it) }
     }
 
     fun onBlock(profileId: String, imageId: String) {

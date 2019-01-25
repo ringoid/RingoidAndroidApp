@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -34,20 +35,21 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         const val TAG = "ChatFragment_tag"
 
         private const val BUNDLE_KEY_PEER_ID = "bundle_key_peer_id"
-        private const val BUNDLE_KEY_POSITION_IN_FEED = "bundle_key_position_in_feed"
+        private const val BUNDLE_KEY_PAYLOAD = "bundle_key_payload"
         private const val BUNDLE_KEY_TAG = "bundle_key_tag"
 
-        fun newInstance(peerId: String, position: Int = DomainUtil.BAD_POSITION, tag: String = TAG): ChatFragment =
+        fun newInstance(peerId: String, payload: ChatPayload = ChatPayload(peerId = peerId), tag: String = TAG): ChatFragment =
             ChatFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_PEER_ID, peerId)
-                    putInt(BUNDLE_KEY_POSITION_IN_FEED, position)
+                    putParcelable(BUNDLE_KEY_PAYLOAD, payload)
                     putString(BUNDLE_KEY_TAG, tag)
                 }
             }
     }
 
     private var peerId: String = BAD_ID
+    private var payload: Parcelable? = null
     private lateinit var chatAdapter: ChatAdapter
 
     override fun getVmClass(): Class<ChatViewModel> = ChatViewModel::class.java
@@ -78,6 +80,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         peerId = arguments?.getString(BUNDLE_KEY_PEER_ID, BAD_ID) ?: BAD_ID
+        payload = arguments?.getParcelable(BUNDLE_KEY_PAYLOAD)
 
         chatAdapter = ChatAdapter().apply {
             itemClickListener = { _, _ -> closeChat() }
@@ -151,9 +154,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        val position = arguments?.getInt(BUNDLE_KEY_POSITION_IN_FEED, DomainUtil.BAD_POSITION) ?: DomainUtil.BAD_POSITION
         val tag = arguments?.getString(BUNDLE_KEY_TAG, TAG) ?: TAG
-        communicator(IDialogCallback::class.java)?.onDialogDismiss(position = position, tag = tag)
+        communicator(IDialogCallback::class.java)?.onDialogDismiss(tag = tag, payload = payload)
     }
 
     // --------------------------------------------------------------------------------------------
