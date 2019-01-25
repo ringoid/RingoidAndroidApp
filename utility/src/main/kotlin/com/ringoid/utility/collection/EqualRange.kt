@@ -36,36 +36,36 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
             return this
         }
         /**
-         * [a  [c  b]  d]
+         * [a  [c  b]  d] => [a  c)
          */
         if (new.from in from..to && to in new.from..new.to) {
             if (from < new.from) return EqualRange(from, new.from - 1, subList(from, new.from))
             if (from == new.from) return EqualRange.empty()
         }
         /**
-         * [a  [c   d]  b]
+         * [a  [c   d]  b] => [a  c)(d  b]
          */
         if (new.from in from..to && to > new.to) {
             val l = subList(from, new.from + 1).apply { addAll(subList(to + 1, to)) }
             return EqualRange(from, from + l.size + 1, l)
         }
         /**
-         * [c  [a  d]  b]
+         * [c  [a  d]  b] => (d  b]
          */
         if (from in new.from..new.to && new.to in from..to) {
             if (new.to < to) return EqualRange(new.to + 1, to + 1, subList(new.to + 1, to))
             if (new.to == to) return EqualRange.empty()
         }
         /**
-         * [a  b][c  d], [c  d][a  b]
+         * [a  b][c  d], [c  d][a  b] => [a  b]
          */
         if (to < new.from || from > new.to) return EqualRange(from, to, this)
         /**
-         * [a  b|c  d]
+         * [a  b|c  d] => [a  b)
          */
         if (to <= new.from) return EqualRange(from, to - 1, subList(from, to))
         /**
-         * [c  d|a  b]
+         * [c  d|a  b] => (a  b]
          */
         if (from >= new.to) return EqualRange(from + 1, to, subList(from + 1, to + 1))
 
