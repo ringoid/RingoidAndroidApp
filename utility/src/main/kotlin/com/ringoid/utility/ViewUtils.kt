@@ -171,6 +171,8 @@ fun Context.toast(text: String, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, text, duration).show()
 }
 
-fun Context.toast(@StringRes textResId: Int, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, textResId, duration).show()
+fun Context.toast(@StringRes textResId: Int, duration: Int = Toast.LENGTH_SHORT, gravity: Int? = null) {
+    Toast.makeText(this, textResId, duration)
+        .apply { gravity?.let { setGravity(gravity, 0, 0) } }
+        .show()
 }
