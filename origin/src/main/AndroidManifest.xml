@@ -25,5 +25,9 @@
         <activity
             android:name=".view.web.WebPageActivity"
             android:screenOrientation="portrait"/>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="528f099ed71d70c9ed0f32a9486fd0f7233c1776" />
     </application>
 </manifest>

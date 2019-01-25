@@ -440,7 +440,7 @@ ext {
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
-//        xPlugins.fabric,
+        xPlugins.fabric,
     ]
 
     /* Base */
