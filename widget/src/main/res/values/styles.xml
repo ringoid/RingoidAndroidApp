@@ -56,7 +56,7 @@
 
     <style name="ChatDialog">
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowSoftInputMode">stateAlwaysVisible|adjustResize</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
     <!-- TextView -->
