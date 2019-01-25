@@ -407,7 +407,7 @@ ext {
     /* Feature Profile */
     // ------------------------------------------
     profileDependencies = []
-    profileDependencies += module_origin + develop + android + arch + dagger + kotlin + glide + log + rx + rxBind
+    profileDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
