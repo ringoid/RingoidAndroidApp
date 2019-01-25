@@ -3,6 +3,7 @@ package com.ringoid.origin.messenger.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.view.longClicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.EmptyMessage
@@ -23,8 +24,11 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }.also { vh->
             vh.setOnClickListener(getOnItemClickListener(vh))
-            vh.itemView.tv_chat_message.clicks().compose(clickDebounce())
-                .subscribe { wrapOnItemClickListener(vh, onMessageClickListener).onClick(vh.itemView.tv_chat_message) }
+            vh.itemView.tv_chat_message.also { view ->
+                view.clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(view) }
+                view.longClicks().compose(clickDebounce())
+                    .subscribe { wrapOnItemClickListener(vh, onMessageClickListener).onClick(view) }
+            }
         }
     }
 
