@@ -13,6 +13,10 @@ fun Activity.isActivityDestroyed(): Boolean = ContextUtil.isActivityDestroyed(th
 
 object ContextUtil {
 
+    fun appInfo(): String =
+        "${BuildConfig.VERSION_NAME}, [${Build.MODEL}, ${Build.MANUFACTURER}, ${Build.PRODUCT}], " +
+        "[${Build.VERSION.RELEASE}, ${Build.VERSION.SDK_INT}]"
+
     fun deviceInfo(): String =
         "Android ${Build.VERSION.SDK_INT}, device [id: ${Build.ID}] = ${Build.DEVICE}, " +
         "brand = ${Build.BRAND}, vendor = ${Build.MANUFACTURER}, tz = ${TimeZone.getDefault().displayName}, " +

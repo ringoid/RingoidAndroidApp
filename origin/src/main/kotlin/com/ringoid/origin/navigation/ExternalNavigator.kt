@@ -5,11 +5,10 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.text.TextUtils
 import android.webkit.URLUtil
 import androidx.fragment.app.Fragment
-import com.ringoid.base.BuildConfig
+import com.ringoid.base.ContextUtil
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.utility.toast
@@ -52,8 +51,8 @@ object ExternalNavigator {
 
     /* Email */
     // --------------------------------------------------------------------------------------------
-    fun openEmailComposer(activity: Activity, email: String, subject: String) {
-        openEmailComposerIntent(email = email, subject = subject)
+    fun openEmailComposer(activity: Activity, email: String, subject: String = "", body: String = "") {
+        openEmailComposerIntent(email = email, subject = subject, body = body)
             .takeIf { it.resolveActivity(activity.packageManager) != null }
             ?.let {
                 val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email))
@@ -61,9 +60,9 @@ object ExternalNavigator {
             }
     }
 
-    fun openEmailComposer(fragment: Fragment, email: String, subject: String) {
+    fun openEmailComposer(fragment: Fragment, email: String, subject: String = "", body: String = "") {
         fragment.activity?.let { activity ->
-            openEmailComposerIntent(email = email, subject = subject)
+            openEmailComposerIntent(email = email, subject = subject, body = body)
                 .takeIf { it.resolveActivity(activity.packageManager) != null }
                 ?.let {
                     val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email))
@@ -72,17 +71,21 @@ object ExternalNavigator {
         }
     }
 
-    fun emailSupportTeam(fragment: Fragment) {
-        val appInfo = "${BuildConfig.VERSION_NAME}, [${Build.MODEL}, ${Build.MANUFACTURER}, ${Build.PRODUCT}], " +
-                "[${Build.VERSION.RELEASE}, ${Build.VERSION.SDK_INT}]"
-        val subject = String.format(AppRes.EMAIL_SUPPORT_MAIL_SUBJECT, appInfo)
-        openEmailComposer(fragment, email = "support@ringoid.com", subject = subject)
+    fun emailDataProtectionOfficer(fragment: Fragment, bodyContent: CharSequence) {
+        val body = String.format(AppRes.EMAIL_OFFICER_MAIL_SUBJECT, bodyContent)
+        val subject = String.format(AppRes.EMAIL_SUPPORT_MAIL_SUBJECT, ContextUtil.appInfo())
+        openEmailComposer(fragment, email = "data.protection@ringoid.com", subject = subject, body = body)
     }
 
-    private fun openEmailComposerIntent(email: String, subject: String): Intent =
+    fun emailSupportTeam(fragment: Fragment, body: String = "") {
+        val subject = String.format(AppRes.EMAIL_SUPPORT_MAIL_SUBJECT, ContextUtil.appInfo())
+        openEmailComposer(fragment, email = "support@ringoid.com", subject = subject, body = body)
+    }
+
+    private fun openEmailComposerIntent(email: String, subject: String = "", body: String = ""): Intent =
         Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$email")).apply {
             putExtra(Intent.EXTRA_SUBJECT, subject)
-            putExtra(Intent.EXTRA_TEXT, "")
+            putExtra(Intent.EXTRA_TEXT, body)
         }
 
     /* Camera and Gallery */

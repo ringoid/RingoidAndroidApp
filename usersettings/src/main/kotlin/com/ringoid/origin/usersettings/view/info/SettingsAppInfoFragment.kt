@@ -63,8 +63,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
         }
         debug_underscore.changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
         item_email_officer.clicks().compose(clickDebounce()).subscribe {
-            val subject = String.format(AppRes.EMAIL_OFFICER_MAIL_SUBJECT, item_customer_id.getLabel())
-            ExternalNavigator.openEmailComposer(this, email = "data.protection@ringoid.com", subject = subject)
+            ExternalNavigator.emailDataProtectionOfficer(this, bodyContent = item_customer_id.getLabel())
         }
         item_licenses.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_LICENSES}") }
         item_privacy.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_PRIVACY}") }
