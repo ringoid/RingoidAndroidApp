@@ -24,6 +24,7 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.*
+import com.ringoid.widget.decor.TopBottomDividerItemDecoration
 import kotlinx.android.synthetic.main.fragment_chat.*
 
 class ChatFragment : BaseDialogFragment<ChatViewModel>() {
@@ -141,6 +142,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     reverseLayout = true
                     stackFromEnd = true
                 }
+            addItemDecoration(TopBottomDividerItemDecoration(context, R.dimen.chat_blob_divider_height))
         }
     }
 
