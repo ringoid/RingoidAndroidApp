@@ -6,6 +6,7 @@
         <item name="android:windowBackground">?refColorBg</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheet.NoAnimation</item>
         <item name="refColorBg">@android:color/white</item>
         <item name="refColorAccent">@color/grass</item>
         <item name="refColorPrimary">@color/steel</item>
@@ -64,12 +65,18 @@
     <style name="AppTheme" parent="Base.V0.AppTheme.Dark"/>
 
     <style name="AppTheme.Transparent">
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <!--<item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>-->
+        <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Transparent.Semi">
+        <item name="android:windowBackground">@color/semitransparent</item>
+        <item name="android:windowIsTranslucent">false</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
