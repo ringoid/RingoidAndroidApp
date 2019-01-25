@@ -17,11 +17,6 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(
     imagesViewPool: RecyclerView.RecycledViewPool? = null, diffCb: BaseDiffCallback<T>)
     : BaseListAdapter<T, VH>(diffCb) where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
 
-    companion object {
-        const val VIEW_TYPE_LOADING = 2
-        const val VIEW_TYPE_FEED_END = 3
-    }
-
     var settingsClickListener: ((model: T, position: Int, positionOfImage: Int) -> Unit)? = null
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 

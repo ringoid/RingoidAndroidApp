@@ -15,6 +15,8 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     companion object {
         const val VIEW_TYPE_NORMAL = 0
         const val VIEW_TYPE_HEADER = 1
+        const val VIEW_TYPE_LOADING = 2
+        const val VIEW_TYPE_FEED_END = 3
     }
 
     private val helper = AsyncListDiffer<T>(
