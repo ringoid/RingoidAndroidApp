@@ -43,7 +43,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             is ViewState.IDLE -> onIdleState()
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is APP_THEME -> recreate()
+                    is APP_THEME -> recreate()//navigateAndClose(this, path = "/login")
                 }
             }
             is ViewState.LOADING -> {

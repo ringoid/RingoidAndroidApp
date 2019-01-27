@@ -20,6 +20,8 @@ class KeyEditText : AppCompatEditText {
         if (listener?.invoke(keyCode, event) == true) true
         else super.onKeyPreIme(keyCode, event)
 
+    override fun isInEditMode(): Boolean = true
+
     // ------------------------------------------
     fun setOnKeyPreImeListener(l: ((keyCode: Int, event: KeyEvent) -> Boolean)?) {
         listener = l

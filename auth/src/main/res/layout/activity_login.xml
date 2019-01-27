@@ -60,6 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rect_round_grey"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="center"
             android:hint="@string/login_year_of_birth_et_hint"
             android:imeOptions="actionDone"
