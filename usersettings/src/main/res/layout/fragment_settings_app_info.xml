@@ -7,42 +7,42 @@
 
     <include layout="@layout/toolbar" android:id="@id/toolbar"/>
 
-    <com.ringoid.widget.view.LabelIconItemView
+    <com.ringoid.widget.view.item_view.LabelIconItemView
         android:id="@+id/item_about"
         app:icon_item_text="@string/settings_info_about"
         style="?attr/iconItemView"/>
 
     <View style="@style/Underscore"/>
 
-    <com.ringoid.widget.view.IconItemView
+    <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_privacy"
         app:icon_item_text="@string/settings_info_privacy"
         style="?attr/iconItemView"/>
 
     <View style="@style/Underscore"/>
 
-    <com.ringoid.widget.view.IconItemView
+    <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_terms"
         app:icon_item_text="@string/settings_info_terms"
         style="?attr/iconItemView"/>
 
     <View style="@style/Underscore"/>
 
-    <com.ringoid.widget.view.IconItemView
+    <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_licenses"
         app:icon_item_text="@string/settings_info_licenses"
         style="?attr/iconItemView"/>
 
     <View style="@style/Underscore"/>
 
-    <com.ringoid.widget.view.IconItemView
+    <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_email_officer"
         app:icon_item_text="@string/settings_info_email_officer"
         style="?attr/iconItemView"/>
 
     <View style="@style/Underscore"/>
 
-    <com.ringoid.widget.view.IconItemView
+    <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_debug"
         android:visibility="gone"
         app:icon_item_text="@string/settings_info_debug"

@@ -1,4 +1,4 @@
-package com.ringoid.widget.view
+package com.ringoid.widget.view.item_view
 
 import android.content.Context
 import android.util.AttributeSet

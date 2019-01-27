@@ -3,6 +3,7 @@ package com.ringoid.widget.view
 import android.content.Context
 import android.util.AttributeSet
 import com.ringoid.widget.R
+import com.ringoid.widget.view.item_view.LabelIconItemView
 
 class SubLabelIconItemView : LabelIconItemView {
 
