@@ -17,7 +17,6 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <View
-        android:id="@+id/right_gradient"
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:background="@drawable/right_gradient"
