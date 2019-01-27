@@ -63,8 +63,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(spm.getThemeResId(defaultThemeResId = R.style.AppTheme))
         super.onCreate(savedInstanceState)
+        setTheme(spm.getThemeResId(defaultThemeResId = R.style.AppTheme))
 
         btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
         et_year_of_birth.apply {
