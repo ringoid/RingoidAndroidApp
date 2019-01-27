@@ -20,9 +20,9 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     protected val context: Context by lazy { app.applicationContext }
 
-    @Inject lateinit var getUserAccessTokenUseCase: GetUserAccessTokenUseCase
-    @Inject lateinit var actionObjectPool: IActionObjectPool
-    @Inject lateinit var spm: ISharedPrefsManager
+    @Inject protected lateinit var getUserAccessTokenUseCase: GetUserAccessTokenUseCase
+    @Inject protected lateinit var actionObjectPool: IActionObjectPool
+    @Inject protected lateinit var spm: ISharedPrefsManager
 
     val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
     val navigation: MutableLiveData<KFunction<*>> by lazy { MutableLiveData<KFunction<*>>() }
