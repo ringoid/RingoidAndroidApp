@@ -14,6 +14,7 @@
     <color name="divider">#BDBDBD</color>
 
     <color name="agat">#626f7e</color>
+    <color name="agat_semi">#7f626f7e</color>
     <color name="aquamarine">#5df2d6</color>
     <color name="black">#000000</color>
     <color name="black_half">#aa000000</color>
@@ -48,7 +49,8 @@
     <color name="teal">#abf1cf</color>
     <color name="tiffany">#81d8d1</color>
     <color name="underscore">#21f2f2f2</color>
-    <color name="underscore_dark">#21CDCED3</color>
+    <color name="underscore_dark">#7fCDCED3</color>
+    <color name="underscore_light">#21CDCED3</color>
     <color name="unpressed">#dbdbdb</color>
     <color name="warning">#ff9900</color>
     <color name="white_transparent">#6fffffff</color>

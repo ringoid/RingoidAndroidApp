@@ -10,10 +10,10 @@
         <item name="refColorBg">@android:color/white</item>
         <item name="refColorAccent">@color/grass</item>
         <item name="refColorPrimary">@color/steel</item>
-        <item name="refColorPrimaryDark">@color/agat</item>
+        <item name="refColorPrimaryDark">@color/agat_semi</item>
         <item name="refColorBottomBarIcon">@color/black_half</item>
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_black</item>
-        <item name="refColorUnderscore">@color/underscore</item>
+        <item name="refColorUnderscore">@color/underscore_dark</item>
         <item name="refTextColorPrimary">@color/primary_text</item>
         <item name="refTextColorSecondary">@color/secondary_text</item>
         <item name="colorAccent">?refColorAccent</item>
@@ -42,7 +42,7 @@
         <item name="android:colorEdgeEffect">@android:color/white</item>
         <item name="refColorBottomBarIcon">@color/white_half</item>
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_white</item>
-        <item name="refColorUnderscore">@color/underscore_dark</item>
+        <item name="refColorUnderscore">@color/underscore_light</item>
         <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_white_24dp</item>
         <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_white_outline_24dp</item>
         <item name="refDrawableBottomBarLmmPressed">@drawable/ic_menu_favorite_white_24dp</item>
