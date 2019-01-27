@@ -14,7 +14,7 @@ object ThemeUtils {
         val newTheme = when (currentTheme) {
             R.style.AppTheme_Dark -> R.style.AppTheme_Light
             R.style.AppTheme_Light -> R.style.AppTheme_Dark
-            else -> currentTheme  // don't change theme
+            else -> R.style.AppTheme_Light  // default theme
         }
         spm.saveThemeResId(themeResId = newTheme)
         return newTheme

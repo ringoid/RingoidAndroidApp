@@ -14,6 +14,7 @@ import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.navigation.*
+import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.AutoLinkMovementMethod
@@ -42,7 +43,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             is ViewState.IDLE -> onIdleState()
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    //is APP_THEME -> recreate()
+                    is APP_THEME -> recreate()
                 }
             }
             is ViewState.LOADING -> {

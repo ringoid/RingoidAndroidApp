@@ -34,7 +34,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
-        Timber.v("View State transition to: $newState")
+        Timber.v("Activity [${hashCode()}]: view state transition to: $newState, VM [${vm.hashCode()}], viewState [${vm.viewState.hashCode()}]")
         // override in subclasses
     }
 

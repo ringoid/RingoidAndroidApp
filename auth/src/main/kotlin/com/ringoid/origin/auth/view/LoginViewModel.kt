@@ -77,6 +77,7 @@ class LoginViewModel @Inject constructor(
     fun switchTheme() {
         val newTheme = ThemeUtils.switchTheme(spm)
         viewState.value = ViewState.DONE(APP_THEME(newTheme))
+        viewState.value = ViewState.IDLE
     }
 
     // --------------------------------------------------------------------------------------------
