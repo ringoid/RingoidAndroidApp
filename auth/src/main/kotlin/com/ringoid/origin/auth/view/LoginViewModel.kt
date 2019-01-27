@@ -10,6 +10,7 @@ import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
+import com.ringoid.origin.auth.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
@@ -28,6 +29,7 @@ class LoginViewModel @Inject constructor(
 
     val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
     val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
+    val themeSwitchState by lazy { MutableLiveData<Boolean>() }
 
     private var gender: Gender? = null
         set (value) {
@@ -74,6 +76,14 @@ class LoginViewModel @Inject constructor(
     }
 
     // ------------------------------------------
+    fun checkAppTheme() {
+        val currentTheme = spm.getThemeResId(defaultThemeResId = R.style.AppTheme)
+        when (currentTheme) {
+            R.style.AppTheme_Dark -> themeSwitchState.value = true
+            R.style.AppTheme_Light -> themeSwitchState.value = false
+        }
+    }
+
     fun switchTheme(isChanged: Boolean) {
         val newTheme = ThemeUtils.switchTheme(spm, isChanged)
         viewState.value = ViewState.DONE(APP_THEME(newTheme))

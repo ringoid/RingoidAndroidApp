@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.deeplink.AppNav
+import com.ringoid.base.observe
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
@@ -63,6 +64,9 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        observe(vm.themeSwitchState) { switch_theme.isChecked = it }  // set value before setting listener
+        vm.checkAppTheme()
+
         btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
         et_year_of_birth.apply {
             requestFocus()
