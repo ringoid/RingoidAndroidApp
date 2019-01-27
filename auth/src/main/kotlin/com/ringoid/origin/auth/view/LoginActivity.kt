@@ -62,7 +62,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onBeforeCreate() {
         super.onBeforeCreate()
-        setTheme(spm.getLoginThemeResId(defaultThemeResId = R.style.LoginTheme_Light))
+        setTheme(spm.getThemeResId(defaultThemeResId = R.style.AppTheme_Light))
     }
 
     @Suppress("CheckResult", "AutoDispose")
@@ -81,8 +81,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         }
         switch_theme.apply {
             setOnCheckedChangeListener(null)
-            isChecked = ThemeUtils.isDarkLoginTheme(spm)
-            setOnCheckedChangeListener { _, isChanged -> vm.switchTheme(isChanged) }
+            isChecked = ThemeUtils.isDarkTheme(spm)
+            setOnCheckedChangeListener { _, _ -> vm.switchTheme() }
         }
         tv_sex_male.clicks().compose(clickDebounce()).subscribe {
             tv_sex_male.takeIf { it.isSelected } ?: run {

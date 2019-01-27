@@ -85,14 +85,6 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
-    <!-- Screen themes -->
-    <style name="LoginTheme.Dark" parent="AppTheme.Dark">
-        <item name="refColorPrimary">@color/grass</item>
-    </style>
-    <style name="LoginTheme.Light" parent="AppTheme.Light">
-        <item name="refColorPrimary">@color/grass</item>
-    </style>
-
     <style name="ImagePreviewTheme" parent="AppTheme">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="refColorPrimaryDark">@android:color/black</item>
