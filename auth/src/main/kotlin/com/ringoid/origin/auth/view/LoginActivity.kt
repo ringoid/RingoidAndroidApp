@@ -64,7 +64,13 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        observe(vm.themeSwitchState) { switch_theme.isChecked = it }  // set value before setting listener
+        observe(vm.themeSwitchState) {
+            switch_theme.apply {
+                setOnCheckedChangeListener(null)
+                isChecked = it  // set value before setting listener
+                setOnCheckedChangeListener { _, isChanged -> vm.switchTheme(isChanged) }
+            }
+        }
         vm.checkAppTheme()
 
         btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
@@ -78,7 +84,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
             textChanges().compose(inputDebounce()).subscribe { vm.onYearOfBirthChange(it.toString()) }
         }
-        switch_theme.setOnCheckedChangeListener { _, isChanged -> vm.switchTheme(isChanged) }
         tv_sex_male.clicks().compose(clickDebounce()).subscribe {
             tv_sex_male.takeIf { it.isSelected } ?: run {
                 tv_sex_male.isSelected = true
