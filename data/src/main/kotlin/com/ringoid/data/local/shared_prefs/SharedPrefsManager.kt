@@ -2,6 +2,7 @@ package com.ringoid.data.local.shared_prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.StyleRes
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -21,10 +22,20 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     companion object {
         const val SHARED_PREFS_FILE_NAME = "Ringoid.prefs"
 
+        const val SP_KEY_THEME = "sp_key_theme"
+
         /* Auth */
         // --------------------------------------
         const val SP_KEY_AUTH_USER_ID = "sp_key_auth_user_id"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
+    }
+
+    // --------------------------------------------------------------------------------------------
+    @StyleRes
+    fun getThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_THEME, defaultThemeResId)
+
+    fun saveThemeResId(@StyleRes themeResId: Int) {
+        sharedPreferences.edit().putInt(SP_KEY_THEME, themeResId).apply()
     }
 
     /* Auth */
