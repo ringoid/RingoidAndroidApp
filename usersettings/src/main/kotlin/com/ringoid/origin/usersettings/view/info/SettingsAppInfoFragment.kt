@@ -34,7 +34,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        item_customer_id.setLabel(vm.spm.currentUserId() ?: "")
+        item_customer_id.setLabel(spm.currentUserId() ?: "")
     }
 
     @Suppress("CheckResult", "AutoDispose")

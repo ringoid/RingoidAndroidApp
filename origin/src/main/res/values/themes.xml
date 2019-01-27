@@ -86,7 +86,10 @@
     </style>
 
     <!-- Screen themes -->
-    <style name="LoginTheme" parent="AppTheme">
+    <style name="LoginTheme.Dark" parent="AppTheme.Dark">
+        <item name="refColorPrimary">@color/grass</item>
+    </style>
+    <style name="LoginTheme.Light" parent="AppTheme.Light">
         <item name="refColorPrimary">@color/grass</item>
     </style>
 

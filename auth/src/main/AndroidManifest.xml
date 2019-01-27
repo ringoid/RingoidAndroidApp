@@ -6,7 +6,7 @@
         <activity
             android:name=".view.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/LoginTheme"
+            android:theme="@style/LoginTheme.Light"
             android:windowSoftInputMode="stateAlwaysVisible">
 
             <intent-filter android:autoVerify="true" android:order="1">

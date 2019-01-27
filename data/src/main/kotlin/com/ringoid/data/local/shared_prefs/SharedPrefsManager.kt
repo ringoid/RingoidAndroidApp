@@ -22,7 +22,8 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     companion object {
         const val SHARED_PREFS_FILE_NAME = "Ringoid.prefs"
 
-        const val SP_KEY_THEME = "sp_key_theme"
+        const val SP_KEY_LOGIN_THEME = "sp_key_login_theme"
+        const val SP_KEY_MAIN_THEME = "sp_key_main_theme"
 
         /* Auth */
         // --------------------------------------
@@ -32,10 +33,15 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     // --------------------------------------------------------------------------------------------
     @StyleRes
-    override fun getThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_THEME, defaultThemeResId)
+    override fun getLoginThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_LOGIN_THEME, defaultThemeResId)
+    @StyleRes
+    override fun getMainThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_MAIN_THEME, defaultThemeResId)
 
-    override fun saveThemeResId(@StyleRes themeResId: Int) {
-        sharedPreferences.edit().putInt(SP_KEY_THEME, themeResId).apply()
+    override fun saveLoginThemeResId(@StyleRes themeResId: Int) {
+        sharedPreferences.edit().putInt(SP_KEY_LOGIN_THEME, themeResId).apply()
+    }
+    override fun saveMainThemeResId(@StyleRes themeResId: Int) {
+        sharedPreferences.edit().putInt(SP_KEY_MAIN_THEME, themeResId).apply()
     }
 
     /* Auth */

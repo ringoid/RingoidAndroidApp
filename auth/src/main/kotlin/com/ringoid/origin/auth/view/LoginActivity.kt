@@ -14,7 +14,6 @@ import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.navigation.*
-import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.AutoLinkMovementMethod
@@ -43,7 +42,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             is ViewState.IDLE -> onIdleState()
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is APP_THEME -> applyTheme(themeResId = (newState.residual as APP_THEME).themeResId)
+                    //is APP_THEME -> recreate()
                 }
             }
             is ViewState.LOADING -> {
@@ -61,11 +60,14 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onBeforeCreate() {
+        super.onBeforeCreate()
+        setTheme(spm.getLoginThemeResId(defaultThemeResId = R.style.LoginTheme_Light))
+    }
+
     @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(spm.getThemeResId(defaultThemeResId = R.style.AppTheme))
-
         btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
         et_year_of_birth.apply {
             requestFocus()
@@ -79,7 +81,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         }
         switch_theme.apply {
             setOnCheckedChangeListener(null)
-            isChecked = ThemeUtils.isDarkTheme(spm)
+            isChecked = ThemeUtils.isDarkLoginTheme(spm)
             setOnCheckedChangeListener { _, isChanged -> vm.switchTheme(isChanged) }
         }
         tv_sex_male.clicks().compose(clickDebounce()).subscribe {

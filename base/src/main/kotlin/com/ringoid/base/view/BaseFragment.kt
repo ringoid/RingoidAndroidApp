@@ -12,6 +12,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.domain.repository.ISharedPrefsManager
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.support.AndroidSupportInjection
 import timber.log.Timber
@@ -23,6 +24,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
+    @Inject protected lateinit var spm: ISharedPrefsManager
 
     var isActivityCreated = false
         private set
