@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
-import androidx.lifecycle.Observer
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.deeplink.AppNav
@@ -16,6 +15,7 @@ import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.style.APP_THEME
+import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.AutoLinkMovementMethod
 import com.ringoid.utility.changeVisibility
@@ -63,15 +63,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(spm.getThemeResId(defaultThemeResId = R.style.AppTheme))
         super.onCreate(savedInstanceState)
-        observe(vm.themeSwitchState) {
-            switch_theme.apply {
-                setOnCheckedChangeListener(null)
-                isChecked = it  // set value before setting listener
-                setOnCheckedChangeListener { _, isChanged -> vm.switchTheme(isChanged) }
-            }
-        }
-        vm.checkAppTheme()
 
         btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
         et_year_of_birth.apply {
@@ -83,6 +76,11 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 false
             }
             textChanges().compose(inputDebounce()).subscribe { vm.onYearOfBirthChange(it.toString()) }
+        }
+        switch_theme.apply {
+            setOnCheckedChangeListener(null)
+            isChecked = ThemeUtils.isDarkTheme(spm)
+            setOnCheckedChangeListener { _, isChanged -> vm.switchTheme(isChanged) }
         }
         tv_sex_male.clicks().compose(clickDebounce()).subscribe {
             tv_sex_male.takeIf { it.isSelected } ?: run {
@@ -104,8 +102,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
         }
 
-        vm.loginButtonEnableState.observe(this, Observer { btn_login.isEnabled = it })
-        vm.yearOfBirthEntryState.observe(this, Observer {
+        observe(vm.loginButtonEnableState) { btn_login.isEnabled = it }
+        observe(vm.yearOfBirthEntryState) {
             when (it) {
                 WidgetState.NORMAL -> {
                     et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_grey)
@@ -127,7 +125,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 }
                 else -> { /* no-op */ }
             }
-        })
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -62,7 +62,7 @@
         <item name="flatButtonBg">@drawable/flat_button_bg_black</item>
     </style>
 
-    <style name="AppTheme" parent="Base.V0.AppTheme.Dark"/>
+    <style name="AppTheme" parent="Base.V0.AppTheme.Light"/>
     <style name="AppTheme.Dark" parent="Base.V0.AppTheme.Dark"/>
     <style name="AppTheme.Light" parent="Base.V0.AppTheme.Light"/>
 

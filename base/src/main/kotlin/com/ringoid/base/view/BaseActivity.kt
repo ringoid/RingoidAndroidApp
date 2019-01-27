@@ -11,6 +11,7 @@ import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
 import com.ringoid.domain.DomainUtil.BAD_RESOURCE
+import com.ringoid.domain.repository.ISharedPrefsManager
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.AndroidInjection
 import timber.log.Timber
@@ -22,6 +23,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
+    @Inject protected lateinit var spm: ISharedPrefsManager
 
     var isDestroying = false
         private set

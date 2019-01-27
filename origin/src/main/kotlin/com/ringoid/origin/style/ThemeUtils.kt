@@ -6,6 +6,9 @@ import com.ringoid.origin.R
 
 object ThemeUtils {
 
+    fun isDarkTheme(spm: ISharedPrefsManager): Boolean =
+        spm.getThemeResId(defaultThemeResId = R.style.AppTheme) == R.style.AppTheme_Dark
+
     @StyleRes
     fun switchTheme(spm: ISharedPrefsManager, isChanged: Boolean): Int {
         val currentTheme = spm.getThemeResId(defaultThemeResId = R.style.AppTheme)
