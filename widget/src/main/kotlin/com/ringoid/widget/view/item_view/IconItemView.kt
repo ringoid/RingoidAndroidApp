@@ -30,7 +30,7 @@ open class IconItemView : LinearLayout {
     protected open fun getLayoutId(): Int = R.layout.widget_icon_item_view_layout
 
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
-        val sidePadding = resources.getDimensionPixelSize(R.dimen.std_text_20)
+        val sidePadding = resources.getDimensionPixelSize(R.dimen.std_margin_20)
         background = context.getSelectableItemBg()
         isClickable = true
         isFocusable = true

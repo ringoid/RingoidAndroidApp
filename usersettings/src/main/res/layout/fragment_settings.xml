@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         style="@style/ProgressBar.Horizontal"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
+    <com.ringoid.widget.view.item_view.SwitchIconItemView
         android:id="@+id/item_theme"
         app:icon_item_icon="?attr/refDrawableThemeSwitch"
         app:icon_item_text="@string/settings_theme_dark"

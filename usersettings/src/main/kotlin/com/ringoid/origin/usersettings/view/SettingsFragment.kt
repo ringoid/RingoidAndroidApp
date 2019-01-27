@@ -15,6 +15,7 @@ import com.ringoid.usersettings.R
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings.*
+import timber.log.Timber
 
 class SettingsFragment : BaseFragment<SettingsViewModel>() {
 
@@ -65,5 +66,6 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
         }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
+        item_theme.clicks().compose(clickDebounce()).subscribe { Timber.v("CHECKED: ${item_theme.isChecked()}") }
     }
 }
