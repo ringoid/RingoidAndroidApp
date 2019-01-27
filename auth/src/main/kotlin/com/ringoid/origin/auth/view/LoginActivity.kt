@@ -60,11 +60,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onBeforeCreate() {
-        super.onBeforeCreate()
-        setTheme(spm.getThemeResId(defaultThemeResId = R.style.AppTheme_Light))
-    }
-
     @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

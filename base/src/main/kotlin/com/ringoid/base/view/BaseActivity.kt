@@ -41,6 +41,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     protected open fun onBeforeCreate() {
+        spm.getThemeResId().takeIf { it != 0 }?.let { setTheme(it) }
         // override in subclasses
     }
 
