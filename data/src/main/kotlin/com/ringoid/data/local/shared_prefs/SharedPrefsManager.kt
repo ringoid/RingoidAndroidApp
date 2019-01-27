@@ -32,9 +32,9 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     // --------------------------------------------------------------------------------------------
     @StyleRes
-    fun getThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_THEME, defaultThemeResId)
+    override fun getThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_THEME, defaultThemeResId)
 
-    fun saveThemeResId(@StyleRes themeResId: Int) {
+    override fun saveThemeResId(@StyleRes themeResId: Int) {
         sharedPreferences.edit().putInt(SP_KEY_THEME, themeResId).apply()
     }
 

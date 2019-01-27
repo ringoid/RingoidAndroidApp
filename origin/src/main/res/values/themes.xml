@@ -63,6 +63,8 @@
     </style>
 
     <style name="AppTheme" parent="Base.V0.AppTheme.Dark"/>
+    <style name="AppTheme.Dark" parent="Base.V0.AppTheme.Dark"/>
+    <style name="AppTheme.Light" parent="Base.V0.AppTheme.Light"/>
 
     <style name="AppTheme.Transparent">
         <!--<item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>-->

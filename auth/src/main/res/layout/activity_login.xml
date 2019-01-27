@@ -12,6 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <Switch
+            android:id="@+id/switch_theme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/std_margin_8"
+            android:layout_marginEnd="@dimen/std_margin_8"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"

@@ -1,9 +1,15 @@
 package com.ringoid.domain.repository
 
+import androidx.annotation.StyleRes
 import com.ringoid.domain.model.user.AccessToken
 
 interface ISharedPrefsManager {
 
+    fun getThemeResId(@StyleRes defaultThemeResId: Int): Int
+
+    fun saveThemeResId(@StyleRes themeResId: Int)
+
+    // ------------------------------------------
     fun accessToken(): AccessToken?
 
     fun currentUserId(): String?

@@ -11,6 +11,8 @@ import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.style.APP_THEME
+import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -69,6 +71,12 @@ class LoginViewModel @Inject constructor(
                     }
 
         enableLoginButton()
+    }
+
+    // ------------------------------------------
+    fun switchTheme(isChanged: Boolean) {
+        val newTheme = ThemeUtils.switchTheme(spm, isChanged)
+        viewState.value = ViewState.DONE(APP_THEME(newTheme))
     }
 
     // --------------------------------------------------------------------------------------------

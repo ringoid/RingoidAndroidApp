@@ -14,6 +14,7 @@ import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.navigation.*
+import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.AutoLinkMovementMethod
 import com.ringoid.utility.changeVisibility
@@ -39,6 +40,11 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is APP_THEME -> applyTheme(themeResId = (newState.residual as APP_THEME).themeResId)
+                }
+            }
             is ViewState.LOADING -> {
                 btn_login.changeVisibility(isVisible = false, soft = true)
                 pb_login.changeVisibility(isVisible = true)
@@ -68,6 +74,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
             textChanges().compose(inputDebounce()).subscribe { vm.onYearOfBirthChange(it.toString()) }
         }
+        switch_theme.setOnCheckedChangeListener { _, isChanged -> vm.switchTheme(isChanged) }
         tv_sex_male.clicks().compose(clickDebounce()).subscribe {
             tv_sex_male.takeIf { it.isSelected } ?: run {
                 tv_sex_male.isSelected = true
