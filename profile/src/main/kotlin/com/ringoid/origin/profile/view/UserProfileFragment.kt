@@ -176,6 +176,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
     private fun showEmptyStub(needShow: Boolean) {
         fl_empty_container.changeVisibility(isVisible = needShow)
+        right_gradient.changeVisibility(isVisible = !needShow)
         if (!needShow) {
             return
         }
