@@ -34,7 +34,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
-        Timber.v("Activity [${hashCode()}]: view state transition to: $newState, VM [${vm.hashCode()}], viewState [${vm.viewState.hashCode()}]")
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("View State transition to: $newState")
         // override in subclasses
     }
 
@@ -46,6 +47,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onCreate($savedInstanceState)")
         isDestroying = false
         AndroidInjection.inject(this)
         onBeforeCreate()
@@ -59,6 +62,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onDestroy")
         isDestroying = true
         super.onDestroy()
         vm.unsubscribeFromBusEvents()
