@@ -84,7 +84,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         else if (withFooter() && position == footerPosition()) getFooterItem()
         else helper.currentList[position - fixUpForHeader()]
 
-    protected fun getItems(): List<T> = helper.currentList
+    protected fun getModels(): List<T> = helper.currentList
     /**
      * The following two methods are just stubs to make [getItem] work properly,
      * header and footer [BaseViewHolder]s and corresponding models are normally
@@ -108,6 +108,8 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     // ------------------------------------------
     override fun getItemCount(): Int = helper.currentList.size + fixUpForHeader() + fixUpForFooter()
 
+    fun getModelCount(): Int = helper.currentList.size
+
     override fun getItemViewType(position: Int): Int =
         if (withHeader() && position == 0) VIEW_TYPE_HEADER
         else if (withFooter() && position == footerPosition()) VIEW_TYPE_FOOTER
@@ -119,12 +121,12 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     @LayoutRes protected open fun getHeaderLayoutResId(): Int = 0
     @LayoutRes protected open fun getFooterLayoutResId(): Int = 0
 
-    private fun withHeader(): Boolean = headerRows > 0
-    private fun withFooter(): Boolean = getFooterLayoutResId() != 0
+    fun withHeader(): Boolean = headerRows > 0
+    fun withFooter(): Boolean = getFooterLayoutResId() != 0
 
     private fun fixUpForHeader(): Int = if (isEmpty()) 0 else if (withHeader()) 1 else 0
     private fun fixUpForFooter(): Int = if (isEmpty()) 0 else if (withFooter()) 1 else 0
-    private fun footerPosition(): Int = headerRows + helper.currentList.size
+    fun footerPosition(): Int = headerRows + helper.currentList.size
 }
 
 // ------------------------------------------------------------------------------------------------

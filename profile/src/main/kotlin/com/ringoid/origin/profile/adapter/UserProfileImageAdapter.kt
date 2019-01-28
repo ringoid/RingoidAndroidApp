@@ -35,9 +35,9 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
     /* Data Access */
     // --------------------------------------------------------------------------------------------
     fun remove(imageId: String) {
-        getItems()
+        getModels()
             .find { it.id == imageId }
-            ?.let { submitList(ArrayList(getItems()).apply { remove(it) }) }
+            ?.let { submitList(ArrayList(getModels()).apply { remove(it) }) }
     }
 
     override fun submitList(list: List<UserImage>?) {
@@ -50,11 +50,11 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
     }
 
     fun updateItemId(oldId: String, newId: String) {
-        getItems()
+        getModels()
             .indexOfFirst { it.id == oldId }
             .takeIf { it != -1 }
             ?.let {
-                val l = ArrayList(getItems())
+                val l = ArrayList(getModels())
                 l.apply {
                     val item = get(it)
                     removeAt(it)

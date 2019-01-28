@@ -206,10 +206,19 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
                 val from = it.findFirstVisibleItemPosition()
                 val to = it.findLastVisibleItemPosition()
                 val items = feedAdapter.getItemsExposed(from = from, to = to).filter { it.isRealModel }
-                Timber.v("Visible feed items [${items.size}] [$from, $to]: $items")
-                feedTrackingBus.postViewEvent(EqualRange(from = from, to = to,
-                    items = items.map { ProfileImageVO(profileId = it.id, image = it.images[0]) }))
-                // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0 properly
+
+                // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0' properly
+                var range = EqualRange(from = from, to = to, items = items.map { ProfileImageVO(profileId = it.id, image = it.images[0]) })
+                range = range.takeIf { feedAdapter.withHeader() }
+                             ?.takeIf { from == 0 }
+                             ?.let { it.dropItems(n = 1) }  // exclude header item from visibility tracking
+                             ?: range  // no header item within the visible range
+                range = range.takeIf { feedAdapter.withFooter() }
+                             ?.takeIf { to == feedAdapter.footerPosition() }
+                             ?.let { it.dropLastItems(n = 1) }  // exclude footer item from visibility tracking
+                             ?: range  // no footer item within the visible range
+                Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
+                feedTrackingBus.postViewEvent(range)
             }
         }
     }

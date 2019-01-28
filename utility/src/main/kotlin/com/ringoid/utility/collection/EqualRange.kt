@@ -84,6 +84,20 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
         return this
     }
 
+    fun dropItems(n: Int): EqualRange<T> {
+        if (n < 0) throw IllegalArgumentException("Number of first items to drop must not be negative: $n")
+        if (n == 0) return this
+        if (n >= size) return empty()
+        return EqualRange(from + n, to, drop(n))
+    }
+
+    fun dropLastItems(n: Int): EqualRange<T> {
+        if (n < 0) throw IllegalArgumentException("Number of first items to drop must not be negative: $n")
+        if (n == 0) return this
+        if (n >= size) return empty()
+        return EqualRange(from, to - n, dropLast(n))
+    }
+
     // ------------------------------------------
     @Suppress("Unchecked_Cast")
     override fun equals(other: Any?): Boolean{
