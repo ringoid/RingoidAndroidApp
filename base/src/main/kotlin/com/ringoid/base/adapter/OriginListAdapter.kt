@@ -93,6 +93,15 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     protected abstract fun getHeaderItem(): T
     protected open fun getFooterItem(): T = getHeaderItem()
 
+    // ------------------------------------------
+    fun getItemExposed(position: Int): T = getItem(position)
+    fun getItemsExposed(from: Int, to: Int): List<T> {
+        val list = mutableListOf<T>()
+        for (i in from..to) list.add(getItem(i))
+        return list
+    }
+
+    // ------------------------------------------
     override fun getItemCount(): Int = helper.currentList.size + fixUpForHeader() + fixUpForFooter()
 
     override fun getItemViewType(position: Int): Int =

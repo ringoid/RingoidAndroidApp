@@ -42,7 +42,8 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
 
     protected lateinit var feedAdapter: BaseFeedAdapter<T, VH>
         private set
-    private lateinit var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>
+    private lateinit var feedTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
+    private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
@@ -158,8 +159,9 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        trackingBus = TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
-        feedAdapter.trackingBus = this@FeedFragment.trackingBus
+        feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
+        imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
+        feedAdapter.trackingBus = imagesTrackingBus
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -171,6 +173,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
             setHasFixedSize(true)
 //            setRecycledViewPool(viewPool)  // TODO: use pool for feeds
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+            addOnScrollListener(scrollListener)
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
@@ -180,11 +183,34 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
 
     override fun onResume() {
         super.onResume()
-        trackingBus.subscribe()
+        feedTrackingBus.subscribe()
+        imagesTrackingBus.subscribe()
     }
 
     override fun onPause() {
         super.onPause()
-        trackingBus.unsubscribe()
+        feedTrackingBus.unsubscribe()
+        imagesTrackingBus.unsubscribe()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rv_items.removeOnScrollListener(scrollListener)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(rv, dx, dy)
+            (rv.layoutManager as? LinearLayoutManager)?.let {
+                val from = it.findFirstVisibleItemPosition()
+                val to = it.findLastVisibleItemPosition()
+                val items = feedAdapter.getItemsExposed(from = from, to = to)
+                Timber.v("Visible feed items [${items.size}] [$from, $to]: $items")
+                feedTrackingBus.postViewEvent(EqualRange(from = from, to = to,
+                    items = items.map { ProfileImageVO(profileId = it.id, image = it.images[0]) }))
+                // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0 properly
+            }
+        }
     }
 }

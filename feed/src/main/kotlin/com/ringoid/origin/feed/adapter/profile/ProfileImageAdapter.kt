@@ -34,13 +34,6 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
     // --------------------------------------------------------------------------------------------
     override fun getHeaderItem(): ProfileImageVO = EmptyProfileImageVO
 
-    internal fun getItemExposed(position: Int): ProfileImageVO = getItem(position)
-    internal fun getItemsExposed(from: Int, to: Int): List<ProfileImageVO> {
-        val list = mutableListOf<ProfileImageVO>()
-        for (i in from..to) list.add(getItem(i))
-        return list
-    }
-
     // ------------------------------------------
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
         val clickListener = super.wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))

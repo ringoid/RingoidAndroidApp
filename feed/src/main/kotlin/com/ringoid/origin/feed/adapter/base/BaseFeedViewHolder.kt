@@ -57,7 +57,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
                         val from = it.findFirstVisibleItemPosition()
                         val to = it.findLastVisibleItemPosition()
                         val items = profileImageAdapter.getItemsExposed(from = from, to = to)
-                        Timber.v("Visible items [${items.size}] [$from, $to]: $items")
+                        Timber.v("Visible profile images [${items.size}] [$from, $to]: $items")
                         trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
                     }
                 }
