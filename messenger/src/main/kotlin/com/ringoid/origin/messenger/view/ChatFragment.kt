@@ -19,6 +19,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
@@ -26,7 +27,6 @@ import com.ringoid.origin.messenger.adapter.ChatAdapter
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
-import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.*
 import com.ringoid.widget.decor.TopBottomDividerItemDecoration
@@ -81,11 +81,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_chat.changeVisibility(isVisible = true)
-            is ViewState.ERROR -> {
-                // TODO: analyze: newState.e
-                Dialogs.errorDialog(this, newState.e)
-                onIdleState()
-            }
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
         }
     }
 

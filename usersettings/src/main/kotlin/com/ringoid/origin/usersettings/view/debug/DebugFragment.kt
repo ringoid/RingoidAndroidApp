@@ -6,11 +6,8 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.exception.ApiException
-import com.ringoid.origin.navigation.blockingErrorScreen
-import com.ringoid.origin.navigation.logout
+import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
-import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.usersettings.R
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -33,27 +30,12 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         fun onIdleState() {
             pb_debug.changeVisibility(isVisible = false, soft = true)
         }
-        fun onErrorState(e: Throwable) {
-            Dialogs.errorDialog(this, e)
-            onIdleState()
-        }
 
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_debug.changeVisibility(isVisible = true)
-            is ViewState.ERROR -> {
-                if (newState.e is ApiException) {
-                    val code = (newState.e as ApiException).code
-                    when (code) {
-                        ApiException.OLD_APP_VERSION -> blockingErrorScreen(this, path="/old_version")
-                        ApiException.INVALID_ACCESS_TOKEN -> logout(this)
-                        else -> onErrorState(newState.e)
-                    }
-                } else {
-                    onErrorState(newState.e)  // default error handling
-                }
-            }
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
         }
     }
 

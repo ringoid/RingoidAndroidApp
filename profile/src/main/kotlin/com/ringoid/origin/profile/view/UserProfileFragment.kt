@@ -13,6 +13,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
@@ -53,11 +54,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         when (newState) {
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
-            is ViewState.ERROR -> {
-                // TODO: analyze: newState.e
-                Dialogs.errorDialog(this, newState.e)
-                onIdleState()
-            }
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
         }
     }
 

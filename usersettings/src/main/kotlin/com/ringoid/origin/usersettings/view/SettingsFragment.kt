@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.navigate
@@ -45,11 +46,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
                 }
             }
             is ViewState.LOADING -> pb_settings.changeVisibility(isVisible = true)
-            is ViewState.ERROR -> {
-                // TODO: analyze: newState.e
-                Dialogs.errorDialog(this, newState.e)
-                onIdleState()
-            }
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
             else -> { /* no-op */ }
         }
     }

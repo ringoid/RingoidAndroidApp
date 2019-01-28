@@ -13,10 +13,10 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
+import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
-import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.AutoLinkMovementMethod
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -50,11 +50,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 btn_login.changeVisibility(isVisible = false, soft = true)
                 pb_login.changeVisibility(isVisible = true)
             }
-            is ViewState.ERROR -> {
-                // TODO: analyze: newState.e
-                Dialogs.errorDialog(this, newState.e)
-                onIdleState()
-            }
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
             else -> { /* no-op */ }
         }
     }

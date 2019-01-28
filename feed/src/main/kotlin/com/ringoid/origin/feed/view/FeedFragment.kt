@@ -11,6 +11,7 @@ import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.IProfile
+import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
@@ -87,11 +88,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.ERROR -> {
-                // TODO: analyze: newState.e
-                Dialogs.errorDialog(this, newState.e)
-                onIdleState()
-            }
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
         }
     }
 
