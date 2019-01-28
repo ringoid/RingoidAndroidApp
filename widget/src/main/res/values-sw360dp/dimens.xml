@@ -18,6 +18,7 @@
     <dimen name="std_text_18">16sp</dimen>
     <dimen name="std_text_20">18sp</dimen>
     <dimen name="std_text_22">19sp</dimen>
+    <dimen name="std_text_36">32sp</dimen>
 
     <!-- Widget -->
     <dimen name="icon_item_view_height">53dp</dimen>

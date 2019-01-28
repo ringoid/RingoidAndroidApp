@@ -44,10 +44,6 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(
             vh.setOnClickListener(null)  // clicks on the whole feed's item is no-op
         }
 
-    fun clear() {
-        submitList(emptyList())
-    }
-
     // ------------------------------------------
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer
 }

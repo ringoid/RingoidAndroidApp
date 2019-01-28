@@ -8,5 +8,6 @@
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="@dimen/std_margin_16"
         android:text="@string/bullet"
+        android:textSize="@dimen/std_text_36"
         style="@style/StdText.Secondary"/>
 </FrameLayout>
