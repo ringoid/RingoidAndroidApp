@@ -61,4 +61,15 @@ class DebugRepository @Inject constructor(
             .handleError()
             .ignoreElement()  // convert to Completable
     }
+
+    // ------------------------------------------
+    override fun debugRequestTimeOut(): Completable = cloud.debugTimeout()
+
+    override fun debugNotSuccessResponse(): Completable = cloud.debugNotSuccess()
+
+    override fun debugRequestCausingServerError(): Completable = cloud.debugServerError()
+
+    override fun debugRequestWithInvalidAccessToken(): Completable = cloud.debugInvalidToken()
+
+    override fun debugRequestWithUnsupportedAppVersion(): Completable = cloud.debugOldVersion()
 }

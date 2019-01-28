@@ -64,4 +64,18 @@ interface RingoidRestAdapter {
 
     /* Test */
     // --------------------------------------------------------------------------------------------
+    @POST("timeout")
+    fun debugTimeout(): Completable
+
+    @POST("invalidtoken")
+    fun debugInvalidToken(): Completable
+
+    @POST("nonok")
+    fun debugNotSuccess(): Completable
+
+    @POST("old_version")
+    fun debugOldVersion(): Completable
+
+    @POST("internalerror")
+    fun debugServerError(): Completable
 }

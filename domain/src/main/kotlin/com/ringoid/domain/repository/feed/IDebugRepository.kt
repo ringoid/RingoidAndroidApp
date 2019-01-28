@@ -7,4 +7,10 @@ interface IDebugRepository {
     fun requestWithInvalidAccessToken(token: String): Completable
     fun requestWithUnsupportedAppVersion(): Completable
     fun requestWithWrongParameters(): Completable
+
+    fun debugRequestTimeOut(): Completable
+    fun debugNotSuccessResponse(): Completable
+    fun debugRequestCausingServerError(): Completable
+    fun debugRequestWithInvalidAccessToken(): Completable
+    fun debugRequestWithUnsupportedAppVersion(): Completable
 }
