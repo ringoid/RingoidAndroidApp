@@ -95,9 +95,7 @@ abstract class FeedViewModel(
         cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({
-                viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
-            }, Timber::e)
+            .subscribe({ viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId)) }, Timber::e)
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {
