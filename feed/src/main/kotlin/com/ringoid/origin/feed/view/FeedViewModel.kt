@@ -82,7 +82,7 @@ abstract class FeedViewModel(
     }
 
     fun onBlock(profileId: String, imageId: String, sourceFeed: String = getFeedName()) {
-        onReport(profileId = profileId, imageId = imageId, reasonNumber = 0)
+        onReport(profileId = profileId, imageId = imageId, reasonNumber = 0, sourceFeed = sourceFeed)
     }
 
     fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String = getFeedName()) {
