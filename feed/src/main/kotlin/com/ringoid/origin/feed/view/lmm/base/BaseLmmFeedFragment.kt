@@ -23,11 +23,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(payload: ChatPayload) {
-        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId)
+        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = "chat")
     }
 
     override fun onReportFromChat(payload: ChatPayload, reasonNumber: Int) {
-        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber)
+        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = "chat")
     }
 
     override fun onDialogDismiss(tag: String, payload: Parcelable?) {

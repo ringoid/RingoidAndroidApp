@@ -81,14 +81,14 @@ abstract class FeedViewModel(
             .also { actionObjectPool.put(it) }
     }
 
-    fun onBlock(profileId: String, imageId: String) {
+    fun onBlock(profileId: String, imageId: String, sourceFeed: String = getFeedName()) {
         onReport(profileId = profileId, imageId = imageId, reasonNumber = 0)
     }
 
-    fun onReport(profileId: String, imageId: String, reasonNumber: Int) {
+    fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String = getFeedName()) {
         advanceAndPushViewObject(imageId to profileId)
         BlockActionObject(numberOfBlockReason = reasonNumber,
-            sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
+            sourceFeed = sourceFeed, targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
 
         // remove profile from feed, filter it from backend responses in future
