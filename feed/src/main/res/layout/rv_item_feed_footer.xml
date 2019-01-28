@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-         android:layout_width="match_parent"
-         android:layout_height="@dimen/feed_item_footer_height">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/feed_item_footer_height">
 
     <TextView
         android:id="@id/tv_end_item"
         android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:gravity="center_horizontal|top"
         android:text="@string/feed_footer_item_label"
         style="@style/StdText.Secondary"/>
 </FrameLayout>
