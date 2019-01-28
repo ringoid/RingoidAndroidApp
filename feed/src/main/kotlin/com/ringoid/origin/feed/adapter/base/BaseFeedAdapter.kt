@@ -7,6 +7,7 @@ import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.IProfile
+import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.clickDebounce
@@ -46,4 +47,7 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(
     fun clear() {
         submitList(emptyList())
     }
+
+    // ------------------------------------------
+    override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer
 }

@@ -62,6 +62,8 @@
         <item>@string/report_profile_button_6</item>
     </string-array>
 
+    <string name="feed_footer_item_label">No one else around</string>
+
     <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover, like and message others?\n\nAdd photo so others can like you</string>
     <string name="feed_explore_empty_need_refresh">Pull to refresh to\ndiscover users nearby</string>
     <string name="feed_explore_empty_no_data">No one new around</string>

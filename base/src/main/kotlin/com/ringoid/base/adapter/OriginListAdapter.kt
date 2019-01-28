@@ -15,8 +15,9 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     companion object {
         const val VIEW_TYPE_NORMAL = 0
         const val VIEW_TYPE_HEADER = 1
-        const val VIEW_TYPE_LOADING = 2
-        const val VIEW_TYPE_FEED_END = 3
+        const val VIEW_TYPE_FOOTER = 2
+        const val VIEW_TYPE_LOADING = 3
+        const val VIEW_TYPE_FEED_END = 4
     }
 
     private val helper = AsyncListDiffer<T>(
@@ -68,26 +69,39 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     // ------------------------------------------
     override fun getItemId(position: Int): Long = getItem(position).getModelId()
 
-    protected fun getItem(position: Int): T {
-        if (withHeader() && position == 0) {
-            return getHeaderItem()
-        }
-        return helper.currentList[if (withHeader()) position - 1 else position]
-    }
+    protected fun getItem(position: Int): T =
+        if (withHeader() && position == 0) getHeaderItem()
+        else if (withFooter() && position == footerPosition()) getFooterItem()
+        else helper.currentList[if (withHeader()) position - 1 else position]
 
-    protected fun getItems() = helper.currentList
+    protected fun getItems(): List<T> = helper.currentList
+    /**
+     * The following two methods are just stubs to make [getItem] work properly,
+     * header and footer [BaseViewHolder]s and corresponding models are normally
+     * not used anywhere.
+     */
     protected abstract fun getHeaderItem(): T
+    protected open fun getFooterItem(): T = getHeaderItem()
 
-    override fun getItemCount(): Int = (if (withHeader()) 1 else 0) + helper.currentList.size
+    override fun getItemCount(): Int = fixUpForHeader() + helper.currentList.size + fixUpForFooter()
+
     override fun getItemViewType(position: Int): Int =
-        if (withHeader() && position == 0) VIEW_TYPE_HEADER else VIEW_TYPE_NORMAL
+        if (withHeader() && position == 0) VIEW_TYPE_HEADER
+        else if (withFooter() && position == footerPosition()) VIEW_TYPE_FOOTER
+        else VIEW_TYPE_NORMAL
 
     fun isEmpty(): Boolean = helper.currentList.isEmpty()  // don't count header / footer
 
     // ------------------------------------------
     @LayoutRes protected open fun getHeaderLayoutResId(): Int = 0
+    @LayoutRes protected open fun getFooterLayoutResId(): Int = 0
 
     private fun withHeader(): Boolean = getHeaderLayoutResId() != 0
+    private fun withFooter(): Boolean = getFooterLayoutResId() != 0
+
+    private fun fixUpForHeader(): Int = if (withHeader()) 1 else 0
+    private fun fixUpForFooter(): Int = if (withFooter()) 1 else 0
+    private fun footerPosition(): Int = fixUpForHeader() + helper.currentList.size
 }
 
 // ------------------------------------------------------------------------------------------------

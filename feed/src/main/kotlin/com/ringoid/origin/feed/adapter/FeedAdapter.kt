@@ -19,8 +19,8 @@ class FeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<Profile> =
-        FeedViewHolder(view, viewPool = imagesViewPool).apply {
-            onLikeImageListener = this@FeedAdapter.onLikeImageListener
+        FeedViewHolder(view, viewPool = imagesViewPool).also { vh ->
+            vh.onLikeImageListener = onLikeImageListener
         }
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderFeedViewHolder(view)
@@ -31,4 +31,6 @@ class FeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
 
     // ------------------------------------------
     override fun getHeaderItem(): Profile = EmptyProfile
+
+    override fun getFooterLayoutResId(): Int = R.layout.rv_item_feed_footer
 }
