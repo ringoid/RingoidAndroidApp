@@ -12,7 +12,7 @@ class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
     : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool, headerRows = 1) {
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
-        MatchFeedViewHolder(view).also { vh ->
+        MatchFeedViewHolder(view, viewPool = imagesViewPool).also { vh ->
             vh.profileImageAdapter.isLikeButtonVisible = false
             (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
                 ?.apply { verticalBias = 0.28f }?.let { vh.itemView.ibtn_message.layoutParams = it }

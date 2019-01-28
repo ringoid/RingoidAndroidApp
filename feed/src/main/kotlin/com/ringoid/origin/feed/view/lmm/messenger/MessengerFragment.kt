@@ -1,5 +1,6 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
+import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.OriginR_string
@@ -17,8 +18,9 @@ class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, OriginFeedView
 
     override fun getVmClass(): Class<MessengerViewModel> = MessengerViewModel::class.java
 
-    override fun createFeedAdapter(): BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>> =
-        MessengerFeedAdapter().apply {
+    override fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?)
+            : BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>> =
+        MessengerFeedAdapter(imagesViewPool).apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
                 openChat(peerId = model.id, position = position, imageId = model.images[positionOfImage].id)
             }

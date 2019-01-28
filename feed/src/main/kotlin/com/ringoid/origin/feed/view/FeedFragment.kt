@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
@@ -21,8 +22,10 @@ import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.communicator
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -42,7 +45,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
 
-    protected abstract fun createFeedAdapter(): BaseFeedAdapter<T, VH>
+    protected abstract fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseFeedAdapter<T, VH>
 
     protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
 
@@ -116,7 +119,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        feedAdapter = createFeedAdapter()
+        feedAdapter = createFeedAdapter(communicator(IBaseMainActivity::class.java)?.imagesViewPool)
             .apply {
                 settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
                     val image = model.images[positionOfImage]

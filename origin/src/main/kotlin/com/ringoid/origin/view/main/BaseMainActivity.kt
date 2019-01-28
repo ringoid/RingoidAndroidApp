@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.ncapdevi.fragnav.FragNavController
@@ -22,11 +23,12 @@ import com.ringoid.utility.getAttributeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
-abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(),
+abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IBaseMainActivity,
     FragNavController.TransactionListener {
 
     protected lateinit var fragNav: FragNavController
 
+    override val imagesViewPool = RecyclerView.RecycledViewPool()
     private lateinit var badgeLmm: View
     private lateinit var badgeMessenger: View
 

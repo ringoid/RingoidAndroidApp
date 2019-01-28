@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.FeedItem
@@ -19,10 +20,10 @@ import com.ringoid.utility.communicator
 abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedViewHolder<FeedItem>>
     : BaseLmmFeedFragment<VM, VH>() {
 
-    abstract fun instantiateFeedAdapter(): BaseLikeFeedAdapter<VH>
+    abstract fun instantiateFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseLikeFeedAdapter<VH>
 
-    override fun createFeedAdapter(): BaseLikeFeedAdapter<VH> =
-        instantiateFeedAdapter().apply {
+    override fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseLikeFeedAdapter<VH> =
+        instantiateFeedAdapter(imagesViewPool).apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
                 openChat(position = position, peerId = model.id, imageId = model.images[positionOfImage].id)
