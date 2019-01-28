@@ -20,6 +20,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.error.handleOnView
+import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
@@ -41,7 +42,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         private const val BUNDLE_KEY_PAYLOAD = "bundle_key_payload"
         private const val BUNDLE_KEY_TAG = "bundle_key_tag"
 
-        fun newInstance(peerId: String, payload: ChatPayload = ChatPayload(peerId = peerId), tag: String = TAG): ChatFragment =
+        fun newInstance(peerId: String, payload: ChatPayload = ChatPayload(
+            peerId = peerId
+        ), tag: String = TAG): ChatFragment =
             ChatFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_PEER_ID, peerId)

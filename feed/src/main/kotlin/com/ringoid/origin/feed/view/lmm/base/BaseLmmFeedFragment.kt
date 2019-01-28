@@ -13,7 +13,7 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.messenger.view.ChatFragment
-import com.ringoid.origin.messenger.view.ChatPayload
+import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.view.dialog.IDialogCallback
 
@@ -50,7 +50,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
         childFragmentManager.let {
             it.findFragmentByTag(tag)
                 ?: run {
-                    val payload = ChatPayload(position = position, peerId = peerId, peerImageId = imageId)
+                    val payload = ChatPayload(
+                        position = position,
+                        peerId = peerId,
+                        peerImageId = imageId
+                    )
                     vm.onChatOpen(profileId = peerId, imageId = imageId)
                     scrollToTopOfItemAtPosition(position)
                     feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)

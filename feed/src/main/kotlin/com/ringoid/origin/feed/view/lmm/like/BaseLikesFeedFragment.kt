@@ -14,7 +14,7 @@ import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import com.ringoid.origin.messenger.view.ChatFragment
-import com.ringoid.origin.messenger.view.ChatPayload
+import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.utility.communicator
 
 abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedViewHolder<FeedItem>>
