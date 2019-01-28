@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.ringoid.domain.model.IListModel
 
-abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
-    : OriginListAdapter<T, VH>(diffCb) {
+abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>, headerRows: Int = 0)
+    : OriginListAdapter<T, VH>(diffCb, headerRows = headerRows) {
 
     @LayoutRes protected abstract fun getLayoutId(): Int
 

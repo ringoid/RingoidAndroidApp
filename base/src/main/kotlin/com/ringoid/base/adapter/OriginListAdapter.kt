@@ -5,11 +5,15 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
 import com.ringoid.domain.model.IListModel
 
-abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>)
+abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>, private val headerRows: Int = 0)
     : RecyclerView.Adapter<VH>() {
 
     init {
         setHasStableIds(true)
+
+        if (withHeader() && getHeaderLayoutResId() == 0) {
+            throw IllegalArgumentException("Need to supply header layout resource id in subclass for header")
+        }
     }
 
     companion object {
@@ -20,9 +24,11 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         const val VIEW_TYPE_FEED_END = 4
     }
 
-    private val helper = AsyncListDiffer<T>(
-        ExposedAdapterListUpdateCallback(this, exposedCb = { getExposedCb()?.invoke() }),
-        AsyncDifferConfig.Builder(diffCb).build())
+    private val helper by lazy {
+        AsyncListDiffer<T>(
+            ExposedAdapterListUpdateCallback(this, headerRows = headerRows, exposedCb = { getExposedCb()?.invoke() }),
+            AsyncDifferConfig.Builder(diffCb).build())
+    }
 
     // --------------------------------------------------------------------------------------------
     override fun onBindViewHolder(holder: VH, position: Int) {
@@ -71,8 +77,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     protected fun getItem(position: Int): T =
         if (withHeader() && position == 0) getHeaderItem()
-        else if (withFooter() && position == footerPosition()) getFooterItem()
-        else helper.currentList[if (withHeader()) position - 1 else position]
+        else helper.currentList[position - headerRows]
 
     protected fun getItems(): List<T> = helper.currentList
     /**
@@ -83,7 +88,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     protected abstract fun getHeaderItem(): T
     protected open fun getFooterItem(): T = getHeaderItem()
 
-    override fun getItemCount(): Int = fixUpForHeader() + helper.currentList.size + fixUpForFooter()
+    override fun getItemCount(): Int = helper.currentList.size + headerRows + fixUpForFooter()
 
     override fun getItemViewType(position: Int): Int =
         if (withHeader() && position == 0) VIEW_TYPE_HEADER
@@ -96,12 +101,11 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     @LayoutRes protected open fun getHeaderLayoutResId(): Int = 0
     @LayoutRes protected open fun getFooterLayoutResId(): Int = 0
 
-    private fun withHeader(): Boolean = getHeaderLayoutResId() != 0
-    private fun withFooter(): Boolean = getFooterLayoutResId() != 0
+    private fun withHeader(): Boolean = headerRows > 0
+    private fun withFooter(): Boolean = false//getFooterLayoutResId() != 0
 
-    private fun fixUpForHeader(): Int = if (withHeader()) 1 else 0
     private fun fixUpForFooter(): Int = if (withFooter()) 1 else 0
-    private fun footerPosition(): Int = fixUpForHeader() + helper.currentList.size
+    private fun footerPosition(): Int = headerRows + helper.currentList.size
 }
 
 // ------------------------------------------------------------------------------------------------

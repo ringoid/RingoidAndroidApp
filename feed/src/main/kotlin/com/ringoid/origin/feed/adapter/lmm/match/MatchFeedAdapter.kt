@@ -9,7 +9,7 @@ import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool) {
+    : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool, headerRows = 1) {
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
         MatchFeedViewHolder(view).also { vh ->
