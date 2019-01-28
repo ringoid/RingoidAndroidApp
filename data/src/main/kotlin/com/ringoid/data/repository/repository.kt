@@ -11,7 +11,7 @@ import timber.log.Timber
 import java.lang.Math.pow
 import java.util.concurrent.TimeUnit
 
-const val DEFAULT_RETRY_COUNT = 2
+const val DEFAULT_RETRY_COUNT = 0
 const val DEFAULT_RETRY_DELAY = 55
 
 /* Retry with exponential backoff */
@@ -154,17 +154,26 @@ inline fun <reified T : BaseResponse> onNetErrorObservable(tag: String? = null):
 
 /* Error handling */
 // --------------------------------------------------------------------------------------------
+fun Completable.handleErrorNoRetry(tag: String? = null): Completable = withNetError(tag)
 fun Completable.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
-    withNetError(tag).withRetry(count = count, delay = delay, tag = tag)
+    handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
+inline fun <reified T : BaseResponse> Maybe<T>.handleErrorNoRetry(tag: String? = null): Maybe<T> =
+    withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Maybe<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
-    withApiError(tag).withNetError(tag).withRetry(count = count, delay = delay, tag = tag)
+    handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
+inline fun <reified T : BaseResponse> Single<T>.handleErrorNoRetry(tag: String? = null): Single<T> =
+    withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Single<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
-    withApiError(tag).withNetError(tag).withRetry(count = count, delay = delay, tag = tag)
+    handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
+inline fun <reified T : BaseResponse> Flowable<T>.handleErrorNoRetry(tag: String? = null): Flowable<T> =
+    withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Flowable<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
-    withApiError(tag).withNetError(tag).withRetry(count = count, delay = delay, tag = tag)
+    handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
+inline fun <reified T : BaseResponse> Observable<T>.handleErrorNoRetry(tag: String? = null): Observable<T> =
+    withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Observable<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
-    withApiError(tag).withNetError(tag).withRetry(count = count, delay = delay, tag = tag)
+    handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
