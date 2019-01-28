@@ -182,11 +182,13 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     }
 
     private fun scrollListToPosition(position: Int) {
-        rv_chat_messages.smoothScrollToPosition(position)
+        rv_chat_messages.post { rv_chat_messages.smoothScrollToPosition(position) }
     }
 
     private fun scrollToTopOfItemAtPosition(position: Int) {
-        (rv_chat_messages.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+        rv_chat_messages.post {
+            (rv_chat_messages.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+        }
     }
 
     private fun showChatControls(isVisible: Boolean) {
@@ -204,8 +206,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     // ------------------------------------------
     private fun putMyMessage(message: Message) {
         et_message.setText("")  // clear text input
-        scrollListToPosition(0)
         chatAdapter.prepend(message)
+        scrollListToPosition(0)
     }
 
     // ------------------------------------------
