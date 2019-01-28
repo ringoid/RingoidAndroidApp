@@ -39,13 +39,19 @@ class UserRepository @Inject constructor(
     override fun deleteUserProfile(): Completable =
         spm.accessSingle { cloud.deleteUserProfile(accessToken = it.accessToken) }
             .handleError()  // TODO: notify on error
-            .doOnSuccess {
-                spm.apply {
-                    currentUserId()?.let {
-                        local.deleteUserProfile(userId = it)
-                        deleteUserProfile(userId = it)
-                    }
-                }
-            }
+            .doOnSuccess { clearUserLocalData() }
             .ignoreElement()  // convert to Completable
+
+    override fun deleteUserLocalData(): Completable =
+        Completable.fromCallable { clearUserLocalData() }
+
+    // ------------------------------------------
+    private fun clearUserLocalData() {
+        spm.apply {
+            currentUserId()?.let {
+                local.deleteUserProfile(userId = it)
+                deleteUserProfile(userId = it)
+            }
+        }
+    }
 }

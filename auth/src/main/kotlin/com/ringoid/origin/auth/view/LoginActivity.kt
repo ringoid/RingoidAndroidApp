@@ -60,6 +60,10 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (intent.hasExtra(Extras.EXTRA_LOGOUT)) {
+            vm.onLogout()
+        }
+
         btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
         et_year_of_birth.apply {
             requestFocus()

@@ -53,6 +53,7 @@ private fun blockingScreenIntent(path: String): Intent =
     }
 
 private fun logoutIntent(): Intent = blockingScreenIntent(path = "/login")
+    .putExtra(Extras.EXTRA_LOGOUT, true)
 
 fun blockingErrorScreen(activity: Activity, path: String) {
     blockingScreenIntent(path).let { activity.startActivity(it) }

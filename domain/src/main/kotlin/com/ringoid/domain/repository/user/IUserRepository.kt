@@ -13,4 +13,5 @@ interface IUserRepository {
     fun createUserProfile(essence: AuthCreateProfileEssence): Single<CurrentUser>
 
     fun deleteUserProfile(): Completable
+    fun deleteUserLocalData(): Completable
 }

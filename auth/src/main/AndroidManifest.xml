@@ -5,6 +5,7 @@
     <application>
         <activity
             android:name=".view.LoginActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Light"
             android:windowSoftInputMode="stateAlwaysVisible">
