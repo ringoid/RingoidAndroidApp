@@ -33,7 +33,7 @@
             android:paddingEnd="@dimen/std_margin_16"
             android:shadowColor="@color/text_shadow"
             android:shadowRadius="6"
-            android:textColor="?attr/refTextColorPrimary">
+            android:textColor="@android:color/white">
             <requestFocus/>
         </com.ringoid.widget.view.KeyEditText>
 
