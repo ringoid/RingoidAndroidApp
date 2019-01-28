@@ -17,6 +17,7 @@ abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: B
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val layoutResId = when (viewType) {
             VIEW_TYPE_HEADER -> getHeaderLayoutResId()
+            VIEW_TYPE_FOOTER -> getFooterLayoutResId()
             else -> getLayoutId()
         }
 
