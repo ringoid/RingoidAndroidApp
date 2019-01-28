@@ -141,6 +141,11 @@ abstract class FeedViewModel(
     }
 
     private fun addViewObjectToBuffer(aobj: ViewActionObject) {
-        viewActionObjectBuffer[aobj.targetImageId to aobj.targetUserId] = aobj
+        val key = aobj.targetImageId to aobj.targetUserId
+        if (viewActionObjectBuffer.containsKey(key)) {
+            return  // don't replace already added aobj, because it's creation time is tracking now
+        }
+
+        viewActionObjectBuffer[key] = aobj
     }
 }
