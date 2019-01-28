@@ -103,7 +103,7 @@ abstract class FeedViewModel(
         prevRange?.delta(items)
             ?.takeIf { !it.isRangeEmpty() }
             ?.let {
-                Timber.v("Excluded items in range [${it.range()}], consume VIEW action objects")
+                Timber.v("Excluded items in range ${it.range()}, consume VIEW action objects")
                 advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
             }
 
