@@ -9,6 +9,8 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.utility.changeVisibility
+import com.ringoid.widget.view.Direction
+import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 interface ILmmViewHolder
@@ -18,6 +20,20 @@ abstract class OriginLmmViewHolder(view: View, viewPool: RecyclerView.RecycledVi
 
 abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseFeedViewHolder<FeedItem>(view, viewPool) {
+
+    init {
+        itemView.ibtn_message.setOnFlingListener {
+            val rv = itemView.rv_items
+            when (it) {
+                Direction.left -> {  // next page
+                    rv.smoothScrollToPosition(adapterPosition + 1)
+                }
+                Direction.right -> {  // previous page
+                    rv.smoothScrollToPosition(adapterPosition - 1)
+                }
+            }
+        }
+    }
 
     override fun bind(model: FeedItem, payloads: List<Any>) {
         fun hideControls() {
