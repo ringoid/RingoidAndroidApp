@@ -96,6 +96,10 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     // ------------------------------------------
     fun getItemExposed(position: Int): T = getItem(position)
     fun getItemsExposed(from: Int, to: Int): List<T> {
+        if (isEmpty()) {
+            return emptyList()
+        }
+
         val list = mutableListOf<T>()
         for (i in from..to) list.add(getItem(i))
         return list
