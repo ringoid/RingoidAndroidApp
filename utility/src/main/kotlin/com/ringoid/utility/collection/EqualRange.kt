@@ -109,4 +109,6 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
 
     // ------------------------------------------
     override fun toString(): String = (from..to step 1).joinToString(", ", "[", "]")
+
+    fun payloadToString(): String = "${toString()} ${joinToString(", ", "{", "}")}"
 }

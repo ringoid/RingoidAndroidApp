@@ -99,7 +99,7 @@ abstract class FeedViewModel(
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {
-        Timber.v("Incoming visible items: $items")
+        Timber.v("Incoming visible items: ${items.payloadToString()}")
         prevRange?.delta(items)
             ?.takeIf { !it.isRangeEmpty() }
             ?.let {
