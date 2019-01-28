@@ -22,7 +22,7 @@
         android:background="@drawable/right_gradient"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="@dimen/std_image_height"
@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"/>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout>
 
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
