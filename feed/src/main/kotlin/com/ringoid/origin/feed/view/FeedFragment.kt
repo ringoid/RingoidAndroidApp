@@ -11,6 +11,7 @@ import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.IProfile
+import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
@@ -205,10 +206,13 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
             (rv.layoutManager as? LinearLayoutManager)?.let {
                 val from = it.findFirstVisibleItemPosition()
                 val to = it.findLastVisibleItemPosition()
-                val items = feedAdapter.getItemsExposed(from = from, to = to).filter { it.isRealModel }
-
+                val items = feedAdapter.getItemsExposed(from = from, to = to)
                 // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0' properly
-                var range = EqualRange(from = from, to = to, items = items.map { ProfileImageVO(profileId = it.id, image = it.images[0]) })
+                var range = EqualRange(from = from, to = to,
+                    items = items.map {
+                        val image = if (it.isRealModel) it.images[0] else EmptyImage
+                        ProfileImageVO(profileId = it.id, image = image)
+                    })
                 range = range.takeIf { feedAdapter.withHeader() }
                              ?.takeIf { from == 0 }
                              ?.let { it.dropItems(n = 1) }  // exclude header item from visibility tracking
