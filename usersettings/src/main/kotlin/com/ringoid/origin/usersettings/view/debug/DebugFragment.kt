@@ -49,12 +49,12 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
             setTitle(OriginR_string.debug_title)
         }
 
-        item_error_http.clicks().compose(clickDebounce()).subscribe {  }
+        item_error_http.clicks().compose(clickDebounce()).subscribe { vm.requestWithNotSuccessResponse() }
         item_error_token.clicks().compose(clickDebounce()).subscribe { vm.requestWithInvalidAccessToken() }
         item_error_token_expired.clicks().compose(clickDebounce()).subscribe { vm.requestWithExpiredAccessToken() }
         item_error_app_version.clicks().compose(clickDebounce()).subscribe { vm.requestWithStaledAppVersion() }
         item_error_server.clicks().compose(clickDebounce()).subscribe { vm.requestWithServerError() }
         item_error_request_params.clicks().compose(clickDebounce()).subscribe { vm.requestWithWrongParams() }
-        item_error_timeout.clicks().compose(clickDebounce()).subscribe {  }
+        item_error_timeout.clicks().compose(clickDebounce()).subscribe { vm.requestWithTimeOutResponse() }
     }
 }
