@@ -205,7 +205,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
             (rv.layoutManager as? LinearLayoutManager)?.let {
                 val from = it.findFirstVisibleItemPosition()
                 val to = it.findLastVisibleItemPosition()
-                val items = feedAdapter.getItemsExposed(from = from, to = to)
+                val items = feedAdapter.getItemsExposed(from = from, to = to).filter { it.isRealModel }
                 Timber.v("Visible feed items [${items.size}] [$from, $to]: $items")
                 feedTrackingBus.postViewEvent(EqualRange(from = from, to = to,
                     items = items.map { ProfileImageVO(profileId = it.id, image = it.images[0]) }))

@@ -5,7 +5,8 @@ import android.os.Parcelable
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.utility.randomString
 
-data class Image(override val id: String, override val uri: String? = null) : IImage {
+data class Image(override val id: String, override val uri: String? = null,
+                 override val isRealModel: Boolean = true) : IImage {
 
     private constructor(source: Parcel): this(id = source.readString() ?: BAD_ID, uri = source.readString())
 
@@ -29,4 +30,4 @@ data class Image(override val id: String, override val uri: String? = null) : II
     }
 }
 
-val EmptyImage = Image(id = randomString(), uri = null)
+val EmptyImage = Image(id = randomString(), uri = null, isRealModel = false)

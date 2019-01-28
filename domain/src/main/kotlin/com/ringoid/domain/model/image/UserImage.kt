@@ -7,7 +7,8 @@ import com.ringoid.utility.randomString
 
 data class UserImage(
     val originId: String = BAD_ID, val numberOfLikes: Int = 0,
-    override val id: String, override val uri: String? = null) : IImage {
+    override val id: String, override val uri: String? = null,
+    override val isRealModel: Boolean = true) : IImage {
 
     private constructor(source: Parcel): this(
         id = source.readString() ?: BAD_ID, uri = source.readString(),
@@ -38,4 +39,4 @@ data class UserImage(
     }
 }
 
-val EmptyUserImage = UserImage(id = randomString(), uri = null)
+val EmptyUserImage = UserImage(id = randomString(), uri = null, isRealModel = false)
