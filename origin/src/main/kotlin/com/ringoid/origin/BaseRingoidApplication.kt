@@ -54,9 +54,8 @@ abstract class BaseRingoidApplication : DaggerApplication() {
     private fun initializeLogger() {
         if (BuildConfig.DEBUG) {
             Timber.plant(object : Timber.DebugTree() {
-                override fun createStackElementTag(element: StackTraceElement): String {
-                    return packageName + ":" + super.createStackElementTag(element) + ":" + element.lineNumber
-                }
+                override fun createStackElementTag(element: StackTraceElement): String =
+                    packageName + ":" + super.createStackElementTag(element) + ":" + element.lineNumber
             })
         } else {
             Timber.plant(CrashlyticsTree())
