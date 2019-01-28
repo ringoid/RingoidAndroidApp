@@ -14,13 +14,22 @@ import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.ChatPayload
+import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.view.dialog.IDialogCallback
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
-    : FeedFragment<VM, FeedItem, VH>(), IDialogCallback
+    : FeedFragment<VM, FeedItem, VH>(), IChatHost, IDialogCallback
     where VH : BaseViewHolder<FeedItem>, VH : IFeedViewHolder {
 
     // --------------------------------------------------------------------------------------------
+    override fun onBlockFromChat(payload: ChatPayload) {
+        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId)
+    }
+
+    override fun onReportFromChat(payload: ChatPayload, reasonNumber: Int) {
+        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber)
+    }
+
     override fun onDialogDismiss(tag: String, payload: Parcelable?) {
         (payload as? ChatPayload)
             ?.let {

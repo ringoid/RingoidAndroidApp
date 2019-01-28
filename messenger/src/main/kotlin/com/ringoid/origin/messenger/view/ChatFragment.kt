@@ -23,6 +23,7 @@ import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
+import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.Dialogs
@@ -120,7 +121,13 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         when (requestCode) {
             RequestCode.RC_BLOCK_DIALOG -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    // TODO: close chat
+                    if (data?.hasExtra(Extras.OUT_EXTRA_REPORT_REASON) != null) {
+                        val reasonNumber = (data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0) + 1) * 10
+                        communicator(IChatHost::class.java)?.onReportFromChat(payload as ChatPayload, reasonNumber = reasonNumber)
+                    } else {
+                        communicator(IChatHost::class.java)?.onBlockFromChat(payload as ChatPayload)
+                    }
+                    closeChat()
                 } else {
                     showChatControls(isVisible = true)
                 }
