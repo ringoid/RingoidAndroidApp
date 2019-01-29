@@ -9,7 +9,6 @@ import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.FeedItemDiffCallback
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
-import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
@@ -28,12 +27,8 @@ abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesVi
                 }
 
                 val wrapMessageClickListener = wrapMessageClickListener(vh)
-                vh.itemView.ibtn_message.apply {
-                    // TODO: show message button only after like tap
-                    changeVisibility(isVisible = true)
-                    clicks().compose(clickDebounce())
-                        .subscribe { wrapOnItemClickListener(vh, wrapMessageClickListener).onClick(vh.itemView.ibtn_message) }
-                }
+                vh.itemView.ibtn_message.clicks().compose(clickDebounce())
+                    .subscribe { wrapOnItemClickListener(vh, wrapMessageClickListener).onClick(vh.itemView.ibtn_message) }
             }
 
     // ------------------------------------------
