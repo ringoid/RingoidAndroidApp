@@ -112,7 +112,10 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.messages, chatAdapter::submitList) { scrollToTopOfItemAtPosition(ChatInMemoryCache.getProfilePosition(profileId = peerId)) }
+            observe(vm.messages, chatAdapter::submitList) {
+                val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
+                scrollToTopOfItemAtPosition(position)
+            }
             observe(vm.sentMessage, ::putMyMessage)
         }
     }
@@ -171,7 +174,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onStart() {
         super.onStart()
-        vm.getMessages()
+        vm.getMessages(profileId = peerId)
     }
 
     override fun onDismiss(dialog: DialogInterface) {

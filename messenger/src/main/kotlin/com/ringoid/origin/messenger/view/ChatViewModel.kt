@@ -8,6 +8,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
+import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Message
@@ -21,10 +22,10 @@ class ChatViewModel @Inject constructor(private val sendMessageToPeerUseCase: Se
     val messages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
 
-    fun getMessages() {
+    fun getMessages(profileId: String) {
         // TODO: get messages properly
         // TODO: the most recent message is the first one in list, positions ascending and message age is also ascending
-        messages.value = listOf(
+        val xmessages = listOf(
             Message(peerId = "peer1", text = "1!"),  // NEW
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "1 Howdy. Have a plans for tonight?"),
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "1 Glad to see you"),
@@ -45,6 +46,11 @@ class ChatViewModel @Inject constructor(private val sendMessageToPeerUseCase: Se
             Message(peerId = DomainUtil.CURRENT_USER_ID, text = "4 Glad to see you"),
             Message(peerId = "peer1", text = "4 Okay at 19:30 pm!"),
             Message(peerId = "peer1", text = "4 Go to eat food!"))  // OLD
+
+        if (ChatInMemoryCache.getMessagesCount(profileId = profileId) != xmessages.size) {
+            ChatInMemoryCache.setMessagesCount(profileId = profileId, count = xmessages.size)
+        }
+        messages.value = xmessages
     }
 
     @Suppress("CheckResult")
