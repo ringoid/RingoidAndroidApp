@@ -98,6 +98,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     protected fun getItem(position: Int): T =
         if (withHeader() && position == 0) getHeaderItem()
+        else if (withLoader() && position == footerPosition()) getLoadingItem()
         else if (withFooter() && position == footerPosition()) getFooterItem()
         else helper.currentList[position - fixUpForHeader()]
 
@@ -108,7 +109,8 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
      * not used anywhere.
      */
     protected abstract fun getHeaderItem(): T
-    protected open fun getFooterItem(): T = getHeaderItem()
+    private fun getFooterItem(): T = getHeaderItem()
+    private fun getLoadingItem(): T = getHeaderItem()
 
     // ------------------------------------------
     fun getItemExposed(position: Int): T = getItem(position)
