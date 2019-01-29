@@ -35,6 +35,7 @@ import com.ringoid.domain.model.feed.Feed
  */
 class FeedResponse(
     @Expose @SerializedName(COLUMN_PROFILES) val profiles: List<ProfileEntity> = emptyList(),
+    @Expose @SerializedName(COLUMN_REPEAT_AFTER_SEC) val repeatAfterSec: Int = 0,
     errorCode: String = "", errorMessage: String = "")
     : BaseResponse(errorCode, errorMessage), Mappable<Feed> {
 
@@ -43,6 +44,7 @@ class FeedResponse(
 
     companion object {
         const val COLUMN_PROFILES = "profiles"
+        const val COLUMN_REPEAT_AFTER_SEC = "repeatRequestAfterSec"
     }
 
     override fun map(): Feed = Feed(profiles = profiles.map { it.map() })
