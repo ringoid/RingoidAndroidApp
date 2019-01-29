@@ -206,6 +206,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
             (rv.layoutManager as? LinearLayoutManager)?.let {
                 val from = it.findFirstVisibleItemPosition()
                 val to = it.findLastVisibleItemPosition()
+                Timber.d("Feed Adapter: $feedAdapter")  // TODO: remove log in release
                 val items = feedAdapter.getItemsExposed(from = from, to = to)
                 // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0' properly
                 var range = EqualRange(from = from, to = to,

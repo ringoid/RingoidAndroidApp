@@ -136,6 +136,9 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     private fun fixUpForHeader(): Int = if (isEmpty()) 0 else if (withHeader()) 1 else 0
     private fun fixUpForFooter(): Int = if (isEmpty()) 0 else if (withFooter()) 1 else 0
     fun footerPosition(): Int = headerRows + helper.currentList.size
+
+    // --------------------------------------------------------------------------------------------
+    override fun toString(): String = "$javaClass: size=${helper.currentList.size}, withHeader=${withHeader()}, withFooter=${withFooter()}[at ${footerPosition()}]"
 }
 
 // ------------------------------------------------------------------------------------------------
