@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.interactor.feed.ClearCachedBlockedProfileIdsUseCase
 import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
@@ -24,8 +25,9 @@ import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
     private val createUserProfileUseCase: CreateUserProfileUseCase,
-    private val clearLocalUserDataUseCase: ClearLocalUserDataUseCase, app: Application)
-    : BaseViewModel(app) {
+    private val clearLocalUserDataUseCase: ClearLocalUserDataUseCase,
+    private val clearCachedBlockedProfileIdsUseCase: ClearCachedBlockedProfileIdsUseCase,
+    app: Application) : BaseViewModel(app) {
 
     private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
@@ -83,6 +85,7 @@ class LoginViewModel @Inject constructor(
                 ChatInMemoryCache.clear()
                 actionObjectPool.dropLastActionTime()
             }
+            .andThen(clearCachedBlockedProfileIdsUseCase.source())
             .autoDisposable(this)
             .subscribe({ Timber.i("Local user data has been cleared on logout") }, Timber::e)
     }
