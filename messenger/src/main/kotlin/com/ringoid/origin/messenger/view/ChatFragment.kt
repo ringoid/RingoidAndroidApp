@@ -185,7 +185,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     // --------------------------------------------------------------------------------------------
     private fun closeChat() {
-        val position = (rv_chat_messages.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: ChatInMemoryCache.BOTTOM_CHAT_POSITION
+        val position = rv_chat_messages.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition() ?: ChatInMemoryCache.BOTTOM_CHAT_POSITION
         ChatInMemoryCache.addProfileWithPosition(profileId = peerId, position = position)
         et_message.hideKeyboard()
         dismiss()
@@ -197,7 +197,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     private fun scrollToTopOfItemAtPosition(position: Int) {
         rv_chat_messages.post {
-            (rv_chat_messages.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+            rv_chat_messages.linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
         }
     }
 

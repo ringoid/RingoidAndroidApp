@@ -16,6 +16,8 @@ import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 
 // ------------------------------------------------------------------------------------------------
@@ -44,6 +46,8 @@ fun View.touchExtend(size: Int = 100): View {
     }
     return this
 }
+
+fun RecyclerView.linearLayoutManager(): LinearLayoutManager? = layoutManager as? LinearLayoutManager
 
 fun TextView.changeTypeface(tf: Typeface? = null, style: Int = Typeface.NORMAL, isSelected: Boolean = false) {
     this.isSelected = isSelected

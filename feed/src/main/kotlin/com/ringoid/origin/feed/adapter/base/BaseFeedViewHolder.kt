@@ -11,6 +11,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.linearLayoutManager
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -53,7 +54,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
             setOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(rv, dx, dy)
-                    (rv.layoutManager as? LinearLayoutManager)?.let {
+                    rv.linearLayoutManager()?.let {
                         val from = it.findFirstVisibleItemPosition()
                         val to = it.findLastVisibleItemPosition()
                         val items = profileImageAdapter.getItemsExposed(from = from, to = to)
@@ -94,5 +95,5 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
     }
 
     override fun getCurrentImagePosition(): Int =
-        (itemView.rv_items.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        itemView.rv_items.linearLayoutManager()?.findFirstVisibleItemPosition() ?: 0
 }

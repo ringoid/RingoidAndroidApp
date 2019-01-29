@@ -2,7 +2,9 @@ package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.GetNewFacesUseCase
@@ -18,16 +20,17 @@ class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
-    : FeedViewModel(cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
+    : FeedViewModel(cacheBlockedProfileIdUseCase, countUserImagesUseCase, app),
+    IListScrollCallback {
 
     val feed by lazy { MutableLiveData<Feed>() }
+    private var isLoadingMore: Boolean = false
 
+    override fun getFeedName(): String = "new_faces"
+
+    // ------------------------------------------
     override fun getFeed() {
-        val params = Params()
-            .put(ScreenHelper.getLargestPossibleImageResolution(context))
-            .put("limit", 20)
-
-        getNewFacesUseCase.source(params = params)
+        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
@@ -38,5 +41,32 @@ class ExploreViewModel @Inject constructor(
             .subscribe({ feed.value = it }, Timber::e)
     }
 
-    override fun getFeedName(): String = "new_faces"
+    private fun getMoreFeed() {
+        getNewFacesUseCase.source(params = prepareFeedParams())
+            .doOnSubscribe { viewState.value = ViewState.PAGING }
+            .doOnSuccess {
+                // TODO: on empty load more - show footer, hide loading indicator
+                viewState.value = ViewState.IDLE
+            }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doFinally { isLoadingMore = false }
+            .autoDisposable(this)
+            .subscribe({ feed.value = feed.value?.append(it) ?: it }, Timber::e)
+    }
+
+    private fun prepareFeedParams(): Params =
+        Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+                .put("limit", DomainUtil.LIMIT_PER_PAGE)
+
+    // ------------------------------------------
+    override fun onScroll(itemsLeftToEnd: Int) {
+        if (isLoadingMore) {
+            Timber.v("Skip onScroll event in error state or during loading more")
+            return
+        }
+        if (itemsLeftToEnd <= DomainUtil.LOAD_MORE_THRESHOLD) {
+            isLoadingMore = true
+            getMoreFeed()
+        }
+    }
 }

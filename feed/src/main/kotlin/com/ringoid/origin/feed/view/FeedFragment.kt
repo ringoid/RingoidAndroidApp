@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
-import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.IProfile
 import com.ringoid.domain.model.image.EmptyImage
@@ -28,12 +28,13 @@ import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.communicator
+import com.ringoid.utility.linearLayoutManager
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
 abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
-    : BaseFragment<VM>() where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
+    : BaseListFragment<VM>() where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
 
     object InternalNavigator {
         fun openProfileScreen(fragment: Fragment) {
@@ -47,6 +48,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
+    override fun getRecyclerView(): RecyclerView = rv_items
 
     protected abstract fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseFeedAdapter<T, VH>
 
@@ -103,15 +105,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
              */
             vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
         }
-    }
-
-    // ------------------------------------------
-    protected fun scrollListToPosition(position: Int) {
-        rv_items.smoothScrollToPosition(position)
-    }
-
-    protected fun scrollToTopOfItemAtPosition(position: Int) {
-        (rv_items.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
     }
 
     /* Lifecycle */
@@ -203,7 +196,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
-            (rv.layoutManager as? LinearLayoutManager)?.let {
+            rv.linearLayoutManager()?.let {
                 val from = it.findFirstVisibleItemPosition()
                 val to = it.findLastVisibleItemPosition()
                 Timber.d("Feed Adapter: $feedAdapter, range [$from, $to]")  // TODO: remove log in release
