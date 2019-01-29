@@ -142,7 +142,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     @LayoutRes protected open fun getFooterLayoutResId(): Int = 0
 
     fun withHeader(): Boolean = headerRows > 0
-    fun withFooter(): Boolean = getFooterLayoutResId() != 0
+    fun withFooter(): Boolean = getFooterLayoutResId() != 0 && !withLoader()
     fun withLoader(): Boolean = isThereMore
 
     private fun fixUpForHeader(): Int = if (isEmpty()) 0 else if (withHeader()) 1 else 0
