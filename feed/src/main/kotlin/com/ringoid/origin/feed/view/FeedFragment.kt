@@ -174,7 +174,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
             setHasFixedSize(true)
 //            setRecycledViewPool(viewPool)  // TODO: use pool for feeds
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-            addOnScrollListener(scrollListener)
+            addOnScrollListener(visibilityTrackingScrollListener)
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
@@ -196,11 +196,11 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_items.removeOnScrollListener(scrollListener)
+        rv_items.removeOnScrollListener(visibilityTrackingScrollListener)
     }
 
     // --------------------------------------------------------------------------------------------
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
+    private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
             (rv.layoutManager as? LinearLayoutManager)?.let {
