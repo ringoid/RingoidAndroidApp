@@ -33,6 +33,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
     private val strategies = mutableMapOf<Class<ActionObject>, List<TriggerStrategy>>()
     private val timers = mutableMapOf<Class<ActionObject>, Disposable?>()
 
+    // --------------------------------------------------------------------------------------------
     @Synchronized
     override fun put(aobj: ActionObject) {
         Timber.v("Put action object: $aobj")
@@ -119,6 +120,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         }
     }
 
+    // ------------------------------------------
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
         if (queue.isEmpty()) {
@@ -147,5 +149,10 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         }
         .subscribe({ Timber.v("Triggering... finished, last action time: ${it.lastActionTime}") }, Timber::e)
         // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
+    }
+
+    // --------------------------------------------------------------------------------------------
+    override fun dropLastActionTime() {
+        lastActionTime = 0L
     }
 }

@@ -79,7 +79,10 @@ class LoginViewModel @Inject constructor(
     // ------------------------------------------
     fun onLogout() {
         clearLocalUserDataUseCase.source()
-            .doOnSubscribe { ChatInMemoryCache.clear() }
+            .doOnSubscribe {
+                ChatInMemoryCache.clear()
+                actionObjectPool.dropLastActionTime()
+            }
             .autoDisposable(this)
             .subscribe({ Timber.i("Local user data has been cleared on logout") }, Timber::e)
     }

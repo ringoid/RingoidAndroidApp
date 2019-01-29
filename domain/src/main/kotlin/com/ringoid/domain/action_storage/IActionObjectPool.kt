@@ -7,4 +7,6 @@ interface IActionObjectPool {
     fun put(aobj: ActionObject)
 
     fun trigger()
+
+    fun dropLastActionTime()
 }
