@@ -39,19 +39,6 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile, OriginFeedViewHo
         }
 
     // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.IDLE -> {
-                // TODO: hide loading
-            }
-            is ViewState.PAGING -> {
-                // TODO: show loading indicator on next page
-            }
-        }
-    }
-
-    // ------------------------------------------
     override fun onTabReselect() {
         super.onTabReselect()
         scrollToTopOfItemAtPosition(0)
