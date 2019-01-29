@@ -60,20 +60,29 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     /* Data Access */
     // --------------------------------------------------------------------------------------------
     fun clear() {
-        submitList(null)
+        helper.submitList(null)
         notifyDataSetChanged()  // fix possible 'inconsistency detected' error
     }
 
     fun prepend(item: T) {
-        helper.submitList(mutableListOf<T>().apply { add(item) }.also { it.addAll(helper.currentList) })
+        submitList(mutableListOf<T>().apply { add(item) }.also { it.addAll(helper.currentList) })
     }
 
     fun remove(predicate: (item: T) -> Boolean) {
-        helper.submitList(ArrayList(helper.currentList).apply { removeAll(predicate) })
+        submitList(ArrayList(helper.currentList).apply { removeAll(predicate) })
     }
 
-    open fun submitList(list: List<T>?) {
-        helper.submitList(list)
+    fun submitList(list: List<T>?) {
+        if (list.isNullOrEmpty()) {
+            clear()
+        } else {
+            helper.submitList(list)
+        }
+        onSubmitList(list)
+    }
+
+    protected open fun onSubmitList(list: List<T>?) {
+        // override in subclasses
     }
 
     // ------------------------------------------

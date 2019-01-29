@@ -40,8 +40,8 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
             ?.let { submitList(ArrayList(getModels()).apply { remove(it) }) }
     }
 
-    override fun submitList(list: List<UserImage>?) {
-        super.submitList(list)
+    override fun onSubmitList(list: List<UserImage>?) {
+        super.onSubmitList(list)
         onEmptyImagesListener?.invoke(list.isNullOrEmpty())
     }
 
