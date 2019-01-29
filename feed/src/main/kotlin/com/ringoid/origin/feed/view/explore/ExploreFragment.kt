@@ -24,7 +24,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile, OriginFeedViewHo
             : BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>> =
         FeedAdapter(imagesViewPool).apply {
             onLikeImageListener = { model: ProfileImageVO, _ ->
-                Timber.i("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
+                Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
                 vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
             }
         }
