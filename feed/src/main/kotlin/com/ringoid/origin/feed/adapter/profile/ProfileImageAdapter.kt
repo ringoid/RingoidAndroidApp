@@ -15,14 +15,14 @@ import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageViewHolder>(ProfileImageDiffCallback()) {
 
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
-    var isLikeButtonVisible = true
+    var isLikeEnabled = true
 
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
     override fun instantiateViewHolder(view: View): BaseProfileImageViewHolder =
         ProfileImageViewHolder(view).also { vh ->
             vh.itemView.ibtn_like.apply {
-                changeVisibility(isVisible = isLikeButtonVisible)
+                changeVisibility(isVisible = isLikeEnabled)
                 clicks().compose(clickDebounce()).subscribe { getOnLikeButtonClickListener(vh).onClick(vh.itemView.ibtn_like) }
             }
         }
@@ -36,7 +36,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
 
     // ------------------------------------------
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
-        if (!isLikeButtonVisible) {
+        if (!isLikeEnabled) {
             super.getOnItemClickListener(vh)
         } else {
             val clickListener = super.wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))

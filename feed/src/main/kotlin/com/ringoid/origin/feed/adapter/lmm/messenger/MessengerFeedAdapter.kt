@@ -24,7 +24,7 @@ class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
         MessengerViewHolder(view, viewPool = imagesViewPool).also { vh ->
             vh.profileImageAdapter.also { adapter ->
-                adapter.isLikeButtonVisible = false  // hide like button on messenger feed items
+                adapter.isLikeEnabled = false  // hide like button on messenger feed items
                 adapter.itemClickListener = onImageToOpenChatClickListener
             }
             val wrapMessageClickListener = wrapMessageClickListener(vh)

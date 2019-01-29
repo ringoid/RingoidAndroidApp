@@ -17,7 +17,7 @@ class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
         MatchFeedViewHolder(view, viewPool = imagesViewPool).also { vh ->
             vh.profileImageAdapter.also { adapter ->
-                adapter.isLikeButtonVisible = false  // hide like button on matches feed items
+                adapter.isLikeEnabled = false  // hide like button on matches feed items
                 adapter.itemClickListener = onImageToOpenChatClickListener
             }
             (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
