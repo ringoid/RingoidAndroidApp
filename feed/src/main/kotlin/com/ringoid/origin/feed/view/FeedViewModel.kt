@@ -8,6 +8,7 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.actions.*
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
@@ -95,7 +96,10 @@ abstract class FeedViewModel(
         cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({ viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId)) }, Timber::e)
+            .subscribe({
+                ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
+                viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
+            }, Timber::e)
     }
 
     fun onView(items: EqualRange<ProfileImageVO>) {

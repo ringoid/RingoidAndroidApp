@@ -18,6 +18,7 @@ import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
+import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.messenger.ChatPayload
@@ -94,6 +95,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         super.onCreate(savedInstanceState)
         peerId = arguments?.getString(BUNDLE_KEY_PEER_ID, BAD_ID) ?: BAD_ID
         payload = arguments?.getParcelable(BUNDLE_KEY_PAYLOAD)
+        ChatInMemoryCache.addProfileIfNotExists(profileId = peerId)
 
         chatAdapter = ChatAdapter().apply {
             itemClickListener = { _, _ -> closeChat() }
@@ -110,7 +112,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.messages, chatAdapter::submitList) { scrollToTopOfItemAtPosition(0) }
+            observe(vm.messages, chatAdapter::submitList) { scrollToTopOfItemAtPosition(ChatInMemoryCache.getProfilePosition(profileId = peerId)) }
             observe(vm.sentMessage, ::putMyMessage)
         }
     }
@@ -180,6 +182,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     // --------------------------------------------------------------------------------------------
     private fun closeChat() {
+        val position = (rv_chat_messages.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: ChatInMemoryCache.BOTTOM_CHAT_POSITION
+        ChatInMemoryCache.addProfileWithPosition(profileId = peerId, position = position)
         et_message.hideKeyboard()
         dismiss()
     }

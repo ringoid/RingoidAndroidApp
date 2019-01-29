@@ -8,6 +8,7 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
+import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
@@ -78,6 +79,7 @@ class LoginViewModel @Inject constructor(
     // ------------------------------------------
     fun onLogout() {
         clearLocalUserDataUseCase.source()
+            .doOnSubscribe { ChatInMemoryCache.clear() }
             .autoDisposable(this)
             .subscribe({ Timber.i("Local user data has been cleared on logout") }, Timber::e)
     }
