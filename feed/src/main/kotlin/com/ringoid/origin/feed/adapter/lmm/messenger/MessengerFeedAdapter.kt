@@ -9,6 +9,7 @@ import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.FeedItemDiffCallback
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
+import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_messenger_feed_profile.view.*
 
@@ -16,16 +17,17 @@ class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
     : BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>>(imagesViewPool, FeedItemDiffCallback()) {
 
     var messageClickListener: ((model: FeedItem, position: Int, positionOfImage: Int) -> Unit)? = null
+    var onImageToOpenChatClickListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
 
     override fun getLayoutId(): Int = R.layout.rv_item_messenger_feed_profile
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
         MessengerViewHolder(view, viewPool = imagesViewPool).also { vh ->
-            vh.profileImageAdapter.isLikeButtonVisible = false
-            val wrapMessageClickListener: ((model: FeedItem, position: Int) -> Unit)? =
-                { model: FeedItem, position: Int ->
-                    messageClickListener?.invoke(model, position, vh.getCurrentImagePosition())
-                }
+            vh.profileImageAdapter.also { adapter ->
+                adapter.isLikeButtonVisible = false  // hide like button on messenger feed items
+                adapter.itemClickListener = onImageToOpenChatClickListener
+            }
+            val wrapMessageClickListener = wrapMessageClickListener(vh)
             vh.itemView.ibtn_message.clicks().compose(clickDebounce())
                 .subscribe { wrapOnItemClickListener(vh, wrapMessageClickListener).onClick(vh.itemView.ibtn_message) }
         }
@@ -34,4 +36,10 @@ class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
 
     // ------------------------------------------
     override fun getHeaderItem(): FeedItem = EmptyFeedItem
+
+    // ------------------------------------------
+    private fun wrapMessageClickListener(vh: MessengerViewHolder): ((model: FeedItem, position: Int) -> Unit)? =
+        { model: FeedItem, position: Int ->
+            messageClickListener?.invoke(model, position, vh.getCurrentImagePosition())
+        }
 }

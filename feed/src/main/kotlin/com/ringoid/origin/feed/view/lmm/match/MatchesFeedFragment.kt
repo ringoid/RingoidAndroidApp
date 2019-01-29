@@ -9,6 +9,7 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
 import com.ringoid.origin.feed.adapter.lmm.match.MatchFeedAdapter
+import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.like.BaseLikesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
@@ -23,7 +24,13 @@ class MatchesFeedFragment : BaseLikesFeedFragment<MatchesFeedViewModel, OriginFe
     override fun getVmClass(): Class<MatchesFeedViewModel> = MatchesFeedViewModel::class.java
 
     override fun instantiateFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?)
-        : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>> = MatchFeedAdapter(imagesViewPool)
+        : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>> =
+        MatchFeedAdapter(imagesViewPool).apply {
+            onImageToOpenChatClickListener = { model: ProfileImageVO, position: Int ->
+                communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
+                openChat(position = position, peerId = model.profileId, imageId = model.image.id)
+            }
+        }
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {

@@ -27,10 +27,7 @@ abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesVi
                     return@also
                 }
 
-                val wrapMessageClickListener: ((model: FeedItem, position: Int) -> Unit)? =
-                    { model: FeedItem, position: Int ->
-                        messageClickListener?.invoke(model, position, vh.getCurrentImagePosition())
-                    }
+                val wrapMessageClickListener = wrapMessageClickListener(vh)
                 vh.itemView.ibtn_message.apply {
                     // TODO: show message button only after like tap
                     changeVisibility(isVisible = true)
@@ -42,4 +39,10 @@ abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesVi
     // ------------------------------------------
     override fun getHeaderItem(): FeedItem = EmptyFeedItem
     override fun getHeaderLayoutResId(): Int = R.layout.rv_item_feed_lmm_header
+
+    // ------------------------------------------
+    private fun wrapMessageClickListener(vh: VH): ((model: FeedItem, position: Int) -> Unit)? =
+        { model: FeedItem, position: Int ->
+            messageClickListener?.invoke(model, position, vh.getCurrentImagePosition())
+        }
 }

@@ -35,8 +35,11 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
     override fun getHeaderItem(): ProfileImageVO = EmptyProfileImageVO
 
     // ------------------------------------------
-    override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
-        val clickListener = super.wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))
+    override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
+        if (!isLikeButtonVisible) {
+            super.getOnItemClickListener(vh)
+        } else {
+            val clickListener = super.wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))
 //        vh.itemView.setOnTouchListener { _, event ->
 //            if (event.action == MotionEvent.ACTION_DOWN) {
 //                vh.itemView.iv_like_anim.apply {
@@ -46,7 +49,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
 //            }
 //            false
 //        }
-        return clickListener
+        clickListener
     }
 
     private fun getOnLikeButtonClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =

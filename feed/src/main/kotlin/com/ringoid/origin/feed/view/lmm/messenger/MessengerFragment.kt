@@ -7,6 +7,7 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.adapter.lmm.messenger.MessengerFeedAdapter
+import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 
@@ -23,6 +24,9 @@ class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, OriginFeedView
         MessengerFeedAdapter(imagesViewPool).apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
                 openChat(peerId = model.id, position = position, imageId = model.images[positionOfImage].id)
+            }
+            onImageToOpenChatClickListener = { model: ProfileImageVO, position: Int ->
+                openChat(position = position, peerId = model.profileId, imageId = model.image.id)
             }
         }
 
