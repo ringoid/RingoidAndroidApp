@@ -59,7 +59,10 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     /* Data Access */
     // --------------------------------------------------------------------------------------------
+    private var isThereMore: Boolean = false  // indicates is there more items for paging
+
     fun clear() {
+        isThereMore = false
         helper.submitList(null)
         notifyDataSetChanged()  // fix possible 'inconsistency detected' error
     }
@@ -79,6 +82,11 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
             helper.submitList(list)
         }
         onSubmitList(list)
+    }
+
+    fun submitList(list: List<T>?, isThereMore: List<T>.() -> Boolean = { false }) {
+        submitList(list)
+        this.isThereMore = list?.isThereMore() == true
     }
 
     protected open fun onSubmitList(list: List<T>?) {
@@ -115,12 +123,13 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     }
 
     // ------------------------------------------
-    override fun getItemCount(): Int = helper.currentList.size + fixUpForHeader() + fixUpForFooter()
+    override fun getItemCount(): Int = getModelsCount() + fixUpForHeader() + fixUpForFooter() + fixUpForLoader()
 
-    fun getModelCount(): Int = helper.currentList.size
+    fun getModelsCount(): Int = helper.currentList.size
 
     override fun getItemViewType(position: Int): Int =
         if (withHeader() && position == 0) VIEW_TYPE_HEADER
+        else if (withLoader() && position == footerPosition()) VIEW_TYPE_LOADING
         else if (withFooter() && position == footerPosition()) VIEW_TYPE_FOOTER
         else VIEW_TYPE_NORMAL
 
@@ -132,13 +141,15 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     fun withHeader(): Boolean = headerRows > 0
     fun withFooter(): Boolean = getFooterLayoutResId() != 0
+    fun withLoader(): Boolean = isThereMore
 
     private fun fixUpForHeader(): Int = if (isEmpty()) 0 else if (withHeader()) 1 else 0
     private fun fixUpForFooter(): Int = if (isEmpty()) 0 else if (withFooter()) 1 else 0
-    fun footerPosition(): Int = headerRows + helper.currentList.size
+    private fun fixUpForLoader(): Int = if (isEmpty()) 0 else if (withLoader()) 1 else 0
+    fun footerPosition(): Int = getModelsCount() + fixUpForHeader()
 
     // --------------------------------------------------------------------------------------------
-    override fun toString(): String = "$javaClass: size=${helper.currentList.size}, withHeader=${withHeader()}, withFooter=${withFooter()}[at ${footerPosition()}]"
+    override fun toString(): String = "$javaClass: size=${getModelsCount()}, withHeader=${withHeader()}, withFooter=${withFooter()}[at ${footerPosition()}]"
 }
 
 // ------------------------------------------------------------------------------------------------

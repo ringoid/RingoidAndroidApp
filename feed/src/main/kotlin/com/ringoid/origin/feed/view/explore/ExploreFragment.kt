@@ -42,6 +42,9 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile, OriginFeedViewHo
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
         when (newState) {
+            is ViewState.IDLE -> {
+                // TODO: hide loading
+            }
             is ViewState.PAGING -> {
                 // TODO: show loading indicator on next page
             }
@@ -58,7 +61,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile, OriginFeedViewHo
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.feed) { feedAdapter.submitList(it.profiles) }
+        viewLifecycleOwner.observe(vm.feed) { feedAdapter.submitList(it.profiles) { !isEmpty() } }
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 }

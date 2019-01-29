@@ -44,10 +44,8 @@ class ExploreViewModel @Inject constructor(
     private fun getMoreFeed() {
         getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
-            .doOnSuccess {
-                // TODO: on empty load more - show footer, hide loading indicator
-                viewState.value = ViewState.IDLE
-            }
+            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .filter { !it.isEmpty() }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .doFinally { isLoadingMore = false }
             .autoDisposable(this)

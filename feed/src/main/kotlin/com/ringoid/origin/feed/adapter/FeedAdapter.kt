@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.adapter
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.model.feed.EmptyProfile
-import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
@@ -24,10 +23,6 @@ class FeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
         }
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderFeedViewHolder(view)
-
-    fun submit(feed: Feed) {
-        submitList(feed.profiles)
-    }
 
     // ------------------------------------------
     override fun getHeaderItem(): Profile = EmptyProfile
