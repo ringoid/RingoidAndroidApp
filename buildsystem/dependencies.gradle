@@ -60,8 +60,8 @@ ext {
 
 //            deeplink:       "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
 //            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
-            deeplink:       "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:-SNAPSHOT",
-            deeplinkProcessor: "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch-processor:-SNAPSHOT",
+            deeplink:       "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:eb7e520d87",
+            deeplinkProcessor: "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch-processor:eb7e520d87",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
             fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
@@ -448,7 +448,8 @@ ext {
     baseDependencies = [
         [configuration: "api", dependency: d_libs.eventBus]
     ]
-    baseDependencies += module_domain + module_utility + android + arch + dagger + deeplink + kotlin + log + autoDispose + rx + rxBind
+    baseDependencies += module_domain + module_utility + module_widget + android + arch + dagger + deeplink + kotlin +
+                        log + autoDispose + rx + rxBind
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test
