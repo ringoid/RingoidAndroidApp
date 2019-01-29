@@ -1,8 +1,8 @@
 package com.ringoid.data.remote.di
 
-import com.ringoid.domain.BuildConfig
 import com.ringoid.data.remote.RingoidRestAdapter
 import com.ringoid.data.remote.network.ApiUrlBase
+import com.ringoid.domain.BuildConfig
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -17,6 +17,7 @@ class RingoidCloudModule(private val apiUrlBase: ApiUrlBase = ApiUrlBase.DEFAULT
         val apiUrl = when (apiUrlBase) {
             ApiUrlBase.CUSTOM -> customApiUrl
             ApiUrlBase.DEFAULT -> BuildConfig.API_URL
+            ApiUrlBase.DEVELOP -> "https://test.ringoidapp.com"
             ApiUrlBase.PRODUCTION -> "https://prod.ringoidapp.com"
             ApiUrlBase.STAGING -> "https://stage.ringoidapp.com"
         }
