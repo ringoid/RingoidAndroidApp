@@ -67,6 +67,10 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         notifyDataSetChanged()  // fix possible 'inconsistency detected' error
     }
 
+    fun append(items: List<T>) {
+        submitList(mutableListOf<T>().apply { addAll(helper.currentList) }.also { it.addAll(items) })
+    }
+
     fun prepend(item: T) {
         submitList(mutableListOf<T>().apply { add(item) }.also { it.addAll(helper.currentList) })
     }
