@@ -19,10 +19,10 @@ class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
     private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
     private val cacheAlreadySeenProfileIdsUseCase: CacheAlreadySeenProfileIdsUseCase,
-    private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
+    clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
-    : FeedViewModel(cacheBlockedProfileIdUseCase, countUserImagesUseCase, app),
+    : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app),
     IListScrollCallback {
 
     val feed by lazy { MutableLiveData<Feed>() }
@@ -62,7 +62,7 @@ class ExploreViewModel @Inject constructor(
 
     private fun prepareDebugFeedParams(): Params = Params().put("page", nextPage++)
 
-    // ------------------------------------------
+    // --------------------------------------------------------------------------------------------
     override fun onScroll(itemsLeftToEnd: Int) {
         if (isLoadingMore) {
             Timber.v("Skip onScroll event in error state or during loading more")

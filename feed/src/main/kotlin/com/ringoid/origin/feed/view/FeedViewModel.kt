@@ -5,15 +5,17 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
+import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
+import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 
 abstract class FeedViewModel(
+    private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase, app: Application)
     : BaseViewModel(app) {
@@ -34,6 +36,14 @@ abstract class FeedViewModel(
         prevRange = null
     }
 
+    /* Feed */
+    // --------------------------------------------------------------------------------------------
+    fun purgeAlreadySeenProfiles() {
+        clearCachedAlreadySeenProfileIdsUseCase.source()
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
+    }
+
     // --------------------------------------------------------------------------------------------
     fun onAddImage() {
         navigation.value = FeedFragment.InternalNavigator::openProfileScreen
@@ -44,18 +54,22 @@ abstract class FeedViewModel(
     }
 
     fun onRefresh() {
-        countUserImagesUseCase.source()
-            .map { it > 0 }  // user has images in profile
+        clearCachedAlreadySeenProfileIdsUseCase.source()
+            .andThen {
+                countUserImagesUseCase.source()
+                    .map { it > 0 }  // user has images in profile
+                    .doOnSuccess {
+                        if (it) {
+                            actionObjectPool.trigger()
+                            clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
+                            getFeed()
+                        } else {
+                            viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+                        }
+                    }
+            }
             .autoDisposable(this)
-            .subscribe({
-                if (it) {
-                    actionObjectPool.trigger()
-                    clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
-                    getFeed()
-                } else {
-                    viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
-                }
-            }, Timber::e)
+            .subscribe({}, Timber::e)
     }
 
     /* Action Objects */

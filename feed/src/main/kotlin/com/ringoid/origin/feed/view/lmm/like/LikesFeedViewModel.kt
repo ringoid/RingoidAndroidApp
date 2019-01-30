@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lmm.like
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
+import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
@@ -12,9 +13,10 @@ import io.reactivex.Observable
 import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(
-    getLmmUseCase: GetLmmUseCase, cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
+    getLmmUseCase: GetLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
+    cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
-    : BaseLmmFeedViewModel(getLmmUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
+    : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
 
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
 

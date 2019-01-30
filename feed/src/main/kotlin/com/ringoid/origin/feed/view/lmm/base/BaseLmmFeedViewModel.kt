@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
+import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
@@ -17,9 +18,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
 abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
+    clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
-    : FeedViewModel(cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
+    : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
 

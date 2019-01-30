@@ -39,6 +39,14 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile, OriginFeedViewHo
         }
 
     // --------------------------------------------------------------------------------------------
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (isActivityCreated && hidden) {
+            vm.purgeAlreadySeenProfiles()
+        }
+    }
+
+    // ------------------------------------------
     override fun onTabReselect() {
         super.onTabReselect()
         scrollToTopOfItemAtPosition(0)
