@@ -24,6 +24,7 @@ import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.snackbar
+import com.ringoid.widget.view.swipes
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import kotlinx.android.synthetic.main.fragment_profile.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -138,6 +139,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
+            swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         val snapHelper = PagerSnapHelper()
         rv_items.apply {

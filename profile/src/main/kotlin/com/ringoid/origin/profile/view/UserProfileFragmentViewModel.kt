@@ -95,6 +95,10 @@ class UserProfileFragmentViewModel @Inject constructor(
         navigation.value = ExternalNavigator::openGalleryToGetImageFragment
     }
 
+    fun onStartRefresh() {
+        actionObjectPool.trigger()
+    }
+
     fun onRefresh() {
         actionObjectPool.trigger()
         getUserImages()
