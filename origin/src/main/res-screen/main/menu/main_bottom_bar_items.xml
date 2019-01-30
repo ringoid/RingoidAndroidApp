@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/item_lmm"
-        android:icon="@drawable/ic_menu_favorite_white_outline_24dp"
+        android:icon="@drawable/ic_menu_favorite_white_outline_36dp"
         android:title="@string/main_bottom_bar_menu_lmm"/>
 
     <item
         android:id="@+id/item_profile"
-        android:icon="@drawable/ic_menu_profile_outline_white_24dp"
+        android:icon="@drawable/ic_menu_profile_outline_white_36dp"
         android:title="@string/main_bottom_bar_menu_profile"/>
 
     <item
         android:id="@+id/item_feed"
-        android:icon="@drawable/ic_menu_explore_white_24dp"
+        android:icon="@drawable/ic_menu_explore_white_36dp"
         android:title="@string/main_bottom_bar_menu_feed"/>
 </menu>

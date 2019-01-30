@@ -25,13 +25,13 @@
 
     <style name="Base.V0.AppTheme.Light">
         <item name="android:colorEdgeEffect">@android:color/black</item>
-        <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_black_24dp</item>
-        <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_black_outline_24dp</item>
-        <item name="refDrawableBottomBarLmmPressed">@drawable/ic_menu_favorite_black_24dp</item>
+        <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_black_36dp</item>
+        <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_black_outline_36dp</item>
+        <item name="refDrawableBottomBarLmmPressed">@drawable/ic_menu_favorite_black_36dp</item>
         <item name="refDrawableBottomBarMessenger">@drawable/ic_menu_messages_black_outline_24dp</item>
         <item name="refDrawableBottomBarMessengerPressed">@drawable/ic_menu_messages_black_24dp</item>
-        <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_black_24dp</item>
-        <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_black_24dp</item>
+        <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_black_36dp</item>
+        <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_black_36dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_internet_black_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
@@ -43,13 +43,13 @@
         <item name="refColorBottomBarIcon">@color/white_half</item>
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_white</item>
         <item name="refColorUnderscore">@color/underscore_light</item>
-        <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_white_24dp</item>
-        <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_white_outline_24dp</item>
-        <item name="refDrawableBottomBarLmmPressed">@drawable/ic_menu_favorite_white_24dp</item>
+        <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_white_36dp</item>
+        <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_white_outline_36dp</item>
+        <item name="refDrawableBottomBarLmmPressed">@drawable/ic_menu_favorite_white_36dp</item>
         <item name="refDrawableBottomBarMessenger">@drawable/ic_menu_messages_white_outline_24dp</item>
         <item name="refDrawableBottomBarMessengerPressed">@drawable/ic_menu_messages_white_24dp</item>
-        <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_white_24dp</item>
-        <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_white_24dp</item>
+        <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_white_36dp</item>
+        <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_white_36dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_internet_white_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>
