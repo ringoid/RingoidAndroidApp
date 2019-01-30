@@ -209,6 +209,10 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
             super.onScrolled(rv, dx, dy)
             rv.linearLayoutManager()?.let {
                 val p = it.findFirstCompletelyVisibleItemPosition()
+                if (p == RecyclerView.NO_POSITION) {
+                    return
+                }
+
                 val fixUp = if (feedAdapter.withHeader()) 1 else 0
                 if (dy > 0 && !scroll_fab.isVisible()) {
                     if (p >= 1 + fixUp) {
