@@ -62,18 +62,19 @@
         <item>@string/report_profile_button_6</item>
     </string-array>
 
+    <string name="feed_explore_empty_title">Discover</string>
     <string name="feed_footer_item_label">No one else around</string>
 
     <string name="feed_empty_need_refresh">Pull to refresh</string>
     <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover, like and message others?\n\nAdd photo so others can like you</string>
-    <string name="feed_explore_empty_need_refresh">@string/feed_empty_need_refresh</string>
+    <string name="feed_explore_empty_need_refresh" translatable="false">@string/feed_empty_need_refresh</string>
     <string name="feed_explore_empty_no_data">No one new around</string>
-    <string name="feed_likes_you_empty_need_refresh">@string/feed_empty_need_refresh</string>
+    <string name="feed_likes_you_empty_need_refresh" translatable="false">@string/feed_empty_need_refresh</string>
     <string name="feed_likes_you_empty_no_data">Users who like you will appear here</string>
     <string name="feed_list_end_item_label">No one else around</string>
-    <string name="feed_matches_empty_need_refresh">@string/feed_empty_need_refresh</string>
+    <string name="feed_matches_empty_need_refresh" translatable="false">@string/feed_empty_need_refresh</string>
     <string name="feed_matches_empty_no_data">Users that you like and who like you (mutual likes) will appear here</string>
-    <string name="feed_messages_empty_need_refresh">@string/feed_empty_need_refresh</string>
+    <string name="feed_messages_empty_need_refresh" translatable="false">@string/feed_empty_need_refresh</string>
     <string name="feed_messages_empty_no_data">Messages from your matches will appear here</string>
 
     <!-- Image Preview screen -->
@@ -99,6 +100,7 @@
     <string name="profile_dialog_image_another_button_cancel">Discover new faces</string>
     <string name="profile_dialog_image_another_title">What do you want to do next?</string>
     <string name="profile_empty_images">Add your photo to\nsee who likes you</string>
+    <string name="profile_empty_title">Profile</string>
     <string name="profile_image_created">Photo has been uploaded.</string>
     <string name="profile_image_deleted">Photo has been removed.</string>
 

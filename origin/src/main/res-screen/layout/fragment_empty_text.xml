@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@id/tv_empty_title"
+        android:layout_gravity="top|start"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:textSize="@dimen/std_text_30"
+        android:textStyle="bold"
+        tools:text="Profile"
+        style="@style/StdText.Primary"/>
 
     <TextView
         android:id="@id/tv_empty"
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/std_margin_40"
         android:layout_marginEnd="@dimen/std_margin_40"
+        tools:text="@string/profile_empty_images"
         style="@style/StdText.Secondary"/>
 </FrameLayout>

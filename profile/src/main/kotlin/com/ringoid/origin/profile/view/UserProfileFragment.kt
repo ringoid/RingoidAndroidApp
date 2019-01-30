@@ -177,7 +177,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             return
         }
 
-        EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images)
+        EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.profile_empty_images)
             .apply {
                 val emptyFragment = EmptyFragment.newInstance(this)
                 childFragmentManager
