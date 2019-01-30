@@ -100,7 +100,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
         super.onHiddenChanged(hidden)
         if (isActivityCreated && hidden) {
             /**
-             * Purge feed when Main tab has switched back to Explore screen,
+             * Purge feed when Main tab has switched from this Feed screen,
              * swipe-to-refresh is required to get need data.
              */
             vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
