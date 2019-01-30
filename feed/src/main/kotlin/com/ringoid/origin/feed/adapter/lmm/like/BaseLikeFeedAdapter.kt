@@ -32,7 +32,7 @@ abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesVi
             }
 
     // ------------------------------------------
-    override fun getHeaderItem(): FeedItem = EmptyFeedItem
+    override fun getStubItem(): FeedItem = EmptyFeedItem
     override fun getHeaderLayoutResId(): Int = R.layout.rv_item_feed_lmm_header
 
     // ------------------------------------------

@@ -39,5 +39,5 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
         }
 
     // ------------------------------------------
-    override fun getHeaderItem(): Message = EmptyMessage
+    override fun getStubItem(): Message = EmptyMessage
 }

@@ -7,6 +7,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
+import com.ringoid.domain.interactor.feed.DebugGetNewFacesUseCase
 import com.ringoid.domain.interactor.feed.GetNewFacesUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.Feed
@@ -18,6 +19,7 @@ import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
+    private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
     : FeedViewModel(cacheBlockedProfileIdUseCase, countUserImagesUseCase, app),
@@ -25,12 +27,14 @@ class ExploreViewModel @Inject constructor(
 
     val feed by lazy { MutableLiveData<Feed>() }
     private var isLoadingMore: Boolean = false
+    private var nextPage: Int = 0
 
     override fun getFeedName(): String = "new_faces"
 
     // ------------------------------------------
     override fun getFeed() {
-        getNewFacesUseCase.source(params = prepareFeedParams())
+        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
+//        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
@@ -42,19 +46,21 @@ class ExploreViewModel @Inject constructor(
     }
 
     private fun getMoreFeed() {
-        getNewFacesUseCase.source(params = prepareFeedParams())
+        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
+//        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
-            .filter { !it.isEmpty() }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .doFinally { isLoadingMore = false }
             .autoDisposable(this)
-            .subscribe({ feed.value = feed.value?.append(it) ?: it }, Timber::e)
+            .subscribe({ feed.value = it }, Timber::e)
     }
 
     private fun prepareFeedParams(): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
+
+    private fun prepareDebugFeedParams(): Params = Params().put("page", nextPage++)
 
     // ------------------------------------------
     override fun onScroll(itemsLeftToEnd: Int) {

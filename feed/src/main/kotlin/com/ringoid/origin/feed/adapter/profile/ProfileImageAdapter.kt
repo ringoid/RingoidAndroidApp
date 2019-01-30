@@ -32,7 +32,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 
     // --------------------------------------------------------------------------------------------
-    override fun getHeaderItem(): ProfileImageVO = EmptyProfileImageVO
+    override fun getStubItem(): ProfileImageVO = EmptyProfileImageVO
 
     // ------------------------------------------
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =

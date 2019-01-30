@@ -67,8 +67,11 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         notifyDataSetChanged()  // fix possible 'inconsistency detected' error
     }
 
-    fun append(items: List<T>) {
-        submitList(mutableListOf<T>().apply { addAll(helper.currentList) }.also { it.addAll(items) })
+    fun append(list: List<T>?, isThereMore: List<T>.() -> Boolean = { false }) {
+        if (!list.isNullOrEmpty()) {
+            submitList(mutableListOf<T>().apply { addAll(helper.currentList) }.also { it.addAll(list) })
+        }
+        noMoreItems(list, isThereMore)
     }
 
     fun prepend(item: T) {
@@ -90,31 +93,47 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     fun submitList(list: List<T>?, isThereMore: List<T>.() -> Boolean = { false }) {
         submitList(list)
-        this.isThereMore = list?.isThereMore() == true
+        noMoreItems(list, isThereMore)
     }
 
     protected open fun onSubmitList(list: List<T>?) {
         // override in subclasses
     }
 
+    private fun noMoreItems(list: List<T>?, isThereMore: List<T>.() -> Boolean = { false }) {
+        val previous = this.isThereMore  // old value
+        this.isThereMore = list?.isThereMore() == true
+        if (previous != this.isThereMore) {
+            notifyItemChanged(footerPosition())
+        }
+    }
+
     // ------------------------------------------
-    override fun getItemId(position: Int): Long = getItem(position).getModelId()
+    override fun getItemId(position: Int): Long {
+        val viewType = getItemViewType(position)
+        return when (viewType) {
+            VIEW_TYPE_NORMAL -> getModel(position).getModelId()
+            /**
+             * Any of:  VIEW_TYPE_HEADER, VIEW_TYPE_LOADING, VIEW_TYPE_FOOTER
+             */
+            else -> viewType.toLong()
+        }
+    }
 
     protected fun getItem(position: Int): T =
-        if (withHeader() && position == 0) getHeaderItem()
-        else if (withLoader() && position == footerPosition()) getLoadingItem()
-        else if (withFooter() && position == footerPosition()) getFooterItem()
-        else helper.currentList[position - fixUpForHeader()]
+        when (getItemViewType(position)) {
+            VIEW_TYPE_HEADER, VIEW_TYPE_LOADING, VIEW_TYPE_FOOTER -> getStubItem()
+            else /* VIEW_TYPE_NORMAL */ -> getModel(position)
+        }
 
+    private fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]
     protected fun getModels(): List<T> = helper.currentList
     /**
      * The following two methods are just stubs to make [getItem] work properly,
      * header and footer [BaseViewHolder]s and corresponding models are normally
      * not used anywhere.
      */
-    protected abstract fun getHeaderItem(): T
-    private fun getFooterItem(): T = getHeaderItem()
-    private fun getLoadingItem(): T = getHeaderItem()
+    protected abstract fun getStubItem(): T
 
     // ------------------------------------------
     fun getItemExposed(position: Int): T = getItem(position)

@@ -30,7 +30,7 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 
     // ------------------------------------------
-    override fun getHeaderItem(): UserImage = EmptyUserImage
+    override fun getStubItem(): UserImage = EmptyUserImage
 
     /* Data Access */
     // --------------------------------------------------------------------------------------------

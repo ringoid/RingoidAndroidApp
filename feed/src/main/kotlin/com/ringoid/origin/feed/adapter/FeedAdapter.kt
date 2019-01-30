@@ -25,7 +25,7 @@ class FeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
     override fun instantiateHeaderViewHolder(view: View) = HeaderFeedViewHolder(view)
 
     // ------------------------------------------
-    override fun getHeaderItem(): Profile = EmptyProfile
+    override fun getStubItem(): Profile = EmptyProfile
 
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_feed_footer
 }

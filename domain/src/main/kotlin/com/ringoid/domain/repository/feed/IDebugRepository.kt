@@ -1,6 +1,8 @@
 package com.ringoid.domain.repository.feed
 
+import com.ringoid.domain.model.feed.Feed
 import io.reactivex.Completable
+import io.reactivex.Single
 
 interface IDebugRepository {
 
@@ -13,4 +15,7 @@ interface IDebugRepository {
     fun debugRequestCausingServerError(): Completable
     fun debugRequestWithInvalidAccessToken(): Completable
     fun debugRequestWithUnsupportedAppVersion(): Completable
+
+    // ------------------------------------------
+    fun debugGetNewFaces(page: Int): Single<Feed>
 }

@@ -8,3 +8,5 @@ data class Feed(val profiles: List<Profile>) {
         if (other.isEmpty()) this
         else Feed(profiles = ArrayList(profiles).apply { addAll(other.profiles) })
 }
+
+val EmptyFeed = Feed(profiles = emptyList())

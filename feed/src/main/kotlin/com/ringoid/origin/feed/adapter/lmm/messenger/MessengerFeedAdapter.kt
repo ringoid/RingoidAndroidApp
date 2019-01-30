@@ -35,7 +35,7 @@ class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
     override fun instantiateHeaderViewHolder(view: View) = HeaderMessengerViewHolder(view)
 
     // ------------------------------------------
-    override fun getHeaderItem(): FeedItem = EmptyFeedItem
+    override fun getStubItem(): FeedItem = EmptyFeedItem
 
     // ------------------------------------------
     private fun wrapMessageClickListener(vh: MessengerViewHolder): ((model: FeedItem, position: Int) -> Unit)? =
