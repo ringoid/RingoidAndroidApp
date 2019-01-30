@@ -33,8 +33,8 @@ class ExploreViewModel @Inject constructor(
 
     // ------------------------------------------
     override fun getFeed() {
-        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
-//        getNewFacesUseCase.source(params = prepareFeedParams())
+//        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
+        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
@@ -46,8 +46,8 @@ class ExploreViewModel @Inject constructor(
     }
 
     private fun getMoreFeed() {
-        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
-//        getNewFacesUseCase.source(params = prepareFeedParams())
+//        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
+        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
