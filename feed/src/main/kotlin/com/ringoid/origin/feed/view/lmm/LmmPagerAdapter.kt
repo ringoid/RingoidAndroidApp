@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.ringoid.origin.feed.view.lmm.like.LikesFeedFragment
 import com.ringoid.origin.feed.view.lmm.match.MatchesFeedFragment
+import com.ringoid.origin.feed.view.lmm.messenger.MessengerFragment
 import java.lang.ref.WeakReference
 
 class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -15,12 +16,13 @@ class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     fun accessItem(position: Int): Fragment? = map[position]?.get()
 
-    override fun getCount(): Int = 2
+    override fun getCount(): Int = 3
 
     override fun getItem(position: Int): Fragment =
         when (position) {
-            0 -> LikesFeedFragment.newInstance()
+            0 -> MessengerFragment.newInstance()
             1 -> MatchesFeedFragment.newInstance()
+            2 -> LikesFeedFragment.newInstance()
             else -> throw IllegalArgumentException("Page at position [$position] is not allowed")
         }
 

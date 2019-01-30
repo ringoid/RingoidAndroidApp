@@ -21,37 +21,37 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
-        android:id="@+id/btn_tab_likes"
-        android:layout_marginEnd="@dimen/std_margin_8"
+        android:id="@+id/btn_tab_messenger"
         android:background="?selectableItemBackground"
-        android:text="@string/lmm_tab_likes"
+        android:text="@string/lmm_tab_messenger"
         android:textColor="@color/tab_button_text_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_tab_matches"
         app:layout_constraintHorizontal_chainStyle="packed"
         style="@style/FlatButton"/>
-    
+
     <View
-        android:id="@+id/badge_likes"
+        android:id="@+id/badge_messenger"
         android:layout_width="6dp"
         android:layout_height="6dp"
         android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginEnd="6dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/red_circle"
         android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="@id/btn_tab_likes"
-        app:layout_constraintEnd_toEndOf="@id/btn_tab_likes"/>
+        app:layout_constraintTop_toTopOf="@id/btn_tab_messenger"
+        app:layout_constraintEnd_toEndOf="@id/btn_tab_messenger"/>
 
     <View
-        android:id="@+id/tab_delim"
+        android:id="@+id/tab_delim1"
         android:layout_width="2dp"
         android:layout_height="8dp"
+        android:layout_marginStart="@dimen/std_margin_8"
         android:background="?attr/refColorUnderscore"
-        app:layout_constraintTop_toTopOf="@id/btn_tab_likes"
-        app:layout_constraintBottom_toBottomOf="@id/btn_tab_likes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/btn_tab_messenger"
+        app:layout_constraintBottom_toBottomOf="@id/btn_tab_messenger"
+        app:layout_constraintStart_toEndOf="@id/btn_tab_messenger"
+        app:layout_constraintEnd_toStartOf="@+id/btn_tab_matches"/>
 
     <Button
         android:id="@+id/btn_tab_matches"
@@ -60,8 +60,8 @@
         android:text="@string/lmm_tab_matches"
         android:textColor="@color/tab_button_text_color"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_tab_likes"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_tab_messenger"
+        app:layout_constraintEnd_toStartOf="@+id/btn_tab_likes"
         style="@style/FlatButton"/>
 
     <View
@@ -74,5 +74,38 @@
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="@id/btn_tab_matches"
         app:layout_constraintEnd_toEndOf="@id/btn_tab_matches"/>
+
+    <View
+        android:id="@+id/tab_delim2"
+        android:layout_width="2dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="@dimen/std_margin_8"
+        android:background="?attr/refColorUnderscore"
+        app:layout_constraintTop_toTopOf="@id/btn_tab_matches"
+        app:layout_constraintBottom_toBottomOf="@id/btn_tab_matches"
+        app:layout_constraintStart_toEndOf="@id/btn_tab_matches"
+        app:layout_constraintEnd_toStartOf="@+id/btn_tab_likes"/>
+
+    <Button
+        android:id="@+id/btn_tab_likes"
+        android:layout_marginStart="@dimen/std_margin_8"
+        android:background="?selectableItemBackground"
+        android:text="@string/lmm_tab_likes"
+        android:textColor="@color/tab_button_text_color"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_tab_matches"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/FlatButton"/>
+    
+    <View
+        android:id="@+id/badge_likes"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginEnd="6dp"
+        android:background="@drawable/red_circle"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="@id/btn_tab_likes"
+        app:layout_constraintEnd_toEndOf="@id/btn_tab_likes"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -82,6 +82,7 @@
     <!-- Lmm screen -->
     <string name="lmm_tab_likes">Likes You</string>
     <string name="lmm_tab_matches">Matches</string>
+    <string name="lmm_tab_messenger">Chat</string>
     
     <!-- Login screen -->
     <string name="login_button">Continue to upload photo</string>
@@ -91,7 +92,6 @@
     <!-- Main screen -->
     <string name="main_bottom_bar_menu_feed">New Faces</string>
     <string name="main_bottom_bar_menu_lmm">Likes</string>
-    <string name="main_bottom_bar_menu_messages">Messages</string>
     <string name="main_bottom_bar_menu_profile">Profile</string>
 
     <!-- Profile screen -->

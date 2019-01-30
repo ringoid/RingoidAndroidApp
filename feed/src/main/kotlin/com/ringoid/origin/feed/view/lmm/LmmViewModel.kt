@@ -18,6 +18,7 @@ class LmmViewModel @Inject constructor(
 
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
     val badgeMatches by lazy { MutableLiveData<Boolean>() }
+    val badgeMessenger by lazy { MutableLiveData<Boolean>() }
     val listScrolls by lazy { MutableLiveData<Int>() }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -33,6 +34,7 @@ class LmmViewModel @Inject constructor(
             .doOnSuccess {
                 badgeLikes.value = it.newLikesCount() > 0
                 badgeMatches.value = it.newMatchesCount() > 0
+                badgeMessenger.value = false  // TODO: new messages count
             }
             .autoDisposable(this)
             .subscribe({ Timber.v("Lmm has been refreshed") }, Timber::e)

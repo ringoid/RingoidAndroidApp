@@ -8,7 +8,6 @@ import com.ringoid.base.observe
 import com.ringoid.main.OriginR_style
 import com.ringoid.origin.feed.view.explore.ExploreFragment
 import com.ringoid.origin.feed.view.lmm.LmmFragment
-import com.ringoid.origin.feed.view.lmm.messenger.MessengerFragment
 import com.ringoid.origin.profile.view.UserProfileFragment
 import com.ringoid.origin.view.main.BaseMainActivity
 
@@ -21,10 +20,9 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
 
     override fun getListOfRootFragments(): List<Fragment> =
             listOf(
-                ExploreFragment.newInstance(),
                 LmmFragment.newInstance(),
-                MessengerFragment.newInstance(),
-                UserProfileFragment.newInstance())
+                UserProfileFragment.newInstance(),
+                ExploreFragment.newInstance())
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -32,7 +30,6 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         super.onCreate(savedInstanceState)
         currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme)
         observe(vm.badgeLmm, ::showBadgeOnLmm)
-        observe(vm.badgeMessenger, ::showBadgeOnMessenger)
     }
 
     override fun onStart() {

@@ -36,10 +36,4 @@ class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, OriginFeedView
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_messages_empty_need_refresh)
             else -> null
         }
-
-    // --------------------------------------------------------------------------------------------
-    override fun onTabReselect() {
-        super.onTabReselect()
-        scrollToTopOfItemAtPosition(0)
-    }
 }
