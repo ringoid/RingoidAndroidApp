@@ -83,6 +83,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
                 observe(navigation) { it.call(this@BaseFragment) }
             }
         }
+        savedInstanceState ?: run { vm.onFreshCreate() }
     }
 
     override fun onResume() {

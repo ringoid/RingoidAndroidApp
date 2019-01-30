@@ -1,7 +1,9 @@
 package com.ringoid.base.viewmodel
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
@@ -37,6 +39,13 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    /**
+     * Called on fresh start of the [Activity] or [Fragment], not after recreate with state restore.
+     */
+    open fun onFreshCreate() {
+        // override in subclasses
+    }
+
     override fun onCleared() {
         super.onCleared()
         unsubscribeFromBusEvents()

@@ -59,6 +59,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
             observe(viewState, ::onViewStateChange)
             observe(navigation) { it.call(this@BaseActivity) }
         }
+        savedInstanceState ?: run { vm.onFreshCreate() }
     }
 
     override fun onDestroy() {
