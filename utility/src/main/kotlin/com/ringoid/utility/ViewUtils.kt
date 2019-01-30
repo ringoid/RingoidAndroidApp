@@ -25,6 +25,8 @@ fun View.changeVisibility(isVisible: Boolean, soft: Boolean = false) {
     visibility = if (isVisible) View.VISIBLE else if (soft) View.INVISIBLE else View.GONE
 }
 
+fun View.isVisible(): Boolean = visibility == View.VISIBLE
+
 fun View.getScreenshot(view: View): Bitmap {
     view.isDrawingCacheEnabled = true
     val bmp = Bitmap.createBitmap(view.drawingCache)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,4 +26,18 @@
             android:scrollbars="horizontal"/>
 
     </com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout>
+
+    <ImageButton
+        android:id="@+id/scroll_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="@dimen/feed_fab_margin_bottom"
+        android:layout_marginStart="@dimen/std_margin_24"
+        android:background="@drawable/white_half_oval_selector"
+        android:contentDescription="@null"
+        android:minWidth="@dimen/std_icon_36"
+        android:minHeight="@dimen/std_icon_36"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_expand_less_white_24dp"/>
 </FrameLayout>

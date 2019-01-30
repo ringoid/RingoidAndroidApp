@@ -3,6 +3,7 @@
     <dimen name="dialog_bottom_sheet_block_height">106dp</dimen>
     <dimen name="dialog_bottom_sheet_report_height">315dp</dimen>
 
+    <dimen name="feed_fab_margin_bottom">80dp</dimen>
     <dimen name="feed_item_footer_height">180dp</dimen>
     <dimen name="feed_tab_layout_height">11dp</dimen>
 

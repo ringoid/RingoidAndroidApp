@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
@@ -26,11 +27,8 @@ import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
-import com.ringoid.utility.communicator
-import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -171,12 +169,17 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
             setHasFixedSize(true)
 //            setRecycledViewPool(viewPool)  // TODO: use pool for feeds
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+            addOnScrollListener(topScrollListener)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
+        }
+        scroll_fab.clicks().compose(clickDebounce()).subscribe {
+            scroll_fab.changeVisibility(isVisible = false)
+            scrollToTopOfItemAtPosition(position = 0)
         }
     }
 
@@ -194,10 +197,32 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_items.removeOnScrollListener(visibilityTrackingScrollListener)
+        rv_items.apply {
+            removeOnScrollListener(topScrollListener)
+            removeOnScrollListener(visibilityTrackingScrollListener)
+        }
     }
 
     // --------------------------------------------------------------------------------------------
+    private val topScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(rv, dx, dy)
+            rv.linearLayoutManager()?.let {
+                val p = it.findFirstCompletelyVisibleItemPosition()
+                val fixUp = if (feedAdapter.withHeader()) 1 else 0
+                if (dy > 0 && !scroll_fab.isVisible()) {
+                    if (p >= 1 + fixUp) {
+                        scroll_fab.changeVisibility(isVisible = true)
+                    }
+                } else if (scroll_fab.isVisible()) {
+                    if (p < 1 + fixUp) {
+                        scroll_fab.changeVisibility(isVisible = false)
+                    }
+                }
+            }
+        }
+    }
+
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
