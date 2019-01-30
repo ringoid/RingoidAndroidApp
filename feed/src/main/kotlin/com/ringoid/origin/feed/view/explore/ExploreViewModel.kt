@@ -70,6 +70,7 @@ class ExploreViewModel @Inject constructor(
         }
         if (itemsLeftToEnd <= DomainUtil.LOAD_MORE_THRESHOLD) {
             isLoadingMore = true
+            actionObjectPool.trigger()
             getMoreFeed()
         }
     }
