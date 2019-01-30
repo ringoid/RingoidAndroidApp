@@ -91,7 +91,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
         fun openInitialTab() {
             openTabByName(tabName = NavigateFrom.MAIN_TAB_PROFILE)
         }
-        
+
         intent.extras?.apply {
             getString("tab")
                 ?.let {
