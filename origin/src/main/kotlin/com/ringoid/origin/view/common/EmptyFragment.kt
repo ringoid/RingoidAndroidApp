@@ -51,7 +51,9 @@ class EmptyFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(layoutResId, container, false)
             .apply {
-                findViewById<TextView>(R.id.tv_empty_title)?.setText(emptyTitleResId)
+                emptyTitleResId
+                    .takeIf { it != 0 }
+                    ?.let { findViewById<TextView>(R.id.tv_empty_title)?.setText(it) }
                 findViewById<TextView>(R.id.tv_empty)?.setText(emptyTextResId)
             }
     }
