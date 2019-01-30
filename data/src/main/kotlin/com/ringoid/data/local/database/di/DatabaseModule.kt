@@ -44,6 +44,9 @@ class DatabaseModule {
     @Provides @Singleton @Named("user")
     fun provideUserDao(database: UserRingoidDatabase): UserDao = database.userDao()
 
-    @Provides @Singleton @Named("user")
-    fun provideUserFeedDao(database: UserRingoidDatabase): UserFeedDao = database.userFeedDao()
+    @Provides @Singleton @Named("alreadySeen")
+    fun provideAlreadySeenUserFeedDao(database: UserRingoidDatabase): UserFeedDao = database.userFeedDao()
+
+    @Provides @Singleton @Named("block")
+    fun provideBlockedUserFeedDao(database: UserRingoidDatabase): UserFeedDao = database.userFeedDao()
 }

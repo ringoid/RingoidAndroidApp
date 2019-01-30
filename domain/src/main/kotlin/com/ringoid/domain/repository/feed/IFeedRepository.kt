@@ -10,6 +10,13 @@ import io.reactivex.subjects.PublishSubject
 
 interface IFeedRepository {
 
+    fun cacheAlreadySeenProfileIds(ids: Collection<String>): Completable
+
+    fun getAlreadySeenProfileIds(): Single<List<String>>
+
+    fun deleteAlreadySeenProfileIds(): Completable
+
+    // -------------------------------------------
     fun cacheBlockedProfileId(profileId: String): Completable
 
     fun getBlockedProfileIds(): Single<List<String>>

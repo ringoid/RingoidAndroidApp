@@ -6,9 +6,7 @@ import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.DebugGetNewFacesUseCase
-import com.ringoid.domain.interactor.feed.GetNewFacesUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.ScreenHelper
@@ -20,6 +18,8 @@ import javax.inject.Inject
 class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
     private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
+    private val cacheAlreadySeenProfileIdsUseCase: CacheAlreadySeenProfileIdsUseCase,
+    private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
     : FeedViewModel(cacheBlockedProfileIdUseCase, countUserImagesUseCase, app),

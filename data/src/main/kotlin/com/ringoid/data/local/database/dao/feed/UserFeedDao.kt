@@ -11,11 +11,14 @@ import io.reactivex.Single
 interface UserFeedDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addBlockedProfileId(profileId: ProfileIdDbo)
+    fun addProfileId(profileId: ProfileIdDbo)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addProfileIds(profileIds: Collection<ProfileIdDbo>)
 
     @Query("SELECT * FROM ${ProfileIdDbo.TABLE_NAME}")
-    fun blockedProfileIds(): Single<List<ProfileIdDbo>>
+    fun profileIds(): Single<List<ProfileIdDbo>>
 
     @Query("DELETE FROM ${ProfileIdDbo.TABLE_NAME}")
-    fun deleteBlockedProfileIds()
+    fun deleteProfileIds()
 }

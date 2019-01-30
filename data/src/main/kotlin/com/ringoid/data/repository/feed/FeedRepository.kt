@@ -1,7 +1,6 @@
 package com.ringoid.data.repository.feed
 
 import com.ringoid.data.action_storage.ActionObjectPool
-import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
@@ -18,6 +17,7 @@ import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
@@ -27,18 +27,33 @@ import javax.inject.Singleton
 
 @Singleton
 class FeedRepository @Inject constructor(
-    private val local: FeedDao, @Named("user") private val cache: UserFeedDao,
+    @Named("alreadySeen") private val alreadySeenProfilesCache: UserFeedDao,
+    @Named("block") private val blockedProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
+    // --------------------------------------------------------------------------------------------
+    private fun Single<FeedResponse>.cacheNewFacesAsAlreadySeen(): Single<FeedResponse> =
+        doOnSuccess { alreadySeenProfilesCache.addProfileIds(it.profiles.map { ProfileIdDbo(it.id) }) }
+
+    override fun cacheAlreadySeenProfileIds(ids: Collection<String>): Completable =
+        Completable.fromCallable { alreadySeenProfilesCache.addProfileIds(ids.map { ProfileIdDbo(it) }) }
+
+    override fun getAlreadySeenProfileIds(): Single<List<String>> =
+        alreadySeenProfilesCache.profileIds().map { it.mapList() }
+
+    override fun deleteAlreadySeenProfileIds(): Completable =
+        Completable.fromCallable { alreadySeenProfilesCache.deleteProfileIds() }
+
+    // -------------------------------------------
     override fun cacheBlockedProfileId(profileId: String): Completable =
-        Completable.fromCallable { cache.addBlockedProfileId(ProfileIdDbo(profileId)) }
+        Completable.fromCallable { blockedProfilesCache.addProfileId(ProfileIdDbo(profileId)) }
 
     override fun getBlockedProfileIds(): Single<List<String>> =
-        cache.blockedProfileIds().map { it.mapList() }
+        blockedProfilesCache.profileIds().map { it.mapList() }
 
     override fun deleteBlockedProfileIds(): Completable =
-        Completable.fromCallable { cache.deleteBlockedProfileIds() }
+        Completable.fromCallable { blockedProfilesCache.deleteProfileIds() }
 
     // --------------------------------------------------------------------------------------------
     override val feedLikes = PublishSubject.create<List<FeedItem>>()
@@ -52,7 +67,9 @@ class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
                  .handleError()
+                 .filterAlreadySeenProfilesFeed()
                  .filterBlockedProfilesFeed()
+                 .cacheNewFacesAsAlreadySeen()
                  .map { it.map() }
         }
 
@@ -72,9 +89,15 @@ class FeedRepository @Inject constructor(
         }
 
     // --------------------------------------------------------------------------------------------
+    private fun Single<FeedResponse>.filterAlreadySeenProfilesFeed(): Single<FeedResponse> =
+        filterProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())
+
     private fun Single<FeedResponse>.filterBlockedProfilesFeed(): Single<FeedResponse> =
+        filterProfilesFeed(idsSource = getBlockedProfileIds().toObservable())
+
+    private fun Single<FeedResponse>.filterProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
         toObservable()
-        .withLatestFrom(getBlockedProfileIds().toObservable(),
+        .withLatestFrom(idsSource,
             BiFunction { feed: FeedResponse, blockedIds: List<String> ->
                 blockedIds
                     .takeIf { !it.isEmpty() }
@@ -85,6 +108,7 @@ class FeedRepository @Inject constructor(
             })
         .single(FeedResponse()  /* by default - empty feed */)
 
+    // ------------------------------------------
     private fun Single<LmmResponse>.filterBlockedProfilesLmm(): Single<LmmResponse> =
         toObservable()
         .withLatestFrom(getBlockedProfileIds().toObservable(),
