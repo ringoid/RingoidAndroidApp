@@ -55,7 +55,7 @@ abstract class FeedViewModel(
 
     fun onRefresh() {
         clearCachedAlreadySeenProfileIdsUseCase.source()
-            .andThen {
+            .andThen(
                 countUserImagesUseCase.source()
                     .map { it > 0 }  // user has images in profile
                     .doOnSuccess {
@@ -66,8 +66,7 @@ abstract class FeedViewModel(
                         } else {
                             viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
                         }
-                    }
-            }
+                    })
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
