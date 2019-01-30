@@ -83,14 +83,17 @@ ext {
     ]
 
     d_rx = [
-            rx:             "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
-            rxAndroid:      "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
-            rxBinding:      "com.jakewharton.rxbinding3:rxbinding:${rxBindingVersion}",
-            rxBindCore:     "com.jakewharton.rxbinding3:rxbinding-core:${rxBindingVersion}",
-            rxBindCompat:   "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}",
-            autoDispose:    "com.uber.autodispose:autodispose-android-ktx:${autoDisposeVersion}",
-            autoDisposeAC:  "com.uber.autodispose:autodispose-android-archcomponents:${autoDisposeVersion}",
-            autoDisposeKt:  "com.uber.autodispose:autodispose-lifecycle-ktx:${autoDisposeVersion}",
+            rx:              "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
+            rxAndroid:       "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
+            rxBinding:       "com.jakewharton.rxbinding3:rxbinding:${rxBindingVersion}",
+            rxBindCore:      "com.jakewharton.rxbinding3:rxbinding-core:${rxBindingVersion}",
+            rxBindCompat:    "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}",
+            rxBindRecycler:  "com.jakewharton.rxbinding3:rxbinding-recyclerview:${rxBindingVersion}",
+            rxBindSwipe:     "com.jakewharton.rxbinding3:rxbinding-swiperefreshlayout:${rxBindingVersion}",
+            rxBindViewPager: "com.jakewharton.rxbinding3:rxbinding-viewpager:${rxBindingVersion}",
+            autoDispose:     "com.uber.autodispose:autodispose-android-ktx:${autoDisposeVersion}",
+            autoDisposeAC:   "com.uber.autodispose:autodispose-android-archcomponents:${autoDisposeVersion}",
+            autoDisposeKt:   "com.uber.autodispose:autodispose-lifecycle-ktx:${autoDisposeVersion}",
     ]
 
     d_test = [
@@ -254,6 +257,9 @@ ext {
             [configuration: "implementation", dependency: d_rx.rxBinding],
             [configuration: "implementation", dependency: d_rx.rxBindCore],
             [configuration: "implementation", dependency: d_rx.rxBindCompat],
+            [configuration: "implementation", dependency: d_rx.rxBindRecycler],
+            [configuration: "implementation", dependency: d_rx.rxBindSwipe],
+            [configuration: "implementation", dependency: d_rx.rxBindViewPager],
     ]
 
     def autoDispose = [

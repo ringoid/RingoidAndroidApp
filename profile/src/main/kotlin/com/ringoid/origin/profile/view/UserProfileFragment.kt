@@ -8,6 +8,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
@@ -136,7 +137,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            setOnRefreshListener { vm.onRefresh() }
+            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
         }
         val snapHelper = PagerSnapHelper()
         rv_items.apply {

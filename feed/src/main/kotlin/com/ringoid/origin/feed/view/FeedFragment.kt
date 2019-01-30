@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
@@ -26,9 +27,11 @@ import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.communicator
 import com.ringoid.utility.linearLayoutManager
+import com.ringoid.widget.view.swipes
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -158,6 +161,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
         feedAdapter.trackingBus = imagesTrackingBus
     }
 
+    @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rv_items.apply {
@@ -171,7 +175,8 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            setOnRefreshListener { vm.onRefresh() }
+            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
+            swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
     }
 

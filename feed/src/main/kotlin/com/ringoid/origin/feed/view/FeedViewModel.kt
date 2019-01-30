@@ -53,6 +53,10 @@ abstract class FeedViewModel(
         viewState.value = ViewState.CLEAR(mode)
     }
 
+    fun onStartRefresh() {
+        actionObjectPool.trigger()
+    }
+
     fun onRefresh() {
         actionObjectPool.trigger()
 
