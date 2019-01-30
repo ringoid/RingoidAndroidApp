@@ -54,13 +54,14 @@ abstract class FeedViewModel(
     }
 
     fun onRefresh() {
+        actionObjectPool.trigger()
+
         clearCachedAlreadySeenProfileIdsUseCase.source()
             .andThen(
                 countUserImagesUseCase.source()
                     .map { it > 0 }  // user has images in profile
                     .doOnSuccess {
                         if (it) {
-                            actionObjectPool.trigger()
                             clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
                             getFeed()
                         } else {
