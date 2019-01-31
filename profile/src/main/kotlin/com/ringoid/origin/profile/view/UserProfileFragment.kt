@@ -24,10 +24,7 @@ import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.communicator
-import com.ringoid.utility.snackbar
+import com.ringoid.utility.*
 import com.ringoid.widget.view.swipes
 import kotlinx.android.synthetic.main.fragment_profile.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -63,6 +60,20 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     }
 
     // ------------------------------------------
+    override fun onTabReselect() {
+        super.onTabReselect()
+        if (imagesAdapter.itemCount < 2) {
+            return
+        }
+
+        rv_items.linearLayoutManager()
+            ?.let {
+                val currentPage = it.findFirstCompletelyVisibleItemPosition()
+                val nextPage = currentPage + 1
+                it.scrollToPosition(nextPage.takeIf { it >= imagesAdapter.itemCount }?.let { 0 } ?: nextPage)
+            }
+    }
+
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
         payload?.let {
