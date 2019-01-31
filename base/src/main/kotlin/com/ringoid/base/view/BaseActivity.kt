@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     protected val scopeProvider by lazy { AndroidLifecycleScopeProvider.from(this) }
+    protected val app by lazy { application as IBaseRingoidApplication }
 
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
@@ -28,6 +30,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     protected var currentResult: Int = Activity.RESULT_CANCELED
         private set
 
+    // ------------------------------------------
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
     @LayoutRes protected open fun getLayoutId(): Int? = null  // null means no layout

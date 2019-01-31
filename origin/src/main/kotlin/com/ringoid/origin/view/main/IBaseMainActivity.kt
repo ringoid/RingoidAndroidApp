@@ -6,4 +6,6 @@ import com.ringoid.utility.ICommunicator
 interface IBaseMainActivity : ICommunicator {
 
     val imagesViewPool: RecyclerView.RecycledViewPool
+
+    fun isNewUser(): Boolean
 }

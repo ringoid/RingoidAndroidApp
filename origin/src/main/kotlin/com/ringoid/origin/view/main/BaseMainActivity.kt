@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
@@ -16,6 +17,7 @@ import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.utility.changeVisibility
@@ -26,18 +28,20 @@ import timber.log.Timber
 abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IBaseMainActivity,
     FragNavController.TransactionListener {
 
-    protected lateinit var fragNav: FragNavController
+    private lateinit var fragNav: FragNavController
+    private val loginInMemoryCache: ILoginInMemoryCache by lazy { app.loginInMemoryCache }
 
     override val imagesViewPool = RecyclerView.RecycledViewPool()
     private lateinit var badgeLmm: View
 
     private var tabPayload: String? = null  // payload to pass to subscreen on tab switch
 
+    // ------------------------------------------
     override fun getLayoutId(): Int = R.layout.activity_main
 
     protected abstract fun getListOfRootFragments(): List<Fragment>
 
-    protected fun bottomBar() = bottom_bar
+    protected fun bottomBar(): BottomNavigationView = bottom_bar
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -174,4 +178,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     protected fun showBadgeOnLmm(isVisible: Boolean) {
         badgeLmm.changeVisibility(isVisible, soft = true)
     }
+
+    // --------------------------------------------------------------------------------------------
+    override fun isNewUser(): Boolean = loginInMemoryCache.isNewUser()
 }

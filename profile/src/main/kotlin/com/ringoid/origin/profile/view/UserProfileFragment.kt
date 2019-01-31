@@ -21,8 +21,10 @@ import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.communicator
 import com.ringoid.utility.snackbar
 import com.ringoid.widget.view.swipes
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
@@ -128,7 +130,9 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             observe(vm.imageIdChanged, imagesAdapter::updateItemId)
             observe(vm.images, imagesAdapter::submitList)
         }
-        vm.getUserImages()
+        if (communicator(IBaseMainActivity::class.java)?.isNewUser() != true) {
+            vm.getUserImages()
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")

@@ -13,6 +13,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
+import com.ringoid.origin.auth.memory.LoginInMemoryCache
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.style.APP_THEME
@@ -27,6 +28,9 @@ import kotlinx.android.synthetic.main.activity_login.*
 @AppNav("login")
 class LoginActivity : BaseActivity<LoginViewModel>() {
 
+    private val loginInMemoryCache: LoginInMemoryCache by lazy { app.loginInMemoryCache as LoginInMemoryCache }
+
+    // ------------------------------------------
     override fun getVmClass() = LoginViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.activity_login
@@ -41,6 +45,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
+            is ViewState.CLOSE -> loginInMemoryCache.setNewUser(true)
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is APP_THEME -> recreate()
@@ -61,6 +66,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (intent.hasExtra(Extras.EXTRA_LOGOUT)) {
+            loginInMemoryCache.setNewUser(false)
             vm.onLogout()
         }
 

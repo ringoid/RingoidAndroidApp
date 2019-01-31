@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
+import com.ringoid.base.IBaseRingoidApplication
+import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.support.DaggerApplication
@@ -14,12 +16,14 @@ import timber.log.Timber
 import java.io.IOException
 import java.net.SocketException
 import java.util.*
+import javax.inject.Inject
 
-abstract class BaseRingoidApplication : DaggerApplication() {
+abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplication {
 
     private var refWatcher: RefWatcher? = null
 
     val calendar = Calendar.getInstance()
+    @Inject override lateinit var loginInMemoryCache: ILoginInMemoryCache
 
     companion object {
         fun refWatcher(context: Context?): RefWatcher? =

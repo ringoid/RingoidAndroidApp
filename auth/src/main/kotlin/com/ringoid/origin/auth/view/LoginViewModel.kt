@@ -57,7 +57,7 @@ class LoginViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
-                Timber.d("Successfully logged in, current user: $it")
+                Timber.d("Successfully signed up, current user: $it")
                 navigation.value = ExternalNavigator::openGalleryToGetImage
             }, Timber::e)
     }
