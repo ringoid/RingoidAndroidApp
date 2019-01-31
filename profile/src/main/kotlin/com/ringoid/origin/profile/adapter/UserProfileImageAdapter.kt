@@ -49,7 +49,7 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
         updateItemId(oldId = ids.first, newId = ids.second)
     }
 
-    fun updateItemId(oldId: String, newId: String) {
+    private fun updateItemId(oldId: String, newId: String) {
         getModels()
             .indexOfFirst { it.id == oldId }
             .takeIf { it != -1 }
@@ -70,5 +70,5 @@ class UserProfileImageDiffCallback : BaseDiffCallback<UserImage>() {
 
     override fun areItemsTheSame(oldItem: UserImage, newItem: UserImage): Boolean = oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: UserImage, newItem: UserImage): Boolean = oldItem == newItem  // as 'data class'
+    override fun areContentsTheSame(oldItem: UserImage, newItem: UserImage): Boolean = oldItem.uri == newItem.uri
 }
