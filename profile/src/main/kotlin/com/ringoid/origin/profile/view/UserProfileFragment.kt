@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.IBaseRingoidApplication
+import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
@@ -85,7 +87,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         }
 
         imagePreviewReceiver.apply {
-            register(context)
+            Timber.v("Initializing local receiver for image preview result...")
             setListener(object : CropIwaResultReceiver.Listener {
                 override fun onCropFailed(e: Throwable) {
                     Timber.e(e, "Image crop has failed")
@@ -98,6 +100,33 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                     askToAddAnotherImage()
                 }
             })
+
+            /**
+             * 1. Set listener before register receiver in order to prevent situation when broadcast
+             *    is received before the listener has been set, so that broadcast won't be handled.
+             *
+             * 2. Unregister global app-wide broadcast receiver, because we make it 'local' on UserProfile
+             *    screen, using [UserProfileFragment.imagePreviewReceiver] instead of [IBaseRingoidApplication.imagePreviewReceiver].
+             *    Once such local receiver is registered, we no longer need global receiver, but we still
+             *    should check whether there are any pending result from image preview that should be handled.
+             *
+             *    Such pending result occasionally happens, when closing ImagePreview screen launches
+             *    image cropping task, that finishes before UserProfile screen is opened and this local
+             *    receiver is registered.
+             */
+            register(context)
+            Timber.w("image cropping ${globalImagePreviewReceiver()}, result=${globalImagePreviewReceiver()?.hasResult()}")
+            globalImagePreviewReceiver()
+                ?.also { it.unregister(context) /* global receiver is not needed anymore */ }
+                ?.takeIf { it.hasResult() }
+                ?.also {
+                    Timber.v("Use pending image cropping result from global receiver")
+                    val context = activity!!.applicationContext
+                    it.getLastError()
+                        ?.let { CropIwaResultReceiver.onCropFailed(context, it) }
+                        ?: run { it.getLastResult()?.let { CropIwaResultReceiver.onCropCompleted(context, it) } }
+                    it.clear()
+                }
         }
     }
 
@@ -193,4 +222,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                     .commitNowAllowingStateLoss()
             }
     }
+
+    // ------------------------------------------
+    private fun globalImagePreviewReceiver(): IImagePreviewReceiver? =
+        this@UserProfileFragment.communicator(IBaseRingoidApplication::class.java)?.imagePreviewReceiver
 }

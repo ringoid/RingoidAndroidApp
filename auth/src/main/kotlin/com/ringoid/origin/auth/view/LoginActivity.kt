@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
+import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseActivity
@@ -28,6 +29,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 @AppNav("login")
 class LoginActivity : BaseActivity<LoginViewModel>() {
 
+    private val imagePreviewReceiver: IImagePreviewReceiver by lazy { app.imagePreviewReceiver }
     private val loginInMemoryCache: LoginInMemoryCache by lazy { app.loginInMemoryCache as LoginInMemoryCache }
 
     // ------------------------------------------
@@ -66,6 +68,11 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (intent.hasExtra(Extras.EXTRA_LOGOUT)) {
+            /**
+             * Resubscribe global receiver on image preview result because it had been unsubscribed
+             * before on UserProfile screen and replaced there with local receiver.
+             */
+            imagePreviewReceiver.register(applicationContext)
             loginInMemoryCache.setNewUser(false)
             vm.onLogout()
         }

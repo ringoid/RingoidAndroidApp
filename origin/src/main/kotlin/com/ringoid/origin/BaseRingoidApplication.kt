@@ -5,6 +5,7 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.ringoid.base.IBaseRingoidApplication
+import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
@@ -23,6 +24,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     private var refWatcher: RefWatcher? = null
 
     val calendar = Calendar.getInstance()
+    @Inject override lateinit var imagePreviewReceiver: IImagePreviewReceiver
     @Inject override lateinit var loginInMemoryCache: ILoginInMemoryCache
 
     companion object {
@@ -43,6 +45,8 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         initializeCrashlytics()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeRxErrorHandler()
+
+        imagePreviewReceiver.register(applicationContext)  // app-wide broadcast receiver doesn't need to unregister
     }
 
     /* Leak detection */
