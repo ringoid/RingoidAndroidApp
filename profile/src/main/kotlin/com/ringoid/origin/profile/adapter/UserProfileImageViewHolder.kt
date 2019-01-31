@@ -18,6 +18,8 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
             options = RequestOptions()
                 .override(itemView.width, itemView.height)
                 .centerCrop())
+
+        itemView.tv_likes_count.text = "${model.numberOfLikes}"
     }
 }
 
