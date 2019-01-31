@@ -140,7 +140,10 @@ ext {
             main:    ':main',
             origin:  ':origin',
             utility: ':utility',
-            widget:  ':widget'
+            widget:  ':widget',
+
+            // 3rd-party submodules
+            cropiwa: ':cropiwa',
     ]
 
     def module_auth = [[configuration: "implementation", dependency: project(modules.auth)]]
@@ -428,7 +431,8 @@ ext {
     /* Origin - base feature */
     // ------------------------------------------
     originDependencies = [
-        [configuration: "api", dependency: d_libs.cropiwa],
+//        [configuration: "api", dependency: d_libs.cropiwa],
+        [configuration: "api", dependency: project(modules.cropiwa)],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
                           support + view

@@ -1,1 +1,4 @@
 include ':app', ':auth', ':feed', ':imagepreview', ':main', ':messenger', ':origin', ':base', ':domain', ':data', ':profile', ':usersettings', ':utility', ':widget'
+
+include ':cropiwa'
+project(':cropiwa').projectDir = new File('cropiwa/library')
