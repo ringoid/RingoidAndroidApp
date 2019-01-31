@@ -29,7 +29,6 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import com.ringoid.utility.snackbar
 import com.ringoid.widget.view.swipes
-import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import kotlinx.android.synthetic.main.fragment_profile.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -43,7 +42,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     private var shouldAskToAddAnotherImage: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
-    private val imagePreviewReceiver = CropIwaResultReceiver()
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
@@ -78,6 +76,17 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
+        fun onCropFailed(e: Throwable) {
+            Timber.e(e, "Image crop has failed")
+            view?.let { snackbar(it, OriginR_string.error_crop_image) }
+        }
+
+        fun onCropSuccess(croppedUri: Uri) {
+            Timber.v("Image cropping has succeeded, uri: $croppedUri")
+            vm.uploadImage(uri = croppedUri)
+            askToAddAnotherImage()
+        }
+
         super.onCreate(savedInstanceState)
         imagesAdapter = UserProfileImageAdapter().apply {
             onDeleteImageListener = { model: UserImage, _ ->
@@ -86,47 +95,9 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             onEmptyImagesListener = ::showEmptyStub
         }
 
-        imagePreviewReceiver.apply {
-            Timber.v("Initializing local receiver for image preview result...")
-            setListener(object : CropIwaResultReceiver.Listener {
-                override fun onCropFailed(e: Throwable) {
-                    Timber.e(e, "Image crop has failed")
-                    view?.let { snackbar(it, OriginR_string.error_crop_image) }
-                }
-
-                override fun onCropSuccess(croppedUri: Uri) {
-                    Timber.v("Image cropping has succeeded, uri: $croppedUri")
-                    vm.uploadImage(uri = croppedUri)
-                    askToAddAnotherImage()
-                }
-            })
-
-            /**
-             * 1. Set listener before register receiver in order to prevent situation when broadcast
-             *    is received before the listener has been set, so that broadcast won't be handled.
-             *
-             * 2. Unregister global app-wide broadcast receiver, because we make it 'local' on UserProfile
-             *    screen, using [UserProfileFragment.imagePreviewReceiver] instead of [IBaseRingoidApplication.imagePreviewReceiver].
-             *    Once such local receiver is registered, we no longer need global receiver, but we still
-             *    should check whether there are any pending result from image preview that should be handled.
-             *
-             *    Such pending result occasionally happens, when closing ImagePreview screen launches
-             *    image cropping task, that finishes before UserProfile screen is opened and this local
-             *    receiver is registered.
-             */
-            register(activity)
-            Timber.w("image cropping ${globalImagePreviewReceiver()}, result=${globalImagePreviewReceiver()?.hasResult()}")
-            globalImagePreviewReceiver()
-                ?.also { it.unregister() /* global receiver is not needed anymore */ }
-                ?.takeIf { it.hasResult() }
-                ?.also {
-                    Timber.v("Use pending image cropping result from global receiver")
-                    it.getLastError()
-                        ?.let { CropIwaResultReceiver.onCropFailed(activity, it) }
-                        ?: run { it.getLastResult()?.let { CropIwaResultReceiver.onCropCompleted(activity, it) } }
-                    it.clear()
-                }
-        }
+        globalImagePreviewReceiver()
+            ?.doOnError(::onCropFailed)
+            ?.doOnSuccess(::onCropSuccess)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -185,11 +156,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        imagePreviewReceiver.unregister(context)
     }
 
     // --------------------------------------------------------------------------------------------

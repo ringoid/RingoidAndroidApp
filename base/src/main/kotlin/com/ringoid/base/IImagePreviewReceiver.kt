@@ -11,4 +11,7 @@ interface IImagePreviewReceiver {
     fun hasResult(): Boolean
     fun getLastError(): Throwable?
     fun getLastResult(): Uri?
+
+    fun doOnError(l: (e: Throwable) -> Unit): IImagePreviewReceiver
+    fun doOnSuccess(l: (uri: Uri) -> Unit): IImagePreviewReceiver
 }

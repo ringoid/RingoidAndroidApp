@@ -68,11 +68,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (intent.hasExtra(Extras.EXTRA_LOGOUT)) {
-            /**
-             * Resubscribe global receiver on image preview result because it had been unsubscribed
-             * before on UserProfile screen and replaced there with local receiver.
-             */
-            imagePreviewReceiver.register()
             loginInMemoryCache.setNewUser(false)
             vm.onLogout()
         }
