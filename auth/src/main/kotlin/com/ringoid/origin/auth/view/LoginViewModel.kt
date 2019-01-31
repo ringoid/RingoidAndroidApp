@@ -36,8 +36,8 @@ class LoginViewModel @Inject constructor(
     val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
     val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
 
-    private var gender: Gender? = null
-        set (value) {
+    var gender: Gender? = null
+        private set (value) {
             field = value
             enableLoginButton()
         }

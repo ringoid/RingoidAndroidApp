@@ -29,6 +29,10 @@ import kotlinx.android.synthetic.main.activity_login.*
 @AppNav("login")
 class LoginActivity : BaseActivity<LoginViewModel>() {
 
+    companion object {
+        private const val BUNDLE_KEY_SELECTED_GENDER = "bundle_key_selected_gender"
+    }
+
     private val imagePreviewReceiver: IImagePreviewReceiver by lazy { app.imagePreviewReceiver }
     private val loginInMemoryCache: LoginInMemoryCache by lazy { app.loginInMemoryCache as LoginInMemoryCache }
 
@@ -133,6 +137,17 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 else -> { /* no-op */ }
             }
         }
+
+        savedInstanceState?.let {
+            (it.getSerializable(BUNDLE_KEY_SELECTED_GENDER) as? Gender)
+                ?.let { gender ->
+                    when (gender) {
+                        Gender.MALE -> tv_sex_male.isSelected = true
+                        Gender.FEMALE -> tv_sex_female.isSelected = true
+                    }
+                    vm.onGenderSelect(gender)
+                }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -148,5 +163,10 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(BUNDLE_KEY_SELECTED_GENDER, vm.gender)
     }
 }
