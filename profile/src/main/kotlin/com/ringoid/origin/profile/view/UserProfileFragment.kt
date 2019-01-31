@@ -76,17 +76,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
-        fun onCropFailed(e: Throwable) {
-            Timber.e(e, "Image crop has failed")
-            view?.let { snackbar(it, OriginR_string.error_crop_image) }
-        }
-
-        fun onCropSuccess(croppedUri: Uri) {
-            Timber.v("Image cropping has succeeded, uri: $croppedUri")
-            vm.uploadImage(uri = croppedUri)
-            askToAddAnotherImage()
-        }
-
         super.onCreate(savedInstanceState)
         imagesAdapter = UserProfileImageAdapter().apply {
             onDeleteImageListener = { model: UserImage, _ ->
@@ -94,11 +83,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             }
             onEmptyImagesListener = ::showEmptyStub
         }
-
-        globalImagePreviewReceiver()
-            ?.doOnError(::onCropFailed)
-            ?.doOnSuccess(::onCropSuccess)
-            ?.subscribe()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -123,6 +107,17 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        fun onCropFailed(e: Throwable) {
+            Timber.e(e, "Image crop has failed")
+            view?.let { snackbar(it, OriginR_string.error_crop_image) }
+        }
+
+        fun onCropSuccess(croppedUri: Uri) {
+            Timber.v("Image cropping has succeeded, uri: $croppedUri")
+            vm.uploadImage(uri = croppedUri)
+            askToAddAnotherImage()
+        }
+
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
             observe(vm.imageCreated, imagesAdapter::prepend) { rv_items.post { rv_items.smoothScrollToPosition(0) } }
@@ -133,6 +128,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         if (communicator(IBaseMainActivity::class.java)?.isNewUser() != true) {
             vm.getUserImages()
         }
+
+        globalImagePreviewReceiver()
+            ?.doOnError(::onCropFailed)
+            ?.doOnSuccess(::onCropSuccess)
+            ?.subscribe()
     }
 
     @Suppress("CheckResult", "AutoDispose")
