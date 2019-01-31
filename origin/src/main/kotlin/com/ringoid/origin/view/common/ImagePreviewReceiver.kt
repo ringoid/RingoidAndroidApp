@@ -6,17 +6,14 @@ import com.ringoid.base.IImagePreviewReceiver
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import timber.log.Timber
 
-class ImagePreviewReceiver(private val receiver: CropIwaResultReceiver) : IImagePreviewReceiver {
+class ImagePreviewReceiver(private val applicationContext: Context, private val receiver: CropIwaResultReceiver)
+    : IImagePreviewReceiver {
 
     private var isRegistered: Boolean = false
     private var lastCropError: Throwable? = null
     private var lastCropResult: Uri? = null
 
-    override fun register(context: Context?) {
-        if (context == null) {
-            return
-        }
-
+    override fun register() {
         clear()  // forget any previous result in order not to receive it again
         receiver.apply {
             setListener(object : CropIwaResultReceiver.Listener {
@@ -30,19 +27,15 @@ class ImagePreviewReceiver(private val receiver: CropIwaResultReceiver) : IImage
                     lastCropResult = croppedUri
                 }
             })
-            register(context)
+            register(applicationContext)
             isRegistered = true
         }
     }
 
-    override fun unregister(context: Context?) {
-        if (context == null) {
-            return
-        }
-
+    override fun unregister() {
         if (isRegistered) {
             try {
-                receiver.unregister(context)
+                receiver.unregister(applicationContext)
             } catch (e: IllegalArgumentException) {
                 // it's a shame that Android FW doesn't provide receiver.isRegistered() method.
                 Timber.w(e)

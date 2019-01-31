@@ -1,12 +1,11 @@
 package com.ringoid.base
 
-import android.content.Context
 import android.net.Uri
 
 interface IImagePreviewReceiver {
 
-    fun register(context: Context?)
-    fun unregister(context: Context?)
+    fun register()
+    fun unregister()
 
     fun clear()
     fun hasResult(): Boolean

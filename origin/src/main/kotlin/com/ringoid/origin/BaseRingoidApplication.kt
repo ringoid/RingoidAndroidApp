@@ -46,7 +46,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeRxErrorHandler()
 
-        imagePreviewReceiver.register(applicationContext)  // app-wide broadcast receiver doesn't need to unregister
+        imagePreviewReceiver.register()  // app-wide broadcast receiver doesn't need to unregister
     }
 
     /* Leak detection */

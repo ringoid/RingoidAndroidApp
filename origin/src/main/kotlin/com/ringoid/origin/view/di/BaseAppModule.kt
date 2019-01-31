@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.di
 
+import android.content.Context
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.origin.view.common.ImagePreviewReceiver
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
@@ -11,6 +12,6 @@ import javax.inject.Singleton
 class BaseAppModule {
 
     @Provides @Singleton
-    fun provideCropIwaResultReceiver(): IImagePreviewReceiver =
-        ImagePreviewReceiver(CropIwaResultReceiver())
+    fun provideCropIwaResultReceiver(applicationContext: Context): IImagePreviewReceiver =
+        ImagePreviewReceiver(applicationContext, CropIwaResultReceiver())
 }

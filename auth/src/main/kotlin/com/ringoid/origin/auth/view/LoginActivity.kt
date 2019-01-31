@@ -72,7 +72,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
              * Resubscribe global receiver on image preview result because it had been unsubscribed
              * before on UserProfile screen and replaced there with local receiver.
              */
-            imagePreviewReceiver.register(applicationContext)
+            imagePreviewReceiver.register()
             loginInMemoryCache.setNewUser(false)
             vm.onLogout()
         }

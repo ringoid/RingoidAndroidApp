@@ -114,17 +114,16 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
              *    image cropping task, that finishes before UserProfile screen is opened and this local
              *    receiver is registered.
              */
-            register(context)
+            register(activity)
             Timber.w("image cropping ${globalImagePreviewReceiver()}, result=${globalImagePreviewReceiver()?.hasResult()}")
             globalImagePreviewReceiver()
-                ?.also { it.unregister(context) /* global receiver is not needed anymore */ }
+                ?.also { it.unregister() /* global receiver is not needed anymore */ }
                 ?.takeIf { it.hasResult() }
                 ?.also {
                     Timber.v("Use pending image cropping result from global receiver")
-                    val context = activity!!.applicationContext
                     it.getLastError()
-                        ?.let { CropIwaResultReceiver.onCropFailed(context, it) }
-                        ?: run { it.getLastResult()?.let { CropIwaResultReceiver.onCropCompleted(context, it) } }
+                        ?.let { CropIwaResultReceiver.onCropFailed(activity, it) }
+                        ?: run { it.getLastResult()?.let { CropIwaResultReceiver.onCropCompleted(activity, it) } }
                     it.clear()
                 }
         }
