@@ -66,7 +66,7 @@
     <style name="AppTheme.Dark" parent="Base.V0.AppTheme.Dark"/>
     <style name="AppTheme.Light" parent="Base.V0.AppTheme.Light"/>
 
-    <style name="AppTheme.Transparent">
+    <style name="AppTheme.Dark.Transparent">
         <!--<item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>-->
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -76,7 +76,26 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.Transparent.Semi">
+    <style name="AppTheme.Light.Transparent">
+        <!--<item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>-->
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Dark.SemiTransparent">
+        <item name="android:windowBackground">@color/semitransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+
+    <style name="AppTheme.Light.SemiTransparent">
         <item name="android:windowBackground">@color/semitransparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowContentOverlay">@null</item>

@@ -4,10 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.base.view.SimpleBaseActivity
+import com.ringoid.origin.view.base.SimpleBaseDialogActivity
 
 @AppNav("delete_image")
-class DeleteUserProfileImageActivity : SimpleBaseActivity(), IDeleteUserProfileImageActivity {
+class DeleteUserProfileImageActivity : SimpleBaseDialogActivity(), IDeleteUserProfileImageActivity {
 
     private var deleteUserImageDialog: DeleteUserProfileImageDialog? = null
 

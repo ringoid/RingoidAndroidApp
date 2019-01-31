@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.base.view.SimpleBaseActivity
+import com.ringoid.origin.view.base.SimpleBaseDialogActivity
 import com.ringoid.origin.navigation.Extras
 
 @AppNav("block_dialog", "report_dialog")
-class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity {
+class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetActivity {
 
     private var blockDialog: BlockBottomSheetDialog? = null
     private var reportDialog: ReportBottomSheetDialog? = null
