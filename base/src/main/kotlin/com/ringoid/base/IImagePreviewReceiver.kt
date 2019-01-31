@@ -14,4 +14,5 @@ interface IImagePreviewReceiver {
 
     fun doOnError(l: (e: Throwable) -> Unit): IImagePreviewReceiver
     fun doOnSuccess(l: (uri: Uri) -> Unit): IImagePreviewReceiver
+    fun dispose()
 }

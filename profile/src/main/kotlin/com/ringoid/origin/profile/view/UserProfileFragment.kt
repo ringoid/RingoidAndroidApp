@@ -158,6 +158,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        globalImagePreviewReceiver()?.dispose()
+    }
+
     // --------------------------------------------------------------------------------------------
     private fun askToAddAnotherImage() {
         if (!shouldAskToAddAnotherImage) {

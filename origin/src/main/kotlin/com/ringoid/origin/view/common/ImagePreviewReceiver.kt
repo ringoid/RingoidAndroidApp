@@ -71,4 +71,9 @@ class ImagePreviewReceiver(private val applicationContext: Context, private val 
         onSuccess = l
         return this
     }
+
+    override fun dispose() {
+        onError = null
+        onSuccess = null
+    }
 }
