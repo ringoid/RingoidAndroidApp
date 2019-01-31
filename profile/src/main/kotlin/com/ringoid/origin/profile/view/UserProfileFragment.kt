@@ -98,6 +98,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         globalImagePreviewReceiver()
             ?.doOnError(::onCropFailed)
             ?.doOnSuccess(::onCropSuccess)
+            ?.subscribe()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

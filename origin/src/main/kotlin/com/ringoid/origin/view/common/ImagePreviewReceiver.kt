@@ -76,4 +76,10 @@ class ImagePreviewReceiver(private val applicationContext: Context, private val 
         onError = null
         onSuccess = null
     }
+
+    override fun subscribe() {
+        lastCropError
+            ?.let { onError?.invoke(it) }
+            ?: run { lastCropResult?.let { onSuccess?.invoke(it) } }
+    }
 }
