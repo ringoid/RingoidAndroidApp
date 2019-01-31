@@ -1,0 +1,3 @@
+[submodule "cropiwa"]
+	path = cropiwa
+	url = https://github.com/ringoid/cropiwa
