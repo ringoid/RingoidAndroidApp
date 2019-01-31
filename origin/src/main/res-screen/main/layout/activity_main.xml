@@ -14,19 +14,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <View
+    <Space
         android:id="@+id/space_left"
         android:layout_width="@dimen/main_bottom_bar_space_width"
         android:layout_height="@dimen/main_bottom_bar_height"
-        android:background="@drawable/bottom_gradient_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bottom_gradient_black"
+        app:layout_constraintTop_toTopOf="@+id/bottom_bar"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Space
         android:id="@+id/space_right"
         android:layout_width="@dimen/main_bottom_bar_space_width"
         android:layout_height="@dimen/main_bottom_bar_height"
-        android:background="@drawable/bottom_gradient_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -34,7 +39,6 @@
         android:id="@+id/bottom_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_gradient_black"
         android:minHeight="@dimen/main_bottom_bar_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/space_left"
