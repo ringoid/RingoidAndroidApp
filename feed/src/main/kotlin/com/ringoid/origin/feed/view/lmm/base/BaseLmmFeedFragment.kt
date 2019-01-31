@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.lmm.base
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
@@ -12,10 +13,11 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.view.FeedFragment
-import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.ChatPayload
+import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.view.dialog.IDialogCallback
+import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
     : FeedFragment<VM, FeedItem, VH>(), IChatHost, IDialogCallback
@@ -69,5 +71,15 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.observe(vm.feed, feedAdapter::submitList)
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        rv_items.addOnScrollListener(topScrollListener)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rv_items.removeOnScrollListener(topScrollListener)
     }
 }
