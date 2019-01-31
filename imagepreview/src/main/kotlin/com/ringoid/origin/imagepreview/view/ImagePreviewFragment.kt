@@ -14,14 +14,17 @@ import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.communicator
 import com.ringoid.utility.randomString
+import com.ringoid.utility.snackbar
+import com.steelkiwi.cropiwa.OnImageLoadListener
 import com.steelkiwi.cropiwa.config.CropIwaSaveConfig
 import kotlinx.android.synthetic.main.fragment_image_preview.*
 import timber.log.Timber
 import java.io.File
 
-class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
+class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadListener {
 
     companion object {
         internal const val TAG = "ImagePreviewFragment_tag"
@@ -81,7 +84,9 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
             setNavigationOnClickListener { onNavigateBack() }
         }
 
-        uri?.let { crop_view.setImageUri(it) }
+        crop_view.setOnImageLoadListener(this)
+
+        uri?.let { crop_view.setImageUri(it).also { pb_image_preview.changeVisibility(isVisible = true) } }
            ?: run {
                Timber.w("No image uri supplied on ImagePreview screen.")
                arguments?.getString(BUNDLE_KEY_NAVIGATE_FROM)
@@ -91,7 +96,10 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
     }
 
     override fun onDestroyView() {
-        crop_view.setCropSaveCompleteListener(null)
+        crop_view.apply {
+            setCropSaveCompleteListener(null)
+            setOnImageLoadListener(null)
+        }
         super.onDestroyView()
     }
 
@@ -114,6 +122,18 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>() {
         onClose(true)  // close this ImagePreview screen immediately, doing cropping in background
     }
 
+    // ------------------------------------------
+    override fun onSuccess(uri: Uri) {
+        pb_image_preview.changeVisibility(isVisible = false)
+    }
+
+    override fun onFailure(e: Throwable) {
+        pb_image_preview.changeVisibility(isVisible = false)
+        snackbar(view, R.string.error_crop_image)
+        onClose()  // failed to load image to crop - close without retry
+    }
+
+    // --------------------------------------------------------------------------------------------
     private fun onClose(withImageAdded: Boolean = false) {
         communicator(IImagePreviewActivity::class.java)?.onClose(withImageAdded)
     }

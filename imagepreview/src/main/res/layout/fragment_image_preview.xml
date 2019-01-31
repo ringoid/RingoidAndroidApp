@@ -23,6 +23,15 @@
         app:ci_scale_enabled="true"
         app:ci_translation_enabled="true"/>
 
+    <ProgressBar
+        android:id="@+id/pb_image_preview"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/ProgressBar"/>
+
     <include layout="@layout/toolbar" android:id="@id/toolbar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
