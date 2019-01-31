@@ -131,7 +131,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.imageCreated, imagesAdapter::prepend) { rv_items.post { rv_items.smoothScrollToPosition(0) } }
+            observe(vm.imageCreated, imagesAdapter::prepend) { rv_items.post { rv_items.scrollToPosition(0) } }
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.imageIdChanged, imagesAdapter::updateItemId)
             observe(vm.images, imagesAdapter::submitList)
