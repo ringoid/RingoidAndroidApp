@@ -220,11 +220,11 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
 
                     val fixUp = if (feedAdapter.withHeader()) 1 else 0
                     if (scroll_fab.isVisible()) {
-                        if (p < 2 + fixUp) {
+                        if (p < 1 + fixUp) {
                             scroll_fab.changeVisibility(isVisible = false)
                         }
                     } else {
-                        if (p >= 2 + fixUp) {
+                        if (p >= 1 + fixUp) {
                             scroll_fab.changeVisibility(isVisible = true)
                         }
                     }
