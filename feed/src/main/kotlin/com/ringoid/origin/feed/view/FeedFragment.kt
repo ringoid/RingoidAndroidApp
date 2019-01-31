@@ -213,18 +213,18 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
                         scroll_fab.changeVisibility(isVisible = false)
                     }
                 } else {
-                    val p = it.findFirstCompletelyVisibleItemPosition()
+                    val p = it.findFirstVisibleItemPosition()
                     if (p == RecyclerView.NO_POSITION) {
                         return
                     }
 
                     val fixUp = if (feedAdapter.withHeader()) 1 else 0
                     if (scroll_fab.isVisible()) {
-                        if (p < 1 + fixUp) {
+                        if (p < 2 + fixUp) {
                             scroll_fab.changeVisibility(isVisible = false)
                         }
                     } else {
-                        if (p >= 1 + fixUp) {
+                        if (p >= 2 + fixUp) {
                             scroll_fab.changeVisibility(isVisible = true)
                         }
                     }
