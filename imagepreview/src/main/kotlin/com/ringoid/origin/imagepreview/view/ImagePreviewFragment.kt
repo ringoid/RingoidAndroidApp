@@ -63,7 +63,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
                 when (resultCode) {
                     Activity.RESULT_CANCELED -> onClose()
-                    Activity.RESULT_OK -> uri = data?.data?.also { crop_view?.setImageUri(it) }
+                    Activity.RESULT_OK -> uri = data?.data?.also { setImageUri(it) }
                 }
             }
         }
@@ -86,7 +86,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
 
         crop_view.setOnImageLoadListener(this)
 
-        uri?.let { crop_view.setImageUri(it).also { pb_image_preview.changeVisibility(isVisible = true) } }
+        uri?.let { setImageUri(it) }
            ?: run {
                Timber.w("No image uri supplied on ImagePreview screen.")
                arguments?.getString(BUNDLE_KEY_NAVIGATE_FROM)
@@ -120,6 +120,14 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
 
         activity?.setResult(Activity.RESULT_OK)  // close with result
         onClose(true)  // close this ImagePreview screen immediately, doing cropping in background
+    }
+
+    private fun setImageUri(uri: Uri) {
+        crop_view.apply {
+            clear()
+            pb_image_preview.changeVisibility(isVisible = true)
+            setImageUri(uri)
+        }
     }
 
     // ------------------------------------------
