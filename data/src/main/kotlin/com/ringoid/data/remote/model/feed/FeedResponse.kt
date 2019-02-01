@@ -35,16 +35,13 @@ import com.ringoid.domain.model.feed.Feed
  */
 class FeedResponse(
     @Expose @SerializedName(COLUMN_PROFILES) val profiles: List<ProfileEntity> = emptyList(),
-    @Expose @SerializedName(COLUMN_REPEAT_AFTER_SEC) val repeatAfterSec: Int = 0,
-    errorCode: String = "", errorMessage: String = "")
-    : BaseResponse(errorCode, errorMessage), Mappable<Feed> {
+    errorCode: String = "", errorMessage: String = "") : BaseResponse(errorCode, errorMessage), Mappable<Feed> {
 
     fun copyWith(profiles: List<ProfileEntity> = this.profiles): FeedResponse =
         FeedResponse(profiles = profiles, errorCode = errorCode, errorMessage = errorMessage)
 
     companion object {
         const val COLUMN_PROFILES = "profiles"
-        const val COLUMN_REPEAT_AFTER_SEC = "repeatRequestAfterSec"
     }
 
     override fun map(): Feed = Feed(profiles = profiles.map { it.map() })
