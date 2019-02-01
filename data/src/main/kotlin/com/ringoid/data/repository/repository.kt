@@ -39,10 +39,13 @@ private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) 
             .flatMap { errorWithAttempt ->
                 val attemptNumber = errorWithAttempt.first
                 val error = errorWithAttempt.second
-                val delayTime = delay * pow(5.0, attemptNumber.toDouble()).toLong()
+                val delayTime = when (error) {
+                    is RepeatRequestAfterSecException -> error.delay * 1000  // in secons
+                    else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
+                }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
                                 .doOnComplete {
-                                    Timber.e("Failed to retry on attempt [$attemptNumber / $count]: $error")
+                                    Timber.e("Retry attempt [$attemptNumber / $count] after error: $error")
                                     if (attemptNumber >= count) throw error
                                 }
             }
@@ -54,10 +57,13 @@ private fun expBackoffObservableImpl(count: Int, delay: Int, tag: String? = null
             .flatMap { errorWithAttempt ->
                 val attemptNumber = errorWithAttempt.first
                 val error = errorWithAttempt.second
-                val delayTime = pow(delay.toDouble(), attemptNumber.toDouble()).toLong()
+                val delayTime = when (error) {
+                    is RepeatRequestAfterSecException -> error.delay * 1000  // in secons
+                    else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
+                }
                 Observable.timer(delayTime, TimeUnit.MILLISECONDS)
                                   .doOnComplete {
-                                      Timber.e("Failed to retry on attempt [$attemptNumber / $count]: $error")
+                                      Timber.e("Retry attempt [$attemptNumber / $count] after error: $error")
                                       if (attemptNumber >= count) throw error
                                   }
             }
