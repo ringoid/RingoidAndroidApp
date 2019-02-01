@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.GlideApp
+import com.ringoid.origin.imagepreview.OriginR_string
 import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
@@ -137,7 +138,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
 
     override fun onFailure(e: Throwable) {
         pb_image_preview.changeVisibility(isVisible = false)
-        snackbar(view, R.string.error_crop_image)
+        snackbar(view, OriginR_string.error_crop_image)
         onClose()  // failed to load image to crop - close without retry
     }
 
