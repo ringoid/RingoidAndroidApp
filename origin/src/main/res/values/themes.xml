@@ -32,6 +32,8 @@
         <item name="refDrawableBottomBarMessengerPressed">@drawable/ic_menu_messages_black_24dp</item>
         <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_black_36dp</item>
         <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_black_36dp</item>
+        <item name="refDrawableFabScrollBg">@drawable/black_half_oval_selector</item>
+        <item name="refDrawableFabScrollIcon">@drawable/ic_expand_less_white_24dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_internet_black_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
@@ -50,6 +52,8 @@
         <item name="refDrawableBottomBarMessengerPressed">@drawable/ic_menu_messages_white_24dp</item>
         <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_white_36dp</item>
         <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_white_36dp</item>
+        <item name="refDrawableFabScrollBg">@drawable/white_half_oval_selector</item>
+        <item name="refDrawableFabScrollIcon">@drawable/ic_expand_less_black_24dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_internet_white_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>

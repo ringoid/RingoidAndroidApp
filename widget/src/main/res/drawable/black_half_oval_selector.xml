@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/grass">
+    <item>
+        <selector>
+            <item android:drawable="@drawable/black_half_oval" android:state_enabled="false"/>
+            <item android:drawable="@drawable/black_half_oval"/>
+        </selector>
+    </item>
+</ripple>

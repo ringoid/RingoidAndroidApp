@@ -34,10 +34,11 @@
         android:layout_gravity="bottom|start"
         android:layout_marginBottom="@dimen/feed_fab_margin_bottom"
         android:layout_marginStart="@dimen/std_margin_24"
-        android:background="@drawable/white_half_oval_selector"
+        android:background="?attr/refDrawableFabScrollBg"
         android:contentDescription="@null"
+        android:elevation="8dp"
         android:minWidth="@dimen/std_icon_36"
         android:minHeight="@dimen/std_icon_36"
         android:visibility="invisible"
-        app:srcCompat="@drawable/ic_expand_less_white_24dp"/>
+        app:srcCompat="?attr/refDrawableFabScrollIcon"/>
 </FrameLayout>
