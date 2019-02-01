@@ -39,15 +39,13 @@ class DebugViewModel @Inject constructor(
 
     fun requestWithFailNTimesBeforeSuccess(n: Int) {
         requestRetryNTimesUseCase.source(params = Params().put("count", n))
-            .doOnComplete { viewState.value = ViewState.DONE(Residual()) }
-            .handleResult(this)
+            .handleResult(this, ViewState.DONE(Residual()))
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithInvalidAccessToken() {
         invalidAccessTokenRequestUseCase.source(params = Params().put("token", "invalid_token"))
-            .doOnComplete { viewState.value = ViewState.DONE(Residual()) }
             .handleResult(this)
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
@@ -55,7 +53,7 @@ class DebugViewModel @Inject constructor(
 
     fun requestWithNeedToRepeatAfterDelay(delay: Long /* in seconds */) {
         requestRepeatAfterDelayUseCase.source(params = Params().put("delay", delay))
-            .handleResult(this)
+            .handleResult(this, ViewState.DONE(Residual()))
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
@@ -102,12 +100,13 @@ class DebugViewModel @Inject constructor(
 
     /* Misc */
     // --------------------------------------------------------------------------------------------
-    private fun handleResult(): CompletableTransformer =
+    private fun handleResult(completeState: ViewState = ViewState.IDLE): CompletableTransformer =
         CompletableTransformer {
             it.doOnSubscribe { viewState.value = ViewState.LOADING }
-                .doOnComplete { viewState.value = ViewState.IDLE }
+                .doOnComplete { viewState.value = completeState }
                 .doOnError { viewState.value = ViewState.ERROR(it) }
         }
 
-    private fun Completable.handleResult(handler: BaseViewModel): Completable = compose(handleResult())
+    private fun Completable.handleResult(handler: BaseViewModel, completeState: ViewState = ViewState.IDLE)
+            : Completable = compose(handleResult(completeState))
 }
