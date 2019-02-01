@@ -13,6 +13,8 @@ import javax.inject.Inject
 
 class DebugViewModel @Inject constructor(
     private val invalidAccessTokenRequestUseCase: InvalidAccessTokenRequestUseCase,
+    private val requestRepeatAfterDelayUseCase: RequestRepeatAfterDelayUseCase,
+    private val requestRetryNTimesUseCase: RequestRetryNTimesUseCase,
     private val unsupportedAppVersionRequestUseCase: UnsupportedAppVersionRequestUseCase,
     private val wrongParamsRequestUseCase: WrongParamsRequestUseCase,
     private val debugInvalidAccessTokenRequestUseCase: DebugInvalidAccessTokenRequestUseCase,
@@ -34,8 +36,22 @@ class DebugViewModel @Inject constructor(
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
+    fun requestWithFailNTimesBeforeSuccess(n: Int) {
+        requestRetryNTimesUseCase.source(params = Params().put("count", n))
+            .handleResult(this)
+            .autoDisposable(this)
+            .subscribe({ /* no-op */ }, Timber::e)
+    }
+
     fun requestWithInvalidAccessToken() {
         invalidAccessTokenRequestUseCase.source(params = Params().put("token", "invalid_token"))
+            .handleResult(this)
+            .autoDisposable(this)
+            .subscribe({ /* no-op */ }, Timber::e)
+    }
+
+    fun requestWithNeedToRepeatAfterDelay(delay: Long /* in seconds */) {
+        requestRepeatAfterDelayUseCase.source(params = Params().put("delay", delay))
             .handleResult(this)
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)

@@ -59,4 +59,19 @@
         android:id="@+id/item_error_timeout"
         app:icon_item_text="@string/debug_item_response_error_timeout"
         style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.item_view.IconItemView
+        android:id="@+id/item_error_request_n_fail_attempts"
+        app:icon_item_text="@string/debug_item_response_error_request_n_attempts"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.item_view.IconItemView
+        android:id="@+id/item_error_request_repeat_after_delay"
+        app:icon_item_text="@string/debug_item_response_error_request_repeat_after_delay"
+        style="?attr/iconItemView"/>
+
 </LinearLayout>

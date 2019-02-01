@@ -12,6 +12,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.DaggerCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
+import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.data.repository.withApiError
@@ -45,6 +46,28 @@ class DebugRepository @Inject constructor(
     @Named("block") private val blockedProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IDebugRepository {
+
+    private var requestAttempt: Int = 0
+    private var requestRepeatAfterDelayAttempt: Int = 0
+
+    override fun requestWithFailNTimesBeforeSuccess(count: Int): Completable =
+        Single.just(requestAttempt)
+            .flatMap {
+                ++requestAttempt
+                if (it < count) Single.error(RuntimeException("Continue attempts: $it / $count"))
+                else Single.just(BaseResponse())
+            }
+            .handleError(count = count)
+            .ignoreElement()  // convert to Completable
+
+    override fun requestWithRepeatAfterDelay(delay: Long): Completable =
+        Single.just(requestRepeatAfterDelayAttempt)
+            .flatMap {
+                ++requestRepeatAfterDelayAttempt
+                Single.just(BaseResponse(repeatAfterSec = if (it < 1) delay else 0))
+            }
+            .handleError(count = 2)
+            .ignoreElement()  // convert to Completable
 
     override fun requestWithInvalidAccessToken(token: String): Completable =
         cloud.getUserImages(accessToken = token, resolution = ImageResolution._480x640)
