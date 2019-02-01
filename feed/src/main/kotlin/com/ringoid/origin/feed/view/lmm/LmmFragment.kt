@@ -34,34 +34,34 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun showBadgeOnLikes(isVisible: Boolean) {
         badge_likes_visibilityPrev = isVisible
-        badge_likes.changeVisibility(isVisible, soft = true)
+        btn_tab_likes.showBadge(isVisible)
     }
 
     override fun showBadgeOnMatches(isVisible: Boolean) {
         badge_matches_visibilityPrev = isVisible
-        badge_matches.changeVisibility(isVisible, soft = true)
+        btn_tab_matches.showBadge(isVisible)
     }
 
     override fun showBadgeOnMessenger(isVisible: Boolean) {
         badge_messages_visibilityPrev = isVisible
-        badge_messenger.changeVisibility(isVisible, soft = true)
+        btn_tab_messenger.showBadge(isVisible)
     }
 
     override fun showTabs(isVisible: Boolean) {
         if (isVisible) {
             if (badge_likes_visibilityPrev) {
-                badge_likes.changeVisibility(isVisible)
+                btn_tab_likes.showBadge(isVisible)
             }
             if (badge_matches_visibilityPrev) {
-                badge_matches.changeVisibility(isVisible)
+                btn_tab_matches.showBadge(isVisible)
             }
             if (badge_messages_visibilityPrev) {
-                badge_messenger.changeVisibility(isVisible)
+                btn_tab_messenger.showBadge(isVisible)
             }
         } else {
-            badge_likes.changeVisibility(isVisible)
-            badge_matches.changeVisibility(isVisible)
-            badge_messenger.changeVisibility(isVisible)
+            btn_tab_likes.showBadge(isVisible)
+            btn_tab_matches.showBadge(isVisible)
+            btn_tab_messenger.showBadge(isVisible)
         }
         btn_tab_likes.changeVisibility(isVisible)
         btn_tab_matches.changeVisibility(isVisible)
