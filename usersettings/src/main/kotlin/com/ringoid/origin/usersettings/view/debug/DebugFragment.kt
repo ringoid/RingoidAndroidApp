@@ -11,6 +11,7 @@ import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.usersettings.R
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.snackbar
 import kotlinx.android.synthetic.main.fragment_debug.*
 
 class DebugFragment : BaseFragment<DebugViewModel>() {
@@ -34,6 +35,7 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
+            is ViewState.DONE -> snackbar(view, "Success!")
             is ViewState.LOADING -> pb_debug.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
         }

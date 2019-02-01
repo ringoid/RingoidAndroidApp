@@ -55,9 +55,10 @@ class DebugRepository @Inject constructor(
     private fun getAndIncrementRequestRepeatAfterDelayAttempt(): Int = requestRepeatAfterDelayAttempt++
 
     override fun requestWithFailNTimesBeforeSuccess(count: Int): Completable =
-        Single.just(getAndIncrementRequestAttempt())
+        Single.just(0L)
             .flatMap {
-                if (it < count) Single.error(RuntimeException("Continue attempts: $it / $count"))
+                val i = getAndIncrementRequestAttempt()
+                if (i < count) Single.just(BaseResponse(errorCode = "DebugError", errorMessage = "Debug error"))
                 else Single.just(BaseResponse())
             }
             .handleError(count = count)
@@ -65,8 +66,11 @@ class DebugRepository @Inject constructor(
             .ignoreElement()  // convert to Completable
 
     override fun requestWithRepeatAfterDelay(delay: Long): Completable =
-        Single.just(getAndIncrementRequestRepeatAfterDelayAttempt())
-            .flatMap { Single.just(BaseResponse(repeatAfterSec = if (it < 1) delay else 0)) }
+        Single.just(0L)
+            .flatMap {
+                val i = getAndIncrementRequestRepeatAfterDelayAttempt()
+                Single.just(BaseResponse(repeatAfterSec = if (i < 1) delay else 0))
+            }
             .handleError(count = 2)
             .doFinally { requestRepeatAfterDelayAttempt = 0 }
             .ignoreElement()  // convert to Completable

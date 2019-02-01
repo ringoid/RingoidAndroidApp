@@ -1,6 +1,7 @@
 package com.ringoid.origin.usersettings.view.debug
 
 import android.app.Application
+import com.ringoid.base.view.Residual
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
@@ -38,6 +39,7 @@ class DebugViewModel @Inject constructor(
 
     fun requestWithFailNTimesBeforeSuccess(n: Int) {
         requestRetryNTimesUseCase.source(params = Params().put("count", n))
+            .doOnComplete { viewState.value = ViewState.DONE(Residual()) }
             .handleResult(this)
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
@@ -45,6 +47,7 @@ class DebugViewModel @Inject constructor(
 
     fun requestWithInvalidAccessToken() {
         invalidAccessTokenRequestUseCase.source(params = Params().put("token", "invalid_token"))
+            .doOnComplete { viewState.value = ViewState.DONE(Residual()) }
             .handleResult(this)
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
