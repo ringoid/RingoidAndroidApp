@@ -3,6 +3,7 @@ package com.ringoid.data.repository
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.exception.ApiException
 import com.ringoid.domain.exception.NetworkException
+import com.ringoid.domain.exception.RepeatRequestAfterSecException
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
@@ -77,8 +78,12 @@ inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = 
 // ----------------------------------------------
 private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer<in T> =
     Consumer {
-        it.takeIf { !it.errorCode.isNullOrBlank() }
-          ?.let { throw ApiException(code = it.errorCode, message = it.errorMessage, tag = tag) }
+        if (!it.errorCode.isNullOrBlank()) {
+            throw ApiException(code = it.errorCode, message = it.errorMessage, tag = tag)
+        }
+        if (it.repeatAfterSec > 0) {
+            throw RepeatRequestAfterSecException(delay = it.repeatAfterSec)
+        }
     }
 
 fun <T : BaseResponse> onApiErrorMaybe(tag: String? = null): MaybeTransformer<T, T> =
