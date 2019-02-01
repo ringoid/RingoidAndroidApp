@@ -41,18 +41,27 @@ private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) 
                 val error = errorWithAttempt.second
                 val delayTime = delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                                .doOnComplete { Timber.e("Failed to retry on attempt [$attemptNumber / $count]: $error") }
+                                .doOnComplete {
+                                    Timber.e("Failed to retry on attempt [$attemptNumber / $count]: $error")
+                                    if (attemptNumber >= count) throw error
+                                }
             }
-    }  // TODO: handle fail all retries
+    }
 
 private fun expBackoffObservableImpl(count: Int, delay: Int, tag: String? = null) =
     { it: Observable<Throwable> ->
-        it.zipWith<Int, Int>(Observable.range(1, count), BiFunction { _: Throwable, i -> i })
-            .flatMap { retryCount ->
-                val delayTime = pow(delay.toDouble(), retryCount.toDouble()).toLong()
+        it.zipWith<Int, Pair<Int, Throwable>>(Observable.range(1, count), BiFunction { e: Throwable, i -> i to e })
+            .flatMap { errorWithAttempt ->
+                val attemptNumber = errorWithAttempt.first
+                val error = errorWithAttempt.second
+                val delayTime = pow(delay.toDouble(), attemptNumber.toDouble()).toLong()
                 Observable.timer(delayTime, TimeUnit.MILLISECONDS)
+                                  .doOnComplete {
+                                      Timber.e("Failed to retry on attempt [$attemptNumber / $count]: $error")
+                                      if (attemptNumber >= count) throw error
+                                  }
             }
-    }  // TODO: handle fail all retries
+    }
 
 fun expBackoffCompletable(count: Int, delay: Int, tag: String? = null): CompletableTransformer =
     CompletableTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
