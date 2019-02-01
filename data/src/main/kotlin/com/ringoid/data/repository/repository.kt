@@ -12,33 +12,36 @@ import timber.log.Timber
 import java.lang.Math.pow
 import java.util.concurrent.TimeUnit
 
-const val DEFAULT_RETRY_COUNT = 0
+const val DEFAULT_RETRY_COUNT = 5
 const val DEFAULT_RETRY_DELAY = 55
 
 /* Retry with exponential backoff */
 // ------------------------------------------------------------------------------------------------
 fun Completable.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
-    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffCompletable(count = count, delay = delay, tag = tag))
+    doOnError { Timber.e(it, "Retry on error $count") }.compose(expBackoffCompletable(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
-    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffMaybe(count = count, delay = delay, tag = tag))
+    doOnError { Timber.e(it, "Retry on error $count") }.compose(expBackoffMaybe(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Single<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
-    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffSingle(count = count, delay = delay, tag = tag))
+    doOnError { Timber.e(it, "Retry on error $count") }.compose(expBackoffSingle(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
-    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffFlowable(count = count, delay = delay, tag = tag))
+    doOnError { Timber.e(it, "Retry on error $count") }.compose(expBackoffFlowable(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
-    doOnError { Timber.e(it, "Retry on error") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
+    doOnError { Timber.e(it, "Retry on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
 
 // ----------------------------------------------
 private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) =
     { it: Flowable<Throwable> ->
-        it.zipWith<Int, Int>(Flowable.range(1, count), BiFunction { _: Throwable, i -> i })
-            .flatMap { retryCount ->
-                val delayTime = delay * pow(5.0, retryCount.toDouble()).toLong()
+        it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, count), BiFunction { e: Throwable, i -> i to e })
+            .flatMap { errorWithAttempt ->
+                val attemptNumber = errorWithAttempt.first
+                val error = errorWithAttempt.second
+                val delayTime = delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
+                                .doOnComplete { Timber.e("Failed to retry on attempt [$attemptNumber / $count]: $error") }
             }
     }  // TODO: handle fail all retries
 

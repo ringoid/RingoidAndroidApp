@@ -48,7 +48,7 @@ class DebugRepository @Inject constructor(
 
     override fun requestWithInvalidAccessToken(token: String): Completable =
         cloud.getUserImages(accessToken = token, resolution = ImageResolution._480x640)
-            .handleError()
+            .handleError(count = 2)
             .ignoreElement()  // convert to Completable
 
     override fun requestWithUnsupportedAppVersion(): Completable {
