@@ -47,28 +47,31 @@ class DebugRepository @Inject constructor(
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IDebugRepository {
 
+    // --------------------------------------------------------------------------------------------
     private var requestAttempt: Int = 0
     private var requestRepeatAfterDelayAttempt: Int = 0
 
+    private fun getAndIncrementRequestAttempt(): Int = requestAttempt++
+    private fun getAndIncrementRequestRepeatAfterDelayAttempt(): Int = requestRepeatAfterDelayAttempt++
+
     override fun requestWithFailNTimesBeforeSuccess(count: Int): Completable =
-        Single.just(requestAttempt)
+        Single.just(getAndIncrementRequestAttempt())
             .flatMap {
-                ++requestAttempt
                 if (it < count) Single.error(RuntimeException("Continue attempts: $it / $count"))
                 else Single.just(BaseResponse())
             }
             .handleError(count = count)
+            .doFinally { requestAttempt = 0 }
             .ignoreElement()  // convert to Completable
 
     override fun requestWithRepeatAfterDelay(delay: Long): Completable =
-        Single.just(requestRepeatAfterDelayAttempt)
-            .flatMap {
-                ++requestRepeatAfterDelayAttempt
-                Single.just(BaseResponse(repeatAfterSec = if (it < 1) delay else 0))
-            }
+        Single.just(getAndIncrementRequestRepeatAfterDelayAttempt())
+            .flatMap { Single.just(BaseResponse(repeatAfterSec = if (it < 1) delay else 0)) }
             .handleError(count = 2)
+            .doFinally { requestRepeatAfterDelayAttempt = 0 }
             .ignoreElement()  // convert to Completable
 
+    // ------------------------------------------
     override fun requestWithInvalidAccessToken(token: String): Completable =
         cloud.getUserImages(accessToken = token, resolution = ImageResolution._480x640)
             .handleError(count = 2)
