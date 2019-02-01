@@ -74,8 +74,10 @@
 
     <ProgressBar
         android:id="@+id/pb_profile"
+        android:layout_marginBottom="@dimen/main_bottom_bar_height"
+        android:scaleY="3"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         style="@style/ProgressBar.Horizontal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
