@@ -44,10 +44,8 @@ private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) 
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                                .doOnComplete {
-                                    Timber.e("Retry attempt [$attemptNumber / $count] after error: $error")
-                                    if (attemptNumber >= count) throw error
-                                }
+                                .doOnSubscribe { Timber.w("Retry attempt [$attemptNumber / $count] after error: $error") }
+                                .doOnComplete { if (attemptNumber >= count) throw error }
             }
     }
 

@@ -61,7 +61,7 @@ class DebugRepository @Inject constructor(
                 if (i < count) Single.just(BaseResponse(errorCode = "DebugError", errorMessage = "Debug error"))
                 else Single.just(BaseResponse())
             }
-            .handleError(count = count * 2)
+            .handleError(count = count * 2, delay = 250)
             .doFinally { requestAttempt = 0 }
             .ignoreElement()  // convert to Completable
 
