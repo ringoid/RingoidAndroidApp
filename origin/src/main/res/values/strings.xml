@@ -29,7 +29,7 @@
     <string name="debug_item_response_error_expired_token">Expired Access Token</string>
     <string name="debug_item_response_error_invalid_token">Invalid Access Token</string>
     <string name="debug_item_response_error_old_app_version">Too old app version</string>
-    <string name="debug_item_response_error_request_n_attempts">Retry request 2 times before success</string>
+    <string name="debug_item_response_error_request_n_attempts">Retry request 3 times before success</string>
     <string name="debug_item_response_error_request_params">Wrong request params</string>
     <string name="debug_item_response_error_request_repeat_after_delay">Repeat request after 5 seconds</string>
     <string name="debug_item_response_error_server">Internal Server error</string>
