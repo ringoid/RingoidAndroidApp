@@ -61,7 +61,7 @@ class DebugRepository @Inject constructor(
                 if (i < count) Single.just(BaseResponse(errorCode = "DebugError", errorMessage = "Debug error"))
                 else Single.just(BaseResponse())
             }
-            .handleError(count = count)
+            .handleError(count = count * 2)
             .doFinally { requestAttempt = 0 }
             .ignoreElement()  // convert to Completable
 
@@ -71,7 +71,7 @@ class DebugRepository @Inject constructor(
                 val i = getAndIncrementRequestRepeatAfterDelayAttempt()
                 Single.just(BaseResponse(repeatAfterSec = if (i < 1) delay else 0))
             }
-            .handleError(count = 2)
+            .handleError()
             .doFinally { requestRepeatAfterDelayAttempt = 0 }
             .ignoreElement()  // convert to Completable
 
