@@ -40,7 +40,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) 
                 val attemptNumber = errorWithAttempt.first
                 val error = errorWithAttempt.second
                 val delayTime = when (error) {
-                    is RepeatRequestAfterSecException -> error.delay * 1000  // in secons
+                    is RepeatRequestAfterSecException -> error.delay * 1000  // in seconds
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
