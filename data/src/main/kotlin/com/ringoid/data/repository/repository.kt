@@ -30,7 +30,7 @@ inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = DEFAULT
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffFlowable(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
-    doOnError { Timber.w(it, "Retry on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
+    doOnError { Timber.w("Retry on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
 
 // ----------------------------------------------
 private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) =
