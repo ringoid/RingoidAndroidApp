@@ -32,10 +32,10 @@ class DebugFeedRepository @Inject constructor(
     override fun debugGetNewFacesWithFailNTimesBeforeSuccessForPage(page: Int, failPage: Int, count: Int): Single<Feed> =
         if (page == failPage) {
             Single.just(DebugRepository.getFeed(page))
-                .map {
+                .flatMap {
                     val i = getAndIncrementRequestAttempt()
-                    if (i < count) it.convertToFeedResponse(errorCode = "DebugError", errorMessage = "Debug error")
-                    else it.convertToFeedResponse()
+                    if (i < count) Single.just(it.convertToFeedResponse(errorCode = "DebugError", errorMessage = "Debug error"))
+                    else Single.just(it.convertToFeedResponse())
                 }
         } else {
             Single.just(DebugRepository.getFeed(page)).map { it.convertToFeedResponse() }
@@ -50,7 +50,7 @@ class DebugFeedRepository @Inject constructor(
         if (page == repeatPage) {
             val i = getAndIncrementRequestRepeatAfterDelayAttempt()
             Single.just(DebugRepository.getFeed(page))
-                .map { it.convertToFeedResponse(repeatAfterSec = if (i < 1) delay else 0) }
+                .flatMap { Single.just(it.convertToFeedResponse(repeatAfterSec = if (i < 1) delay else 0)) }
         } else {
             Single.just(DebugRepository.getFeed(page)).map { it.convertToFeedResponse() }
         }
