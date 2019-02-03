@@ -33,10 +33,10 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
     }
 
     override fun getItemViewType(position: Int): Int =
-        when (getItem(position).peerId) {
-            DomainUtil.CURRENT_USER_ID -> R.layout.rv_item_my_chat_item
-            else -> R.layout.rv_item_chat_item
-        }
+        if (super.getItemViewType(position) == VIEW_TYPE_NORMAL) {
+            if (getModel(position).peerId == DomainUtil.CURRENT_USER_ID) R.layout.rv_item_my_chat_item
+            else R.layout.rv_item_chat_item
+        } else DomainUtil.BAD_RESOURCE
 
     // ------------------------------------------
     override fun getStubItem(): Message = EmptyMessage

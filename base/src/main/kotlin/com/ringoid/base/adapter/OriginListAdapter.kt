@@ -126,7 +126,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
             else /* VIEW_TYPE_NORMAL */ -> getModel(position)
         }
 
-    private fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]
+    protected fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]
     protected fun getModels(): List<T> = helper.currentList
     /**
      * The following two methods are just stubs to make [getItem] work properly,
