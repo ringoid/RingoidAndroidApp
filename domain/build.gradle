@@ -16,6 +16,8 @@ android {
         buildConfigField 'String', 'API_URL', rootProject.ext.apiUrl
         buildConfigField 'String', 'APPNAV', rootProject.ext.appnav
         buildConfigField 'String', 'AUTHORITY', rootProject.ext.authority
+        buildConfigField 'int', 'DEFAULT_RETRY_COUNT', "5"
+        buildConfigField 'long', 'DEFAULT_RETRY_DELAY', "55L"
         buildConfigField 'String', 'HOST', rootProject.ext.host
     }
     buildTypes {

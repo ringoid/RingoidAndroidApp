@@ -1,6 +1,7 @@
 package com.ringoid.data.repository
 
 import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.exception.ApiException
 import com.ringoid.domain.exception.NetworkException
 import com.ringoid.domain.exception.RepeatRequestAfterSecException
@@ -12,24 +13,21 @@ import timber.log.Timber
 import java.lang.Math.pow
 import java.util.concurrent.TimeUnit
 
-const val DEFAULT_RETRY_COUNT = 5
-const val DEFAULT_RETRY_DELAY = 55L
-
 /* Retry with exponential backoff */
 // ------------------------------------------------------------------------------------------------
-fun Completable.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
+fun Completable.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffCompletable(count = count, delay = delay, tag = tag))
 
-inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
+inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffMaybe(count = count, delay = delay, tag = tag))
 
-inline fun <reified T : BaseResponse> Single<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
+inline fun <reified T : BaseResponse> Single<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffSingle(count = count, delay = delay, tag = tag))
 
-inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
+inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffFlowable(count = count, delay = delay, tag = tag))
 
-inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
+inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
 
 // ----------------------------------------------
@@ -176,25 +174,25 @@ inline fun <reified T : BaseResponse> onNetErrorObservable(tag: String? = null):
 /* Error handling */
 // --------------------------------------------------------------------------------------------
 fun Completable.handleErrorNoRetry(tag: String? = null): Completable = withNetError(tag)
-fun Completable.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
+fun Completable.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Maybe<T>.handleErrorNoRetry(tag: String? = null): Maybe<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Maybe<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
+inline fun <reified T : BaseResponse> Maybe<T>.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Single<T>.handleErrorNoRetry(tag: String? = null): Single<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Single<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
+inline fun <reified T : BaseResponse> Single<T>.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Flowable<T>.handleErrorNoRetry(tag: String? = null): Flowable<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Flowable<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
+inline fun <reified T : BaseResponse> Flowable<T>.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Observable<T>.handleErrorNoRetry(tag: String? = null): Observable<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Observable<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
+inline fun <reified T : BaseResponse> Observable<T>.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
