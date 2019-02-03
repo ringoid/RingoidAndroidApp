@@ -26,14 +26,14 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-class FeedRepository @Inject constructor(
+open class FeedRepository @Inject constructor(
     @Named("alreadySeen") private val alreadySeenProfilesCache: UserFeedDao,
     @Named("block") private val blockedProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
     // --------------------------------------------------------------------------------------------
-    private fun Single<FeedResponse>.cacheNewFacesAsAlreadySeen(): Single<FeedResponse> =
+    protected fun Single<FeedResponse>.cacheNewFacesAsAlreadySeen(): Single<FeedResponse> =
         doOnSuccess { alreadySeenProfilesCache.addProfileIds(it.profiles.map { ProfileIdDbo(it.id) }) }
 
     override fun cacheAlreadySeenProfileIds(ids: Collection<String>): Completable =
@@ -89,13 +89,13 @@ class FeedRepository @Inject constructor(
         }
 
     // --------------------------------------------------------------------------------------------
-    private fun Single<FeedResponse>.filterAlreadySeenProfilesFeed(): Single<FeedResponse> =
+    protected fun Single<FeedResponse>.filterAlreadySeenProfilesFeed(): Single<FeedResponse> =
         filterProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())
 
-    private fun Single<FeedResponse>.filterBlockedProfilesFeed(): Single<FeedResponse> =
+    protected fun Single<FeedResponse>.filterBlockedProfilesFeed(): Single<FeedResponse> =
         filterProfilesFeed(idsSource = getBlockedProfileIds().toObservable())
 
-    private fun Single<FeedResponse>.filterProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
+    protected fun Single<FeedResponse>.filterProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
         toObservable()
         .withLatestFrom(idsSource,
             BiFunction { feed: FeedResponse, blockedIds: List<String> ->

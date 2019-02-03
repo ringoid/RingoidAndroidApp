@@ -19,8 +19,8 @@ class ImageUploadUrlResponse(
     @Expose @SerializedName(COLUMN_CLIENT_IMAGE_ID) val clientImageId: String,
     @Expose @SerializedName(COLUMN_ORIGIN_IMAGE_ID) val originImageId: String,
     @Expose @SerializedName(COLUMN_IMAGE_URI) val imageUri: String?,
-    errorCode: String = "", errorMessage: String = "")
-    : BaseResponse(errorCode, errorMessage), Mappable<Image> {
+    errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L)
+    : BaseResponse(errorCode, errorMessage, repeatAfterSec), Mappable<Image> {
 
     companion object {
         const val COLUMN_CLIENT_IMAGE_ID = "clientPhotoId"

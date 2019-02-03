@@ -18,6 +18,8 @@ import javax.inject.Inject
 class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
     private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
+    private val debugGetNewFacesRepeatAfterDelayForPageUseCase: DebugGetNewFacesRepeatAfterDelayForPageUseCase,
+    private val debugGetNewFacesRetryNTimesForPageUseCase: DebugGetNewFacesRetryNTimesForPageUseCase,
     private val cacheAlreadySeenProfileIdsUseCase: CacheAlreadySeenProfileIdsUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -34,7 +36,9 @@ class ExploreViewModel @Inject constructor(
     // ------------------------------------------
     override fun getFeed() {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
-        getNewFacesUseCase.source(params = prepareFeedParams())
+//        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
+        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
+//        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
@@ -47,7 +51,9 @@ class ExploreViewModel @Inject constructor(
 
     private fun getMoreFeed() {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
-        getNewFacesUseCase.source(params = prepareFeedParams())
+//        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
+        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
+//        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }  // TODO: retry load more
@@ -61,6 +67,16 @@ class ExploreViewModel @Inject constructor(
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
 
     private fun prepareDebugFeedParams(): Params = Params().put("page", nextPage++)
+
+    private fun prepareDebugFeedParamsRepeatAfterDelay(): Params =
+        Params().put("page", nextPage++)
+                .put("repeatPage", 2)
+                .put("delay", 5L)  // in seconds
+
+    private fun prepareDebugFeedParamsRetryNTimes(): Params =
+        Params().put("page", nextPage++)
+            .put("failPage", 2)
+            .put("count", 2)
 
     // --------------------------------------------------------------------------------------------
     override fun onScroll(itemsLeftToEnd: Int) {

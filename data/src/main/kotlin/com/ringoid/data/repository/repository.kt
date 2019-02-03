@@ -13,27 +13,27 @@ import java.lang.Math.pow
 import java.util.concurrent.TimeUnit
 
 const val DEFAULT_RETRY_COUNT = 5
-const val DEFAULT_RETRY_DELAY = 55
+const val DEFAULT_RETRY_DELAY = 55L
 
 /* Retry with exponential backoff */
 // ------------------------------------------------------------------------------------------------
-fun Completable.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
+fun Completable.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffCompletable(count = count, delay = delay, tag = tag))
 
-inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
+inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffMaybe(count = count, delay = delay, tag = tag))
 
-inline fun <reified T : BaseResponse> Single<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
+inline fun <reified T : BaseResponse> Single<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffSingle(count = count, delay = delay, tag = tag))
 
-inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
+inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffFlowable(count = count, delay = delay, tag = tag))
 
-inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
+inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
 
 // ----------------------------------------------
-private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) =
+private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null) =
     { it: Flowable<Throwable> ->
         it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, count), BiFunction { e: Throwable, i -> i to e })
             .flatMap { errorWithAttempt ->
@@ -49,7 +49,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Int, tag: String? = null) 
             }
     }
 
-private fun expBackoffObservableImpl(count: Int, delay: Int, tag: String? = null) =
+private fun expBackoffObservableImpl(count: Int, delay: Long, tag: String? = null) =
     { it: Observable<Throwable> ->
         it.zipWith<Int, Pair<Int, Throwable>>(Observable.range(1, count), BiFunction { e: Throwable, i -> i to e })
             .flatMap { errorWithAttempt ->
@@ -67,19 +67,19 @@ private fun expBackoffObservableImpl(count: Int, delay: Int, tag: String? = null
             }
     }
 
-fun expBackoffCompletable(count: Int, delay: Int, tag: String? = null): CompletableTransformer =
+fun expBackoffCompletable(count: Int, delay: Long, tag: String? = null): CompletableTransformer =
     CompletableTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
 
-fun <T : BaseResponse> expBackoffMaybe(count: Int, delay: Int, tag: String? = null): MaybeTransformer<T, T> =
+fun <T : BaseResponse> expBackoffMaybe(count: Int, delay: Long, tag: String? = null): MaybeTransformer<T, T> =
     MaybeTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
 
-fun <T : BaseResponse> expBackoffSingle(count: Int, delay: Int, tag: String? = null): SingleTransformer<T, T> =
+fun <T : BaseResponse> expBackoffSingle(count: Int, delay: Long, tag: String? = null): SingleTransformer<T, T> =
     SingleTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
 
-fun <T : BaseResponse> expBackoffFlowable(count: Int, delay: Int, tag: String? = null): FlowableTransformer<T, T> =
+fun <T : BaseResponse> expBackoffFlowable(count: Int, delay: Long, tag: String? = null): FlowableTransformer<T, T> =
     FlowableTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
 
-fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Int, tag: String? = null): ObservableTransformer<T, T> =
+fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Long, tag: String? = null): ObservableTransformer<T, T> =
     ObservableTransformer { it.retryWhen(expBackoffObservableImpl(count, delay, tag)) }
 
 /* Api Error */
@@ -176,25 +176,25 @@ inline fun <reified T : BaseResponse> onNetErrorObservable(tag: String? = null):
 /* Error handling */
 // --------------------------------------------------------------------------------------------
 fun Completable.handleErrorNoRetry(tag: String? = null): Completable = withNetError(tag)
-fun Completable.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
+fun Completable.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Maybe<T>.handleErrorNoRetry(tag: String? = null): Maybe<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Maybe<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
+inline fun <reified T : BaseResponse> Maybe<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Single<T>.handleErrorNoRetry(tag: String? = null): Single<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Single<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
+inline fun <reified T : BaseResponse> Single<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Flowable<T>.handleErrorNoRetry(tag: String? = null): Flowable<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Flowable<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
+inline fun <reified T : BaseResponse> Flowable<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Observable<T>.handleErrorNoRetry(tag: String? = null): Observable<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Observable<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Int = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
+inline fun <reified T : BaseResponse> Observable<T>.handleError(count: Int = DEFAULT_RETRY_COUNT, delay: Long = DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
     handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }

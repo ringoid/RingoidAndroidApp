@@ -6,7 +6,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.model.feed.Feed
-import com.ringoid.domain.repository.feed.IDebugRepository
+import com.ringoid.domain.repository.debug.IDebugRepository
 import io.reactivex.Single
 import javax.inject.Inject
 

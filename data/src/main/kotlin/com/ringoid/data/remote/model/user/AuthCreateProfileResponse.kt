@@ -17,8 +17,8 @@ import com.ringoid.domain.model.user.CurrentUser
 class AuthCreateProfileResponse(
     @Expose @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String = "",
     @Expose @SerializedName(COLUMN_USER_ID) val userId: String = "",
-    errorCode: String = "", errorMessage: String = "")
-    : BaseResponse(errorCode, errorMessage), Mappable<CurrentUser> {
+    errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L)
+    : BaseResponse(errorCode, errorMessage, repeatAfterSec), Mappable<CurrentUser> {
 
     companion object {
         const val COLUMN_ACCESS_TOKEN = "accessToken"

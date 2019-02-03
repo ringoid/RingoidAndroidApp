@@ -21,7 +21,8 @@ class UserSettingsResponse(
     @Expose @SerializedName(COLUMN_PUSH_MESSAGES) val pushMessages: Boolean = false,
     @Expose @SerializedName(COLUMN_PUSH_SAFE_DISTANCE) val safeDistance: Int = 0,
     @Expose @SerializedName(COLUMN_PUSH_WHO_CAN_SEE_PHOTO) val whoCanSeePhoto: String = "",
-    errorCode: String = "", errorMessage: String = "") : BaseResponse(errorCode, errorMessage) {
+    errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L)
+    : BaseResponse(errorCode, errorMessage, repeatAfterSec) {
 
     companion object {
         const val COLUMN_PUSH_LIKES = "pushLikes"

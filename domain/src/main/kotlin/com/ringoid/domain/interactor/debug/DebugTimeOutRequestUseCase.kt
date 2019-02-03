@@ -4,12 +4,12 @@ import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.repository.feed.IDebugRepository
+import com.ringoid.domain.repository.debug.IDebugRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class DebugTimeOutRequestUseCase @Inject constructor(val repository: IDebugRepository,
-     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
+                                                     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Completable = repository.debugRequestTimeOut()

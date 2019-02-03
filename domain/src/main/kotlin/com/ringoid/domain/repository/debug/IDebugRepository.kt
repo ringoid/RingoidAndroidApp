@@ -1,4 +1,4 @@
-package com.ringoid.domain.repository.feed
+package com.ringoid.domain.repository.debug
 
 import com.ringoid.domain.model.feed.Feed
 import io.reactivex.Completable

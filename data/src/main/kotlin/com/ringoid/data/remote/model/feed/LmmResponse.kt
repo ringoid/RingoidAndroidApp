@@ -21,8 +21,8 @@ class LmmResponse(
     @Expose @SerializedName(COLUMN_LIKES) val likes: List<FeedItemEntity> = emptyList(),
     @Expose @SerializedName(COLUMN_MATCHES) val matches: List<FeedItemEntity> = emptyList(),
     @Expose @SerializedName(COLUMN_MESSAGES) val messages: List<FeedItemEntity> = emptyList(),
-    errorCode: String = "", errorMessage: String = "")
-    : BaseResponse(errorCode, errorMessage), Mappable<Lmm> {
+    errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L)
+    : BaseResponse(errorCode, errorMessage, repeatAfterSec), Mappable<Lmm> {
 
     fun copyWith(likes: List<FeedItemEntity> = this.likes, matches: List<FeedItemEntity> = this.matches,
                  messages: List<FeedItemEntity> = this.messages): LmmResponse =

@@ -35,7 +35,8 @@ import com.ringoid.domain.model.feed.Feed
  */
 class FeedResponse(
     @Expose @SerializedName(COLUMN_PROFILES) val profiles: List<ProfileEntity> = emptyList(),
-    errorCode: String = "", errorMessage: String = "") : BaseResponse(errorCode, errorMessage), Mappable<Feed> {
+    errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L)
+    : BaseResponse(errorCode, errorMessage, repeatAfterSec), Mappable<Feed> {
 
     fun copyWith(profiles: List<ProfileEntity> = this.profiles): FeedResponse =
         FeedResponse(profiles = profiles, errorCode = errorCode, errorMessage = errorMessage)

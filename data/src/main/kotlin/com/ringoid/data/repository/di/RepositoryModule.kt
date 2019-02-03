@@ -10,7 +10,7 @@ import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.image.UserImageRepository
 import com.ringoid.data.repository.messenger.MessengerRepository
 import com.ringoid.data.repository.user.UserRepository
-import com.ringoid.domain.repository.feed.IDebugRepository
+import com.ringoid.domain.repository.debug.IDebugRepository
 import com.ringoid.domain.repository.feed.IFeedRepository
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.domain.repository.messenger.IMessengerRepository

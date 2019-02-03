@@ -13,8 +13,8 @@ import com.ringoid.data.remote.model.BaseResponse
  */
 class CommitActionsResponse(
     @Expose @SerializedName(COLUMN_LAST_ACTION_TIME) val lastActionTime: Long,
-    errorCode: String = "", errorMessage: String = "")
-    : BaseResponse(errorCode, errorMessage) {
+    errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L)
+    : BaseResponse(errorCode, errorMessage, repeatAfterSec) {
 
     companion object {
         const val COLUMN_LAST_ACTION_TIME = "lastActionTime"
