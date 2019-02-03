@@ -24,7 +24,10 @@ class DebugFeedRepository @Inject constructor(
     /* Debug */
     // --------------------------------------------------------------------------------------------
     private var requestAttempt: Int = 0
+    private var requestRepeatAfterDelayAttempt: Int = 0
+
     private fun getAndIncrementRequestAttempt(): Int = requestAttempt++
+    private fun getAndIncrementRequestRepeatAfterDelayAttempt(): Int = requestRepeatAfterDelayAttempt++
 
     override fun debugGetNewFacesWithFailNTimesBeforeSuccessForPage(page: Int, failPage: Int, count: Int): Single<Feed> =
         if (page == failPage) {
@@ -45,8 +48,9 @@ class DebugFeedRepository @Inject constructor(
 
     override fun debugGetNewFacesWithRepeatForPageAfterDelay(page: Int, repeatPage: Int, delay: Long): Single<Feed> =
         if (page == repeatPage) {
+            val i = getAndIncrementRequestRepeatAfterDelayAttempt()
             Single.just(DebugRepository.getFeed(page))
-                .map { it.convertToFeedResponse(repeatAfterSec = delay) }
+                .map { it.convertToFeedResponse(repeatAfterSec = if (i < 1) delay else 0) }
         } else {
             Single.just(DebugRepository.getFeed(page)).map { it.convertToFeedResponse() }
         }
