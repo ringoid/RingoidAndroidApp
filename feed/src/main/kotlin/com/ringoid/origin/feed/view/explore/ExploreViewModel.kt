@@ -50,7 +50,7 @@ class ExploreViewModel @Inject constructor(
         getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // TODO: retry load more
             .doFinally { isLoadingMore = false }
             .autoDisposable(this)
             .subscribe({ feed.value = it }, Timber::e)
