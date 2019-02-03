@@ -5,11 +5,13 @@ import com.ringoid.data.executor.di.UseCaseExecutorModule
 import com.ringoid.data.local.database.di.DatabaseModule
 import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.RingoidCloudModule
+import com.ringoid.data.repository.debug.DebugFeedRepository
 import com.ringoid.data.repository.debug.DebugRepository
 import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.image.UserImageRepository
 import com.ringoid.data.repository.messenger.MessengerRepository
 import com.ringoid.data.repository.user.UserRepository
+import com.ringoid.domain.repository.debug.IDebugFeedRepository
 import com.ringoid.domain.repository.debug.IDebugRepository
 import com.ringoid.domain.repository.feed.IFeedRepository
 import com.ringoid.domain.repository.image.IUserImageRepository
@@ -25,6 +27,9 @@ class RepositoryModule {
 
     @Provides @Singleton
     fun provideDebugRepository(repository: DebugRepository): IDebugRepository = repository
+
+    @Provides @Singleton
+    fun provideDebugFeedRepository(repository: DebugFeedRepository): IDebugFeedRepository = repository
 
     @Provides @Singleton
     fun provideFeedRepository(repository: FeedRepository): IFeedRepository = repository
