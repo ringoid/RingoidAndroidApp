@@ -18,6 +18,7 @@ import javax.inject.Inject
 class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
     private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
+    private val debugGetNewFacesDropFlagsUseCase: DebugGetNewFacesDropFlagsUseCase,
     private val debugGetNewFacesRepeatAfterDelayForPageUseCase: DebugGetNewFacesRepeatAfterDelayForPageUseCase,
     private val debugGetNewFacesRetryNTimesForPageUseCase: DebugGetNewFacesRetryNTimesForPageUseCase,
     private val cacheAlreadySeenProfileIdsUseCase: CacheAlreadySeenProfileIdsUseCase,
@@ -80,6 +81,14 @@ class ExploreViewModel @Inject constructor(
             .put("count", 2)
 
     // --------------------------------------------------------------------------------------------
+    override fun onRefresh() {
+        super.onRefresh()
+        debugGetNewFacesDropFlagsUseCase.source()
+            .autoDisposable(this)
+            .subscribe()
+    }
+
+    // ------------------------------------------
     override fun onScroll(itemsLeftToEnd: Int) {
         if (isLoadingMore) {
             Timber.v("Skip onScroll event in error state or during loading more")

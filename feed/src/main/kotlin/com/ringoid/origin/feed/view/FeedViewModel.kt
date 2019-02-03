@@ -57,7 +57,7 @@ abstract class FeedViewModel(
         actionObjectPool.trigger()
     }
 
-    fun onRefresh() {
+    open fun onRefresh() {
         actionObjectPool.trigger()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()

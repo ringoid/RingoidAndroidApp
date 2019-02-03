@@ -11,6 +11,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
@@ -61,6 +62,14 @@ class DebugFeedRepository @Inject constructor(
         .filterBlockedProfilesFeed()
         .cacheNewFacesAsAlreadySeen()
         .map { it.map() }
+
+    override fun dropFlags(): Completable =
+        Single.just(0L)
+            .doOnSubscribe {
+                requestAttempt = 0
+                requestRepeatAfterDelayAttempt = 0
+            }
+            .ignoreElement()  // convert to Completable
 
     // ------------------------------------------
     private fun Feed.convertToFeedResponse(errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L): FeedResponse =
