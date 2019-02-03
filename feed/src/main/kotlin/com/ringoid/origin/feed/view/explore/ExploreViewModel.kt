@@ -37,10 +37,11 @@ class ExploreViewModel @Inject constructor(
     override fun getFeed() {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
-        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
-//        getNewFacesUseCase.source(params = prepareFeedParams())
+//        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
+        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
+                Timber.v("Received feed[${it.profiles.size}]: $it")
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
                                   else ViewState.IDLE
             }
@@ -52,10 +53,10 @@ class ExploreViewModel @Inject constructor(
     private fun getMoreFeed() {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
-        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
-//        getNewFacesUseCase.source(params = prepareFeedParams())
+//        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
+        getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSuccess { viewState.value = ViewState.IDLE ; Timber.v("Received more feed[${it.profiles.size}]: $it") }
             .doOnError { viewState.value = ViewState.ERROR(it) }  // TODO: retry load more
             .doFinally { isLoadingMore = false }
             .autoDisposable(this)
