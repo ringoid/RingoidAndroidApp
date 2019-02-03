@@ -48,9 +48,11 @@ class DebugFeedRepository @Inject constructor(
 
     override fun debugGetNewFacesWithRepeatForPageAfterDelay(page: Int, repeatPage: Int, delay: Long): Single<Feed> =
         if (page == repeatPage) {
-            val i = getAndIncrementRequestRepeatAfterDelayAttempt()
             Single.just(DebugRepository.getFeed(page))
-                .flatMap { Single.just(it.convertToFeedResponse(repeatAfterSec = if (i < 1) delay else 0)) }
+                .flatMap {
+                    val i = getAndIncrementRequestRepeatAfterDelayAttempt()
+                    Single.just(it.convertToFeedResponse(repeatAfterSec = if (i < 1) delay else 0))
+                }
         } else {
             Single.just(DebugRepository.getFeed(page)).map { it.convertToFeedResponse() }
         }
