@@ -28,9 +28,9 @@ class MessengerRepository @Inject constructor(
     // messages cached since last network request + sent user messages (cache locally)
     override fun getMessages(chatId: String): Single<List<Message>> =
         local.messages(chatId)
-            .concatWith { sentMessagesLocal.messages(chatId) }
+            .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
-            .map { it.mapList() }
+            .map { it.mapList().reversed() }
 
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         aObjPool.put(MessageActionObject(text = essence.text, sourceFeed = essence.aObjEssence?.sourceFeed ?: "",

@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.domain.DomainUtil
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Dao
@@ -25,7 +26,7 @@ interface MessageDao {
     fun countUserMessages(chatId: String): Single<Int>
 
     @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
-    fun messages(chatId: String): Single<List<MessageDbo>>
+    fun messages(chatId: String): Maybe<List<MessageDbo>>  // Maybe calls onComplete() rather than Single
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMessage(message: MessageDbo)
