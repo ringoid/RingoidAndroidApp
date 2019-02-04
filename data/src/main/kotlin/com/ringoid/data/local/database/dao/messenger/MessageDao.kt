@@ -21,7 +21,7 @@ interface MessageDao {
     @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :peerId AND ${MessageDbo.COLUMN_PEER_ID} = :peerId")
     fun countPeerMessages(peerId: String): Single<Int>
 
-    @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_PEER_ID} = ${DomainUtil.CURRENT_USER_ID}")
+    @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_PEER_ID} = '${DomainUtil.CURRENT_USER_ID}'")
     fun countUserMessages(chatId: String): Single<Int>
 
     @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
