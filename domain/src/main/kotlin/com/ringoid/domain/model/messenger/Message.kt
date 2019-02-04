@@ -4,7 +4,7 @@ import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.IListModel
 import com.ringoid.utility.randomString
 
-data class Message(val id: String = randomString(), val chatId: String, val peerId: String, val text: String) : IListModel {
+data class Message(val id: String, val chatId: String, val peerId: String, val text: String) : IListModel {
 
     override fun getModelId(): Long = id.hashCode().toLong()
 }

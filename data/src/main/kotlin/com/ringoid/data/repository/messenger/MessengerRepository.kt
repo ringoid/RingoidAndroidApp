@@ -12,6 +12,7 @@ import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.messenger.IMessengerRepository
+import com.ringoid.utility.randomString
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,6 +27,6 @@ class MessengerRepository @Inject constructor(private val local: MessageDao, clo
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         aObjPool.put(MessageActionObject(text = essence.text, sourceFeed = essence.aObjEssence?.sourceFeed ?: "",
             targetImageId = essence.aObjEssence?.targetImageId ?: BAD_ID, targetUserId = essence.aObjEssence?.targetUserId ?: BAD_ID))
-        return Single.just(Message(chatId = essence.peerId, peerId = DomainUtil.CURRENT_USER_ID, text = essence.text))
+        return Single.just(Message(id = "${essence.peerId}_${randomString()}", chatId = essence.peerId, peerId = DomainUtil.CURRENT_USER_ID, text = essence.text))
     }
 }

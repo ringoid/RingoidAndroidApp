@@ -14,6 +14,7 @@ import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
+import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -81,23 +82,23 @@ class DebugFeedRepository @Inject constructor(messengerLocal: MessageDao,
 }
 
 fun getDebugChat(): List<Message> = listOf(
-        Message(chatId = "peer1", peerId = "peer1", text = "1"),  // NEW
-        Message(chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "2 my?"),
-        Message(chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "3 my"),
-        Message(chatId = "peer1", peerId = "peer1", text = "4"),
-        Message(chatId = "peer1", peerId = "peer1", text = "5"),
-        Message(chatId = "peer1", peerId = "peer1", text = "6"),
-        Message(chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "7 my"),
-        Message(chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "8 my"),
-        Message(chatId = "peer1", peerId = "peer1", text = "9"),
-        Message(chatId = "peer1", peerId = "peer1", text = "10"),
-        Message(chatId = "peer1", peerId = "peer1", text = "11"),
-        Message(chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "12 my"),
-        Message(chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "13 my"),
-        Message(chatId = "peer1", peerId = "peer1", text = "14"),
-        Message(chatId = "peer1", peerId = "peer1", text = "15"),
-        Message(chatId = "peer1", peerId = "peer1", text = "16"),
-        Message(chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "17 my"),
-        Message(chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "18 my"),
-        Message(chatId = "peer1", peerId = "peer1", text = "19"),
-        Message(chatId = "peer1", peerId = "peer1", text = "20"))  // OLD
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "1"),  // NEW
+        Message(id = randomString(), chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "2 my?"),
+        Message(id = randomString(), chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "3 my"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "4"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "5"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "6"),
+        Message(id = randomString(), chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "7 my"),
+        Message(id = randomString(), chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "8 my"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "9"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "10"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "11"),
+        Message(id = randomString(), chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "12 my"),
+        Message(id = randomString(), chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "13 my"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "14"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "15"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "16"),
+        Message(id = randomString(), chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "17 my"),
+        Message(id = randomString(), chatId = "peer1", peerId = DomainUtil.CURRENT_USER_ID, text = "18 my"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "19"),
+        Message(id = randomString(), chatId = "peer1", peerId = "peer1", text = "20"))  // OLD
