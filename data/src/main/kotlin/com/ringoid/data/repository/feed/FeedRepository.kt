@@ -29,7 +29,8 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-open class FeedRepository @Inject constructor(private val messengerLocal: MessageDao,
+open class FeedRepository @Inject constructor(
+    private val messengerLocal: MessageDao, @Named("user") private val sentMessagesLocal: MessageDao,
     @Named("alreadySeen") private val alreadySeenProfilesCache: UserFeedDao,
     @Named("block") private val blockedProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
@@ -79,6 +80,8 @@ open class FeedRepository @Inject constructor(private val messengerLocal: Messag
     override fun getLmm(resolution: ImageResolution): Single<Lmm> =
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
+                  // clear sent user messages because they will be restored with new Lmm
+                 .doOnSubscribe { sentMessagesLocal.deleteMessages() }
                  .handleError()
                  .filterBlockedProfilesLmm()
                  .map { it.map() }
@@ -135,6 +138,7 @@ open class FeedRepository @Inject constructor(private val messengerLocal: Messag
             })
         .single(LmmResponse()  /* by default - empty lmm */)
 
+    // ------------------------------------------
     private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
         doAfterSuccess {
             val messages = mutableListOf<Message>()

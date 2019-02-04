@@ -28,5 +28,11 @@ interface MessageDao {
     fun messages(chatId: String): Single<List<MessageDbo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addMessage(message: MessageDbo)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMessages(messages: Collection<MessageDbo>)
+
+    @Query("DELETE FROM ${MessageDbo.TABLE_NAME}")
+    fun deleteMessages()
 }

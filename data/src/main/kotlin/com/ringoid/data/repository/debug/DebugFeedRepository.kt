@@ -20,11 +20,12 @@ import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
 
-class DebugFeedRepository @Inject constructor(messengerLocal: MessageDao,
+class DebugFeedRepository @Inject constructor(
+    messengerLocal: MessageDao, @Named("user") sentMessagesLocal: MessageDao,
     @Named("alreadySeen") alreadySeenProfilesCache: UserFeedDao,
     @Named("block") blockedProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
-    : FeedRepository(messengerLocal, alreadySeenProfilesCache, blockedProfilesCache, cloud, spm, aObjPool),
+    : FeedRepository(messengerLocal, sentMessagesLocal, alreadySeenProfilesCache, blockedProfilesCache, cloud, spm, aObjPool),
       IDebugFeedRepository {
 
     /* Debug */
