@@ -21,6 +21,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         const val VIEW_TYPE_HEADER = 1
         const val VIEW_TYPE_FOOTER = 2
         const val VIEW_TYPE_LOADING = 3
+        const val VIEW_TYPE_ERROR = 4
     }
 
     private val helper by lazy {
@@ -59,12 +60,19 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     /* Data Access */
     // --------------------------------------------------------------------------------------------
+    private var isInErrorState: Boolean = false  // indicates whether should show error item as footer
     private var isThereMore: Boolean = false  // indicates is there more items for paging
 
     fun clear() {
+        isInErrorState = false
         isThereMore = false
         helper.submitList(null)
         notifyDataSetChanged()  // fix possible 'inconsistency detected' error
+    }
+
+    fun error() {
+        isInErrorState = true
+        noMoreItems(emptyList()) { false }
     }
 
     fun append(list: List<T>?, isThereMore: List<T>.() -> Boolean = { false }) {
@@ -83,6 +91,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     }
 
     fun submitList(list: List<T>?) {
+        isInErrorState = false
         if (list.isNullOrEmpty()) {
             clear()
         } else {
@@ -122,7 +131,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     protected open fun getItem(position: Int): T =
         when (getItemViewType(position)) {
-            VIEW_TYPE_HEADER, VIEW_TYPE_LOADING, VIEW_TYPE_FOOTER -> getStubItem()
+            VIEW_TYPE_HEADER, VIEW_TYPE_FOOTER, VIEW_TYPE_ERROR, VIEW_TYPE_LOADING -> getStubItem()
             else /* VIEW_TYPE_NORMAL */ -> getModel(position)
         }
 
@@ -148,15 +157,18 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     }
 
     // ------------------------------------------
-    override fun getItemCount(): Int = getModelsCount() + fixUpForHeader() + fixUpForFooter() + fixUpForLoader()
+    override fun getItemCount(): Int = getModelsCount() + fixUpForHeader() + fixUpForFooter() + fixUpForLoader() + fixUpForError()
 
     fun getModelsCount(): Int = helper.currentList.size
 
-    override fun getItemViewType(position: Int): Int =
-        if (withHeader() && position == 0) VIEW_TYPE_HEADER
-        else if (withLoader() && position == footerPosition()) VIEW_TYPE_LOADING
-        else if (withFooter() && position == footerPosition()) VIEW_TYPE_FOOTER
+    override fun getItemViewType(position: Int): Int {
+        val footerPosition = footerPosition()
+        return if (withHeader() && position == 0) VIEW_TYPE_HEADER
+        else if (withLoader() && position == footerPosition) VIEW_TYPE_LOADING
+        else if (withError()  && position == footerPosition) VIEW_TYPE_ERROR
+        else if (withFooter() && position == footerPosition) VIEW_TYPE_FOOTER
         else VIEW_TYPE_NORMAL
+    }
 
     fun isEmpty(): Boolean = helper.currentList.isEmpty()  // don't count header / footer
 
@@ -165,12 +177,14 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     @LayoutRes protected open fun getFooterLayoutResId(): Int = 0
 
     fun withHeader(): Boolean = headerRows > 0
-    fun withFooter(): Boolean = getFooterLayoutResId() != 0 && !withLoader()
+    fun withFooter(): Boolean = getFooterLayoutResId() != 0 && !withLoader() && !withError()
     fun withLoader(): Boolean = isThereMore
+    fun withError():  Boolean = isInErrorState
 
     private fun fixUpForHeader(): Int = if (isEmpty()) 0 else if (withHeader()) 1 else 0
     private fun fixUpForFooter(): Int = if (isEmpty()) 0 else if (withFooter()) 1 else 0
     private fun fixUpForLoader(): Int = if (isEmpty()) 0 else if (withLoader()) 1 else 0
+    private fun fixUpForError():  Int = if (isEmpty()) 0 else if (withError())  1 else 0
     fun footerPosition(): Int = getModelsCount() + fixUpForHeader()
 
     // --------------------------------------------------------------------------------------------

@@ -39,6 +39,13 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile, OriginFeedViewHo
         }
 
     // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.ERROR -> feedAdapter.error()
+        }
+    }
+
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (isActivityCreated && hidden) {
