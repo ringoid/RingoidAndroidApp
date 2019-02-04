@@ -25,7 +25,7 @@ class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null
         MessengerViewHolder(view, viewPool = imagesViewPool).also { vh ->
             vh.profileImageAdapter.also { adapter ->
                 adapter.isLikeEnabled = false  // hide like button on messenger feed items
-                adapter.itemClickListener = onImageToOpenChatClickListener
+                adapter.itemClickListener = wrapOnImageClickListener(vh, onImageToOpenChatClickListener)
             }
             val wrapMessageClickListener = wrapMessageClickListener(vh)
             vh.itemView.ibtn_message.clicks().compose(clickDebounce())

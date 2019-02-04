@@ -18,7 +18,7 @@ class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
         MatchFeedViewHolder(view, viewPool = imagesViewPool).also { vh ->
             vh.profileImageAdapter.also { adapter ->
                 adapter.isLikeEnabled = false  // hide like button on matches feed items
-                adapter.itemClickListener = onImageToOpenChatClickListener
+                adapter.itemClickListener = wrapOnImageClickListener(vh, onImageToOpenChatClickListener)
             }
             (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
                 ?.apply { verticalBias = 0.28f }?.let { vh.itemView.ibtn_message.layoutParams = it }

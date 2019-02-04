@@ -46,4 +46,13 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(
 
     // ------------------------------------------
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer
+
+    /**
+     * Wraps outer click on image listener, but passes feed item position in adapter instead of image's
+     * position in the inner adapter. This is useful when callers need just a callback on image click
+     * and position of enclosing feed item that contains that clicked image.
+     */
+    protected fun wrapOnImageClickListener(vh: VH, l: ((model: ProfileImageVO, position: Int) -> Unit)?)
+            : ((model: ProfileImageVO, position: Int) -> Unit)? =
+        { model: ProfileImageVO, _ -> vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(model, it) } }
 }

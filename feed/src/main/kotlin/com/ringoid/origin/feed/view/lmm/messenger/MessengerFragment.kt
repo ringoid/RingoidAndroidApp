@@ -23,7 +23,7 @@ class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel, OriginFeedView
             : BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>> =
         MessengerFeedAdapter(imagesViewPool).apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
-                openChat(peerId = model.id, position = position, imageId = model.images[positionOfImage].id)
+                openChat(position = position, peerId = model.id, imageId = model.images[positionOfImage].id)
             }
             onImageToOpenChatClickListener = { model: ProfileImageVO, position: Int ->
                 openChat(position = position, peerId = model.profileId, imageId = model.image.id)
