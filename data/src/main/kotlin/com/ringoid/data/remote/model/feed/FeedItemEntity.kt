@@ -8,7 +8,6 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
-import com.ringoid.utility.randomLong
 
 /**
  * {
@@ -38,8 +37,8 @@ class FeedItemEntity(
 
     override fun map(): FeedItem =
         FeedItem(id = id, isNotSeen = isNotSeen, images = images.mapList(),
-                 messages = messages.map { message ->
+                 messages = messages.mapIndexed { index, message ->
                      val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
-                     Message(id = randomLong(), chatId = id, peerId = peerId, text = message.text)
+                     Message(id = "${id}_$index", chatId = id, peerId = peerId, text = message.text)
                  })
 }

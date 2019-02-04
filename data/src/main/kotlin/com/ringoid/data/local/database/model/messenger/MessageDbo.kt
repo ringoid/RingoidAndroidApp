@@ -8,7 +8,7 @@ import com.ringoid.domain.model.messenger.Message
 
 @Entity(tableName = MessageDbo.TABLE_NAME)
 data class MessageDbo(
-    @PrimaryKey @ColumnInfo(name = COLUMN_ID) val id: Long,
+    @PrimaryKey @ColumnInfo(name = COLUMN_ID) val id: String,
     @ColumnInfo(name = COLUMN_CHAT_ID) val chatId: String,
     @ColumnInfo(name = COLUMN_PEER_ID) val peerId: String,
     @ColumnInfo(name = COLUMN_TEXT) val text: String) : Mappable<Message> {
