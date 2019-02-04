@@ -11,17 +11,21 @@ import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
 import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.utility.KeyboardManager
+import com.ringoid.utility.KeyboardStatus
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.AndroidInjection
+import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
 
-abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
+abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActivity {
 
     protected val scopeProvider by lazy { AndroidLifecycleScopeProvider.from(this) }
     protected val app by lazy { application as IBaseRingoidApplication }
 
     protected lateinit var vm: T
+    private val keyboardManager by lazy { KeyboardManager(this) }
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
     @Inject protected lateinit var spm: ISharedPrefsManager
 
@@ -41,6 +45,9 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
         Timber.d("View State transition to: $newState")
         // override in subclasses
     }
+
+    // ------------------------------------------
+    override fun keyboard(): Observable<KeyboardStatus> = keyboardManager.status()
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

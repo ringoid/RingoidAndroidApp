@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseDialogFragment
+import com.ringoid.base.view.IBaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
@@ -32,7 +33,9 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.*
 import com.ringoid.widget.decor.TopBottomDividerItemDecoration
+import com.uber.autodispose.lifecycle.autoDisposable
 import kotlinx.android.synthetic.main.fragment_chat.*
+import timber.log.Timber
 
 class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
@@ -112,12 +115,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.messages, chatAdapter::submitList) {
-                val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
-                scrollToTopOfItemAtPosition(position)
-            }
+            observe(vm.messages, chatAdapter::submitList) { scrollToTopOfItemAtCachedPosition() }
             observe(vm.sentMessage, ::putMyMessage)
         }
+        communicator(IBaseActivity::class.java)?.keyboard()
+            ?.autoDisposable(scopeProvider)
+            ?.subscribe({ scrollToTopOfItemAtCachedPosition() }, Timber::e)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -199,6 +202,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         rv_chat_messages.post {
             rv_chat_messages.linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
         }
+    }
+
+    private fun scrollToTopOfItemAtCachedPosition() {
+        val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
+        scrollToTopOfItemAtPosition(position)
     }
 
     private fun showChatControls(isVisible: Boolean) {
