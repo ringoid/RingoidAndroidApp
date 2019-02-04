@@ -120,7 +120,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         }
     }
 
-    protected fun getItem(position: Int): T =
+    protected open fun getItem(position: Int): T =
         when (getItemViewType(position)) {
             VIEW_TYPE_HEADER, VIEW_TYPE_LOADING, VIEW_TYPE_FOOTER -> getStubItem()
             else /* VIEW_TYPE_NORMAL */ -> getModel(position)
