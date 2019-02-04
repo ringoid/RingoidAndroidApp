@@ -2,6 +2,7 @@ package com.ringoid.data.repository.feed
 
 import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
+import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -26,7 +27,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-open class FeedRepository @Inject constructor(
+open class FeedRepository @Inject constructor(private val messengerLocal: MessageDao,
     @Named("alreadySeen") private val alreadySeenProfilesCache: UserFeedDao,
     @Named("block") private val blockedProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
@@ -84,6 +85,7 @@ open class FeedRepository @Inject constructor(
                      feedMatches.onNext(it.matches)
                      feedMessages.onNext(it.messages)
                      lmmChanged.onNext(it.containsNotSeenItems())
+                     messengerLocal
                      // TODO: newMessages
                  }
         }

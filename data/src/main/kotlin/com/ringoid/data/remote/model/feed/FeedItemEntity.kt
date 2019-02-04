@@ -39,7 +39,7 @@ class FeedItemEntity(
     override fun map(): FeedItem =
         FeedItem(id = id, isNotSeen = isNotSeen, images = images.mapList(),
                  messages = messages.map { message ->
-                     val peerId = id.takeIf { message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
-                     Message(id = randomLong(), peerId = peerId, text = message.text)
+                     val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
+                     Message(id = randomLong(), chatId = id, peerId = peerId, text = message.text)
                  })
 }

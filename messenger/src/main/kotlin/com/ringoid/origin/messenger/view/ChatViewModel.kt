@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
 import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
@@ -16,41 +16,27 @@ import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
-class ChatViewModel @Inject constructor(private val sendMessageToPeerUseCase: SendMessageToPeerUseCase, app: Application)
-    : BaseViewModel(app) {
+class ChatViewModel @Inject constructor(
+    private val getMessagesForPeerUseCase: GetMessagesForPeerUseCase,
+    private val sendMessageToPeerUseCase: SendMessageToPeerUseCase,
+    app: Application) : BaseViewModel(app) {
 
     val messages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
 
     fun getMessages(profileId: String) {
-        // TODO: get messages properly
-        // TODO: the most recent message is the first one in list, positions ascending and message age is also ascending
-        val xmessages = listOf(
-            Message(peerId = "peer1", text = "1"),  // NEW
-            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "2 my?"),
-            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "3 my"),
-            Message(peerId = "peer1", text = "4"),
-            Message(peerId = "peer1", text = "5"),
-            Message(peerId = "peer1", text = "6"),
-            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "7 my"),
-            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "8 my"),
-            Message(peerId = "peer1", text = "9"),
-            Message(peerId = "peer1", text = "10"),
-            Message(peerId = "peer1", text = "11"),
-            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "12 my"),
-            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "13 my"),
-            Message(peerId = "peer1", text = "14"),
-            Message(peerId = "peer1", text = "15"),
-            Message(peerId = "peer1", text = "16"),
-            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "17 my"),
-            Message(peerId = DomainUtil.CURRENT_USER_ID, text = "18 my"),
-            Message(peerId = "peer1", text = "19"),
-            Message(peerId = "peer1", text = "20"))  // OLD
-
-        if (ChatInMemoryCache.getMessagesCount(profileId = profileId) != xmessages.size) {
-            ChatInMemoryCache.setMessagesCount(profileId = profileId, count = xmessages.size)
-        }
-        messages.value = xmessages
+        // The most recent message is the first one in list, positions ascending and message age is also ascending
+        getMessagesForPeerUseCase.source(params = Params().put("peerId", profileId))
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .autoDisposable(this)
+            .subscribe({
+                if (ChatInMemoryCache.getMessagesCount(profileId = profileId) != it.size) {
+                    ChatInMemoryCache.setMessagesCount(profileId = profileId, count = it.size)
+                }
+                messages.value = it
+            }, Timber::e)
     }
 
     @Suppress("CheckResult")
@@ -64,4 +50,7 @@ class ChatViewModel @Inject constructor(private val sendMessageToPeerUseCase: Se
             .autoDisposable(this)
             .subscribe({ sentMessage.value = it }, Timber::e)
     }
+
+    /* Debug */
+    // ---------------------------------------------------------------------------
 }
