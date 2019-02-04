@@ -20,6 +20,9 @@ data class MessageDbo(
         const val COLUMN_TEXT = "text"
 
         const val TABLE_NAME = "Messages"
+
+        fun from(message: Message): MessageDbo =
+            MessageDbo(id = message.id, chatId = message.chatId, peerId = message.peerId, text = message.text)
     }
 
     override fun map(): Message = Message(id = id, chatId = chatId, peerId = peerId, text = text)

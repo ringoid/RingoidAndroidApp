@@ -15,5 +15,5 @@ class GetMessagesForPeerUseCase @Inject constructor(private val repository: IMes
     : SingleUseCase<List<Message>>(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Single<List<Message>> =
-        params.processSingle("peerId", repository::getMessages)
+        params.processSingle("chatId", repository::getMessages)
 }

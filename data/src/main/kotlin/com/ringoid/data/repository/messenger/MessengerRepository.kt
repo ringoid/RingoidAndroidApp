@@ -20,8 +20,8 @@ import javax.inject.Singleton
 class MessengerRepository @Inject constructor(private val local: MessageDao, cloud: RingoidCloud,
     spm: ISharedPrefsManager, aObjPool: ActionObjectPool) : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
-    override fun getMessages(peerId: String): Single<List<Message>> =
-            local.messages(peerId).map { it.mapList() }
+    override fun getMessages(chatId: String): Single<List<Message>> =
+            local.messages(chatId).map { it.mapList() }
 
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         aObjPool.put(MessageActionObject(text = essence.text, sourceFeed = essence.aObjEssence?.sourceFeed ?: "",

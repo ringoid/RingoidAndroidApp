@@ -4,6 +4,7 @@ import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
+import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
@@ -15,6 +16,7 @@ import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.mapList
+import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
@@ -84,10 +86,17 @@ open class FeedRepository @Inject constructor(private val messengerLocal: Messag
                      feedLikes.onNext(it.likes)
                      feedMatches.onNext(it.matches)
                      feedMessages.onNext(it.messages)
-                     lmmChanged.onNext(it.containsNotSeenItems())
-                     messengerLocal
-                     // TODO: newMessages
+                     lmmChanged.onNext(it.containsNotSeenItems())  // have not seen items
                  }
+                .zipWith(messengerLocal.countChatMessages(),  // old total messages count
+                    BiFunction { lmm: Lmm, count: Int ->
+                        if (count != lmm.messagesCount()) {
+                            lmm.hasNewMessages = true
+                            lmmChanged.onNext(true)  // have new messages
+                        }
+                        lmm
+                    })
+                .cacheMessagesFromLmm()
         }
 
     // --------------------------------------------------------------------------------------------
@@ -125,4 +134,12 @@ open class FeedRepository @Inject constructor(private val messengerLocal: Messag
                     } ?: lmm
             })
         .single(LmmResponse()  /* by default - empty lmm */)
+
+    private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
+        doAfterSuccess {
+            val messages = mutableListOf<Message>()
+                .also { l -> it.messages.forEach { l.addAll(it.messages) } }
+                .map { MessageDbo.from(it) }
+            messengerLocal.addMessages(messages)  // cache new messages
+        }
 }

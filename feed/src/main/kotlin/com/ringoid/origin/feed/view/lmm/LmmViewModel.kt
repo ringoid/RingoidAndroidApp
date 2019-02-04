@@ -34,7 +34,7 @@ class LmmViewModel @Inject constructor(
             .doOnSuccess {
                 badgeLikes.value = it.newLikesCount() > 0
                 badgeMatches.value = it.newMatchesCount() > 0
-                badgeMessenger.value = false  // TODO: new messages count
+                badgeMessenger.value = it.hasNewMessages
             }
             .autoDisposable(this)
             .subscribe({ Timber.v("Lmm has been refreshed") }, Timber::e)

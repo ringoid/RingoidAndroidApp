@@ -6,7 +6,7 @@ import io.reactivex.Single
 
 interface IMessengerRepository {
 
-    fun getMessages(peerId: String): Single<List<Message>>
+    fun getMessages(chatId: String): Single<List<Message>>
 
     fun sendMessage(essence: MessageEssence): Single<Message>
 }
