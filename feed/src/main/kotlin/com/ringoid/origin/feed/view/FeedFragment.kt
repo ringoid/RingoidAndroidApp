@@ -128,6 +128,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
         when (requestCode) {
             RequestCode.RC_BLOCK_DIALOG -> {
                 if (data == null) {
+                    // TODO: crashes on app recreate, save bundle lack of 'data'
                     val e = NullPointerException("No output from Block/Report dialog - this is an error!")
                     Timber.e(e) ; throw e
                 }
