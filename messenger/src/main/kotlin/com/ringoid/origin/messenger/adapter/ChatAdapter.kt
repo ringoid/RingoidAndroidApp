@@ -12,17 +12,33 @@ import com.ringoid.origin.messenger.R
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_chat_item.view.*
 
-class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCallback()) {
+class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCallback(), headerRows = 1) {
+
+    companion object {
+        const val VIEW_TYPE_NORMAL_MY = 5
+    }
 
     var onMessageClickListener: ((model: Message, position: Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        val layoutResId = when (viewType) {
+            VIEW_TYPE_HEADER -> getHeaderLayoutResId()
+            VIEW_TYPE_NORMAL -> R.layout.rv_item_chat_item
+            VIEW_TYPE_NORMAL_MY -> R.layout.rv_item_my_chat_item
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
+        }
+
+        val view = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
         return when (viewType) {
-            R.layout.rv_item_chat_item -> PeerChatViewHolder(view)
-            R.layout.rv_item_my_chat_item -> MyChatViewHolder(view)
+            VIEW_TYPE_HEADER -> HeaderChatViewHolder(view)
+            VIEW_TYPE_NORMAL -> PeerChatViewHolder(view)
+            VIEW_TYPE_NORMAL_MY -> MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }.also { vh->
+            if (viewType != VIEW_TYPE_NORMAL || viewType != VIEW_TYPE_NORMAL_MY) {
+                return@also
+            }
+
             vh.setOnClickListener(getOnItemClickListener(vh))
             vh.itemView.tv_chat_message.also { view ->
                 view.clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(view) }
@@ -32,16 +48,26 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
         }
     }
 
-    override fun getItem(position: Int): Message = getModel(position)
+    override fun getItemId(position: Int): Long {
+        val viewType = getItemViewType(position)
+        return when (viewType) {
+            VIEW_TYPE_NORMAL, VIEW_TYPE_NORMAL_MY -> getModel(position).getModelId()
+            else -> viewType.toLong()
+        }
+    }
 
-    override fun getItemId(position: Int): Long = getModel(position).getModelId()
-
-    override fun getItemViewType(position: Int): Int =
-        if (super.getItemViewType(position) == VIEW_TYPE_NORMAL) {
-            if (getModel(position).peerId == DomainUtil.CURRENT_USER_ID) R.layout.rv_item_my_chat_item
-            else R.layout.rv_item_chat_item
-        } else DomainUtil.BAD_RESOURCE
+    override fun getItemViewType(position: Int): Int {
+        val viewType = super.getItemViewType(position)
+        return when (viewType) {
+            VIEW_TYPE_NORMAL -> {
+                if (getModel(position).peerId == DomainUtil.CURRENT_USER_ID) VIEW_TYPE_NORMAL_MY
+                else viewType
+            }
+            else -> viewType
+        }
+    }
 
     // ------------------------------------------
     override fun getStubItem(): Message = EmptyMessage
+    override fun getHeaderLayoutResId(): Int = R.layout.rv_item_chat_header
 }

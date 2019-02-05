@@ -123,7 +123,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         return when (viewType) {
             VIEW_TYPE_NORMAL -> getModel(position).getModelId()
             /**
-             * Any of:  VIEW_TYPE_HEADER, VIEW_TYPE_LOADING, VIEW_TYPE_FOOTER
+             * Any of: VIEW_TYPE_HEADER, VIEW_TYPE_FOOTER, VIEW_TYPE_LOADING, VIEW_TYPE_ERROR
              */
             else -> viewType.toLong()
         }
