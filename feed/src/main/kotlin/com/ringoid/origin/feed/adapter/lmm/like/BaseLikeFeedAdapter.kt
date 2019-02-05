@@ -36,7 +36,7 @@ abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesVi
     override fun getHeaderLayoutResId(): Int = R.layout.rv_item_feed_lmm_header
 
     // ------------------------------------------
-    private fun wrapMessageClickListener(vh: VH): ((model: FeedItem, position: Int) -> Unit)? =
+    protected fun wrapMessageClickListener(vh: VH): ((model: FeedItem, position: Int) -> Unit)? =
         { model: FeedItem, position: Int ->
             messageClickListener?.invoke(model, position, vh.getCurrentImagePosition())
         }
