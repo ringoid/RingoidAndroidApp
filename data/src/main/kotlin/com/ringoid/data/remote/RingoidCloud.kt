@@ -36,7 +36,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     }
 
     fun getUserSettings(accessToken: String): Single<UserSettingsResponse> =
-        restAdapter.getUserSettings(accessToken = accessToken).breadcrumb("deleteUserProfile", "accessToken" to accessToken)
+        restAdapter.getUserSettings(accessToken = accessToken).breadcrumb("getUserSettings", "accessToken" to accessToken)
 
     fun updateUserSettings(essence: UpdateUserSettingsEssence): Single<BaseResponse> =
         restAdapter.updateUserSettings(essence.toBody()).breadcrumb("updateUserSettings", essence.toSentryData())
@@ -53,7 +53,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
         restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
-            .breadcrumb("deleteUserProfile", "accessToken" to accessToken, "resolution" to "$resolution")
+            .breadcrumb("getUserImages", "accessToken" to accessToken, "resolution" to "$resolution")
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
         restAdapter.deleteUserImage(essence.toBody()).breadcrumb("deleteUserImage", essence.toSentryData())
@@ -67,12 +67,12 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun getNewFaces(accessToken: String, resolution: ImageResolution, limit: Int?, lastActionTime: Long = 0L) =
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
-            .breadcrumb("deleteUserProfile", "accessToken" to accessToken, "resolution" to "$resolution",
+            .breadcrumb("getNewFaces", "accessToken" to accessToken, "resolution" to "$resolution",
                         "lastActionTime" to "$lastActionTime")
 
     fun getLmm(accessToken: String, resolution: ImageResolution, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, lastActionTime = lastActionTime)
-            .breadcrumb("deleteUserProfile", "accessToken" to accessToken,
+            .breadcrumb("getLmm", "accessToken" to accessToken,
                         "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
 
     /* Test */
