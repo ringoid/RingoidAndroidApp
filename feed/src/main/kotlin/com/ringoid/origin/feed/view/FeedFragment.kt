@@ -213,23 +213,18 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
             rv.linearLayoutManager()?.let {
-                if (dy > 0) {
+                if (dy > 0) {  // scroll list down - to see new items
                     if (scroll_fab.isVisible()) {
                         scroll_fab.changeVisibility(isVisible = false)
                     }
-                } else {
-                    val p = it.findFirstVisibleItemPosition()
-                    if (p == RecyclerView.NO_POSITION) {
-                        return
-                    }
-
-                    val fixUp = if (feedAdapter.withHeader()) 1 else 0
+                } else {  // scroll list up - to see previous items
+                    val offset = rv.computeVerticalScrollOffset()
                     if (scroll_fab.isVisible()) {
-                        if (p < 1 + fixUp) {
+                        if (offset <= 0) {
                             scroll_fab.changeVisibility(isVisible = false)
                         }
                     } else {
-                        if (p >= 1 + fixUp) {
+                        if (offset > 0) {
                             scroll_fab.changeVisibility(isVisible = true)
                         }
                     }
