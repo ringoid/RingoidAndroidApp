@@ -87,7 +87,7 @@ class DebugRepository @Inject constructor(
 
     override fun requestWithFailAllRetries(): Completable =
         Single.just(BaseResponse(errorCode = "DebugError", errorMessage = "Debug error"))
-            .handleError()
+            .handleError(count = 3)
             .ignoreElement()  // convert to Completable
 
     override fun requestWithFailNTimesBeforeSuccess(count: Int): Completable =

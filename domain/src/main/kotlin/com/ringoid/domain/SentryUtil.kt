@@ -1,6 +1,7 @@
 package com.ringoid.domain
 
 import android.os.Build
+import com.ringoid.utility.stackTraceString
 import io.sentry.Sentry
 import io.sentry.event.Breadcrumb
 import io.sentry.event.BreadcrumbBuilder
@@ -43,7 +44,12 @@ object SentryUtil {
     fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.FATAL,   extras = extras)
 
     fun capture(e: Throwable, message: String? = null, extras: List<Pair<String, String>>? = null) {
-        capture(e, message = message, `object` = null, extras = extras)
+        val fullExtras = mutableListOf<Pair<String, String>>()
+            .apply {
+                add(e.javaClass.simpleName to e.stackTraceString())
+                extras?.let { addAll(it) }
+            }
+        capture(e, message = message, `object` = null, extras = fullExtras)
     }
 
     /* Internal */
