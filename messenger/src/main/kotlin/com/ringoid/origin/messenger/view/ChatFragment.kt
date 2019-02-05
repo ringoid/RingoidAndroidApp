@@ -231,7 +231,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ibtn_chat_close.changeVisibility(isVisible, soft = true)
         ibtn_settings.changeVisibility(isVisible, soft = true)
         ll_text_input.changeVisibility(isVisible, soft = true)
-        rv_chat_messages.changeVisibility(isVisible, soft = true)
     }
 
     // ------------------------------------------
