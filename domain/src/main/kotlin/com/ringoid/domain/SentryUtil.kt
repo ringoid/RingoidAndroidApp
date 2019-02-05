@@ -1,14 +1,12 @@
 package com.ringoid.domain
 
 import android.os.Build
+import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.sentry.Sentry
-import io.sentry.event.Breadcrumb
-import io.sentry.event.BreadcrumbBuilder
-import io.sentry.event.Event
-import io.sentry.event.EventBuilder
+import io.sentry.event.*
 import java.util.*
 
 object SentryUtil {
@@ -59,6 +57,13 @@ object SentryUtil {
         capture(e, message = message, `object` = null, extras = fullExtras)
     }
 
+    fun setUser(spm: ISharedPrefsManager) {
+        spm.currentUserId()?.let {
+            val data = mutableMapOf<String, Any>().apply { put("accessToken", spm.accessToken()?.accessToken ?: "null") }
+            Sentry.getContext().user = UserBuilder().setId(it).setData(data).build()
+        }
+    }
+
     /* Internal */
     // --------------------------------------------------------------------------------------------
     private fun log(message: String, level: Event.Level, `object`: Any? = null,
@@ -77,6 +82,7 @@ object SentryUtil {
 
     private fun createEvent(message: String, level: Event.Level, `object`: Any? = null,
                             extras: List<Pair<String, String>>? = null): Event {
+        val user: User? = Sentry.getContext().user
         val builder = EventBuilder()
             .withBreadcrumbs(Sentry.getContext().breadcrumbs)
             .withLevel(level)
@@ -84,9 +90,11 @@ object SentryUtil {
             .withPlatform("Android: ${Build.VERSION.SDK_INT}")
             .withRelease(BuildConfig.VERSION_NAME)
             .withTimestamp(Date())
+            .withExtra("userId", user?.id ?: "null")
         if (`object` != null) {
             builder.withTag(`object`.javaClass.simpleName, `object`.hashCode().toString())
         }
+        user?.data?.forEach { builder.withExtra(it.key, it.value) }
         extras?.forEach { builder.withExtra(it.first, it.second) }
         return builder.build()
     }
