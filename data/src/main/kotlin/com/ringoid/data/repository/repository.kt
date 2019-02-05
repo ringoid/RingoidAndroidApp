@@ -2,6 +2,7 @@ package com.ringoid.data.repository
 
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.SentryUtil
 import com.ringoid.domain.exception.ApiException
 import com.ringoid.domain.exception.NetworkException
 import com.ringoid.domain.exception.RepeatRequestAfterSecException
@@ -43,7 +44,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null)
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
                                 .doOnSubscribe { Timber.w("Retry attempt [$attemptNumber / $count] after error: $error") }
-                                .doOnComplete { if (attemptNumber >= count) throw error }
+                                .doOnComplete { if (attemptNumber >= count) throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted") } }
             }
     }
 
@@ -54,14 +55,12 @@ private fun expBackoffObservableImpl(count: Int, delay: Long, tag: String? = nul
                 val attemptNumber = errorWithAttempt.first
                 val error = errorWithAttempt.second
                 val delayTime = when (error) {
-                    is RepeatRequestAfterSecException -> error.delay * 1000  // in secons
+                    is RepeatRequestAfterSecException -> error.delay * 1000  // in seconds
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Observable.timer(delayTime, TimeUnit.MILLISECONDS)
-                                  .doOnComplete {
-                                      Timber.e("Retry attempt [$attemptNumber / $count] after error: $error")
-                                      if (attemptNumber >= count) throw error
-                                  }
+                                  .doOnSubscribe { Timber.e("Retry attempt [$attemptNumber / $count] after error: $error") }
+                                  .doOnComplete { if (attemptNumber >= count) throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted") } }
             }
     }
 

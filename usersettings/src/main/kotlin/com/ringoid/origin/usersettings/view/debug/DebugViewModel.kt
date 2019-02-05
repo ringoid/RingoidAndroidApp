@@ -14,6 +14,7 @@ import javax.inject.Inject
 
 class DebugViewModel @Inject constructor(
     private val invalidAccessTokenRequestUseCase: InvalidAccessTokenRequestUseCase,
+    private val requestFailUseCase: RequestFailUseCase,
     private val requestRepeatAfterDelayUseCase: RequestRepeatAfterDelayUseCase,
     private val requestRetryNTimesUseCase: RequestRetryNTimesUseCase,
     private val unsupportedAppVersionRequestUseCase: UnsupportedAppVersionRequestUseCase,
@@ -32,6 +33,13 @@ class DebugViewModel @Inject constructor(
 //            .subscribe({ /* no-op */ }, Timber::e)
 
         debugInvalidAccessTokenRequestUseCase.source()
+            .handleResult(this)
+            .autoDisposable(this)
+            .subscribe({ /* no-op */ }, Timber::e)
+    }
+
+    fun requestWithFailAllRetries() {
+        requestFailUseCase.source()
             .handleResult(this)
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)

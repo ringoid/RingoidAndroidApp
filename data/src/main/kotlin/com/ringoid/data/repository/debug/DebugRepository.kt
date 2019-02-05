@@ -85,6 +85,11 @@ class DebugRepository @Inject constructor(
     private fun getAndIncrementRequestAttempt(): Int = requestAttempt++
     private fun getAndIncrementRequestRepeatAfterDelayAttempt(): Int = requestRepeatAfterDelayAttempt++
 
+    override fun requestWithFailAllRetries(): Completable =
+        Single.just(BaseResponse(errorCode = "DebugError", errorMessage = "Debug error"))
+            .handleError()
+            .ignoreElement()  // convert to Completable
+
     override fun requestWithFailNTimesBeforeSuccess(count: Int): Completable =
         Single.just(0L)
             .flatMap {

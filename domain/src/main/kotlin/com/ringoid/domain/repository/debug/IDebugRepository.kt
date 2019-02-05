@@ -6,6 +6,7 @@ import io.reactivex.Single
 
 interface IDebugRepository {
 
+    fun requestWithFailAllRetries(): Completable
     fun requestWithFailNTimesBeforeSuccess(count: Int): Completable
     fun requestWithRepeatAfterDelay(delay: Long): Completable
     fun requestWithInvalidAccessToken(token: String): Completable
