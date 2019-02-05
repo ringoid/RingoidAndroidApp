@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="grey_middle">#bdc1c6</color>
+    <color name="toast_bg_color">#aa1f262c</color>
     <color name="util_grass">#64aa0a</color>
 </resources>

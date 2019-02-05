@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.TextView
@@ -173,12 +174,16 @@ fun snackbar(view: View?, @StringRes textResId: Int, duration: Int = Snackbar.LE
     view?.let { Snackbar.make(it, textResId, duration).show() }
 }
 
-fun Context.toast(text: String, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, text, duration).show()
+fun Context.toast(text: String, duration: Int = Toast.LENGTH_SHORT, gravity: Int? = null) {
+    val view = LayoutInflater.from(this).inflate(R.layout.toast_layout, null)
+        .also { it.findViewById<TextView>(R.id.tv_toast_text).text = text }
+
+    Toast.makeText(this, text, duration)
+        .apply { gravity?.let { setGravity(gravity, 0, 0) } }
+        .also { it.view = view }
+        .show()
 }
 
 fun Context.toast(@StringRes textResId: Int, duration: Int = Toast.LENGTH_SHORT, gravity: Int? = null) {
-    Toast.makeText(this, textResId, duration)
-        .apply { gravity?.let { setGravity(gravity, 0, 0) } }
-        .show()
+    toast(text = resources.getString(textResId), duration = duration, gravity = gravity)
 }
