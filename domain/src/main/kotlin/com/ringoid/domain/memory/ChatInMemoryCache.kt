@@ -2,11 +2,11 @@ package com.ringoid.domain.memory
 
 object ChatInMemoryCache {
 
-    const val BOTTOM_CHAT_POSITION: Int = 0
+    val BOTTOM_CHAT_POSITION: Pair<Int, Int> = 0 to 0
 
     private val chatInputMessage = mutableMapOf<String, CharSequence>()
     private val chatMessagesCount = mutableMapOf<String, Int>()
-    private val chatScrollPosition = mutableMapOf<String, Int>()
+    private val chatScrollPosition = mutableMapOf<String, Pair<Int, Int>>()
 
     // ------------------------------------------
     fun getInputMessage(profileId: String): CharSequence? = chatInputMessage[profileId]
@@ -30,7 +30,7 @@ object ChatInMemoryCache {
     // ------------------------------------------
     fun hasProfile(profileId: String): Boolean = chatScrollPosition.containsKey(profileId)
 
-    fun getProfilePosition(profileId: String): Int =
+    fun getProfilePosition(profileId: String): Pair<Int, Int> =
             chatScrollPosition[profileId] ?: BOTTOM_CHAT_POSITION
 
     fun addProfileIfNotExists(profileId: String): Boolean {
@@ -41,13 +41,13 @@ object ChatInMemoryCache {
         return result
     }
 
-    fun addProfileWithPosition(profileId: String, position: Int): Boolean {
+    fun addProfileWithPosition(profileId: String, position: Pair<Int, Int>): Boolean {
         val result = hasProfile(profileId)
         chatScrollPosition[profileId] = position
         return result
     }
 
-    fun addProfileWithPositionIfNotExists(profileId: String, position: Int): Boolean {
+    fun addProfileWithPositionIfNotExists(profileId: String, position: Pair<Int, Int>): Boolean {
         val result = hasProfile(profileId)
         if (!result) {
             chatScrollPosition[profileId] = position
