@@ -22,6 +22,7 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
@@ -118,6 +119,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     val image = model.images[positionOfImage]
                     scrollToTopOfItemAtPosition(position)
                     notifyItemChanged(position, FeedViewHolderHideControls)
+                    communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
                     navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}", rc = RequestCode.RC_BLOCK_DIALOG)
                 }
             }
@@ -133,6 +135,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     Timber.e(e) ; throw e
                 }
 
+                communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                 val position = data.extras!!.getString("position", "0").toInt()
 
                 if (resultCode == Activity.RESULT_OK) {
