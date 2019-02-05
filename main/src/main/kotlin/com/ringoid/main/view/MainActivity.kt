@@ -38,4 +38,10 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
             recreate()  // theme has changed outside, in some another Activity
         }
     }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onRefreshFeed() {
+        super.onRefreshFeed()
+        vm.onRefreshFeed()
+    }
 }

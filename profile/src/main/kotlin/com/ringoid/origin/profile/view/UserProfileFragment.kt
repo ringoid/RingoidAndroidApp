@@ -153,7 +153,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
+            refreshes().compose(clickDebounce()).subscribe {
+                communicator(IBaseMainActivity::class.java)?.onRefreshFeed()
+                vm.onRefresh()
+            }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         val snapHelper = PagerSnapHelper()

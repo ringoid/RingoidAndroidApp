@@ -31,6 +31,11 @@ class LmmViewModel @Inject constructor(
     private fun getLmm() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
         getLmmUseCase.source(params = params)
+            .doOnSubscribe {
+                badgeLikes.value = false
+                badgeMatches.value = false
+                badgeMessenger.value = false
+            }
             .doOnSuccess {
                 badgeLikes.value = it.newLikesCount() > 0
                 badgeMatches.value = it.newMatchesCount() > 0

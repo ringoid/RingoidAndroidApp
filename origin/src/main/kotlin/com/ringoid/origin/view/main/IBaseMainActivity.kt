@@ -8,4 +8,5 @@ interface IBaseMainActivity : ICommunicator {
     val imagesViewPool: RecyclerView.RecycledViewPool
 
     fun isNewUser(): Boolean
+    fun onRefreshFeed()
 }

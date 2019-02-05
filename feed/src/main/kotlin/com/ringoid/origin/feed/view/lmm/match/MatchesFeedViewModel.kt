@@ -30,4 +30,9 @@ class MatchesFeedViewModel @Inject constructor(
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMatches
 
     override fun getFeedName(): String = "matches"
+
+    override fun onRefresh() {
+        badgeMatches.value = false  // discard badge on refresh - it will be set properly after refresh
+        super.onRefresh()
+    }
 }

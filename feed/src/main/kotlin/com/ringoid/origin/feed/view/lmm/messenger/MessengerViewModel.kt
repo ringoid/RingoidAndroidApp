@@ -30,4 +30,9 @@ class MessengerViewModel @Inject constructor(
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMessages
 
     override fun getFeedName(): String = "messages"
+
+    override fun onRefresh() {
+        badgeMessenger.value = false  // discard badge on refresh - it will be set properly after refresh
+        super.onRefresh()
+    }
 }

@@ -30,4 +30,9 @@ class LikesFeedViewModel @Inject constructor(
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedLikes
 
     override fun getFeedName(): String = "who_liked_me"
+
+    override fun onRefresh() {
+        badgeLikes.value = false  // discard badge on refresh - it will be set properly after refresh
+        super.onRefresh()
+    }
 }
