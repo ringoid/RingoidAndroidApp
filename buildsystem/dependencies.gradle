@@ -120,6 +120,7 @@ ext {
             crashlytics: "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
             leakCanary:  "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
             multidex:    "com.android.support:multidex:${multidexVersion}",
+            sentry:      "io.sentry:sentry-android:${sentryVersion}",
             timber:      "com.jakewharton.timber:timber:${timberVersion}",
     ]
 
@@ -486,6 +487,7 @@ ext {
     // ------------------------------------------
     domainDependencies = [
         [configuration: "implementation", dependency: d_libs.gson],
+        [configuration: "api", dependency: d_support.sentry]
     ]
     domainDependencies += module_utility + kotlin + dagger + log + rx
     testDomainDependencies = test

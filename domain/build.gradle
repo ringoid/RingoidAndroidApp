@@ -19,6 +19,7 @@ android {
         buildConfigField 'int', 'DEFAULT_RETRY_COUNT', "5"
         buildConfigField 'long', 'DEFAULT_RETRY_DELAY', "55L"
         buildConfigField 'String', 'HOST', rootProject.ext.host
+        buildConfigField 'String', 'SENTRY_DSN', rootProject.ext.sentryDSN
     }
     buildTypes {
         release {

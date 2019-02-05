@@ -22,6 +22,7 @@ ext {
     host = '"ringoid.com"'
     authority = '"https://ringoid.com"'
     appnav = '"appnav://ringoid.com"'
+    sentryDSN = '"https://e71e66c6bcfd4cbb8541f9a5536b0d9f@sentry.io/1387000"'
 }
 
 buildscript {
