@@ -14,4 +14,6 @@ data class MessageEssence(
         const val COLUMN_PEER_ID = "profileId"
         const val COLUMN_TEXT = "text"
     }
+
+    override fun toSentryPayload(): String = "[peerId=$peerId, text=$text]"
 }

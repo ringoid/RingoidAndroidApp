@@ -34,4 +34,6 @@ open class ActionObject(
     }
 
     override fun toString(): String = "${javaClass.simpleName}(actionTime=$actionTime, actionType='$actionType', sourceFeed='$sourceFeed', targetImageId='$targetImageId', targetUserId='$targetUserId', triggerStrategies=$triggerStrategies)"
+
+    override fun toSentryPayload(): String = "[${javaClass.simpleName}]"
 }

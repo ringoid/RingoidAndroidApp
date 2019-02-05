@@ -6,4 +6,6 @@ interface IImageUploadUrlEssence : IEssence {
 
     val clientImageId: String
     val extension: String
+
+    override fun toSentryPayload(): String = "[clientPhotoId=$clientImageId], extension=$extension]"
 }

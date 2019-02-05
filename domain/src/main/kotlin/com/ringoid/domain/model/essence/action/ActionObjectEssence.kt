@@ -18,4 +18,6 @@ data class ActionObjectEssence(
         const val COLUMN_TARGET_IMAGE_ID = "targetPhotoId"
         const val COLUMN_TARGET_USER_ID = "targetUserId"
     }
+
+    override fun toSentryPayload(): String = "[actionTime=$actionTime, actionType=$actionType, sourceFeed=$sourceFeed, targetPhotoId=$targetImageId, targetUserId=$targetUserId]"
 }

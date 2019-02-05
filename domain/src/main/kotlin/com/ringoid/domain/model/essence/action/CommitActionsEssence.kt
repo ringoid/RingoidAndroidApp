@@ -13,4 +13,6 @@ data class CommitActionsEssence(
         const val COLUMN_ACCESS_TOKEN = "accessToken"
         const val COLUMN_ACTIONS = "actions"
     }
+
+    override fun toSentryPayload(): String = actions.joinToString(", ", "[", "]")
 }

@@ -18,4 +18,6 @@ data class ImageDeleteEssence(
         const val COLUMN_ACCESS_TOKEN = "accessToken"
         const val COLUMN_IMAGE_ID = "photoId"
     }
+
+    override fun toSentryPayload(): String = "[photoId=$imageId]"
 }

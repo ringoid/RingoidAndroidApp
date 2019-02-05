@@ -27,4 +27,6 @@ data class UpdateUserSettingsEssence(
         const val COLUMN_PUSH_MESSAGES = "pushMessages"
         const val COLUMN_PUSH_SAFE_DISTANCE = "safeDistanceInMeter"
     }
+
+    override fun toSentryPayload(): String = "[pushLikes=$pushLikes, pushMatches=$pushMatches, pushMessages=$pushMessages, safeDistance=$safeDistance]"
 }
