@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 object RxViewUtil {
 
     const val DEBOUNCE_CLICK = 500L
-    const val DEBOUNCE_INPUT = 175L
+    const val DEBOUNCE_INPUT = 200L
     const val POST_DELAY = 200L
 }
 
