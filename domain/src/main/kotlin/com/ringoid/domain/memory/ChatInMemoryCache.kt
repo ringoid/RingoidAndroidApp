@@ -4,8 +4,18 @@ object ChatInMemoryCache {
 
     const val BOTTOM_CHAT_POSITION: Int = 0
 
+    private val chatInputMessage = mutableMapOf<String, CharSequence>()
     private val chatMessagesCount = mutableMapOf<String, Int>()
     private val chatScrollPosition = mutableMapOf<String, Int>()
+
+    // ------------------------------------------
+    fun getInputMessage(profileId: String): CharSequence? = chatInputMessage[profileId]
+
+    fun setInputMessage(profileId: String, text: CharSequence) {
+        if (hasProfile(profileId)) {
+            chatInputMessage[profileId] = text
+        }
+    }
 
     // ------------------------------------------
     fun getMessagesCount(profileId: String): Int = chatMessagesCount[profileId] ?: 0
@@ -53,6 +63,7 @@ object ChatInMemoryCache {
 
     // ------------------------------------------
     fun clear() {
+        chatInputMessage.clear()
         chatMessagesCount.clear()
         chatScrollPosition.clear()
     }

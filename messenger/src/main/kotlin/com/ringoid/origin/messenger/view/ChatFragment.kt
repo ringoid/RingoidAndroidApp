@@ -13,6 +13,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.IBaseActivity
@@ -153,6 +154,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 }
                 false
             }
+            textChanges().compose(inputDebounce()).subscribe { ChatInMemoryCache.setInputMessage(profileId = peerId, text = it) }
         }
         ibtn_message_send.clicks().compose(clickDebounce()).subscribe {
             val imageId = (payload as? ChatPayload)?.peerImageId ?: BAD_ID
@@ -178,6 +180,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onStart() {
         super.onStart()
         vm.getMessages(profileId = peerId)
+        et_message.apply {
+            val text = ChatInMemoryCache.getInputMessage(profileId = peerId)
+            setText(text)
+            setSelection(text?.length ?:0)
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -223,6 +230,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     // ------------------------------------------
     private fun putMyMessage(message: Message) {
+        ChatInMemoryCache.setInputMessage(profileId = peerId, text = "")
         et_message.setText("")  // clear text input
         chatAdapter.prepend(message)
         scrollListToPosition(0)
