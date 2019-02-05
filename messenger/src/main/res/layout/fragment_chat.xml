@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/chat_edit_text_bg"
-        android:minHeight="@dimen/chat_text_input_container_height"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -27,7 +26,8 @@
             android:inputType="textMultiLine"
             android:maxLength="1000"
             android:maxLines="4"
-            android:paddingBottom="@dimen/std_margin_8"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:paddingStart="@dimen/std_margin_16"
             android:paddingEnd="@dimen/std_margin_16"
             android:shadowColor="@color/text_shadow"
@@ -41,8 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/std_margin_8"
             android:paddingTop="@dimen/std_margin_8"
-            android:paddingBottom="@dimen/std_margin_16"
+            android:paddingBottom="@dimen/std_margin_8"
             android:paddingStart="@dimen/std_margin_8"
             android:paddingEnd="@dimen/std_margin_8"
             app:xbtnSrc="@drawable/ic_send_white_36dp"/>
