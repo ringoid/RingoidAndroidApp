@@ -23,7 +23,7 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatViewHolder {
         val layoutResId = when (viewType) {
-            VIEW_TYPE_HEADER -> getHeaderLayoutResId()
+            VIEW_TYPE_FOOTER -> getFooterLayoutResId()
             VIEW_TYPE_NORMAL -> R.layout.rv_item_chat_item
             VIEW_TYPE_NORMAL_MY -> R.layout.rv_item_my_chat_item
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
@@ -31,7 +31,7 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
 
         val view = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
         return when (viewType) {
-            VIEW_TYPE_HEADER -> HeaderChatViewHolder(view)
+            VIEW_TYPE_FOOTER -> HeaderChatViewHolder(view)
             VIEW_TYPE_NORMAL -> PeerChatViewHolder(view)
             VIEW_TYPE_NORMAL_MY -> MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
@@ -74,5 +74,5 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
 
     // ------------------------------------------
     override fun getStubItem(): Message = EmptyMessage
-    override fun getHeaderLayoutResId(): Int = R.layout.rv_item_chat_header
+    override fun getFooterLayoutResId(): Int = R.layout.rv_item_chat_header
 }
