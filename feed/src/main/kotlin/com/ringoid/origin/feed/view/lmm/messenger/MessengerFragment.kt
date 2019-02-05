@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.lmm.messenger
 
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
+import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.OriginR_string
@@ -42,6 +43,6 @@ class MessengerFragment : BaseLikesFeedFragment<MessengerViewModel, OriginFeedVi
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        // TODO
+        viewLifecycleOwner.observe(vm.badgeMessenger) { communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(it) }
     }
 }
