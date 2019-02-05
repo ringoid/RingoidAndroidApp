@@ -20,7 +20,6 @@
     <string name="error_crop_image">Failed to load and prepare image</string>
 
     <!-- Chat screen -->
-    <string name="chat_message_edit_text_hint">Type some text&#8230;</string>
     <string name="chat_message_sent">Message sent</string>
 
     <!-- Debug screen -->
