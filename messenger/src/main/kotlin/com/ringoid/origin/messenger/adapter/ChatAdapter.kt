@@ -19,6 +19,7 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
     }
 
     var onMessageClickListener: ((model: Message, position: Int) -> Unit)? = null
+    var onMessageInsertListener: ((position: Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatViewHolder {
         val layoutResId = when (viewType) {
@@ -66,6 +67,10 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
             else -> viewType
         }
     }
+
+    // ------------------------------------------
+    override fun getOnInsertedCb(): ((position: Int, count: Int) -> Unit)? =
+        { position: Int, _ -> onMessageInsertListener?.invoke(position) }
 
     // ------------------------------------------
     override fun getStubItem(): Message = EmptyMessage

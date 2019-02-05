@@ -26,7 +26,10 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     private val helper by lazy {
         AsyncListDiffer<T>(
-            ExposedAdapterListUpdateCallback(this, headerRows = headerRows, exposedCb = { getExposedCb()?.invoke() }),
+            ExposedAdapterListUpdateCallback(
+                this, headerRows = headerRows, exposedCb = { getExposedCb()?.invoke() },
+                onInsertedCb = getOnInsertedCb(), onRemovedCb = getOnRemovedCb(),
+                onMovedCb = getOnMovedCb(), onChangedCb = getOnChangedCb()),
             AsyncDifferConfig.Builder(diffCb).build())
     }
 
@@ -50,6 +53,11 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
      * such callback could be properly defined in subclasses of this [OriginListAdapter].
      */
     protected open fun getExposedCb(): (() -> Unit)? = null
+
+    protected open fun getOnInsertedCb(): ((position: Int, count: Int) -> Unit)? = null
+    protected open fun getOnRemovedCb(): ((position: Int, count: Int) -> Unit)? = null
+    protected open fun getOnMovedCb(): ((fromPosition: Int, toPosition: Int) -> Unit)? = null
+    protected open fun getOnChangedCb(): ((position: Int, count: Int) -> Unit)? = null
 
     // --------------------------------------------------------------------------------------------
     var itemClickListener: ((model: T, position: Int) -> Unit)? = null

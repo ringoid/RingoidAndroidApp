@@ -107,6 +107,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 context?.copyToClipboard(DomainUtil.CLIPBOARD_KEY_CHAT_MESSAGE, model.text)
                 context?.toast(OriginR_string.common_clipboard, gravity = Gravity.CENTER)
             }
+            onMessageInsertListener = { _ -> scrollToTopOfItemAtPosition(0) }  // scroll to last message
         }
     }
 
@@ -116,12 +117,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.messages, chatAdapter::submitList) { scrollToTopOfItemAtCachedPosition() }
+            observe(vm.messages, chatAdapter::submitList)// { scrollToTopOfItemAtPosition(0) }
             observe(vm.sentMessage, ::putMyMessage)
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)
-            ?.subscribe({ scrollToTopOfItemAtCachedPosition() }, Timber::e)
+            ?.subscribe({ scrollToTopOfItemAtPosition(0) }, Timber::e)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -203,7 +204,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     }
 
     private fun scrollListToPosition(position: Int) {
-        rv_chat_messages.post { rv_chat_messages.smoothScrollToPosition(position) }
+        rv_chat_messages.post { rv_chat_messages.scrollToPosition(position) }
     }
 
     private fun scrollToTopOfItemAtPosition(position: Int) {
@@ -219,8 +220,10 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     }
 
     private fun scrollToTopOfItemAtCachedPosition() {
-        val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
-        scrollListToY(scroll = position.second)
+        // TODO: call only if no new messages
+//        val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
+//        scrollListToY(scroll = position.second)
+//        scrollToTopOfItemAtPosition(position.first)
     }
 
     private fun showChatControls(isVisible: Boolean) {
@@ -240,7 +243,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ChatInMemoryCache.setInputMessage(profileId = peerId, text = "")
         et_message.setText("")  // clear text input
         chatAdapter.prepend(message)
-        scrollListToPosition(0)
     }
 
     // ------------------------------------------
