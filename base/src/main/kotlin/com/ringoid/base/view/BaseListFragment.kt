@@ -25,7 +25,7 @@ abstract class BaseListFragment<T : BaseViewModel> : BaseFragment<T>() {
 
     // --------------------------------------------------------------------------------------------
     protected fun scrollListToPosition(position: Int) {
-        getRecyclerView().smoothScrollToPosition(position)
+        getRecyclerView().scrollToPosition(position)
     }
 
     protected fun scrollToTopOfItemAtPosition(position: Int) {
