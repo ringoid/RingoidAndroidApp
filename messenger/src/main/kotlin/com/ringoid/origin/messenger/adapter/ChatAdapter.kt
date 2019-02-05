@@ -12,7 +12,7 @@ import com.ringoid.origin.messenger.R
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_chat_item.view.*
 
-class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCallback(), headerRows = 1) {
+class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCallback()) {
 
     companion object {
         const val VIEW_TYPE_NORMAL_MY = 5
