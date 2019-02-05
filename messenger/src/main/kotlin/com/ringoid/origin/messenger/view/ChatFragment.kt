@@ -8,10 +8,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.Gravity
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.observe
@@ -174,8 +172,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     stackFromEnd = true
                 }
             addItemDecoration(TopBottomDividerItemDecoration(context, R.dimen.chat_blob_divider_height))
-            setOnTouchListener(ChatTouchListener())
+            setOnClickListener { closeChat() }
         }
+        vg_chat.setOnClickListener { closeChat() }
     }
 
     override fun onStart() {
@@ -240,24 +239,5 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ChatInMemoryCache.setInputMessage(profileId = peerId, text = "")
         et_message.setText("")  // clear text input
         chatAdapter.prepend(message)
-    }
-
-    // ------------------------------------------
-    private inner class ChatTouchListener : View.OnTouchListener {
-        private var lastAction: Int = MotionEvent.ACTION_DOWN
-
-        @Suppress("ClickableViewAccessibility")
-        override fun onTouch(v: View, event: MotionEvent): Boolean =
-            if (event.action == MotionEvent.ACTION_UP &&
-                (lastAction == MotionEvent.ACTION_DOWN ||
-                    (v.takeIf { it is RecyclerView }
-                      ?.let { it as? RecyclerView }
-                      ?.let { lastAction == MotionEvent.ACTION_MOVE && it.adapter?.itemCount == 0 }) == true)) {
-                closeChat()
-                true
-            } else {
-                lastAction = event.action
-                false
-            }
     }
 }

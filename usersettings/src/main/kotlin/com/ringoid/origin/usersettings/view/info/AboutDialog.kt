@@ -29,10 +29,8 @@ class AboutDialog : SimpleBaseDialogFragment() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-            ?.apply { setOnClickListener { dismiss() } }
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        super.onCreateView(inflater, container, savedInstanceState)?.apply { setOnClickListener { dismiss() } }
 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
