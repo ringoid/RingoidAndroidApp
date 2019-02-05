@@ -55,7 +55,7 @@ object ExternalNavigator {
         openEmailComposerIntent(email = email, subject = subject, body = body)
             .takeIf { it.resolveActivity(activity.packageManager) != null }
             ?.let {
-                val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email))
+                val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email)).singleTop()
                 activity.startActivityForResult(intent, RC_EMAIL_SEND)
             }
     }
@@ -65,7 +65,7 @@ object ExternalNavigator {
             openEmailComposerIntent(email = email, subject = subject, body = body)
                 .takeIf { it.resolveActivity(activity.packageManager) != null }
                 ?.let {
-                    val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email))
+                    val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email)).singleTop()
                     fragment.startActivityForResult(intent, RC_EMAIL_SEND)
                 }
         }
@@ -94,7 +94,7 @@ object ExternalNavigator {
         openGalleryToGetImageIntent()
             .takeIf { it.resolveActivity(activity.packageManager) != null }
             ?.let {
-                val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_choose_image))
+                val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_choose_image)).singleTop()
                 activity.startActivityForResult(intent, RC_GALLERY_GET_IMAGE)
             }
     }
@@ -104,7 +104,7 @@ object ExternalNavigator {
             openGalleryToGetImageIntent()
                 .takeIf { it.resolveActivity(activity.packageManager) != null }
                 ?.let {
-                    val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_choose_image))
+                    val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_choose_image)).singleTop()
                     fragment.startActivityForResult(intent, RC_GALLERY_GET_IMAGE)
                 }
         }

@@ -9,6 +9,9 @@ import timber.log.Timber
 
 const val RC_IMAGE_PREVIEW = 10000
 
+fun Intent.withFlags(flags: Int): Intent = addFlags(flags)
+fun Intent.singleTop(): Intent = addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
 // ------------------------------------------------------------------------------------------------
 // content://com.android.providers.media.documents/document/image:4561
 const val CONTENT_URI = "content_uri"
@@ -47,10 +50,9 @@ fun navigateAndClose(fragment: Fragment, path: String, rc: Int = 0, payload: Int
 
 // ----------------------------------------------------------------------------
 private fun blockingScreenIntent(path: String): Intent =
-    navigate(path = path).apply {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-    }
+    navigate(path = path)
+        .withFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .withFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
 private fun logoutIntent(): Intent = blockingScreenIntent(path = "/login")
     .putExtra(Extras.EXTRA_LOGOUT, true)
