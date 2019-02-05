@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.origin.view.base.SimpleBaseDialogActivity
 import com.ringoid.origin.navigation.Extras
+import com.ringoid.origin.view.base.SimpleBaseDialogActivity
 
 @AppNav("block_dialog", "report_dialog")
 class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetActivity {
@@ -67,7 +67,8 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
 
     private fun createReportDialogIfNeed() {
         if (reportDialog == null) {
-            reportDialog = ReportBottomSheetDialog.newInstance()
+            val excludedReasons = intent.extras?.getString("excludedReasons")
+            reportDialog = ReportBottomSheetDialog.newInstance(excludedReasons)
                 .also { it.showNow(supportFragmentManager, ReportBottomSheetDialog.TAG) }
         }
     }

@@ -120,7 +120,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     scrollToTopOfItemAtPosition(position)
                     notifyItemChanged(position, FeedViewHolderHideControls)
                     communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
-                    navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}", rc = RequestCode.RC_BLOCK_DIALOG)
+                    navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,70", rc = RequestCode.RC_BLOCK_DIALOG)
                 }
             }
     }
@@ -148,7 +148,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
                     val profileId = data.extras!!.getString("profileId")!!
 
                     if (data.hasExtra(Extras.OUT_EXTRA_REPORT_REASON)) {
-                        val reasonNumber = (data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0) + 1) * 10
+                        val reasonNumber = data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0)
                         vm.onReport(profileId = profileId, imageId = imageId, reasonNumber = reasonNumber)
                     } else {
                         vm.onBlock(profileId = profileId, imageId = imageId)

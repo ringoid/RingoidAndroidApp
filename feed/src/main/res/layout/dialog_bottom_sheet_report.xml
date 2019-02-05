@@ -9,6 +9,16 @@
     <View style="@style/Underscore"/>
 
     <Button
+        android:id="@+id/btn_report_0"
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:text="@string/report_profile_button_0"
+        android:textColor="@color/flat_button_text_color_primary"
+        style="@style/FlatButton.Tall"/>
+
+    <View style="@style/Underscore"/>
+
+    <Button
         android:id="@+id/btn_report_1"
         android:layout_width="match_parent"
         android:layout_gravity="center"

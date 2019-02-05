@@ -48,21 +48,13 @@
         <item>@string/block_profile_button_report</item>
     </string-array>
 
-    <string name="report_profile_button_1">Inappropriate content</string>
+    <string name="report_profile_button_0">Inappropriate message</string>
+    <string name="report_profile_button_1">Inappropriate photo</string>
     <string name="report_profile_button_2">Stolen photos, Copyright infringement</string>
     <string name="report_profile_button_3">Spam, Advertising, Commercial activity</string>
     <string name="report_profile_button_4">Human and sex trafficking, Criminal activity</string>
     <string name="report_profile_button_5">Underage users, Child exploitation</string>
     <string name="report_profile_button_6">Harassment or threats, Abuse</string>
-
-    <string-array name="report_profile_array">
-        <item>@string/report_profile_button_1</item>
-        <item>@string/report_profile_button_2</item>
-        <item>@string/report_profile_button_3</item>
-        <item>@string/report_profile_button_4</item>
-        <item>@string/report_profile_button_5</item>
-        <item>@string/report_profile_button_6</item>
-    </string-array>
 
     <string name="feed_explore_empty_title">Discover</string>
     <string name="feed_footer_item_label">No one else around</string>
