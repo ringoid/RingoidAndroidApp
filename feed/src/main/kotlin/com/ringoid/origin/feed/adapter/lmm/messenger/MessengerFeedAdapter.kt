@@ -14,7 +14,7 @@ import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_messenger_feed_profile.view.*
 
 class MessengerFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>>(imagesViewPool, FeedItemDiffCallback()) {
+    : BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>>(imagesViewPool, FeedItemDiffCallback(), headerRows = 1) {
 
     var messageClickListener: ((model: FeedItem, position: Int, positionOfImage: Int) -> Unit)? = null
     var onImageToOpenChatClickListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null

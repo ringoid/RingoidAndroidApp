@@ -10,7 +10,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool, headerRows = 1) {
+    : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool) {
 
     var onImageToOpenChatClickListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
 

@@ -12,7 +12,7 @@ import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesViewPool: RecyclerView.RecycledViewPool? = null, headerRows: Int = 0)
+abstract class BaseLikeFeedAdapter<VH : OriginFeedViewHolder<FeedItem>>(imagesViewPool: RecyclerView.RecycledViewPool? = null, headerRows: Int = 1)
     : BaseFeedAdapter<FeedItem, VH>(imagesViewPool, FeedItemDiffCallback(), headerRows = headerRows) {
 
     var messageClickListener: ((model: FeedItem, position: Int, positionOfImage: Int) -> Unit)? = null

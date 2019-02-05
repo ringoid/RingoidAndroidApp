@@ -6,7 +6,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 
 class LikeFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool, headerRows = 1) {
+    : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>>(imagesViewPool) {
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
         LikeFeedViewHolder(view, viewPool = imagesViewPool).also { vh ->
