@@ -9,6 +9,7 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.snackbar
 import kotlinx.android.synthetic.main.fragment_web.*
 
@@ -60,6 +61,7 @@ class WebPageFragment : BaseFragment<WebPageViewModel>() {
         }
 
         wv_link.apply {
+            setBackgroundColor(context.getAttributeColor(R.attr.refColorBg))
             webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
