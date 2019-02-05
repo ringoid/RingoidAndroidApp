@@ -35,7 +35,7 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
             VIEW_TYPE_NORMAL_MY -> MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }.also { vh->
-            if (viewType != VIEW_TYPE_NORMAL || viewType != VIEW_TYPE_NORMAL_MY) {
+            if (viewType != VIEW_TYPE_NORMAL && viewType != VIEW_TYPE_NORMAL_MY) {
                 return@also
             }
 
