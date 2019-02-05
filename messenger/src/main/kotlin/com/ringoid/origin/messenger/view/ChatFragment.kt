@@ -117,12 +117,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.messages, chatAdapter::submitList)// { scrollToTopOfItemAtPosition(0) }
+            observe(vm.messages, chatAdapter::submitList)
             observe(vm.sentMessage, ::putMyMessage)
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)
-            ?.subscribe({ scrollToTopOfItemAtPosition(0) }, Timber::e)
+            ?.subscribe({ scrollToItemAtCachedPosition() }, Timber::e)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -196,9 +196,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     // --------------------------------------------------------------------------------------------
     private fun closeChat() {
-        val position = rv_chat_messages.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition() ?: 0
-        val scroll = rv_chat_messages.computeVerticalScrollOffset()
-        ChatInMemoryCache.addProfileWithPosition(profileId = peerId, position = position to scroll)
+        rv_chat_messages.linearLayoutManager()?.let {
+            val position = it.findFirstVisibleItemPosition()
+            val scroll = it.findViewByPosition(position)?.let { rv_chat_messages.bottom - it.bottom } ?: 0
+            ChatInMemoryCache.addProfileWithPosition(profileId = peerId, position = position to scroll)
+        }
         et_message.hideKeyboard()
         dismiss()
     }
@@ -213,17 +215,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         }
     }
 
-    private fun scrollListToY(scroll: Int) {
-        rv_chat_messages.post {
-            rv_chat_messages.scrollTo(0, scroll)
-        }
-    }
-
-    private fun scrollToTopOfItemAtCachedPosition() {
+    private fun scrollToItemAtCachedPosition() {
         // TODO: call only if no new messages
-//        val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
-//        scrollListToY(scroll = position.second)
-//        scrollToTopOfItemAtPosition(position.first)
+        val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
+        rv_chat_messages.post {
+            rv_chat_messages.linearLayoutManager()?.scrollToPositionWithOffset(position.first, position.second)
+        }
     }
 
     private fun showChatControls(isVisible: Boolean) {
