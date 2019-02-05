@@ -12,4 +12,7 @@ interface IEssence {
             .toJson(this)
 
     fun toJson(gson: Gson): String = gson.toJson(this)
+
+    fun toSentryData(): Pair<String, String> = javaClass.simpleName to toSentryPayload()
+    fun toSentryPayload(): String = "${hashCode()}"
 }

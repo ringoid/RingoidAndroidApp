@@ -37,4 +37,6 @@ data class AuthCreateProfileEssence(
         const val COLUMN_DEVICE = "deviceModel"
         const val COLUMN_OS_VERSION = "osVersion"
     }
+
+    override fun toSentryPayload(): String = "[yearOfBirth=$yearOfBirth, sex=$sex]"
 }

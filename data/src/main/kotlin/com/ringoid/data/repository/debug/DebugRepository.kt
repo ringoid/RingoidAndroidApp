@@ -18,6 +18,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.data.repository.withApiError
 import com.ringoid.data.repository.withNetError
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.breadcrumb
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.feed.EmptyFeed
@@ -87,6 +88,7 @@ class DebugRepository @Inject constructor(
 
     override fun requestWithFailAllRetries(): Completable =
         Single.just(BaseResponse(errorCode = "DebugError", errorMessage = "Debug error"))
+            .breadcrumb("requestWithFailAllRetries", "debug" to "debug")
             .handleError(count = 3)
             .ignoreElement()  // convert to Completable
 
