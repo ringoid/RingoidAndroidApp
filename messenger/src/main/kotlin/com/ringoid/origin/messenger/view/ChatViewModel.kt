@@ -40,9 +40,13 @@ class ChatViewModel @Inject constructor(
     }
 
     @Suppress("CheckResult")
-    fun sendMessage(peerId: String, imageId: String = BAD_ID, text: String) {
+    fun sendMessage(peerId: String, imageId: String = BAD_ID, text: String?) {
+        if (text.isNullOrBlank()) {
+            return  // don't send empty text
+        }
+
         val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = "messages", targetImageId = imageId, targetUserId = peerId)
-        val message = MessageEssence(peerId = peerId, text = text, aObjEssence = essence)
+        val message = MessageEssence(peerId = peerId, text = text.trim(), aObjEssence = essence)
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT) }
