@@ -1,7 +1,6 @@
 package com.ringoid.origin.messenger.view
 
 import android.app.Application
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
@@ -13,8 +12,6 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Message
-import com.ringoid.origin.navigation.RequestCode
-import com.ringoid.origin.navigation.navigate
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,12 +20,6 @@ class ChatViewModel @Inject constructor(
     private val getMessagesForPeerUseCase: GetMessagesForPeerUseCase,
     private val sendMessageToPeerUseCase: SendMessageToPeerUseCase,
     app: Application) : BaseViewModel(app) {
-
-    object InternalNavigator {
-        fun openBlockProfileDialog(fragment: Fragment) {
-            navigate(fragment, path = "/block_dialog", rc = RequestCode.RC_BLOCK_DIALOG)
-        }
-    }
 
     val messages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
@@ -64,8 +55,6 @@ class ChatViewModel @Inject constructor(
             .subscribe({ sentMessage.value = it }, Timber::e)
     }
 
+    /* Debug */
     // ---------------------------------------------------------------------------
-    fun onSettingsClick() {
-        navigation.value = InternalNavigator::openBlockProfileDialog
-    }
 }

@@ -2,7 +2,6 @@ package com.ringoid.origin.profile.view
 
 import android.app.Application
 import android.net.Uri
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
@@ -18,9 +17,6 @@ import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.navigation.ExternalNavigator
-import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.navigate
-import com.ringoid.origin.profile.view.UserProfileFragmentViewModel.InternalNavigator.openSettingsScreen
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,17 +30,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val getUserImagesUseCase: GetUserImagesUseCase,
     app: Application) : BaseViewModel(app) {
 
-    object InternalNavigator {
-        fun openExploreScreen(fragment: Fragment) {
-            navigate(fragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}")
-        }
-
-        fun openSettingsScreen(fragment: Fragment) {
-            navigate(fragment, path = "/settings")
-        }
-    }
-
-    // ------------------------------------------
     val imageCreated by lazy { MutableLiveData<UserImage>() }
     val imageDeleted by lazy { MutableLiveData<String>() }
     val imageIdChanged by lazy { MutableLiveData<Pair<String, String>>() }
@@ -70,7 +55,6 @@ class UserProfileFragmentViewModel @Inject constructor(
             .subscribe({ imageIdChanged.value = it }, Timber::e)
     }
 
-    // --------------------------------------------------------------------------------------------
     fun getUserImages() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
@@ -107,16 +91,8 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    fun onAddImageClick() {
+    fun onAddImage() {
         navigation.value = ExternalNavigator::openGalleryToGetImageFragment
-    }
-
-    fun onExploreClick() {
-        navigation.value = InternalNavigator::openExploreScreen
-    }
-
-    fun onSettingsClick() {
-        navigation.value = InternalNavigator::openSettingsScreen
     }
 
     fun onStartRefresh() {

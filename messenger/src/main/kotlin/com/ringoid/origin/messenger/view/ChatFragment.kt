@@ -28,6 +28,7 @@ import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.*
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -161,7 +162,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe {
             showChatControls(isVisible = false)
-            vm.onSettingsClick()
+            navigate(this@ChatFragment, path = "/block_dialog", rc = RequestCode.RC_BLOCK_DIALOG)
         }
         rv_chat_messages.apply {
             adapter = chatAdapter

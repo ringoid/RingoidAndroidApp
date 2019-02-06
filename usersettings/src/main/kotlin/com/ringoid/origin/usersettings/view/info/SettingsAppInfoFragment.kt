@@ -6,8 +6,10 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.DomainUtil.CLIPBOARD_KEY_CUSTOMER_ID
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.BuildConfig
 import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.usersettings.R
 import com.ringoid.utility.changeVisibility
@@ -57,14 +59,14 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
         }
         item_debug.apply {
             changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
-            clicks().compose(clickDebounce()).subscribe { vm.onDebugClick() }
+            clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsAppInfoFragment, path="/debug") }
         }
         debug_underscore.changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
         item_email_officer.clicks().compose(clickDebounce()).subscribe {
             ExternalNavigator.emailDataProtectionOfficer(this, bodyContent = item_customer_id.getLabel())
         }
-        item_licenses.clicks().compose(clickDebounce()).subscribe { vm.onLicensesClick() }
-        item_privacy.clicks().compose(clickDebounce()).subscribe { vm.onPrivacyClick() }
-        item_terms.clicks().compose(clickDebounce()).subscribe { vm.onTermsClick() }
+        item_licenses.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_LICENSES}") }
+        item_privacy.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_PRIVACY}") }
+        item_terms.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_TERMS}") }
     }
 }

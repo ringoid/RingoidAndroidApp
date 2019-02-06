@@ -1,6 +1,5 @@
 package com.ringoid.origin.auth.view
 
-import android.app.Activity
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
@@ -17,8 +16,6 @@ import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.navigation.ExternalNavigator
-import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.utility.isAdultAge
@@ -35,12 +32,6 @@ class LoginViewModel @Inject constructor(
     private val clearCachedBlockedProfileIdsUseCase: ClearCachedBlockedProfileIdsUseCase,
     private val clearMessagesUseCase: ClearMessagesUseCase,
     app: Application) : BaseViewModel(app) {
-
-    object InternalNavigator {
-        fun openProfileScreen(activity: Activity) {
-            navigateAndClose(activity, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}")
-        }
-    }
 
     private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
@@ -92,10 +83,6 @@ class LoginViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    fun onCancelChooseImageFromGallery() {
-        navigation.value = InternalNavigator::openProfileScreen
-    }
-
     fun onLogout() {
         clearLocalUserDataUseCase.source()
             .doOnSubscribe {

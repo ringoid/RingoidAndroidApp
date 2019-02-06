@@ -9,6 +9,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.logout
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.usersettings.OriginR_string
@@ -66,7 +67,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
                 positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
                 positiveListener = { _, _ -> vm.deleteAccount() })
         }
-        item_legal.clicks().compose(clickDebounce()).subscribe { vm.onSettingsAppInfoClick() }
+        item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
         item_theme.apply {
             setChecked(ThemeUtils.isDarkTheme(spm))
