@@ -23,6 +23,12 @@ ext {
     authority = '"https://ringoid.com"'
     appnav = '"appnav://ringoid.com"'
     sentryDSN = '"https://e71e66c6bcfd4cbb8541f9a5536b0d9f@sentry.io/1387000"'
+
+    debounceClickMs = "500L"
+    debounceInputMs = "200L"
+    postDelayMs = "200L"
+    retryCount = "5"
+    retryDelayMs = "55L"
 }
 
 buildscript {

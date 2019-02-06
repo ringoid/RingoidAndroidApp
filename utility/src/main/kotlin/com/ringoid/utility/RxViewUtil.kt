@@ -1,9 +1,6 @@
 package com.ringoid.utility
 
 import android.os.Looper
-import com.ringoid.utility.RxViewUtil.DEBOUNCE_CLICK
-import com.ringoid.utility.RxViewUtil.DEBOUNCE_INPUT
-import com.ringoid.utility.RxViewUtil.POST_DELAY
 import io.reactivex.ObservableTransformer
 import io.reactivex.Observer
 import io.reactivex.Single
@@ -12,23 +9,16 @@ import io.reactivex.disposables.Disposables
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-object RxViewUtil {
-
-    const val DEBOUNCE_CLICK = 500L
-    const val DEBOUNCE_INPUT = 200L
-    const val POST_DELAY = 200L
-}
-
-fun <T> clickDebounce(timeout: Long = DEBOUNCE_CLICK): ObservableTransformer<T, T> =
+fun <T> clickDebounce(timeout: Long = BuildConfig.DEBOUNCE_CLICK): ObservableTransformer<T, T> =
     ObservableTransformer { observable ->
         observable.throttleFirst(timeout, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(AndroidSchedulers.mainThread())
     }
 
-fun <T> inputDebounce(timeout: Long = DEBOUNCE_INPUT): ObservableTransformer<T, T> =
+fun <T> inputDebounce(timeout: Long = BuildConfig.DEBOUNCE_INPUT): ObservableTransformer<T, T> =
     ObservableTransformer { observable ->
         observable.debounce(timeout, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(AndroidSchedulers.mainThread())
     }
 
 fun checkMainThread2(observer: Observer<*>): Boolean {
@@ -41,7 +31,7 @@ fun checkMainThread2(observer: Observer<*>): Boolean {
 }
 
 @Suppress("CheckResult")
-fun delay(time: Long = POST_DELAY, units: TimeUnit = TimeUnit.MILLISECONDS, body: () -> Unit) {
+fun delay(time: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLISECONDS, body: () -> Unit) {
     Single.just(0)
         .delay(time, units)
         .observeOn(AndroidSchedulers.mainThread())

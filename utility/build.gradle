@@ -10,6 +10,10 @@ android {
         versionCode rootProject.ext.androidVersionCode
         versionName rootProject.ext.androidVersionName
         testInstrumentationRunner rootProject.ext.testInstrumentationRunner
+
+        buildConfigField 'long', 'DEBOUNCE_CLICK', rootProject.ext.debounceClickMs
+        buildConfigField 'long', 'DEBOUNCE_INPUT', rootProject.ext.debounceInputMs
+        buildConfigField 'long', 'POST_DELAY', rootProject.ext.postDelayMs
     }
     buildTypes {
         release {
