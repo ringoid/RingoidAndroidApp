@@ -54,7 +54,7 @@ allprojects {
         majorVersion = 1
         middleVersion = 0
         minorVersion = 0
-        buildVersion = 98
+        buildVersion = 99
 
         androidApplicationId = getAppId(isStaging)
         androidVersionCode = buildVersion
