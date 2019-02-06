@@ -93,7 +93,8 @@ open class FeedRepository @Inject constructor(
                  }
                 .zipWith(messengerLocal.countChatMessages(),  // old total messages count
                     BiFunction { lmm: Lmm, count: Int ->
-                        if (count != lmm.messagesCount()) {
+                        val newCount = lmm.messagesCount()
+                        if (newCount != 0 && count != newCount) {
                             lmm.hasNewMessages = true
                             lmmChanged.onNext(true)  // have new messages
                         }
