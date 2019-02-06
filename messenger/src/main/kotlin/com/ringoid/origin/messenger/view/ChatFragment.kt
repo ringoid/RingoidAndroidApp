@@ -183,6 +183,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             setText(text)
             setSelection(text?.length ?:0)
         }
+
+        dialog?.window?.showKeyboard()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
