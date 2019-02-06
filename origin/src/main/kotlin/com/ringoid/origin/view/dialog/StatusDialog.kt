@@ -40,6 +40,7 @@ class StatusDialog : SimpleBaseDialogFragment() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        btn_cancel.clicks().compose(clickDebounce()).subscribe { dismiss() }
         btn_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this); dismiss() }
         tv_dialog_title.setText(arguments?.getInt(BUNDLE_KEY_TITLE_RES_ID) ?: R.string.error_common)
 
