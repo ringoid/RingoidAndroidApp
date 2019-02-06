@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
@@ -23,7 +22,9 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
-import com.ringoid.origin.navigation.*
+import com.ringoid.origin.navigation.Extras
+import com.ringoid.origin.navigation.RequestCode
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
@@ -37,12 +38,6 @@ import timber.log.Timber
 
 abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
     : BaseListFragment<VM>() where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
-
-    object InternalNavigator {
-        fun openProfileScreen(fragment: Fragment) {
-            navigate(fragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}")
-        }
-    }
 
     protected lateinit var feedAdapter: BaseFeedAdapter<T, VH>
         private set
