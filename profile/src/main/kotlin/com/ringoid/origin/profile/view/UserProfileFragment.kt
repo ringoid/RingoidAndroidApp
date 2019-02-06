@@ -15,7 +15,6 @@ import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
@@ -88,12 +87,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imagesAdapter = UserProfileImageAdapter().apply {
-            onDeleteImageListener = { model: UserImage, _ ->
-                navigate(this@UserProfileFragment, path = "/delete_image?imageId=${model.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
-            }
-            onEmptyImagesListener = ::showEmptyStub
-        }
+        imagesAdapter = UserProfileImageAdapter().apply { onEmptyImagesListener = ::showEmptyStub }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -131,10 +125,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.imageCreated, imagesAdapter::prepend) { rv_items.post { rv_items.scrollToPosition(0) } }
-            observe(vm.imageDeleted, imagesAdapter::remove)
+            observe(vm.imageDeleted, imagesAdapter::remove) { ibtn_delete_image.changeVisibility(isVisible = !imagesAdapter.isEmpty()) }
             observe(vm.imageIdChanged, imagesAdapter::updateItemId)
-            observe(vm.images, imagesAdapter::submitList)
+            observe(vm.images, imagesAdapter::submitList) { ibtn_delete_image.changeVisibility(isVisible = !it.isEmpty()) }
+            observe(vm.imageCreated, imagesAdapter::prepend) {
+                ibtn_delete_image.changeVisibility(isVisible = true)
+                rv_items.post { rv_items.scrollToPosition(0) }
+            }
         }
         if (communicator(IBaseMainActivity::class.java)?.isNewUser() != true) {
             vm.getUserImages()
@@ -150,6 +147,14 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ibtn_add_image.clicks().compose(clickDebounce()).subscribe { onAddImage() }
+        ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
+            rv_items.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
+                ?.takeIf { it != RecyclerView.NO_POSITION }
+                ?.let {
+                    val model = imagesAdapter.getModel(it)
+                    navigate(this@UserProfileFragment, path = "/delete_image?imageId=${model.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
+                }
+        }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))

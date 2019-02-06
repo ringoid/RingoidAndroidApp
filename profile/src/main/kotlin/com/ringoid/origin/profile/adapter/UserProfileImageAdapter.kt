@@ -2,28 +2,21 @@ package com.ringoid.origin.profile.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.domain.model.image.EmptyUserImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.profile.R
-import com.ringoid.utility.clickDebounce
-import kotlinx.android.synthetic.main.rv_item_user_profile_image.view.*
 
 class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageViewHolder>(UserProfileImageDiffCallback()) {
 
-    var onDeleteImageListener: ((model: UserImage, position: Int) -> Unit)? = null
     var onEmptyImagesListener: ((isEmpty: Boolean) -> Unit)? = null
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
 
     override fun getLayoutId(): Int = R.layout.rv_item_user_profile_image
 
     override fun instantiateViewHolder(view: View): BaseUserProfileImageViewHolder =
-        UserProfileImageViewHolder(view).also { vh ->
-            vh.itemView.ibtn_delete_image.clicks().compose(clickDebounce())
-                .subscribe { wrapOnItemClickListener(vh, onDeleteImageListener).onClick(vh.itemView.ibtn_delete_image) }
-        }
+        UserProfileImageViewHolder(view)
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderUserProfileImageViewHolder(view)
 
