@@ -117,8 +117,9 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
             .apply {
                 settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
                     val image = model.images[positionOfImage]
-                    scrollToTopOfItemAtPosition(position)
-                    notifyItemChanged(position, FeedViewHolderHideControls)
+                    scrollToTopOfItemAtPositionAndPost(position).post {
+                        notifyItemChanged(position, FeedViewHolderHideControls)
+                    }
                     communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
                     navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,40,70", rc = RequestCode.RC_BLOCK_DIALOG)
                 }

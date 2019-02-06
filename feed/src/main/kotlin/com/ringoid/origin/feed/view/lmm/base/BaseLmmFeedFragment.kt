@@ -44,9 +44,12 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
                 when (tag) {
                     ChatFragment.TAG -> {
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
-                        feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                        getRecyclerView().post {
+                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                        }
                     }
                 }
+                true  // no-op value
             }
     }
 
@@ -60,8 +63,9 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
                         peerImageId = imageId
                     )
                     vm.onChatOpen(profileId = peerId, imageId = imageId)
-                    scrollToTopOfItemAtPosition(position)
-                    feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
+                    scrollToTopOfItemAtPositionAndPost(position).post {
+                        feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
+                    }
                     ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(it, tag)
                 }
         }

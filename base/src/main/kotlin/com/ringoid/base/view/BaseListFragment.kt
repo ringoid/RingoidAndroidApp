@@ -28,9 +28,15 @@ abstract class BaseListFragment<T : BaseViewModel> : BaseFragment<T>() {
         getRecyclerView().scrollToPosition(position)
     }
 
+    protected fun scrollListToPositionAndPost(position: Int): RecyclerView =
+        getRecyclerView().also { it.scrollToPosition(position) }
+
     protected fun scrollToTopOfItemAtPosition(position: Int) {
         getRecyclerView().linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
     }
+
+    protected fun scrollToTopOfItemAtPositionAndPost(position: Int): RecyclerView =
+        getRecyclerView().also { it.linearLayoutManager()?.scrollToPositionWithOffset(position, 0) }
 
     // ------------------------------------------
     private var lastVisible = DomainUtil.BAD_POSITION
