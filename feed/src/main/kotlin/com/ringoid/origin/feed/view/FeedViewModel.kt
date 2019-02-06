@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view
 
 import android.app.Application
-import androidx.fragment.app.Fragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
@@ -11,9 +10,6 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.Payload
-import com.ringoid.origin.navigation.navigate
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
@@ -23,12 +19,6 @@ abstract class FeedViewModel(
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase, app: Application)
     : BaseViewModel(app) {
-
-    object InternalNavigator {
-        fun openProfileScreen(fragment: Fragment) {
-            navigate(fragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}")
-        }
-    }
 
     private var prevRange: EqualRange<ProfileImageVO>? = null
     private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
@@ -55,10 +45,6 @@ abstract class FeedViewModel(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun onAddImage() {
-        navigation.value = InternalNavigator::openProfileScreen
-    }
-
     fun clearScreen(mode: Int) {
         viewState.value = ViewState.CLEAR(mode)
     }

@@ -51,7 +51,10 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
-            is ViewState.CLOSE -> loginInMemoryCache.setNewUser(true)
+            is ViewState.CLOSE -> {
+                loginInMemoryCache.setNewUser(true)
+                ExternalNavigator.openGalleryToGetImage(this)
+            }
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is APP_THEME -> recreate()

@@ -16,7 +16,6 @@ import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.ScreenHelper
-import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -91,10 +90,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    fun onAddImage() {
-        navigation.value = ExternalNavigator::openGalleryToGetImageFragment
-    }
-
     fun onStartRefresh() {
         actionObjectPool.trigger()
     }

@@ -82,7 +82,6 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
             viewLifecycleOwner.apply {
                 subscribeOnBusEvents()
                 observe(viewState, this@BaseDialogFragment::onViewStateChange)
-                observe(navigation) { it.call(this@BaseDialogFragment) }
             }
         }
     }

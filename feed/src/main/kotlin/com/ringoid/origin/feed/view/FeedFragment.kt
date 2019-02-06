@@ -22,9 +22,7 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
-import com.ringoid.origin.navigation.Extras
-import com.ringoid.origin.navigation.RequestCode
-import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
@@ -83,7 +81,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
                             descriptionResId = OriginR_string.feed_explore_dialog_no_user_photo_description,
                             positiveBtnLabelResId = OriginR_string.button_add_photo,
                             negativeBtnLabelResId = OriginR_string.button_later,
-                            positiveListener = { _, _ -> vm.onAddImage() })
+                            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })
                         swipe_refresh_layout.isRefreshing = false
                     }
                 }

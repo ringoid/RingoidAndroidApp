@@ -79,7 +79,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         payload?.let {
             when (it) {
                 Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { shouldAskToAddAnotherImage = true }
-                Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> vm.onAddImage()
+                Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> onAddImage()
             }
         }
     }
@@ -149,7 +149,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ibtn_add_image.clicks().compose(clickDebounce()).subscribe { vm.onAddImage() }
+        ibtn_add_image.clicks().compose(clickDebounce()).subscribe { onAddImage() }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
@@ -179,6 +179,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     }
 
     // --------------------------------------------------------------------------------------------
+    private fun onAddImage() {
+        ExternalNavigator.openGalleryToGetImageFragment(this)
+    }
+
     private fun askToAddAnotherImage() {
         if (!shouldAskToAddAnotherImage) {
             return
@@ -188,7 +192,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
             negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
-            positiveListener = { _, _ -> vm.onAddImage() },
+            positiveListener = { _, _ -> onAddImage() },
             negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
     }
 

@@ -80,7 +80,6 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
             viewLifecycleOwner.apply {
                 subscribeOnBusEvents()
                 observe(viewState, this@BaseFragment::onViewStateChange)
-                observe(navigation) { it.call(this@BaseFragment) }
             }
         }
         savedInstanceState ?: run { vm.onFreshCreate() }

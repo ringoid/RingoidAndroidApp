@@ -148,6 +148,6 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     }
 
     internal fun onNavigateBack() {
-        vm.onNavigateBack()
+        ExternalNavigator.openGalleryToGetImageFragment(this)
     }
 }

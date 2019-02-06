@@ -17,7 +17,6 @@ import com.ringoid.domain.repository.ISharedPrefsManager
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
-import kotlin.reflect.KFunction
 
 abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
@@ -29,7 +28,6 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     @Inject protected lateinit var spm: ISharedPrefsManager
 
     val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
-    val navigation: MutableLiveData<KFunction<*>> by lazy { MutableLiveData<KFunction<*>>() }
     val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
 
     // --------------------------------------------------------------------------------------------

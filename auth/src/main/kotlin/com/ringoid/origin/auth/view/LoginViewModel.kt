@@ -15,7 +15,6 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
-import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.utility.isAdultAge
@@ -58,10 +57,7 @@ class LoginViewModel @Inject constructor(
             .doOnSuccess { viewState.value = ViewState.CLOSE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({
-                Timber.d("Successfully signed up, current user: $it")
-                navigation.value = ExternalNavigator::openGalleryToGetImage
-            }, Timber::e)
+            .subscribe({ Timber.d("Successfully signed up, current user: $it") }, Timber::e)
     }
 
     fun onGenderSelect(gender: Gender) {

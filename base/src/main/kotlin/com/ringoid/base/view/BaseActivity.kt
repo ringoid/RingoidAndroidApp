@@ -67,7 +67,6 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             subscribeOnBusEvents()
             observe(viewState, ::onViewStateChange)
-            observe(navigation) { it.call(this@BaseActivity) }
         }
         savedInstanceState ?: run { vm.onFreshCreate() }
     }
