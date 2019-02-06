@@ -20,6 +20,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.OriginR_string
@@ -135,6 +136,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     }
                     closeChat()
                 } else {
+                    rv_chat_messages.apply { setPadding(paddingLeft, paddingTop, paddingRight, 0) }
                     showChatControls(isVisible = true)
                 }
             }
@@ -163,6 +165,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ibtn_settings.clicks().compose(clickDebounce()).subscribe {
             showChatControls(isVisible = false)
             navigate(this@ChatFragment, path = "/block_dialog", rc = RequestCode.RC_BLOCK_DIALOG)
+            rv_chat_messages.apply { setPadding(paddingLeft, paddingTop, paddingRight, AppRes.BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT) }
         }
         rv_chat_messages.apply {
             adapter = chatAdapter
