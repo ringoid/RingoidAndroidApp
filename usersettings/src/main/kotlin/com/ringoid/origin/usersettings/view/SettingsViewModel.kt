@@ -1,9 +1,11 @@
 package com.ringoid.origin.usersettings.view
 
 import android.app.Application
+import androidx.fragment.app.Fragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.user.DeleteUserProfileUseCase
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -14,6 +16,17 @@ class SettingsViewModel @Inject constructor(
     private val deleteUserProfileUseCase: DeleteUserProfileUseCase,
     app: Application) : BaseViewModel(app) {
 
+    object InternalNavigator {
+        fun openSettingsAppInfoScreen(fragment: Fragment) {
+            navigate(fragment, path = "/settings_info")
+        }
+    }
+
+    fun onSettingsAppInfoClick() {
+        navigation.value = InternalNavigator::openSettingsAppInfoScreen
+    }
+
+    // --------------------------------------------------------------------------------------------
     fun deleteAccount() {
         deleteUserProfileUseCase.source()
             .doOnSubscribe { viewState.value = ViewState.LOADING }

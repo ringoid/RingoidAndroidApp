@@ -14,7 +14,6 @@ import com.ringoid.origin.imagepreview.OriginR_string
 import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.communicator
 import com.ringoid.utility.randomString
@@ -92,7 +91,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
                Timber.w("No image uri supplied on ImagePreview screen.")
                arguments?.getString(BUNDLE_KEY_NAVIGATE_FROM)
                              ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
-                             ?.let { navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
+                             ?.let { vm.onInvalidImageUriAfterLogin() }
            }
     }
 
