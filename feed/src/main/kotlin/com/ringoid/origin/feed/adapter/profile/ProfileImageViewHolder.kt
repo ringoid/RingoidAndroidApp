@@ -7,9 +7,12 @@ import android.view.animation.ScaleAnimation
 import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.origin.feed.R
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.anim.LikeAnimation
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.ImageLoader
+import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
 interface IProfileImageViewHolder {
@@ -22,12 +25,31 @@ abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileIm
 class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
 
     override fun bind(model: ProfileImageVO, payloads: List<Any>) {
+        fun hideControls() {
+            itemView.ibtn_like.changeVisibility(isVisible = false)
+        }
+
+        fun showControls() {
+            itemView.ibtn_like.changeVisibility(isVisible = true)
+        }
+
+        if (payloads.contains(FeedViewHolderHideControls)) {
+            hideControls()
+            return
+        } else {
+            showControls()  // TODO: do we need that branch?
+        }
+        if (payloads.contains(FeedViewHolderShowControls)) {
+            showControls()
+            return
+        }
+
         ImageLoader.load(model.image.uri, itemView.iv_image,
             options = RequestOptions()
                 .override(itemView.width, itemView.height)
                 .centerCrop())
 
-        setLiked(isLiked = model.isLiked)
+        setLiked(isLiked = model.isLiked)  // TODO: use payload
     }
 
     private fun setLiked(isLiked: Boolean) {

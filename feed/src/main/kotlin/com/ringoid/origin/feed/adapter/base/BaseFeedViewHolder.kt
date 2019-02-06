@@ -72,6 +72,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
                 tabs.changeVisibility(isVisible = false)
                 ibtn_settings.changeVisibility(isVisible = false)
             }
+            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
         }
 
         fun showControls() {
@@ -79,13 +80,14 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
                 tabs.changeVisibility(isVisible = true)
                 ibtn_settings.changeVisibility(isVisible = true)
             }
+            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
         }
 
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
             return
         } else {
-            showControls()
+            showControls()  // TODO: do we need that branch?
         }
         if (payloads.contains(FeedViewHolderShowControls)) {
             showControls()

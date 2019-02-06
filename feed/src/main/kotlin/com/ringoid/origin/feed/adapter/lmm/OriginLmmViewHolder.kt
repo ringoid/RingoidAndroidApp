@@ -46,7 +46,7 @@ abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledView
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
         } else {
-            showControls()
+            showControls()  // TODO: do we need that branch?
         }
         if (payloads.contains(FeedViewHolderShowControls)) {
             showControls()
