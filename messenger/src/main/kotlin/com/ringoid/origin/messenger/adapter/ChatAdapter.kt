@@ -31,7 +31,7 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
 
         val view = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
         return when (viewType) {
-            VIEW_TYPE_FOOTER -> HeaderChatViewHolder(view)
+            VIEW_TYPE_FOOTER -> HeaderChatViewHolder(view).also { it.setOnClickListener(getOnItemClickListener(it)) }
             VIEW_TYPE_NORMAL -> PeerChatViewHolder(view)
             VIEW_TYPE_NORMAL_MY -> MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")

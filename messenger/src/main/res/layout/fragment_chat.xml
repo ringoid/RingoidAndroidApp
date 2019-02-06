@@ -64,9 +64,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/std_btn_height"
-        android:paddingStart="@dimen/std_margin_16"
-        android:paddingEnd="@dimen/std_margin_16"
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

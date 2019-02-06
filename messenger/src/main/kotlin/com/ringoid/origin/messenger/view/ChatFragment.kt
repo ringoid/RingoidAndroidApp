@@ -31,7 +31,6 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.*
-import com.ringoid.widget.decor.TopBottomDividerItemDecoration
 import com.uber.autodispose.lifecycle.autoDisposable
 import kotlinx.android.synthetic.main.fragment_chat.*
 import timber.log.Timber
@@ -171,8 +170,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     reverseLayout = true
                     stackFromEnd = true
                 }
-            addItemDecoration(TopBottomDividerItemDecoration(context, R.dimen.chat_blob_divider_height))
-            setOnClickListener { closeChat() }
         }
         vg_chat.setOnClickListener { closeChat() }
     }
