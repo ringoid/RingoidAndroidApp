@@ -1,91 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:clipToPadding="false"
+    android:fillViewport="true">
 
-    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/pb_debug"
-        android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/ProgressBar.Horizontal"/>
+        <include layout="@layout/toolbar" android:id="@id/toolbar"/>
 
-    <com.ringoid.widget.view.item_view.LabelIconItemView
-        android:id="@+id/item_error_http"
-        app:icon_item_text="@string/debug_item_response_error_http"
-        style="?attr/iconItemView"/>
+        <ProgressBar
+            android:id="@+id/pb_debug"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/ProgressBar.Horizontal"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.LabelIconItemView
+            android:id="@+id/item_error_http"
+            app:icon_item_text="@string/debug_item_response_error_http"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_token"
-        app:icon_item_text="@string/debug_item_response_error_invalid_token"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_token"
+            app:icon_item_text="@string/debug_item_response_error_invalid_token"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_token_expired"
-        app:icon_item_text="@string/debug_item_response_error_expired_token"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_token_expired"
+            app:icon_item_text="@string/debug_item_response_error_expired_token"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_app_version"
-        app:icon_item_text="@string/debug_item_response_error_old_app_version"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_app_version"
+            app:icon_item_text="@string/debug_item_response_error_old_app_version"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_server"
-        app:icon_item_text="@string/debug_item_response_error_server"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_server"
+            app:icon_item_text="@string/debug_item_response_error_server"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_request_params"
-        app:icon_item_text="@string/debug_item_response_error_request_params"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_request_params"
+            app:icon_item_text="@string/debug_item_response_error_request_params"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_timeout"
-        app:icon_item_text="@string/debug_item_response_error_timeout"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_timeout"
+            app:icon_item_text="@string/debug_item_response_error_timeout"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_request_fail_all_attempts"
-        app:icon_item_text="@string/debug_item_response_error_request_fail_all_attempts"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_request_fail_all_attempts"
+            app:icon_item_text="@string/debug_item_response_error_request_fail_all_attempts"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_request_n_fail_attempts"
-        app:icon_item_text="@string/debug_item_response_error_request_n_attempts"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_request_n_fail_attempts"
+            app:icon_item_text="@string/debug_item_response_error_request_n_attempts"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.item_view.IconItemView
-        android:id="@+id/item_error_request_repeat_after_delay"
-        app:icon_item_text="@string/debug_item_response_error_request_repeat_after_delay"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-    <View style="@style/Underscore"/>
+        <com.ringoid.widget.view.item_view.IconItemView
+            android:id="@+id/item_error_request_repeat_after_delay"
+            app:icon_item_text="@string/debug_item_response_error_request_repeat_after_delay"
+            style="?attr/iconItemView"/>
 
-    <com.ringoid.widget.view.SubLabelIconItemView
-        android:id="@+id/item_screen_info"
-        app:icon_item_text="@string/debug_item_screen_info"
-        style="?attr/iconItemView"/>
+        <View style="@style/Underscore"/>
 
-</LinearLayout>
+        <com.ringoid.widget.view.SubLabelIconItemView
+            android:id="@+id/item_screen_info"
+            app:icon_item_text="@string/debug_item_screen_info"
+            style="?attr/iconItemView"/>
+
+    </LinearLayout>
+</ScrollView>
