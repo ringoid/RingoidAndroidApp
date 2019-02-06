@@ -474,7 +474,7 @@ ext {
     /* Data */
     // ------------------------------------------
     dataDependencies = []
-    dataDependencies += module_domain + module_utility + kotlin + dagger + log + net + room + rx
+    dataDependencies += module_domain + module_utility + kotlin + dagger + log + autoDispose + net + room + rx
     testDataDependencies = test
 
     dataPlugins = [
@@ -489,7 +489,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "api", dependency: d_support.sentry]
     ]
-    domainDependencies += module_utility + kotlin + dagger + log + rx
+    domainDependencies += module_utility + kotlin + dagger + log + autoDispose + rx
     testDomainDependencies = test
 
     domainPlugins = [

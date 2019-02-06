@@ -7,6 +7,7 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.domain.memory.ILoginInMemoryCache
+import com.ringoid.domain.scope.UserScopeProvider
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.support.DaggerApplication
@@ -27,6 +28,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     val calendar = Calendar.getInstance()
     @Inject override lateinit var imagePreviewReceiver: IImagePreviewReceiver
     @Inject override lateinit var loginInMemoryCache: ILoginInMemoryCache
+    @Inject override lateinit var userScopeProvider: UserScopeProvider
 
     companion object {
         fun refWatcher(context: Context?): RefWatcher? =

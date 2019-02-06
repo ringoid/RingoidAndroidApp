@@ -8,6 +8,8 @@ import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
+import com.ringoid.domain.scope.UserScopeProvider
+import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -18,7 +20,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, private val spm: SharedPrefsManager)
+class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, private val spm: SharedPrefsManager,
+                                           private val userScopeProvider: UserScopeProvider)
     : IActionObjectPool {
 
     companion object {
@@ -129,7 +132,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         }
 
         lastActionTime = queue.peek()?.actionTime ?: 0L
-        Timber.v("Triggering... queue size [${queue.size}], last action time: $lastActionTime")
         spm.accessSingle { accessToken ->
             val essence = CommitActionsEssence(accessToken.accessToken, queue)
             cloud.commitActions(essence)
@@ -138,21 +140,22 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSubscribe {
             // TODO: cache the queue to restore later in case of failure all retries
+            Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime")
             queue.clear()
             numbers.clear()
             strategies.clear()
             timers.forEach { it.value?.dispose() }.also { timers.clear() }
         }
         .doOnSuccess {
-            Timber.v("Successfully committed all [${queue.size}] actions")
+            Timber.d("Successfully committed all [${queue.size}] actions")
             lastActionTime = it.lastActionTime
         }
-        .subscribe({ Timber.v("Triggering... finished, last action time: ${it.lastActionTime}") }, Timber::e)
+        .doOnDispose {
+            Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
+            lastActionTime = 0L  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
+        }
+        .autoDisposable(userScopeProvider)
+        .subscribe({ Timber.d("Trigger Queue finished, last action time: ${it.lastActionTime}") }, Timber::e)
         // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
-    }
-
-    // --------------------------------------------------------------------------------------------
-    override fun dropLastActionTime() {
-        lastActionTime = 0L
     }
 }

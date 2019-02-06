@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
@@ -20,6 +21,7 @@ import kotlin.reflect.KFunction
 
 abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
+    protected val app: IBaseRingoidApplication by lazy { app as IBaseRingoidApplication }
     protected val context: Context by lazy { app.applicationContext }
 
     @Inject protected lateinit var getUserAccessTokenUseCase: GetUserAccessTokenUseCase
