@@ -115,7 +115,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
             observe(vm.messages, chatAdapter::submitList)
-            observe(vm.sentMessage, ::putMyMessage)
+            observe(vm.sentMessage, chatAdapter::prepend)
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)
@@ -157,6 +157,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ibtn_message_send.clicks().compose(clickDebounce()).subscribe {
             val imageId = (payload as? ChatPayload)?.peerImageId ?: BAD_ID
             vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString())
+            clearEditText()
         }
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe {
@@ -231,9 +232,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     }
 
     // ------------------------------------------
-    private fun putMyMessage(message: Message) {
+    private fun clearEditText() {
         ChatInMemoryCache.setInputMessage(profileId = peerId, text = "")
         et_message.setText("")  // clear text input
-        chatAdapter.prepend(message)
     }
 }
