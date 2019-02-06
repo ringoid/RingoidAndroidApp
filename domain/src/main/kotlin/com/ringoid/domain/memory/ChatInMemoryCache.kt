@@ -27,6 +27,15 @@ object ChatInMemoryCache {
         }
     }
 
+    fun setMessagesCountIfChanged(profileId: String, count: Int) {
+        if (!hasProfile(profileId) || getMessagesCount(profileId) == count) {
+            return
+        }
+
+        chatMessagesCount[profileId] = count
+        dropPositionForProfile(profileId)
+    }
+
     // ------------------------------------------
     fun hasProfile(profileId: String): Boolean = chatScrollPosition.containsKey(profileId)
 

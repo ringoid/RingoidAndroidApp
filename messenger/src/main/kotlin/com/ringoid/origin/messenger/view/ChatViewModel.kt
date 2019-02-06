@@ -32,9 +32,7 @@ class ChatViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
-                if (ChatInMemoryCache.getMessagesCount(profileId = profileId) != it.size) {
-                    ChatInMemoryCache.setMessagesCount(profileId = profileId, count = it.size)
-                }
+                ChatInMemoryCache.setMessagesCountIfChanged(profileId = profileId, count = it.size)
                 messages.value = it
             }, Timber::e)
     }
