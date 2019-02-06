@@ -81,4 +81,11 @@
         app:icon_item_text="@string/debug_item_response_error_request_repeat_after_delay"
         style="?attr/iconItemView"/>
 
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.SubLabelIconItemView
+        android:id="@+id/item_screen_info"
+        app:icon_item_text="@string/debug_item_screen_info"
+        style="?attr/iconItemView"/>
+
 </LinearLayout>

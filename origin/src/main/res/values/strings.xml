@@ -34,6 +34,7 @@
     <string name="debug_item_response_error_request_repeat_after_delay">Repeat request after 5 seconds</string>
     <string name="debug_item_response_error_server">Internal Server error</string>
     <string name="debug_item_response_error_timeout">Response timed out</string>
+    <string name="debug_item_screen_info">Screed Info</string>
     <string name="debug_title">Debug Menu</string>
 
     <!-- Error screen -->

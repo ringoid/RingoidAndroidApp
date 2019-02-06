@@ -9,9 +9,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.usersettings.R
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.snackbar
+import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.fragment_debug.*
 
 class DebugFragment : BaseFragment<DebugViewModel>() {
@@ -61,5 +59,6 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         item_error_request_params.clicks().compose(clickDebounce()).subscribe { vm.requestWithWrongParams() }
         item_error_request_repeat_after_delay.clicks().compose(clickDebounce()).subscribe { vm.requestWithNeedToRepeatAfterDelay(delay = 5L) }
         item_error_timeout.clicks().compose(clickDebounce()).subscribe { vm.requestWithTimeOutResponse() }
+        item_screen_info.setLabel("Density: ${activity?.getScreenDensity()}, SW: ${activity?.getSmallestWidth()}, W: ${activity?.getScreenWidthDp()} dp [${activity?.getScreenWidth()} px], H: ${activity?.getScreenHeight()} dp [${activity?.getScreenHeightDp()} px]")
     }
 }
