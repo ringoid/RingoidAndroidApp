@@ -197,11 +197,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     private fun closeChat() {
         rv_chat_messages.linearLayoutManager()?.let {
             val position = it.findFirstVisibleItemPosition()
-            val scroll = it.findViewByPosition(position)?.let {
-                val rvy = rv_chat_messages.bottom
-                val viewY = it.bottom
-                rv_chat_messages.bottom - it.bottom
-            } ?: 0
+            val scroll = it.findViewByPosition(position)?.let { rv_chat_messages.bottom - it.top } ?: 0
             ChatInMemoryCache.addProfileWithPosition(profileId = peerId, position = position to scroll)
         }
         et_message.hideKeyboard()
