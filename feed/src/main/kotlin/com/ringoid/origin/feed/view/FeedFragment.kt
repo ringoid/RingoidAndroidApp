@@ -25,7 +25,6 @@ import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.widget.view.swipes
@@ -43,7 +42,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
 
-    protected abstract fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseFeedAdapter<T, OriginFeedViewHolder<T>>
+    protected abstract fun createFeedAdapter(): BaseFeedAdapter<T, OriginFeedViewHolder<T>>
 
     protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
 
@@ -104,17 +103,16 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        feedAdapter = createFeedAdapter(communicator(IBaseMainActivity::class.java)?.imagesViewPool)
-            .apply {
-                settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
-                    val image = model.images[positionOfImage]
-                    scrollToTopOfItemAtPositionAndPost(position).post {
-                        notifyItemChanged(position, FeedViewHolderHideControls)
-                    }
-                    communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
-                    navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70", rc = RequestCode.RC_BLOCK_DIALOG)
+        feedAdapter = createFeedAdapter().apply {
+            settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
+                val image = model.images[positionOfImage]
+                scrollToTopOfItemAtPositionAndPost(position).post {
+                    notifyItemChanged(position, FeedViewHolderHideControls)
                 }
+                communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
+                navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70", rc = RequestCode.RC_BLOCK_DIALOG)
             }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

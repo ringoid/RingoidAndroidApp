@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.Profile
@@ -20,9 +19,8 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
         fun newInstance(): ExploreFragment = ExploreFragment()
     }
 
-    override fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?)
-            : BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>> =
-        FeedAdapter(imagesViewPool).apply {
+    override fun createFeedAdapter(): BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>> =
+        FeedAdapter().apply {
             onLikeImageListener = { model: ProfileImageVO, _ ->
                 Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
                 vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)

@@ -2,15 +2,13 @@ package com.ringoid.origin.feed.adapter.lmm
 
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-open class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseLmmAdapter(imagesViewPool) {
+open class MatchFeedAdapter : BaseLmmAdapter() {
 
     var onImageToOpenChatClickListener: ((model: ProfileImageVO, feedItemPosition: Int) -> Unit)? = null
 

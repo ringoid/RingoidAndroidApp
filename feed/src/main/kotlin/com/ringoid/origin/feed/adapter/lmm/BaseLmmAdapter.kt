@@ -2,7 +2,6 @@ package com.ringoid.origin.feed.adapter.lmm
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.domain.model.feed.EmptyFeedItem
 import com.ringoid.domain.model.feed.FeedItem
@@ -13,8 +12,7 @@ import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-abstract class BaseLmmAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null, headerRows: Int = 1)
-    : BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>>(imagesViewPool, FeedItemDiffCallback(), headerRows = headerRows) {
+abstract class BaseLmmAdapter(headerRows: Int = 1) : BaseFeedAdapter<FeedItem, OriginFeedViewHolder<FeedItem>>(FeedItemDiffCallback(), headerRows = headerRows) {
 
     var messageClickListener: ((model: FeedItem, position: Int, positionOfImage: Int) -> Unit)? = null
 

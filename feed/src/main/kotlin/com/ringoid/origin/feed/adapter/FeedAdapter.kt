@@ -1,15 +1,13 @@
 package com.ringoid.origin.feed.adapter
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.model.feed.EmptyProfile
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.model.ProfileImageVO
 
-class FeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>>(imagesViewPool, ProfileDiffCallback()) {
+class FeedAdapter : BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>>(ProfileDiffCallback()) {
 
     var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
 

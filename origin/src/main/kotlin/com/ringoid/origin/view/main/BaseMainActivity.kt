@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -31,7 +30,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     private lateinit var fragNav: FragNavController
     private val loginInMemoryCache: ILoginInMemoryCache by lazy { app.loginInMemoryCache }
 
-    override val imagesViewPool = RecyclerView.RecycledViewPool()
     private lateinit var badgeLmm: View
 
     private var tabPayload: String? = null  // payload to pass to subscreen on tab switch

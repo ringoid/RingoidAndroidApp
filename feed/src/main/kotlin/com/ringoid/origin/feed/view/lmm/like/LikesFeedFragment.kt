@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
@@ -19,8 +18,7 @@ class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel>() {
 
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
 
-    override fun instantiateFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?)
-        : BaseLmmAdapter = LikeFeedAdapter(imagesViewPool)
+    override fun instantiateFeedAdapter(): BaseLmmAdapter = LikeFeedAdapter()
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {
