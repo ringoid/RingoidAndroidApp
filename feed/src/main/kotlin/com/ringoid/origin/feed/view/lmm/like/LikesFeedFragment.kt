@@ -6,9 +6,11 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
+import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.communicator
+import timber.log.Timber
 
 class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel>() {
 
@@ -18,7 +20,13 @@ class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel>() {
 
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
 
-    override fun instantiateFeedAdapter(): BaseLmmAdapter = LikeFeedAdapter()
+    override fun instantiateFeedAdapter(): BaseLmmAdapter =
+        LikeFeedAdapter().apply {
+            onLikeImageListener = { model: ProfileImageVO, _ ->
+                Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
+                vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
+            }
+        }
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {

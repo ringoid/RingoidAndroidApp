@@ -29,7 +29,7 @@ abstract class BaseLmmAdapter(headerRows: Int = 1) : BaseFeedAdapter<FeedItem, O
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 
-    override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
+    override fun instantiateViewHolder(view: View): LmmViewHolder =
         LmmViewHolder(view, viewPool = imagesViewPool)
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderLmmViewHolder(view)
