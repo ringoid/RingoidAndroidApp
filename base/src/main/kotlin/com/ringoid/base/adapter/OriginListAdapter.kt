@@ -35,7 +35,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     // --------------------------------------------------------------------------------------------
     override fun onBindViewHolder(holder: VH, position: Int) {
-        onBindViewHolder(holder, position, payloads = emptyList())
+        holder.bind(getItem(position))
     }
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {

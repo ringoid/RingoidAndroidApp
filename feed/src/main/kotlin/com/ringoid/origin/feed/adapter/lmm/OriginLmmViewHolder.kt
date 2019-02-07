@@ -30,28 +30,30 @@ class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     }
 
     override fun bind(model: FeedItem, payloads: List<Any>) {
-        fun hideControls() {
-            itemView.ibtn_message.changeVisibility(isVisible = false)
-        }
-        fun showControls() {
-            itemView.ibtn_message.changeVisibility(isVisible = true)
-        }
-
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
-        } else {
-            showControls()  // TODO: do we need that branch?
         }
         if (payloads.contains(FeedViewHolderShowControls)) {
             showControls()
         }
         super.bind(model, payloads)
     }
+
+    // ------------------------------------------------------------------------
+    override fun hideControls() {
+        super.hideControls()
+        itemView.ibtn_message.changeVisibility(isVisible = false)
+    }
+
+    override fun showControls() {
+        super.showControls()
+        itemView.ibtn_message.changeVisibility(isVisible = true)
+    }
 }
 
 class HeaderLmmViewHolder(view: View) : OriginFeedViewHolder<FeedItem>(view) {
 
-    override fun bind(model: FeedItem, payloads: List<Any>) {
+    override fun bind(model: FeedItem) {
         // no-op
     }
 }

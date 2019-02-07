@@ -67,34 +67,35 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         }
     }
 
+    override fun bind(model: T) {
+        showControls()  // cancel any effect caused by applied payloads
+        profileImageAdapter.submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
+    }
+
     override fun bind(model: T, payloads: List<Any>) {
-        fun hideControls() {
-            itemView.apply {
-                tabs.changeVisibility(isVisible = false)
-                ibtn_settings.changeVisibility(isVisible = false)
-            }
-            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
-        }
-
-        fun showControls() {
-            itemView.apply {
-                tabs.changeVisibility(isVisible = true)
-                ibtn_settings.changeVisibility(isVisible = true)
-            }
-            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
-        }
-
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
-            return
-        } else {
-            showControls()  // TODO: do we need that branch?
         }
         if (payloads.contains(FeedViewHolderShowControls)) {
             showControls()
-            return
         }
-        profileImageAdapter.submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
+    }
+
+    // ------------------------------------------------------------------------
+    protected open fun hideControls() {
+        itemView.apply {
+            tabs.changeVisibility(isVisible = false)
+            ibtn_settings.changeVisibility(isVisible = false)
+        }
+        profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
+    }
+
+    protected open fun showControls() {
+        itemView.apply {
+            tabs.changeVisibility(isVisible = true)
+            ibtn_settings.changeVisibility(isVisible = true)
+        }
+        profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
     }
 
     override fun getCurrentImagePosition(): Int =
@@ -106,7 +107,7 @@ class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null
 
 class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder<Profile>(view), IFeedViewHolder {
 
-    override fun bind(model: Profile, payloads: List<Any>) {
+    override fun bind(model: Profile) {
         // no-op
     }
 }

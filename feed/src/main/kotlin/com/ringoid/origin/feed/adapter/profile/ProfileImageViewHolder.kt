@@ -24,26 +24,8 @@ abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileIm
 
 class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
 
-    override fun bind(model: ProfileImageVO, payloads: List<Any>) {
-        fun hideControls() {
-            itemView.ibtn_like.changeVisibility(isVisible = false)
-        }
-
-        fun showControls() {
-            itemView.ibtn_like.changeVisibility(isVisible = true)
-        }
-
-        if (payloads.contains(FeedViewHolderHideControls)) {
-            hideControls()
-            return
-        } else {
-            showControls()  // TODO: do we need that branch?
-        }
-        if (payloads.contains(FeedViewHolderShowControls)) {
-            showControls()
-            return
-        }
-
+    override fun bind(model: ProfileImageVO) {
+        showControls()  // cancel any effect caused by applied payloads
         ImageLoader.load(model.image.uri, itemView.iv_image,
             options = RequestOptions()
                 .override(itemView.width, itemView.height)
@@ -52,8 +34,25 @@ class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
         setLiked(isLiked = model.isLiked)  // TODO: use payload
     }
 
+    override fun bind(model: ProfileImageVO, payloads: List<Any>) {
+        if (payloads.contains(FeedViewHolderHideControls)) {
+            hideControls()
+        }
+        if (payloads.contains(FeedViewHolderShowControls)) {
+            showControls()
+        }
+    }
+
     private fun setLiked(isLiked: Boolean) {
         itemView.ibtn_like.setImageResource(if (isLiked) R.drawable.ic_like_red_36dp else R.drawable.ic_like_outline_white_36dp)
+    }
+
+    private fun hideControls() {
+        itemView.ibtn_like.changeVisibility(isVisible = false)
+    }
+
+    private fun showControls() {
+        itemView.ibtn_like.changeVisibility(isVisible = true)
     }
 
     // --------------------------------------------------------------------------------------------
@@ -87,7 +86,7 @@ class HeaderProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view
         // no-op
     }
 
-    override fun bind(model: ProfileImageVO, payloads: List<Any>) {
+    override fun bind(model: ProfileImageVO) {
         // no-op
     }
 }

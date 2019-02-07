@@ -13,19 +13,19 @@ abstract class BaseUserProfileImageViewHolder(view: View) : BaseViewHolder<UserI
 
 class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(view) {
 
-    override fun bind(model: UserImage, payloads: List<Any>) {
+    override fun bind(model: UserImage) {
         ImageLoader.load(uri = model.uri, imageView = itemView.iv_image,
             options = RequestOptions()
                 .override(itemView.width, itemView.height)
                 .centerCrop())
 
-        itemView.tv_likes_count.text = "${model.numberOfLikes}"
+        itemView.tv_likes_count.text = "${model.numberOfLikes}"  // TODO: use payload
     }
 }
 
 class HeaderUserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(view) {
 
-    override fun bind(model: UserImage, payloads: List<Any>) {
+    override fun bind(model: UserImage) {
         // no-op
     }
 }
