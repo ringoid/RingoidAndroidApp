@@ -5,7 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
-import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.BaseLikeFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 

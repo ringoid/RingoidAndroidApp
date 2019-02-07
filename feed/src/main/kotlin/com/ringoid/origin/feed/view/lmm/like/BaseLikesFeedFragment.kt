@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
-import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.BaseLikeFeedAdapter
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel

@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.adapter.lmm.like
+package com.ringoid.origin.feed.adapter.lmm
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

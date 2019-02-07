@@ -7,7 +7,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
-import com.ringoid.origin.feed.adapter.lmm.like.BaseLikeFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.BaseLikeFeedAdapter
 import com.ringoid.origin.feed.adapter.lmm.match.MatchFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
