@@ -14,8 +14,9 @@ open class MatchFeedAdapter : BaseLmmAdapter() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder<FeedItem> {
         val viewHolder = super.onCreateViewHolder(parent, viewType)
-        viewHolder.takeIf { it is BaseFeedViewHolder<FeedItem> }
-            ?.let { it as BaseFeedViewHolder<FeedItem> }
+        return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
+            .takeIf { viewType == VIEW_TYPE_NORMAL }
+            ?.let { it as? BaseFeedViewHolder<FeedItem> }
             ?.also { vh ->
                 vh.profileImageAdapter.also { adapter ->
                     adapter.isLikeEnabled = false  // hide like button on matches feed items
@@ -23,7 +24,6 @@ open class MatchFeedAdapter : BaseLmmAdapter() {
                 }
                 (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
                     ?.apply { verticalBias = 0.28f }?.let { vh.itemView.ibtn_message.layoutParams = it }
-            }
-        return viewHolder
+            } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 }

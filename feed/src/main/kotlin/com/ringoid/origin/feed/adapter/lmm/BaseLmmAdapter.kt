@@ -18,17 +18,16 @@ abstract class BaseLmmAdapter(headerRows: Int = 1) : BaseFeedAdapter<FeedItem, O
 
     override fun getLayoutId(): Int = R.layout.rv_item_lmm_profile
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder<FeedItem> =
-        super.onCreateViewHolder(parent, viewType)
-            .also { vh ->
-                if (viewType != VIEW_TYPE_NORMAL) {
-                    return@also
-                }
-
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder<FeedItem> {
+        val viewHolder = super.onCreateViewHolder(parent, viewType)
+        return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
+            .takeIf { viewType == VIEW_TYPE_NORMAL }
+            ?.also { vh ->
                 val wrapMessageClickListener = wrapMessageClickListener(vh)
                 vh.itemView.ibtn_message.clicks().compose(clickDebounce())
                     .subscribe { wrapOnItemClickListener(vh, wrapMessageClickListener).onClick(vh.itemView.ibtn_message) }
-            }
+            } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
+    }
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder<FeedItem> =
         LmmViewHolder(view, viewPool = imagesViewPool)

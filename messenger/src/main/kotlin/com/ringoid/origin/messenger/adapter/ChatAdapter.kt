@@ -30,23 +30,23 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
         }
 
         val view = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
-        return when (viewType) {
+        val viewHolder = when (viewType) {
             VIEW_TYPE_FOOTER -> HeaderChatViewHolder(view).also { it.setOnClickListener(getOnItemClickListener(it)) }
             VIEW_TYPE_NORMAL -> PeerChatViewHolder(view)
             VIEW_TYPE_NORMAL_MY -> MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
-        }.also { vh->
-            if (viewType != VIEW_TYPE_NORMAL && viewType != VIEW_TYPE_NORMAL_MY) {
-                return@also
-            }
-
-            vh.setOnClickListener(getOnItemClickListener(vh))
-            vh.itemView.tv_chat_message.also { view ->
-                view.clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(view) }
-                view.longClicks().compose(clickDebounce())
-                    .subscribe { wrapOnItemClickListener(vh, onMessageClickListener).onClick(view) }
-            }
         }
+
+        return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
+            .takeIf { viewType == VIEW_TYPE_NORMAL || viewType == VIEW_TYPE_NORMAL_MY }
+            ?.also { vh->
+                vh.setOnClickListener(getOnItemClickListener(vh))
+                vh.itemView.tv_chat_message.also { view ->
+                    view.clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(view) }
+                    view.longClicks().compose(clickDebounce())
+                        .subscribe { wrapOnItemClickListener(vh, onMessageClickListener).onClick(view) }
+                }
+            } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 
     override fun getItemId(position: Int): Long {

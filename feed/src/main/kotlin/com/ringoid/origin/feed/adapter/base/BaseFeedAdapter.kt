@@ -22,21 +22,19 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(diffCb: BaseDiffCallback<T>, he
 
     protected var imagesViewPool = RecyclerView.RecycledViewPool()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        super.onCreateViewHolder(parent, viewType).also { vh ->
-            if (viewType != VIEW_TYPE_NORMAL) {
-                return@also
-            }
-
-            vh.trackingBus = this@BaseFeedAdapter.trackingBus
-            val wrapSettingsClickListener: ((model: T, position: Int) -> Unit)? =
-                { model: T, position: Int ->
-                    settingsClickListener?.invoke(model, position, vh.getCurrentImagePosition())
-                }
-            vh.itemView.ibtn_settings.clicks().compose(clickDebounce())
-                .subscribe { wrapOnItemClickListener(vh, wrapSettingsClickListener).onClick(vh.itemView.ibtn_settings) }
-            vh.setOnClickListener(null)  // clicks on the whole feed's item is no-op
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val viewHolder = super.onCreateViewHolder(parent, viewType)
+        return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
+            .takeIf { viewType == VIEW_TYPE_NORMAL }
+            ?.also { vh ->
+                vh.trackingBus = this@BaseFeedAdapter.trackingBus
+                val wrapSettingsClickListener: ((model: T, position: Int) -> Unit)? =
+                    { model: T, position: Int -> settingsClickListener?.invoke(model, position, vh.getCurrentImagePosition()) }
+                vh.itemView.ibtn_settings.clicks().compose(clickDebounce())
+                    .subscribe { wrapOnItemClickListener(vh, wrapSettingsClickListener).onClick(vh.itemView.ibtn_settings) }
+                vh.setOnClickListener(null)  // clicks on the whole feed's item is no-op
+            } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
+    }
 
     // ------------------------------------------
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer
