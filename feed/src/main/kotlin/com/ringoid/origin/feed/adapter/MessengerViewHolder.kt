@@ -13,6 +13,16 @@ class MessengerViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
 
     override fun bind(model: FeedItem) {
         super.bind(model)
+        setMessengerIcon(model)
+    }
+
+    override fun bind(model: FeedItem, payloads: List<Any>) {
+        super.bind(model, payloads)
+        setMessengerIcon(model)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun setMessengerIcon(model: FeedItem) {
         val iconResId = if (model.messages.isEmpty()) {
             R.drawable.ic_chat_bubble_outline_white_36dp
         } else if (model.hasPeerMessages()) {
