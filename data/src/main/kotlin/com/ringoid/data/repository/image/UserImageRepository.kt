@@ -36,6 +36,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
     override val imageCreate = PublishSubject.create<String>()
     override val imageDelete = PublishSubject.create<String>()
     override val imageIdChange = PublishSubject.create<Pair<String, String>>()
+    override val totalUserImages = PublishSubject.create<Int>()
 
     override fun countUserImages(): Single<Int> = local.countUserImages()
 
@@ -44,7 +45,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =
         spm.accessSingle {
             cloud.getUserImages(it.accessToken, resolution)
-                .handleError()  // TODO: on fail - notify
+                .handleError()
                 .compose(requestSet.addCreatedImagesInResponse())
                 .compose(requestSet.filterOutRemovedImages())
                 .map { it.map { it as UserImage } }  // cast not losing fields in UserImage

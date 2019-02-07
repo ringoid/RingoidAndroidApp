@@ -31,6 +31,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     private val loginInMemoryCache: ILoginInMemoryCache by lazy { app.loginInMemoryCache }
 
     private lateinit var badgeLmm: View
+    private lateinit var badgeWarningProfile: View
 
     private var tabPayload: String? = null  // payload to pass to subscreen on tab switch
 
@@ -163,18 +164,31 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
 
     // --------------------------------------------------------------------------------------------
     private fun initView() {
+        val inflater = LayoutInflater.from(this)
         val menuView = bottom_bar.getChildAt(0) as? BottomNavigationMenuView
-        badgeLmm = LayoutInflater.from(this).inflate(R.layout.main_menu_badge, menuView, false)
+        badgeLmm = inflater.inflate(R.layout.main_menu_badge, menuView, false)
+        badgeWarningProfile = inflater.inflate(R.layout.main_menu_warning, menuView, false)
 
-        menuView?.getChildAt(tabIdToIndex(R.id.item_lmm))
+        menuView?.apply {
+            getChildAt(tabIdToIndex(R.id.item_lmm))
                 ?.let { it as? BottomNavigationItemView }
                 ?.addView(badgeLmm)
 
+            getChildAt(tabIdToIndex(R.id.item_profile))
+                ?.let { it as? BottomNavigationItemView }
+                ?.addView(badgeWarningProfile)
+        }
+
         showBadgeOnLmm(isVisible = false)
+        showBadgeWarningOnProfile(isVisible = false)
     }
 
     protected fun showBadgeOnLmm(isVisible: Boolean) {
         badgeLmm.changeVisibility(isVisible, soft = true)
+    }
+
+    protected fun showBadgeWarningOnProfile(isVisible: Boolean) {
+        badgeWarningProfile.changeVisibility(isVisible, soft = true)
     }
 
     // --------------------------------------------------------------------------------------------

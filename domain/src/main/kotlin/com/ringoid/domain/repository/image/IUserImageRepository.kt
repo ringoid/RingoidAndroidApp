@@ -12,6 +12,7 @@ interface IUserImageRepository : IImageRepository {
     val imageCreate: PublishSubject<String>
     val imageDelete: PublishSubject<String>
     val imageIdChange: PublishSubject<Pair<String, String>>
+    val totalUserImages: PublishSubject<Int>
 
     // --------------------------------------------------------------------------------------------
     fun countUserImages(): Single<Int>

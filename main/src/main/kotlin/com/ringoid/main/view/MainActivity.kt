@@ -30,6 +30,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         super.onCreate(savedInstanceState)
         currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme)
         observe(vm.badgeLmm, ::showBadgeOnLmm)
+        observe(vm.badgeWarningProfile, ::showBadgeWarningOnProfile)
     }
 
     override fun onStart() {
