@@ -8,7 +8,6 @@ import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
@@ -20,11 +19,8 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
     override fun instantiateViewHolder(view: View): BaseProfileImageViewHolder =
-        ProfileImageViewHolder(view).also { vh ->
-            vh.itemView.ibtn_like.apply {
-                changeVisibility(isVisible = isLikeEnabled)
-                clicks().compose(clickDebounce()).subscribe { getOnLikeButtonClickListener(vh).onClick(vh.itemView.ibtn_like) }
-            }
+        ProfileImageViewHolder(view, isLikeEnabled).also { vh ->
+            vh.itemView.ibtn_like.clicks().compose(clickDebounce()).subscribe { getOnLikeButtonClickListener(vh).onClick(vh.itemView.ibtn_like) }
         }
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderProfileImageViewHolder(view)

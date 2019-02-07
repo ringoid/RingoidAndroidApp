@@ -22,7 +22,11 @@ interface IProfileImageViewHolder {
 
 abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view), IProfileImageViewHolder
 
-class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
+class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = true) : BaseProfileImageViewHolder(view) {
+
+    init {
+        itemView.ibtn_like.changeVisibility(isVisible = isLikeEnabled)
+    }
 
     override fun bind(model: ProfileImageVO) {
         showControls()  // cancel any effect caused by applied payloads
@@ -52,7 +56,7 @@ class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
     }
 
     private fun showControls() {
-        itemView.ibtn_like.changeVisibility(isVisible = true)
+        itemView.ibtn_like.changeVisibility(isVisible = isLikeEnabled)
     }
 
     // --------------------------------------------------------------------------------------------
