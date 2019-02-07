@@ -87,7 +87,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
             cloud.getImageUploadUrl(xessence)
                 .doOnSubscribe {
                     requestSet.create(localImageRequest)
-                    local.addImage(UserImageDbo(id = xessence.clientImageId, uri = image.uriString(), originId = xessence.clientImageId))
+                    local.addImage(UserImageDbo(id = xessence.clientImageId, uri = image.uriString(), originId = xessence.clientImageId, isBlocked = false))
                     imageCreate.onNext(xessence.clientImageId)  // notify database changed
                 }
                 .doOnSuccess { image ->
@@ -100,7 +100,7 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                     // replace local id with remote-generated id for local image in cache
                     local.deleteImage(id = image.clientImageId)
                          .takeIf { it == 1 }
-                         ?.let { local.addImage(UserImageDbo(id = image.originImageId, uri = image.imageUri, originId = image.originImageId)) }
+                         ?.let { local.addImage(UserImageDbo(id = image.originImageId, uri = image.imageUri, originId = image.originImageId, isBlocked = false)) }
                     imageIdChange.onNext(image.clientImageId to image.originImageId)  // notify image id change in database
                 }
                 // TODO: on fail getImageUploadUrl

@@ -6,16 +6,17 @@ import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.utility.randomString
 
 data class UserImage(
-    val originId: String = BAD_ID, val numberOfLikes: Int = 0,
+    val originId: String = BAD_ID, val numberOfLikes: Int = 0, val isBlocked: Boolean = false,
     override val id: String, override val uri: String? = null,
     override val isRealModel: Boolean = true) : IImage {
 
     private constructor(source: Parcel): this(
         id = source.readString() ?: BAD_ID, uri = source.readString(),
-        originId = source.readString() ?: BAD_ID, numberOfLikes = source.readInt())
+        originId = source.readString() ?: BAD_ID, numberOfLikes = source.readInt(),
+        isBlocked = source.readInt() != 0)
 
     override fun copyWithId(id: String): IImage =
-        UserImage(originId = originId, numberOfLikes = numberOfLikes, id = id, uri = uri)
+        UserImage(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked, id = id, uri = uri)
 
     override fun describeContents(): Int = 0
 
@@ -25,6 +26,7 @@ data class UserImage(
             writeString(uri)
             writeString(originId)
             writeInt(numberOfLikes)
+            writeInt(if (isBlocked) 1 else 0)
         }
     }
 

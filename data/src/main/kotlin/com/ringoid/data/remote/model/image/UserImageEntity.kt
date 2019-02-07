@@ -15,12 +15,14 @@ import com.ringoid.domain.model.image.UserImage
 class UserImageEntity(
     @Expose @SerializedName(COLUMN_ORIGIN_ID) val originId: String,
     @Expose @SerializedName(COLUMN_NUMBER_LIKES) val numberOfLikes: Int,
+    @Expose @SerializedName(COLUMN_FLAG_BLOCKED) val isBlocked: Boolean,
     id: String, uri: String) : BaseImageEntity<UserImage>(id = id, uri = uri) {
 
     companion object {
+        const val COLUMN_FLAG_BLOCKED = "blocked"
         const val COLUMN_ORIGIN_ID = "originPhotoId"
         const val COLUMN_NUMBER_LIKES = "likes"
     }
 
-    override fun map(): UserImage = UserImage(originId = originId, numberOfLikes = numberOfLikes, id = id, uri = uri)
+    override fun map(): UserImage = UserImage(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked, id = id, uri = uri)
 }

@@ -10,7 +10,7 @@ import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 
-@Database(version = 3,
+@Database(version = 4,
           entities = [ImageDbo::class, MessageDbo::class,
                       ProfileDbo::class, UserImageDbo::class])
 abstract class RingoidDatabase : RoomDatabase() {

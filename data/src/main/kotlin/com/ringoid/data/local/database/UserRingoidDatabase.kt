@@ -12,7 +12,7 @@ import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 
-@Database(version = 5,
+@Database(version = 6,
           entities = [ImageDbo::class, MessageDbo::class,
                       ProfileDbo::class, ProfileIdDbo::class,
                       UserImageDbo::class])
