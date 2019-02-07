@@ -40,9 +40,11 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
         savedInstanceState ?: run {
             if (intent.dataString?.contains("block_dialog") == true) {
                 createBlockDialogIfNeed()
+                blockDialog?.showNow(supportFragmentManager, BlockBottomSheetDialog.TAG)
             }
             if (intent.dataString?.contains("report_dialog") == true) {
                 createReportDialogIfNeed()
+                reportDialog?.showNow(supportFragmentManager, ReportBottomSheetDialog.TAG)
             }
         }
     }
@@ -61,7 +63,6 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
     private fun createBlockDialogIfNeed() {
         if (blockDialog == null) {
             blockDialog = BlockBottomSheetDialog.newInstance()
-                .also { it.showNow(supportFragmentManager, BlockBottomSheetDialog.TAG) }
         }
     }
 
@@ -69,7 +70,6 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
         if (reportDialog == null) {
             val excludedReasons = intent.extras?.getString("excludedReasons")
             reportDialog = ReportBottomSheetDialog.newInstance(excludedReasons)
-                .also { it.showNow(supportFragmentManager, ReportBottomSheetDialog.TAG) }
         }
     }
 }
