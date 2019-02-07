@@ -10,16 +10,10 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 fun <T> clickDebounce(timeout: Long = BuildConfig.DEBOUNCE_CLICK): ObservableTransformer<T, T> =
-    ObservableTransformer { observable ->
-        observable.throttleFirst(timeout, TimeUnit.MILLISECONDS)
-            .subscribeOn(AndroidSchedulers.mainThread())
-    }
+    ObservableTransformer { it.throttleFirst(timeout, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()) }
 
 fun <T> inputDebounce(timeout: Long = BuildConfig.DEBOUNCE_INPUT): ObservableTransformer<T, T> =
-    ObservableTransformer { observable ->
-        observable.debounce(timeout, TimeUnit.MILLISECONDS)
-            .subscribeOn(AndroidSchedulers.mainThread())
-    }
+    ObservableTransformer { it.debounce(timeout, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()) }
 
 fun checkMainThread2(observer: Observer<*>): Boolean {
     if (Looper.myLooper() != Looper.getMainLooper()) {
