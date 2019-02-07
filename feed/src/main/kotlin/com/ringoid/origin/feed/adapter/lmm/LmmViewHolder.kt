@@ -12,10 +12,11 @@ import com.ringoid.widget.view.Direction
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseFeedViewHolder<FeedItem>(view, viewPool) {
 
     init {
+        // TODO: improve UX for fling
         itemView.ibtn_message.setOnFlingListener {
             val rv = itemView.rv_items
             when (it) {
