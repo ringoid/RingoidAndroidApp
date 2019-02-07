@@ -14,10 +14,11 @@ open class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = nul
 
     var onImageToOpenChatClickListener: ((model: ProfileImageVO, feedItemPosition: Int) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder<FeedItem> =
-        super.onCreateViewHolder(parent, viewType)
-            .let { it as BaseFeedViewHolder<FeedItem> }
-            .also { vh ->
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder<FeedItem> {
+        val viewHolder = super.onCreateViewHolder(parent, viewType)
+        viewHolder.takeIf { it is BaseFeedViewHolder<FeedItem> }
+            ?.let { it as BaseFeedViewHolder<FeedItem> }
+            ?.also { vh ->
                 vh.profileImageAdapter.also { adapter ->
                     adapter.isLikeEnabled = false  // hide like button on matches feed items
                     adapter.itemClickListener = wrapOnImageClickListenerByFeedItem(vh, onImageToOpenChatClickListener)
@@ -25,4 +26,6 @@ open class MatchFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool? = nul
                 (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
                     ?.apply { verticalBias = 0.28f }?.let { vh.itemView.ibtn_message.layoutParams = it }
             }
+        return viewHolder
+    }
 }
