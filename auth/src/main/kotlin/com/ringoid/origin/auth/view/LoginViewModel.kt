@@ -57,7 +57,10 @@ class LoginViewModel @Inject constructor(
             .doOnSuccess { viewState.value = ViewState.CLOSE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({ Timber.d("Successfully signed up, current user: $it") }, Timber::e)
+            .subscribe({
+                Timber.d("Successfully signed up, current user: $it")
+                app.userScopeProvider.onLogin()
+            }, Timber::e)
     }
 
     fun onGenderSelect(gender: Gender) {

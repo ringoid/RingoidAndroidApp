@@ -32,6 +32,11 @@ class UserScopeProvider @Inject constructor() : LifecycleScopeProvider<UserLifec
 
     override fun peekLifecycle(): UserLifecycleEvent? = lifecycleEvents.value
 
+    fun onLogin() {
+        Timber.d("Login on user scope provider: ${hashCode()}")
+        lifecycleEvents.onNext(UserLifecycleEvent.LOGIN)
+    }
+
     fun onLogout() {
         Timber.d("Logout on user scope provider: ${hashCode()}")
         lifecycleEvents.onNext(UserLifecycleEvent.LOGOUT)
