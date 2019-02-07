@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
@@ -32,7 +33,8 @@ class ChatViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
-                ChatInMemoryCache.setMessagesCountIfChanged(profileId = profileId, count = it.size)
+                val peerMessagesCount = it.count { it.peerId != DomainUtil.CURRENT_USER_ID }
+                ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
                 messages.value = it
             }, Timber::e)
     }

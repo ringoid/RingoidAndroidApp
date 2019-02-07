@@ -26,10 +26,9 @@ class MessengerViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
         val iconResId = if (model.messages.isEmpty()) {
             R.drawable.ic_chat_bubble_outline_white_36dp
         } else if (model.hasPeerMessages()) {
-            if (model.messages.size == ChatInMemoryCache.getMessagesCount(model.id)) {
+            if (model.countOfPeerMessages() == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
                 R.drawable.ic_messenger_outline_white_36dp
-            } else {  // has unread messages
-                // TODO: maybe check whether peer's count changed, not total
+            } else {  // has unread messages from peer
                 R.drawable.ic_messenger_fill_lgreen_36dp
             }
         } else {  // contains only current user's messages
