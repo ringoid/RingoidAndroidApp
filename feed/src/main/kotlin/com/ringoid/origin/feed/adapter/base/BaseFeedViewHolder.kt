@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.IProfile
+import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
@@ -98,4 +99,14 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
 
     override fun getCurrentImagePosition(): Int =
         itemView.rv_items.linearLayoutManager()?.findFirstVisibleItemPosition() ?: 0
+}
+
+class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+    : BaseFeedViewHolder<Profile>(view, viewPool)
+
+class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder<Profile>(view), IFeedViewHolder {
+
+    override fun bind(model: Profile, payloads: List<Any>) {
+        // no-op
+    }
 }

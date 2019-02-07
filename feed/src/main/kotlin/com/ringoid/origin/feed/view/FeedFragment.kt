@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.IProfile
@@ -19,7 +18,7 @@ import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
-import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.navigation.*
@@ -34,10 +33,9 @@ import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
-abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
-    : BaseListFragment<VM>() where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
+abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment<VM>() {
 
-    protected lateinit var feedAdapter: BaseFeedAdapter<T, VH>
+    protected lateinit var feedAdapter: BaseFeedAdapter<T, OriginFeedViewHolder<T>>
         private set
     private lateinit var feedTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
@@ -45,7 +43,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile, VH>
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
 
-    protected abstract fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseFeedAdapter<T, VH>
+    protected abstract fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseFeedAdapter<T, OriginFeedViewHolder<T>>
 
     protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
 

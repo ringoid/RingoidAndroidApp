@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.view.lmm.base
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
-import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -11,7 +10,6 @@ import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
-import com.ringoid.origin.feed.adapter.base.IFeedViewHolder
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
@@ -21,9 +19,7 @@ import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_feed.*
 
-abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel, VH>
-    : FeedFragment<VM, FeedItem, VH>(), IChatHost, IDialogCallback
-    where VH : BaseViewHolder<FeedItem>, VH : IFeedViewHolder {
+abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM, FeedItem>(), IChatHost, IDialogCallback  {
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(payload: ChatPayload) {

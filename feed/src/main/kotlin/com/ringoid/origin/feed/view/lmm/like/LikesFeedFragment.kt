@@ -4,16 +4,14 @@ import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
-import com.ringoid.origin.feed.adapter.lmm.BaseLikeFeedAdapter
-import com.ringoid.origin.feed.adapter.lmm.like.LikeFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
+import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.communicator
 
-class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel, OriginFeedViewHolder<FeedItem>>() {
+class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel>() {
 
     companion object {
         fun newInstance(): LikesFeedFragment = LikesFeedFragment()
@@ -22,7 +20,7 @@ class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel, OriginFeedVi
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
 
     override fun instantiateFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?)
-        : BaseLikeFeedAdapter<OriginFeedViewHolder<FeedItem>> = LikeFeedAdapter(imagesViewPool)
+        : BaseLmmAdapter = LikeFeedAdapter(imagesViewPool)
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {

@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
-import com.ringoid.origin.feed.adapter.lmm.BaseLikeFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
@@ -16,12 +15,11 @@ import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.utility.communicator
 
-abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel, VH : OriginFeedViewHolder<FeedItem>>
-    : BaseLmmFeedFragment<VM, VH>() {
+abstract class BaseLikesFeedFragment<VM : BaseLmmFeedViewModel> : BaseLmmFeedFragment<VM>() {
 
-    abstract fun instantiateFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseLikeFeedAdapter<VH>
+    abstract fun instantiateFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseLmmAdapter
 
-    override fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseLikeFeedAdapter<VH> =
+    override fun createFeedAdapter(imagesViewPool: RecyclerView.RecycledViewPool?): BaseLmmAdapter =
         instantiateFeedAdapter(imagesViewPool).apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)

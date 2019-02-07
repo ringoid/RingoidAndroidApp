@@ -52,7 +52,7 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(
      * position in the inner adapter. This is useful when callers need just a callback on image click
      * and position of enclosing feed item that contains that clicked image.
      */
-    protected fun wrapOnImageClickListener(vh: VH, l: ((model: ProfileImageVO, position: Int) -> Unit)?)
+    protected fun wrapOnImageClickListenerByFeedItem(vh: VH, l: ((model: ProfileImageVO, position: Int) -> Unit)?)
             : ((model: ProfileImageVO, position: Int) -> Unit)? =
         { model: ProfileImageVO, _ -> vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(model, it) } }
 }

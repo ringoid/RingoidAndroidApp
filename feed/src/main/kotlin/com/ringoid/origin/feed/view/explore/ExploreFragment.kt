@@ -14,7 +14,7 @@ import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import timber.log.Timber
 
-class ExploreFragment : FeedFragment<ExploreViewModel, Profile, OriginFeedViewHolder<Profile>>() {
+class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
 
     companion object {
         fun newInstance(): ExploreFragment = ExploreFragment()

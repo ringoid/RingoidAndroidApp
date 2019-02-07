@@ -2,7 +2,6 @@ package com.ringoid.origin.feed.adapter.lmm
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
@@ -13,12 +12,7 @@ import com.ringoid.widget.view.Direction
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-interface ILmmViewHolder
-
-abstract class OriginLmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : OriginFeedViewHolder<FeedItem>(view, viewPool)
-
-abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseFeedViewHolder<FeedItem>(view, viewPool) {
 
     init {
@@ -55,7 +49,7 @@ abstract class BaseLmmViewHolder(view: View, viewPool: RecyclerView.RecycledView
     }
 }
 
-open class HeaderLmmViewHolder(view: View) : BaseViewHolder<FeedItem>(view), ILmmViewHolder {
+class HeaderLmmViewHolder(view: View) : OriginFeedViewHolder<FeedItem>(view) {
 
     override fun bind(model: FeedItem, payloads: List<Any>) {
         // no-op
