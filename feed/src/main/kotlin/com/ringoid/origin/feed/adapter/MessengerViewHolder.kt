@@ -25,14 +25,17 @@ class MessengerViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
     private fun setMessengerIcon(model: FeedItem) {
         val iconResId = if (model.messages.isEmpty()) {
             R.drawable.ic_chat_bubble_outline_white_36dp
-        } else if (model.hasPeerMessages()) {
-            if (model.countOfPeerMessages() == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
-                R.drawable.ic_messenger_outline_white_36dp
-            } else {  // has unread messages from peer
-                R.drawable.ic_messenger_fill_lgreen_36dp
+        } else {
+            val peerMessagesCount = model.countOfPeerMessages()
+            if (peerMessagesCount > 0) {
+                if (peerMessagesCount == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
+                    R.drawable.ic_messenger_outline_white_36dp
+                } else {  // has unread messages from peer
+                    R.drawable.ic_messenger_fill_lgreen_36dp
+                }
+            } else {  // contains only current user's messages
+                R.drawable.ic_chat_bubble_white_36dp
             }
-        } else {  // contains only current user's messages
-            R.drawable.ic_chat_bubble_white_36dp
         }
         itemView.ibtn_message.setImageResource(resId = iconResId)
     }

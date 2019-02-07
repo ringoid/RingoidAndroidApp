@@ -11,7 +11,6 @@ data class FeedItem(val isNotSeen: Boolean, val messages: List<Message>,
 
     fun countOfPeerMessages(): Int = messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
     fun countOfUserMessages(): Int = messages.count { it.peerId == DomainUtil.CURRENT_USER_ID }
-    fun hasPeerMessages(): Boolean = countOfPeerMessages() > 0
 
     fun profile(): Profile = Profile(id = id, images = images)
 }
