@@ -18,6 +18,8 @@ import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 interface IProfileImageViewHolder {
 
     fun animateLike(isLiked: Boolean)
+
+    fun cancelAnimations()
 }
 
 abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view), IProfileImageViewHolder
@@ -67,6 +69,10 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
         showLikeAnimationSmall(isLiked)
     }
 
+    override fun cancelAnimations() {
+        animation?.cancel()
+    }
+
     private fun showLikeAnimationSmall(isLiked: Boolean) {
         setLiked(isLiked = isLiked)
         ScaleAnimation(0.7f, 1f, 0.7f, 1f,
@@ -79,7 +85,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
     }
 
     private fun showLikeAnimation() {
-        animation?.cancel()
+        cancelAnimations()
         animation = LikeAnimation(itemView.iv_like_anim).apply { show() }
     }
 }

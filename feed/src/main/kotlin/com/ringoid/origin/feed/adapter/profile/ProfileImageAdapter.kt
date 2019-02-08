@@ -16,6 +16,11 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
     var isLikeEnabled = true
 
+    override fun onFailedToRecycleView(holder: BaseProfileImageViewHolder): Boolean {
+        holder.cancelAnimations()
+        return true
+    }
+
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
     override fun instantiateViewHolder(view: View): BaseProfileImageViewHolder =
