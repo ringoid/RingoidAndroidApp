@@ -139,7 +139,7 @@ open class FeedRepository @Inject constructor(
             })
         .single(LmmResponse()  /* by default - empty lmm */)
 
-    // ------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
         doAfterSuccess {
             val messages = mutableListOf<Message>()
