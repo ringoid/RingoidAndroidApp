@@ -77,6 +77,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onTabTransaction(payload)
         payload?.let {
             when (it) {
+                Payload.PAYLOAD_PROFILE_LOGIN -> {}  // TODO: login no image
                 Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { shouldAskToAddAnotherImage = true }
                 Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> onAddImage()
             }
@@ -220,4 +221,45 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // ------------------------------------------
     private fun globalImagePreviewReceiver(): IImagePreviewReceiver? =
         this@UserProfileFragment.communicator(IBaseRingoidApplication::class.java)?.imagePreviewReceiver
+
+    // --------------------------------------------------------------------------------------------
+    /**
+     * Show progress while image is being cropped
+     * Stop progress on image has been cropped or cropping has failed
+     *
+     * On crop Success:
+     *     add image to UI
+     *     add image to Db
+     *     show delete image button
+     *
+     * On crop Error:
+     *     show error
+     *     (hide delete image button on Login)
+     *     (show empty screen on Login and warning)
+     */
+    private fun addImagePipeline() {
+        //
+    }
+
+    /**
+     * Show progress while obtaining images
+     * Stop progress on images have been obtained from Db
+     * Get cached images from Db
+     * Show images from Db on UI
+     * Show empty screen if no images and warning, hide delete image button
+     */
+    private fun getImagesPipeline() {
+        //
+    }
+
+    /**
+     * Show progress while removing image
+     * Stop progress on image has been removed from Db
+     * Remove image from UI
+     * Remove image from Db
+     * Show empty screen if no images and warning, hide delete image button
+     */
+    private fun deleteImagePipeline() {
+        //
+    }
 }
