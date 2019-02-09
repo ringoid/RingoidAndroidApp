@@ -11,8 +11,8 @@ import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
 import com.ringoid.domain.repository.ISharedPrefsManager
-import com.ringoid.utility.KeyboardManager
-import com.ringoid.utility.KeyboardStatus
+import com.ringoid.utility.manager.KeyboardManager
+import com.ringoid.utility.manager.KeyboardStatus
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.AndroidInjection
 import io.reactivex.Observable

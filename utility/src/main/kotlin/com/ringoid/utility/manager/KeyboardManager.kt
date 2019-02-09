@@ -1,4 +1,4 @@
-package com.ringoid.utility
+package com.ringoid.utility.manager
 
 import android.app.Activity
 import android.graphics.Rect
