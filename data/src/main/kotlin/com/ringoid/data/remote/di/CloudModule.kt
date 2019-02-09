@@ -6,7 +6,9 @@ import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.ringoid.data.BuildConfig
 import com.ringoid.data.remote.network.IRequestHeaderInterceptor
+import com.ringoid.data.remote.network.IResponseErrorInterceptor
 import com.ringoid.data.remote.network.RequestHeaderInterceptor
+import com.ringoid.data.remote.network.ResponseErrorInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -44,10 +46,16 @@ class CloudModule(private val appVersion: Int) {
         RequestHeaderInterceptor(appVersion = appVersion)
 
     @Provides @Singleton
+    fun provideResponseErrorInterceptor(): IResponseErrorInterceptor =
+        ResponseErrorInterceptor()
+
+    @Provides @Singleton
     fun provideOkHttpClient(requestInterceptor: IRequestHeaderInterceptor,
+                            responseInterceptor: IResponseErrorInterceptor,
                             logInterceptor: LoggingInterceptor): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(requestInterceptor)
+            .addInterceptor(responseInterceptor)
             .addInterceptor(logInterceptor)
             .readTimeout(16, TimeUnit.SECONDS)
             .connectTimeout(16, TimeUnit.SECONDS)
