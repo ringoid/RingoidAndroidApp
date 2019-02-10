@@ -96,6 +96,10 @@ class HeaderProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view
         // no-op
     }
 
+    override fun cancelAnimations() {
+        // no-op
+    }
+
     override fun bind(model: ProfileImageVO) {
         // no-op
     }
