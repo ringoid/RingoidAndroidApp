@@ -12,7 +12,7 @@ import com.ringoid.origin.view.dialog.Dialogs
 fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit = {}) {
     fun errorState(e: Throwable) {
         Dialogs.errorDialog(activity, e)
-        onErrorState()
+        onErrorState()  // handle error state on Screen  in screen-specific way
     }
 
     when (this) {
@@ -23,7 +23,10 @@ fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit 
                 else -> errorState(this)
             }
         }
-        is NetworkUnexpected -> noConnection(activity)
+        is NetworkUnexpected -> {
+            noConnection(activity)
+            onErrorState()  // handle error state on Screen  in screen-specific way
+        }
         else -> errorState(this)  // default error handling
     }
 }
@@ -31,7 +34,7 @@ fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit 
 fun Throwable.handleOnView(fragment: Fragment, onErrorState: () -> Unit = {}) {
     fun errorState(e: Throwable) {
         Dialogs.errorDialog(fragment, e)
-        onErrorState()
+        onErrorState()  // handle error state on Screen  in screen-specific way
     }
 
     when (this) {
@@ -42,7 +45,10 @@ fun Throwable.handleOnView(fragment: Fragment, onErrorState: () -> Unit = {}) {
                 else -> errorState(this)
             }
         }
-        is NetworkUnexpected -> noConnection(fragment)
+        is NetworkUnexpected -> {
+            noConnection(fragment)
+            onErrorState()  // handle error state on Screen  in screen-specific way
+        }
         else -> errorState(this)  // default error handling
     }
 }
