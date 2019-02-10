@@ -5,6 +5,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.SentryUtil
 import com.ringoid.domain.exception.ApiException
 import com.ringoid.domain.exception.NetworkException
+import com.ringoid.domain.exception.NetworkUnexpected
 import com.ringoid.domain.exception.RepeatRequestAfterSecException
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
@@ -40,6 +41,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null)
                 val error = errorWithAttempt.second
                 val delayTime = when (error) {
                     is RepeatRequestAfterSecException -> error.delay * 1000  // in seconds
+                    is NetworkUnexpected -> throw error  // don't retry on fatal network errors
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
@@ -56,6 +58,7 @@ private fun expBackoffObservableImpl(count: Int, delay: Long, tag: String? = nul
                 val error = errorWithAttempt.second
                 val delayTime = when (error) {
                     is RepeatRequestAfterSecException -> error.delay * 1000  // in seconds
+                    is NetworkUnexpected -> throw error  // don't retry on fatal network errors
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Observable.timer(delayTime, TimeUnit.MILLISECONDS)
@@ -91,6 +94,9 @@ inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = 
 // ----------------------------------------------
 private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer<in T> =
     Consumer {
+        if (!it.unexpected.isNullOrBlank()) {
+            throw NetworkUnexpected(it.unexpected)
+        }
         if (!it.errorCode.isNullOrBlank()) {
             throw ApiException(code = it.errorCode, message = it.errorMessage, tag = tag)
         }

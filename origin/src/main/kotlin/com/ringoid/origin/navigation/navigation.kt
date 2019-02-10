@@ -73,6 +73,14 @@ fun logout(fragment: Fragment) {
     logoutIntent().let { fragment.startActivity(it) }
 }
 
+fun noConnection(activity: Activity) {
+    //
+}
+
+fun noConnection(fragment: Fragment) {
+    //
+}
+
 fun splash(activity: Activity, path: String) {
     navigate(path = path, uri = "splash://ringoid.com").let(activity::startActivity)
     activity.finish()
