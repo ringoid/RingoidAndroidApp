@@ -57,7 +57,7 @@ private fun blockingScreenIntent(path: String): Intent =
 private fun logoutIntent(): Intent = blockingScreenIntent(path = "/login")
     .putExtra(Extras.EXTRA_LOGOUT, true)
 
-private fun noConnectionIntent(): Intent = navigate(path = "no_net_conn")
+private fun noConnectionIntent(): Intent = navigate(path = "/no_net_conn")
 
 fun blockingErrorScreen(activity: Activity, path: String) {
     blockingScreenIntent(path).let { activity.startActivity(it) }
