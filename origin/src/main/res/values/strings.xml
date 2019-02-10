@@ -38,6 +38,8 @@
     <string name="debug_title">Debug Menu</string>
 
     <!-- Error screen -->
+    <string name="error_screen_no_network_connection">No network connection</string>
+    <string name="error_screen_no_network_connection_button_label">Reload this page</string>
     <string name="error_screen_old_app_version_button_label">Open Google Play</string>
 
     <!-- Feed screen -->

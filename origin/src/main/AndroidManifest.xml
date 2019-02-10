@@ -6,6 +6,12 @@
 
     <application>
         <activity
+            android:name=".view.error.NoNetworkConnectionActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Light"/>
+
+        <activity
             android:name=".view.error.OldAppVersionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme"/>
