@@ -29,6 +29,7 @@ import com.ringoid.origin.usersettings.view.info.di.AboutDialogModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoActivityModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoFragmentModule
 import com.ringoid.origin.view.dialog.di.StatusDialogModule
+import com.ringoid.origin.view.error.di.NoNetworkConnectionActivityModule
 import com.ringoid.origin.view.error.di.OldAppVersionActivityModule
 import com.ringoid.origin.view.splash.di.SplashActivityModule
 import com.ringoid.origin.view.web.di.WebPageActivityModule
@@ -50,7 +51,7 @@ import javax.inject.Singleton
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
                       LoginActivityModule::class, MainActivityModule::class,
-                      MatchesFeedFragmentModule::class, MessengerFragmentModule::class,
+                      MatchesFeedFragmentModule::class, MessengerFragmentModule::class, NoNetworkConnectionActivityModule::class,
                       OldAppVersionActivityModule::class, UserProfileFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
