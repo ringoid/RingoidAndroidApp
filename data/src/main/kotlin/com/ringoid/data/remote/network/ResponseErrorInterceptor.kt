@@ -36,7 +36,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
             errorMessage = "No network connection" ; Timber.e(e)
             unexpected = ERROR_NO_CONNECTION
         }
-        val body = BaseResponse(unexpected = unexpected)
+        val body = BaseResponse(requestUrl = request.url(), unexpected = unexpected)
         return Response.Builder()
             .code(200)
             .message(errorMessage)
