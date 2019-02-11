@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
@@ -24,6 +23,7 @@ import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.*
+import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
 import kotlinx.android.synthetic.main.fragment_profile.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -177,7 +177,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
-        val snapHelper = PagerSnapHelper()
+        val snapHelper = EnhancedPagerSnapHelper()
         rv_items.apply {
             adapter = imagesAdapter.also { it.tabsObserver = tabs.adapterDataObserver }
             isNestedScrollingEnabled = false

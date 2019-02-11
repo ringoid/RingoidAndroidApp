@@ -2,7 +2,6 @@ package com.ringoid.origin.feed.adapter.base
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.IProfile
@@ -13,6 +12,7 @@ import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
+import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -39,7 +39,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     init {
-        val snapHelper = PagerSnapHelper()
+        val snapHelper = EnhancedPagerSnapHelper()
         itemView.rv_items.apply {
             adapter = profileImageAdapter.also { it.tabsObserver = itemView.tabs.adapterDataObserver }
             isNestedScrollingEnabled = false
