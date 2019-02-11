@@ -18,6 +18,7 @@ import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
+import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.communicator
@@ -70,6 +71,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
     }
 
     protected fun openChat(position: Int, peerId: String, imageId: String = BAD_ID, tag: String = ChatFragment.TAG) {
+        if (!connectionManager.isNetworkAvailable()) {
+            noConnection(this)
+            return
+        }
+
         childFragmentManager.let {
             it.findFragmentByTag(tag)
                 ?: run {
