@@ -52,21 +52,26 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             fl_empty_container.changeVisibility(isVisible = false, soft = true)
             swipe_refresh_layout.isRefreshing = false
         }
+        fun onClearState(mode: Int) {
+            getEmptyStateInput(mode)?.let {
+                onIdleState()
+                fl_empty_container.changeVisibility(isVisible = true)
+                val emptyFragment = EmptyFragment.newInstance(it)
+                childFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
+                    .commitNowAllowingStateLoss()
+            }
+        }
+        fun onErrorState() {
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+        }
 
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.CLEAR -> {
                 feedAdapter.clear()
-
-                getEmptyStateInput(newState.mode)?.let {
-                    onIdleState()
-                    fl_empty_container.changeVisibility(isVisible = true)
-                    val emptyFragment = EmptyFragment.newInstance(it)
-                    childFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
-                        .commitNowAllowingStateLoss()
-                }
+                onClearState(mode = newState.mode)
             }
             is ViewState.DONE -> {
                 when (newState.residual) {
@@ -84,7 +89,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
 
