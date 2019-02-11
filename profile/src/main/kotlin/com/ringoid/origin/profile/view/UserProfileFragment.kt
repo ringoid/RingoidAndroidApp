@@ -156,6 +156,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 onAddImage()
             }
         ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
+            if (!connectionManager.isNetworkAvailable()) {
+                noConnection(this)
+                return@subscribe
+            }
+            
             rv_items.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
                 ?.takeIf { it != RecyclerView.NO_POSITION }
                 ?.let {
