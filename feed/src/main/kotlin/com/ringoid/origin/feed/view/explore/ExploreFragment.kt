@@ -23,7 +23,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
     override fun createFeedAdapter(): BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>> =
         FeedAdapter().apply {
             onLikeImageListener = { model: ProfileImageVO, _ ->
-                if (connectionManager.isNetworkAvailable()) {
+                if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@ExploreFragment)
                 } else {
                     Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")

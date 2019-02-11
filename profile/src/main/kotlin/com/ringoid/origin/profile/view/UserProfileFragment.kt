@@ -149,7 +149,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         ibtn_add_image.clicks().compose(clickDebounce())
             .subscribe {
-                if (connectionManager.isNetworkAvailable()) noConnection(this)
+                if (!connectionManager.isNetworkAvailable()) noConnection(this)
                 else onAddImage()
             }
         ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
