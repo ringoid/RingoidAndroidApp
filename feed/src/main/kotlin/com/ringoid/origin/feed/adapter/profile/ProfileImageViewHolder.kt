@@ -65,7 +65,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
     private var animation: LikeAnimation? = null
 
     override fun animateLike(isLiked: Boolean) {
-        showLikeAnimation()
+        if (isLiked) showLikeAnimation()
         showLikeAnimationSmall(isLiked)
     }
 
