@@ -8,11 +8,11 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
-import com.ringoid.origin.feed.view.lmm.like.BaseLikesFeedFragment
+import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.communicator
 
-class MessengerFragment : BaseLikesFeedFragment<MessengerViewModel>() {
+class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel>() {
 
     companion object {
         fun newInstance(): MessengerFragment = MessengerFragment()

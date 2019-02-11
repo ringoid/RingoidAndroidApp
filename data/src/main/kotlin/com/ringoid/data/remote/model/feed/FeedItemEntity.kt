@@ -40,5 +40,5 @@ class FeedItemEntity(
                  messages = messages.mapIndexed { index, message ->
                      val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
                      Message(id = "${id}_$index", chatId = id, peerId = peerId, text = message.text)
-                 })
+                 }.toMutableList())
 }

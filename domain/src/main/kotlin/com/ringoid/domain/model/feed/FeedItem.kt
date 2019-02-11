@@ -5,7 +5,7 @@ import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.utility.randomString
 
-data class FeedItem(val isNotSeen: Boolean, val messages: List<Message>,
+data class FeedItem(val isNotSeen: Boolean, val messages: MutableList<Message>,
     override val id: String, override val images: List<Image>,
     override val isRealModel: Boolean = true) : IProfile {
 
@@ -15,5 +15,5 @@ data class FeedItem(val isNotSeen: Boolean, val messages: List<Message>,
     fun profile(): Profile = Profile(id = id, images = images)
 }
 
-val EmptyFeedItem = FeedItem(isNotSeen = false, messages = emptyList(),
+val EmptyFeedItem = FeedItem(isNotSeen = false, messages = mutableListOf(),
     id = randomString(), images = emptyList(), isRealModel = false)

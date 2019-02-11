@@ -1,5 +1,6 @@
 package com.ringoid.origin.messenger.view
 
 import com.ringoid.base.view.Residual
+import com.ringoid.domain.model.messenger.Message
 
-object CHAT_MESSAGE_SENT : Residual()
+data class CHAT_MESSAGE_SENT(val message: Message) : Residual()

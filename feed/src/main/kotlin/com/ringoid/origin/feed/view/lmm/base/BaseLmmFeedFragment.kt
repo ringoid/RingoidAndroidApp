@@ -3,6 +3,8 @@ package com.ringoid.origin.feed.view.lmm.base
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -10,7 +12,9 @@ import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
+import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
@@ -20,6 +24,16 @@ import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM, FeedItem>(), IChatHost, IDialogCallback  {
+
+    abstract fun instantiateFeedAdapter(): BaseLmmAdapter
+
+    override fun createFeedAdapter(): BaseLmmAdapter =
+        instantiateFeedAdapter().apply {
+            messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
+                communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
+                openChat(position = position, peerId = model.id, imageId = model.images[positionOfImage].id)
+            }
+        }
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(payload: ChatPayload) {
@@ -36,10 +50,16 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
                 if (it.position == DomainUtil.BAD_POSITION) {
                     return
                 }
+                if (it.position == 1) {
+                    scrollToTopOfItemAtPosition(0)
+                }
 
                 when (tag) {
                     ChatFragment.TAG -> {
+                        communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
+                        // supply first message from user to FeedItem to change in on bind
+                        it.firstUserMessage?.let { message -> feedAdapter.getModel(it.position).messages.add(message) }
                         getRecyclerView().post {
                             feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
                         }
@@ -73,6 +93,12 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.observe(vm.feed, feedAdapter::submitList)
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+        /**
+         * Parent's [Fragment.onActivityCreated] is called before this method on any child [Fragment],
+         * so it's safe to access parent's [ViewModel] here, because it's already initialized.
+         */
+        communicator(ILmmFragment::class.java)?.accessViewModel()
+            ?.let { parentVm -> viewLifecycleOwner.observe(parentVm.listScrolls, ::scrollListToPosition) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -8,11 +8,12 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
+import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.communicator
 import timber.log.Timber
 
-class LikesFeedFragment : BaseLikesFeedFragment<LikesFeedViewModel>() {
+class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
 
     companion object {
         fun newInstance(): LikesFeedFragment = LikesFeedFragment()
