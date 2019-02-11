@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -56,7 +55,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     }
 
     private var peerId: String = BAD_ID
-    private var payload: Parcelable? = null
+    private var payload: ChatPayload? = null
     private lateinit var chatAdapter: ChatAdapter
 
     override fun getVmClass(): Class<ChatViewModel> = ChatViewModel::class.java
@@ -79,7 +78,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                         context?.toast(OriginR_string.chat_message_sent, gravity = Gravity.CENTER)
                         if (chatAdapter.isEmpty()) {
                             // user has just sent her first message to peer
-                            (payload as? ChatPayload)?.firstUserMessage = (newState.residual as? CHAT_MESSAGE_SENT)?.message
+                            payload?.firstUserMessage = (newState.residual as? CHAT_MESSAGE_SENT)?.message
                             closeChat()
                         }
                     }
@@ -130,9 +129,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 if (resultCode == Activity.RESULT_OK) {
                     if (data?.hasExtra(Extras.OUT_EXTRA_REPORT_REASON) != null) {
                         val reasonNumber = (data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0) + 1) * 10
-                        communicator(IChatHost::class.java)?.onReportFromChat(payload as ChatPayload, reasonNumber = reasonNumber)
+                        communicator(IChatHost::class.java)?.onReportFromChat(payload!!, reasonNumber = reasonNumber)
                     } else {
-                        communicator(IChatHost::class.java)?.onBlockFromChat(payload as ChatPayload)
+                        communicator(IChatHost::class.java)?.onBlockFromChat(payload!!)
                     }
                     closeChat()
                 } else {
@@ -157,7 +156,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             textChanges().compose(inputDebounce()).subscribe { ChatInMemoryCache.setInputMessage(profileId = peerId, text = it) }
         }
         ibtn_message_send.clicks().compose(clickDebounce()).subscribe {
-            val imageId = (payload as? ChatPayload)?.peerImageId ?: BAD_ID
+            val imageId = payload?.peerImageId ?: BAD_ID
             vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString())
             clearEditText()
         }
