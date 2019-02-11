@@ -160,7 +160,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 noConnection(this)
                 return@subscribe
             }
-            
+
             rv_items.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
                 ?.takeIf { it != RecyclerView.NO_POSITION }
                 ?.let {

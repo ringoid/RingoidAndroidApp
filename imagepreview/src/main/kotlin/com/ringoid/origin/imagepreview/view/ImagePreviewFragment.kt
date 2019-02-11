@@ -15,6 +15,7 @@ import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
+import com.ringoid.origin.navigation.noConnection
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.communicator
 import com.ringoid.utility.randomString
@@ -106,6 +107,11 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
 
     // --------------------------------------------------------------------------------------------
     private fun cropImage() {
+        if (!connectionManager.isNetworkAvailable()) {
+            noConnection(this)
+            return
+        }
+
         context?.let {
             val context = it
             val destinationFile = File(it.filesDir, "${randomString()}.jpg")
