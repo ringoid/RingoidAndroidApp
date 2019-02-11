@@ -10,6 +10,7 @@ import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import timber.log.Timber
 
@@ -22,8 +23,12 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
     override fun createFeedAdapter(): BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>> =
         FeedAdapter().apply {
             onLikeImageListener = { model: ProfileImageVO, _ ->
-                Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
-                vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
+                if (connectionManager.isNetworkAvailable()) {
+                    noConnection(this@ExploreFragment)
+                } else {
+                    Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
+                    vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
+                }
             }
         }
 
