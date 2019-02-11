@@ -13,6 +13,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.messenger.ChatPayload
@@ -24,7 +25,7 @@ import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_feed.*
 
-abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM, FeedItem>(), IChatHost, IDialogCallback  {
+abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM, FeedItemVO>(), IChatHost, IDialogCallback  {
 
     abstract fun instantiateFeedAdapter(): BaseLmmAdapter
 
@@ -60,7 +61,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
                         communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
-                        it.firstUserMessage?.let { message -> feedAdapter.getModel(it.position).messages.add(message) }
+                        it.firstUserMessage?.let { message -> feedAdapter.getModel(it.position).feedItem.messages.add(message) }
                         getRecyclerView().post {
                             feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
                         }

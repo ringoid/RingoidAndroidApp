@@ -12,4 +12,3 @@ class LikeFeedAdapter : BaseLmmAdapter() {
             vh.profileImageAdapter.itemClickListener = onLikeImageListener
         }
 }
-// TODO: show message button only after like tap

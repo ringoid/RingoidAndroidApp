@@ -2,9 +2,9 @@ package com.ringoid.origin.feed.adapter.lmm
 
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
@@ -12,11 +12,11 @@ open class MatchFeedAdapter : BaseLmmAdapter() {
 
     var onImageToOpenChatClickListener: ((model: ProfileImageVO, feedItemPosition: Int) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder<FeedItem> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder<FeedItemVO> {
         val viewHolder = super.onCreateViewHolder(parent, viewType)
         return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
             .takeIf { viewType == VIEW_TYPE_NORMAL }
-            ?.let { it as? BaseFeedViewHolder<FeedItem> }
+            ?.let { it as? BaseFeedViewHolder<FeedItemVO> }
             ?.also { vh ->
                 vh.profileImageAdapter.also { adapter ->
                     adapter.isLikeEnabled = false  // hide like button on matches feed items

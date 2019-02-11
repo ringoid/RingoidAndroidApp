@@ -11,6 +11,7 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.ScreenHelper
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -23,13 +24,13 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
     : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
 
-    val feed by lazy { MutableLiveData<List<FeedItem>>() }
+    val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
 
     init {
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ feed.value = it }, Timber::e)
+            .subscribe({ feed.value = it.map { FeedItemVO(feedItem = it) } }, Timber::e)
     }
 
     protected open fun doOnSuccess(lmm: Lmm) {}
