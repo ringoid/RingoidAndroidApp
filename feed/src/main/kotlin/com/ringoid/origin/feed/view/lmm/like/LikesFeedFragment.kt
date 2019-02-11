@@ -4,6 +4,8 @@ import android.os.Bundle
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderHideChatControls
+import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderShowChatControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -23,9 +25,9 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
 
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
         LikeFeedAdapter().apply {
-            onLikeImageListener = { model: ProfileImageVO, _ ->
+            onLikeImageListener = { model: ProfileImageVO, feedItemPosition: Int ->
                 Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
-                vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
+                vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked, feedItemPosition = feedItemPosition)
             }
         }
 
@@ -35,6 +37,25 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_likes_you_empty_need_refresh)
             else -> null
         }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is HAS_LIKES_ON_PROFILE -> {
+                        val position = (newState.residual as HAS_LIKES_ON_PROFILE).feedItemPosition
+                        feedAdapter.notifyItemChanged(position, LikeFeedViewHolderShowChatControls)
+                    }
+                    is NO_LIKES_ON_PROFILE -> {
+                        val position = (newState.residual as NO_LIKES_ON_PROFILE).feedItemPosition
+                        feedAdapter.notifyItemChanged(position, LikeFeedViewHolderHideChatControls)
+                    }
+                }
+            }
+        }
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

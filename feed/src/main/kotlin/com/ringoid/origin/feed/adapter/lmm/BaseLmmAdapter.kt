@@ -39,7 +39,7 @@ abstract class BaseLmmAdapter(headerRows: Int = 1) : BaseFeedAdapter<FeedItem, O
     override fun getHeaderLayoutResId(): Int = R.layout.rv_item_feed_lmm_header
 
     // ------------------------------------------
-    protected fun wrapMessageClickListener(vh: OriginFeedViewHolder<FeedItem>): ((model: FeedItem, position: Int) -> Unit)? =
+    private fun wrapMessageClickListener(vh: OriginFeedViewHolder<FeedItem>): ((model: FeedItem, position: Int) -> Unit)? =
         { model: FeedItem, position: Int ->
             messageClickListener?.invoke(model, position, vh.getCurrentImagePosition())
         }

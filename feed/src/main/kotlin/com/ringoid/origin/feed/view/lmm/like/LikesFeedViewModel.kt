@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.lmm.like
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
@@ -20,6 +21,8 @@ class LikesFeedViewModel @Inject constructor(
 
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
 
+    private val numberOfLikes = mutableMapOf<String, MutableSet<String>>()
+
     override fun doOnSuccess(lmm: Lmm) {
         super.doOnSuccess(lmm)
         badgeLikes.value = lmm.newLikesCount() > 0
@@ -30,6 +33,18 @@ class LikesFeedViewModel @Inject constructor(
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedLikes
 
     override fun getFeedName(): String = "who_liked_me"
+
+    fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
+        if (!numberOfLikes.containsKey(profileId)) {
+            numberOfLikes[profileId] = mutableSetOf()
+        }
+        numberOfLikes[profileId]?.let {
+            if (isLiked) it.add(imageId) else it.remove(imageId)
+            viewState.value = if (it.isEmpty()) ViewState.DONE(NO_LIKES_ON_PROFILE(feedItemPosition))
+                              else ViewState.DONE(HAS_LIKES_ON_PROFILE(feedItemPosition))
+        }
+        onLike(profileId, imageId, isLiked)
+    }
 
     override fun onRefresh() {
         badgeLikes.value = false  // discard badge on refresh - it will be set properly after refresh
