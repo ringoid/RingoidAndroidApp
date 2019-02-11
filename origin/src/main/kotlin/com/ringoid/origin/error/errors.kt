@@ -8,6 +8,7 @@ import com.ringoid.origin.navigation.blockingErrorScreen
 import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.utility.delay
 
 fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit = {}) {
     fun errorState(e: Throwable) {
@@ -25,7 +26,7 @@ fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit 
         }
         is NetworkUnexpected -> {
             noConnection(activity)
-            activity.runOnUiThread {onErrorState() }  // handle error state on Screen  in screen-specific way
+            delay(delay = 1000L) {onErrorState() }  // handle error state on Screen  in screen-specific way
         }
         else -> errorState(this)  // default error handling
     }
@@ -47,7 +48,7 @@ fun Throwable.handleOnView(fragment: Fragment, onErrorState: () -> Unit = {}) {
         }
         is NetworkUnexpected -> {
             noConnection(fragment)
-            fragment.activity?.runOnUiThread { onErrorState() }  // handle error state on Screen  in screen-specific way
+            delay(delay = 1000L) { onErrorState() }  // handle error state on Screen  in screen-specific way
         }
         else -> errorState(this)  // default error handling
     }
