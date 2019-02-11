@@ -10,6 +10,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.utility.manager.KeyboardManager
 import com.ringoid.utility.manager.KeyboardStatus
@@ -27,6 +28,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     protected lateinit var vm: T
     private val keyboardManager by lazy { KeyboardManager(this) }
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
+    @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
 
     var isDestroying = false
