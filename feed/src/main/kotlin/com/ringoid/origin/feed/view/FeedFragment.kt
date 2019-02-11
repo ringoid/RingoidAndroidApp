@@ -53,6 +53,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             swipe_refresh_layout.isRefreshing = false
         }
         fun onClearState(mode: Int) {
+            feedAdapter.clear()
             getEmptyStateInput(mode)?.let {
                 onIdleState()
                 fl_empty_container.changeVisibility(isVisible = true)
@@ -69,10 +70,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
 
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.CLEAR -> {
-                feedAdapter.clear()
-                onClearState(mode = newState.mode)
-            }
+            is ViewState.CLEAR -> onClearState(mode = newState.mode)
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is BLOCK_PROFILE -> {
