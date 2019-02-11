@@ -98,6 +98,7 @@
     <string name="profile_dialog_image_another_title">What do you want to do next?</string>
     <string name="profile_empty_images">Add your photo to\nsee who likes you</string>
     <string name="profile_empty_title">Profile</string>
+    <string name="profile_error_stub">Pull to refresh</string>
     <string name="profile_image_created">Photo has been uploaded.</string>
     <string name="profile_image_deleted">Photo has been removed.</string>
 

@@ -49,12 +49,16 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             pb_profile.changeVisibility(isVisible = false)
             swipe_refresh_layout.isRefreshing = false
         }
+        fun onErrorState() {
+            onIdleState()
+            showErrorStub(needShow = true)
+        }
 
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
-            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
 
@@ -215,19 +219,26 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     }
 
     private fun showEmptyStub(needShow: Boolean) {
+        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.profile_empty_images))
+    }
+
+    private fun showErrorStub(needShow: Boolean) {
+        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.profile_error_stub))
+    }
+
+    private fun showEmptyStub(needShow: Boolean, input: EmptyFragment.Companion.Input) {
         fl_empty_container.changeVisibility(isVisible = needShow)
         if (!needShow) {
             return
         }
 
-        EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.profile_empty_images)
-            .apply {
-                val emptyFragment = EmptyFragment.newInstance(this)
-                childFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
-                    .commitNowAllowingStateLoss()
-            }
+        input.apply {
+            val emptyFragment = EmptyFragment.newInstance(this)
+            childFragmentManager
+                .beginTransaction()
+                .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
+                .commitNowAllowingStateLoss()
+        }
     }
 
     // ------------------------------------------
