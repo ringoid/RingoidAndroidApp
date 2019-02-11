@@ -29,6 +29,7 @@ import com.ringoid.origin.messenger.adapter.ChatAdapter
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.*
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -156,6 +157,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             textChanges().compose(inputDebounce()).subscribe { ChatInMemoryCache.setInputMessage(profileId = peerId, text = it) }
         }
         ibtn_message_send.clicks().compose(clickDebounce()).subscribe {
+            if (!connectionManager.isNetworkAvailable()) {
+                noConnection(this)
+                return@subscribe
+            }
+
             val imageId = payload?.peerImageId ?: BAD_ID
             vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString())
             clearEditText()
