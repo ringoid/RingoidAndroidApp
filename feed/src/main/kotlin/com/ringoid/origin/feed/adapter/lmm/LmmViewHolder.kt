@@ -3,17 +3,17 @@ package com.ringoid.origin.feed.adapter.lmm
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
-import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedViewHolder<FeedItemVO>(view, viewPool) {
+    : BaseFeedViewHolder<FeedItem>(view, viewPool) {
 
     init {
         // TODO: improve UX for fling
@@ -30,12 +30,12 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 //        }
     }
 
-    override fun bind(model: FeedItemVO) {
+    override fun bind(model: FeedItem) {
         super.bind(model)
         setMessengerIcon(model)
     }
 
-    override fun bind(model: FeedItemVO, payloads: List<Any>) {
+    override fun bind(model: FeedItem, payloads: List<Any>) {
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
         }
@@ -58,11 +58,11 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     }
 
     // ------------------------------------------
-    private fun setMessengerIcon(model: FeedItemVO) {
-        val iconResId = if (model.feedItem.messages.isEmpty()) {
+    private fun setMessengerIcon(model: FeedItem) {
+        val iconResId = if (model.messages.isEmpty()) {
             R.drawable.ic_chat_bubble_outline_white_36dp
         } else {
-            val peerMessagesCount = model.feedItem.countOfPeerMessages()
+            val peerMessagesCount = model.countOfPeerMessages()
             if (peerMessagesCount > 0) {
                 if (peerMessagesCount == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
                     R.drawable.ic_messenger_outline_white_36dp
@@ -77,9 +77,9 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     }
 }
 
-class HeaderLmmViewHolder(view: View) : OriginFeedViewHolder<FeedItemVO>(view) {
+class HeaderLmmViewHolder(view: View) : OriginFeedViewHolder<FeedItem>(view) {
 
-    override fun bind(model: FeedItemVO) {
+    override fun bind(model: FeedItem) {
         // no-op
     }
 }
