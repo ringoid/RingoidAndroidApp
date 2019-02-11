@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.ringoid.widget.view.GestureEnhancedRecyclerView
+        <com.ringoid.widget.view.rv.GestureEnhancedRecyclerView
             android:id="@+id/rv_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
