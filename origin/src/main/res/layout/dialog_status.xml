@@ -27,24 +27,16 @@
         tools:text="@string/error_common"
         style="@style/StdText.Secondary"/>
 
-    <LinearLayout
+    <Button
+        android:id="@+id/btn_support"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:text="@string/debug_email_support_button_label"
+        style="@style/FlatButton"/>
 
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/std_margin_16"
-            android:text="@string/button_cancel"
-            style="@style/FlatButton"/>
-
-        <Button
-            android:id="@+id/btn_support"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/std_margin_16"
-            android:text="@string/debug_email_support_button_label"
-            style="@style/FlatButton"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:text="@string/button_cancel"
+        style="@style/FlatButton"/>
 </LinearLayout>
