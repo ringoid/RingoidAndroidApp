@@ -64,6 +64,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
