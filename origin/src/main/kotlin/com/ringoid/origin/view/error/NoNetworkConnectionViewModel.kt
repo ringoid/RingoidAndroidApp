@@ -9,6 +9,7 @@ import javax.inject.Inject
 class NoNetworkConnectionViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
 
     fun onPageReload() {
+        viewState.value = ViewState.LOADING
         delay(delay = 1000L) {
             if (connectionManager.isNetworkAvailable()) viewState.value = ViewState.CLOSE
             else viewState.value = ViewState.IDLE

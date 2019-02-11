@@ -22,8 +22,14 @@ class NoNetworkConnectionActivity : BaseActivity<NoNetworkConnectionViewModel>()
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.CLOSE -> finish()
-            is ViewState.IDLE -> pb_no_connection.changeVisibility(isVisible = false)
-            is ViewState.LOADING -> pb_no_connection.changeVisibility(isVisible = true)
+            is ViewState.IDLE -> {
+                btn_retry.changeVisibility(isVisible = true)
+                pb_no_connection.changeVisibility(isVisible = false)
+            }
+            is ViewState.LOADING -> {
+                btn_retry.changeVisibility(isVisible = false)
+                pb_no_connection.changeVisibility(isVisible = true)
+            }
         }
     }
 
