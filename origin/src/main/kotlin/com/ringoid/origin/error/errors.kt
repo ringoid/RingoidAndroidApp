@@ -26,7 +26,7 @@ fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit 
         }
         is NetworkUnexpected -> {
             noConnection(activity)
-            delay(delay = 1000L) {onErrorState() }  // handle error state on Screen  in screen-specific way
+            delay {onErrorState() }  // handle error state on Screen  in screen-specific way
         }
         else -> errorState(this)  // default error handling
     }
@@ -48,7 +48,7 @@ fun Throwable.handleOnView(fragment: Fragment, onErrorState: () -> Unit = {}) {
         }
         is NetworkUnexpected -> {
             noConnection(fragment)
-            delay(delay = 1000L) { onErrorState() }  // handle error state on Screen  in screen-specific way
+            delay { onErrorState() }  // handle error state on Screen  in screen-specific way
         }
         else -> errorState(this)  // default error handling
     }

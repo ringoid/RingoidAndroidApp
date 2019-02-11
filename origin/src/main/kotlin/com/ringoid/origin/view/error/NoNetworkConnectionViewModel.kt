@@ -10,7 +10,7 @@ class NoNetworkConnectionViewModel @Inject constructor(app: Application) : BaseV
 
     fun onPageReload() {
         viewState.value = ViewState.LOADING
-        delay(delay = 1000L) {
+        delay {
             if (connectionManager.isNetworkAvailable()) viewState.value = ViewState.CLOSE
             else viewState.value = ViewState.IDLE
         }
