@@ -149,8 +149,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         ibtn_add_image.clicks().compose(clickDebounce())
             .subscribe {
-                if (!connectionManager.isNetworkAvailable()) noConnection(this)
-                else onAddImage()
+                if (!connectionManager.isNetworkAvailable()) {
+                    noConnection(this)
+                    return@subscribe
+                }
+                onAddImage()
             }
         ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
             rv_items.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
