@@ -147,7 +147,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ibtn_add_image.clicks().compose(clickDebounce()).subscribe { onAddImage() }
+        ibtn_add_image.clicks().compose(clickDebounce())
+            .subscribe {
+                if (connectionManager.isNetworkAvailable()) noConnection(this)
+                else onAddImage()
+            }
         ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
             rv_items.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
                 ?.takeIf { it != RecyclerView.NO_POSITION }
