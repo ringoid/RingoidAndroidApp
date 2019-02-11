@@ -76,6 +76,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
             return
         }
 
+        communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
         childFragmentManager.let {
             it.findFragmentByTag(tag)
                 ?: run {

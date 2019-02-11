@@ -23,7 +23,6 @@ class MessengerFragment : BaseLmmFeedFragment<MessengerViewModel>() {
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
         MessengerFeedAdapter().apply {
             onImageToOpenChatClickListener = { model: ProfileImageVO, feedItemPosition: Int ->
-                communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
                 openChat(position = feedItemPosition, peerId = model.profileId, imageId = model.image.id)
             }
         }
