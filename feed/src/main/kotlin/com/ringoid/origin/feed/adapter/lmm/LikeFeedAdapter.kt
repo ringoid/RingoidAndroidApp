@@ -8,7 +8,7 @@ class LikeFeedAdapter : BaseLmmAdapter() {
     var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
 
     override fun instantiateViewHolder(view: View): LmmViewHolder =
-        super.instantiateViewHolder(view).also { vh ->
+        LikeFeedViewHolder(view, viewPool = imagesViewPool).also { vh ->
             vh.profileImageAdapter.itemClickListener = onLikeImageListener
         }
 }
