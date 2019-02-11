@@ -38,4 +38,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/RaisedButton"/>
+
+    <ProgressBar
+        android:id="@+id/pb_no_connection"
+        android:layout_marginBottom="@dimen/std_margin_16"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/ProgressBar"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

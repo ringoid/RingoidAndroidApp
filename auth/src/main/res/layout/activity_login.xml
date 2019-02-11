@@ -32,6 +32,8 @@
             android:text="@string/login_button"
             android:textSize="@dimen/std_text_20"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             style="@style/RaisedButton"/>
 
         <ProgressBar

@@ -12,6 +12,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
+import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -25,6 +26,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     @Inject protected lateinit var getUserAccessTokenUseCase: GetUserAccessTokenUseCase
     @Inject protected lateinit var actionObjectPool: IActionObjectPool
+    @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
 
     val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
