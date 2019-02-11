@@ -25,9 +25,9 @@ fun checkMainThread2(observer: Observer<*>): Boolean {
 }
 
 @Suppress("CheckResult")
-fun delay(time: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLISECONDS, body: () -> Unit) {
+fun delay(delay: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLISECONDS, body: () -> Unit) {
     Single.just(0)
-        .delay(time, units)
+        .delay(delay, units)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe({ body() }, Timber::e)
 }
