@@ -134,7 +134,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                     et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_orange)
                     iv_status.also {
                         it.changeVisibility(isVisible = true)
-                        it.setImageResource(R.drawable.ic_error_red_16dp)
+                        it.setImageResource(WidgetR_drawable.ic_error_red_16dp)
                     }
                 }
                 else -> { /* no-op */ }
