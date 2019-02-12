@@ -46,6 +46,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null)
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
                                 .doOnSubscribe { Timber.w("Retry attempt [$attemptNumber / $count] after error: $error") }
+                                .doOnNext { if (error is RepeatRequestAfterSecException) SentryUtil.capture(error, message = "Repeat after delay") }
                                 .doOnComplete { if (attemptNumber >= count) throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted") } }
             }
     }
@@ -63,6 +64,7 @@ private fun expBackoffObservableImpl(count: Int, delay: Long, tag: String? = nul
                 }
                 Observable.timer(delayTime, TimeUnit.MILLISECONDS)
                                   .doOnSubscribe { Timber.e("Retry attempt [$attemptNumber / $count] after error: $error") }
+                                  .doOnNext { if (error is RepeatRequestAfterSecException) SentryUtil.capture(error, message = "Repeat after delay") }
                                   .doOnComplete { if (attemptNumber >= count) throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted") } }
             }
     }
