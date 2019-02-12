@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class EnhancedPagerSnapHelper : PagerSnapHelper() {
+class EnhancedPagerSnapHelper(private val factor: Float = FACTOR, private val duration: Int = MAX_SCROLL_ON_FLING_DURATION)
+    : PagerSnapHelper() {
 
     private lateinit var rv: RecyclerView
 
     companion object {
-        const val FACTOR = 0.5f
+        const val FACTOR = 1.0f
         const val MAX_SCROLL_ON_FLING_DURATION = 100
     }
 
@@ -40,10 +41,10 @@ class EnhancedPagerSnapHelper : PagerSnapHelper() {
             }
 
             override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float =
-                super.calculateSpeedPerPixel(displayMetrics) * FACTOR
+                super.calculateSpeedPerPixel(displayMetrics) * factor
 
             override fun calculateTimeForScrolling(dx: Int): Int =
-                Math.min(MAX_SCROLL_ON_FLING_DURATION, super.calculateTimeForScrolling(dx))
+                Math.min(duration, super.calculateTimeForScrolling(dx))
         }
     }
 }
