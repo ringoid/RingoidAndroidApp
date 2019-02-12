@@ -30,5 +30,6 @@ sealed class BusEvent {
     override fun toString(): String = javaClass.simpleName
 
     object Stub : BusEvent()
+    object NoImagesOnProfile : BusEvent()
     object RefreshOnProfile : BusEvent()
 }

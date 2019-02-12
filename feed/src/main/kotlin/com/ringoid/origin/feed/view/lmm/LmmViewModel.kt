@@ -13,8 +13,8 @@ import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
-class LmmViewModel @Inject constructor(
-    val getLmmUseCase: GetLmmUseCase, app: Application) : BaseViewModel(app) {
+class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase, app: Application)
+    : BaseViewModel(app) {
 
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
     val badgeMatches by lazy { MutableLiveData<Boolean>() }

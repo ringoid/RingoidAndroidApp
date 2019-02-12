@@ -82,6 +82,12 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // ------------------------------------------
+    fun onDeleteImage(imagesLeft: Int) {
+        if (imagesLeft <= 0) {
+            Bus.post(event = BusEvent.NoImagesOnProfile)
+        }
+    }
+
     fun onStartRefresh() {
         actionObjectPool.trigger()
     }

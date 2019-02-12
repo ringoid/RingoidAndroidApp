@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view
 
 import android.app.Application
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
@@ -12,6 +13,8 @@ import com.ringoid.domain.model.actions.*
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 
 abstract class FeedViewModel(
@@ -42,6 +45,13 @@ abstract class FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase.source()
             .autoDisposable(this)
             .subscribe({}, Timber::e)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
+        Timber.d("Received bus event: $event")
+        // deleting all images on Profile screen leads any Feed screen to purge it's content
+        clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 
     // --------------------------------------------------------------------------------------------
