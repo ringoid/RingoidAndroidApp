@@ -27,40 +27,57 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     /* User (Auth, Profile) */
     // --------------------------------------------------------------------------------------------
     fun createUserProfile(essence: AuthCreateProfileEssence): Single<AuthCreateProfileResponse> =
-        restAdapter.createUserProfile(essence.toBody()).breadcrumb("createUserProfile", essence.toSentryData())
+        restAdapter.createUserProfile(essence.toBody())
+            .breadcrumb("createUserProfile", essence.toSentryData())
+            .checkResponseTime()
 
     fun deleteUserProfile(accessToken: String): Single<BaseResponse> {
         val content = "{\"accessToken\":\"$accessToken\"}"
         val body = RequestBody.create(MediaType.parse("application/json"), content)
-        return restAdapter.deleteUserProfile(body).breadcrumb("deleteUserProfile", "accessToken" to accessToken)
+        return restAdapter.deleteUserProfile(body)
+            .breadcrumb("deleteUserProfile", "accessToken" to accessToken)
+            .checkResponseTime()
     }
 
     fun getUserSettings(accessToken: String): Single<UserSettingsResponse> =
-        restAdapter.getUserSettings(accessToken = accessToken).breadcrumb("getUserSettings", "accessToken" to accessToken)
+        restAdapter.getUserSettings(accessToken = accessToken)
+            .breadcrumb("getUserSettings", "accessToken" to accessToken)
+            .checkResponseTime()
 
     fun updateUserSettings(essence: UpdateUserSettingsEssence): Single<BaseResponse> =
-        restAdapter.updateUserSettings(essence.toBody()).breadcrumb("updateUserSettings", essence.toSentryData())
+        restAdapter.updateUserSettings(essence.toBody())
+            .breadcrumb("updateUserSettings", essence.toSentryData())
+            .checkResponseTime()
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
     fun commitActions(essence: CommitActionsEssence): Single<CommitActionsResponse> =
-        restAdapter.commitActions(essence.toBody()).breadcrumb("commitActions", essence.toSentryData())
+        restAdapter.commitActions(essence.toBody())
+            .breadcrumb("commitActions", essence.toSentryData())
+            .checkResponseTime()
 
     /* Image */
     // --------------------------------------------------------------------------------------------
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<ImageUploadUrlResponse> =
-        restAdapter.getImageUploadUrl(essence.toBody()).breadcrumb("getImageUploadUrl", essence.toSentryData())
+        restAdapter.getImageUploadUrl(essence.toBody())
+            .breadcrumb("getImageUploadUrl", essence.toSentryData())
+            .checkResponseTime()
 
     fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
         restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
             .breadcrumb("getUserImages", "accessToken" to accessToken, "resolution" to "$resolution")
+            .checkResponseTime()
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
-        restAdapter.deleteUserImage(essence.toBody()).breadcrumb("deleteUserImage", essence.toSentryData())
+        restAdapter.deleteUserImage(essence.toBody())
+            .breadcrumb("deleteUserImage", essence.toSentryData())
+            .checkResponseTime()
 
     fun uploadImage(url: String, image: File): Completable {
         val body = RequestBody.create(MediaType.parse("image/*"), image)
-        return restAdapter.uploadImage(url = url, body = body).breadcrumb("uploadImage", "url" to url)
+        return restAdapter.uploadImage(url = url, body = body)
+            .breadcrumb("uploadImage", "url" to url)
+            .checkResponseTime()
     }
 
     /* Feed */
@@ -69,17 +86,19 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
             .breadcrumb("getNewFaces", "accessToken" to accessToken, "resolution" to "$resolution",
                         "lastActionTime" to "$lastActionTime")
+            .checkResponseTime()
 
     fun getLmm(accessToken: String, resolution: ImageResolution, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, lastActionTime = lastActionTime)
             .breadcrumb("getLmm", "accessToken" to accessToken,
                         "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
+            .checkResponseTime()
 
     /* Test */
     // --------------------------------------------------------------------------------------------
-    fun debugTimeout(): Completable = restAdapter.debugTimeout()
-    fun debugInvalidToken(): Completable = restAdapter.debugInvalidToken()
-    fun debugNotSuccess(): Completable = restAdapter.debugNotSuccess()
-    fun debugOldVersion(): Completable = restAdapter.debugOldVersion()
-    fun debugServerError(): Completable = restAdapter.debugServerError()
+    fun debugTimeout(): Completable = restAdapter.debugTimeout().checkResponseTime()
+    fun debugInvalidToken(): Completable = restAdapter.debugInvalidToken().checkResponseTime()
+    fun debugNotSuccess(): Completable = restAdapter.debugNotSuccess().checkResponseTime()
+    fun debugOldVersion(): Completable = restAdapter.debugOldVersion().checkResponseTime()
+    fun debugServerError(): Completable = restAdapter.debugServerError().checkResponseTime()
 }
