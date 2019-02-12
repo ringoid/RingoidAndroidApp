@@ -35,7 +35,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
     }
 
-    private var shouldAskToAddAnotherImage: Boolean = false
+    private var cropImageAfterLogin: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
 
@@ -81,9 +81,9 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onTabTransaction(payload)
         payload?.let {
             when (it) {
-                Payload.PAYLOAD_PROFILE_LOGIN -> {}  // TODO: login no image
-                Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { shouldAskToAddAnotherImage = true }
-                Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> onAddImage()
+                Payload.PAYLOAD_PROFILE_LOGIN -> showEmptyStub(needShow = true)
+                Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }
+                Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> onAddImage()  // redirect from other screen
             }
         }
     }
@@ -120,21 +120,22 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         fun onCropFailed(e: Throwable) {
             Timber.e(e, "Image crop has failed")
             view?.let { snackbar(it, OriginR_string.error_crop_image) }
+            doOnCropErrorAfterLogin()
         }
 
         fun onCropSuccess(croppedUri: Uri) {
             Timber.v("Image cropping has succeeded, uri: $croppedUri")
             vm.uploadImage(uri = croppedUri)
-            askToAddAnotherImage()
+            doOnCropSuccessAfterLogin()
         }
 
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.imageDeleted, imagesAdapter::remove) { ibtn_delete_image.changeVisibility(isVisible = !imagesAdapter.isEmpty()) }
+            observe(vm.imageDeleted, imagesAdapter::remove) { showEmptyStub(needShow = imagesAdapter.isEmpty()) }
             observe(vm.imageIdChanged, imagesAdapter::updateItemId)
-            observe(vm.images, imagesAdapter::submitList) { ibtn_delete_image.changeVisibility(isVisible = !it.isEmpty()) }
+            observe(vm.images, imagesAdapter::submitList) { showEmptyStub(needShow = it.isEmpty()) }
             observe(vm.imageCreated, imagesAdapter::prepend) {
-                ibtn_delete_image.changeVisibility(isVisible = true)
+                showEmptyStub(needShow = false)
                 rv_items.post { rv_items.scrollToPosition(0) }
             }
         }
@@ -189,7 +190,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             snapHelper.attachToRecyclerView(this)
             tabs.attachToRecyclerView(this, snapHelper)
             setHasFixedSize(true)
-//            setRecycledViewPool(viewPool)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
@@ -205,12 +205,21 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         ExternalNavigator.openGalleryToGetImageFragment(this)
     }
 
-    private fun askToAddAnotherImage() {
-        if (!shouldAskToAddAnotherImage) {
+    private fun doOnCropErrorAfterLogin() {
+        if (!cropImageAfterLogin) {
             return
         }
 
-        shouldAskToAddAnotherImage = false  // ask only once per session
+        cropImageAfterLogin = false  // ask only once per session
+        showEmptyStub(needShow = true)
+    }
+
+    private fun doOnCropSuccessAfterLogin() {
+        if (!cropImageAfterLogin) {
+            return
+        }
+
+        cropImageAfterLogin = false  // ask only once per session
         Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
             negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
@@ -218,8 +227,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
     }
 
+    // ------------------------------------------
     private fun showEmptyStub(needShow: Boolean) {
         showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.profile_empty_images))
+        ibtn_delete_image.changeVisibility(isVisible = !needShow)
+        communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
     private fun showErrorStub(needShow: Boolean) {
@@ -244,45 +256,4 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // ------------------------------------------
     private fun globalImagePreviewReceiver(): IImagePreviewReceiver? =
         this@UserProfileFragment.communicator(IBaseRingoidApplication::class.java)?.imagePreviewReceiver
-
-    // --------------------------------------------------------------------------------------------
-    /**
-     * Show progress while image is being cropped
-     * Stop progress on image has been cropped or cropping has failed
-     *
-     * On crop Success:
-     *     add image to UI
-     *     add image to Db
-     *     show delete image button
-     *
-     * On crop Error:
-     *     show error
-     *     (hide delete image button on Login)
-     *     (show empty screen on Login and warning)
-     */
-    private fun addImagePipeline() {
-        //
-    }
-
-    /**
-     * Show progress while obtaining images
-     * Stop progress on images have been obtained from Db
-     * Get cached images from Db
-     * Show images from Db on UI
-     * Show empty screen if no images and warning, hide delete image button
-     */
-    private fun getImagesPipeline() {
-        //
-    }
-
-    /**
-     * Show progress while removing image
-     * Stop progress on image has been removed from Db
-     * Remove image from UI
-     * Remove image from Db
-     * Show empty screen if no images and warning, hide delete image button
-     */
-    private fun deleteImagePipeline() {
-        //
-    }
 }

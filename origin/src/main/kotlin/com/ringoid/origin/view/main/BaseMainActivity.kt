@@ -187,7 +187,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
         badgeLmm.changeVisibility(isVisible, soft = true)
     }
 
-    protected fun showBadgeWarningOnProfile(isVisible: Boolean) {
+    override fun showBadgeWarningOnProfile(isVisible: Boolean) {
         badgeWarningProfile.changeVisibility(isVisible, soft = true)
     }
 

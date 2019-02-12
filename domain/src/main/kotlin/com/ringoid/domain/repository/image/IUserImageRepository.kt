@@ -22,4 +22,5 @@ interface IUserImageRepository : IImageRepository {
     fun getUserImages(resolution: ImageResolution): Single<List<UserImage>>
 
     fun deleteUserImage(essence: ImageDeleteEssence): Completable
+    fun deleteLocalUserImages(): Completable
 }

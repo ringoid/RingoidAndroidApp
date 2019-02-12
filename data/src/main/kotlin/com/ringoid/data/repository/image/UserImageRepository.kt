@@ -75,6 +75,8 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
         .ignoreElement()  // convert to Completable
     }
 
+    override fun deleteLocalUserImages(): Completable = Completable.fromCallable { local.deleteAllImages() }
+
     // ------------------------------------------------------------------------
     override fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image> {
         val localImageRequest = CreateLocalImageRequest(id = essence.clientImageId, image = LocalImage(file = image))
