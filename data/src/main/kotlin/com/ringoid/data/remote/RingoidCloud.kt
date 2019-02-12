@@ -35,13 +35,13 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
         val content = "{\"accessToken\":\"$accessToken\"}"
         val body = RequestBody.create(MediaType.parse("application/json"), content)
         return restAdapter.deleteUserProfile(body)
-            .breadcrumb("deleteUserProfile", "accessToken" to accessToken)
+            .breadcrumb("deleteUserProfile", "accessToken" to "")
             .checkResponseTime()
     }
 
     fun getUserSettings(accessToken: String): Single<UserSettingsResponse> =
         restAdapter.getUserSettings(accessToken = accessToken)
-            .breadcrumb("getUserSettings", "accessToken" to accessToken)
+            .breadcrumb("getUserSettings", "accessToken" to "")
             .checkResponseTime()
 
     fun updateUserSettings(essence: UpdateUserSettingsEssence): Single<BaseResponse> =
@@ -65,7 +65,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
         restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
-            .breadcrumb("getUserImages", "accessToken" to accessToken, "resolution" to "$resolution")
+            .breadcrumb("getUserImages", "accessToken" to "", "resolution" to "$resolution")
             .checkResponseTime()
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
@@ -84,13 +84,13 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun getNewFaces(accessToken: String, resolution: ImageResolution, limit: Int?, lastActionTime: Long = 0L) =
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
-            .breadcrumb("getNewFaces", "accessToken" to accessToken, "resolution" to "$resolution",
+            .breadcrumb("getNewFaces", "accessToken" to "", "resolution" to "$resolution",
                         "lastActionTime" to "$lastActionTime")
             .checkResponseTime()
 
     fun getLmm(accessToken: String, resolution: ImageResolution, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, lastActionTime = lastActionTime)
-            .breadcrumb("getLmm", "accessToken" to accessToken,
+            .breadcrumb("getLmm", "accessToken" to "",
                         "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .checkResponseTime()
 

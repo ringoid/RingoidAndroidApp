@@ -59,7 +59,7 @@ object SentryUtil {
 
     fun setUser(spm: ISharedPrefsManager) {
         spm.currentUserId()?.let {
-            val data = mutableMapOf<String, Any>().apply { put("accessToken", spm.accessToken()?.accessToken ?: "null") }
+            val data = mutableMapOf<String, Any>()//.apply { put("accessToken", spm.accessToken()?.accessToken ?: "null") }
             Sentry.getContext().user = UserBuilder().setId(it).setData(data).build()
         }
     }

@@ -6,6 +6,7 @@ import com.ringoid.domain.model.IEssence
 import io.reactivex.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import timber.log.Timber
 
 fun IEssence.toBody(): RequestBody = RequestBody.create(MediaType.parse("application/json"), this.toJson())
 
@@ -59,7 +60,7 @@ inline fun <reified T> checkResponseTimeObservable(): ObservableTransformer<T, T
 fun checkElapsedTimeAndWarn(startTime: Long) {
     val elapsedTime = System.currentTimeMillis() - startTime
     if (elapsedTime >= BuildConfig.REQUEST_TIME_THRESHOLD) {
-        SentryUtil.w("Waiting for response longer than expected",
-            listOf("elapsed time" to "$elapsedTime", "threshold" to "${BuildConfig.REQUEST_TIME_THRESHOLD}"))
+        val message = "Waiting for response longer than expected"; Timber.w(message)
+        SentryUtil.w(message, listOf("elapsed time" to "$elapsedTime", "threshold" to "${BuildConfig.REQUEST_TIME_THRESHOLD}"))
     }
 }
