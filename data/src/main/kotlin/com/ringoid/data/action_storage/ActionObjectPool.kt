@@ -5,12 +5,14 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.*
+import com.ringoid.domain.exception.EmptyActionObjectPoolException
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -131,8 +133,20 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
             return
         }
 
+        triggerSource()
+            .autoDisposable(userScopeProvider)
+            .subscribe({ Timber.d("Trigger Queue finished, last action time: $it") }, Timber::e)
+        // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
+    }
+
+    override fun triggerSource(): Single<Long> {
+        if (queue.isEmpty()) {
+            Timber.v("Triggering empty queue - no-op")
+            return Single.error(EmptyActionObjectPoolException())
+        }
+
         lastActionTime = queue.peek()?.actionTime ?: 0L
-        spm.accessSingle { accessToken ->
+        return spm.accessSingle { accessToken ->
             val essence = CommitActionsEssence(accessToken.accessToken, queue)
             cloud.commitActions(essence)
         }
@@ -154,8 +168,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
             Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
             lastActionTime = 0L  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
         }
-        .autoDisposable(userScopeProvider)
-        .subscribe({ Timber.d("Trigger Queue finished, last action time: ${it.lastActionTime}") }, Timber::e)
-        // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
+        .map { it.lastActionTime }
     }
 }
