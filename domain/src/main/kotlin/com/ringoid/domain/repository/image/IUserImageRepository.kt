@@ -11,16 +11,17 @@ interface IUserImageRepository : IImageRepository {
 
     val imageCreate: PublishSubject<String>
     val imageDelete: PublishSubject<String>
-    val imageIdChange: PublishSubject<Pair<String, String>>
     val totalUserImages: PublishSubject<Int>
 
     // --------------------------------------------------------------------------------------------
     fun countUserImages(): Single<Int>
 
     fun getUserImage(id: String): Single<UserImage>
-
     fun getUserImages(resolution: ImageResolution): Single<List<UserImage>>
 
     fun deleteUserImage(essence: ImageDeleteEssence): Completable
     fun deleteLocalUserImages(): Completable
+    fun deleteClientOriginImageIdMapping(): Completable
+
+    fun fulfillPendingImageRequests(): Completable
 }

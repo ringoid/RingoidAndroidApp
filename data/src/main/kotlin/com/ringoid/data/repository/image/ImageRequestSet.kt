@@ -1,11 +1,10 @@
 package com.ringoid.data.repository.image
 
 import android.net.Uri
+import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.remote.model.image.UserImageListResponse
-import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.Image
-import com.ringoid.domain.model.image.UserImage
-import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.SingleTransformer
 import timber.log.Timber
 import javax.inject.Inject
@@ -48,53 +47,37 @@ class ImageRequestSet @Inject constructor() {
         removed.clear()
     }
 
-    fun addCreatedImages(): SingleTransformer<List<IImage>, List<IImage>> =
+    fun addCreatedImagesInResponse(): SingleTransformer<UserImageListResponse, UserImageListResponse> =
         SingleTransformer {
-            val createdIds = created.values.map { it.image.id }
-            val createdImages = created.values.map { it.image }
+            val createdIds = created.values.map { it.image.id }.toMutableList()
             it.flatMap {
                 Timber.v("Response analysis: add images to response that have been created locally but not yet provided by the backend")
-                Observable.fromIterable(it)
-                    .filter { !createdIds.contains(it.id) }
-                    .toList()
-                    .map { it.toMutableList().apply { addAll(createdImages) } }
+                createdIds.removeAll(it.images.map { it.originId })
+                if (createdIds.isEmpty()) {
+                    Single.just(it)
+                } else {
+                    val list = mutableListOf<UserImageEntity>()
+                        .apply {
+                            addAll(created.values.map { UserImageEntity.from(it.image) })
+                            addAll(it.images)
+                        }
+                    Single.just(it.copyWith(images = list))
+                }
             }
         }
 
-    fun addCreatedImagesInResponse(): SingleTransformer<UserImageListResponse, List<UserImage>> =
-        SingleTransformer {
-            val createdIds = created.values.map { it.image.id }
-            val createdImages = created.values.map { UserImage.from(it.image) }
-            it.flatMap {
-                Timber.v("Response analysis: add images to response that have been created locally but not yet provided by the backend")
-                Observable.fromIterable(it.images)
-                    .filter { !createdIds.contains(it.id) }
-                    .map { it.map() }
-                    .toList()
-                    .map { it.toMutableList().apply { addAll(createdImages) } }
-            }
-        }
-
-    fun filterOutRemovedImages(): SingleTransformer<List<IImage>, List<IImage>> =
+    fun filterOutRemovedImagesInResponse(): SingleTransformer<UserImageListResponse, UserImageListResponse> =
         SingleTransformer {
             val removedIds = removed.values.map { it.imageId }
             it.flatMap {
                 Timber.v("Response analysis: remove images from response that have been deleted locally but not yet on the backend")
-                Observable.fromIterable(it)
-                    .filter { !removedIds.contains(it.id) }
-                    .toList()
-            }
-        }
-
-    fun filterOutRemovedImagesInResponse(): SingleTransformer<UserImageListResponse, List<UserImage>> =
-        SingleTransformer {
-            val removedIds = removed.values.map { it.imageId }
-            it.flatMap {
-                Timber.v("Response analysis: remove images from response that have been deleted locally but not yet on the backend")
-                Observable.fromIterable(it.images)
-                    .filter { !removedIds.contains(it.id) }
-                    .map { it.map() }
-                    .toList()
+                if (removedIds.isEmpty()) {
+                    Single.just(it)
+                } else {
+                    val list = mutableListOf<UserImageEntity>()
+                        .apply { addAll(it.images.filter { !removedIds.contains(it.originId) }) }
+                    Single.just(it.copyWith(images = list))
+                }
             }
         }
 }

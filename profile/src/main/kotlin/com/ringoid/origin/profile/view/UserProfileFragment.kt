@@ -132,7 +132,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
             observe(vm.imageDeleted, imagesAdapter::remove) { showEmptyStub(needShow = imagesAdapter.isEmpty()) }
-            observe(vm.imageIdChanged, imagesAdapter::updateItemId)
             observe(vm.images, imagesAdapter::submitList) { showEmptyStub(needShow = it.isEmpty()) }
             observe(vm.imageCreated, imagesAdapter::prepend) {
                 showEmptyStub(needShow = false)

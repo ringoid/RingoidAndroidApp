@@ -26,5 +26,8 @@ class UserImageListResponse(
         const val COLUMN_IMAGES = "photos"
     }
 
+    fun copyWith(images: List<UserImageEntity>): UserImageListResponse =
+        UserImageListResponse(images = images, errorCode = errorCode, errorMessage = errorMessage, repeatAfterSec = repeatAfterSec)
+
     override fun map(): List<UserImage> = images.mapList()
 }

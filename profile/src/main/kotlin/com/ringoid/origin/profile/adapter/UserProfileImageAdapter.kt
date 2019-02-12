@@ -37,25 +37,6 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
         super.onSubmitList(list)
         onEmptyImagesListener?.invoke(list.isNullOrEmpty())
     }
-
-    fun updateItemId(ids: Pair<String, String>) {
-        updateItemId(oldId = ids.first, newId = ids.second)
-    }
-
-    private fun updateItemId(oldId: String, newId: String) {
-        getModels()
-            .indexOfFirst { it.id == oldId }
-            .takeIf { it != -1 }
-            ?.let {
-                val l = ArrayList(getModels())
-                l.apply {
-                    val item = get(it)
-                    removeAt(it)
-                    add(it, item.copyWithId(newId) as UserImage)
-                }
-                submitList(l)
-            }
-    }
 }
 
 // ------------------------------------------------------------------------------------------------

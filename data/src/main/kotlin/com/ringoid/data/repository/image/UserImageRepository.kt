@@ -35,8 +35,9 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
 
     override val imageCreate = PublishSubject.create<String>()
     override val imageDelete = PublishSubject.create<String>()
-    override val imageIdChange = PublishSubject.create<Pair<String, String>>()
     override val totalUserImages = PublishSubject.create<Int>()
+
+    private val clientToOriginImageIds = mutableMapOf<String, String>()
 
     override fun countUserImages(): Single<Int> = local.countUserImages()
 
@@ -46,9 +47,9 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
         spm.accessSingle {
             cloud.getUserImages(it.accessToken, resolution)
                 .handleError()
+                .compose(requestSet.filterOutRemovedImagesInResponse())
                 .compose(requestSet.addCreatedImagesInResponse())
-                .compose(requestSet.filterOutRemovedImages())
-                .map { it.map { it as UserImage } }  // cast not losing fields in UserImage
+                .map { it.map() }  // cast not losing fields in UserImage
                 .doOnSuccess {
                     Timber.v("Loaded user images: now updating the whole local cache...")
                     local.apply {
@@ -64,13 +65,13 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
         return spm.accessSingle {
             cloud.deleteUserImage(essence)
                 .doOnSubscribe {
-                    // TODO: possibly old id
                     local.deleteImage(id = essence.imageId)
+                    clientToOriginImageIds[essence.imageId]?.let { local.deleteImage(it) }
                     imageDelete.onNext(essence.imageId)  // notify database changed
                 }
         }
         .doOnSubscribe { requestSet.remove(request) }
-        .handleError()  // TODO: on fail - notify and restore delete item in Db
+        .handleError()  // TODO: on fail - retry on pull-to-refresh
         .doOnSuccess { requestSet.fulfilled(request.id) }
         .ignoreElement()  // convert to Completable
     }
@@ -101,15 +102,17 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
                     requestSet.create(request)  // rewrite local image request with remote image request
 
                     // replace local id with remote-generated id for local image in cache
+                    // TODO: breaks ordering in local cache
                     local.deleteImage(id = image.clientImageId)
-                         .takeIf { it == 1 }
+                         .takeIf { it == 1 }  // at least one item has been deleted
                          ?.let { local.addImage(UserImageDbo(id = image.originImageId, uri = image.imageUri, originId = image.originImageId, isBlocked = false)) }
-                    imageIdChange.onNext(image.clientImageId to image.originImageId)  // notify image id change in database
+                    clientToOriginImageIds[image.clientImageId] = image.originImageId
                 }
+                .handleError()  // TODO: on fail - retry on pull-to-refresh
                 // TODO: on fail getImageUploadUrl
                 .flatMap {
                     cloud.uploadImage(url = it.imageUri!!, image = image)
-                        .handleError()  // TODO: on fail - notify and delete added item in Db
+                        .handleError()  // TODO: on fail - retry on pull-to-refresh
                         .andThen(Single.just(it))
                         .map { it.map() }
                 }
@@ -122,4 +125,11 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
 
     override fun uploadImage(url: String, image: File): Completable =
         cloud.uploadImage(url = url, image = image)
+
+    // --------------------------------------------------------------------------------------------
+    override fun deleteClientOriginImageIdMapping(): Completable =
+        Completable.fromCallable { clientToOriginImageIds.clear() }
+
+    override fun fulfillPendingImageRequests(): Completable =
+        Completable.fromCallable {  }  // TODO: fulfill all requests
 }
