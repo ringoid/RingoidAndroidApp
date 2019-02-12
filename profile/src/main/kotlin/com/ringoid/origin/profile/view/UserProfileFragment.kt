@@ -181,7 +181,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
-        val snapHelper = EnhancedPagerSnapHelper()
+        val snapHelper = EnhancedPagerSnapHelper(duration = 30)
         rv_items.apply {
             adapter = imagesAdapter.also { it.tabsObserver = tabs.adapterDataObserver }
             isNestedScrollingEnabled = false

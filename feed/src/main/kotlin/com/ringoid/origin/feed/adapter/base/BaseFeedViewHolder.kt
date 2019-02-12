@@ -39,7 +39,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     init {
-        val snapHelper = EnhancedPagerSnapHelper()
+        val snapHelper = EnhancedPagerSnapHelper(duration = 30)
         itemView.rv_items.apply {
             adapter = profileImageAdapter.also { it.tabsObserver = itemView.tabs.adapterDataObserver }
             isNestedScrollingEnabled = false

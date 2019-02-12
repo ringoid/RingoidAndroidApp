@@ -1,18 +1,16 @@
 package com.ringoid.widget.view.rv
 
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class EnhancedPagerSnapHelper(private val factor: Float = FACTOR, private val duration: Int = MAX_SCROLL_ON_FLING_DURATION)
+class EnhancedPagerSnapHelper(private val duration: Int = MAX_SCROLL_ON_FLING_DURATION)
     : PagerSnapHelper() {
 
     private lateinit var rv: RecyclerView
 
     companion object {
-        const val FACTOR = 1.0f
         const val MAX_SCROLL_ON_FLING_DURATION = 100
     }
 
@@ -39,9 +37,6 @@ class EnhancedPagerSnapHelper(private val factor: Float = FACTOR, private val du
                     action.update(dx, dy, time, mDecelerateInterpolator)
                 }
             }
-
-            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float =
-                super.calculateSpeedPerPixel(displayMetrics) * factor
 
             override fun calculateTimeForScrolling(dx: Int): Int =
                 Math.min(duration, super.calculateTimeForScrolling(dx))
