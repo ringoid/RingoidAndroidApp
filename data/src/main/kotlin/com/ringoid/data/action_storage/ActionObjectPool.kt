@@ -5,7 +5,6 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.*
-import com.ringoid.domain.exception.EmptyActionObjectPoolException
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -142,7 +141,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
     override fun triggerSource(): Single<Long> {
         if (queue.isEmpty()) {
             Timber.v("Triggering empty queue - no-op")
-            return Single.error(EmptyActionObjectPoolException())
+            return Single.just(lastActionTime)
         }
 
         lastActionTime = queue.peek()?.actionTime ?: 0L
