@@ -80,9 +80,9 @@ open class FeedRepository @Inject constructor(
     override fun getLmm(resolution: ImageResolution): Single<Lmm> =
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
-                  // clear sent user messages because they will be restored with new Lmm
-                 .doOnSubscribe { sentMessagesLocal.deleteMessages() }
                  .handleError()
+                 // clear sent user messages because they will be restored with new Lmm
+                 .doOnSubscribe { sentMessagesLocal.deleteMessages() }
                  .filterBlockedProfilesLmm()
                  .map { it.map() }
                  .doOnSuccess {

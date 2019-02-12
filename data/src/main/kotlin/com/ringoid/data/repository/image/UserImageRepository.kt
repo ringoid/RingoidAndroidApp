@@ -13,22 +13,22 @@ import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.Image
-import com.ringoid.domain.model.image.LocalImage
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.utility.uriString
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-class UserImageRepository @Inject constructor(private val requestSet: ImageRequestSet,
+class UserImageRepository @Inject constructor(
     @Named("user") private val local: ImageDao, cloud: RingoidCloud,
     spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
@@ -37,51 +37,38 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
     override val imageDelete = PublishSubject.create<String>()
     override val totalUserImages = PublishSubject.create<Int>()
 
-    private val clientToOriginImageIds = mutableMapOf<String, String>()
-
     override fun countUserImages(): Single<Int> = local.countUserImages()
 
     override fun getUserImage(id: String): Single<UserImage> = local.userImage(id).map { it.map() }
 
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =
-        spm.accessSingle {
-            cloud.getUserImages(it.accessToken, resolution)
-                .handleError()
-                .compose(requestSet.filterOutRemovedImagesInResponse())
-                .compose(requestSet.addCreatedImagesInResponse())
-                .map { it.map() }  // cast not losing fields in UserImage
-                .doOnSuccess {
-                    Timber.v("Loaded user images: now updating the whole local cache...")
-                    local.apply {
-                        deleteAllImages()  // refresh the whole cache with the remote cloud
-                        addUserImages(it.map { UserImageDbo.from(it) })
-                        // though database has changed, result is used upstream
-                    }
-                }
-        }
+        spm.accessSingle { cloud.getUserImages(it.accessToken, resolution) }
+            .handleError()
+            .flatMap {
+                Observable.fromIterable(it.images)
+                    .doOnNext { local.updateUserImageByOriginId(originImageId = it.originId, uri = it.uri, isBlocked = it.isBlocked, numberOfLikes = it.numberOfLikes) }
+                    .toList()
+            }
+            .flatMap { local.userImages() }
+            .map { it.mapList() }
 
-    override fun deleteUserImage(essence: ImageDeleteEssence): Completable {
-        val request = DeleteImageRequest(imageId = essence.imageId)
-        return spm.accessSingle {
-            cloud.deleteUserImage(essence)
-                .doOnSubscribe {
-                    local.deleteImage(id = essence.imageId)
-                    clientToOriginImageIds[essence.imageId]?.let { local.deleteImage(it) }
-                    imageDelete.onNext(essence.imageId)  // notify database changed
-                }
-        }
-        .doOnSubscribe { requestSet.remove(request) }
-        .handleError()  // TODO: on fail - retry on pull-to-refresh
-        .doOnSuccess { requestSet.fulfilled(request.id) }
-        .ignoreElement()  // convert to Completable
-    }
+    override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
+        local.userImage(id = essence.imageId)
+            .flatMapCompletable { localImage ->
+                spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
+                    .handleError()  // TODO: on fail - retry on pull-to-refresh
+                    .doOnSubscribe {
+                        local.deleteImage(id = essence.imageId)
+                        imageDelete.onNext(essence.imageId)  // notify database changed
+                    }
+                    .ignoreElement()  // convert to Completable
+            }
 
     override fun deleteLocalUserImages(): Completable = Completable.fromCallable { local.deleteAllImages() }
 
     // ------------------------------------------------------------------------
-    override fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image> {
-        val localImageRequest = CreateLocalImageRequest(id = essence.clientImageId, image = LocalImage(file = image))
-        return spm.accessSingle { accessToken ->
+    override fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image> =
+        spm.accessSingle { accessToken ->
             val xessence = when (essence) {
                 is ImageUploadUrlEssence -> essence  // for ImageUploadUrlEssence with access token supplied
                 is ImageUploadUrlEssenceUnauthorized -> ImageUploadUrlEssence.from(essence, accessToken.accessToken)
@@ -89,36 +76,30 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
             }
 
             cloud.getImageUploadUrl(xessence)
+                .handleError()  // TODO: on fail - retry on pull-to-refresh
                 .doOnSubscribe {
-                    requestSet.create(localImageRequest)
-                    local.addImage(UserImageDbo(id = xessence.clientImageId, uri = image.uriString(), originId = xessence.clientImageId, isBlocked = false))
+                    val localImage = UserImageDbo(id = xessence.clientImageId, uri = image.uriString())
+                    local.addImage(localImage)
                     imageCreate.onNext(xessence.clientImageId)  // notify database changed
                 }
                 .doOnSuccess { image ->
                     if (image.imageUri.isNullOrBlank()) {
                         throw NullPointerException("Upload uri is null: $image")
                     }
-                    val request = CreateImageRequest(id = localImageRequest.id, image = image.map())
-                    requestSet.create(request)  // rewrite local image request with remote image request
-
-                    // replace local id with remote-generated id for local image in cache
-                    // TODO: breaks ordering in local cache
-                    local.deleteImage(id = image.clientImageId)
-                         .takeIf { it == 1 }  // at least one item has been deleted
-                         ?.let { local.addImage(UserImageDbo(id = image.originImageId, uri = image.imageUri, originId = image.originImageId, isBlocked = false)) }
-                    clientToOriginImageIds[image.clientImageId] = image.originImageId
+                    /**
+                     * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
+                     * for image in local cache.
+                     */
+                    val updatedLocalImage = UserImageDbo(originId = image.originImageId, id = xessence.clientImageId, uri = image.imageUri)
+                    local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
                 }
-                .handleError()  // TODO: on fail - retry on pull-to-refresh
-                // TODO: on fail getImageUploadUrl
                 .flatMap {
                     cloud.uploadImage(url = it.imageUri!!, image = image)
                         .handleError()  // TODO: on fail - retry on pull-to-refresh
                         .andThen(Single.just(it))
                         .map { it.map() }
                 }
-                .doOnSuccess { requestSet.fulfilled(localImageRequest.id) }
         }
-    }
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }
@@ -127,9 +108,6 @@ class UserImageRepository @Inject constructor(private val requestSet: ImageReque
         cloud.uploadImage(url = url, image = image)
 
     // --------------------------------------------------------------------------------------------
-    override fun deleteClientOriginImageIdMapping(): Completable =
-        Completable.fromCallable { clientToOriginImageIds.clear() }
-
     override fun fulfillPendingImageRequests(): Completable =
         Completable.fromCallable {  }  // TODO: fulfill all requests
 }

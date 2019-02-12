@@ -3,7 +3,6 @@ package com.ringoid.data.local.database.dao.image
 import androidx.room.*
 import com.ringoid.data.local.database.model.image.BaseImageDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
-import io.reactivex.Observable
 import io.reactivex.Single
 
 @Dao
@@ -16,7 +15,7 @@ interface ImageDao {
     fun userImage(id: String): Single<UserImageDbo>
 
     @Query("SELECT * FROM ${UserImageDbo.TABLE_NAME}")
-    fun userImages(): Observable<List<UserImageDbo>>
+    fun userImages(): Single<List<UserImageDbo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addImage(image: UserImageDbo)
@@ -32,4 +31,10 @@ interface ImageDao {
 
     @Delete
     fun deleteImage(image: UserImageDbo): Int
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateUserImage(image: UserImageDbo): Int
+
+    @Query("UPDATE ${UserImageDbo.TABLE_NAME} SET ${BaseImageDbo.COLUMN_URI} = :uri, ${UserImageDbo.COLUMN_FLAG_BLOCKED} = :isBlocked, ${UserImageDbo.COLUMN_NUMBER_LIKES} = :numberOfLikes WHERE ${UserImageDbo.COLUMN_ORIGIN_ID} = :originImageId")
+    fun updateUserImageByOriginId(originImageId: String, uri: String, isBlocked: Boolean, numberOfLikes: Int): Int
 }

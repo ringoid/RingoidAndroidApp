@@ -9,7 +9,6 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedBlockedProfileIdsUseCase
 import com.ringoid.domain.interactor.image.ClearCachedUserImagesUseCase
-import com.ringoid.domain.interactor.image.ClearClientOriginImageIdMappingUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesUseCase
 import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
@@ -32,7 +31,6 @@ class LoginViewModel @Inject constructor(
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val clearCachedBlockedProfileIdsUseCase: ClearCachedBlockedProfileIdsUseCase,
     private val clearCachedUserImagesUseCase: ClearCachedUserImagesUseCase,
-    private val clearClientOriginImageIdMappingUseCase: ClearClientOriginImageIdMappingUseCase,
     private val clearMessagesUseCase: ClearMessagesUseCase,
     app: Application) : BaseViewModel(app) {
 
@@ -95,7 +93,6 @@ class LoginViewModel @Inject constructor(
             .andThen(clearCachedAlreadySeenProfileIdsUseCase.source())
             .andThen(clearCachedBlockedProfileIdsUseCase.source())
             .andThen(clearCachedUserImagesUseCase.source())
-            .andThen(clearClientOriginImageIdMappingUseCase.source())
             .andThen(clearMessagesUseCase.source())
             .autoDisposable(this)
             .subscribe({ Timber.i("Local user data has been cleared on logout") }, Timber::e)

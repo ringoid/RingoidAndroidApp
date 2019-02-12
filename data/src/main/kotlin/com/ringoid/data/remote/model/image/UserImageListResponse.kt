@@ -12,8 +12,8 @@ import com.ringoid.domain.model.mapList
  *   "errorCode":"",
  *   "errorMessage":"",
  *   "photos":[
- *     {"photoId":"12dd","originPhotoId":"sldkjflkjlkjlkjf","photoUri":"https://bla-bla.com/sss.jpg","likes":22},
- *     {"photoId":"13dd","originPhotoId":"mnbmvnbcxlsdfhwo","photoUri":"https://bla-bla.com/sss2.jpg","likes":0}
+ *     {"photoId":"12dd","originPhotoId":"sldkjflkjlkjlkjf","photoUri":"https://bla-bla.com/sss.jpg","likes":22,"blocked":true},
+ *     {"photoId":"13dd","originPhotoId":"mnbmvnbcxlsdfhwo","photoUri":"https://bla-bla.com/sss2.jpg","likes":0,"blocked":false}
  *   ]
  * }
  */

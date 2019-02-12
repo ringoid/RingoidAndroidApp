@@ -2,14 +2,15 @@ package com.ringoid.data.local.database.model.image
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.Mappable
 import com.ringoid.domain.model.image.UserImage
 
 @Entity(tableName = UserImageDbo.TABLE_NAME)
 class UserImageDbo(
-    @ColumnInfo(name = COLUMN_ORIGIN_ID) val originId: String,
+    @ColumnInfo(name = COLUMN_ORIGIN_ID) val originId: String = BAD_ID,
     @ColumnInfo(name = COLUMN_NUMBER_LIKES) val numberOfLikes: Int = 0,
-    @ColumnInfo(name = COLUMN_FLAG_BLOCKED) val isBlocked: Boolean,
+    @ColumnInfo(name = COLUMN_FLAG_BLOCKED) val isBlocked: Boolean = false,
     id: String, uri: String?) : BaseImageDbo(id = id, uri = uri), Mappable<UserImage> {
 
     companion object {
