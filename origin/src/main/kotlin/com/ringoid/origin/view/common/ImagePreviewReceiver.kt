@@ -25,13 +25,13 @@ class ImagePreviewReceiver(private val applicationContext: Context, private val 
                 override fun onCropFailed(e: Throwable) {
                     Timber.e(e, "Image crop has failed")
                     lastCropError = e
-                    onError?.invoke(e)
+                    callOnError(e)
                 }
 
                 override fun onCropSuccess(croppedUri: Uri) {
                     Timber.v("Image cropping has succeeded, uri: $croppedUri")
                     lastCropResult = croppedUri
-                    onSuccess?.invoke(croppedUri)
+                    callOnSuccess(croppedUri)
                 }
             })
             register(applicationContext)
@@ -79,7 +79,18 @@ class ImagePreviewReceiver(private val applicationContext: Context, private val 
 
     override fun subscribe() {
         lastCropError
-            ?.let { onError?.invoke(it) }
-            ?: run { lastCropResult?.let { onSuccess?.invoke(it) } }
+            ?.let { callOnError(it) }
+            ?: run { lastCropResult?.let { callOnSuccess(it) } }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun callOnError(lastCropError: Throwable) {
+        onError?.invoke(lastCropError)
+        clear()  // value must not be reusable to emulate cold observable source
+    }
+
+    private fun callOnSuccess(lastCropResult: Uri) {
+        onSuccess?.invoke(lastCropResult)
+        clear()  // value must not be reusable to emulate cold observable source
     }
 }
