@@ -32,7 +32,7 @@ data class ImageRequestDbo(
         const val COLUMN_IMAGE_FILE_PATH = "imageFilePath"  // for create only
         const val COLUMN_TYPE = "type"  // create, delete
 
-        const val TABLE_NAME = "ImageRequests.db"
+        const val TABLE_NAME = "ImageRequests"
 
         const val TYPE_CREATE = "create"
         const val TYPE_DELETE = "delete"
