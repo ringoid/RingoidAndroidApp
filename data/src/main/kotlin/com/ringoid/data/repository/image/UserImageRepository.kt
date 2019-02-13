@@ -27,6 +27,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
@@ -57,7 +58,8 @@ class UserImageRepository @Inject constructor(
                         .zipWith(Observable.range(0, it.images.size), BiFunction { image: UserImageEntity, index: Int -> image to index })
                         .doOnNext { (image, index) ->
                             if (image.isBlocked && image.isBlocked != local.isUserImageBlockedByOriginId(originImageId = image.originId)) {
-                                imageBlocked.onNext(image.originId)  // notify image has been blocked by moderator
+                                Timber.v("Image with id [${image.originId}] has been blocked by Moderator on the Server")
+                                imageBlocked.onNext(image.originId)  // notify image has been blocked by Moderator
                             }
                             local.updateUserImageByOriginId(originImageId = image.originId, uri = image.uri,
                                 numberOfLikes = image.numberOfLikes, isBlocked = image.isBlocked, sortPosition = index)
@@ -69,15 +71,22 @@ class UserImageRepository @Inject constructor(
 
         return imageRequestLocal.countRequests()
             .flatMap { count ->
+                Timber.v("Total count of failed image requests: $count")
                 if (count > 0) {
                     imageRequestLocal.requests()
                         .flatMap {
                             Observable.fromIterable(it)
                                 .map { request ->
                                     when (request.type) {
-                                        ImageRequestDbo.TYPE_CREATE ->
-                                            createImage(request.createRequestEssence(), request.imageFilePath, retryCount = 0).ignoreElement()
-                                        ImageRequestDbo.TYPE_DELETE -> deleteUserImage(request.deleteRequestEssence(), retryCount = 0)
+                                        ImageRequestDbo.TYPE_CREATE -> {
+                                            Timber.v("Execute 'create image' request again, as it's failed before")
+                                            createImage(request.createRequestEssence(), request.imageFilePath, retryCount = 0)
+                                                .ignoreElement()
+                                        }
+                                        ImageRequestDbo.TYPE_DELETE -> {
+                                            Timber.v("Execute 'delete image' request again, as it's failed before")
+                                            deleteUserImage(request.deleteRequestEssence(), retryCount = 0)
+                                        }
                                         else -> Completable.complete()  // ignored item
                                     }
                                     .doOnComplete { imageRequestLocal.deleteRequest(request) }
@@ -89,9 +98,9 @@ class UserImageRepository @Inject constructor(
                                 .onErrorComplete()  // if any request fails, fetch user images whatever it is on the Server
                                 .toSingle { 0L }
                         }
-                        .flatMap { fetchUserImages() }
+                        .flatMap { fetchUserImages().doOnSubscribe { Timber.v("Fetch actualized list of images") } }
                 } else {
-                    fetchUserImages()
+                    fetchUserImages().doOnSubscribe { Timber.v("Fetch list of images") }
                 }
             }
     }
