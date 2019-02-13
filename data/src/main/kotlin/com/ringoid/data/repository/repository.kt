@@ -3,10 +3,7 @@ package com.ringoid.data.repository
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.SentryUtil
-import com.ringoid.domain.exception.ApiException
-import com.ringoid.domain.exception.NetworkException
-import com.ringoid.domain.exception.NetworkUnexpected
-import com.ringoid.domain.exception.RepeatRequestAfterSecException
+import com.ringoid.domain.exception.*
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
@@ -41,7 +38,11 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null)
                 val error = errorWithAttempt.second
                 val delayTime = when (error) {
                     is RepeatRequestAfterSecException -> error.delay * 1000  // in seconds
-                    is NetworkUnexpected -> throw error  // don't retry on fatal network errors
+                    // don't retry on fatal network errors
+                    is InvalidAccessTokenApiException,
+                    is OldAppVersionApiException,
+                    is WrongRequestParamsClientApiException,
+                    is NetworkUnexpected -> throw error
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
@@ -59,7 +60,11 @@ private fun expBackoffObservableImpl(count: Int, delay: Long, tag: String? = nul
                 val error = errorWithAttempt.second
                 val delayTime = when (error) {
                     is RepeatRequestAfterSecException -> error.delay * 1000  // in seconds
-                    is NetworkUnexpected -> throw error  // don't retry on fatal network errors
+                    // don't retry on fatal network errors
+                    is InvalidAccessTokenApiException,
+                    is OldAppVersionApiException,
+                    is WrongRequestParamsClientApiException,
+                    is NetworkUnexpected -> throw error
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Observable.timer(delayTime, TimeUnit.MILLISECONDS)
@@ -100,7 +105,14 @@ private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer
             throw NetworkUnexpected(it.unexpected)
         }
         if (!it.errorCode.isNullOrBlank()) {
-            throw ApiException(code = it.errorCode, message = it.errorMessage, tag = tag)
+            val apiError = when (it.errorCode) {
+                ApiException.OLD_APP_VERSION -> OldAppVersionApiException(message = it.errorMessage, tag = tag)
+                ApiException.INVALID_ACCESS_TOKEN -> InvalidAccessTokenApiException( message = it.errorMessage, tag = tag)
+                ApiException.CLIENT_ERROR -> WrongRequestParamsClientApiException(message = it.errorMessage, tag = tag)
+                ApiException.SERVER_ERROR -> InternalServerErrorApiException(message = it.errorMessage, tag = tag)
+                else -> ApiException(code = it.errorCode, message = it.errorMessage, tag = tag)
+            }
+            throw apiError
         }
         if (it.repeatAfterSec > 0) {
             throw RepeatRequestAfterSecException(delay = it.repeatAfterSec)

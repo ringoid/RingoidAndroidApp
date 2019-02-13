@@ -4,14 +4,15 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
+import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.model.feed.ProfileDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
+import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
-import com.ringoid.data.local.database.model.image.ImageRequestDbo
 
 @Database(version = 6,
           entities = [ImageDbo::class, ImageRequestDbo::class, MessageDbo::class,

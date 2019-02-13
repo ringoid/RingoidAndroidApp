@@ -2,8 +2,9 @@ package com.ringoid.origin.error
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.ringoid.domain.exception.ApiException
+import com.ringoid.domain.exception.InvalidAccessTokenApiException
 import com.ringoid.domain.exception.NetworkUnexpected
+import com.ringoid.domain.exception.OldAppVersionApiException
 import com.ringoid.origin.navigation.blockingErrorScreen
 import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.noConnection
@@ -17,13 +18,8 @@ fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit 
     }
 
     when (this) {
-        is ApiException -> {
-            when (code) {
-                ApiException.OLD_APP_VERSION -> blockingErrorScreen(activity, path = "/old_version")
-                ApiException.INVALID_ACCESS_TOKEN -> logout(activity)
-                else -> errorState(this)
-            }
-        }
+        is OldAppVersionApiException -> blockingErrorScreen(activity, path = "/old_version")
+        is InvalidAccessTokenApiException -> logout(activity)
         is NetworkUnexpected -> {
             noConnection(activity)
             delay {onErrorState() }  // handle error state on Screen  in screen-specific way
@@ -39,13 +35,8 @@ fun Throwable.handleOnView(fragment: Fragment, onErrorState: () -> Unit = {}) {
     }
 
     when (this) {
-        is ApiException -> {
-            when (code) {
-                ApiException.OLD_APP_VERSION -> blockingErrorScreen(fragment, path = "/old_version")
-                ApiException.INVALID_ACCESS_TOKEN -> logout(fragment)
-                else -> errorState(this)
-            }
-        }
+        is OldAppVersionApiException -> blockingErrorScreen(fragment, path = "/old_version")
+        is InvalidAccessTokenApiException -> logout(fragment)
         is NetworkUnexpected -> {
             noConnection(fragment)
             delay { onErrorState() }  // handle error state on Screen  in screen-specific way

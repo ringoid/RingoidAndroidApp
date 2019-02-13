@@ -2,7 +2,7 @@ package com.ringoid.domain.exception
 
 import timber.log.Timber
 
-class ApiException(val code: String, message: String? = null, val tag: String? = null) : RuntimeException("code=$code: $message") {
+open class ApiException(val code: String, message: String? = null, val tag: String? = null) : RuntimeException("code=$code: $message") {
 
     init {
         Timber.e(this, "ApiException[tag=$tag]: code=$code: $message")
@@ -15,3 +15,15 @@ class ApiException(val code: String, message: String? = null, val tag: String? =
         const val SERVER_ERROR = "InternalServerError"
     }
 }
+
+class InvalidAccessTokenApiException(message: String? = null, tag: String? = null)
+    : ApiException(code = INVALID_ACCESS_TOKEN, message = message, tag = tag)
+
+class InternalServerErrorApiException(message: String? = null, tag: String? = null)
+    : ApiException(code = SERVER_ERROR, message = message, tag = tag)
+
+class OldAppVersionApiException(message: String? = null, tag: String? = null)
+    : ApiException(code = OLD_APP_VERSION, message = message, tag = tag)
+
+class WrongRequestParamsClientApiException(message: String? = null, tag: String? = null)
+    : ApiException(code = CLIENT_ERROR, message = message, tag = tag)
