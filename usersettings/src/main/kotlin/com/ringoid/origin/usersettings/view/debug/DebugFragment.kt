@@ -6,7 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil.CLIPBOARD_KEY_DEBUG
+import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.usersettings.R
@@ -63,7 +63,7 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         item_screen_info.apply {
             clicks().compose(clickDebounce()).subscribe {
                 context?.let {
-                    it.copyToClipboard(key = CLIPBOARD_KEY_DEBUG, value = item_screen_info.getLabel().toString())
+                    it.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = item_screen_info.getLabel().toString())
                     it.toast(OriginR_string.common_clipboard)
                 }
             }

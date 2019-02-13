@@ -5,7 +5,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.domain.DomainUtil.CLIPBOARD_KEY_CUSTOMER_ID
+import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.BuildConfig
 import com.ringoid.origin.navigation.ExternalNavigator
@@ -53,7 +53,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
         }
         item_customer_id.clicks().compose(clickDebounce()).subscribe {
             context?.let {
-                it.copyToClipboard(key = CLIPBOARD_KEY_CUSTOMER_ID, value = item_customer_id.getLabel().toString())
+                it.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_CUSTOMER_ID, value = item_customer_id.getLabel().toString())
                 it.toast(OriginR_string.common_clipboard)
             }
         }
