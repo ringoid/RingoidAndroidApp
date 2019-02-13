@@ -15,4 +15,7 @@ interface ImageRequestDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addRequest(request: ImageRequestDbo)
+
+    @Query("DELETE FROM ${ImageRequestDbo.TABLE_NAME}")
+    fun deleteAllRequests(): Int
 }
