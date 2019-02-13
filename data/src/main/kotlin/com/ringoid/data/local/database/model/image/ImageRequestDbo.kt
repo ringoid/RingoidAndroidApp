@@ -16,6 +16,12 @@ data class ImageRequestDbo(
     @ColumnInfo(name = COLUMN_EXTENSION) val extension: String = "",
     @ColumnInfo(name = COLUMN_TYPE) val type: String) {
 
+    fun createRequestEssence(): ImageUploadUrlEssence =
+        ImageUploadUrlEssence(accessToken = accessToken, clientImageId = clientImageId, extension = extension)
+
+    fun deleteRequestEssence(): ImageDeleteEssence =
+        ImageDeleteEssence(accessToken = accessToken, imageId = originImageId)
+
     companion object {
         const val COLUMN_ID = "id"
         const val COLUMN_ACCESS_TOKEN = "accessToken"

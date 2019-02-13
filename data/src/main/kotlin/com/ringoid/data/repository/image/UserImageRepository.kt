@@ -44,16 +44,42 @@ class UserImageRepository @Inject constructor(
 
     override fun getUserImage(id: String): Single<UserImage> = local.userImage(id).map { it.map() }
 
-    override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> =
-        spm.accessSingle { cloud.getUserImages(it.accessToken, resolution) }
-            .handleError()
-            .flatMap {
-                Observable.fromIterable(it.images)
-                    .doOnNext { local.updateUserImageByOriginId(originImageId = it.originId, uri = it.uri, isBlocked = it.isBlocked, numberOfLikes = it.numberOfLikes) }
-                    .toList()
+    override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> {
+        fun fetchUserImages(): Single<List<UserImage>> =
+            spm.accessSingle { cloud.getUserImages(it.accessToken, resolution) }
+                .handleError()
+                .flatMap {
+                    Observable.fromIterable(it.images)
+                        .doOnNext { local.updateUserImageByOriginId(originImageId = it.originId, uri = it.uri, isBlocked = it.isBlocked, numberOfLikes = it.numberOfLikes) }
+                        .toList()
+                }
+                .flatMap { local.userImages() }
+                .map { it.mapList() }
+
+        return imageRequestLocal.countRequests()
+            .flatMap { count ->
+                if (count > 0) {
+                    imageRequestLocal.requests()
+                        .flatMap {
+                            Observable.fromIterable(it)
+                                .map { request ->
+                                    when (request.type) {
+                                        ImageRequestDbo.TYPE_CREATE ->
+                                            createImage(request.createRequestEssence(), image).ignoreElement()
+                                        ImageRequestDbo.TYPE_DELETE -> deleteUserImage(request.deleteRequestEssence())
+                                        else -> Completable.complete()  // ignored item
+                                    }
+                                    .doOnComplete { imageRequestLocal.deleteRequest(request) }
+                                }
+                                .toList()
+                        }
+                        .flatMap { Completable.concat(it).toSingle { 0L } }//TODO: handle error
+                        .flatMap { fetchUserImages() }
+                } else {
+                    fetchUserImages()
+                }
             }
-            .flatMap { local.userImages() }
-            .map { it.mapList() }
+    }
 
     override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
         local.userImage(id = essence.imageId)
