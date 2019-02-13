@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil.CLIPBOARD_KEY_DEBUG
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.usersettings.R
@@ -59,6 +60,14 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         item_error_request_params.clicks().compose(clickDebounce()).subscribe { vm.requestWithWrongParams() }
         item_error_request_repeat_after_delay.clicks().compose(clickDebounce()).subscribe { vm.requestWithNeedToRepeatAfterDelay(delay = 5L) }
         item_error_timeout.clicks().compose(clickDebounce()).subscribe { vm.requestWithTimeOutResponse() }
-        item_screen_info.setLabel("Density: ${activity?.getScreenDensity()}, SW: ${activity?.getSmallestWidth()}, W: ${activity?.getScreenWidthDp()} dp [${activity?.getScreenWidth()} px], H: ${activity?.getScreenHeight()} dp [${activity?.getScreenHeightDp()} px]")
+        item_screen_info.apply {
+            clicks().compose(clickDebounce()).subscribe {
+                context?.let {
+                    it.copyToClipboard(key = CLIPBOARD_KEY_DEBUG, value = item_screen_info.getLabel().toString())
+                    it.toast(OriginR_string.common_clipboard)
+                }
+            }
+            setLabel("Density: ${activity?.getScreenDensity()}, SW: ${activity?.getSmallestWidth()}, W: ${activity?.getScreenWidthDp()} dp [${activity?.getScreenWidth()} px], H: ${activity?.getScreenHeightDp()} dp [${activity?.getScreenHeight()} px]")
+        }
     }
 }

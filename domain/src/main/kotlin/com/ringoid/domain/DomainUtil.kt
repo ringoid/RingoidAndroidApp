@@ -13,4 +13,5 @@ object DomainUtil {
 
     const val CLIPBOARD_KEY_CHAT_MESSAGE = "chatMessage"
     const val CLIPBOARD_KEY_CUSTOMER_ID = "customerId"
+    const val CLIPBOARD_KEY_DEBUG = "debug"
 }
