@@ -66,7 +66,7 @@ class UserImageRepository @Inject constructor(
                                 .map { request ->
                                     when (request.type) {
                                         ImageRequestDbo.TYPE_CREATE ->
-                                            createImage(request.createRequestEssence(), image, retryCount = 0).ignoreElement()
+                                            createImage(request.createRequestEssence(), request.imageFilePath, retryCount = 0).ignoreElement()
                                         ImageRequestDbo.TYPE_DELETE -> deleteUserImage(request.deleteRequestEssence(), retryCount = 0)
                                         else -> Completable.complete()  // ignored item
                                     }
@@ -108,10 +108,10 @@ class UserImageRepository @Inject constructor(
         Completable.fromCallable { imageRequestLocal.deleteAllRequests() }
 
     // ------------------------------------------------------------------------
-    override fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image> =
-        createImage(essence, image, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
+    override fun createImage(essence: IImageUploadUrlEssence, imageFilePath: String): Single<Image> =
+        createImage(essence, imageFilePath, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
 
-    private fun createImage(essence: IImageUploadUrlEssence, image: File, retryCount: Int): Single<Image> =
+    private fun createImage(essence: IImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> =
         spm.accessSingle { accessToken ->
             val xessence = when (essence) {
                 is ImageUploadUrlEssence -> essence  // for ImageUploadUrlEssence with access token supplied
@@ -119,9 +119,10 @@ class UserImageRepository @Inject constructor(
                 else -> throw IllegalArgumentException("Unsupported implementation of IImageUploadUrlEssence for createImage()")
             }
 
+            val imageFile = File(imageFilePath)
             cloud.getImageUploadUrl(xessence)
                 .doOnSubscribe {
-                    val localImage = UserImageDbo(id = xessence.clientImageId, uri = image.uriString())
+                    val localImage = UserImageDbo(id = xessence.clientImageId, uri = imageFile.uriString())
                     local.addImage(localImage)
                     imageCreate.onNext(xessence.clientImageId)  // notify database changed
                 }
@@ -136,15 +137,14 @@ class UserImageRepository @Inject constructor(
                     val updatedLocalImage = UserImageDbo(originId = image.originImageId, id = xessence.clientImageId, uri = image.imageUri)
                     local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
                 }
-                .flatMap { cloud.uploadImage(url = it.imageUri!!, image = image).andThen(Single.just(it)) }
+                .flatMap { cloud.uploadImage(url = it.imageUri!!, image = imageFile).andThen(Single.just(it)) }
                 .handleError(count = retryCount)
-                .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence)) }
+                .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence, imageFilePath)) }
                 .map { it.map() }
         }
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }
 
-    override fun uploadImage(url: String, image: File): Completable =
-        cloud.uploadImage(url = url, image = image)
+    override fun uploadImage(url: String, image: File): Completable = cloud.uploadImage(url = url, image = image)
 }

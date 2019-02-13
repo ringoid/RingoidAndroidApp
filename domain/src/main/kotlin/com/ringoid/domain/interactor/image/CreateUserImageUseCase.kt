@@ -11,7 +11,6 @@ import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.repository.image.IUserImageRepository
 import io.reactivex.Single
-import java.io.File
 import javax.inject.Inject
 
 class CreateUserImageUseCase @Inject constructor(val repository: IUserImageRepository,
@@ -19,10 +18,10 @@ class CreateUserImageUseCase @Inject constructor(val repository: IUserImageRepos
     : SingleUseCase<Image>(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Single<Image> {
-        val image = params.get<Uri>("uri")?.let { File(it.path) } ?: throw MissingRequiredParamsException()
+        val imageFileUri = params.get<Uri>("uri") ?: throw MissingRequiredParamsException()
 
         return params.processSingle(IImageUploadUrlEssence::class.java) {
-            repository.createImage(essence = it, image = image)
+            repository.createImage(essence = it, imageFilePath = imageFileUri.path!!)
         }
     }
 }

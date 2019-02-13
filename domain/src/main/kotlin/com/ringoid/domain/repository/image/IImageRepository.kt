@@ -9,7 +9,7 @@ import java.io.File
 
 interface IImageRepository {
 
-    fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image>
+    fun createImage(essence: IImageUploadUrlEssence, imageFilePath: String): Single<Image>
 
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image>
 
