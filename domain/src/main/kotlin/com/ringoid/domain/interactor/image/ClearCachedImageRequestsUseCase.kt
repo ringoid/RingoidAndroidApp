@@ -8,9 +8,9 @@ import com.ringoid.domain.repository.image.IUserImageRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
-class ClearCachedUserImagesUseCase@Inject constructor(private val repository: IUserImageRepository,
-threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
-: CompletableUseCase(threadExecutor, postExecutor) {
+class ClearCachedImageRequestsUseCase @Inject constructor(private val repository: IUserImageRepository,
+    threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
+    : CompletableUseCase(threadExecutor, postExecutor) {
 
-    override fun sourceImpl(params: Params): Completable = repository.deleteLocalUserImages()
+    override fun sourceImpl(params: Params): Completable = repository.deleteLocalUserImageRequests()
 }

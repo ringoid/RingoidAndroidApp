@@ -70,6 +70,9 @@ class UserImageRepository @Inject constructor(
 
     override fun deleteLocalUserImages(): Completable = Completable.fromCallable { local.deleteAllImages() }
 
+    override fun deleteLocalUserImageRequests(): Completable =
+        Completable.fromCallable { imageRequestLocal.deleteAllRequests() }
+
     // ------------------------------------------------------------------------
     override fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image> =
         spm.accessSingle { accessToken ->
