@@ -10,6 +10,7 @@ import com.ringoid.origin.profile.R
 
 class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageViewHolder>(UserProfileImageDiffCallback()) {
 
+    var onInsertListener: (() -> Unit)? = null
     var onEmptyImagesListener: ((isEmpty: Boolean) -> Unit)? = null
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
 
@@ -21,6 +22,9 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
     override fun instantiateHeaderViewHolder(view: View) = HeaderUserProfileImageViewHolder(view)
 
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
+
+    override fun getOnInsertedCb(): ((position: Int, count: Int) -> Unit)? =
+        { _, _ -> onInsertListener?.invoke() }
 
     // ------------------------------------------
     override fun getStubItem(): UserImage = EmptyUserImage

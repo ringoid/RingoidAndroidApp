@@ -93,7 +93,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imagesAdapter = UserProfileImageAdapter().apply { onEmptyImagesListener = ::showEmptyStub }
+        imagesAdapter = UserProfileImageAdapter()
+            .apply {
+                onInsertListener = { rv_items.post { rv_items.scrollToPosition(0) } }
+                onEmptyImagesListener = ::showEmptyStub
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -134,10 +138,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         viewLifecycleOwner.apply {
             observe(vm.images, imagesAdapter::submitList) { showEmptyStub(needShow = it.isEmpty()) }
             observe(vm.imageBlocked, ::doOnBlockedImage)
-            observe(vm.imageCreated, imagesAdapter::prepend) {
-                showEmptyStub(needShow = false)
-                rv_items.post { rv_items.scrollToPosition(0) }
-            }
+            observe(vm.imageCreated, imagesAdapter::prepend) { showEmptyStub(needShow = false) }
             observe(vm.imageDeleted, imagesAdapter::remove) {
                 showEmptyStub(needShow = imagesAdapter.isEmpty())
                 vm.onDeleteImage(imagesLeft = imagesAdapter.getModelsCount())
