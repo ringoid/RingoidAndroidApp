@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
 import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
@@ -40,7 +39,7 @@ class ChatViewModel @Inject constructor(
     }
 
     @Suppress("CheckResult")
-    fun sendMessage(peerId: String, imageId: String = BAD_ID, text: String?) {
+    fun sendMessage(peerId: String, imageId: String = DomainUtil.BAD_ID, text: String?) {
         if (text.isNullOrBlank()) {
             return  // don't send empty text
         }

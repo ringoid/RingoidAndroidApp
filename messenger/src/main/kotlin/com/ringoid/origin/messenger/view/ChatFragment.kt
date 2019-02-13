@@ -55,7 +55,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             }
     }
 
-    private var peerId: String = BAD_ID
+    private var peerId: String = DomainUtil.BAD_ID
     private var payload: ChatPayload? = null
     private lateinit var chatAdapter: ChatAdapter
 

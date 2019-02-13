@@ -41,7 +41,7 @@ class MessengerRepository @Inject constructor(
 
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         aObjPool.put(MessageActionObject(text = essence.text, sourceFeed = essence.aObjEssence?.sourceFeed ?: "",
-            targetImageId = essence.aObjEssence?.targetImageId ?: BAD_ID, targetUserId = essence.aObjEssence?.targetUserId ?: BAD_ID))
+            targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID, targetUserId = essence.aObjEssence?.targetUserId ?: BAD_ID))
         val sentMessage = Message(id = "${essence.peerId}_${randomString()}", chatId = essence.peerId, peerId = DomainUtil.CURRENT_USER_ID, text = essence.text)
         return Single.just(sentMessage).cacheSentMessage()
     }

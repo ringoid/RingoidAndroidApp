@@ -2,17 +2,17 @@ package com.ringoid.domain.model.image
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.ringoid.domain.DomainUtil.BAD_ID
+import com.ringoid.domain.DomainUtil
 import com.ringoid.utility.randomString
 
 data class UserImage(
-    val originId: String = BAD_ID, val numberOfLikes: Int = 0, val isBlocked: Boolean = false,
+    val originId: String = DomainUtil.BAD_ID, val numberOfLikes: Int = 0, val isBlocked: Boolean = false,
     override val id: String, override val uri: String? = null,
     override val isRealModel: Boolean = true) : IImage {
 
     private constructor(source: Parcel): this(
-        id = source.readString() ?: BAD_ID, uri = source.readString(),
-        originId = source.readString() ?: BAD_ID, numberOfLikes = source.readInt(),
+        id = source.readString() ?: DomainUtil.BAD_ID, uri = source.readString(),
+        originId = source.readString() ?: DomainUtil.BAD_ID, numberOfLikes = source.readInt(),
         isBlocked = source.readInt() != 0)
 
     override fun copyWithId(id: String): IImage =

@@ -2,7 +2,7 @@ package com.ringoid.data.remote.model.image
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.ringoid.domain.DomainUtil.BAD_ID
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
 
@@ -26,7 +26,7 @@ class UserImageEntity(
         const val COLUMN_NUMBER_LIKES = "likes"
 
         fun from(image: IImage): UserImageEntity =
-            UserImageEntity(originId = BAD_ID, numberOfLikes = 0, isBlocked = false, id = image.id, uri = image.uri ?: "")
+            UserImageEntity(originId = DomainUtil.BAD_ID, numberOfLikes = 0, isBlocked = false, id = image.id, uri = image.uri ?: "")
     }
 
     override fun map(): UserImage = UserImage(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked, id = id, uri = uri)
