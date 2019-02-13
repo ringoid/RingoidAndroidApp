@@ -1,9 +1,9 @@
 apply from: 'buildsystem/dependencies.gradle'
 
 enum Environment {
-    DEVELOP('com.ringoid.app.develop', '"Ringoid Test', '"https://test.ringoidapp.com"', "-test"),
-    PRODUCTION('com.ringoid.app', '"Ringoid"', '"https://prod.ringoidapp.com"', ""),
-    STAGING('com.ringoid.app.staging', '"Ringoid Staging"', '"https://stage.ringoidapp.com"', "-staging")
+    DEVELOP('com.ringoid.app.develop', 'Ringoid Test', '"https://test.ringoidapp.com"', "-test"),
+    PRODUCTION('com.ringoid.app', 'Ringoid', '"https://prod.ringoidapp.com"', ""),
+    STAGING('com.ringoid.app.staging', 'Ringoid Staging', '"https://stage.ringoidapp.com"', "-staging")
 
     String appId, appName, apiUrl, versionNameSuffix
 
