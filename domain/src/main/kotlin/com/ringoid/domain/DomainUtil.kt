@@ -4,6 +4,7 @@ object DomainUtil {
 
     const val BAD_ID: String = ""
     const val BAD_POSITION: Int = -1
+    const val BAD_SORT_POSITION: Int = Int.MAX_VALUE
     const val BAD_RESOURCE: Int = 0
     const val CURRENT_USER_ID: String = "currentUserId"
     const val DEBOUNCE_NET = 400L

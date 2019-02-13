@@ -61,7 +61,7 @@ class UserProfileFragmentViewModel @Inject constructor(
                     .toList()
             }
             .autoDisposable(this)
-            .subscribe({ images.value = it }, Timber::e)
+            .subscribe({ images.value = it.apply { sortBy { it.sortPosition } } }, Timber::e)
     }
 
     fun deleteImage(id: String) {

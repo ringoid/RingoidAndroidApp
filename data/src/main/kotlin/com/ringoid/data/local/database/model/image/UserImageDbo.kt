@@ -11,7 +11,7 @@ class UserImageDbo(
     @ColumnInfo(name = COLUMN_ORIGIN_ID) val originId: String = DomainUtil.BAD_ID,
     @ColumnInfo(name = COLUMN_NUMBER_LIKES) val numberOfLikes: Int = 0,
     @ColumnInfo(name = COLUMN_FLAG_BLOCKED) val isBlocked: Boolean = false,
-    @ColumnInfo(name = COLUMN_SORT_POSITION) val sortPosition: Int = DomainUtil.BAD_POSITION,
+    @ColumnInfo(name = COLUMN_SORT_POSITION) val sortPosition: Int = DomainUtil.BAD_SORT_POSITION,
     id: String, uri: String?) : BaseImageDbo(id = id, uri = uri), Mappable<UserImage> {
 
     companion object {
