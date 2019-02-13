@@ -7,6 +7,7 @@ import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
@@ -24,6 +25,7 @@ import com.ringoid.utility.uriString
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import java.io.File
 import javax.inject.Inject
@@ -50,8 +52,12 @@ class UserImageRepository @Inject constructor(
             spm.accessSingle { cloud.getUserImages(it.accessToken, resolution) }
                 .handleError()
                 .flatMap {
-                    Observable.fromIterable(it.images)
-                        .doOnNext { local.updateUserImageByOriginId(originImageId = it.originId, uri = it.uri, isBlocked = it.isBlocked, numberOfLikes = it.numberOfLikes) }
+                    Observable.fromIterable(it.images)  // images fetched from the Server
+                        .zipWith(Observable.range(0, it.images.size), BiFunction { image: UserImageEntity, index: Int -> image to index })
+                        .doOnNext { (image, index) ->
+                            local.updateUserImageByOriginId(originImageId = image.originId, uri = image.uri,
+                                numberOfLikes = image.numberOfLikes, isBlocked = image.isBlocked, sortPosition = index)
+                        }
                         .toList()
                 }
                 .flatMap { local.userImages() }

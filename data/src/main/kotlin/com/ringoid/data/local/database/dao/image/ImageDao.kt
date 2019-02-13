@@ -35,6 +35,6 @@ interface ImageDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateUserImage(image: UserImageDbo): Int
 
-    @Query("UPDATE ${UserImageDbo.TABLE_NAME} SET ${BaseImageDbo.COLUMN_URI} = :uri, ${UserImageDbo.COLUMN_FLAG_BLOCKED} = :isBlocked, ${UserImageDbo.COLUMN_NUMBER_LIKES} = :numberOfLikes WHERE ${UserImageDbo.COLUMN_ORIGIN_ID} = :originImageId")
-    fun updateUserImageByOriginId(originImageId: String, uri: String, isBlocked: Boolean, numberOfLikes: Int): Int
+    @Query("UPDATE ${UserImageDbo.TABLE_NAME} SET ${BaseImageDbo.COLUMN_URI} = :uri, ${UserImageDbo.COLUMN_NUMBER_LIKES} = :numberOfLikes, ${UserImageDbo.COLUMN_FLAG_BLOCKED} = :isBlocked, ${UserImageDbo.COLUMN_SORT_POSITION} = :sortPosition WHERE ${UserImageDbo.COLUMN_ORIGIN_ID} = :originImageId")
+    fun updateUserImageByOriginId(originImageId: String, uri: String, numberOfLikes: Int, isBlocked: Boolean, sortPosition: Int): Int
 }
