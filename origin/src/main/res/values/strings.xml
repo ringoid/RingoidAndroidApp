@@ -96,6 +96,8 @@
     <string name="profile_dialog_image_another_button_add">Add another photo</string>
     <string name="profile_dialog_image_another_button_cancel">Discover new faces</string>
     <string name="profile_dialog_image_another_title">What do you want to do next?</string>
+    <string name="profile_dialog_image_blocked_button">Terms of Service</string>
+    <string name="profile_dialog_image_blocked_title">Your photo was deleted for violating Terms of Service</string>
     <string name="profile_empty_images">Add your photo to\nsee who likes you</string>
     <string name="profile_empty_title">Profile</string>
     <string name="profile_error_stub">Pull to refresh</string>

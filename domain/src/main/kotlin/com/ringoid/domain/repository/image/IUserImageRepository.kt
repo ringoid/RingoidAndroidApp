@@ -9,8 +9,9 @@ import io.reactivex.subjects.PublishSubject
 
 interface IUserImageRepository : IImageRepository {
 
-    val imageCreate: PublishSubject<String>
-    val imageDelete: PublishSubject<String>
+    val imageBlocked: PublishSubject<String>
+    val imageCreated: PublishSubject<String>
+    val imageDeleted: PublishSubject<String>
     val totalUserImages: PublishSubject<Int>
 
     // --------------------------------------------------------------------------------------------

@@ -39,8 +39,9 @@ class UserImageRepository @Inject constructor(
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
 
-    override val imageCreate = PublishSubject.create<String>()
-    override val imageDelete = PublishSubject.create<String>()
+    override val imageBlocked = PublishSubject.create<String>()
+    override val imageCreated = PublishSubject.create<String>()
+    override val imageDeleted = PublishSubject.create<String>()
     override val totalUserImages = PublishSubject.create<Int>()
 
     override fun countUserImages(): Single<Int> = local.countUserImages()
@@ -55,6 +56,9 @@ class UserImageRepository @Inject constructor(
                     Observable.fromIterable(it.images)  // images fetched from the Server
                         .zipWith(Observable.range(0, it.images.size), BiFunction { image: UserImageEntity, index: Int -> image to index })
                         .doOnNext { (image, index) ->
+                            if (image.isBlocked && image.isBlocked != local.isUserImageBlockedByOriginId(originImageId = image.originId)) {
+                                imageBlocked.onNext(image.originId)  // notify image has been blocked by moderator
+                            }
                             local.updateUserImageByOriginId(originImageId = image.originId, uri = image.uri,
                                 numberOfLikes = image.numberOfLikes, isBlocked = image.isBlocked, sortPosition = index)
                         }
@@ -103,7 +107,7 @@ class UserImageRepository @Inject constructor(
                     .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
                     .doOnSubscribe {
                         local.deleteImage(id = essence.imageId)
-                        imageDelete.onNext(essence.imageId)  // notify database changed
+                        imageDeleted.onNext(essence.imageId)  // notify database changed
                     }
                     .ignoreElement()  // convert to Completable
             }
@@ -130,7 +134,7 @@ class UserImageRepository @Inject constructor(
                 .doOnSubscribe {
                     val localImage = UserImageDbo(id = xessence.clientImageId, uri = imageFile.uriString())
                     local.addImage(localImage)
-                    imageCreate.onNext(xessence.clientImageId)  // notify database changed
+                    imageCreated.onNext(xessence.clientImageId)  // notify database changed
                 }
                 .doOnSuccess { image ->
                     if (image.imageUri.isNullOrBlank()) {

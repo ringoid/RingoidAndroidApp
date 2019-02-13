@@ -37,4 +37,7 @@ interface ImageDao {
 
     @Query("UPDATE ${UserImageDbo.TABLE_NAME} SET ${BaseImageDbo.COLUMN_URI} = :uri, ${UserImageDbo.COLUMN_NUMBER_LIKES} = :numberOfLikes, ${UserImageDbo.COLUMN_FLAG_BLOCKED} = :isBlocked, ${UserImageDbo.COLUMN_SORT_POSITION} = :sortPosition WHERE ${UserImageDbo.COLUMN_ORIGIN_ID} = :originImageId")
     fun updateUserImageByOriginId(originImageId: String, uri: String, numberOfLikes: Int, isBlocked: Boolean, sortPosition: Int): Int
+
+    @Query("SELECT ${UserImageDbo.COLUMN_FLAG_BLOCKED} FROM ${UserImageDbo.TABLE_NAME} WHERE ${UserImageDbo.COLUMN_ORIGIN_ID} = :originImageId")
+    fun isUserImageBlockedByOriginId(originImageId: String): Boolean
 }

@@ -21,6 +21,7 @@ import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class UserProfileFragmentViewModel @Inject constructor(
@@ -29,12 +30,18 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
     private val getUserImagesUseCase: GetUserImagesUseCase, app: Application) : BaseViewModel(app) {
 
+    val imageBlocked by lazy { MutableLiveData<String>() }
     val imageCreated by lazy { MutableLiveData<UserImage>() }
     val imageDeleted by lazy { MutableLiveData<String>() }
     val images by lazy { MutableLiveData<List<UserImage>>() }
 
     init {
-        createUserImageUseCase.repository.imageCreate
+        createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
+            .debounce(500L, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())  // touch LiveData on main thread only
+            .autoDisposable(this)
+            .subscribe({ imageBlocked.value = it }, Timber::e)
+
+        createUserImageUseCase.repository.imageCreated
             .autoDisposable(this)
             .subscribe {
                 getUserImageByIdUseCase.source(Params().put("id", it))
@@ -42,7 +49,7 @@ class UserProfileFragmentViewModel @Inject constructor(
                     .subscribe({ imageCreated.value = it }, Timber::e)
             }
 
-        createUserImageUseCase.repository.imageDelete
+        createUserImageUseCase.repository.imageDeleted
             .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
             .subscribe({ imageDeleted.value = it }, Timber::e)

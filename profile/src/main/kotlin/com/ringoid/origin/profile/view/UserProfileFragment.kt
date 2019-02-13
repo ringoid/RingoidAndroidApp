@@ -14,6 +14,7 @@ import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
@@ -132,13 +133,14 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
             observe(vm.images, imagesAdapter::submitList) { showEmptyStub(needShow = it.isEmpty()) }
-            observe(vm.imageDeleted, imagesAdapter::remove) {
-                showEmptyStub(needShow = imagesAdapter.isEmpty())
-                vm.onDeleteImage(imagesLeft = imagesAdapter.getModelsCount())
-            }
+            observe(vm.imageBlocked, ::doOnBlockedImage)
             observe(vm.imageCreated, imagesAdapter::prepend) {
                 showEmptyStub(needShow = false)
                 rv_items.post { rv_items.scrollToPosition(0) }
+            }
+            observe(vm.imageDeleted, imagesAdapter::remove) {
+                showEmptyStub(needShow = imagesAdapter.isEmpty())
+                vm.onDeleteImage(imagesLeft = imagesAdapter.getModelsCount())
             }
         }
         if (communicator(IBaseMainActivity::class.java)?.isNewUser() != true) {
@@ -227,6 +229,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
             positiveListener = { _, _ -> onAddImage() },
             negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}") })
+    }
+
+    private fun doOnBlockedImage(imageId: String) {
+        Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_blocked_title, descriptionResId = 0,
+            positiveBtnLabelResId = OriginR_string.profile_dialog_image_blocked_button,
+            negativeBtnLabelResId = OriginR_string.button_close,
+            positiveListener = { _, _ -> navigate(this, path = "/webpage?url=${AppRes.WEB_URL_TERMS}") })
     }
 
     // ------------------------------------------
