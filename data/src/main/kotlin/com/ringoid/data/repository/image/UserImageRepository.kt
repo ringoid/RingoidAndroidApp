@@ -106,8 +106,4 @@ class UserImageRepository @Inject constructor(
 
     override fun uploadImage(url: String, image: File): Completable =
         cloud.uploadImage(url = url, image = image)
-
-    // --------------------------------------------------------------------------------------------
-    override fun fulfillPendingImageRequests(): Completable =
-        Completable.fromCallable {  }  // TODO: fulfill all requests
 }

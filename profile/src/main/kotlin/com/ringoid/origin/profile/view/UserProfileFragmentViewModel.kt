@@ -8,7 +8,10 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.image.*
+import com.ringoid.domain.interactor.image.CreateUserImageUseCase
+import com.ringoid.domain.interactor.image.DeleteUserImageUseCase
+import com.ringoid.domain.interactor.image.GetUserImageByIdUseCase
+import com.ringoid.domain.interactor.image.GetUserImagesUseCase
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
@@ -24,7 +27,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
     private val getUserImagesUseCase: GetUserImagesUseCase,
-    private val fulfillPendingImageRequestsUseCase: FulfillPendingImageRequestsUseCase,
     app: Application) : BaseViewModel(app) {
 
     val imageCreated by lazy { MutableLiveData<UserImage>() }
@@ -93,7 +95,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     fun onRefresh() {
-        // TODO: fulfill is failed
         actionObjectPool.trigger()
         getUserImages()
         Bus.post(event = BusEvent.RefreshOnProfile)
