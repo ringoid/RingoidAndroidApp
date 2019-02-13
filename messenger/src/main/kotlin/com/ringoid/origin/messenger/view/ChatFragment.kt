@@ -95,7 +95,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        peerId = arguments?.getString(BUNDLE_KEY_PEER_ID, BAD_ID) ?: BAD_ID
+        peerId = arguments?.getString(BUNDLE_KEY_PEER_ID, DomainUtil.BAD_ID) ?: DomainUtil.BAD_ID
         payload = arguments?.getParcelable(BUNDLE_KEY_PAYLOAD)
         ChatInMemoryCache.addProfileIfNotExists(profileId = peerId)
 

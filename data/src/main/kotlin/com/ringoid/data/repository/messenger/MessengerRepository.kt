@@ -6,7 +6,6 @@ import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.actions.MessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.mapList
@@ -41,7 +40,7 @@ class MessengerRepository @Inject constructor(
 
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         aObjPool.put(MessageActionObject(text = essence.text, sourceFeed = essence.aObjEssence?.sourceFeed ?: "",
-            targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID, targetUserId = essence.aObjEssence?.targetUserId ?: BAD_ID))
+            targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID, targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID))
         val sentMessage = Message(id = "${essence.peerId}_${randomString()}", chatId = essence.peerId, peerId = DomainUtil.CURRENT_USER_ID, text = essence.text)
         return Single.just(sentMessage).cacheSentMessage()
     }

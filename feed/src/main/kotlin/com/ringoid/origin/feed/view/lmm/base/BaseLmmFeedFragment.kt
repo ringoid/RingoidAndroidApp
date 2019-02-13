@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
@@ -70,7 +69,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
             }
     }
 
-    protected fun openChat(position: Int, peerId: String, imageId: String = BAD_ID, tag: String = ChatFragment.TAG) {
+    protected fun openChat(position: Int, peerId: String, imageId: String = DomainUtil.BAD_ID, tag: String = ChatFragment.TAG) {
         if (!connectionManager.isNetworkAvailable()) {
             noConnection(this)
             return
