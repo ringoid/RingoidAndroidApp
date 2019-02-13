@@ -67,7 +67,9 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
                     it.toast(OriginR_string.common_clipboard)
                 }
             }
-            setLabel("Density: ${activity?.getScreenDensity()}, SW: ${activity?.getSmallestWidth()}, W: ${activity?.getScreenWidthDp()} dp [${activity?.getScreenWidth()} px], H: ${activity?.getScreenHeightDp()} dp [${activity?.getScreenHeight()} px]")
+            setLabel("Density: ${activity?.getScreenDensity()}, SW: ${activity?.getSmallestWidth()}, " +
+                     "W: ${activity?.getScreenWidthDp()} dp [${activity?.getScreenWidth()} px], " +
+                     "H: ${activity?.getScreenHeightDp()} dp [${activity?.getScreenHeight()} px]")
         }
     }
 }
