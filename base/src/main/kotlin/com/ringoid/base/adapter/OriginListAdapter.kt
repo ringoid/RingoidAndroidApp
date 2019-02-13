@@ -3,6 +3,7 @@ package com.ringoid.base.adapter
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IListModel
 
 abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>, private val headerRows: Int = 0)
@@ -148,6 +149,15 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
 
     fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]
     protected fun getModels(): List<T> = helper.currentList
+
+    fun findModel(predicate: (item: T) -> Boolean): T? = helper.currentList.find(predicate)
+
+    fun getModelAdapterPosition(predicate: (item: T) -> Boolean): Int =
+        helper.currentList.indexOfFirst(predicate)
+            .takeIf { it != DomainUtil.BAD_POSITION }
+            ?.let { it + fixUpForHeader() }
+            ?: DomainUtil.BAD_POSITION
+
     /**
      * The following two methods are just stubs to make [getItem] work properly,
      * header and footer [BaseViewHolder]s and corresponding models are normally

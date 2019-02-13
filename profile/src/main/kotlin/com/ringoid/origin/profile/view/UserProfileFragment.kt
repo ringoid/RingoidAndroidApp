@@ -14,6 +14,8 @@ import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
@@ -36,6 +38,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
     }
 
+    private var imageOnViewPortId: String = DomainUtil.BAD_ID
     private var cropImageAfterLogin: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
@@ -94,7 +97,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onCreate(savedInstanceState)
         imagesAdapter = UserProfileImageAdapter()
             .apply {
-                onInsertListener = { rv_items.post { rv_items.scrollToPosition(0) } }
+                onInsertListener = { scrollToPosition(0) }
                 onEmptyImagesListener = ::showEmptyStub
             }
     }
@@ -135,12 +138,19 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            observe(vm.images, imagesAdapter::submitList) { showEmptyStub(needShow = it.isEmpty()) }
             observe(vm.imageBlocked, ::doOnBlockedImage)
             observe(vm.imageCreated, imagesAdapter::prepend) { showEmptyStub(needShow = false) }
             observe(vm.imageDeleted, imagesAdapter::remove) {
                 showEmptyStub(needShow = imagesAdapter.isEmpty())
                 vm.onDeleteImage(imagesLeft = imagesAdapter.getModelsCount())
+            }
+            observe(vm.images, imagesAdapter::submitList) {
+                showEmptyStub(needShow = it.isEmpty())
+                if (!it.isEmpty()) {  // restore position at image on viewport
+                    imagesAdapter.getModelAdapterPosition { it.id == imageOnViewPortId }
+                        .takeIf { it != DomainUtil.BAD_POSITION }
+                        ?.let { scrollToPosition(it) }
+                }
             }
         }
         if (communicator(IBaseMainActivity::class.java)?.isNewUser() != true) {
@@ -170,17 +180,15 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 return@subscribe
             }
 
-            rv_items.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
-                ?.takeIf { it != RecyclerView.NO_POSITION }
-                ?.let {
-                    val model = imagesAdapter.getModel(it)
-                    navigate(this@UserProfileFragment, path = "/delete_image?imageId=${model.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
-                }
+            imageOnViewPort()?.let {
+                navigate(this@UserProfileFragment, path = "/delete_image?imageId=${it.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
+            }
         }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe {
+                imageOnViewPortId = imageOnViewPort()?.id ?: DomainUtil.BAD_ID
                 communicator(IBaseMainActivity::class.java)?.onRefreshFeed()
                 vm.onRefresh()
             }
@@ -269,4 +277,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // ------------------------------------------
     private fun globalImagePreviewReceiver(): IImagePreviewReceiver? =
         this@UserProfileFragment.communicator(IBaseRingoidApplication::class.java)?.imagePreviewReceiver
+
+    private fun imageOnViewPort(): IImage? =
+        rv_items.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
+            ?.takeIf { it != RecyclerView.NO_POSITION }
+            ?.let { imagesAdapter.getModel(it) }
+
+    private fun scrollToPosition(position: Int) {
+        rv_items.post { rv_items.scrollToPosition(position) }
+    }
 }
