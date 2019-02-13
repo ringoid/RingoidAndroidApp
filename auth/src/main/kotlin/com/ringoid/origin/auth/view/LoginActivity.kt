@@ -76,7 +76,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onCreate(savedInstanceState)
         if (intent.hasExtra(Extras.EXTRA_LOGOUT)) {
             imagePreviewReceiver.clear()  // forget any previous image cropping result upon logout
-            loginInMemoryCache.setNewUser(false)
             vm.onLogout()
         }
 

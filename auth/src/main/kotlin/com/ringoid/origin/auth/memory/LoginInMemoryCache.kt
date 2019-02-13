@@ -15,5 +15,9 @@ internal class LoginInMemoryCache : ILoginInMemoryCache {
         isNewUserFlag = isNew
     }
 
-    override fun isNewUser(): Boolean = isNewUserFlag
+    override fun isNewUser(): Boolean {
+        val value = isNewUserFlag
+        setNewUser(isNew = false)  // drop flag, use just once
+        return value
+    }
 }
