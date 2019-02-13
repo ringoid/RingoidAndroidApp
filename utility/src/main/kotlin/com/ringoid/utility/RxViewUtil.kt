@@ -3,6 +3,7 @@ package com.ringoid.utility
 import android.os.Looper
 import io.reactivex.ObservableTransformer
 import io.reactivex.Observer
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposables
@@ -24,10 +25,13 @@ fun checkMainThread2(observer: Observer<*>): Boolean {
     return true
 }
 
-@Suppress("CheckResult")
 fun delay(delay: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLISECONDS, body: () -> Unit) {
+    delay(delay, units, AndroidSchedulers.mainThread(), body)
+}
+
+@Suppress("CheckResult")
+fun delay(delay: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLISECONDS, scheduler: Scheduler, body: () -> Unit) {
     Single.just(0)
-        .delay(delay, units)
-        .observeOn(AndroidSchedulers.mainThread())
+        .delay(delay, units, scheduler)
         .subscribe({ body() }, Timber::e)
 }
