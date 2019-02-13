@@ -138,6 +138,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
+            // TODO: all lambdas after 'observe' acts on old adapter, because they happens before submitList() completes
             observe(vm.imageBlocked, ::doOnBlockedImage)
             observe(vm.imageCreated, imagesAdapter::prepend) { showEmptyStub(needShow = false) }
             observe(vm.imageDeleted, imagesAdapter::remove) {
