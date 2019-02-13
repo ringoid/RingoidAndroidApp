@@ -9,6 +9,7 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
@@ -65,15 +66,19 @@ class UserImageRepository @Inject constructor(
                                 .map { request ->
                                     when (request.type) {
                                         ImageRequestDbo.TYPE_CREATE ->
-                                            createImage(request.createRequestEssence(), image).ignoreElement()
-                                        ImageRequestDbo.TYPE_DELETE -> deleteUserImage(request.deleteRequestEssence())
+                                            createImage(request.createRequestEssence(), image, retryCount = 0).ignoreElement()
+                                        ImageRequestDbo.TYPE_DELETE -> deleteUserImage(request.deleteRequestEssence(), retryCount = 0)
                                         else -> Completable.complete()  // ignored item
                                     }
                                     .doOnComplete { imageRequestLocal.deleteRequest(request) }
                                 }
                                 .toList()
                         }
-                        .flatMap { Completable.concat(it).toSingle { 0L } }//TODO: handle error
+                        .flatMap {
+                            Completable.concat(it)
+                                .onErrorComplete()  // if any request fails, fetch user images whatever it is on the Server
+                                .toSingle { 0L }
+                        }
                         .flatMap { fetchUserImages() }
                 } else {
                     fetchUserImages()
@@ -82,10 +87,13 @@ class UserImageRepository @Inject constructor(
     }
 
     override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
+        deleteUserImage(essence, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
+
+    private fun deleteUserImage(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)
             .flatMapCompletable { localImage ->
                 spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                    .handleError()
+                    .handleError(count = retryCount)
                     .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
                     .doOnSubscribe {
                         local.deleteImage(id = essence.imageId)
@@ -101,6 +109,9 @@ class UserImageRepository @Inject constructor(
 
     // ------------------------------------------------------------------------
     override fun createImage(essence: IImageUploadUrlEssence, image: File): Single<Image> =
+        createImage(essence, image, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
+
+    private fun createImage(essence: IImageUploadUrlEssence, image: File, retryCount: Int): Single<Image> =
         spm.accessSingle { accessToken ->
             val xessence = when (essence) {
                 is ImageUploadUrlEssence -> essence  // for ImageUploadUrlEssence with access token supplied
@@ -126,7 +137,7 @@ class UserImageRepository @Inject constructor(
                     local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
                 }
                 .flatMap { cloud.uploadImage(url = it.imageUri!!, image = image).andThen(Single.just(it)) }
-                .handleError()  // TODO: on fail - retry on pull-to-refresh
+                .handleError(count = retryCount)
                 .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence)) }
                 .map { it.map() }
         }
