@@ -4,7 +4,7 @@ import android.view.View
 import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.image.UserImage
-import com.ringoid.utility.ImageLoader
+import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_user_profile_image.view.*
 
 

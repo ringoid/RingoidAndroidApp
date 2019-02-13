@@ -11,7 +11,7 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.anim.LikeAnimation
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.utility.ImageLoader
+import com.ringoid.utility.image.ImageLoader
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 

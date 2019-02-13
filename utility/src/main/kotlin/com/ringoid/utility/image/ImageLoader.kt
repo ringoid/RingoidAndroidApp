@@ -1,10 +1,11 @@
-package com.ringoid.utility
+package com.ringoid.utility.image
 
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.ringoid.utility.R
 
 object ImageLoader {
 
