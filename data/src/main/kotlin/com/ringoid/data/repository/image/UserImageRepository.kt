@@ -76,7 +76,6 @@ class UserImageRepository @Inject constructor(
             }
 
             cloud.getImageUploadUrl(xessence)
-                .handleError()  // TODO: on fail - retry on pull-to-refresh
                 .doOnSubscribe {
                     val localImage = UserImageDbo(id = xessence.clientImageId, uri = image.uriString())
                     local.addImage(localImage)
@@ -93,13 +92,10 @@ class UserImageRepository @Inject constructor(
                     val updatedLocalImage = UserImageDbo(originId = image.originImageId, id = xessence.clientImageId, uri = image.imageUri)
                     local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
                 }
-                .flatMap {
-                    cloud.uploadImage(url = it.imageUri!!, image = image)
-                        .handleError()  // TODO: on fail - retry on pull-to-refresh
-                        .andThen(Single.just(it))
-                        .map { it.map() }
-                }
+                .flatMap { cloud.uploadImage(url = it.imageUri!!, image = image).andThen(Single.just(it)) }
         }
+        .handleError()  // TODO: on fail - retry on pull-to-refresh
+        .map { it.map() }
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }
