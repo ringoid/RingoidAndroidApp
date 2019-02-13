@@ -7,6 +7,7 @@ import com.ringoid.data.local.database.UserRingoidDatabase
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
+import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
 import dagger.Module
@@ -37,6 +38,9 @@ class DatabaseModule {
 
     @Provides @Singleton @Named("user")
     fun provideUserImageDao(database: UserRingoidDatabase): ImageDao = database.imageDao()
+
+    @Provides @Singleton @Named("user")
+    fun provideUserImageRequestDao(database: UserRingoidDatabase): ImageRequestDao = database.imageRequestDao()
 
     @Provides @Singleton
     fun provideMessageDao(database: RingoidDatabase): MessageDao = database.messageDao()

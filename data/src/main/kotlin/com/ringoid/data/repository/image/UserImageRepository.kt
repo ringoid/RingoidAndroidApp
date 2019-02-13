@@ -2,6 +2,8 @@ package com.ringoid.data.repository.image
 
 import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.image.ImageDao
+import com.ringoid.data.local.database.dao.image.ImageRequestDao
+import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -29,8 +31,9 @@ import javax.inject.Singleton
 
 @Singleton
 class UserImageRepository @Inject constructor(
-    @Named("user") private val local: ImageDao, cloud: RingoidCloud,
-    spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    @Named("user") private val local: ImageDao,
+    @Named("user") private val imageRequestLocal: ImageRequestDao,
+    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
 
     override val imageCreate = PublishSubject.create<String>()
@@ -56,7 +59,8 @@ class UserImageRepository @Inject constructor(
         local.userImage(id = essence.imageId)
             .flatMapCompletable { localImage ->
                 spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                    .handleError()  // TODO: on fail - retry on pull-to-refresh
+                    .handleError()
+                    .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
                     .doOnSubscribe {
                         local.deleteImage(id = essence.imageId)
                         imageDelete.onNext(essence.imageId)  // notify database changed
@@ -93,9 +97,10 @@ class UserImageRepository @Inject constructor(
                     local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
                 }
                 .flatMap { cloud.uploadImage(url = it.imageUri!!, image = image).andThen(Single.just(it)) }
+                .handleError()  // TODO: on fail - retry on pull-to-refresh
+                .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence)) }
+                .map { it.map() }
         }
-        .handleError()  // TODO: on fail - retry on pull-to-refresh
-        .map { it.map() }
 
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }

@@ -11,11 +11,11 @@ import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
+import com.ringoid.data.local.database.model.image.ImageRequestDbo
 
 @Database(version = 6,
-          entities = [ImageDbo::class, MessageDbo::class,
-                      ProfileDbo::class, ProfileIdDbo::class,
-                      UserImageDbo::class])
+          entities = [ImageDbo::class, ImageRequestDbo::class, MessageDbo::class,
+                      ProfileDbo::class, ProfileIdDbo::class, UserImageDbo::class])
 abstract class UserRingoidDatabase : RoomDatabase() {
 
     companion object {
@@ -23,6 +23,7 @@ abstract class UserRingoidDatabase : RoomDatabase() {
     }
 
     abstract fun imageDao(): ImageDao
+    abstract fun imageRequestDao(): ImageRequestDao
     abstract fun messageDao(): MessageDao
     abstract fun userDao(): UserDao
     abstract fun userFeedDao(): UserFeedDao
