@@ -32,7 +32,7 @@ class ImagePreviewActivity : BaseHostActivity(), IImagePreviewActivity {
               ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
               ?.let {
                   val payload = if (withImageAdded) "&tabPayload=${Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED}"
-                                else "&tabPayload=${Payload.PAYLOAD_PROFILE_LOGIN}"
+                                else ""
                   navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}$payload")
               }
         super.onBackPressed()  // close ImagePreview screen

@@ -11,7 +11,6 @@ object NavigateFrom {
 
 object Payload {
 
-    const val PAYLOAD_PROFILE_LOGIN = "payload_profile_login"
     const val PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED = "payload_profile_login_image_added"
     const val PAYLOAD_PROFILE_REQUEST_ADD_IMAGE = "payload_profile_request_add_image"
 }

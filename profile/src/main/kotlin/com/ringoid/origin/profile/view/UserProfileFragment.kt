@@ -82,7 +82,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onTabTransaction(payload)
         payload?.let {
             when (it) {
-                Payload.PAYLOAD_PROFILE_LOGIN -> showEmptyStub(needShow = true)
                 Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }
                 Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> onAddImage()  // redirect from other screen
             }
@@ -198,6 +197,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
+
+        showEmptyStub(needShow = true)  // empty stub will be replaced on adapter's filled
     }
 
     override fun onDestroy() {
