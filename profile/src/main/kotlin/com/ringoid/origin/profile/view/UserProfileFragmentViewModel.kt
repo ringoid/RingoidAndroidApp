@@ -18,6 +18,7 @@ import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,8 +27,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
-    private val getUserImagesUseCase: GetUserImagesUseCase,
-    app: Application) : BaseViewModel(app) {
+    private val getUserImagesUseCase: GetUserImagesUseCase, app: Application) : BaseViewModel(app) {
 
     val imageCreated by lazy { MutableLiveData<UserImage>() }
     val imageDeleted by lazy { MutableLiveData<String>() }
@@ -55,6 +55,11 @@ class UserProfileFragmentViewModel @Inject constructor(
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
+            .flatMap {
+                Observable.fromIterable(it)
+                    .filter { !it.isBlocked }
+                    .toList()
+            }
             .autoDisposable(this)
             .subscribe({ images.value = it }, Timber::e)
     }
