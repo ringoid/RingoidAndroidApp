@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.ringoid.utility.R
 import io.reactivex.Flowable
@@ -37,18 +38,26 @@ object ImageLoader {
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
     fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
+        fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
+
         if (uri.isNullOrBlank()) {
             return
         }
+
+        val cacheStrategy = if (isLocalUri(uri)) DiskCacheStrategy.NONE
+                            else DiskCacheStrategy.AUTOMATIC
+        val thumbnailCacheStrategy = if (isLocalUri(thumbnailUri)) DiskCacheStrategy.NONE
+                                     else DiskCacheStrategy.AUTOMATIC
+
+        val xOptions = wrapOptions(options).diskCacheStrategy(cacheStrategy)
+        val xThumbnailOptions = RequestOptions().placeholder(progress).diskCacheStrategy(thumbnailCacheStrategy)
 
         val thumbnailRequest =
             thumbnailUri?.let {
                 Glide.with(imageView)
                     .load(it)
-                    .apply(RequestOptions().placeholder(progress))
+                    .apply(xThumbnailOptions)
             }
-
-        val xOptions = wrapOptions(options)
 
         Glide.with(imageView)
             .load(uri)
