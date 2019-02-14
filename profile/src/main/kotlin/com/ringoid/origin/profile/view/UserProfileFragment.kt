@@ -97,8 +97,22 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onCreate(savedInstanceState)
         imagesAdapter = UserProfileImageAdapter()
             .apply {
-                onInsertListener = { scrollToPosition(0) }
-                onEmptyImagesListener = ::showEmptyStub
+                onInsertListener = { count ->
+                    showEmptyStub(needShow = count <= 0)
+                    if (count > 1) {  // inserted multiple items
+                        // restore position at image on viewport
+                        imagesAdapter.getModelAdapterPosition { it.id == imageOnViewPortId }
+                            .takeIf { it != DomainUtil.BAD_POSITION }
+                            ?.let { scrollToPosition(it) }
+                    } else if (count > 0) {
+                        scrollToPosition(0)  // inserted single item
+                    }
+                }
+                onRemoveListener = {
+                    val empty = imagesAdapter.isEmpty()
+                    showEmptyStub(needShow = empty)
+                    vm.onDeleteImage(empty = empty)
+                }
             }
     }
 
@@ -138,21 +152,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.apply {
-            // TODO: all lambdas after 'observe' acts on old adapter, because they happens before submitList() completes
             observe(vm.imageBlocked, ::doOnBlockedImage)
-            observe(vm.imageCreated, imagesAdapter::prepend) { showEmptyStub(needShow = false) }
-            observe(vm.imageDeleted, imagesAdapter::remove) {
-                showEmptyStub(needShow = imagesAdapter.isEmpty())
-                vm.onDeleteImage(imagesLeft = imagesAdapter.getModelsCount())
-            }
-            observe(vm.images, imagesAdapter::submitList) {
-                showEmptyStub(needShow = it.isEmpty())
-                if (!it.isEmpty()) {  // restore position at image on viewport
-                    imagesAdapter.getModelAdapterPosition { it.id == imageOnViewPortId }
-                        .takeIf { it != DomainUtil.BAD_POSITION }
-                        ?.let { scrollToPosition(it) }
-                }
-            }
+            observe(vm.imageCreated, imagesAdapter::prepend)
+            observe(vm.imageDeleted, imagesAdapter::remove)
+            observe(vm.images, imagesAdapter::submitList)
         }
         if (communicator(IBaseMainActivity::class.java)?.isNewUser() != true) {
             vm.getUserImages()

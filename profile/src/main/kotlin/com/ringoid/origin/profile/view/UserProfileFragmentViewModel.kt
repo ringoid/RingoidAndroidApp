@@ -96,8 +96,8 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    fun onDeleteImage(imagesLeft: Int) {
-        if (imagesLeft <= 0) {
+    fun onDeleteImage(empty: Boolean) {
+        if (empty) {
             Bus.post(event = BusEvent.NoImagesOnProfile)
         }
     }

@@ -10,8 +10,8 @@ import com.ringoid.origin.profile.R
 
 class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageViewHolder>(UserProfileImageDiffCallback()) {
 
-    var onInsertListener: (() -> Unit)? = null
-    var onEmptyImagesListener: ((isEmpty: Boolean) -> Unit)? = null
+    var onInsertListener: ((count: Int) -> Unit)? = null
+    var onRemoveListener: (() -> Unit)? = null
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
 
     override fun getLayoutId(): Int = R.layout.rv_item_user_profile_image
@@ -24,7 +24,10 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 
     override fun getOnInsertedCb(): ((position: Int, count: Int) -> Unit)? =
-        { _, _ -> onInsertListener?.invoke() }
+        { _, count: Int -> onInsertListener?.invoke(count) }
+
+    override fun getOnRemovedCb(): ((position: Int, count: Int) -> Unit)? =
+        { _, _ -> onRemoveListener?.invoke() }
 
     // ------------------------------------------
     override fun getStubItem(): UserImage = EmptyUserImage
@@ -35,11 +38,6 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
         getModels()
             .find { it.id == imageId }
             ?.let { submitList(ArrayList(getModels()).apply { remove(it) }) }
-    }
-
-    override fun onSubmitList(list: List<UserImage>?) {
-        super.onSubmitList(list)
-        onEmptyImagesListener?.invoke(list.isNullOrEmpty())
     }
 }
 

@@ -109,16 +109,11 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         } else {
             helper.submitList(list)
         }
-        onSubmitList(list)
     }
 
     fun submitList(list: List<T>?, isThereMore: List<T>.() -> Boolean = { false }) {
         submitList(list)
         noMoreItems(list, isThereMore)
-    }
-
-    protected open fun onSubmitList(list: List<T>?) {
-        // override in subclasses
     }
 
     private fun noMoreItems(list: List<T>?, isThereMore: List<T>.() -> Boolean = { false }) {
