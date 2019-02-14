@@ -31,17 +31,14 @@ class AutoRetryImageListener(
     }
 
     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-        Timber.v("Failed to load image: $retried")
+        Timber.v("Failed to load image [$uri]: $retried")
         onFailure?.invoke()
-        val thread = Thread {
-            delay(1000L, scheduler = Schedulers.io()) {
-                if (retried < AutoRetryImageListener.RETRY_COUNT) {  // async recursion's stop condition
-                    retried++
+        Thread { delay(1000L, scheduler = Schedulers.trampoline()) {
+                if (retried++ < AutoRetryImageListener.RETRY_COUNT) {  // async recursion's stop condition
                     ImageLoader.load(uri, imageView,this)  // async recursion to try loading image again
                 }
             }
-        }
-        thread.start()
+        }.start()
         return true  // we handled the problem
     }
 

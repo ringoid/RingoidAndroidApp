@@ -8,13 +8,13 @@ import com.ringoid.utility.randomString
 data class UserImage(
     val originId: String = DomainUtil.BAD_ID, val numberOfLikes: Int = 0,
     val isBlocked: Boolean = false, val sortPosition: Int = DomainUtil.BAD_POSITION,
-    override val id: String, override val uri: String? = null,
+    val uriLocal: String? = null, override val id: String, override val uri: String? = null,
     override val isRealModel: Boolean = true) : IImage {
 
     private constructor(source: Parcel): this(
         id = source.readString() ?: DomainUtil.BAD_ID, uri = source.readString(),
         originId = source.readString() ?: DomainUtil.BAD_ID, numberOfLikes = source.readInt(),
-        isBlocked = source.readInt() != 0, sortPosition = source.readInt())
+        isBlocked = source.readInt() != 0, sortPosition = source.readInt(), uriLocal = source.readString())
 
     override fun copyWithId(id: String): IImage =
         UserImage(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked, id = id, uri = uri)
@@ -29,6 +29,7 @@ data class UserImage(
             writeInt(numberOfLikes)
             writeInt(if (isBlocked) 1 else 0)
             writeInt(sortPosition)
+            writeString(uriLocal)
         }
     }
 

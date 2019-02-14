@@ -46,5 +46,5 @@ class UserProfileImageDiffCallback : BaseDiffCallback<UserImage>() {
 
     override fun areItemsTheSame(oldItem: UserImage, newItem: UserImage): Boolean = oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: UserImage, newItem: UserImage): Boolean = oldItem.uri == newItem.uri
+    override fun areContentsTheSame(oldItem: UserImage, newItem: UserImage): Boolean = oldItem == newItem
 }

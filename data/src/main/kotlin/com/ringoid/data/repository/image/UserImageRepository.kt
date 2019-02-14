@@ -139,9 +139,11 @@ class UserImageRepository @Inject constructor(
             }
 
             val imageFile = File(imageFilePath)
+            val uriLocal = imageFile.uriString()
+            val localImage = UserImageDbo(id = xessence.clientImageId, uri = uriLocal, uriLocal = uriLocal)
+
             cloud.getImageUploadUrl(xessence)
                 .doOnSubscribe {
-                    val localImage = UserImageDbo(id = xessence.clientImageId, uri = imageFile.uriString())
                     local.addImage(localImage)
                     imageCreated.onNext(xessence.clientImageId)  // notify database changed
                 }
@@ -151,9 +153,9 @@ class UserImageRepository @Inject constructor(
                     }
                     /**
                      * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
-                     * for image in local cache.
+                     * for image in local cache, keeping [UserImageDbo.id] and [UserImageDbo.uriLocal] unchanged.
                      */
-                    val updatedLocalImage = UserImageDbo(originId = image.originImageId, id = xessence.clientImageId, uri = image.imageUri)
+                    val updatedLocalImage = localImage.copyWith(originId = image.originImageId, uri = image.imageUri)
                     local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
                 }
                 .flatMap { cloud.uploadImage(url = it.imageUri!!, image = imageFile).andThen(Single.just(it)) }

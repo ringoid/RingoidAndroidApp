@@ -26,15 +26,23 @@ object ImageLoader {
             }
     }
 
-    fun load(uri: String?, imageView: ImageView, options: RequestOptions? = null) {
+    fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
         if (uri.isNullOrBlank()) {
             return
         }
 
+        val thumbnailRequest =
+            thumbnailUri?.let {
+                Glide.with(imageView)
+                    .load(it)
+                    .apply(RequestOptions().placeholder(progress))
+            }
+
         Glide.with(imageView)
             .load(uri)
-            .apply(RequestOptions().placeholder(progress).apply { options?.let { apply(it) } })
-            .listener(AutoRetryImageListener(uri, imageView))
+            .apply(RequestOptions().apply { options?.let { apply(it) } })
+//            .listener(AutoRetryImageListener(uri, imageView))
+            .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
             .into(imageView)
     }
 

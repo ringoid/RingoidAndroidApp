@@ -13,7 +13,8 @@ abstract class BaseUserProfileImageViewHolder(view: View) : BaseViewHolder<UserI
 class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(view) {
 
     override fun bind(model: UserImage) {
-        ImageLoader.load(uri = model.uri, imageView = itemView.iv_image,
+        ImageLoader.load(uri = model.uri, thumbnailUri = model.uriLocal,
+            imageView = itemView.iv_image,
             options = RequestOptions()
                 .override(itemView.width, itemView.height)
                 .centerCrop())

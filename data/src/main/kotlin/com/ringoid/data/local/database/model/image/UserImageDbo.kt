@@ -12,6 +12,7 @@ class UserImageDbo(
     @ColumnInfo(name = COLUMN_NUMBER_LIKES) val numberOfLikes: Int = 0,
     @ColumnInfo(name = COLUMN_FLAG_BLOCKED) val isBlocked: Boolean = false,
     @ColumnInfo(name = COLUMN_SORT_POSITION) val sortPosition: Int = DomainUtil.BAD_SORT_POSITION,
+    @ColumnInfo(name = COLUMN_URI_LOCAL) val uriLocal: String? = null,
     id: String, uri: String?) : BaseImageDbo(id = id, uri = uri), Mappable<UserImage> {
 
     companion object {
@@ -19,14 +20,20 @@ class UserImageDbo(
         const val COLUMN_ORIGIN_ID = "originPhotoId"
         const val COLUMN_NUMBER_LIKES = "likes"
         const val COLUMN_SORT_POSITION = "sortPosition"
+        const val COLUMN_URI_LOCAL = "uriLocal"
 
         const val TABLE_NAME = "UserImages"
 
         fun from(image: UserImage): UserImageDbo =
             UserImageDbo(originId = image.originId, numberOfLikes = image.numberOfLikes, isBlocked = image.isBlocked,
-                         sortPosition = image.sortPosition, id = image.id, uri = image.uri)
+                         sortPosition = image.sortPosition, uriLocal = image.uriLocal, id = image.id, uri = image.uri)
     }
 
+    fun copyWith(originId: String = this.originId, numberOfLikes: Int = this.numberOfLikes, isBlocked: Boolean = this.isBlocked,
+                 sortPosition: Int = this.sortPosition, uriLocal: String? = this.uriLocal, uri: String? = this.uri)
+        : UserImageDbo = UserImageDbo(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked,
+                                      sortPosition = sortPosition, uriLocal = uriLocal, id = id, uri = uri)
+
     override fun map(): UserImage = UserImage(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked,
-                                              sortPosition = sortPosition, id = id, uri = uri)
+                                              sortPosition = sortPosition, uriLocal = uriLocal, id = id, uri = uri)
 }

@@ -11,8 +11,8 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.anim.LikeAnimation
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.utility.image.ImageLoader
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
 interface IProfileImageViewHolder {
@@ -32,7 +32,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
 
     override fun bind(model: ProfileImageVO) {
         showControls()  // cancel any effect caused by applied payloads
-        ImageLoader.load(model.image.uri, itemView.iv_image,
+        ImageLoader.load(uri = model.image.uri, imageView = itemView.iv_image,
             options = RequestOptions()
                 .override(itemView.width, itemView.height)
                 .centerCrop())
