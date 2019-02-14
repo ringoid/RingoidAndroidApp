@@ -41,22 +41,25 @@ object ImageLoader {
                     .apply(RequestOptions().placeholder(progress))
             }
 
+        val xOptions = RequestOptions().apply { options?.let { apply(it) } }
+
         Glide.with(imageView)
             .load(uri)
-            .apply(RequestOptions().apply { options?.let { apply(it) } })
-//            .listener(AutoRetryImageListener(uri, imageView))
+            .apply(xOptions)
+            .listener(AutoRetryImageListener(uri, imageView, xOptions))
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
             .into(imageView)
     }
 
     @Suppress("CheckResult")
-    fun load(uri: String?, imageView: ImageView, listener: RetryImageListener) {
+    fun load(uri: String?, imageView: ImageView, options: RequestOptions? = null, listener: RetryImageListener) {
         if (uri.isNullOrBlank()) {
             return
         }
 
         val drawableFuture = Glide.with(imageView)
             .load(uri)
+            .apply(RequestOptions().apply { options?.let { apply(it) } })
             .listener(listener)
             .submit()
 
