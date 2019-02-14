@@ -18,7 +18,7 @@ interface OnVerticalSwipeListener {
 class OnlyVerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : SwipeRefreshLayout(context, attrs) {
 
     private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
-    private var prev: MotionEvent? = null
+    private var prevX: Float = 0.0f
     private var declined: Boolean = false
 
     private var listener: OnVerticalSwipeListener? = null
@@ -26,23 +26,24 @@ class OnlyVerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : Sw
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                prev = MotionEvent.obtain(event)
+                prevX = event.x
                 declined = false  // new action
             }
             MotionEvent.ACTION_MOVE -> {
-                listener?.onVerticalSwipe()
-                val xDiff = Math.abs(event.x - (prev?.x ?: 0f))
-                if (declined || xDiff > touchSlop) {
+                if (declined || Math.abs(event.x - prevX) > touchSlop) {
                     declined = true  // memorize
                     return false
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                prev?.recycle()
-                prev = null
+                prevX = event.x
             }
         }
-        return super.onInterceptTouchEvent(event)
+        val result = super.onInterceptTouchEvent(event)
+        if (result && event.action == MotionEvent.ACTION_MOVE) {
+            listener?.onVerticalSwipe()
+        }
+        return result
     }
 
     /* Listener */
