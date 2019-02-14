@@ -20,4 +20,6 @@ class OpenChatActionObject(
         const val COLUMN_OPEN_CHAT_COUNT = "openChatCount"
         const val COLUMN_OPEN_CHAT_TIME_MILLIS = "openChatTimeMillis"
     }
+
+    override fun propertyString(): String? = "count=$count, timeInMillis=$timeInMillis"
 }

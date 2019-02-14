@@ -15,4 +15,6 @@ class MessageActionObject(
     companion object {
         const val COLUMN_TEXT = "text"
     }
+
+    override fun propertyString(): String? = "text=$text"
 }

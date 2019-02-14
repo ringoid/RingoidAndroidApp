@@ -33,7 +33,12 @@ open class ActionObject(
         const val COLUMN_TARGET_USER_ID = "targetUserId"
     }
 
-    override fun toString(): String = "${javaClass.simpleName}(actionTime=$actionTime, actionType='$actionType', sourceFeed='$sourceFeed', targetImageId='$targetImageId', targetUserId='$targetUserId', triggerStrategies=$triggerStrategies)"
+    protected open fun propertyString(): String? = null
+
+    override fun toString(): String {
+        val property = propertyString().takeIf { !it.isNullOrBlank() }?.let { "$it, " } ?: ""
+        return "${javaClass.simpleName}(${property}actionTime=$actionTime, actionType='$actionType', sourceFeed='$sourceFeed', targetImageId='$targetImageId', targetUserId='$targetUserId', triggerStrategies=$triggerStrategies)"
+    }
 
     override fun toSentryPayload(): String = "[${javaClass.simpleName}]"
 }

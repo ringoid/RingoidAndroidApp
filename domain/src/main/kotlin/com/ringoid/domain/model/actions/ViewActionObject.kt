@@ -32,4 +32,6 @@ class ViewActionObject(
         const val COLUMN_VIEW_COUNT = "viewCount"
         const val COLUMN_VIEW_TIME_MILLIS = "viewTimeMillis"
     }
+
+    override fun propertyString(): String? = "count=$count, timeInMillis=$timeInMillis"
 }

@@ -15,4 +15,6 @@ class BlockActionObject(
     companion object {
         const val COLUMN_NUMBER_BLOCK_REASON = "blockReasonNum"
     }
+
+    override fun propertyString(): String? = "blockReason=$numberOfBlockReason"
 }

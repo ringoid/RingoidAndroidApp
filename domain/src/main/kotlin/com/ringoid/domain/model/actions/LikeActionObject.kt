@@ -16,4 +16,6 @@ class LikeActionObject(
     companion object {
         const val COLUMN_LIKE_COUNT = "likeCount"
     }
+
+    override fun propertyString(): String? = "likeCount=$likeCount"
 }
