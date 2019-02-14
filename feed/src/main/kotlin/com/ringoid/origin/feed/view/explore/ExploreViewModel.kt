@@ -42,7 +42,7 @@ class ExploreViewModel @Inject constructor(
         getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
-                Timber.v("Received feed[${it.profiles.size}]: $it")
+                Timber.v("Received feed[${it.profiles.size}]")
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
                                   else ViewState.IDLE
             }
