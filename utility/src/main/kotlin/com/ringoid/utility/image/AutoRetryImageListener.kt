@@ -23,7 +23,7 @@ class AutoRetryImageListener(
         Timber.v("Failed to load image: [$uri]")
         if (e?.rootCauses?.find { it is FileNotFoundException } != null) {
             Timber.e("Image file not found by url: $uri")
-//            return false  // handle with Glide
+            return false  // handle with Glide
         }
 
         thread(2000L) { ImageLoader.load(uri, imageView, withThumbnail, options) }
