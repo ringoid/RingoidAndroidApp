@@ -154,7 +154,7 @@ abstract class FeedViewModel(
     private fun advanceAndPushViewObject(key: Pair<String, String>, recreate: Boolean) {
         advanceAndPushViewObject(key)
             ?.takeIf { recreate }
-            ?.let { addViewObjectToBuffer(it) }
+            ?.let { addViewObjectToBuffer(it.recreated()) }
     }
 
     private fun advanceAndPushViewObjects() {
