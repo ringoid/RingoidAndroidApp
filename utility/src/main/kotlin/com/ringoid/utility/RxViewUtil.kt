@@ -7,6 +7,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposables
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -34,4 +35,12 @@ fun delay(delay: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLI
     Single.just(0)
         .delay(delay, units, scheduler)
         .subscribe({ body() }, Timber::e)
+}
+
+fun thread(runnable: () -> Unit) {
+    Thread(runnable).start()
+}
+
+fun thread(delay: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLISECONDS, runnable: () -> Unit) {
+    thread { delay(delay = delay, units = units, scheduler = Schedulers.trampoline(), body = runnable) }
 }

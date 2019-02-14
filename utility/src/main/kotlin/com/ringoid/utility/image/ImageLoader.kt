@@ -8,11 +8,18 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.ringoid.utility.R
-import io.reactivex.Observable
+import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import timber.log.Timber
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 object ImageLoader {
+
+    private const val IMAGE_LOAD_RETRY_COUNT = 4
+    private const val IMAGE_LOAD_RETRY_DELAY = 55L  // in ms
 
     private lateinit var progress: Drawable
 
@@ -41,7 +48,7 @@ object ImageLoader {
                     .apply(RequestOptions().placeholder(progress))
             }
 
-        val xOptions = RequestOptions().apply { options?.let { apply(it) } }
+        val xOptions = wrapOptions(options)
 
         Glide.with(imageView)
             .load(uri)
@@ -52,19 +59,45 @@ object ImageLoader {
     }
 
     @Suppress("CheckResult")
-    fun load(uri: String?, imageView: ImageView, options: RequestOptions? = null, listener: RetryImageListener) {
+    internal fun load(uri: String?, imageView: ImageView, options: RequestOptions? = null) {
+        fun getDrawableFuture() = getDrawableFuture(uri, imageView, options)
+
         if (uri.isNullOrBlank()) {
             return
         }
 
-        val drawableFuture = Glide.with(imageView)
-            .load(uri)
-            .apply(RequestOptions().apply { options?.let { apply(it) } })
-            .listener(listener)
-            .submit()
-
-        Observable.fromFuture(drawableFuture)
+        Single.fromFuture(getDrawableFuture())
+            .retryWhen {
+                it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, IMAGE_LOAD_RETRY_COUNT), BiFunction { e: Throwable, i -> i to e })
+                    .flatMap { errorWithAttempt ->
+                        val attemptNumber = errorWithAttempt.first
+                        val error = errorWithAttempt.second
+                        val delayTime = IMAGE_LOAD_RETRY_DELAY * Math.pow(5.0, attemptNumber.toDouble()).toLong()
+                        Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
+                            .doOnSubscribe { Timber.v("Retry to load image, attempt [$attemptNumber / $IMAGE_LOAD_RETRY_COUNT] after error: $error") }
+                            .doOnComplete { if (attemptNumber >= IMAGE_LOAD_RETRY_COUNT) throw error }
+                    }
+            }
+            .doFinally { clearDrawableFuture() ; Timber.v("Clear resources used to load image") }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ imageView.post { imageView.setImageDrawable(it) } }, Timber::e)
+            .subscribe({ imageView.post { imageView.setImageDrawable(it) } },
+                       { imageView.post { imageView.setImageResource(R.drawable.ic_no_photo_placeholder_grey_96dp) } ; Timber.e(it) })
     }
+
+    // ------------------------------------------
+    private var prevRequest: Future<Drawable>? = null
+
+    private fun clearDrawableFuture() {
+        prevRequest?.cancel(true)
+        prevRequest = null
+    }
+
+    private fun getDrawableFuture(uri: String?, imageView: ImageView, options: RequestOptions? = null): Future<Drawable> {
+        clearDrawableFuture()
+        prevRequest = Glide.with(imageView).load(uri).apply(wrapOptions(options)).submit()
+        return prevRequest!!
+    }
+
+    private fun wrapOptions(options: RequestOptions?): RequestOptions =
+        RequestOptions().apply { options?.let { apply(it) } }.error(R.drawable.ic_no_photo_placeholder_grey_96dp)
 }
