@@ -14,17 +14,19 @@ import java.io.FileNotFoundException
 /**
  * @see https://github.com/bumptech/glide/issues/1308
  */
-class AutoRetryImageListener(private val uri: String?, private val imageView: ImageView, private val options: RequestOptions? = null)
+class AutoRetryImageListener(
+    private val uri: String?, private val imageView: ImageView,
+    private val options: RequestOptions? = null, private val withThumbnail: Boolean = false)
     : RequestListener<Drawable> {
 
     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
         Timber.v("Failed to load image: [$uri]")
         if (e?.rootCauses?.find { it is FileNotFoundException } != null) {
             Timber.e("Image file not found by url: $uri")
-            return false  // handle with Glide
+//            return false  // handle with Glide
         }
 
-        thread(2000L) { ImageLoader.load(uri, imageView, options) }
+        thread(2000L) { ImageLoader.load(uri, imageView, withThumbnail, options) }
         return true  // we handled the problem
     }
 

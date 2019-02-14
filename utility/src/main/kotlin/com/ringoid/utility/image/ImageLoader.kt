@@ -34,10 +34,14 @@ object ImageLoader {
 
         val cacheStrategy = if (isLocalUri(uri)) DiskCacheStrategy.NONE
                             else DiskCacheStrategy.AUTOMATIC
+
         val thumbnailCacheStrategy = if (isLocalUri(thumbnailUri)) DiskCacheStrategy.NONE
                                      else DiskCacheStrategy.AUTOMATIC
 
-        val xOptions = wrapOptions(imageView.context, options).diskCacheStrategy(cacheStrategy)
+        val xOptions = wrapOptions(options)
+            .placeholder(getDrawableProgress(imageView.context))
+            .diskCacheStrategy(cacheStrategy)
+
         val xThumbnailOptions = RequestOptions()
             .placeholder(getDrawableProgress(imageView.context))
             .diskCacheStrategy(thumbnailCacheStrategy)
@@ -52,20 +56,21 @@ object ImageLoader {
         Glide.with(imageView)
             .load(uri)
             .apply(xOptions)
-            .listener(AutoRetryImageListener(uri, imageView, xOptions))
+            .listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = xOptions))
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
             .into(imageView)
     }
 
     @Suppress("CheckResult")
-    internal fun load(uri: String?, imageView: ImageView, options: RequestOptions? = null) {
+    internal fun load(uri: String?, imageView: ImageView, withThumbnail: Boolean = false,options: RequestOptions? = null) {
         fun getDrawableFuture() = getDrawableFuture(uri, imageView, options)
 
         if (uri.isNullOrBlank()) {
             return
         }
 
-        Single.fromFuture(getDrawableFuture())
+        Single.just(getDrawableFuture())
+            .flatMap { Single.fromFuture(it) }
             .retryWhen {
                 it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, IMAGE_LOAD_RETRY_COUNT), BiFunction { e: Throwable, i -> i to e })
                     .flatMap { errorWithAttempt ->
@@ -79,12 +84,17 @@ object ImageLoader {
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ imageView.post { imageView.setImageDrawable(it) } },
-                       { imageView.post { imageView.setImageResource(R.drawable.ic_no_photo_placeholder_grey_96dp) } ; Timber.e(it) })
+                       {
+                           Timber.e(it)
+                           if (!withThumbnail) {
+                               imageView.post { imageView.setImageResource(R.drawable.ic_no_photo_placeholder_grey_96dp) }
+                           }
+                       })
     }
 
     // ------------------------------------------
     private fun getDrawableFuture(uri: String?, imageView: ImageView, options: RequestOptions? = null): Future<Drawable> =
-        Glide.with(imageView).load(uri).apply(wrapOptions(imageView.context, options)).submit()
+        Glide.with(imageView).load(uri).apply(wrapOptions(options)).submit()
 
     private fun getDrawableProgress(context: Context) =
         CircularProgressDrawable(context)
@@ -95,8 +105,6 @@ object ImageLoader {
                 start()
             }
 
-    private fun wrapOptions(context: Context, options: RequestOptions?): RequestOptions =
-        RequestOptions().apply { options?.let { apply(it) } }
-            .error(R.drawable.ic_no_photo_placeholder_grey_96dp)
-            .placeholder(getDrawableProgress(context))
+    private fun wrapOptions(options: RequestOptions?): RequestOptions =
+        RequestOptions().apply { options?.let { apply(it) } }.error(R.drawable.ic_no_photo_placeholder_grey_96dp)
 }
