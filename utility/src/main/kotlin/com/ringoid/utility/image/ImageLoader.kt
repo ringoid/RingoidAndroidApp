@@ -26,6 +26,9 @@ object ImageLoader {
             }
     }
 
+    /**
+     * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
+     */
     fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
         if (uri.isNullOrBlank()) {
             return
