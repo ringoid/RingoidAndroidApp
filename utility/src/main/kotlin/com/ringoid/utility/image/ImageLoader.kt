@@ -22,18 +22,6 @@ object ImageLoader {
     private const val IMAGE_LOAD_RETRY_COUNT = 4
     private const val IMAGE_LOAD_RETRY_DELAY = 55L  // in ms
 
-    private lateinit var progress: Drawable
-
-    fun init(context: Context) {
-        progress = CircularProgressDrawable(context)
-            .apply {
-                setColorSchemeColors(ContextCompat.getColor(context, R.color.util_grass))
-                strokeWidth = 5f
-                centerRadius = 30f
-                start()
-            }
-    }
-
     /**
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
@@ -49,8 +37,10 @@ object ImageLoader {
         val thumbnailCacheStrategy = if (isLocalUri(thumbnailUri)) DiskCacheStrategy.NONE
                                      else DiskCacheStrategy.AUTOMATIC
 
-        val xOptions = wrapOptions(options).diskCacheStrategy(cacheStrategy)
-        val xThumbnailOptions = RequestOptions().placeholder(progress).diskCacheStrategy(thumbnailCacheStrategy)
+        val xOptions = wrapOptions(imageView.context, options).diskCacheStrategy(cacheStrategy)
+        val xThumbnailOptions = RequestOptions()
+            .placeholder(getDrawableProgress(imageView.context))
+            .diskCacheStrategy(thumbnailCacheStrategy)
 
         val thumbnailRequest =
             thumbnailUri?.let {
@@ -87,26 +77,26 @@ object ImageLoader {
                             .doOnComplete { if (attemptNumber >= IMAGE_LOAD_RETRY_COUNT) throw error }
                     }
             }
-            .doFinally { clearDrawableFuture() ; Timber.v("Clear resources used to load image") }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ imageView.post { imageView.setImageDrawable(it) } },
                        { imageView.post { imageView.setImageResource(R.drawable.ic_no_photo_placeholder_grey_96dp) } ; Timber.e(it) })
     }
 
     // ------------------------------------------
-    private var prevRequest: Future<Drawable>? = null
+    private fun getDrawableFuture(uri: String?, imageView: ImageView, options: RequestOptions? = null): Future<Drawable> =
+        Glide.with(imageView).load(uri).apply(wrapOptions(imageView.context, options)).submit()
 
-    private fun clearDrawableFuture() {
-        prevRequest?.cancel(true)
-        prevRequest = null
-    }
+    private fun getDrawableProgress(context: Context) =
+        CircularProgressDrawable(context)
+            .apply {
+                setColorSchemeColors(ContextCompat.getColor(context, R.color.util_grass))
+                strokeWidth = 5f
+                centerRadius = 30f
+                start()
+            }
 
-    private fun getDrawableFuture(uri: String?, imageView: ImageView, options: RequestOptions? = null): Future<Drawable> {
-        clearDrawableFuture()
-        prevRequest = Glide.with(imageView).load(uri).apply(wrapOptions(options)).submit()
-        return prevRequest!!
-    }
-
-    private fun wrapOptions(options: RequestOptions?): RequestOptions =
-        RequestOptions().apply { options?.let { apply(it) } }.error(R.drawable.ic_no_photo_placeholder_grey_96dp)
+    private fun wrapOptions(context: Context, options: RequestOptions?): RequestOptions =
+        RequestOptions().apply { options?.let { apply(it) } }
+            .error(R.drawable.ic_no_photo_placeholder_grey_96dp)
+            .placeholder(getDrawableProgress(context))
 }

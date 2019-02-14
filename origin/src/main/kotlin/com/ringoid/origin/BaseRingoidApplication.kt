@@ -8,7 +8,6 @@ import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.domain.scope.UserScopeProvider
-import com.ringoid.utility.image.ImageLoader
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.support.DaggerApplication
@@ -85,7 +84,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     // ------------------------------------------------------------------------
     private fun initializeResources() {
         AppRes.init(applicationContext)
-        ImageLoader.init(applicationContext)
     }
 
     /* Rx */
