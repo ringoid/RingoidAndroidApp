@@ -154,7 +154,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         .doOnSubscribe {
             // TODO: cache the queue to restore later in case of failure all retries
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime")
-            queue.clear()
+            queue.clear()  // TODO: if no connection - clear queue at this stage leads to lost data
             numbers.clear()
             strategies.clear()
             timers.forEach { it.value?.dispose() }.also { timers.clear() }
