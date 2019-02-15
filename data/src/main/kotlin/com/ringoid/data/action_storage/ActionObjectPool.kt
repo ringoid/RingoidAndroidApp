@@ -117,7 +117,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
                 ?.let {
                     // schedule timer to trigger after delay
                     Observable.timer(it.delay, TimeUnit.SECONDS)
-                        .subscribeOn(Schedulers.io())
                         .doOnComplete(this::trigger)
                         .subscribe({ Timber.v("Delay strategy has just satisfied at $aobj") }, Timber::e)
                 }
