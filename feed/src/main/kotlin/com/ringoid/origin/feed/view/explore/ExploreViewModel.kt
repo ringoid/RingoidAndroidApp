@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -13,6 +14,8 @@ import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,7 +38,15 @@ class ExploreViewModel @Inject constructor(
 
     override fun getFeedName(): String = "new_faces"
 
-    // ------------------------------------------
+    // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
+        Timber.d("Received bus event: $event")
+        // refresh on Profile screen leads Feed screen to purge
+        clearScreen(ViewState.CLEAR.MODE_NEED_REFRESH)
+    }
+
+    // --------------------------------------------------------------------------------------------
     override fun getFeed() {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
@@ -71,6 +82,7 @@ class ExploreViewModel @Inject constructor(
             .subscribe({ feed.value = it }, Timber::e)
     }
 
+    // ------------------------------------------
     private fun prepareFeedParams(): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
