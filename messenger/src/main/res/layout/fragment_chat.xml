@@ -80,7 +80,7 @@
         android:paddingEnd="@dimen/std_margin_12"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:xbtnSrc="@drawable/ic_close_white_24dp"/>
+        app:xbtnSrc="@drawable/ic_close_white"/>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_settings"
