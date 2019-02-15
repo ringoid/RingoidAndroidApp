@@ -50,7 +50,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
     }
 
     private fun setLiked(isLiked: Boolean) {
-        itemView.ibtn_like.setImageResource(if (isLiked) R.drawable.ic_like_red_36dp else R.drawable.ic_like_outline_white_36dp)
+        itemView.ibtn_like.setImageResource(if (isLiked) R.drawable.ic_like_red else R.drawable.ic_like_outline_white)
     }
 
     private fun hideControls() {
