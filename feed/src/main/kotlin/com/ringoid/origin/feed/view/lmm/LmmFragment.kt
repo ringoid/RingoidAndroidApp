@@ -49,19 +49,13 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun showTabs(isVisible: Boolean) {
         if (isVisible) {
-            if (badge_likes_visibilityPrev) {
-                btn_tab_likes.showBadge(isVisible)
-            }
-            if (badge_matches_visibilityPrev) {
-                btn_tab_matches.showBadge(isVisible)
-            }
-            if (badge_messages_visibilityPrev) {
-                btn_tab_messenger.showBadge(isVisible)
-            }
+            btn_tab_likes.showBadge(badge_likes_visibilityPrev)
+            btn_tab_matches.showBadge(badge_matches_visibilityPrev)
+            btn_tab_messenger.showBadge(badge_messages_visibilityPrev)
         } else {
-            btn_tab_likes.showBadge(isVisible)
-            btn_tab_matches.showBadge(isVisible)
-            btn_tab_messenger.showBadge(isVisible)
+            btn_tab_likes.showBadge(false)
+            btn_tab_matches.showBadge(false)
+            btn_tab_messenger.showBadge(false)
         }
         btn_tab_likes.changeVisibility(isVisible)
         btn_tab_matches.changeVisibility(isVisible)
