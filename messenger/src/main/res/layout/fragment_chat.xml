@@ -46,7 +46,7 @@
             android:paddingBottom="@dimen/std_margin_8"
             android:paddingStart="@dimen/std_margin_8"
             android:paddingEnd="@dimen/std_margin_8"
-            app:xbtnSrc="@drawable/ic_send_white_36dp"/>
+            app:xbtnSrc="@drawable/ic_send_white"/>
     </LinearLayout>
 
     <View
