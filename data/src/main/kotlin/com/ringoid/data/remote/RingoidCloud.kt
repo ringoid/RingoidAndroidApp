@@ -66,7 +66,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
         restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
             .breadcrumb("getUserImages", "accessToken" to "", "resolution" to "$resolution")
-            .checkResponseTime()
+            .checkResponseTime("UserPhotos")
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
         restAdapter.deleteUserImage(essence.toBody())
@@ -86,13 +86,13 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
             .breadcrumb("getNewFaces", "accessToken" to "", "resolution" to "$resolution",
                         "lastActionTime" to "$lastActionTime")
-            .checkResponseTime()
+            .checkResponseTime("NewFaces")
 
     fun getLmm(accessToken: String, resolution: ImageResolution, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, lastActionTime = lastActionTime)
             .breadcrumb("getLmm", "accessToken" to "",
                         "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
-            .checkResponseTime()
+            .checkResponseTime("LMM")
 
     /* Test */
     // --------------------------------------------------------------------------------------------
