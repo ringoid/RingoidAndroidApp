@@ -48,13 +48,14 @@ object SentryUtil {
     fun e(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.ERROR,   extras = extras)
     fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.FATAL,   extras = extras)
 
-    fun capture(e: Throwable, message: String? = null, extras: List<Pair<String, String>>? = null) {
+    fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
+                extras: List<Pair<String, String>>? = null) {
         val fullExtras = mutableListOf<Pair<String, String>>()
             .apply {
                 add(e.javaClass.simpleName to e.stackTraceString())
                 extras?.let { addAll(it) }
             }
-        capture(e, message = message, `object` = null, extras = fullExtras)
+        capture(e, message = message, level = level, `object` = null, extras = fullExtras)
     }
 
     fun setUser(spm: ISharedPrefsManager) {
@@ -71,10 +72,10 @@ object SentryUtil {
         Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
     }
 
-    private fun capture(e: Throwable, message: String? = null, `object`: Any? = null,
-                        extras: List<Pair<String, String>>? = null) {
+    private fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
+                        `object`: Any? = null, extras: List<Pair<String, String>>? = null) {
         if (!message.isNullOrBlank()) {
-            Sentry.capture(createEvent(message = message, level = Event.Level.ERROR, `object` = `object`, extras = extras))
+            Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
         } else {
             Sentry.capture(e)
         }

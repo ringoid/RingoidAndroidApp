@@ -7,6 +7,7 @@ import com.ringoid.domain.exception.*
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
+import io.sentry.event.Event
 import retrofit2.HttpException
 import timber.log.Timber
 import java.lang.Math.pow
@@ -49,7 +50,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null)
                                 .doOnSubscribe { Timber.w("Retry attempt [$attemptNumber / $count] after error: $error") }
                                 .doOnNext {
                                     if (error is RepeatRequestAfterSecException) {
-                                        SentryUtil.capture(error, message = "Repeat after delay")
+                                        SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING)
                                         if (attemptNumber >= 3) {
                                             SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row")
                                         }
