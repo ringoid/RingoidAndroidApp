@@ -48,8 +48,8 @@ class DebugFeedRepository @Inject constructor(
             Single.just(DebugRepository.getFeed(page)).map { it.convertToFeedResponse() }
         }
         .handleError(count = count * 2, delay = 250L)
-        .filterAlreadySeenProfilesFeed()
-        .filterBlockedProfilesFeed()
+        .filterOutAlreadySeenProfilesFeed()
+        .filterOutBlockedProfilesFeed()
         .cacheNewFacesAsAlreadySeen()
         .map { it.map() }
 
@@ -64,8 +64,8 @@ class DebugFeedRepository @Inject constructor(
             Single.just(DebugRepository.getFeed(page)).map { it.convertToFeedResponse() }
         }
         .handleError()
-        .filterAlreadySeenProfilesFeed()
-        .filterBlockedProfilesFeed()
+        .filterOutAlreadySeenProfilesFeed()
+        .filterOutBlockedProfilesFeed()
         .cacheNewFacesAsAlreadySeen()
         .map { it.map() }
 

@@ -71,8 +71,8 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
                  .handleError()
-                 .filterAlreadySeenProfilesFeed()
-                 .filterBlockedProfilesFeed()
+                 .filterOutAlreadySeenProfilesFeed()
+                 .filterOutBlockedProfilesFeed()
                  .cacheNewFacesAsAlreadySeen()
                  .map { it.map() }
         }
@@ -83,7 +83,7 @@ open class FeedRepository @Inject constructor(
                  .handleError()
                  // clear sent user messages because they will be restored with new Lmm
                  .doOnSubscribe { sentMessagesLocal.deleteMessages() }
-                 .filterBlockedProfilesLmm()
+                 .filterOutBlockedProfilesLmm()
                  .map { it.map() }
                  .doOnSuccess {
                      feedLikes.onNext(it.likes)
@@ -104,13 +104,13 @@ open class FeedRepository @Inject constructor(
         }
 
     // --------------------------------------------------------------------------------------------
-    protected fun Single<FeedResponse>.filterAlreadySeenProfilesFeed(): Single<FeedResponse> =
-        filterProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())
+    protected fun Single<FeedResponse>.filterOutAlreadySeenProfilesFeed(): Single<FeedResponse> =
+        filterOutProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())
 
-    protected fun Single<FeedResponse>.filterBlockedProfilesFeed(): Single<FeedResponse> =
-        filterProfilesFeed(idsSource = getBlockedProfileIds().toObservable())
+    protected fun Single<FeedResponse>.filterOutBlockedProfilesFeed(): Single<FeedResponse> =
+        filterOutProfilesFeed(idsSource = getBlockedProfileIds().toObservable())
 
-    protected fun Single<FeedResponse>.filterProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
+    protected fun Single<FeedResponse>.filterOutProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
         toObservable()
         .withLatestFrom(idsSource,
             BiFunction { feed: FeedResponse, blockedIds: List<String> ->
@@ -124,7 +124,7 @@ open class FeedRepository @Inject constructor(
         .single(FeedResponse()  /* by default - empty feed */)
 
     // ------------------------------------------
-    private fun Single<LmmResponse>.filterBlockedProfilesLmm(): Single<LmmResponse> =
+    private fun Single<LmmResponse>.filterOutBlockedProfilesLmm(): Single<LmmResponse> =
         toObservable()
         .withLatestFrom(getBlockedProfileIds().toObservable(),
             BiFunction { lmm: LmmResponse, blockedIds: List<String> ->
