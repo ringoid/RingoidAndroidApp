@@ -29,7 +29,7 @@
         android:paddingEnd="@dimen/std_margin_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_more_white_36dp"/>
+        app:xbtnSrc="@drawable/ic_more_white"/>
 
     <View
         android:id="@+id/underscore"
