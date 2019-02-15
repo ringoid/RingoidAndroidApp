@@ -69,6 +69,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
 
         bottom_bar.apply {
             setOnNavigationItemSelectedListener {
+                vm.onSwitchTab()
                 changeMenuItemAppearance(it)
                 fragNav.switchTab(tabIdToIndex(it.itemId))
                     true
