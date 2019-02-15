@@ -19,7 +19,7 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
                 .override(itemView.width, itemView.height)
                 .centerCrop())
 
-        itemView.tv_likes_count.text = "${model.numberOfLikes}"  // TODO: use payload
+        itemView.tv_likes_count.text = "${model.numberOfLikes}"
     }
 }
 
