@@ -193,7 +193,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe {
                 imageOnViewPortId = imageOnViewPort()?.id ?: DomainUtil.BAD_ID
-                communicator(IBaseMainActivity::class.java)?.onRefreshFeed()
                 vm.onRefresh()
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }

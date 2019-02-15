@@ -38,9 +38,4 @@ class MainViewModel @Inject constructor(getLmmUseCase: GetLmmUseCase, getUserIma
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
-
-    // --------------------------------------------------------------------------------------------
-    fun onRefreshFeed() {
-        badgeLmm.value = false  // discard badge on refresh - it will be set properly after refresh
-    }
 }

@@ -1,7 +1,5 @@
 package com.ringoid.origin.feed.view.lmm.like
 
-import android.os.Bundle
-import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderHideChatControls
@@ -9,10 +7,8 @@ import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderShowChatControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
-import com.ringoid.utility.communicator
 import timber.log.Timber
 
 class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
@@ -55,12 +51,5 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                 }
             }
         }
-    }
-
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.badgeLikes) { communicator(ILmmFragment::class.java)?.showBadgeOnLikes(it) }
     }
 }

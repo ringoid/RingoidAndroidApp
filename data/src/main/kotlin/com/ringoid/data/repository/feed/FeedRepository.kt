@@ -60,11 +60,13 @@ open class FeedRepository @Inject constructor(
         Completable.fromCallable { blockedProfilesCache.deleteProfileIds() }
 
     // --------------------------------------------------------------------------------------------
+    override val badgeLikes = PublishSubject.create<Boolean>()
+    override val badgeMatches = PublishSubject.create<Boolean>()
+    override val badgeMessenger = PublishSubject.create<Boolean>()
     override val feedLikes = PublishSubject.create<List<FeedItem>>()
     override val feedMatches = PublishSubject.create<List<FeedItem>>()
     override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
-    override val newMessages = PublishSubject.create<Boolean>()
 
     // TODO: always check db first
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
@@ -81,11 +83,19 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
                  .handleError()
-                 // clear sent user messages because they will be restored with new Lmm
-                 .doOnSubscribe { sentMessagesLocal.deleteMessages() }
+                 .doOnSubscribe {
+                     // clear sent user messages because they will be restored with new Lmm
+                     sentMessagesLocal.deleteMessages()
+                     badgeLikes.onNext(false)
+                     badgeMatches.onNext(false)
+                     badgeMessenger.onNext(false)
+                     lmmChanged.onNext(false)
+                 }
                  .filterOutBlockedProfilesLmm()
                  .map { it.map() }
                  .doOnSuccess {
+                     badgeLikes.onNext(it.newLikesCount() > 0)
+                     badgeMatches.onNext(it.newMatchesCount() > 0)
                      feedLikes.onNext(it.likes)
                      feedMatches.onNext(it.matches)
                      feedMessages.onNext(it.messages)
@@ -95,7 +105,7 @@ open class FeedRepository @Inject constructor(
                     BiFunction { lmm: Lmm, count: Int ->
                         val newCount = lmm.messagesCount()
                         if (newCount != 0 && count != newCount) {
-                            lmm.hasNewMessages = true
+                            badgeMessenger.onNext(true)
                             lmmChanged.onNext(true)  // have new messages
                         }
                         lmm

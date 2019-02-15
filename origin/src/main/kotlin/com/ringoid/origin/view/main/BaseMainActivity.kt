@@ -194,8 +194,4 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
 
     // --------------------------------------------------------------------------------------------
     override fun isNewUser(): Boolean = loginInMemoryCache.isNewUser()
-
-    override fun onRefreshFeed() {
-        // override in subclasses
-    }
 }

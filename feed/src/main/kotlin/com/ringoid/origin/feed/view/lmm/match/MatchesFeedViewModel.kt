@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view.lmm.match
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
@@ -18,21 +17,9 @@ class MatchesFeedViewModel @Inject constructor(
     countUserImagesUseCase: CountUserImagesUseCase, app: Application)
     : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
 
-    val badgeMatches by lazy { MutableLiveData<Boolean>() }
-
-    override fun doOnSuccess(lmm: Lmm) {
-        super.doOnSuccess(lmm)
-        badgeMatches.value = lmm.newLikesCount() > 0
-    }
-
     override fun isLmmEmpty(lmm: Lmm): Boolean = lmm.isMatchesEmpty()
 
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMatches
 
     override fun getFeedName(): String = "matches"
-
-    override fun onRefresh() {
-        badgeMatches.value = false  // discard badge on refresh - it will be set properly after refresh
-        super.onRefresh()
-    }
 }

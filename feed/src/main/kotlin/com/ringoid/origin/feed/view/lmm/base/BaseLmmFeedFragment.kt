@@ -19,7 +19,6 @@ import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
-import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_feed.*
 
@@ -115,11 +114,5 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
     override fun onDestroyView() {
         super.onDestroyView()
         rv_items.removeOnScrollListener(topScrollListener)
-    }
-
-    // --------------------------------------------------------------------------------------------
-    override fun onRefresh() {
-        communicator(IBaseMainActivity::class.java)?.onRefreshFeed()
-        vm.onRefresh()
     }
 }

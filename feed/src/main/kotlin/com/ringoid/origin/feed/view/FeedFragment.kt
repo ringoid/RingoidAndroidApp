@@ -175,7 +175,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            refreshes().compose(clickDebounce()).subscribe { onRefresh() }
+            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
@@ -199,11 +199,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun onDestroyView() {
         super.onDestroyView()
         rv_items.removeOnScrollListener(visibilityTrackingScrollListener)
-    }
-
-    // --------------------------------------------------------------------------------------------
-    protected open fun onRefresh() {
-        vm.onRefresh()
     }
 
     // --------------------------------------------------------------------------------------------
