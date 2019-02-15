@@ -50,10 +50,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (isActivityCreated && hidden) {
-            vm.purgeAlreadySeenProfiles()
-        }
+        // don't call 'super', completely overridden method
     }
 
     // ------------------------------------------

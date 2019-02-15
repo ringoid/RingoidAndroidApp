@@ -41,12 +41,6 @@ abstract class FeedViewModel(
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
-    fun purgeAlreadySeenProfiles() {
-        clearCachedAlreadySeenProfileIdsUseCase.source()
-            .autoDisposable(this)
-            .subscribe({}, Timber::e)
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
         Timber.d("Received bus event: $event")
