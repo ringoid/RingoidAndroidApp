@@ -19,6 +19,7 @@ import com.ringoid.data.repository.withApiError
 import com.ringoid.data.repository.withNetError
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.breadcrumb
+import com.ringoid.domain.misc.DebugOnly
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.feed.EmptyFeed
@@ -37,7 +38,7 @@ import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
 
-@Singleton
+@Singleton @DebugOnly
 class DebugRepository @Inject constructor(
     @Named("feed") private val imageLocal: ImageDao,
     @Named("user") private val userImageLocal: ImageDao,

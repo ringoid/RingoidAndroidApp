@@ -11,6 +11,7 @@ import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.image.UserImageRepository
 import com.ringoid.data.repository.messenger.MessengerRepository
 import com.ringoid.data.repository.user.UserRepository
+import com.ringoid.domain.misc.DebugOnly
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
 import com.ringoid.domain.repository.debug.IDebugRepository
 import com.ringoid.domain.repository.feed.IFeedRepository
@@ -25,10 +26,10 @@ import javax.inject.Singleton
                     SharedPrefsManagerModule::class, UseCaseExecutorModule::class])
 class RepositoryModule {
 
-    @Provides @Singleton
+    @Provides @Singleton @DebugOnly
     fun provideDebugRepository(repository: DebugRepository): IDebugRepository = repository
 
-    @Provides @Singleton
+    @Provides @Singleton @DebugOnly
     fun provideDebugFeedRepository(repository: DebugFeedRepository): IDebugFeedRepository = repository
 
     @Provides @Singleton

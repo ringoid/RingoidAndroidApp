@@ -8,6 +8,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
+import com.ringoid.domain.misc.DebugOnly
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
@@ -17,10 +18,10 @@ import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
-    private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
-    private val debugGetNewFacesDropFlagsUseCase: DebugGetNewFacesDropFlagsUseCase,
-    private val debugGetNewFacesRepeatAfterDelayForPageUseCase: DebugGetNewFacesRepeatAfterDelayForPageUseCase,
-    private val debugGetNewFacesRetryNTimesForPageUseCase: DebugGetNewFacesRetryNTimesForPageUseCase,
+    @DebugOnly private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
+    @DebugOnly private val debugGetNewFacesDropFlagsUseCase: DebugGetNewFacesDropFlagsUseCase,
+    @DebugOnly private val debugGetNewFacesRepeatAfterDelayForPageUseCase: DebugGetNewFacesRepeatAfterDelayForPageUseCase,
+    @DebugOnly private val debugGetNewFacesRetryNTimesForPageUseCase: DebugGetNewFacesRetryNTimesForPageUseCase,
     private val cacheAlreadySeenProfileIdsUseCase: CacheAlreadySeenProfileIdsUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -74,13 +75,16 @@ class ExploreViewModel @Inject constructor(
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
 
+    @DebugOnly
     private fun prepareDebugFeedParams(): Params = Params().put("page", nextPage++)
 
+    @DebugOnly
     private fun prepareDebugFeedParamsRepeatAfterDelay(): Params =
         Params().put("page", nextPage++)
                 .put("repeatPage", 2)
                 .put("delay", 5L)  // in seconds
 
+    @DebugOnly
     private fun prepareDebugFeedParamsRetryNTimes(): Params =
         Params().put("page", nextPage++)
             .put("failPage", 2)

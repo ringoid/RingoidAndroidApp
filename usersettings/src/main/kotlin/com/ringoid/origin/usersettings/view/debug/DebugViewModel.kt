@@ -6,24 +6,26 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.debug.*
+import com.ringoid.domain.misc.DebugOnly
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.CompletableTransformer
 import timber.log.Timber
 import javax.inject.Inject
 
+@DebugOnly
 class DebugViewModel @Inject constructor(
-    private val invalidAccessTokenRequestUseCase: InvalidAccessTokenRequestUseCase,
-    private val requestFailUseCase: RequestFailUseCase,
-    private val requestRepeatAfterDelayUseCase: RequestRepeatAfterDelayUseCase,
-    private val requestRetryNTimesUseCase: RequestRetryNTimesUseCase,
-    private val unsupportedAppVersionRequestUseCase: UnsupportedAppVersionRequestUseCase,
-    private val wrongParamsRequestUseCase: WrongParamsRequestUseCase,
-    private val debugInvalidAccessTokenRequestUseCase: DebugInvalidAccessTokenRequestUseCase,
-    private val debugNotSuccessRequestUseCase: DebugNotSuccessRequestUseCase,
-    private val debugServerErrorCauseRequestUseCase: DebugServerErrorCauseRequestUseCase,
-    private val debugTimeOutRequestUseCase: DebugTimeOutRequestUseCase,
-    private val debugUnsupportedAppVersionRequestUseCase: DebugUnsupportedAppVersionRequestUseCase,
+    @DebugOnly private val invalidAccessTokenRequestUseCase: InvalidAccessTokenRequestUseCase,
+    @DebugOnly private val requestFailUseCase: RequestFailUseCase,
+    @DebugOnly private val requestRepeatAfterDelayUseCase: RequestRepeatAfterDelayUseCase,
+    @DebugOnly private val requestRetryNTimesUseCase: RequestRetryNTimesUseCase,
+    @DebugOnly private val unsupportedAppVersionRequestUseCase: UnsupportedAppVersionRequestUseCase,
+    @DebugOnly private val wrongParamsRequestUseCase: WrongParamsRequestUseCase,
+    @DebugOnly private val debugInvalidAccessTokenRequestUseCase: DebugInvalidAccessTokenRequestUseCase,
+    @DebugOnly private val debugNotSuccessRequestUseCase: DebugNotSuccessRequestUseCase,
+    @DebugOnly private val debugServerErrorCauseRequestUseCase: DebugServerErrorCauseRequestUseCase,
+    @DebugOnly private val debugTimeOutRequestUseCase: DebugTimeOutRequestUseCase,
+    @DebugOnly private val debugUnsupportedAppVersionRequestUseCase: DebugUnsupportedAppVersionRequestUseCase,
     app: Application) : BaseViewModel(app) {
 
     fun requestWithExpiredAccessToken() {

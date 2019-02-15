@@ -7,12 +7,14 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.misc.DebugOnly
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.usersettings.R
 import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.fragment_debug.*
 
+@DebugOnly
 class DebugFragment : BaseFragment<DebugViewModel>() {
 
     companion object {

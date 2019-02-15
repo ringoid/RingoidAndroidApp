@@ -10,6 +10,7 @@ import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.misc.DebugOnly
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -19,7 +20,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
+import javax.inject.Singleton
 
+@Singleton @DebugOnly
 class DebugFeedRepository @Inject constructor(
     messengerLocal: MessageDao, @Named("user") sentMessagesLocal: MessageDao,
     @Named("alreadySeen") alreadySeenProfilesCache: UserFeedDao,
