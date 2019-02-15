@@ -58,7 +58,7 @@
         android:paddingEnd="@dimen/std_margin_16"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_add_white_36dp"/>
+        app:xbtnSrc="@drawable/ic_add_white"/>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_settings"
@@ -70,7 +70,7 @@
         android:paddingEnd="@dimen/std_margin_16"
         app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_settings_white_36dp"/>
+        app:xbtnSrc="@drawable/ic_settings_white"/>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_delete_image"
@@ -83,7 +83,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_delete_white_36dp"/>
+        app:xbtnSrc="@drawable/ic_delete_white"/>
 
     <ProgressBar
         android:id="@+id/pb_profile"
