@@ -9,6 +9,8 @@ import com.ringoid.utility.checkMainThread2
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.MainThreadDisposable
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 interface OnVerticalSwipeListener {
 
@@ -20,9 +22,11 @@ class OnlyVerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : Sw
     private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
     private var prevX: Float = 0.0f
     private var declined: Boolean = false
+    private var hasDraggingStarted: Boolean = false
 
     private var listener: OnVerticalSwipeListener? = null
 
+    @Suppress("CheckResult")
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -32,16 +36,24 @@ class OnlyVerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : Sw
             MotionEvent.ACTION_MOVE -> {
                 if (declined || Math.abs(event.x - prevX) > touchSlop) {
                     declined = true  // memorize
+                    hasDraggingStarted = false
                     return false
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 prevX = event.x
+                hasDraggingStarted = false
             }
         }
         val result = super.onInterceptTouchEvent(event)
         if (result && event.action == MotionEvent.ACTION_MOVE) {
-            listener?.onVerticalSwipe()
+            hasDraggingStarted = true
+            Observable.timer(300L, TimeUnit.MILLISECONDS)
+                .subscribe({
+                    if (hasDraggingStarted) {
+                        listener?.onVerticalSwipe()
+                    }
+                }, Timber::e)
         }
         return result
     }
