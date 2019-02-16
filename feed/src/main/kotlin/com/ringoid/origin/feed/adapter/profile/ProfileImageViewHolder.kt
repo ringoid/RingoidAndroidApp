@@ -31,6 +31,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
     }
 
     override fun bind(model: ProfileImageVO) {
+        cancelAnimations()
         showControls()  // cancel any effect caused by applied payloads
         ImageLoader.load(uri = model.image.uri, imageView = itemView.iv_image,
             options = RequestOptions()
@@ -70,6 +71,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
     }
 
     override fun cancelAnimations() {
+        itemView.iv_like_anim.changeVisibility(isVisible = false, soft = true)
         animation?.cancel()
     }
 
