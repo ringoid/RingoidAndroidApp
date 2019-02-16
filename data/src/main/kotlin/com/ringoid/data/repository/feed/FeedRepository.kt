@@ -68,7 +68,6 @@ open class FeedRepository @Inject constructor(
     override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
 
-    // TODO: always check db first
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
