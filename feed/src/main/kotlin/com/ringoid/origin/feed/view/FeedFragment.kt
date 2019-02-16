@@ -169,7 +169,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-//            setRecycledViewPool(viewPool)  // TODO: use pool for feeds
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
