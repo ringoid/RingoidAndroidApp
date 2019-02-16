@@ -26,7 +26,7 @@ object ExternalNavigator {
             return
         }
 
-        var url = initUrl
+        var url = initUrl!!
         Timber.v("Browse to $url")
         if (url.startsWith("www.")) url = url.removePrefix("www.")
         if (URLUtil.isValidUrl(url)) {
