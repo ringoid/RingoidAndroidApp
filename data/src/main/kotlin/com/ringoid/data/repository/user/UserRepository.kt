@@ -27,10 +27,9 @@ class UserRepository @Inject constructor(
 
     override fun accessToken(): Single<AccessToken> = spm.accessSingle { Single.just(it) }
 
-    // TODO: always check db first
     override fun createUserProfile(essence: AuthCreateProfileEssence): Single<CurrentUser> =
         cloud.createUserProfile(essence)
-             .handleError()  // TODO: notify on error
+             .handleError()
              .doOnSuccess {
                  spm.saveUserProfile(userId = it.userId, accessToken = it.accessToken)
                  local.addUserProfile(ProfileDbo(id = it.userId))
@@ -40,7 +39,7 @@ class UserRepository @Inject constructor(
 
     override fun deleteUserProfile(): Completable =
         spm.accessSingle { cloud.deleteUserProfile(accessToken = it.accessToken) }
-            .handleError()  // TODO: notify on error
+            .handleError()
             .doOnSuccess { clearUserLocalData() }
             .ignoreElement()  // convert to Completable
 
