@@ -75,7 +75,7 @@ class ExploreViewModel @Inject constructor(
                         viewState.value = ViewState.IDLE
                         Timber.v("Received more feed[${it.profiles.size}]: $it")
                     }
-                    .doOnError { viewState.value = ViewState.ERROR(it) }  // TODO: retry load more
+                    .doOnError { viewState.value = ViewState.ERROR(it) }
                     .doFinally { isLoadingMore = false }
             }
             .autoDisposable(this)
