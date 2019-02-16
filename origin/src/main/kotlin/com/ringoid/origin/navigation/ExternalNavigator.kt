@@ -40,7 +40,6 @@ object ExternalNavigator {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
             } else {
-                // TODO: localize
                 val message = "No Activity was found to open Browser!"
                 Timber.e(message); context.toast(message)
             }
