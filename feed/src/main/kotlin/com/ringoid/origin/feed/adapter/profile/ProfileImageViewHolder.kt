@@ -38,7 +38,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
                 .override(itemView.width, itemView.height)
                 .centerCrop())
 
-        setLiked(isLiked = model.isLiked)  // TODO: use payload
+        setLiked(isLiked = model.isLiked)  // TODO: use payload later
     }
 
     override fun bind(model: ProfileImageVO, payloads: List<Any>) {
