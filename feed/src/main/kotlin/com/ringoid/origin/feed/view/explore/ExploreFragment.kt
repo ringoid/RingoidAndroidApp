@@ -10,6 +10,7 @@ import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import timber.log.Timber
@@ -57,6 +58,15 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
     override fun onTabReselect() {
         super.onTabReselect()
         scrollToTopOfItemAtPosition(0)
+    }
+
+    override fun onTabTransaction(payload: String?) {
+        super.onTabTransaction(payload)
+        payload?.let {
+            when (it) {
+                Payload.PAYLOAD_FEED_NEED_REFRESH -> vm.onRefresh()
+            }
+        }
     }
 
     /* Lifecycle */
