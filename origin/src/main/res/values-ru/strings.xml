@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Рингоид</string>
+
+    <string name="button_add_photo">Добавить фото</string>
+    <string name="button_browser">Открыть в браузере</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="button_close">Закрыть</string>
+    <string name="button_delete">Удалить</string>
+    <string name="button_done">Готово</string>
+    <string name="button_later">Может позже</string>
+
+    <string name="common_choose_image">Выбор изображения</string>
+    <string name="common_clipboard">Скопировано в буфер</string>
+    <string name="common_compose_email">Отправить Email</string>
+    <string name="common_sex_male">Мужской</string>
+    <string name="common_sex_female">Женский</string>
+
+    <string name="error_common">Ой!\nЧто-то пошло не так</string>
+    <string name="error_crop_image">Не удалось загрузить изображение</string>
+
+    <!-- Chat screen -->
+    <string name="chat_message_sent">Сообщение отправлено</string>
+
+    <!-- Debug screen -->
+    <string name="debug_email_support_button_label">Написать в поддержку</string>
+
+    <!-- Error screen -->
+    <string name="error_screen_no_network_connection">Нет интернета</string>
+    <string name="error_screen_no_network_connection_button_label">Перезагрузить страницу</string>
+    <string name="error_screen_old_app_version_button_label">Открыть Google Play</string>
+
+    <!-- Feed screen -->
+    <string name="block_profile_button_block">Заблокировать</string>
+    <string name="block_profile_button_report">Пожаловаться и Заблокировать</string>
+
+    <string name="report_profile_button_0">Недопустимое сообщение</string>
+    <string name="report_profile_button_1">Недопустимое фото</string>
+    <string name="report_profile_button_2">Украденное фото, Нарушение авторских прав</string>
+    <string name="report_profile_button_3">Спам, Реклама и попытка торговли</string>
+    <string name="report_profile_button_4">Сексуальные услуги и криминал</string>
+    <string name="report_profile_button_5">Несовершеннолетние пользователи</string>
+    <string name="report_profile_button_6">Оскорбления, Угрозы или Домогательства</string>
+
+    <string name="feed_explore_empty_title">Поиск</string>
+    <string name="feed_footer_item_label">Нет никого нового</string>
+
+    <string name="feed_empty_need_refresh">Потяните чтобы обновить</string>
+    <string name="feed_explore_dialog_no_user_photo_description">Хотите увидеть кто вас лайкнул, искать и писать сообщения?\n\nДобавьте фото, чтобы другие могли видеть вас</string>
+    <string name="feed_explore_empty_no_data">Нет никого нового</string>
+    <string name="feed_likes_you_empty_no_data">Здесь появятся пользователи, которые вас лайкнули</string>
+    <string name="feed_list_end_item_label">Нет никого нового</string>
+    <string name="feed_matches_empty_no_data">Здесь появятся пользователи, которые лайкнули вас в ответ (взаимный лайк)</string>
+    <string name="feed_messages_empty_no_data">Здесь появятся сообщения от пользователесь, с которыми у вас взаимная симпатия</string>
+
+    <!-- Image Preview screen -->
+
+    <!-- Lmm screen -->
+    <string name="lmm_tab_likes">Кому я нравлюсь</string>
+    <string name="lmm_tab_matches">Взаимость</string>
+    <string name="lmm_tab_messenger">Чаты</string>
+
+    <!-- Login screen -->
+    <string name="login_button">Продолжить загрузку фото</string>
+    <string name="login_terms">By tapping the button below, you confirm that you have read, understood, consent and agree to Ringoid\'s <a href="http://ringoid.com/terms.html">Terms of Service</a> and <a href="http://ringoid.com/privacy.html">Privacy Policy</a>, and that you are of legal age and adult, as defined by the country or state from where you access Ringoid.</string>
+    <string name="login_year_of_birth_et_hint">Year of Birth</string>
+
+    <!-- Main screen -->
+    <string name="main_bottom_bar_menu_feed">Новые Лица</string>
+    <string name="main_bottom_bar_menu_lmm">Лайки</string>
+    <string name="main_bottom_bar_menu_profile">Профиль</string>
+
+    <!-- Profile screen -->
+    <string name="profile_button_delete_image">Удалить фото</string>
+    <string name="profile_dialog_image_another_button_add">Добавить еще фото</string>
+    <string name="profile_dialog_image_another_button_cancel">Искать новые лица</string>
+    <string name="profile_dialog_image_another_title">Что вы хотите сделать дальше?</string>
+    <string name="profile_dialog_image_blocked_button">Условия Использования</string>
+    <string name="profile_dialog_image_blocked_title">Ваше фото было удалено по причине нарушения Условий Использования</string>
+    <string name="profile_empty_images">Добавьте фото, чтобы\nувидеть кому вы понравились</string>
+    <string name="profile_empty_title">Профиль</string>
+    <string name="profile_error_stub">Потяните чтобы обновить</string>
+    <string name="profile_image_created">Фото было загружено.</string>
+    <string name="profile_image_deleted">Фото было удалено.</string>
+
+    <!-- Settings screen -->
+    <string name="settings_account_delete">Удалить Профиль</string>
+    <string name="settings_account_delete_info">If you don\'t use Ringoid for more than 16 days, your account will be automatically deleted.</string>
+    <string name="settings_account_delete_dialog_description">Операцию нельзя отменить.</string>
+    <string name="settings_account_delete_dialog_title">Удалить Профиль?</string>
+    <string name="settings_app_info">Информация</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email *support@ringoid.com</string>
+    <string name="settings_support">Написать в support@ringoid.com</string>
+    <string name="settings_support_mail_subject">Ringoid Android App %s</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_theme_dark">Ночной скин</string>
+    <string name="settings_theme_light">Дневной скин</string>
+
+    <!-- Settings Info screen -->
+    <string name="settings_info_about">О Приложении</string>
+    <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2018.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
+    <string name="settings_info_about_dialog_title">Ringoid App</string>
+    <string name="settings_info_customer_info">Идентификатор пользователя</string>
+    <string name="settings_info_debug">Дебаг</string>
+    <string name="settings_info_email_officer">Написать в службу защиты данных</string>
+    <string name="settings_info_email_officer_mail_subject">Dear Data Protection Officer,\n\nMy Customer ID is %s\n\n</string>
+    <string name="settings_info_licenses">Открытые Лицензии</string>
+    <string name="settings_info_privacy">Конфиденциальность</string>
+    <string name="settings_info_terms">Условия Использования</string>
+    <string name="settings_info_title">Информация</string>
+
+    <!-- Web Page screen -->
+    <string name="web_page_licenses">Открытые Лицензии</string>
+    <string name="web_page_privacy">Конфиденциальность</string>
+    <string name="web_page_terms">Условия Использования</string>
+</resources>
