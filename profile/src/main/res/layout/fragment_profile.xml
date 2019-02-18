@@ -16,12 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <View
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:background="@drawable/right_gradient"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
