@@ -1,6 +1,6 @@
-package com.ringoid.origin.usersettings.view.di
+package com.ringoid.origin.usersettings.view.settings.di
 
-import com.ringoid.origin.usersettings.view.SettingsFragment
+import com.ringoid.origin.usersettings.view.settings.SettingsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

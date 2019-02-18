@@ -21,6 +21,13 @@
 
     <View style="@style/Underscore"/>
 
+    <com.ringoid.widget.view.item_view.LabelIconItemView
+        android:id="@+id/item_language"
+        app:icon_item_text="@string/settings_language"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_legal"
         app:icon_item_hide_icon="false"

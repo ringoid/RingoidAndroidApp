@@ -8,7 +8,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.ringoid.origin.usersettings.view.SettingsActivity"
+            android:name="com.ringoid.origin.usersettings.view.settings.SettingsActivity"
             android:screenOrientation="portrait"/>
 
         <activity

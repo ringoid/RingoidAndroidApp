@@ -1,4 +1,4 @@
-package com.ringoid.origin.usersettings.view
+package com.ringoid.origin.usersettings.view.settings
 
 import android.os.Bundle
 import android.view.View
@@ -24,7 +24,8 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
     companion object {
         internal const val TAG = "SettingsFragment_tag"
 
-        fun newInstance(): SettingsFragment = SettingsFragment()
+        fun newInstance(): SettingsFragment =
+            SettingsFragment()
     }
 
     override fun getVmClass(): Class<SettingsViewModel> = SettingsViewModel::class.java
@@ -66,6 +67,10 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
                 descriptionResId = OriginR_string.settings_account_delete_dialog_description,
                 positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
                 positiveListener = { _, _ -> vm.deleteAccount() })
+        }
+        item_language.apply {
+            clicks().compose(clickDebounce()).subscribe {  }
+            setLabel()
         }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }

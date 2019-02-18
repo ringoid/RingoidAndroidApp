@@ -24,8 +24,8 @@ import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageDialogModule
 import com.ringoid.origin.profile.view.di.UserProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
-import com.ringoid.origin.usersettings.view.di.SettingsActivityModule
-import com.ringoid.origin.usersettings.view.di.SettingsFragmentModule
+import com.ringoid.origin.usersettings.view.settings.di.SettingsActivityModule
+import com.ringoid.origin.usersettings.view.settings.di.SettingsFragmentModule
 import com.ringoid.origin.usersettings.view.info.di.AboutDialogModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoActivityModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoFragmentModule
