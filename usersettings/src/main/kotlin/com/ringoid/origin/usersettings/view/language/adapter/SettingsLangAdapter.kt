@@ -27,8 +27,8 @@ class SettingsLangAdapter : BaseListAdapter<LanguageItemVO, SettingsLangViewHold
                         }
                     toggleSelected()
                     notifyItemChanged(position, SettingsLangViewHolderIsChecked)
+                    itemClickListener?.invoke(model, position)
                 }
             }
-            itemClickListener?.invoke(model, position)
         }
 }

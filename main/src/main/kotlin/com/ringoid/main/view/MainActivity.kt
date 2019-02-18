@@ -14,6 +14,7 @@ import com.ringoid.origin.view.main.BaseMainActivity
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
 
+    private var currentLocale: String? = null
     @StyleRes private var currentThemeResId: Int = 0
 
     override fun getVmClass() = MainViewModel::class.java
@@ -28,6 +29,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        currentLocale = app.localeManager.getLang()
         currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme)
         observe(vm.badgeLmm, ::showBadgeOnLmm)
         observe(vm.badgeWarningProfile, ::showBadgeWarningOnProfile)
@@ -35,8 +37,9 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
 
     override fun onStart() {
         super.onStart()
-        if (currentThemeResId != spm.getThemeResId(defaultThemeResId = currentThemeResId)) {
-            recreate()  // theme has changed outside, in some another Activity
+        if (currentLocale != app.localeManager.getLang() ||
+            currentThemeResId != spm.getThemeResId(defaultThemeResId = currentThemeResId)) {
+            recreate()  // locale or theme has changed outside, in some another Activity
         }
     }
 }

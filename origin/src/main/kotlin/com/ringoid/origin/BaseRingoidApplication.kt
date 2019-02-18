@@ -94,7 +94,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     // ------------------------------------------------------------------------
     private fun initializeResources() {
         localeManager.setLocale(this)
-        registerActivityLifecycleCallbacks(BaseActivityLifecycleCallbacks())
         AppRes.init(applicationContext)
     }
 

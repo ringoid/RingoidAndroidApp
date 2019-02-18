@@ -14,6 +14,7 @@ import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.utility.manager.KeyboardManager
 import com.ringoid.utility.manager.KeyboardStatus
+import com.ringoid.utility.manager.LocaleManager
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
@@ -54,6 +55,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     protected open fun onBeforeCreate() {
+        app.localeManager.setLocale(this)
+        LocaleManager.resetActivityTitle(this)
         spm.getThemeResId().takeIf { it != 0 }?.let { setTheme(it) }
         // override in subclasses
     }
