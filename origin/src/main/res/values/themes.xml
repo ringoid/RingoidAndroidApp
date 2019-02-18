@@ -13,6 +13,8 @@
         <item name="refColorPrimaryDark">@color/agat_semi</item>
         <item name="refColorBottomBarIcon">@color/black_half</item>
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_black</item>
+        <item name="refDrawableFabScrollBg">@drawable/black_half_oval_selector</item>
+        <item name="refDrawableFabScrollIcon">@drawable/ic_expand_less_white_24dp</item>
         <item name="refColorUnderscore">@color/underscore_dark</item>
         <item name="refTextColorPrimary">@color/primary_text</item>
         <item name="refTextColorSecondary">@color/secondary_text</item>
@@ -32,8 +34,6 @@
         <item name="refDrawableBottomBarMessengerPressed">@drawable/ic_menu_messages_black_24dp</item>
         <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_black_36dp</item>
         <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_black_36dp</item>
-        <item name="refDrawableFabScrollBg">@drawable/black_half_oval_selector</item>
-        <item name="refDrawableFabScrollIcon">@drawable/ic_expand_less_white_24dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_open_in_browser_black_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
@@ -52,8 +52,6 @@
         <item name="refDrawableBottomBarMessengerPressed">@drawable/ic_menu_messages_white_24dp</item>
         <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_white_36dp</item>
         <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_white_36dp</item>
-        <item name="refDrawableFabScrollBg">@drawable/white_half_oval_selector</item>
-        <item name="refDrawableFabScrollIcon">@drawable/ic_expand_less_black_24dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_open_in_browser_white_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>

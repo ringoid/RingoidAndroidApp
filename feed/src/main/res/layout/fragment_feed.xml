@@ -29,8 +29,8 @@
 
     <ImageButton
         android:id="@+id/scroll_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/feed_fab_size"
+        android:layout_height="@dimen/feed_fab_size"
         android:layout_gravity="bottom|start"
         android:layout_marginBottom="@dimen/feed_fab_margin_bottom"
         android:layout_marginStart="@dimen/std_margin_24"
