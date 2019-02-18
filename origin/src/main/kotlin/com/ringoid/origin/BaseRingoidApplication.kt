@@ -1,6 +1,7 @@
 package com.ringoid.origin
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
@@ -8,6 +9,7 @@ import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.domain.scope.UserScopeProvider
+import com.ringoid.utility.manager.LocaleManager
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.support.DaggerApplication
@@ -25,7 +27,8 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
 
     private var refWatcher: RefWatcher? = null
 
-    val calendar = Calendar.getInstance()
+    val calendar: Calendar = Calendar.getInstance()
+    @Inject lateinit var localeManager: LocaleManager
     @Inject override lateinit var imagePreviewReceiver: IImagePreviewReceiver
     @Inject override lateinit var loginInMemoryCache: ILoginInMemoryCache
     @Inject override lateinit var userScopeProvider: UserScopeProvider
@@ -35,6 +38,8 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
             (context?.applicationContext as? BaseRingoidApplication)?.refWatcher
     }
 
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
     override fun onCreate() {
         super.onCreate()
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -51,6 +56,11 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         initializeRxErrorHandler()
 
         imagePreviewReceiver.register()  // app-wide broadcast receiver doesn't need to unregister
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        localeManager.setLocale(this)
     }
 
     /* Leak detection */
@@ -83,6 +93,8 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     /* Resources */
     // ------------------------------------------------------------------------
     private fun initializeResources() {
+        localeManager.setLocale(this)
+        registerActivityLifecycleCallbacks(BaseActivityLifecycleCallbacks())
         AppRes.init(applicationContext)
     }
 
