@@ -62,8 +62,8 @@
 
     <!-- Login screen -->
     <string name="login_button">Продолжить загрузку фото</string>
-    <string name="login_terms">By tapping the button below, you confirm that you have read, understood, consent and agree to Ringoid\'s <a href="http://ringoid.com/terms.html">Terms of Service</a> and <a href="http://ringoid.com/privacy.html">Privacy Policy</a>, and that you are of legal age and adult, as defined by the country or state from where you access Ringoid.</string>
-    <string name="login_year_of_birth_et_hint">Year of Birth</string>
+    <string name="login_terms">Нажимая на кнопку, вы подтверждаете, что ознакомились, понимаете и принимаете <a href="http://ringoid.com/terms.html">Условия Использования</a> Рингоид и <a href="http://ringoid.com/privacy.html">Политику Конфиденциальности</a>, а также что вы достигли совершеннолетия в соответствии с законодательством страны, в которой вы находитесь.</string>
+    <string name="login_year_of_birth_et_hint">Год Рождения</string>
 
     <!-- Main screen -->
     <string name="main_bottom_bar_menu_feed">Новые Лица</string>
@@ -85,12 +85,12 @@
 
     <!-- Settings screen -->
     <string name="settings_account_delete">Удалить Профиль</string>
-    <string name="settings_account_delete_info">If you don\'t use Ringoid for more than 16 days, your account will be automatically deleted.</string>
+    <string name="settings_account_delete_info">Ваш профиль будет автоматически удален из системы, если вы не пользовались приложением более 16 дней.</string>
     <string name="settings_account_delete_dialog_description">Операцию нельзя отменить.</string>
     <string name="settings_account_delete_dialog_title">Удалить Профиль?</string>
     <string name="settings_app_info">Информация</string>
     <string name="settings_language">Язык</string>
-    <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email *support@ringoid.com</string>
+    <string name="settings_language_help">Если вы хотите помочь сообществу и перевести Рингоид на свой родной язык, пожалуйста напишите на *support@ringoid.com</string>
     <string name="settings_support">Написать в support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Настройки</string>
@@ -100,7 +100,7 @@
     <!-- Settings Info screen -->
     <string name="settings_info_about">О Приложении</string>
     <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2018.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
-    <string name="settings_info_about_dialog_title">Ringoid App</string>
+    <string name="settings_info_about_dialog_title">Рингоид</string>
     <string name="settings_info_customer_info">Идентификатор пользователя</string>
     <string name="settings_info_debug">Дебаг</string>
     <string name="settings_info_email_officer">Написать в службу защиты данных</string>
