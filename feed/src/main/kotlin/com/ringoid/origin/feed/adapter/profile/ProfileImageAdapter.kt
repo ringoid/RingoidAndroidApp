@@ -50,7 +50,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
         if (!isLikeEnabled) {
             super.getOnItemClickListener(vh)
         } else {
-            val clickListener = super.wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))
+            val clickListener = wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))
 //        vh.itemView.setOnTouchListener { _, event ->
 //            if (event.action == MotionEvent.ACTION_DOWN) {
 //                vh.itemView.iv_like_anim.apply {
@@ -64,7 +64,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
     }
 
     private fun getOnLikeButtonClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
-        super.wrapOnItemClickListener(vh, getLikeClickListener(vh))
+        wrapOnItemClickListener(vh, getLikeClickListener(vh))
 
     private fun getLikeClickListener(vh: BaseProfileImageViewHolder, setAlwaysLiked: Boolean = false)
         : ((model: ProfileImageVO, position: Int) -> Unit)? =

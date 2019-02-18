@@ -1,19 +1,34 @@
 package com.ringoid.origin.usersettings.view.language.adapter
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
-import com.ringoid.domain.misc.LanguageItem
+import android.view.View
+import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.usersettings.R
 
-class SettingsLangAdapter : ListAdapter<LanguageItem, SettingsLangViewHolder>(LanguageItemDiffCallback()) {
+class SettingsLangAdapter : BaseListAdapter<LanguageItemVO, SettingsLangViewHolder>(LanguageItemDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsLangViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_item_settings_lang, parent, false)
-        return SettingsLangViewHolder(view)
-    }
+    override fun getLayoutId(): Int = R.layout.rv_item_settings_lang
 
-    override fun onBindViewHolder(holder: SettingsLangViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
+    override fun instantiateViewHolder(view: View) = SettingsLangViewHolder(view)
+
+    override fun instantiateHeaderViewHolder(view: View) = HeaderSettingsLangViewHolder(view)
+
+    // ------------------------------------------
+    override fun getStubItem(): LanguageItemVO = EmptyLanguageItemVO
+
+    // ------------------------------------------
+    override fun getOnItemClickListener(vh: SettingsLangViewHolder): View.OnClickListener =
+        wrapOnItemClickListener(vh) { model, position ->
+            getModel(position).apply {
+                if (!isSelected) {
+                    findModelAndPosition { it.isSelected }
+                        ?.let { (position, model) ->
+                            model.toggleSelected()
+                            notifyItemChanged(position, SettingsLangViewHolderUnChecked)
+                        }
+                    toggleSelected()
+                    notifyItemChanged(position, SettingsLangViewHolderIsChecked)
+                }
+            }
+            itemClickListener?.invoke(model, position)
+        }
 }

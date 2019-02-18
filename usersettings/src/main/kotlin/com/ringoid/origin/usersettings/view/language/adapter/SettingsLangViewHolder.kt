@@ -2,12 +2,36 @@ package com.ringoid.origin.usersettings.view.language.adapter
 
 import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
-import com.ringoid.domain.misc.LanguageItem
+import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_settings_lang.view.*
 
-class SettingsLangViewHolder(view: View) : BaseViewHolder<LanguageItem>(view) {
+open class SettingsLangViewHolder(view: View) : BaseViewHolder<LanguageItemVO>(view) {
 
-    override fun bind(model: LanguageItem) {
-        itemView.tv_lang_label.text = model.language
+    override fun bind(model: LanguageItemVO) {
+        itemView.apply {
+            iv_check.changeVisibility(isVisible = model.isSelected)
+            tv_lang_label.text = model.language.language
+        }
+    }
+
+    override fun bind(model: LanguageItemVO, payloads: List<Any>) {
+        super.bind(model, payloads)
+        if (payloads.contains(SettingsLangViewHolderIsChecked)) {
+            itemView.iv_check.changeVisibility(isVisible = true)
+        }
+        if (payloads.contains(SettingsLangViewHolderUnChecked)) {
+            itemView.iv_check.changeVisibility(isVisible = false)
+        }
+    }
+}
+
+class HeaderSettingsLangViewHolder(view: View): SettingsLangViewHolder(view) {
+
+    override fun bind(model: LanguageItemVO) {
+        // no-op
+    }
+
+    override fun bind(model: LanguageItemVO, payloads: List<Any>) {
+        // no-op
     }
 }
