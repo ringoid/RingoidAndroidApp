@@ -5,7 +5,7 @@ import com.ringoid.domain.model.IListModel
 
 data class LanguageItemVO(val language: LanguageItem, var isSelected: Boolean = false) : IListModel {
 
-    constructor(language: String, isSelected: Boolean = false): this(language = LanguageItem(language), isSelected = isSelected)
+    constructor(langId: String, isSelected: Boolean = false): this(language = LanguageItem(langId), isSelected = isSelected)
 
     override fun getModelId(): Long = language.hashCode().toLong()
 

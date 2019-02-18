@@ -28,7 +28,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     private var refWatcher: RefWatcher? = null
 
     val calendar: Calendar = Calendar.getInstance()
-    @Inject lateinit var localeManager: LocaleManager
+    @Inject override lateinit var localeManager: LocaleManager
     @Inject override lateinit var imagePreviewReceiver: IImagePreviewReceiver
     @Inject override lateinit var loginInMemoryCache: ILoginInMemoryCache
     @Inject override lateinit var userScopeProvider: UserScopeProvider

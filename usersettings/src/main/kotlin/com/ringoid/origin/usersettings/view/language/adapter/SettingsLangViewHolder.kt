@@ -2,6 +2,7 @@ package com.ringoid.origin.usersettings.view.language.adapter
 
 import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
+import com.ringoid.origin.LocaleUtils
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_settings_lang.view.*
 
@@ -10,7 +11,7 @@ open class SettingsLangViewHolder(view: View) : BaseViewHolder<LanguageItemVO>(v
     override fun bind(model: LanguageItemVO) {
         itemView.apply {
             iv_check.changeVisibility(isVisible = model.isSelected)
-            tv_lang_label.text = model.language.language
+            tv_lang_label.text = LocaleUtils.getLangById(context, langId = model.language.id)
         }
     }
 

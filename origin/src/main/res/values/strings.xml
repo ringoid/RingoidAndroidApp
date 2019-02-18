@@ -131,6 +131,10 @@
     <string name="settings_info_terms">Terms of Service</string>
     <string name="settings_info_title">Legal</string>
 
+    <!-- Settings Lang screen -->
+    <string name="settings_lang_en">English</string>
+    <string name="settings_lang_ru">Russian</string>
+
     <!-- Web Page screen -->
     <string name="web_page_licenses">Open&#45;source Licenses</string>
     <string name="web_page_privacy">Privacy Policy</string>

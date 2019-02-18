@@ -9,6 +9,7 @@ import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.view.language.adapter.LanguageItemVO
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangAdapter
+import com.ringoid.utility.manager.LocaleManager
 import kotlinx.android.synthetic.main.fragment_settings_language.*
 
 class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
@@ -20,7 +21,9 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
     }
 
     private val langAdapter = SettingsLangAdapter().apply {
-        itemClickListener = { model, _ -> vm.selectLanguage(model.language) }
+        itemClickListener = { model, _ ->
+            app?.localeManager?.setNewLocale(context!!, lang = model.language.id)
+        }
     }
 
     override fun getVmClass(): Class<SettingsLangViewModel> = SettingsLangViewModel::class.java
@@ -39,7 +42,8 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
             adapter = langAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        // TODO: fill langAdapter with available langs
-        langAdapter.submitList(listOf(LanguageItemVO("English"), LanguageItemVO("Russian")))
+        langAdapter.submitList(listOf(
+            LanguageItemVO(LocaleManager.LANG_EN),
+            LanguageItemVO(LocaleManager.LANG_RU)))
     }
 }
