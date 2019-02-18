@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
@@ -25,8 +26,8 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
     private val langAdapter = SettingsLangAdapter().apply {
         itemClickListener = { model, _ ->
             app?.localeManager?.setNewLocale(context!!, lang = model.language.id)
-            activity?.apply {
-                setResult(Activity.RESULT_OK)
+            (activity as? BaseActivity<*>)?.apply {
+                setResultExposed(Activity.RESULT_OK)
                 recreate()
             }
         }

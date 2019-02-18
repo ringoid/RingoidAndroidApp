@@ -23,6 +23,10 @@ import javax.inject.Inject
 
 abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActivity {
 
+    companion object {
+        private const val BUNDLE_KEY_CURRENT_RESULT_CODE = "bundle_key_current_result_code"
+    }
+
     protected val scopeProvider by lazy { AndroidLifecycleScopeProvider.from(this) }
     protected val app by lazy { application as IBaseRingoidApplication }
 
@@ -73,7 +77,14 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
             subscribeOnBusEvents()
             observe(viewState, ::onViewStateChange)
         }
-        savedInstanceState ?: run { vm.onFreshCreate() }
+        savedInstanceState
+            ?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }
+            ?: run { vm.onFreshCreate() }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(BUNDLE_KEY_CURRENT_RESULT_CODE, currentResult)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
@@ -85,7 +96,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     }
 
     // --------------------------------------------------------------------------------------------
-    protected fun setResultExposed(resultCode: Int, data: Intent? = null) {
+    fun setResultExposed(resultCode: Int, data: Intent? = null) {
         currentResult = resultCode
         Timber.v("ResC=$resultCode, data=$data [${data?.extras}]")
         setResult(resultCode, data)
