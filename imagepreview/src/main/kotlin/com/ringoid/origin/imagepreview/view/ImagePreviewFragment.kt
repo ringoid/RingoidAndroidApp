@@ -45,6 +45,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     }
 
     private var uri: Uri? = null
+    private var isLoading: Boolean = false
 
     override fun getVmClass(): Class<ImagePreviewViewModel> = ImagePreviewViewModel::class.java
 
@@ -107,6 +108,9 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
 
     // --------------------------------------------------------------------------------------------
     private fun cropImage() {
+        if (isLoading) {
+            return
+        }
         if (!connectionManager.isNetworkAvailable()) {
             noConnection(this)
             return
@@ -131,6 +135,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
 
     private fun setImageUri(uri: Uri) {
         crop_view.apply {
+            isLoading = true
             clear()
             pb_image_preview.changeVisibility(isVisible = true)
             setImageUri(uri)
@@ -139,10 +144,12 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
 
     // ------------------------------------------
     override fun onSuccess(uri: Uri) {
+        isLoading = false
         pb_image_preview.changeVisibility(isVisible = false)
     }
 
     override fun onFailure(e: Throwable) {
+        isLoading = false
         pb_image_preview.changeVisibility(isVisible = false)
         snackbar(view, OriginR_string.error_crop_image)
         onClose()  // failed to load image to crop - close without retry
