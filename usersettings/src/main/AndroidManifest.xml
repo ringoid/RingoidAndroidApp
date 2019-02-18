@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ringoid.usersettings">
+          package="com.ringoid.origin.usersettings">
 
     <application>
         <activity
-            android:name="com.ringoid.origin.usersettings.view.debug.DebugActivity"
+            android:name=".view.debug.DebugActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.ringoid.origin.usersettings.view.settings.SettingsActivity"
+            android:name=".view.language.SettingsLangActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.ringoid.origin.usersettings.view.info.SettingsAppInfoActivity"
+            android:name=".view.settings.SettingsActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".view.info.SettingsAppInfoActivity"
             android:screenOrientation="portrait"/>
     </application>
 </manifest>

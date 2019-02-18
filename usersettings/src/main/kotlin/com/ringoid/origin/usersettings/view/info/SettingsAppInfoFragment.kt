@@ -11,7 +11,7 @@ import com.ringoid.origin.BuildConfig
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.usersettings.OriginR_string
-import com.ringoid.usersettings.R
+import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.copyToClipboard

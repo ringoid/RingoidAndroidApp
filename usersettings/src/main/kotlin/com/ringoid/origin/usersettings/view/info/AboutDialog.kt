@@ -11,7 +11,7 @@ import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.navigation.navigate
-import com.ringoid.usersettings.R
+import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.AutoLinkMovementMethod
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.dialog_about.*

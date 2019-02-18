@@ -24,11 +24,13 @@ import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageDialogModule
 import com.ringoid.origin.profile.view.di.UserProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
-import com.ringoid.origin.usersettings.view.settings.di.SettingsActivityModule
-import com.ringoid.origin.usersettings.view.settings.di.SettingsFragmentModule
 import com.ringoid.origin.usersettings.view.info.di.AboutDialogModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoActivityModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoFragmentModule
+import com.ringoid.origin.usersettings.view.language.di.SettingsLangActivityModule
+import com.ringoid.origin.usersettings.view.language.di.SettingsLangFragmentModule
+import com.ringoid.origin.usersettings.view.settings.di.SettingsActivityModule
+import com.ringoid.origin.usersettings.view.settings.di.SettingsFragmentModule
 import com.ringoid.origin.view.dialog.di.StatusDialogModule
 import com.ringoid.origin.view.error.di.NoNetworkConnectionActivityModule
 import com.ringoid.origin.view.error.di.OldAppVersionActivityModule
@@ -56,6 +58,7 @@ import javax.inject.Singleton
                       OldAppVersionActivityModule::class, UserProfileFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
+                      SettingsLangActivityModule::class, SettingsLangFragmentModule::class,
                       SplashActivityModule::class, StatusDialogModule::class,
                       WebPageActivityModule::class, WebPageFragmentModule::class])
 interface ApplicationComponent : AndroidInjector<RingoidApplication> {

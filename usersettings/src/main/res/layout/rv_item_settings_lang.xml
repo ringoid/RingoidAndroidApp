@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/settings_lang_item_height">
+
+    <View
+        android:id="@+id/underscore"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/Underscore"/>
+
+    <TextView
+        android:id="@+id/tv_lang_label"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_8"
+        android:gravity="start|center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/underscore"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="English"
+        style="@style/StdText.Primary"/>
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/underscore"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="?attr/refDrawableMenuCheck"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

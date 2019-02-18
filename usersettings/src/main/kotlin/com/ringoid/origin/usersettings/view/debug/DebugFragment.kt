@@ -10,7 +10,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.misc.DebugOnly
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
-import com.ringoid.usersettings.R
+import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.fragment_debug.*
 

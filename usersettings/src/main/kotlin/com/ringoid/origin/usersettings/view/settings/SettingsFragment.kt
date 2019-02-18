@@ -14,7 +14,7 @@ import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.usersettings.R
+import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -24,8 +24,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
     companion object {
         internal const val TAG = "SettingsFragment_tag"
 
-        fun newInstance(): SettingsFragment =
-            SettingsFragment()
+        fun newInstance(): SettingsFragment = SettingsFragment()
     }
 
     override fun getVmClass(): Class<SettingsViewModel> = SettingsViewModel::class.java
@@ -69,8 +68,8 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
                 positiveListener = { _, _ -> vm.deleteAccount() })
         }
         item_language.apply {
-            clicks().compose(clickDebounce()).subscribe {  }
-            setLabel()
+            clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsFragment, path = "/settings_lang") }
+            setLabel("")//TODO: selected language
         }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }

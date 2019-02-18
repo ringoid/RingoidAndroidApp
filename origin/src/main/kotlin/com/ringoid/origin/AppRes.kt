@@ -1,11 +1,16 @@
 package com.ringoid.origin
 
 import android.content.Context
+import android.graphics.drawable.Drawable
+import androidx.core.content.ContextCompat
 
 object AppRes {
 
     var BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT: Int = -1
         private set
+
+    // ------------------------------------------
+    lateinit var UNDERSCORE_DRAWABLE: Drawable
 
     // ------------------------------------------
     var EMAIL_OFFICER_MAIL_SUBJECT = ""
@@ -25,6 +30,9 @@ object AppRes {
     fun init(context: Context) {
         context.resources.apply {
             BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT = getDimensionPixelSize(R.dimen.dialog_bottom_sheet_block_height)
+
+            // ----------------------------------
+            UNDERSCORE_DRAWABLE = ContextCompat.getDrawable(context, WidgetR_drawable.underscore)!!
 
             // ----------------------------------
             EMAIL_OFFICER_MAIL_SUBJECT = getString(R.string.settings_info_email_officer_mail_subject)
