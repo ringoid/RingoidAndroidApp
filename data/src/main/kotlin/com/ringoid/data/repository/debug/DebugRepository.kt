@@ -105,7 +105,7 @@ class DebugRepository @Inject constructor(
         Single.just(0L)
             .flatMap {
                 val i = getAndIncrementRequestRepeatAfterDelayAttempt()
-                Single.just(BaseResponse(repeatAfterSec = if (i < 1) delay else 0))
+                Single.just(BaseResponse(repeatRequestAfter = if (i < 1) delay else 0))
             }
             .handleError()
             .doFinally { requestRepeatAfterDelayAttempt = 0 }

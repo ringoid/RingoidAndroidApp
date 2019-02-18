@@ -19,15 +19,15 @@ import com.ringoid.domain.model.mapList
  */
 class UserImageListResponse(
     @Expose @SerializedName(COLUMN_IMAGES) val images: List<UserImageEntity> = emptyList(),
-    errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L)
-    : BaseResponse(errorCode, errorMessage, repeatAfterSec), Mappable<List<UserImage>> {
+    errorCode: String = "", errorMessage: String = "", repeatRequestAfter: Long = 0L)
+    : BaseResponse(errorCode, errorMessage, repeatRequestAfter), Mappable<List<UserImage>> {
 
     companion object {
         const val COLUMN_IMAGES = "photos"
     }
 
     fun copyWith(images: List<UserImageEntity>): UserImageListResponse =
-        UserImageListResponse(images = images, errorCode = errorCode, errorMessage = errorMessage, repeatAfterSec = repeatAfterSec)
+        UserImageListResponse(images = images, errorCode = errorCode, errorMessage = errorMessage, repeatRequestAfter = repeatRequestAfter)
 
     override fun map(): List<UserImage> = images.mapList()
 }

@@ -38,7 +38,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null)
                 val attemptNumber = errorWithAttempt.first
                 val error = errorWithAttempt.second
                 val delayTime = when (error) {
-                    is RepeatRequestAfterSecException -> error.delay * 1000  // in seconds
+                    is RepeatRequestAfterSecException -> error.delay  // in ms
                     // don't retry on fatal network errors
                     is InvalidAccessTokenApiException,
                     is OldAppVersionApiException,
@@ -100,8 +100,8 @@ private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer
             }
             throw apiError
         }
-        if (it.repeatAfterSec > 0) {
-            throw RepeatRequestAfterSecException(delay = it.repeatAfterSec)
+        if (it.repeatRequestAfter > 0) {
+            throw RepeatRequestAfterSecException(delay = it.repeatRequestAfter)
         }
     }
 
