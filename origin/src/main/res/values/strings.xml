@@ -19,9 +19,6 @@
     <string name="error_common">Oops!\nSomething went wrong</string>
     <string name="error_crop_image">Failed to load and prepare image</string>
 
-    <!-- Chat screen -->
-    <string name="chat_message_sent">Message sent</string>
-
     <!-- Debug screen -->
     <string name="debug_email_support_button_label">Email support</string>
     <string name="debug_item_response_error_http" translatable="false">Response code not 200</string>

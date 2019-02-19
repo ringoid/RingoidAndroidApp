@@ -19,9 +19,6 @@
     <string name="error_common">Ой!\nЧто-то пошло не так</string>
     <string name="error_crop_image">Не удалось загрузить изображение</string>
 
-    <!-- Chat screen -->
-    <string name="chat_message_sent">Сообщение отправлено</string>
-
     <!-- Debug screen -->
     <string name="debug_email_support_button_label">Написать в поддержку</string>
 

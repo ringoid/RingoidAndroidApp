@@ -76,7 +76,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 when (newState.residual) {
                     is CHAT_MESSAGE_SENT -> {
                         onIdleState()
-                        context?.toast(OriginR_string.chat_message_sent, gravity = Gravity.CENTER)
                         if (chatAdapter.isEmpty()) {
                             // user has just sent her first message to peer
                             payload?.firstUserMessage = (newState.residual as? CHAT_MESSAGE_SENT)?.message
