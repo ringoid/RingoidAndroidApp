@@ -12,4 +12,6 @@ abstract class BaseImageEntity<T>(
         const val COLUMN_ID = "photoId"
         const val COLUMN_URI = "photoUri"
     }
+
+    override fun toString(): String = "BaseImageEntity(id='$id', uri='$uri')"
 }

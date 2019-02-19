@@ -17,4 +17,6 @@ data class MessageEntity(
         const val COLUMN_FLAG_CURRENT_USER = "wasYouSender"
         const val COLUMN_TEXT = "text"
     }
+
+    override fun toString(): String = "MessageEntity(isCurrentUser=$isCurrentUser, text='$text')"
 }

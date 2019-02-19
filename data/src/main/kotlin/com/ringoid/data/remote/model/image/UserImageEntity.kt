@@ -30,4 +30,7 @@ class UserImageEntity(
     }
 
     override fun map(): UserImage = UserImage(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked, id = id, uri = uri)
+
+    override fun toString(): String =
+        "UserImageEntity(originId='$originId', numberOfLikes=$numberOfLikes, isBlocked=$isBlocked, ${super.toString()})"
 }

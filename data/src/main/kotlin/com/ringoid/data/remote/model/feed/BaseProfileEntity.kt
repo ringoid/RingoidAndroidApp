@@ -16,4 +16,6 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_DEFAULT_SORT_POSITION = "defaultSortingOrderPosition"
         const val COLUMN_IMAGES = "photos"
     }
+
+    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, images=${images.joinToString(", ", "[", "]")})"
 }

@@ -19,4 +19,6 @@ class CommitActionsResponse(
     companion object {
         const val COLUMN_LAST_ACTION_TIME = "lastActionTime"
     }
+
+    override fun toString(): String = "CommitActionsResponse(lastActionTime=$lastActionTime, ${super.toString()})"
 }

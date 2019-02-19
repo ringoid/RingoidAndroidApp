@@ -20,7 +20,6 @@ open class BaseResponse(
         const val COLUMN_UNEXPECTED = "unexpected"
     }
 
-    override fun toString(): String {
-        return "BaseResponse(errorCode='$errorCode', errorMessage='$errorMessage', requestUrl='$requestUrl', unexpected='$unexpected')"
-    }
+    override fun toString(): String =
+        "BaseResponse(errorCode='$errorCode', errorMessage='$errorMessage', requestUrl='$requestUrl', unexpected='$unexpected')"
 }

@@ -31,4 +31,8 @@ class UserSettingsResponse(
         const val COLUMN_PUSH_SAFE_DISTANCE = "safeDistanceInMeter"
         const val COLUMN_PUSH_WHO_CAN_SEE_PHOTO = "whoCanSeePhoto"
     }
+
+    override fun toString(): String =
+        "UserSettingsResponse(pushLikes=$pushLikes, pushMatches=$pushMatches, pushMessages=$pushMessages, " +
+                "safeDistance=$safeDistance, whoCanSeePhoto='$whoCanSeePhoto', ${super.toString()})"
 }

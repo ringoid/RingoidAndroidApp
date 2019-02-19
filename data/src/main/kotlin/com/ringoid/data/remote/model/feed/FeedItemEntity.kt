@@ -41,4 +41,7 @@ class FeedItemEntity(
                      val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
                      Message(id = "${id}_$index", chatId = id, peerId = peerId, text = message.text)
                  }.toMutableList())
+
+    override fun toString(): String =
+        "FeedItemEntity(isNotSeen=$isNotSeen, messages=${messages.joinToString(", ", "[", "]")}, ${super.toString()})"
 }

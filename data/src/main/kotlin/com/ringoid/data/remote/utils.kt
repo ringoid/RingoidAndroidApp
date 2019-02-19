@@ -1,5 +1,6 @@
 package com.ringoid.data.remote
 
+import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.SentryUtil
 import com.ringoid.domain.model.IEssence
@@ -12,6 +13,29 @@ fun IEssence.toBody(): RequestBody = RequestBody.create(MediaType.parse("applica
 
 const val DEFAULT_TAG = "response"
 
+// ------------------------------------------------------------------------------------------------
+fun Completable.logResponse(tag: String = ""): Completable = this  // no-op, for symmetry
+inline fun <reified T : BaseResponse> Maybe<T>.logResponse(tag: String = ""): Maybe<T> = compose(logResponseMaybe<T>(tag))
+inline fun <reified T : BaseResponse> Single<T>.logResponse(tag: String = ""): Single<T> = compose(logResponseSingle<T>(tag))
+inline fun <reified T : BaseResponse> Flowable<T>.logResponse(tag: String = ""): Flowable<T> = compose(logResponseFlowable<T>(tag))
+inline fun <reified T : BaseResponse> Observable<T>.logResponse(tag: String = ""): Observable<T> = compose(logResponseObservable<T>(tag))
+
+inline fun <reified T : BaseResponse> logResponseMaybe(tag: String = ""): MaybeTransformer<T, T> =
+    MaybeTransformer { it.doOnSuccess { logBaseResponse(it, tag) } }
+inline fun <reified T : BaseResponse> logResponseSingle(tag: String = ""): SingleTransformer<T, T> =
+    SingleTransformer { it.doOnSuccess { logBaseResponse(it, tag) } }
+inline fun <reified T : BaseResponse> logResponseFlowable(tag: String = ""): FlowableTransformer<T, T> =
+    FlowableTransformer { it.doOnNext { logBaseResponse(it, tag) } }
+inline fun <reified T : BaseResponse> logResponseObservable(tag: String = ""): ObservableTransformer<T, T> =
+    ObservableTransformer { it.doOnNext { logBaseResponse(it, tag) } }
+
+inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "") {
+    SentryUtil.breadcrumb("Response [$tag]", "error code" to it.errorCode,
+        "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
+        "request url" to "${it.requestUrl ?: ""}", "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
+}
+
+// ------------------------------------------------------------------------------------------------
 fun Completable.checkResponseTime(tag: String = DEFAULT_TAG): Completable = compose(checkResponseTimeCompletable(tag))
 inline fun <reified T> Maybe<T>.checkResponseTime(tag: String = DEFAULT_TAG): Maybe<T> = compose(checkResponseTimeMaybe(tag))
 inline fun <reified T> Single<T>.checkResponseTime(tag: String = DEFAULT_TAG): Single<T> = compose(checkResponseTimeSingle(tag))
@@ -58,7 +82,7 @@ inline fun <reified T> checkResponseTimeObservable(tag: String = DEFAULT_TAG): O
             .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-// ------------------------------------------------------------------------------------------------
+// ----------------------------------------------
 fun checkElapsedTimeAndWarn(startTime: Long, tag: String = DEFAULT_TAG) {
     val elapsedTime = System.currentTimeMillis() - startTime
     if (elapsedTime >= BuildConfig.REQUEST_TIME_THRESHOLD) {

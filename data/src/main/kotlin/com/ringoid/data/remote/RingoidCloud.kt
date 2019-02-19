@@ -29,6 +29,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun createUserProfile(essence: AuthCreateProfileEssence): Single<AuthCreateProfileResponse> =
         restAdapter.createUserProfile(essence.toBody())
             .breadcrumb("createUserProfile", essence.toSentryData())
+            .logResponse("createUserProfile")
             .checkResponseTime()
 
     fun deleteUserProfile(accessToken: String): Single<BaseResponse> {
@@ -36,17 +37,20 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
         val body = RequestBody.create(MediaType.parse("application/json"), content)
         return restAdapter.deleteUserProfile(body)
             .breadcrumb("deleteUserProfile", "accessToken" to "")
+            .logResponse("deleteUserProfile")
             .checkResponseTime()
     }
 
     fun getUserSettings(accessToken: String): Single<UserSettingsResponse> =
         restAdapter.getUserSettings(accessToken = accessToken)
             .breadcrumb("getUserSettings", "accessToken" to "")
+            .logResponse("getUserSettings")
             .checkResponseTime()
 
     fun updateUserSettings(essence: UpdateUserSettingsEssence): Single<BaseResponse> =
         restAdapter.updateUserSettings(essence.toBody())
             .breadcrumb("updateUserSettings", essence.toSentryData())
+            .logResponse("updateUserSettings")
             .checkResponseTime()
 
     /* Actions */
@@ -54,6 +58,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun commitActions(essence: CommitActionsEssence): Single<CommitActionsResponse> =
         restAdapter.commitActions(essence.toBody())
             .breadcrumb("commitActions", essence.toSentryData())
+            .logResponse("commitActions")
             .checkResponseTime()
 
     /* Image */
@@ -61,22 +66,26 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<ImageUploadUrlResponse> =
         restAdapter.getImageUploadUrl(essence.toBody())
             .breadcrumb("getImageUploadUrl", essence.toSentryData())
+            .logResponse("getImageUploadUrl")
             .checkResponseTime()
 
     fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
         restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
             .breadcrumb("getUserImages", "accessToken" to "", "resolution" to "$resolution")
+            .logResponse("getUserImages")
             .checkResponseTime("UserPhotos")
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
         restAdapter.deleteUserImage(essence.toBody())
             .breadcrumb("deleteUserImage", essence.toSentryData())
+            .logResponse("deleteUserImage")
             .checkResponseTime()
 
     fun uploadImage(url: String, image: File): Completable {
         val body = RequestBody.create(MediaType.parse("image/*"), image)
         return restAdapter.uploadImage(url = url, body = body)
             .breadcrumb("uploadImage", "url" to url)
+            .logResponse("uploadImage")
             .checkResponseTime()
     }
 
@@ -86,12 +95,14 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
             .breadcrumb("getNewFaces", "accessToken" to "", "resolution" to "$resolution",
                         "lastActionTime" to "$lastActionTime")
+            .logResponse("getNewFaces")
             .checkResponseTime("NewFaces")
 
     fun getLmm(accessToken: String, resolution: ImageResolution, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, lastActionTime = lastActionTime)
             .breadcrumb("getLmm", "accessToken" to "",
                         "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
+            .logResponse("getLmm")
             .checkResponseTime("LMM")
 
     /* Test */
