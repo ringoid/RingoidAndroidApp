@@ -259,7 +259,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     }
 
     private fun showErrorStub(needShow: Boolean) {
-        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.profile_error_stub))
+        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.common_pull_to_refresh))
     }
 
     private fun showEmptyStub(needShow: Boolean, input: EmptyFragment.Companion.Input) {
