@@ -112,6 +112,7 @@ class ExploreViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun onRefresh() {
         super.onRefresh()
+        nextPage = 0
         debugGetNewFacesDropFlagsUseCase.source()
             .autoDisposable(this)
             .subscribe()
