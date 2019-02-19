@@ -61,7 +61,6 @@ class ExploreViewModel @Inject constructor(
         getNewFacesUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
-                Timber.v("Received feed[${it.profiles.size}]")
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
                                   else ViewState.IDLE
             }
@@ -78,10 +77,7 @@ class ExploreViewModel @Inject constructor(
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
                 getNewFacesUseCase.source(params = prepareFeedParams())
                     .doOnSubscribe { viewState.value = ViewState.PAGING }
-                    .doOnSuccess {
-                        viewState.value = ViewState.IDLE
-                        Timber.v("Received more feed[${it.profiles.size}]: $it")
-                    }
+                    .doOnSuccess { viewState.value = ViewState.IDLE }
                     .doOnError { viewState.value = ViewState.ERROR(it) }
                     .doFinally { isLoadingMore = false }
             }
