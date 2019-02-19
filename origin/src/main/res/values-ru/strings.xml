@@ -13,6 +13,7 @@
     <string name="common_choose_image">Выбор изображения</string>
     <string name="common_clipboard">Скопировано в буфер</string>
     <string name="common_compose_email">Отправить Email</string>
+    <string name="common_pull_to_refresh">Потяните чтобы обновить</string>
     <string name="common_sex_male">Мужской</string>
     <string name="common_sex_female">Женский</string>
 
@@ -42,7 +43,6 @@
     <string name="feed_explore_empty_title">Поиск</string>
     <string name="feed_footer_item_label">Нет никого нового</string>
 
-    <string name="feed_empty_need_refresh">Потяните чтобы обновить</string>
     <string name="feed_explore_dialog_no_user_photo_description">Хотите увидеть кто вас лайкнул, искать и писать сообщения?\n\nДобавьте фото, чтобы другие могли видеть вас</string>
     <string name="feed_explore_empty_no_data">Нет никого нового</string>
     <string name="feed_likes_you_empty_no_data">Здесь появятся пользователи, которые вас лайкнули</string>
@@ -62,11 +62,6 @@
     <string name="login_terms">Нажимая на кнопку, вы подтверждаете, что ознакомились, понимаете и принимаете <a href="http://ringoid.com/terms.html">Условия Использования</a> Рингоид и <a href="http://ringoid.com/privacy.html">Политику Конфиденциальности</a>, а также что вы достигли совершеннолетия в соответствии с законодательством страны, в которой вы находитесь.</string>
     <string name="login_year_of_birth_et_hint">Год Рождения</string>
 
-    <!-- Main screen -->
-    <string name="main_bottom_bar_menu_feed">Новые Лица</string>
-    <string name="main_bottom_bar_menu_lmm">Лайки</string>
-    <string name="main_bottom_bar_menu_profile">Профиль</string>
-
     <!-- Profile screen -->
     <string name="profile_button_delete_image">Удалить фото</string>
     <string name="profile_dialog_image_another_button_add">Добавить еще фото</string>
@@ -76,9 +71,6 @@
     <string name="profile_dialog_image_blocked_title">Ваше фото было удалено по причине нарушения Условий Использования</string>
     <string name="profile_empty_images">Добавьте фото, чтобы\nувидеть кому вы понравились</string>
     <string name="profile_empty_title">Профиль</string>
-    <string name="profile_error_stub">Потяните чтобы обновить</string>
-    <string name="profile_image_created">Фото было загружено.</string>
-    <string name="profile_image_deleted">Фото было удалено.</string>
 
     <!-- Settings screen -->
     <string name="settings_account_delete">Удалить Профиль</string>
@@ -99,7 +91,6 @@
     <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2018.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
     <string name="settings_info_about_dialog_title">Рингоид</string>
     <string name="settings_info_customer_info">Идентификатор пользователя</string>
-    <string name="settings_info_debug">Дебаг</string>
     <string name="settings_info_email_officer">Написать в службу защиты данных</string>
     <string name="settings_info_email_officer_mail_subject">Dear Data Protection Officer,\n\nMy Customer ID is %s\n\n</string>
     <string name="settings_info_licenses">Открытые Лицензии</string>

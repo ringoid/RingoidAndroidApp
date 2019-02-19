@@ -13,6 +13,7 @@
     <string name="common_choose_image">Choose Image</string>
     <string name="common_clipboard">Copied to clipboard</string>
     <string name="common_compose_email">Send Email</string>
+    <string name="common_pull_to_refresh">Pull to refresh</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
 
@@ -59,16 +60,11 @@
     <string name="feed_explore_empty_title">Discover</string>
     <string name="feed_footer_item_label">No one else around</string>
 
-    <string name="feed_empty_need_refresh">Pull to refresh</string>
     <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover, like and message others?\n\nAdd photo so others can like you</string>
-    <string name="feed_explore_empty_need_refresh" translatable="false">@string/feed_empty_need_refresh</string>
     <string name="feed_explore_empty_no_data">No one new around</string>
-    <string name="feed_likes_you_empty_need_refresh" translatable="false">@string/feed_empty_need_refresh</string>
     <string name="feed_likes_you_empty_no_data">Users who like you will appear here</string>
     <string name="feed_list_end_item_label">No one else around</string>
-    <string name="feed_matches_empty_need_refresh" translatable="false">@string/feed_empty_need_refresh</string>
     <string name="feed_matches_empty_no_data">Users that you like and who like you (mutual likes) will appear here</string>
-    <string name="feed_messages_empty_need_refresh" translatable="false">@string/feed_empty_need_refresh</string>
     <string name="feed_messages_empty_no_data">Messages from your matches will appear here</string>
 
     <!-- Image Preview screen -->
@@ -84,9 +80,9 @@
     <string name="login_year_of_birth_et_hint">Year of Birth</string>
 
     <!-- Main screen -->
-    <string name="main_bottom_bar_menu_feed">New Faces</string>
-    <string name="main_bottom_bar_menu_lmm">Likes</string>
-    <string name="main_bottom_bar_menu_profile">Profile</string>
+    <string name="main_bottom_bar_menu_feed" translatable="false">New Faces</string>
+    <string name="main_bottom_bar_menu_lmm" translatable="false">Likes</string>
+    <string name="main_bottom_bar_menu_profile" translatable="false">Profile</string>
 
     <!-- Profile screen -->
     <string name="profile_button_delete_image">Delete Photo</string>
@@ -97,9 +93,6 @@
     <string name="profile_dialog_image_blocked_title">Your photo was deleted for violating Terms of Service</string>
     <string name="profile_empty_images">Add your photo to\nsee who likes you</string>
     <string name="profile_empty_title">Profile</string>
-    <string name="profile_error_stub">Pull to refresh</string>
-    <string name="profile_image_created">Photo has been uploaded.</string>
-    <string name="profile_image_deleted">Photo has been removed.</string>
 
     <!-- Settings screen -->
     <string name="settings_account_delete">Delete Account</string>
@@ -120,7 +113,7 @@
     <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2018.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
     <string name="settings_info_about_dialog_title">Ringoid App</string>
     <string name="settings_info_customer_info">Customer ID</string>
-    <string name="settings_info_debug">Debug</string>
+    <string name="settings_info_debug" translatable="false">Debug</string>
     <string name="settings_info_email_officer">Email Data Protection Officer</string>
     <string name="settings_info_email_officer_mail_subject">Dear Data Protection Officer,\n\nMy Customer ID is %s\n\n</string>
     <string name="settings_info_licenses">Open&#45;source Licenses</string>
