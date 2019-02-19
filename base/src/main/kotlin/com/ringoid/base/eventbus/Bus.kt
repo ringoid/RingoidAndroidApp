@@ -31,5 +31,6 @@ sealed class BusEvent {
 
     object Stub : BusEvent()
     object NoImagesOnProfile : BusEvent()
+    object RefreshOnLmm : BusEvent()
     object RefreshOnProfile : BusEvent()
 }

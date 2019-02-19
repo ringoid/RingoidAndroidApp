@@ -2,6 +2,8 @@ package com.ringoid.origin.feed.view.lmm.base
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
@@ -47,5 +49,11 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ Timber.v("Lmm has been loaded") }, Timber::e)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onRefresh() {
+        super.onRefresh()
+        Bus.post(event = BusEvent.RefreshOnLmm)
     }
 }
