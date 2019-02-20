@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.adapter.profile
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.base.adapter.SimpleListDiffer
 import com.ringoid.origin.feed.R
@@ -79,13 +78,4 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
                 model.isLiked = isLiked
                 itemClickListener?.invoke(model, position)
             }
-}
-
-// ------------------------------------------------------------------------------------------------
-class ProfileImageDiffCallback : BaseDiffCallback<ProfileImageVO>() {
-
-    override fun areItemsTheSame(oldItem: ProfileImageVO, newItem: ProfileImageVO): Boolean = oldItem.image.id == newItem.image.id
-
-    override fun areContentsTheSame(oldItem: ProfileImageVO, newItem: ProfileImageVO): Boolean =
-        oldItem.image == newItem.image  // as 'data class'
 }
