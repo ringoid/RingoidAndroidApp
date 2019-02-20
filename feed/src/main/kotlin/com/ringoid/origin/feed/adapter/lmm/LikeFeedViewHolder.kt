@@ -12,8 +12,8 @@ class LikeFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     : LmmViewHolder(view, viewPool) {
 
     override fun bind(model: FeedItem) {
-        itemView.ibtn_message.changeVisibility(isVisible = false)  // hide message button initially
         super.bind(model)
+        itemView.ibtn_message.changeVisibility(isVisible = false)  // hide message button initially
     }
 
     override fun bind(model: FeedItem, payloads: List<Any>) {
