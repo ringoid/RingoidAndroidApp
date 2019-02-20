@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Debug screen -->
+    <string name="debug_item_response_error_http" translatable="false">Response code not 200</string>
+    <string name="debug_item_response_error_expired_token" translatable="false">Expired Access Token</string>
+    <string name="debug_item_response_error_invalid_token" translatable="false">Invalid Access Token</string>
+    <string name="debug_item_response_error_old_app_version" translatable="false">Too old app version</string>
+    <string name="debug_item_response_error_request_fail_all_attempts" translatable="false">Request fails all retries</string>
+    <string name="debug_item_response_error_request_n_attempts" translatable="false">Retry request 3 times before success</string>
+    <string name="debug_item_response_error_request_params" translatable="false">Wrong request params</string>
+    <string name="debug_item_response_error_request_repeat_after_delay" translatable="false">Repeat request after 5 seconds</string>
+    <string name="debug_item_response_error_server" translatable="false">Internal Server error</string>
+    <string name="debug_item_response_error_timeout" translatable="false">Response timed out</string>
+    <string name="debug_item_screen_info" translatable="false">Screed Info</string>
+    <string name="debug_title" translatable="false">Debug Menu</string>
+
+    <!-- Main screen -->
+    <string name="main_bottom_bar_menu_feed" translatable="false">New Faces</string>
+    <string name="main_bottom_bar_menu_lmm" translatable="false">Likes</string>
+    <string name="main_bottom_bar_menu_profile" translatable="false">Profile</string>
+
+    <!-- Settings Info screen -->
+    <string name="settings_info_debug" translatable="false">Debug</string>
+</resources>

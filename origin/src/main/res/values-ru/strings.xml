@@ -46,7 +46,6 @@
     <string name="feed_explore_dialog_no_user_photo_description">Хотите увидеть кто вас лайкнул, искать и писать сообщения?\n\nДобавьте фото, чтобы другие могли видеть вас</string>
     <string name="feed_explore_empty_no_data">Нет никого нового</string>
     <string name="feed_likes_you_empty_no_data">Здесь появятся пользователи, которые вас лайкнули</string>
-    <string name="feed_list_end_item_label">Нет никого нового</string>
     <string name="feed_matches_empty_no_data">Здесь появятся пользователи, которые лайкнули вас в ответ (взаимный лайк)</string>
     <string name="feed_messages_empty_no_data">Здесь появятся сообщения от пользователесь, с которыми у вас взаимная симпатия</string>
 

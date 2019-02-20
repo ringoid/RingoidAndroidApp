@@ -22,18 +22,6 @@
 
     <!-- Debug screen -->
     <string name="debug_email_support_button_label">Email support</string>
-    <string name="debug_item_response_error_http" translatable="false">Response code not 200</string>
-    <string name="debug_item_response_error_expired_token" translatable="false">Expired Access Token</string>
-    <string name="debug_item_response_error_invalid_token" translatable="false">Invalid Access Token</string>
-    <string name="debug_item_response_error_old_app_version" translatable="false">Too old app version</string>
-    <string name="debug_item_response_error_request_fail_all_attempts" translatable="false">Request fails all retries</string>
-    <string name="debug_item_response_error_request_n_attempts" translatable="false">Retry request 3 times before success</string>
-    <string name="debug_item_response_error_request_params" translatable="false">Wrong request params</string>
-    <string name="debug_item_response_error_request_repeat_after_delay" translatable="false">Repeat request after 5 seconds</string>
-    <string name="debug_item_response_error_server" translatable="false">Internal Server error</string>
-    <string name="debug_item_response_error_timeout" translatable="false">Response timed out</string>
-    <string name="debug_item_screen_info" translatable="false">Screed Info</string>
-    <string name="debug_title" translatable="false">Debug Menu</string>
 
     <!-- Error screen -->
     <string name="error_screen_no_network_connection">No network connection</string>
@@ -63,7 +51,6 @@
     <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover, like and message others?\n\nAdd photo so others can like you</string>
     <string name="feed_explore_empty_no_data">No one new around</string>
     <string name="feed_likes_you_empty_no_data">Users who like you will appear here</string>
-    <string name="feed_list_end_item_label">No one else around</string>
     <string name="feed_matches_empty_no_data">Users that you like and who like you (mutual likes) will appear here</string>
     <string name="feed_messages_empty_no_data">Messages from your matches will appear here</string>
 
@@ -78,11 +65,6 @@
     <string name="login_button">Continue to upload photo</string>
     <string name="login_terms">By tapping the button below, you confirm that you have read, understood, consent and agree to Ringoid\'s <a href="http://ringoid.com/terms.html">Terms of Service</a> and <a href="http://ringoid.com/privacy.html">Privacy Policy</a>, and that you are of legal age and adult, as defined by the country or state from where you access Ringoid.</string>
     <string name="login_year_of_birth_et_hint">Year of Birth</string>
-
-    <!-- Main screen -->
-    <string name="main_bottom_bar_menu_feed" translatable="false">New Faces</string>
-    <string name="main_bottom_bar_menu_lmm" translatable="false">Likes</string>
-    <string name="main_bottom_bar_menu_profile" translatable="false">Profile</string>
 
     <!-- Profile screen -->
     <string name="profile_button_delete_image">Delete Photo</string>
@@ -113,7 +95,6 @@
     <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2018.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
     <string name="settings_info_about_dialog_title">Ringoid App</string>
     <string name="settings_info_customer_info">Customer ID</string>
-    <string name="settings_info_debug" translatable="false">Debug</string>
     <string name="settings_info_email_officer">Email Data Protection Officer</string>
     <string name="settings_info_email_officer_mail_subject">Dear Data Protection Officer,\n\nMy Customer ID is %s\n\n</string>
     <string name="settings_info_licenses">Open&#45;source Licenses</string>
