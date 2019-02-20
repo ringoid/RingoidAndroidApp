@@ -9,5 +9,5 @@ class ProfileDiffCallback : BaseDiffCallback<Profile>() {
         oldItem.id == newItem.id
 
     override fun areContentsTheSame(oldItem: Profile, newItem: Profile): Boolean =
-        oldItem == newItem  // as 'data class'
+        oldItem.sameContent(newItem)
 }

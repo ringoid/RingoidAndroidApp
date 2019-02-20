@@ -9,5 +9,5 @@ class FeedItemDiffCallback : BaseDiffCallback<FeedItem>() {
         oldItem.id == newItem.id
 
     override fun areContentsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean =
-        oldItem == newItem  // as 'data class'
+        oldItem.sameContent(newItem)
 }
