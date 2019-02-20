@@ -13,6 +13,7 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
+import com.ringoid.origin.usersettings.WidgetR_attrs
 import com.ringoid.origin.usersettings.view.language.adapter.LanguageItemVO
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangAdapter
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangViewHolderIsChecked
@@ -59,7 +60,7 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
             val start = it.text.lastIndexOf(' ')
             if (start != DomainUtil.BAD_POSITION) {
                 SpannableString(it.text).apply {
-                    val textColor = it.context.getAttributeColor(R.attr.refTextColorPrimary)
+                    val textColor = it.context.getAttributeColor(WidgetR_attrs.refTextColorPrimary)
                     setSpan(ForegroundColorSpan(textColor), start, it.text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                     it.text = this
                 }
