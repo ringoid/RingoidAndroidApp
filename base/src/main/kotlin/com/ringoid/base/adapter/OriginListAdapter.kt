@@ -26,12 +26,13 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
     }
 
     private val helper by lazy {
-        AsyncListDiffer<T>(
+//        AsyncListDiffer<T>(
+        SimpleListDiffer<T>(
             ExposedAdapterListUpdateCallback(
                 this, headerRows = headerRows, exposedCb = { getExposedCb()?.invoke() },
                 onInsertedCb = getOnInsertedCb(), onRemovedCb = getOnRemovedCb(),
-                onMovedCb = getOnMovedCb(), onChangedCb = getOnChangedCb()),
-            AsyncDifferConfig.Builder(diffCb).build())
+                onMovedCb = getOnMovedCb(), onChangedCb = getOnChangedCb()))
+//            AsyncDifferConfig.Builder(diffCb).build())
     }
 
     // --------------------------------------------------------------------------------------------
