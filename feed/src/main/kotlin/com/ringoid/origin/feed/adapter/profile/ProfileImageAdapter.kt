@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
+import com.ringoid.base.adapter.SimpleListDiffer
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -15,6 +16,10 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
 
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
     var isLikeEnabled = true
+
+    override val helper by lazy {
+        SimpleListDiffer(getAdapterListUpdateCallback(), ProfileImageDiffCallback())
+    }
 
     override fun onFailedToRecycleView(holder: BaseProfileImageViewHolder): Boolean {
         holder.cancelAnimations()

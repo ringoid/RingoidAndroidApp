@@ -25,15 +25,15 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         const val VIEW_TYPE_ERROR = 4
     }
 
-    private val helper by lazy {
-//        AsyncListDiffer<T>(
-        SimpleListDiffer<T>(
-            ExposedAdapterListUpdateCallback(
-                this, headerRows = headerRows, exposedCb = { getExposedCb()?.invoke() },
-                onInsertedCb = getOnInsertedCb(), onRemovedCb = getOnRemovedCb(),
-                onMovedCb = getOnMovedCb(), onChangedCb = getOnChangedCb()))
-//            AsyncDifferConfig.Builder(diffCb).build())
+    protected open val helper by lazy {
+        AsyncListDiffer<T>(getAdapterListUpdateCallback(), AsyncDifferConfig.Builder(diffCb).build())
     }
+
+    protected fun getAdapterListUpdateCallback(): ListUpdateCallback =
+        ExposedAdapterListUpdateCallback(
+            this, headerRows = headerRows, exposedCb = { getExposedCb()?.invoke() },
+            onInsertedCb = getOnInsertedCb(), onRemovedCb = getOnRemovedCb(),
+            onMovedCb = getOnMovedCb(), onChangedCb = getOnChangedCb())
 
     // --------------------------------------------------------------------------------------------
     override fun onBindViewHolder(holder: VH, position: Int) {
