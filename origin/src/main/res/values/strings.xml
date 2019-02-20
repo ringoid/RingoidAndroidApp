@@ -88,7 +88,6 @@
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Settings</string>
     <string name="settings_theme_dark">Night Mode</string>
-    <string name="settings_theme_light">Light theme</string>
 
     <!-- Settings Info screen -->
     <string name="settings_info_about">About</string>
