@@ -15,11 +15,6 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
     var isLikeEnabled = true
 
-    override fun onFailedToRecycleView(holder: BaseProfileImageViewHolder): Boolean {
-        holder.cancelAnimations()
-        return true
-    }
-
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
     override fun instantiateViewHolder(view: View): BaseProfileImageViewHolder =
@@ -49,7 +44,7 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
         if (!isLikeEnabled) {
             super.getOnItemClickListener(vh)
         } else {
-            val clickListener = wrapOnItemClickListener(vh, getLikeClickListener(vh, setAlwaysLiked = true))
+            val clickListener = wrapOnItemClickListener(vh, getLikeClickListener(vh, alwaysLiked = true))
 //        vh.itemView.setOnTouchListener { _, event ->
 //            if (event.action == MotionEvent.ACTION_DOWN) {
 //                vh.itemView.iv_like_anim.apply {
@@ -63,14 +58,23 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
     }
 
     private fun getOnLikeButtonClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
-        wrapOnItemClickListener(vh, getLikeClickListener(vh))
+        wrapOnItemClickListener(vh) { model: ProfileImageVO, position: Int ->
+            if (!model.isLiked) {  // was liked
+                notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLikeButton)
+            } else {   // was unliked
+                notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateUnLikeButton)
+            }
+            getLikeClickListener(vh)?.invoke(model, position)
+        }
 
-    private fun getLikeClickListener(vh: BaseProfileImageViewHolder, setAlwaysLiked: Boolean = false)
+    private fun getLikeClickListener(vh: BaseProfileImageViewHolder, alwaysLiked: Boolean = false)
         : ((model: ProfileImageVO, position: Int) -> Unit)? =
             { model: ProfileImageVO, position: Int ->
-                val isLiked = if (setAlwaysLiked) true else !model.isLiked
-                vh.animateLike(isLiked = isLiked)
+                val isLiked = if (alwaysLiked) true else !model.isLiked
                 model.isLiked = isLiked
+                if (isLiked) {  // animate on Like, don't animate on Unlike
+                    notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
+                }
                 itemClickListener?.invoke(model, position)
             }
 }

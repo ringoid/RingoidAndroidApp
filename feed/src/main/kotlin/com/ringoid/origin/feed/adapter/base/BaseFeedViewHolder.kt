@@ -7,6 +7,7 @@ import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.IProfile
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
+import com.ringoid.origin.feed.adapter.profile.ProfileImageItemAnimator
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
@@ -43,7 +44,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         itemView.rv_items.apply {
             adapter = profileImageAdapter.also { it.tabsObserver = itemView.tabs.adapterDataObserver }
             isNestedScrollingEnabled = false
-            itemAnimator = null
+            itemAnimator = ProfileImageItemAnimator()
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 .also { it.initialPrefetchItemCount = 4 }
             snapHelper.attachToRecyclerView(this)
