@@ -72,7 +72,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
     override fun bind(model: T) {
         showControls()  // cancel any effect caused by applied payloads
         profileImageAdapter.apply {
-            submitList(null)  // clear old items, preventing animator to animate change upon async diff calc finishes
+            clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
         }
     }
