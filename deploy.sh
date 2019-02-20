@@ -24,7 +24,7 @@ function getBuildCode() {
 ./sign_apk.sh $@
 for FILE in `find ./release/ -name "*-aligned-signed.apk" -type f`
 do
-	cp FILE ./old_releases
+	cp $FILE ./old_releases
 	filename=$(basename $FILE)
 	echo "DEPLOY: ${filename}"
 	url=$(hockeyAppUpload $FILE)
