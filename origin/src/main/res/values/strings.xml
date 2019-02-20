@@ -8,24 +8,24 @@
     <string name="button_close">Close</string>
     <string name="button_delete">Delete</string>
     <string name="button_done">Done</string>
-    <string name="button_later">Maybe later</string>
+    <string name="button_later">Not now</string>
 
-    <string name="common_choose_image">Choose Image</string>
+    <string name="common_choose_image">Choose Photo</string>
     <string name="common_clipboard">Copied to clipboard</string>
     <string name="common_compose_email">Send Email</string>
     <string name="common_pull_to_refresh">Pull to refresh</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
 
-    <string name="error_common">Oops!\nSomething went wrong</string>
-    <string name="error_crop_image">Failed to load and prepare image</string>
+    <string name="error_common">Oops! Something went wrong&#8230;</string>
+    <string name="error_crop_image">Failed to load and prepare photo</string>
 
     <!-- Debug screen -->
-    <string name="debug_email_support_button_label">Email support</string>
+    <string name="debug_email_support_button_label">Email support@ringoid.com</string>
 
     <!-- Error screen -->
-    <string name="error_screen_no_network_connection">No network connection</string>
-    <string name="error_screen_no_network_connection_button_label">Reload this page</string>
+    <string name="error_screen_no_network_connection">No Internet connection</string>
+    <string name="error_screen_no_network_connection_button_label">Retry</string>
     <string name="error_screen_old_app_version_button_label">Open Google Play</string>
 
     <!-- Feed screen -->
@@ -46,13 +46,13 @@
     <string name="report_profile_button_6">Harassment or threats, Abuse</string>
 
     <string name="feed_explore_empty_title">Discover</string>
-    <string name="feed_footer_item_label">No one else around</string>
+    <string name="feed_footer_item_label">No more new</string>
 
-    <string name="feed_explore_dialog_no_user_photo_description">Do you want to see who likes you, discover, like and message others?\n\nAdd photo so others can like you</string>
+    <string name="feed_explore_dialog_no_user_photo_description">Add photo so others can like you</string>
     <string name="feed_explore_empty_no_data">No one new around</string>
-    <string name="feed_likes_you_empty_no_data">Users who like you will appear here</string>
-    <string name="feed_matches_empty_no_data">Users that you like and who like you (mutual likes) will appear here</string>
-    <string name="feed_messages_empty_no_data">Messages from your matches will appear here</string>
+    <string name="feed_likes_you_empty_no_data">No likes yet</string>
+    <string name="feed_matches_empty_no_data">No matches (mutual likes) yet</string>
+    <string name="feed_messages_empty_no_data">No messages yet</string>
 
     <!-- Image Preview screen -->
 
@@ -60,20 +60,20 @@
     <string name="lmm_tab_likes">Likes You</string>
     <string name="lmm_tab_matches">Matches</string>
     <string name="lmm_tab_messenger">Chats</string>
-    
+
     <!-- Login screen -->
-    <string name="login_button">Continue to upload photo</string>
-    <string name="login_terms">By tapping the button below, you confirm that you have read, understood, consent and agree to Ringoid\'s <a href="http://ringoid.com/terms.html">Terms of Service</a> and <a href="http://ringoid.com/privacy.html">Privacy Policy</a>, and that you are of legal age and adult, as defined by the country or state from where you access Ringoid.</string>
+    <string name="login_button">Continue to Upload Photo</string>
+    <string name="login_terms">By tapping the button below, you confirm that you have read, understood, consent and agree to Ringoid\'s <a href="http://ringoid.com/terms.html">Terms of Service</a> and <a href="http://ringoid.com/privacy.html">Privacy Policy</a>, and that you are of the legal age of majority and adult, as defined by the jurisdiction in which you reside or from where you access Ringoid.</string>
     <string name="login_year_of_birth_et_hint">Year of Birth</string>
 
     <!-- Profile screen -->
     <string name="profile_button_delete_image">Delete Photo</string>
     <string name="profile_dialog_image_another_button_add">Add another photo</string>
-    <string name="profile_dialog_image_another_button_cancel">Discover new faces</string>
-    <string name="profile_dialog_image_another_title">What do you want to do next?</string>
+    <string name="profile_dialog_image_another_button_cancel">Discover new users</string>
+    <string name="profile_dialog_image_another_title">What\'s next?</string>
     <string name="profile_dialog_image_blocked_button">Terms of Service</string>
     <string name="profile_dialog_image_blocked_title">Your photo was deleted for violating Terms of Service</string>
-    <string name="profile_empty_images">Add your photo to\nsee who likes you</string>
+    <string name="profile_empty_images">Add photo to\nsee who likes you</string>
     <string name="profile_empty_title">Profile</string>
 
     <!-- Settings screen -->
@@ -92,8 +92,8 @@
 
     <!-- Settings Info screen -->
     <string name="settings_info_about">About</string>
-    <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2018.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
-    <string name="settings_info_about_dialog_title">Ringoid App</string>
+    <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2019.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: www.ringoid.com</string>
+    <string name="settings_info_about_dialog_title">Ringoid</string>
     <string name="settings_info_customer_info">Customer ID</string>
     <string name="settings_info_email_officer">Email Data Protection Officer</string>
     <string name="settings_info_email_officer_mail_subject">Dear Data Protection Officer,\n\nMy Customer ID is %s\n\n</string>
@@ -104,7 +104,7 @@
 
     <!-- Settings Lang screen -->
     <string name="settings_lang_en">English</string>
-    <string name="settings_lang_ru">Russian</string>
+    <string name="settings_lang_ru">Русский</string>
 
     <!-- Web Page screen -->
     <string name="web_page_licenses">Open&#45;source Licenses</string>
