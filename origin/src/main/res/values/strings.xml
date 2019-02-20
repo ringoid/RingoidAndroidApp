@@ -83,7 +83,7 @@
     <string name="settings_account_delete_dialog_title">Delete Account?</string>
     <string name="settings_app_info">Legal</string>
     <string name="settings_language">Language</string>
-    <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email *support@ringoid.com</string>
+    <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email support@ringoid.com</string>
     <string name="settings_support">Email support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Settings</string>

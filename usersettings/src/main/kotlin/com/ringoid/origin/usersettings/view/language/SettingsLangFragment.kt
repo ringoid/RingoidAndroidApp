@@ -2,16 +2,21 @@ package com.ringoid.origin.usersettings.view.language
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.view.language.adapter.LanguageItemVO
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangAdapter
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangViewHolderIsChecked
+import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.manager.LocaleManager
 import kotlinx.android.synthetic.main.fragment_settings_language.*
 
@@ -48,6 +53,17 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
         rv_items.apply {
             adapter = langAdapter
             layoutManager = LinearLayoutManager(context)
+        }
+
+        tv_lang_help.also {
+            val start = it.text.lastIndexOf(' ')
+            if (start != DomainUtil.BAD_POSITION) {
+                SpannableString(it.text).apply {
+                    val textColor = it.context.getAttributeColor(R.attr.refTextColorPrimary)
+                    setSpan(ForegroundColorSpan(textColor), start, it.text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    it.text = this
+                }
+            }
         }
     }
 
