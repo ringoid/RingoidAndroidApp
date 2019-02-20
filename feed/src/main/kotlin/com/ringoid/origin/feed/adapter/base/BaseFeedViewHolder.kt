@@ -43,6 +43,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         itemView.rv_items.apply {
             adapter = profileImageAdapter.also { it.tabsObserver = itemView.tabs.adapterDataObserver }
             isNestedScrollingEnabled = false
+            itemAnimator = null
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 .also { it.initialPrefetchItemCount = 4 }
             snapHelper.attachToRecyclerView(this)
