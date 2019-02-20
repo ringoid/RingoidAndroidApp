@@ -22,15 +22,16 @@ function isOnWindows() {
 rm -rf ./release
 mkdir ./release
 STADPATH=${1:-~/Android/Sdk/build-tools/28.0.3}
-PASSWORD=${3:1q@w3e4r5t}
-echo "Standard path: ${STADPATH}"
+PASSWORD=${2:-1q@w3e4r5t}
+KEYPASS=${3:-q1W2e3r4t5}
+echo "Standard path: ${STADPATH}, keystorePass: ${PASSWORD}, keyPass: ${KEYPASS}"
 for FILE in `find ./app/build/outputs/apk/ -name "*.apk" -type f`
 do
 	filename=$(basename $FILE)
-	keystorePath=${2:-"./keystores/keystore_prod.jks"}
+	keystorePath=${4:-"./keystores/keystore_prod.jks"}
 	if [[ $filename =~ .*staging.* ]]
 	then
-		keystorePath=${2:-"./keystores/keystore_stag.jks"}
+		keystorePath=${4:-"./keystores/keystore_stag.jks"}
 	fi
 	echo "ASSEMBLE: ${FILE} ${filename} :: keystore=${keystorePath}"
 	filename="${filename%.*}"
@@ -45,9 +46,9 @@ do
 	fi
 	if [[ -z $PASSWORD ]]
 	then
-		${APKSIGNER} sign --ks ${keystorePath} --out ./release/${filename}-aligned-signed.apk ./release/${filename}-aligned.apk
+		${APKSIGNER} sign --ks ${keystorePath} --key-pass pass:${KEYPASS} --out ./release/${filename}-aligned-signed.apk ./release/${filename}-aligned.apk
 	else
-		${APKSIGNER} sign --ks ${keystorePath} --ks-pass pass:${PASSWORD} --out ./release/${filename}-aligned-signed.apk ./release/${filename}-aligned.apk
+		${APKSIGNER} sign --ks ${keystorePath} --ks-pass pass:${PASSWORD} --key-pass pass:${KEYPASS} --out ./release/${filename}-aligned-signed.apk ./release/${filename}-aligned.apk
 	fi
 	echo "ASSEMBLE: done ${filename}" ; ls -l ./release/${filename}-aligned-signed.apk
 done
