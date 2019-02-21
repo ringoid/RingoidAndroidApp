@@ -5,6 +5,6 @@ import timber.log.Timber
 class ThresholdExceededException : RuntimeException("Threshold exceeded") {
 
     init {
-        Timber.e(this, "ThresholdExceededException: $message")
+        Timber.e("ThresholdExceededException: $message")
     }
 }

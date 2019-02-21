@@ -7,6 +7,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.sentry.Sentry
 import io.sentry.event.*
+import timber.log.Timber
 import java.util.*
 
 object SentryUtil {
@@ -50,6 +51,7 @@ object SentryUtil {
 
     fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
                 extras: List<Pair<String, String>>? = null) {
+        Timber.d(message)
         val fullExtras = mutableListOf<Pair<String, String>>()
             .apply {
                 add(e.javaClass.simpleName to e.stackTraceString())

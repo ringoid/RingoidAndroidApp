@@ -40,7 +40,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                 val delayTime = when (error) {
                     is RepeatRequestAfterSecException -> {
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
-                        if (error.delay + elapsedTime > BuildConfig.REQUEST_TIME_THRESHOLD) {
+                        if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
                             SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold", level = Event.Level.WARNING)
                             throw ThresholdExceededException()
                         }
