@@ -25,8 +25,11 @@ import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.utility.*
+import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.communicator
+import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -214,31 +217,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             super.onScrolled(rv, dx, dy)
             rv.linearLayoutManager()?.let {
                 // TODO
-            }
-        }
-    }
-
-    // ------------------------------------------
-    protected val topScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(rv, dx, dy)
-            rv.linearLayoutManager()?.let {
-                if (dy > 0) {  // scroll list down - to see new items
-                    if (scroll_fab.isVisible()) {
-                        scroll_fab.changeVisibility(isVisible = false)
-                    }
-                } else {  // scroll list up - to see previous items
-                    val offset = rv.computeVerticalScrollOffset()
-                    if (scroll_fab.isVisible()) {
-                        if (offset <= 0) {
-                            scroll_fab.changeVisibility(isVisible = false)
-                        }
-                    } else {
-                        if (offset > 0) {
-                            scroll_fab.changeVisibility(isVisible = true)
-                        }
-                    }
-                }
             }
         }
     }

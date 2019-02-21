@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -23,7 +24,10 @@ import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.communicator
+import com.ringoid.utility.isVisible
+import com.ringoid.utility.linearLayoutManager
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
@@ -143,5 +147,31 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
     override fun onDestroyView() {
         super.onDestroyView()
         rv_items.removeOnScrollListener(topScrollListener)
+    }
+
+    /* Scroll listeners */
+    // --------------------------------------------------------------------------------------------
+    private val topScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(rv, dx, dy)
+            rv.linearLayoutManager()?.let {
+                if (dy > 0) {  // scroll list down - to see new items
+                    if (scroll_fab.isVisible()) {
+                        scroll_fab.changeVisibility(isVisible = false)
+                    }
+                } else {  // scroll list up - to see previous items
+                    val offset = rv.computeVerticalScrollOffset()
+                    if (scroll_fab.isVisible()) {
+                        if (offset <= 0) {
+                            scroll_fab.changeVisibility(isVisible = false)
+                        }
+                    } else {
+                        if (offset > 0) {
+                            scroll_fab.changeVisibility(isVisible = true)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
