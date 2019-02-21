@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -26,6 +27,7 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
     : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
+    private var cachedFeed: List<FeedItem>? = null
 
     init {
         sourceFeed()
@@ -46,12 +48,24 @@ abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
                 viewState.value = if (isLmmEmpty(it)) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
                                   else ViewState.IDLE
             }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError {
+                if (it is ThresholdExceededException) {
+                    feed.value = cachedFeed
+                    viewState.value = ViewState.IDLE
+                } else {
+                    viewState.value = ViewState.ERROR(it)
+                }
+            }
             .autoDisposable(this)
             .subscribe({ Timber.v("Lmm has been loaded") }, Timber::e)
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun clearScreen(mode: Int) {
+        cachedFeed = feed.value
+        super.clearScreen(mode)
+    }
+
     override fun onRefresh() {
         super.onRefresh()
         Bus.post(event = BusEvent.RefreshOnLmm)
