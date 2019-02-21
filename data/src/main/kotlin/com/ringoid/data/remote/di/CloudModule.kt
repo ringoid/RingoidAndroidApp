@@ -5,10 +5,7 @@ import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.ringoid.data.BuildConfig
-import com.ringoid.data.remote.network.IRequestHeaderInterceptor
-import com.ringoid.data.remote.network.IResponseErrorInterceptor
-import com.ringoid.data.remote.network.RequestHeaderInterceptor
-import com.ringoid.data.remote.network.ResponseErrorInterceptor
+import com.ringoid.data.remote.network.*
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -30,31 +27,33 @@ class CloudModule(private val appVersion: Int) {
             .create()
 
     @Provides @Singleton
-    fun provideHttpLoggingInterceptor(): LoggingInterceptor {
-        return LoggingInterceptor.Builder()
+    fun provideHttpLoggingInterceptor(): LoggingInterceptor =
+        LoggingInterceptor.Builder()
             .loggable(BuildConfig.DEBUG)
             .setLevel(Level.BASIC)
             .log(Platform.INFO)
             .request("Request")
             .response("Response")
-//            .addHeader("version", BuildConfig.VERSION_NAME)
             .build()
-    }
 
     @Provides @Singleton
     fun provideRequestHeaderInterceptor(): IRequestHeaderInterceptor =
         RequestHeaderInterceptor(appVersion = appVersion)
 
     @Provides @Singleton
-    fun provideResponseErrorInterceptor(): IResponseErrorInterceptor =
-        ResponseErrorInterceptor()
+    fun provideRequestUrlInterceptor(): IRequestUrlInterceptor = RequestUrlInterceptor()
+
+    @Provides @Singleton
+    fun provideResponseErrorInterceptor(): IResponseErrorInterceptor = ResponseErrorInterceptor()
 
     @Provides @Singleton
     fun provideOkHttpClient(requestInterceptor: IRequestHeaderInterceptor,
+                            requestUrlInterceptor: IRequestUrlInterceptor,
                             responseInterceptor: IResponseErrorInterceptor,
                             logInterceptor: LoggingInterceptor): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(requestInterceptor)
+            .addInterceptor(requestUrlInterceptor)
             .addInterceptor(responseInterceptor)
             .addInterceptor(logInterceptor)
             .readTimeout(16, TimeUnit.SECONDS)
