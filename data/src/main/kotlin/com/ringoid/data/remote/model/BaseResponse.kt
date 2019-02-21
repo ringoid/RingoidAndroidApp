@@ -21,5 +21,5 @@ open class BaseResponse(
     }
 
     override fun toString(): String =
-        "BaseResponse(errorCode='$errorCode', errorMessage='$errorMessage', requestUrl='$requestUrl', unexpected='$unexpected')"
+        "BaseResponse(errorCode='$errorCode', errorMessage='$errorMessage', repeatRequestAfter=$repeatRequestAfter, requestUrl='$requestUrl', unexpected='$unexpected')"
 }
