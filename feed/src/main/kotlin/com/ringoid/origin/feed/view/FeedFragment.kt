@@ -125,7 +125,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 if (data == null) {
                     // TODO: crashes on app recreate, save bundle lack of 'data'
                     val e = NullPointerException("No output from Block/Report dialog - this is an error!")
-                    Timber.e(e) ; throw e
+                    Timber.e(e); throw e
                 }
 
                 val position = data.extras!!.getString("position", "0").toInt()

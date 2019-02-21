@@ -19,7 +19,7 @@ class MatchesFeedFragment : BaseLmmFeedFragment<MatchesFeedViewModel>() {
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
         MatchFeedAdapter().apply {
             onImageToOpenChatClickListener = { model: ProfileImageVO, feedItemPosition: Int ->
-                openChat(position = feedItemPosition, peerId = model.profileId, imageId = model.image.id)
+                openChat(position = feedItemPosition, peerId = model.profileId, image = model.image)
             }
         }
 

@@ -1,2 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ringoid.origin.messenger"/>
+          package="com.ringoid.origin.messenger">
+
+    <application>
+        <activity
+            android:name=".view.ChatActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Light"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
+    </application>
+</manifest>

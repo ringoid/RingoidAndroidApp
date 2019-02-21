@@ -1,5 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.base
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
@@ -9,6 +11,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
@@ -17,10 +20,13 @@ import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
+import com.ringoid.origin.navigation.RequestCode
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_feed.*
+import timber.log.Timber
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM, FeedItem>(), IChatHost, IDialogCallback  {
 
@@ -30,7 +36,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
         instantiateFeedAdapter().apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
-                openChat(position = position, peerId = model.id, imageId = model.images[positionOfImage].id)
+                openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
             }
         }
 
@@ -68,7 +74,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
             }
     }
 
-    protected fun openChat(position: Int, peerId: String, imageId: String = DomainUtil.BAD_ID, tag: String = ChatFragment.TAG) {
+    protected fun openChat(position: Int, peerId: String, image: IImage? = null, tag: String = ChatFragment.TAG) {
         if (!connectionManager.isNetworkAvailable()) {
             noConnection(this)
             return
@@ -81,13 +87,15 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
                     val payload = ChatPayload(
                         position = position,
                         peerId = peerId,
-                        peerImageId = imageId
+                        peerImageId = image?.id ?: DomainUtil.BAD_ID,
+                        peerImageUri = image?.uri
                     )
-                    vm.onChatOpen(profileId = peerId, imageId = imageId)
+                    vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     scrollToTopOfItemAtPositionAndPost(position).post {
                         feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
                     }
-                    ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(it, tag)
+//                    ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(it, tag)
+                    navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
         }
     }
@@ -104,6 +112,28 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
          */
         communicator(ILmmFragment::class.java)?.accessViewModel()
             ?.let { parentVm -> viewLifecycleOwner.observe(parentVm.listScrolls, ::scrollListToPosition) }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            RequestCode.RC_CHAT -> {
+                if (resultCode != Activity.RESULT_OK) {
+                    return
+                }
+
+                if (data == null) {
+                    val e = NullPointerException("No output from Chat dialog - this is an error!")
+                    Timber.e(e); throw e
+                }
+
+                when (data.getStringExtra("action")) {
+                    "block" -> onBlockFromChat(payload = data.getParcelableExtra("payload"))
+                    "report" -> onReportFromChat(payload = data.getParcelableExtra("payload"), reasonNumber = data.getIntExtra("reason", 0))
+                    else -> onDialogDismiss(tag = data.getStringExtra("tag"), payload = data.getParcelableExtra("payload"))
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -18,6 +18,7 @@ import com.ringoid.origin.feed.view.lmm.match.di.MatchesFeedFragmentModule
 import com.ringoid.origin.feed.view.lmm.messenger.di.MessengerFragmentModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
+import com.ringoid.origin.messenger.di.ChatActivityModule
 import com.ringoid.origin.messenger.di.ChatFragmentModule
 import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageActivityModule
 import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageDialogModule
@@ -49,7 +50,7 @@ import javax.inject.Singleton
                       AboutDialogModule::class,
                       BlockBottomSheetActivityModule::class, BlockBottomSheetDialogModule::class,
                       DeleteUserProfileImageActivityModule::class, DeleteUserProfileImageDialogModule::class,
-                      ReportBottomSheetDialogModule::class, ChatFragmentModule::class,
+                      ReportBottomSheetDialogModule::class, ChatActivityModule::class, ChatFragmentModule::class,
                       DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,

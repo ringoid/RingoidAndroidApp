@@ -19,6 +19,7 @@ object Payload {
 object RequestCode {
 
     const val RC_BLOCK_DIALOG = 11000
+    const val RC_CHAT = 11002
     const val RC_DELETE_IMAGE_DIALOG = 11001
     const val RC_SETTINGS_LANG = 11100
 }

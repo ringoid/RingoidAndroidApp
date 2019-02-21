@@ -13,21 +13,23 @@ import com.ringoid.origin.feed.deeplink.FeedDeepLinkModule
 import com.ringoid.origin.feed.deeplink.FeedDeepLinkModuleLoader
 import com.ringoid.origin.imagepreview.deeplink.ImagePreviewDeepLinkModule
 import com.ringoid.origin.imagepreview.deeplink.ImagePreviewDeepLinkModuleLoader
+import com.ringoid.origin.messenger.deeplink.ChatDeepLinkModule
+import com.ringoid.origin.messenger.deeplink.ChatDeepLinkModuleLoader
 import com.ringoid.origin.profile.deeplink.ProfileDeepLinkModule
 import com.ringoid.origin.profile.deeplink.ProfileDeepLinkModuleLoader
 import com.ringoid.origin.usersettings.deeplink.UserSettingsDeepLinkModule
 import com.ringoid.origin.usersettings.deeplink.UserSettingsDeepLinkModuleLoader
 
-@DeepLinkHandler(value = [AppDeepLinkModule::class, AuthDeepLinkModule::class, FeedDeepLinkModule::class,
-                          ImagePreviewDeepLinkModule::class, MainDeepLinkModule::class,
+@DeepLinkHandler(value = [AppDeepLinkModule::class, AuthDeepLinkModule::class, ChatDeepLinkModule::class,
+                          FeedDeepLinkModule::class, ImagePreviewDeepLinkModule::class, MainDeepLinkModule::class,
                           OriginDeepLinkModule::class, ProfileDeepLinkModule::class, UserSettingsDeepLinkModule::class])
 class DeepLinkHandlerActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val deepLinkDelegate = DeepLinkDelegate(
-            AppDeepLinkModuleLoader(), AuthDeepLinkModuleLoader(), FeedDeepLinkModuleLoader(),
-            ImagePreviewDeepLinkModuleLoader(), MainDeepLinkModuleLoader(),
+            AppDeepLinkModuleLoader(), AuthDeepLinkModuleLoader(), ChatDeepLinkModuleLoader(),
+            FeedDeepLinkModuleLoader(), ImagePreviewDeepLinkModuleLoader(), MainDeepLinkModuleLoader(),
             OriginDeepLinkModuleLoader(), ProfileDeepLinkModuleLoader(), UserSettingsDeepLinkModuleLoader())
         /**
          * Delegate the deep link handling to DeepLinkDispatch.
