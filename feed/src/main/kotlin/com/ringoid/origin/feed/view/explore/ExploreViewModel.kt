@@ -7,6 +7,7 @@ import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
@@ -81,7 +82,13 @@ class ExploreViewModel @Inject constructor(
                 getNewFacesUseCase.source(params = prepareFeedParams())
                     .doOnSubscribe { viewState.value = ViewState.PAGING }
                     .doOnSuccess { viewState.value = ViewState.IDLE }
-                    .doOnError { viewState.value = ViewState.ERROR(it) }
+                    .doOnError {
+                        if (it is ThresholdExceededException) {
+                            feed.value = Feed(profiles = emptyList())
+                        } else {
+                            viewState.value = ViewState.ERROR(it)
+                        }
+                    }
                     .doFinally { isLoadingMore = false }
             }
             .autoDisposable(this)

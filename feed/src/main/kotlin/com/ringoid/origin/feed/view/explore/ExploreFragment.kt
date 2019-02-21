@@ -50,7 +50,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
             is ViewState.ERROR -> {
                 when (newState.e) {
                     is ThresholdExceededException -> {
-                        // TODO see "`No more new`" in the footer or "`No one new around`" in the centre
+                        vm.clearScreen(ViewState.CLEAR.MODE_EMPTY_DATA)
                         return
                     }
                     else -> feedAdapter.error()
