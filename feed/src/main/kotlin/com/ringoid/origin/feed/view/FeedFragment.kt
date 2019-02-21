@@ -107,6 +107,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter().apply {
+            onInsertItemsListener = { trackVisibility() }
             settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {
@@ -202,6 +203,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         rv_items.removeOnScrollListener(visibilityTrackingScrollListener)
     }
 
+    /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
     protected val topScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
@@ -230,28 +232,34 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
-            rv.linearLayoutManager()?.let {
-                val from = it.findFirstVisibleItemPosition()
-                val to = it.findLastVisibleItemPosition()
-                Timber.d("Feed Adapter: $feedAdapter, range [$from, $to]")  // TODO: remove log in release
-                val items = feedAdapter.getItemsExposed(from = from, to = to)
-                // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0' properly
-                var range = EqualRange(from = from, to = to,
-                    items = items.map {
-                        val image = if (it.isRealModel) it.images[0] else EmptyImage
-                        ProfileImageVO(profileId = it.id, image = image)
-                    })
-                range = range.takeIf { feedAdapter.withHeader() }
-                             ?.takeIf { from == 0 }
-                             ?.let { it.dropItems(n = 1) }  // exclude header item from visibility tracking
-                             ?: range  // no header item within the visible range
-                range = range.takeIf { feedAdapter.withFooter() }
-                             ?.takeIf { to == feedAdapter.footerPosition() }
-                             ?.let { it.dropLastItems(n = 1) }  // exclude footer item from visibility tracking
-                             ?: range  // no footer item within the visible range
-                Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
-                feedTrackingBus.postViewEvent(range)
-            }
+            trackVisibility(rv)
         }
     }
+
+    private fun trackVisibility(rv: RecyclerView) {
+        rv.linearLayoutManager()?.let {
+            val from = it.findFirstVisibleItemPosition()
+            val to = it.findLastVisibleItemPosition()
+            Timber.d("Feed Adapter: $feedAdapter, range [$from, $to]")  // TODO: remove log in release
+            val items = feedAdapter.getItemsExposed(from = from, to = to)
+            // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0' properly
+            var range = EqualRange(from = from, to = to,
+                items = items.map {
+                    val image = if (it.isRealModel) it.images[0] else EmptyImage
+                    ProfileImageVO(profileId = it.id, image = image)
+                })
+            range = range.takeIf { feedAdapter.withHeader() }
+                ?.takeIf { from == 0 }
+                ?.let { it.dropItems(n = 1) }  // exclude header item from visibility tracking
+                ?: range  // no header item within the visible range
+            range = range.takeIf { feedAdapter.withFooter() }
+                ?.takeIf { to == feedAdapter.footerPosition() }
+                ?.let { it.dropLastItems(n = 1) }  // exclude footer item from visibility tracking
+                ?: range  // no footer item within the visible range
+            Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
+            feedTrackingBus.postViewEvent(range)
+        }
+    }
+
+    protected fun trackVisibility() = rv_items.post { trackVisibility(rv_items) }
 }
