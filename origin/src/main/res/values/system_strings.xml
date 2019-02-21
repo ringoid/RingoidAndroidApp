@@ -2,7 +2,6 @@
 <resources>
     <string name="bullet" translatable="false">&#8226;</string>
 
-    <string name="web_url_error_status" translatable="false">http://ringoid.com/status.html</string>
     <string name="web_url_licenses" translatable="false">http://ringoid.com/licenses-android.html</string>
     <string name="web_url_privacy" translatable="false">http://ringoid.com/privacy.html</string>
     <string name="web_url_terms" translatable="false">http://ringoid.com/terms.html</string>

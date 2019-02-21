@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.SimpleBaseDialogFragment
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.clickDebounce
@@ -44,7 +43,7 @@ class StatusDialog : SimpleBaseDialogFragment() {
         btn_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this); dismiss() }
         tv_dialog_title.setText(arguments?.getInt(BUNDLE_KEY_TITLE_RES_ID) ?: R.string.error_common)
 
-        AppRes.WEB_URL_ERROR_STATUS.readFromUrl()
+        resources.getString(R.string.web_url_error_status).readFromUrl()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(scopeProvider)

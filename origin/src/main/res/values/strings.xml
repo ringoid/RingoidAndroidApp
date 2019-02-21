@@ -109,4 +109,5 @@
     <string name="web_page_licenses">Open&#45;source Licenses</string>
     <string name="web_page_privacy">Privacy Policy</string>
     <string name="web_page_terms">Terms of Service</string>
+    <string name="web_url_error_status">http://ringoid.com/status.html</string>
 </resources>
