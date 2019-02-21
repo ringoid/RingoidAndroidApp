@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.explore
 import android.os.Bundle
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.FeedAdapter
@@ -45,10 +46,18 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.ERROR -> feedAdapter.error()
+            is ViewState.ERROR -> {
+                when (newState.e) {
+                    is ThresholdExceededException -> {
+                        // TODO see "`No more new`" in the footer or "`No one new around`" in the centre
+                        return
+                    }
+                    else -> feedAdapter.error()
+                }
+            }
         }
+        super.onViewStateChange(newState)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

@@ -19,7 +19,8 @@ android {
         buildConfigField 'int', 'DEFAULT_RETRY_COUNT', rootProject.ext.retryCount
         buildConfigField 'long', 'DEFAULT_RETRY_DELAY', rootProject.ext.retryDelayMs
         buildConfigField 'String', 'HOST', rootProject.ext.host
-        buildConfigField 'long', "REQUEST_TIME_THRESHOLD", rootProject.ext.requestTimeThreshold
+        buildConfigField 'long', 'REQUEST_TIME_THRESHOLD', rootProject.ext.requestTimeThreshold
+        buildConfigField 'long', "RESPONSE_TIME_THRESHOLD", rootProject.ext.responseTimeThreshold
         buildConfigField 'String', 'SENTRY_DSN', rootProject.ext.sentryDSN
     }
     buildTypes {

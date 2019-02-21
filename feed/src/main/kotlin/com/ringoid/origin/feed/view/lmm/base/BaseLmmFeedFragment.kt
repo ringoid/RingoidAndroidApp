@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
@@ -38,6 +39,22 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
                 openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
             }
         }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.ERROR -> {
+                when (newState.e) {
+                    is ThresholdExceededException -> {
+                        // TODO see `profiles` (old with all changes I made)
+                        return
+                    }
+                }
+            }
+        }
+        super.onViewStateChange(newState)
+    }
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(payload: ChatPayload) {

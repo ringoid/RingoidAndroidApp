@@ -37,7 +37,8 @@ ext {
     debounceClickMs = "500L"
     debounceInputMs = "200L"
     postDelayMs = "1000L"
-    requestTimeThreshold = "1000L"
+    requestTimeThreshold = "2000L"
+    responseTimeThreshold = "1000L"
     retryCount = "5"
     retryDelayMs = "55L"
 }

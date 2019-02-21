@@ -31,14 +31,22 @@ inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = Build
     doOnError { Timber.w("Retry on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
 
 // ----------------------------------------------
-private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null) =
+private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: MutableList<Long>, tag: String? = null) =
     { it: Flowable<Throwable> ->
         it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, count), BiFunction { e: Throwable, i -> i to e })
             .flatMap { errorWithAttempt ->
                 val attemptNumber = errorWithAttempt.first
                 val error = errorWithAttempt.second
                 val delayTime = when (error) {
-                    is RepeatRequestAfterSecException -> error.delay  // in ms
+                    is RepeatRequestAfterSecException -> {
+                        val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
+                        if (error.delay + elapsedTime > BuildConfig.REQUEST_TIME_THRESHOLD) {
+                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold", level = Event.Level.WARNING)
+                            throw ThresholdExceededException()
+                        }
+                        elapsedTimes.add(error.delay)
+                        error.delay  // in ms
+                    }
                     // don't retry on fatal network errors
                     is InvalidAccessTokenApiException,
                     is OldAppVersionApiException,
@@ -64,19 +72,37 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null)
     }
 
 fun expBackoffCompletable(count: Int, delay: Long, tag: String? = null): CompletableTransformer =
-    CompletableTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
+    CompletableTransformer {
+        val elapsedTimes = mutableListOf<Long>()
+        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag))
+    }
 
 fun <T : BaseResponse> expBackoffMaybe(count: Int, delay: Long, tag: String? = null): MaybeTransformer<T, T> =
-    MaybeTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
+    MaybeTransformer {
+        val elapsedTimes = mutableListOf<Long>()
+        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag))
+    }
 
 fun <T : BaseResponse> expBackoffSingle(count: Int, delay: Long, tag: String? = null): SingleTransformer<T, T> =
-    SingleTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
+    SingleTransformer {
+        val elapsedTimes = mutableListOf<Long>()
+        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag))
+    }
 
 fun <T : BaseResponse> expBackoffFlowable(count: Int, delay: Long, tag: String? = null): FlowableTransformer<T, T> =
-    FlowableTransformer { it.retryWhen(expBackoffFlowableImpl(count, delay, tag)) }
+    FlowableTransformer {
+        val elapsedTimes = mutableListOf<Long>()
+        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag))
+    }
 
 fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Long, tag: String? = null): ObservableTransformer<T, T> =
-    ObservableTransformer { it.toFlowable(BackpressureStrategy.MISSING).retryWhen(expBackoffFlowableImpl(count, delay, tag)).toObservable() }
+    ObservableTransformer {
+        val elapsedTimes = mutableListOf<Long>()
+        it
+            .toFlowable(BackpressureStrategy.MISSING)
+            .retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag))
+            .toObservable()
+    }
 
 /* Api Error */
 // --------------------------------------------------------------------------------------------
