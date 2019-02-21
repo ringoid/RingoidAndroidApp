@@ -20,59 +20,56 @@
         android:background="@drawable/top_gradient_black"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.ringoid.widget.view.BadgeButton
-        android:id="@+id/btn_tab_messenger"
-        android:background="?selectableItemBackground"
-        android:text="@string/lmm_tab_messenger"
-        android:textColor="@color/tab_button_text_color"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_tab_matches"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        style="@style/FlatButton"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <View
-        android:id="@+id/tab_delim1"
-        android:layout_width="2dp"
-        android:layout_height="8dp"
-        android:layout_marginStart="@dimen/std_margin_8"
-        android:background="?attr/refColorUnderscore"
-        app:layout_constraintTop_toTopOf="@id/btn_tab_messenger"
-        app:layout_constraintBottom_toBottomOf="@id/btn_tab_messenger"
-        app:layout_constraintStart_toEndOf="@id/btn_tab_messenger"
-        app:layout_constraintEnd_toStartOf="@+id/btn_tab_matches"/>
+        <com.ringoid.widget.view.BadgeButton
+            android:id="@+id/btn_tab_messenger"
+            android:layout_width="0dp"
+            android:layout_weight="0.85"
+            android:background="?selectableItemBackground"
+            android:gravity="center_vertical|end"
+            android:paddingEnd="@dimen/std_margin_16"
+            android:text="@string/lmm_tab_messenger"
+            android:textColor="@color/tab_button_text_color"
+            style="@style/FlatButton"/>
 
-    <com.ringoid.widget.view.BadgeButton
-        android:id="@+id/btn_tab_matches"
-        android:layout_marginStart="@dimen/std_margin_8"
-        android:background="?selectableItemBackground"
-        android:text="@string/lmm_tab_matches"
-        android:textColor="@color/tab_button_text_color"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_tab_messenger"
-        app:layout_constraintEnd_toStartOf="@+id/btn_tab_likes"
-        style="@style/FlatButton"/>
+        <View
+            android:id="@+id/tab_delim1"
+            android:layout_width="2dp"
+            android:layout_height="8dp"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/refColorUnderscore"/>
 
-    <View
-        android:id="@+id/tab_delim2"
-        android:layout_width="2dp"
-        android:layout_height="8dp"
-        android:layout_marginStart="@dimen/std_margin_8"
-        android:background="?attr/refColorUnderscore"
-        app:layout_constraintTop_toTopOf="@id/btn_tab_matches"
-        app:layout_constraintBottom_toBottomOf="@id/btn_tab_matches"
-        app:layout_constraintStart_toEndOf="@id/btn_tab_matches"
-        app:layout_constraintEnd_toStartOf="@+id/btn_tab_likes"/>
+        <com.ringoid.widget.view.BadgeButton
+            android:id="@+id/btn_tab_matches"
+            android:background="?selectableItemBackground"
+            android:paddingStart="@dimen/std_margin_8"
+            android:paddingEnd="@dimen/std_margin_8"
+            android:text="@string/lmm_tab_matches"
+            android:textColor="@color/tab_button_text_color"
+            style="@style/FlatButton"/>
 
-    <com.ringoid.widget.view.BadgeButton
-        android:id="@+id/btn_tab_likes"
-        android:layout_marginStart="@dimen/std_margin_8"
-        android:background="?selectableItemBackground"
-        android:text="@string/lmm_tab_likes"
-        android:textColor="@color/tab_button_text_color"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_tab_matches"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/FlatButton"/>
+        <View
+            android:id="@+id/tab_delim2"
+            android:layout_width="2dp"
+            android:layout_height="8dp"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/refColorUnderscore"/>
+
+        <com.ringoid.widget.view.BadgeButton
+            android:id="@+id/btn_tab_likes"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="?selectableItemBackground"
+            android:gravity="center_vertical|start"
+            android:paddingStart="@dimen/std_margin_12"
+            android:text="@string/lmm_tab_likes"
+            android:textColor="@color/tab_button_text_color"
+            style="@style/FlatButton"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
