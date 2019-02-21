@@ -72,10 +72,12 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
                 vm.onSwitchTab()
                 changeMenuItemAppearance(it)
                 fragNav.switchTab(tabIdToIndex(it.itemId))
-                    true
+                true
             }
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
+        space_left.setOnClickListener { bottom_bar.selectedItemId = R.id.item_lmm }
+        space_right.setOnClickListener { bottom_bar.selectedItemId = R.id.item_feed }
 
         processExtras(intent)
     }

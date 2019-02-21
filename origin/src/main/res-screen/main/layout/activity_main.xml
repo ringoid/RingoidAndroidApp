@@ -14,10 +14,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <Space
+    <View
         android:id="@+id/space_left"
         android:layout_width="@dimen/main_bottom_bar_space_width"
         android:layout_height="@dimen/main_bottom_bar_height"
+        android:background="@android:color/transparent"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -28,10 +30,12 @@
         app:layout_constraintTop_toTopOf="@+id/bottom_bar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <Space
+    <View
         android:id="@+id/space_right"
         android:layout_width="@dimen/main_bottom_bar_space_width"
         android:layout_height="@dimen/main_bottom_bar_height"
+        android:background="@android:color/transparent"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
