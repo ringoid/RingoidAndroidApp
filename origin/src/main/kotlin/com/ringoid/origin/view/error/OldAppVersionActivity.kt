@@ -17,6 +17,10 @@ class OldAppVersionActivity : SimpleBaseActivity() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onBeforeCreate() {
+        setTheme(R.style.SplashTheme)
+    }
+
     @Suppress("CheckResult", "AutoDispose")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
