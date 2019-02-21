@@ -173,6 +173,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+            addOnScrollListener(itemOffsetScrollListener)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
         swipe_refresh_layout.apply {
@@ -200,11 +201,24 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_items.removeOnScrollListener(visibilityTrackingScrollListener)
+        rv_items.apply {
+            removeOnScrollListener(itemOffsetScrollListener)
+            removeOnScrollListener(visibilityTrackingScrollListener)
+        }
     }
 
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
+    private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(rv, dx, dy)
+            rv.linearLayoutManager()?.let {
+                // TODO
+            }
+        }
+    }
+
+    // ------------------------------------------
     protected val topScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
@@ -229,6 +243,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
     }
 
+    // ------------------------------------------
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
@@ -261,5 +276,5 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
     }
 
-    protected fun trackVisibility() = rv_items.post { trackVisibility(rv_items) }
+    private fun trackVisibility() = rv_items.post { trackVisibility(rv_items) }
 }
