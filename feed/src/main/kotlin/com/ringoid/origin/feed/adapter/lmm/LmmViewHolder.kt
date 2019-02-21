@@ -73,7 +73,7 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
                 R.drawable.ic_chat_bubble_white
             }
         }
-        itemView.ibtn_message.setImageResource(resId = iconResId)
+        itemView.ibtn_message.setImageSrcResource(resId = iconResId)
     }
 }
 

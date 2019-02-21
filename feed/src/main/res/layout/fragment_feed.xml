@@ -23,18 +23,18 @@
 
     </com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout>
 
-    <ImageButton
+    <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/scroll_fab"
-        android:layout_width="@dimen/feed_fab_size"
-        android:layout_height="@dimen/feed_fab_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:layout_marginBottom="@dimen/feed_fab_margin_bottom"
-        android:layout_marginStart="@dimen/std_margin_24"
-        android:background="?attr/refDrawableFabScrollBg"
+        android:layout_marginBottom="@dimen/main_bottom_bar_height"
         android:contentDescription="@null"
         android:elevation="8dp"
-        android:minWidth="@dimen/std_icon_36"
-        android:minHeight="@dimen/std_icon_36"
+        android:paddingBottom="@dimen/feed_fab_margin_bottom"
+        android:paddingStart="@dimen/std_margin_24"
         android:visibility="invisible"
-        app:srcCompat="?attr/refDrawableFabScrollIcon"/>
+        app:xbtnInnerSize="@dimen/feed_fab_size"
+        app:xbtnBg="?attr/refDrawableFabScrollBg"
+        app:xbtnSrc="?attr/refDrawableFabScrollIcon"/>
 </FrameLayout>

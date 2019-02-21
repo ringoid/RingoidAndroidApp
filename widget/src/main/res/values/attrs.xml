@@ -16,6 +16,8 @@
 
     <!-- Widget -->
     <declare-styleable name="ExtendImageButton">
+        <attr name="xbtnInnerSize" format="reference"/>
+        <attr name="xbtnBg" format="reference"/>
         <attr name="xbtnSrc" format="reference"/>
     </declare-styleable>
 

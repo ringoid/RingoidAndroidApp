@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.jakewharton.rxbinding3.view.clicks
@@ -22,11 +23,7 @@ class ExtendImageButton : FrameLayout {
 
     constructor(context: Context, attributes: AttributeSet?) : this(context, attributes, 0)
 
-    constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attributes,
-        defStyleAttr
-    ) {
+    constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int) : super(context, attributes, defStyleAttr) {
         init(context, attributes, defStyleAttr)
     }
 
@@ -41,7 +38,9 @@ class ExtendImageButton : FrameLayout {
 
         context.obtainStyledAttributes(attributes, R.styleable.ExtendImageButton, defStyleAttr, 0)
             .apply {
-                setImageResource(resId = getResourceId(R.styleable.ExtendImageButton_xbtnSrc, 0))
+                setImageSize(resId = getResourceId(R.styleable.ExtendImageButton_xbtnInnerSize, 0))
+                setImageBgResource(resId = getResourceId(R.styleable.ExtendImageButton_xbtnBg, 0))
+                setImageSrcResource(resId = getResourceId(R.styleable.ExtendImageButton_xbtnSrc, 0))
                 recycle()
             }
 
@@ -50,7 +49,18 @@ class ExtendImageButton : FrameLayout {
 
     /* API */
     // --------------------------------------------------------------------------------------------
-    fun setImageResource(@DrawableRes resId: Int) {
+    private fun setImageSize(@DimenRes resId: Int) {
+        resId.takeIf { it != 0 }?.let {
+            val size = resources.getDimensionPixelSize(resId)
+            ibtn.layoutParams = ibtn.layoutParams.apply { width = size ; height = size }
+        }
+    }
+
+    private fun setImageBgResource(@DrawableRes resId: Int) {
+        resId.takeIf { it != 0 }?.let { ibtn.setBackgroundResource(it) }
+    }
+
+    fun setImageSrcResource(@DrawableRes resId: Int) {
         resId.takeIf { it != 0 }?.let { ibtn.setImageResource(it) }
     }
 
