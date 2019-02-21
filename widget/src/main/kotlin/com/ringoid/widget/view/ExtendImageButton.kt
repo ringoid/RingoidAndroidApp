@@ -6,6 +6,7 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getSelectableItemBgBorderless
@@ -31,7 +32,7 @@ class ExtendImageButton : FrameLayout {
 
     // --------------------------------------------------------------------------------------------
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
-        background = context.getSelectableItemBgBorderless()
+        background = ContextCompat.getDrawable(context, R.drawable.rect_debug_area)  //context.getSelectableItemBgBorderless()
         foreground = context.getSelectableItemBgBorderless()
         isClickable = true
         isFocusable = true
