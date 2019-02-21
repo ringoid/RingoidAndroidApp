@@ -42,8 +42,11 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, tag: String? = null)
                     // don't retry on fatal network errors
                     is InvalidAccessTokenApiException,
                     is OldAppVersionApiException,
-                    is WrongRequestParamsClientApiException,
                     is NetworkUnexpected -> throw error
+                    is WrongRequestParamsClientApiException -> {
+                        SentryUtil.capture(error, message = "Wrong request params on client")
+                        throw error
+                    }
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
