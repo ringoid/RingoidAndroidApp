@@ -6,6 +6,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
@@ -42,6 +43,7 @@ class ExploreViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
         Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // refresh on Profile screen leads Feed screen to purge
         clearScreen(ViewState.CLEAR.MODE_NEED_REFRESH)
     }
@@ -49,6 +51,7 @@ class ExploreViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
         Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // refresh on Profile screen leads Feed screen to purge
         clearScreen(ViewState.CLEAR.MODE_NEED_REFRESH)
     }

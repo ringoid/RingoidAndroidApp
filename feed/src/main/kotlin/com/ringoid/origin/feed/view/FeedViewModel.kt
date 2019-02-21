@@ -4,6 +4,7 @@ import android.app.Application
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -44,6 +45,7 @@ abstract class FeedViewModel(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
         Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // deleting all images on Profile screen leads any Feed screen to purge it's content
         clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
