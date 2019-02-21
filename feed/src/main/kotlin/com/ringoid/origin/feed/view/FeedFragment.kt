@@ -148,7 +148,9 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                     }
                 } else {
                     // on dialog dismiss = show controls back
-                    feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+                    getRecyclerView().post {
+                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+                    }
                 }
             }
         }
