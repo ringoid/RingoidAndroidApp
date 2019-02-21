@@ -12,24 +12,19 @@ import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.IProfile
 import com.ringoid.domain.model.image.EmptyImage
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
-import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
+import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
-import com.ringoid.utility.communicator
-import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -176,18 +171,20 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-            addOnScrollListener(itemOffsetScrollListener)
+//            addOnScrollListener(itemOffsetScrollListener)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
+            refreshes().compose(clickDebounce()).subscribe { onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
             scroll_fab.changeVisibility(isVisible = false)
             scrollToTopOfItemAtPosition(position = 0)
         }
+
+        BB_TOP = activity!!.getScreenHeight() - AppRes.MAIN_BOTTOM_BAR_HEIGHT
     }
 
     override fun onResume() {
@@ -205,18 +202,74 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun onDestroyView() {
         super.onDestroyView()
         rv_items.apply {
-            removeOnScrollListener(itemOffsetScrollListener)
+//            removeOnScrollListener(itemOffsetScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+    protected open fun onRefresh() {
+        vm.onRefresh()
+        settingsBtnHide = false
+        settingsBtnShow = false
+        tabsHide = false
+        tabsShow = false
+    }
+
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
+    protected var BB_TOP: Int = 0
+    protected val SETTINGS_BTN_BOTTOM = AppRes.FEED_ITEM_SETTINGS_BTN_TOP_OFFSET
+    protected val TABS_BOTTOM = AppRes.FEED_ITEM_TABS_INDICATOR_TOP_OFFSET
+    protected var settingsBtnHide: Boolean = false
+    protected var settingsBtnShow: Boolean = false
+    protected var tabsHide: Boolean = false
+    protected var tabsShow: Boolean = false
+
+    protected open fun processItemViewControlVisibility(position: Int, view: View) {
+        Timber.v("TOP[$position]: ${view.top}, bbTop=$BB_TOP, sett=$SETTINGS_BTN_BOTTOM, tab=$TABS_BOTTOM")
+        if (Math.abs(BB_TOP - view.top) >= TABS_BOTTOM) {
+            tabsHide = false
+//            if (!tabsShow) {
+                tabsShow = true
+                feedAdapter.notifyItemChanged(position, FeedViewHolderShowTabsIndicatorOnScroll)
+//            }
+        } else {
+            tabsShow = false
+//            if (!tabsHide) {
+                tabsHide = true
+                feedAdapter.notifyItemChanged(position, FeedViewHolderHideTabsIndicatorOnScroll)
+//            }
+        }
+
+        if (Math.abs(BB_TOP - view.top) >= SETTINGS_BTN_BOTTOM) {
+            settingsBtnHide = false
+//            if (!settingsBtnShow) {
+                settingsBtnShow = true
+                feedAdapter.notifyItemChanged(position, FeedViewHolderShowSettingsBtnOnScroll)
+//            }
+        } else {
+            settingsBtnShow = false
+//            if (!settingsBtnHide) {
+                settingsBtnHide = true
+                feedAdapter.notifyItemChanged(position, FeedViewHolderHideSettingsBtnOnScroll)
+//            }
+        }
+    }
+
     private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            fun processItemView(position: Int, view: View?) {
+                view?.let {
+                    if (it.top < BB_TOP) processItemViewControlVisibility(position, view)
+                }
+            }
+
             super.onScrolled(rv, dx, dy)
             rv.linearLayoutManager()?.let {
-                // TODO
+                val from = it.findFirstVisibleItemPosition()
+                val to = it.findLastVisibleItemPosition()
+                for (i in from..to) processItemView(i, it.findViewByPosition(i))
             }
         }
     }
@@ -229,7 +282,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
     }
 
-    private fun trackVisibility(rv: RecyclerView) {
+    protected fun trackVisibility(rv: RecyclerView) {
         rv.linearLayoutManager()?.let {
             val from = it.findFirstVisibleItemPosition()
             val to = it.findLastVisibleItemPosition()
@@ -254,5 +307,5 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
     }
 
-    private fun trackVisibility() = rv_items.post { trackVisibility(rv_items) }
+    protected fun trackVisibility() = rv_items.post { trackVisibility(rv_items) }
 }

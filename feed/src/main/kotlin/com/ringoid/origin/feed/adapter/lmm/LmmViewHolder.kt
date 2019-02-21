@@ -6,8 +6,8 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
@@ -36,14 +36,16 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     }
 
     override fun bind(model: FeedItem, payloads: List<Any>) {
-        if (payloads.contains(FeedViewHolderHideControls)) {
-            hideControls()
-        }
-        if (payloads.contains(FeedViewHolderShowControls)) {
-            showControls()
-        }
         super.bind(model, payloads)
         setMessengerIcon(model)
+
+        // scroll affected
+        if (payloads.contains(FeedViewHolderHideChatBtnOnScroll)) {
+            itemView.ibtn_message.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(FeedViewHolderShowChatBtnOnScroll)) {
+            itemView.ibtn_message.changeVisibility(isVisible = true)
+        }
     }
 
     // ------------------------------------------------------------------------

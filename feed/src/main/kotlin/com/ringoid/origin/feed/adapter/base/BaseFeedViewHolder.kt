@@ -84,6 +84,26 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         if (payloads.contains(FeedViewHolderShowControls)) {
             showControls()
         }
+
+        // scroll affected
+        if (payloads.contains(FeedViewHolderHideSettingsBtnOnScroll)) {
+            itemView.ibtn_settings.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(FeedViewHolderShowSettingsBtnOnScroll)) {
+            itemView.ibtn_settings.changeVisibility(isVisible = true)
+        }
+        if (payloads.contains(FeedViewHolderHideTabsIndicatorOnScroll)) {
+            itemView.tabs.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(FeedViewHolderShowSettingsBtnOnScroll)) {
+            itemView.tabs.changeVisibility(isVisible = true)
+        }
+        if (payloads.contains(FeedViewHolderHideLikeBtnOnScroll)) {
+            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
+        }
+        if (payloads.contains(FeedViewHolderShowLikeBtnOnScroll)) {
+            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
+        }
     }
 
     // ------------------------------------------------------------------------

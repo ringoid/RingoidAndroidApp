@@ -8,6 +8,20 @@ object AppRes {
 
     var BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT: Int = -1
         private set
+    var ICON_SIZE_36: Int = -1
+        private set
+    var FEED_IMAGE_HEIGHT: Int = -1
+        private set
+    var FEED_ITEM_BIAS_BTN_TOP_OFFSET: Int = -1
+        private set
+    var FEED_ITEM_MID_BTN_TOP_OFFSET: Int = -1
+        private set
+    var FEED_ITEM_SETTINGS_BTN_TOP_OFFSET: Int = -1
+        private set
+    var FEED_ITEM_TABS_INDICATOR_TOP_OFFSET: Int = -1
+        private set
+    var MAIN_BOTTOM_BAR_HEIGHT: Int = -1
+        private set
 
     // ------------------------------------------
     lateinit var UNDERSCORE_DRAWABLE: Drawable
@@ -28,6 +42,13 @@ object AppRes {
     fun init(context: Context) {
         context.resources.apply {
             BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT = getDimensionPixelSize(R.dimen.dialog_bottom_sheet_block_height)
+            ICON_SIZE_36 = getDimensionPixelSize(R.dimen.std_icon_36)
+            FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
+            FEED_ITEM_BIAS_BTN_TOP_OFFSET = (FEED_IMAGE_HEIGHT * 0.28f - ICON_SIZE_36 * 0.5f).toInt()
+            FEED_ITEM_MID_BTN_TOP_OFFSET = ((FEED_IMAGE_HEIGHT - ICON_SIZE_36) * 0.5f).toInt()
+            FEED_ITEM_SETTINGS_BTN_TOP_OFFSET = getDimensionPixelSize(R.dimen.std_margin_24)
+            FEED_ITEM_TABS_INDICATOR_TOP_OFFSET = getDimensionPixelSize(R.dimen.std_margin_16)
+            MAIN_BOTTOM_BAR_HEIGHT = getDimensionPixelSize(R.dimen.main_bottom_bar_height)
 
             // ----------------------------------
             UNDERSCORE_DRAWABLE = ContextCompat.getDrawable(context, WidgetR_drawable.underscore)!!

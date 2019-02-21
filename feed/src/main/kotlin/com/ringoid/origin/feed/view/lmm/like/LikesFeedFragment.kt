@@ -1,9 +1,10 @@
 package com.ringoid.origin.feed.view.lmm.like
 
+import android.view.View
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderHideChatControls
-import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderShowChatControls
+import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -49,6 +50,55 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                         feedAdapter.notifyItemChanged(position, LikeFeedViewHolderHideChatControls)
                     }
                 }
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onRefresh() {
+        super.onRefresh()
+        chatBtnHide = false
+        chatBtnShow = false
+        likeBtnHide = false
+        likeBtnShow = false
+    }
+
+    /* Scroll listeners */
+    // --------------------------------------------------------------------------------------------
+    protected val CHAT_BTN_BOTTOM = AppRes.FEED_ITEM_MID_BTN_TOP_OFFSET
+    protected val LIKE_BTN_BOTTON = AppRes.FEED_ITEM_BIAS_BTN_TOP_OFFSET
+    protected var chatBtnHide: Boolean = false
+    protected var chatBtnShow: Boolean = false
+    protected var likeBtnHide: Boolean = false
+    protected var likeBtnShow: Boolean = false
+
+    override fun processItemViewControlVisibility(position: Int, view: View) {
+        super.processItemViewControlVisibility(position, view)
+        if (Math.abs(BB_TOP - view.top) >= LIKE_BTN_BOTTON) {
+            likeBtnHide = false
+            if (!likeBtnShow) {
+                likeBtnShow = true
+                feedAdapter.notifyItemChanged(position, FeedViewHolderShowLikeBtnOnScroll)
+            }
+        } else {
+            likeBtnShow = false
+            if (!likeBtnHide) {
+                likeBtnHide = true
+                feedAdapter.notifyItemChanged(position, FeedViewHolderHideLikeBtnOnScroll)
+            }
+        }
+
+        if (Math.abs(BB_TOP - view.top) >= CHAT_BTN_BOTTOM) {
+            chatBtnHide = false
+            if (!chatBtnShow) {
+                chatBtnShow = true
+                feedAdapter.notifyItemChanged(position, FeedViewHolderShowChatBtnOnScroll)
+            }
+        } else {
+            chatBtnShow = false
+            if (!chatBtnHide) {
+                chatBtnHide = true
+                feedAdapter.notifyItemChanged(position, FeedViewHolderHideChatBtnOnScroll)
             }
         }
     }
