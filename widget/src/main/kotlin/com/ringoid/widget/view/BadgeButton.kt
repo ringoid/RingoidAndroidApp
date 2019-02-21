@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.Gravity
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import com.ringoid.widget.R
@@ -35,8 +36,16 @@ class BadgeButton : Button {
         super.onDraw(canvas)
         if (isBadgeVisible) {
             paint.getTextBounds(text.toString(), 0, text.length, bounds)
-            badgeX = (width + paint.measureText(text.toString())) * 0.5f + 3.0f
-            badgeY = bounds.height().toFloat() + 12.0f
+            badgeX = when (gravity and Gravity.HORIZONTAL_GRAVITY_MASK) {
+                Gravity.CENTER_HORIZONTAL -> (width + paint.measureText(text.toString())) * 0.5f
+                Gravity.END, Gravity.RIGHT -> (width - paddingEnd).toFloat()
+                else -> paint.measureText(text.toString()) + paddingStart
+            }
+            badgeY = when (gravity and Gravity.VERTICAL_GRAVITY_MASK) {
+                Gravity.CENTER_VERTICAL -> (height - bounds.height()) * 0.5f + 10.0f
+                Gravity.BOTTOM -> (height - paddingBottom).toFloat()
+                else -> bounds.top.toFloat()
+            }
             canvas.drawCircle(badgeX, badgeY, badgeRadius, badgePaint)
         }
     }
