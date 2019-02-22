@@ -130,9 +130,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 val position = data.extras!!.getString("position", "0").toInt()
                 communicator(ILmmFragment::class.java)?.apply {
                     showTabs(isVisible = true)
-                    if (position == 1) {
-                        scrollToTopOfItemAtPosition(0)
-                    }
+                    scrollToTopOfItemAtPosition(position, offset = AppRes.BUTTON_HEIGHT)
                 }
 
                 if (resultCode == Activity.RESULT_OK) {

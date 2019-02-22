@@ -13,6 +13,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
@@ -58,9 +59,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
                 if (it.position == DomainUtil.BAD_POSITION) {
                     return
                 }
-                if (it.position == 1) {
-                    scrollToTopOfItemAtPosition(0)
-                }
+                scrollToTopOfItemAtPosition(it.position, offset = AppRes.BUTTON_HEIGHT)
 
                 when (tag) {
                     ChatFragment.TAG -> {

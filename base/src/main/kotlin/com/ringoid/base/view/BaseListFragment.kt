@@ -31,8 +31,8 @@ abstract class BaseListFragment<T : BaseViewModel> : BaseFragment<T>() {
     protected fun scrollListToPositionAndPost(position: Int): RecyclerView =
         getRecyclerView().also { it.scrollToPosition(position) }
 
-    protected fun scrollToTopOfItemAtPosition(position: Int) {
-        getRecyclerView().linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
+    protected fun scrollToTopOfItemAtPosition(position: Int, offset: Int = 0) {
+        getRecyclerView().linearLayoutManager()?.scrollToPositionWithOffset(position, offset)
     }
 
     protected fun scrollToTopOfItemAtPositionAndPost(position: Int): RecyclerView =
