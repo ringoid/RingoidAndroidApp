@@ -113,7 +113,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.apply {
+        with(viewLifecycleOwner) {
             observe(vm.messages, chatAdapter::submitList)
             observe(vm.sentMessage, chatAdapter::prepend)
         }

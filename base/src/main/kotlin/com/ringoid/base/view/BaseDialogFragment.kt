@@ -83,7 +83,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
         isActivityCreated = true
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // tie observer to view's lifecycle rather than Fragment's one
-            viewLifecycleOwner.apply {
+            with(viewLifecycleOwner) {
                 subscribeOnBusEvents()
                 observe(viewState, this@BaseDialogFragment::onViewStateChange)
             }

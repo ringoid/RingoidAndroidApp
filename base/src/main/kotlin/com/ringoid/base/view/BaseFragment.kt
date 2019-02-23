@@ -81,7 +81,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         isActivityCreated = true
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // tie observer to view's lifecycle rather than Fragment's one
-            viewLifecycleOwner.apply {
+            with(viewLifecycleOwner) {
                 subscribeOnBusEvents()
                 observe(viewState, this@BaseFragment::onViewStateChange)
             }

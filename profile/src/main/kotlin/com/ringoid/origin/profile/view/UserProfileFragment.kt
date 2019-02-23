@@ -151,7 +151,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         }
 
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.apply {
+        with(viewLifecycleOwner) {
             observe(vm.imageBlocked, ::doOnBlockedImage)
             observe(vm.imageCreated, imagesAdapter::prepend)
             observe(vm.imageDeleted, imagesAdapter::remove)

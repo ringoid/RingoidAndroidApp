@@ -82,7 +82,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.apply {
+        with(viewLifecycleOwner) {
             observe(vm.badgeLikes, ::showBadgeOnLikes)
             observe(vm.badgeMatches, ::showBadgeOnMatches)
             observe(vm.badgeMessenger, ::showBadgeOnMessenger)
