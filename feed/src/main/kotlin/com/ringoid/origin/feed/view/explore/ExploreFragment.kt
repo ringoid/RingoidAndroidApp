@@ -14,6 +14,7 @@ import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.utility.debugToast
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
@@ -50,6 +51,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
             is ViewState.ERROR -> {
                 when (newState.e) {
                     is ThresholdExceededException -> {
+                        activity?.debugToast("Repeat after delay exceeded time threshold")
                         vm.clearScreen(ViewState.CLEAR.MODE_EMPTY_DATA)
                         return
                     }

@@ -31,6 +31,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
     val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
+    val oneShot: MutableLiveData<LiveEvent<Any?>> by lazy { MutableLiveData<LiveEvent<Any?>>() }
 
     // --------------------------------------------------------------------------------------------
     fun obtainAccessToken() {

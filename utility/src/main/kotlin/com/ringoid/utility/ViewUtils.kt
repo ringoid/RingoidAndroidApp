@@ -174,6 +174,18 @@ fun snackbar(view: View?, @StringRes textResId: Int, duration: Int = Snackbar.LE
     view?.let { Snackbar.make(it, textResId, duration).show() }
 }
 
+fun Context.debugToast(text: String, duration: Int = Toast.LENGTH_SHORT, gravity: Int? = null) {
+    if (BuildConfig.DEBUG) {
+        toast(text, duration, gravity)
+    }
+}
+
+fun Context.debugToast(@StringRes textResId: Int, duration: Int = Toast.LENGTH_SHORT, gravity: Int? = null) {
+    if (BuildConfig.DEBUG) {
+        toast(textResId, duration, gravity)
+    }
+}
+
 fun Context.toast(text: String, duration: Int = Toast.LENGTH_SHORT, gravity: Int? = null) {
     val view = LayoutInflater.from(this).inflate(R.layout.toast_layout, null)
         .also { it.findViewById<TextView>(R.id.tv_toast_text).text = text }

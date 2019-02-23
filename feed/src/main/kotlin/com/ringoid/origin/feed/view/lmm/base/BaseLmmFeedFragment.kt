@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.AppRes
@@ -25,10 +26,7 @@ import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.communicator
-import com.ringoid.utility.isVisible
-import com.ringoid.utility.linearLayoutManager
+import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
@@ -106,7 +104,14 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.feed, feedAdapter::submitList)
+        with(viewLifecycleOwner) {
+            observe(vm.feed, feedAdapter::submitList)
+            observe(vm.oneShot) {
+                it.getContentIfNotHandled()
+                    ?.takeIf { it is ThresholdExceededException }
+                    ?.let { activity?.debugToast("Repeat after delay exceeded time threshold") }
+            }
+        }
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
         /**
          * Parent's [Fragment.onActivityCreated] is called before this method on any child [Fragment],
