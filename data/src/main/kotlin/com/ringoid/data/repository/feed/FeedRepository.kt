@@ -71,7 +71,7 @@ open class FeedRepository @Inject constructor(
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
-                 .handleError()
+                 .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime})")
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
                  .cacheNewFacesAsAlreadySeen()
@@ -81,7 +81,7 @@ open class FeedRepository @Inject constructor(
     override fun getLmm(resolution: ImageResolution): Single<Lmm> =
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
-                 .handleError()
+                 .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime})")
                  .doOnSubscribe {
                      // clear sent user messages because they will be restored with new Lmm
                      sentMessagesLocal.deleteMessages()

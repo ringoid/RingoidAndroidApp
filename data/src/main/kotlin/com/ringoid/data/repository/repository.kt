@@ -37,11 +37,12 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
             .flatMap { errorWithAttempt ->
                 val attemptNumber = errorWithAttempt.first
                 val error = errorWithAttempt.second
+                val extras = tag?.let { listOf("tag" to "$tag [${error.javaClass.simpleName}]") }
                 val delayTime = when (error) {
                     is RepeatRequestAfterSecException -> {
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
-                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold", level = Event.Level.WARNING)
+                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold", level = Event.Level.WARNING, extras = extras)
                             throw ThresholdExceededException()
                         }
                         elapsedTimes.add(error.delay)
@@ -52,7 +53,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                     is OldAppVersionApiException,
                     is NetworkUnexpected -> throw error
                     is WrongRequestParamsClientApiException -> {
-                        SentryUtil.capture(error, message = "Wrong request params on client")
+                        SentryUtil.capture(error, message = "Wrong request params on client", extras = extras)
                         throw error
                     }
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
@@ -61,13 +62,13 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                                 .doOnSubscribe { Timber.w("Retry attempt [$attemptNumber / $count] after error: $error") }
                                 .doOnNext {
                                     if (error is RepeatRequestAfterSecException) {
-                                        SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING)
+                                        SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, extras = extras)
                                         if (attemptNumber >= 3) {
-                                            SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row")
+                                            SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row", extras = extras)
                                         }
                                     }
                                 }
-                                .doOnComplete { if (attemptNumber >= count) throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted") } }
+                                .doOnComplete { if (attemptNumber >= count) throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", extras = extras) } }
             }
     }
 
