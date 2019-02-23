@@ -9,7 +9,7 @@ object ScreenHelper {
         context.resources.displayMetrics.widthPixels.let { w ->
             val resolution: ImageResolution = ImageResolution._480x640
             ImageResolution.values().reversedArray().forEach {
-                if (resolution.w <= w) {
+                if (it.w <= w) {
                     return@let it
                 }
             }
