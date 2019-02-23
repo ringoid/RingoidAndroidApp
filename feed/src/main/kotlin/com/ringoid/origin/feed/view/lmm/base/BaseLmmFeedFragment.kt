@@ -24,6 +24,7 @@ import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.navigation.RequestCode
+import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.*
@@ -94,8 +95,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
                     scrollToTopOfItemAtPositionAndPost(position).post {
                         feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
                     }
-                    ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(it, tag)
-//                    navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
+//                    ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(it, tag)
+                    navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
         }
     }
