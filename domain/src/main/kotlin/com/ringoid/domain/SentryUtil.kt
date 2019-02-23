@@ -76,6 +76,7 @@ object SentryUtil {
 
     private fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
                         `object`: Any? = null, extras: List<Pair<String, String>>? = null) {
+        message?.let { breadcrumb(it) }
         if (!message.isNullOrBlank()) {
             Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
         } else {
