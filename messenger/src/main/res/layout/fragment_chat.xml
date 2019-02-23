@@ -36,19 +36,6 @@
         </com.ringoid.widget.view.KeyEditText>
     </LinearLayout>
 
-    <com.ringoid.widget.view.ExtendImageButton
-        android:id="@+id/ibtn_message_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:paddingTop="@dimen/std_margin_40"
-        android:paddingBottom="@dimen/std_margin_8"
-        android:paddingStart="@dimen/std_margin_32"
-        android:paddingEnd="@dimen/std_margin_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_send_white"/>
-
     <View
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
         style="@style/Underscore"/>
@@ -68,6 +55,19 @@
         app:layout_constraintBottom_toTopOf="@id/ll_text_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.ringoid.widget.view.ExtendImageButton
+        android:id="@+id/ibtn_message_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="@dimen/std_margin_40"
+        android:paddingBottom="@dimen/std_margin_8"
+        android:paddingStart="@dimen/std_margin_32"
+        android:paddingEnd="@dimen/std_margin_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:xbtnSrc="@drawable/ic_send_white"/>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_chat_close"
