@@ -125,6 +125,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 }
             }
             RequestCode.RC_DELETE_IMAGE_DIALOG -> {
+                showControls(isVisible = true)
                 if (resultCode == Activity.RESULT_OK) {
                     if (data == null) {
                         val e = NullPointerException("No output image id from Delete Image dialog - this is an error!")
@@ -185,6 +186,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             }
 
             imageOnViewPort()?.let {
+                showControls(isVisible = false)
                 navigate(this@UserProfileFragment, path = "/delete_image?imageId=${it.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
             }
         }
@@ -288,5 +290,12 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
     private fun scrollToPosition(position: Int) {
         rv_items?.post { rv_items?.scrollToPosition(position) }
+    }
+
+    private fun showControls(isVisible: Boolean) {
+        ibtn_add_image.changeVisibility(isVisible = isVisible)
+        ibtn_delete_image.changeVisibility(isVisible = isVisible)
+        ibtn_settings.changeVisibility(isVisible = isVisible)
+        tabs.changeVisibility(isVisible = isVisible)
     }
 }
