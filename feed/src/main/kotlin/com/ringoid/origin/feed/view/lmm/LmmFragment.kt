@@ -6,6 +6,7 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
@@ -107,23 +108,23 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             0 -> {
                 lmmPagesAdapter.accessItem(1)?.userVisibleHint = false
                 lmmPagesAdapter.accessItem(2)?.userVisibleHint = false
-                btn_tab_likes?.changeTypeface()
-                btn_tab_matches?.changeTypeface()
-                btn_tab_messenger?.changeTypeface(style = Typeface.BOLD, isSelected = true)
+                btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
+                btn_tab_matches?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
+                btn_tab_messenger?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
             }
             1 -> {
                 lmmPagesAdapter.accessItem(0)?.userVisibleHint = false
                 lmmPagesAdapter.accessItem(2)?.userVisibleHint = false
-                btn_tab_likes?.changeTypeface()
-                btn_tab_matches?.changeTypeface(style = Typeface.BOLD, isSelected = true)
-                btn_tab_messenger?.changeTypeface()
+                btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
+                btn_tab_matches?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
+                btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
             }
             2 -> {
                 lmmPagesAdapter.accessItem(0)?.userVisibleHint = false
                 lmmPagesAdapter.accessItem(1)?.userVisibleHint = false
-                btn_tab_likes?.changeTypeface(style = Typeface.BOLD, isSelected = true)
-                btn_tab_matches?.changeTypeface()
-                btn_tab_messenger?.changeTypeface()
+                btn_tab_likes?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
+                btn_tab_matches?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
+                btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
             }
         }
 

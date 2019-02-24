@@ -52,9 +52,10 @@ fun View.touchExtend(size: Int = 100): View {
 
 fun RecyclerView.linearLayoutManager(): LinearLayoutManager? = layoutManager as? LinearLayoutManager
 
-fun TextView.changeTypeface(tf: Typeface? = null, style: Int = Typeface.NORMAL, isSelected: Boolean = false) {
+fun TextView.changeTypeface(tf: Typeface? = null, style: Int = Typeface.NORMAL, isSelected: Boolean = false, textSize: Int? = null) {
     this.isSelected = isSelected
     setTypeface(tf, style)
+    textSize?.let { setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat()) }
 }
 
 // ------------------------------------------------------------------------------------------------

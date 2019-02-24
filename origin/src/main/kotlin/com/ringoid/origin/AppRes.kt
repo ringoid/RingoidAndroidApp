@@ -8,6 +8,10 @@ object AppRes {
 
     var BUTTON_HEIGHT: Int = -1
         private set
+    var BUTTON_FLAT_TEXT_SIZE: Int = -1
+        private set
+    var BUTTON_FLAT_INC_TEXT_SIZE: Int = -1
+        private set
     var BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT: Int = -1
         private set
     var ICON_SIZE_36: Int = -1
@@ -44,6 +48,8 @@ object AppRes {
     fun init(context: Context) {
         context.resources.apply {
             BUTTON_HEIGHT = getDimensionPixelSize(R.dimen.std_btn_height)
+            BUTTON_FLAT_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_18)
+            BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
             BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT = getDimensionPixelSize(R.dimen.dialog_bottom_sheet_block_height)
             ICON_SIZE_36 = getDimensionPixelSize(R.dimen.std_icon_36)
             FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
