@@ -282,11 +282,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         this@UserProfileFragment.communicator(IBaseRingoidApplication::class.java)?.imagePreviewReceiver
 
     private fun imageOnViewPort(): IImage? =
-        rv_items.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
+        rv_items?.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
             ?.takeIf { it != RecyclerView.NO_POSITION }
             ?.let { imagesAdapter.getModel(it) }
 
     private fun scrollToPosition(position: Int) {
-        rv_items.post { rv_items.scrollToPosition(position) }
+        rv_items?.post { rv_items?.scrollToPosition(position) }
     }
 }

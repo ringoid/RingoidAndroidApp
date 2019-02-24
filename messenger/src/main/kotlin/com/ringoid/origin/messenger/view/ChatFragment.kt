@@ -212,20 +212,20 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     }
 
     private fun scrollListToPosition(position: Int) {
-        rv_chat_messages.post { rv_chat_messages.scrollToPosition(position) }
+        rv_chat_messages?.post { rv_chat_messages?.scrollToPosition(position) }
     }
 
     private fun scrollToTopOfItemAtPosition(position: Int) {
-        rv_chat_messages.post {
-            rv_chat_messages.linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
+        rv_chat_messages?.post {
+            rv_chat_messages?.linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
         }
     }
 
     private fun scrollToItemAtCachedPosition() {
         // TODO: call only if no new messages
         val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
-        rv_chat_messages.post {
-            rv_chat_messages.linearLayoutManager()?.scrollToPositionWithOffset(position.first, position.second)
+        rv_chat_messages?.post {
+            rv_chat_messages?.linearLayoutManager()?.scrollToPositionWithOffset(position.first, position.second)
         }
     }
 

@@ -305,5 +305,5 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
     }
 
-    protected fun trackVisibility() = rv_items.post { trackVisibility(rv_items) }
+    protected fun trackVisibility() = rv_items?.post { rv_items?.let { trackVisibility(it) } }
 }
