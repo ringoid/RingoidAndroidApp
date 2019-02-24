@@ -1,8 +1,11 @@
 package com.ringoid.data.remote.di
 
 import com.ringoid.data.remote.RingoidRestAdapter
+import com.ringoid.data.remote.debug.CloudDebug
 import com.ringoid.data.remote.network.ApiUrlBase
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.debug.ICloudDebug
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -23,4 +26,7 @@ class RingoidCloudModule(private val apiUrlBase: ApiUrlBase = ApiUrlBase.DEFAULT
         }
         return retrofit.baseUrl(apiUrl).build().create(RingoidRestAdapter::class.java)
     }
+
+    @Provides @Singleton @DebugOnly
+    fun provideCloudDebug(cloudDebug: CloudDebug): ICloudDebug = cloudDebug
 }

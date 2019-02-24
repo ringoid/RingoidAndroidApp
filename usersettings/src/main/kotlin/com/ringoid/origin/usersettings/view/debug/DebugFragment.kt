@@ -7,12 +7,13 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.misc.DebugOnly
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.fragment_debug.*
+import kotlinx.android.synthetic.main.fragment_debug.view.*
 
 @DebugOnly
 class DebugFragment : BaseFragment<DebugViewModel>() {
@@ -62,6 +63,10 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         item_error_request_params.clicks().compose(clickDebounce()).subscribe { vm.requestWithWrongParams() }
         item_error_request_repeat_after_delay.clicks().compose(clickDebounce()).subscribe { vm.requestWithNeedToRepeatAfterDelay(delay = 5L) }
         item_error_timeout.clicks().compose(clickDebounce()).subscribe { vm.requestWithTimeOutResponse() }
+        item_last_request.apply {
+            setText("Method: ${cloudDebug.get("request")}")
+            setLabel("Resolution: ${cloudDebug.get("resolution")}")
+        }
         item_screen_info.apply {
             clicks().compose(clickDebounce()).subscribe {
                 context?.let {

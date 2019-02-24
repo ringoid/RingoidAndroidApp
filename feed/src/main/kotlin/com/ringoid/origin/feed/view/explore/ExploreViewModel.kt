@@ -11,7 +11,7 @@ import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
-import com.ringoid.domain.misc.DebugOnly
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel

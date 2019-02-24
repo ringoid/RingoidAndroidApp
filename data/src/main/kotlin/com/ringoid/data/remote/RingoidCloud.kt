@@ -1,5 +1,6 @@
 package com.ringoid.data.remote
 
+import com.ringoid.data.remote.debug.keepDataForDebug
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
@@ -7,6 +8,7 @@ import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
 import com.ringoid.domain.breadcrumb
+import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
@@ -22,7 +24,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapter) {
+class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapter,
+                                       private val cloudDebug: ICloudDebug) {
 
     /* User (Auth, Profile) */
     // --------------------------------------------------------------------------------------------
@@ -71,6 +74,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
         restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
+            .keepDataForDebug(cloudDebug,"request" to "getUserImages", "resolution" to "$resolution")
             .breadcrumb("getUserImages", "accessToken" to "", "resolution" to "$resolution")
             .logResponse("getUserImages")
             .checkResponseTime("UserPhotos")
@@ -93,6 +97,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun getNewFaces(accessToken: String, resolution: ImageResolution, limit: Int?, lastActionTime: Long = 0L) =
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
+            .keepDataForDebug(cloudDebug, "request" to "getNewFaces", "resolution" to "$resolution")
             .breadcrumb("getNewFaces", "accessToken" to "", "resolution" to "$resolution",
                         "lastActionTime" to "$lastActionTime")
             .logResponse("getNewFaces")
@@ -100,6 +105,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun getLmm(accessToken: String, resolution: ImageResolution, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, lastActionTime = lastActionTime)
+            .keepDataForDebug(cloudDebug, "request" to "getLmm", "resolution" to "$resolution")
             .breadcrumb("getLmm", "accessToken" to "",
                         "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .logResponse("getLmm")

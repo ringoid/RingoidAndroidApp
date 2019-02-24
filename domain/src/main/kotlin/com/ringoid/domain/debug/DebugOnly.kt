@@ -1,4 +1,4 @@
-package com.ringoid.domain.misc
+package com.ringoid.domain.debug
 
 @Retention(AnnotationRetention.SOURCE)
 annotation class DebugOnly

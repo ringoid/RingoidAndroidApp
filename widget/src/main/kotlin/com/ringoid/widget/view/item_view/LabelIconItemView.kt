@@ -24,7 +24,7 @@ open class LabelIconItemView : IconItemView {
         tv_label.setText(resId)
     }
 
-    fun setLabel(text: String) {
-        tv_label.text = text
+    fun setLabel(text: String?) {
+        tv_label.text = text ?: ""
     }
 }

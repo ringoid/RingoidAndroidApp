@@ -14,6 +14,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.utility.view.StateBottomSheetDialog
@@ -30,6 +31,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
+    @Inject protected lateinit var cloudDebug: ICloudDebug
 
     protected var asBottomSheet: Boolean = false
         private set

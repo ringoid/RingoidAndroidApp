@@ -1,6 +1,6 @@
 package com.ringoid.domain.repository.debug
 
-import com.ringoid.domain.misc.DebugOnly
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.feed.Feed
 import io.reactivex.Completable
 import io.reactivex.Single

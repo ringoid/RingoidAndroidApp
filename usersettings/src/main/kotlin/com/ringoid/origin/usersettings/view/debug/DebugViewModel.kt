@@ -6,7 +6,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.debug.*
-import com.ringoid.domain.misc.DebugOnly
+import com.ringoid.domain.debug.DebugOnly
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.CompletableTransformer

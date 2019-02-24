@@ -89,9 +89,19 @@
 
         <View style="@style/Underscore"/>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/std_margin_40"/>
+
         <com.ringoid.widget.view.SubLabelIconItemView
             android:id="@+id/item_screen_info"
             app:icon_item_text="@string/debug_item_screen_info"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.SubLabelIconItemView
+            android:id="@+id/item_last_request"
             style="?attr/iconItemView"/>
 
     </LinearLayout>
