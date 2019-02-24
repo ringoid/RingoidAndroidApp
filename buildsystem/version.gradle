@@ -32,7 +32,7 @@ buildscript {
         confettiVersion = '1.1.1'
         cropiwaVersion = '1.0.3'
         deeplinkVersion = '3.1.1'
-        glideVersion = '4.8.0'
+        glideVersion = '4.9.0'
         eventBusVersion = '3.1.1'
         fragNavVersion = '3.0.0'
         frescoVersion = '1.5.0'

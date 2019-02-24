@@ -57,6 +57,7 @@ ext {
             cropiwa:        "com.steelkiwi:cropiwa:${cropiwaVersion}",
             glide:          "com.github.bumptech.glide:glide:${glideVersion}",
             glideCompiler:  "com.github.bumptech.glide:compiler:${glideVersion}",
+            glideRecycler:  "com.github.bumptech.glide:recyclerview-integration:${glideVersion}",
 
 //            deeplink:       "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
 //            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
@@ -370,7 +371,9 @@ ext {
 
     /* Feature Feed */
     // ------------------------------------------
-    feedDependencies = []
+    feedDependencies = [
+        [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
+    ]
     feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink + kotlin +
                         glide + log + rx + rxBind
 
@@ -418,7 +421,9 @@ ext {
     
     /* Feature Profile */
     // ------------------------------------------
-    profileDependencies = []
+    profileDependencies = [
+        [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
+    ]
     profileDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
