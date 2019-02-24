@@ -15,7 +15,7 @@ import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.activity_chat.*
 
 @AppNav("chat")
-class ChatActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
+class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
 
     override fun getLayoutId(): Int = R.layout.activity_chat
 

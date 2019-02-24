@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".view.ChatActivity"
+            android:name=".view.ChatHostActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Light"
