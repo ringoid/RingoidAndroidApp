@@ -8,7 +8,8 @@
         android:id="@+id/iv_chat_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/std_image_height"
-        android:contentDescription="@null"/>
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"/>
 
     <View
         android:id="@+id/underscore"
