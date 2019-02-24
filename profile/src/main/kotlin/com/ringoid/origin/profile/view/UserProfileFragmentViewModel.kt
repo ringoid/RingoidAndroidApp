@@ -7,6 +7,7 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.CreateUserImageUseCase
 import com.ringoid.domain.interactor.image.DeleteUserImageUseCase
@@ -20,6 +21,8 @@ import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -55,6 +58,16 @@ class UserProfileFragmentViewModel @Inject constructor(
             .subscribe({ imageDeleted.value = it }, Timber::e)
     }
 
+    // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        // refresh on Lmm screen leads Profile screen to refresh as well
+        getUserImages()
+    }
+
+    // --------------------------------------------------------------------------------------------
     fun getUserImages() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
