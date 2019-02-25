@@ -18,5 +18,5 @@ class DelayFromLast(val delay: Long = LIKE_DELAY_ON_TRIGGER) : TriggerStrategy()
 }
 
 const val LIKE_COUNT_ON_TRIGGER = 5
-const val LIKE_DELAY_ON_TRIGGER = 5L  // in seconds
-const val VIEW_DELAY_ON_TRIGGER = 10L
+const val LIKE_DELAY_ON_TRIGGER = 3L  // in seconds
+const val VIEW_DELAY_ON_TRIGGER = 2L  // in seconds

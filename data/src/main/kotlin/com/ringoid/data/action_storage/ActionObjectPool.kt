@@ -26,7 +26,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
     : IActionObjectPool {
 
     companion object {
-        private const val CAPACITY = 100
+        private const val CAPACITY = 10
     }
 
     private val queue: Queue<ActionObject> = ArrayDeque()
