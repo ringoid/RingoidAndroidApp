@@ -119,7 +119,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
          * so it's safe to access parent's [ViewModel] here, because it's already initialized.
          */
         communicator(ILmmFragment::class.java)?.accessViewModel()
-            ?.let { parentVm -> viewLifecycleOwner.observe(parentVm.listScrolls, ::scrollListToPosition) }
+            ?.let { viewLifecycleOwner.observe(it.listScrolls, ::scrollListToPosition) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

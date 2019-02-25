@@ -7,6 +7,7 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
+import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,6 +23,8 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase, app: Ap
     val badgeMatches by lazy { MutableLiveData<Boolean>() }
     val badgeMessenger by lazy { MutableLiveData<Boolean>() }
     val listScrolls by lazy { MutableLiveData<Int>() }
+    var cachedLmm: Lmm? = null
+        private set
 
     init {
         getLmmUseCase.repository.badgeLikes
@@ -52,7 +55,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase, app: Ap
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
         getLmmUseCase.source(params = params)
             .autoDisposable(this)
-            .subscribe({ Timber.v("Lmm has been refreshed") }, Timber::e)
+            .subscribe({ cachedLmm = it }, Timber::e)
     }
 
     // --------------------------------------------------------------------------------------------
