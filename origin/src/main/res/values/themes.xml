@@ -12,8 +12,6 @@
         <item name="refColorAccent">@color/grass</item>
         <item name="refColorPrimary">@color/steel</item>
         <item name="refColorPrimaryDark">@color/agat_semi</item>
-        <item name="refColorBottomBarIcon">@color/black_half</item>
-        <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_black</item>
         <item name="refDrawableFabScrollBg">@drawable/black_half_oval_selector</item>
         <item name="refDrawableFabScrollIcon">@drawable/ic_expand_less_white_24dp</item>
         <item name="refColorUnderscore">@color/underscore_dark</item>
@@ -28,7 +26,10 @@
 
     <style name="Base.V0.AppTheme.Light">
         <item name="android:colorEdgeEffect">@android:color/black</item>
+        <item name="refColorBottomBarIcon">@color/black_half</item>
+        <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_black</item>
         <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_black_36dp</item>
+        <item name="refDrawableBottomBarExplorePressed">@drawable/ic_menu_explore_black_light_36dp</item>
         <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_black_outline_36dp</item>
         <item name="refDrawableBottomBarLmmPressed">@drawable/ic_menu_favorite_black_36dp</item>
         <item name="refDrawableBottomBarMessenger">@drawable/ic_menu_messages_black_outline_24dp</item>
@@ -48,6 +49,7 @@
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_white</item>
         <item name="refColorUnderscore">@color/underscore_light</item>
         <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_white_36dp</item>
+        <item name="refDrawableBottomBarExplorePressed">@drawable/ic_menu_explore_white_light_36dp</item>
         <item name="refDrawableBottomBarLmm">@drawable/ic_menu_favorite_white_outline_36dp</item>
         <item name="refDrawableBottomBarLmmPressed">@drawable/ic_menu_favorite_white_36dp</item>
         <item name="refDrawableBottomBarMessenger">@drawable/ic_menu_messages_white_outline_24dp</item>

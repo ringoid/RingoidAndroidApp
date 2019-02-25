@@ -2,12 +2,7 @@ package com.ringoid.origin.view.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
@@ -18,8 +13,6 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.getAttributeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -28,9 +21,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
 
     private lateinit var fragNav: FragNavController
     private val loginInMemoryCache: ILoginInMemoryCache by lazy { app.loginInMemoryCache }
-
-    private lateinit var badgeLmm: View
-    private lateinit var badgeWarningProfile: View
 
     private var tabPayload: String? = null  // payload to pass to subscreen on tab switch
 
@@ -43,14 +33,12 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
-
         fragNav = FragNavController(supportFragmentManager, R.id.fl_container)
             .apply {
                 rootFragments = getListOfRootFragments()
                 navigationStrategy = UnlimitedTabHistoryStrategy(object : FragNavSwitchController {
                     override fun switchTab(index: Int, transactionOptions: FragNavTransactionOptions?) {
-                        bottom_bar.selectedItemId = indexToTabId(index)
+                        bottom_bar.selectedItem = index
                     }
                 })
                 fragNavLogger = object : FragNavLogger {
@@ -65,16 +53,9 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
             }
 
         bottom_bar.apply {
-            setOnNavigationItemSelectedListener {
-                vm.onSwitchTab()
-                changeMenuItemAppearance(it)
-                fragNav.switchTab(tabIdToIndex(it.itemId))
-                true
-            }
+            setOnNavigationItemSelectedListener { vm.onSwitchTab() ; fragNav.switchTab(it) }
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
-        space_left.setOnClickListener { bottom_bar.selectedItemId = R.id.item_lmm }
-        space_right.setOnClickListener { bottom_bar.selectedItemId = R.id.item_feed }
 
         processExtras(intent)
     }
@@ -115,80 +96,25 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     }
 
     protected fun openTabByName(tabName: String) {
-        bottom_bar.selectedItemId = tabNameToId(tabName)
+        bottom_bar.selectedItem = tabNameToIndex(tabName)
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun changeMenuItemAppearance(item: MenuItem) {
-        if (bottom_bar.selectedItemId == item.itemId) {
-            return  // no change
-        }
-
-        val prevItem = bottom_bar.menu.findItem(bottom_bar.selectedItemId)
-        prevItem.icon = getAttributeDrawable(tabIdToAttr(prevItem.itemId).first)
-        item.icon = getAttributeDrawable(tabIdToAttr(item.itemId).second)
-    }
-
-    // ------------------------------------------
-    private fun indexToTabId(index: Int): Int =
-        when (index) {
-            0 -> R.id.item_lmm
-            1 -> R.id.item_profile
-            2 -> R.id.item_feed
-            else -> throw IllegalArgumentException("Index of tab exceeds bounds: $index")
-        }
-
-    private fun tabIdToIndex(tabId: Int): Int =
-        when (tabId) {
-            R.id.item_lmm -> 0
-            R.id.item_profile -> 1
-            R.id.item_feed -> 2
-            else -> throw IllegalArgumentException("Unknown tab id: $tabId")
-        }
-
-    private fun tabNameToId(tabName: String): Int =
+    private fun tabNameToIndex(tabName: String): Int =
         when (tabName) {
-            NavigateFrom.MAIN_TAB_LMM -> R.id.item_lmm
-            NavigateFrom.MAIN_TAB_PROFILE -> R.id.item_profile
-            NavigateFrom.MAIN_TAB_FEED -> R.id.item_feed
+            NavigateFrom.MAIN_TAB_LMM -> 0
+            NavigateFrom.MAIN_TAB_PROFILE -> 1
+            NavigateFrom.MAIN_TAB_FEED -> 2
             else -> throw IllegalArgumentException("Unknown tab name: $tabName")
         }
 
-    private fun tabIdToAttr(tabId: Int): Pair<Int, Int> =
-        when (tabId) {
-            R.id.item_lmm -> R.attr.refDrawableBottomBarLmm to R.attr.refDrawableBottomBarLmmPressed
-            R.id.item_profile -> R.attr.refDrawableBottomBarProfile to R.attr.refDrawableBottomBarProfilePressed
-            R.id.item_feed -> R.attr.refDrawableBottomBarExplore to R.attr.refDrawableBottomBarExplore
-            else -> throw IllegalArgumentException("Unknown tab id: $tabId")
-        }
-
     // --------------------------------------------------------------------------------------------
-    private fun initView() {
-        val inflater = LayoutInflater.from(this)
-        val menuView = bottom_bar.getChildAt(0) as? BottomNavigationMenuView
-        badgeLmm = inflater.inflate(R.layout.main_menu_badge, menuView, false)
-        badgeWarningProfile = inflater.inflate(R.layout.main_menu_warning, menuView, false)
-
-        menuView?.apply {
-            getChildAt(tabIdToIndex(R.id.item_lmm))
-                ?.let { it as? BottomNavigationItemView }
-                ?.addView(badgeLmm)
-
-            getChildAt(tabIdToIndex(R.id.item_profile))
-                ?.let { it as? BottomNavigationItemView }
-                ?.addView(badgeWarningProfile)
-        }
-
-        showBadgeOnLmm(isVisible = false)
-        showBadgeWarningOnProfile(isVisible = false)
-    }
-
     protected fun showBadgeOnLmm(isVisible: Boolean) {
-        badgeLmm.changeVisibility(isVisible, soft = true)
+        bottom_bar.showBadgeOnLmm(isVisible)
     }
 
     override fun showBadgeWarningOnProfile(isVisible: Boolean) {
-        badgeWarningProfile.changeVisibility(isVisible, soft = true)
+        bottom_bar.showWarningOnProfile(isVisible)
     }
 
     // --------------------------------------------------------------------------------------------

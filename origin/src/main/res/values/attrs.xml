@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="Drawables">
         <attr name="refDrawableBottomBarExplore" format="reference"/>
+        <attr name="refDrawableBottomBarExplorePressed" format="reference"/>
         <attr name="refDrawableBottomBarLmm" format="reference"/>
         <attr name="refDrawableBottomBarLmmPressed" format="reference"/>
         <attr name="refDrawableBottomBarMessenger" format="reference"/>
