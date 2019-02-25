@@ -57,6 +57,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase, app: Ap
 
     // --------------------------------------------------------------------------------------------
     fun onTabReselect() {
+        actionObjectPool.trigger()
         listScrolls.value = 0  // scroll to top position
     }
 }
