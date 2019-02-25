@@ -46,22 +46,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
-        fun onIdleState() {
-            fl_empty_container.changeVisibility(isVisible = false, soft = true)
-            swipe_refresh_layout.isRefreshing = false
-        }
-        fun onClearState(mode: Int) {
-            feedAdapter.clear()
-            getEmptyStateInput(mode)?.let {
-                onIdleState()
-                fl_empty_container.changeVisibility(isVisible = true)
-                val emptyFragment = EmptyFragment.newInstance(it)
-                childFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
-                    .commitNowAllowingStateLoss()
-            }
-        }
         fun onErrorState() {
             onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
         }
@@ -87,6 +71,23 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             is ViewState.IDLE -> onIdleState()
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
+    }
+
+    protected fun onClearState(mode: Int) {
+        feedAdapter.clear()
+        getEmptyStateInput(mode)?.let {
+            fl_empty_container.changeVisibility(isVisible = true)
+            val emptyFragment = EmptyFragment.newInstance(it)
+            childFragmentManager
+                .beginTransaction()
+                .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
+                .commitNowAllowingStateLoss()
+        }
+    }
+
+    protected fun onIdleState() {
+        fl_empty_container.changeVisibility(isVisible = false, soft = true)
+        swipe_refresh_layout.isRefreshing = false
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

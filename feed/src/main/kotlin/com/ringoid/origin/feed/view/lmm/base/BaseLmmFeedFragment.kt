@@ -113,7 +113,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
                     ?.let { activity?.debugToast("Repeat after delay exceeded time threshold") }
             }
         }
-        vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+        onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
         /**
          * Parent's [Fragment.onActivityCreated] is called before this method on any child [Fragment],
          * so it's safe to access parent's [ViewModel] here, because it's already initialized.
