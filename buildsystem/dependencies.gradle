@@ -371,9 +371,7 @@ ext {
 
     /* Feature Feed */
     // ------------------------------------------
-    feedDependencies = [
-        [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
-    ]
+    feedDependencies = []
     feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink + kotlin +
                         glide + log + rx + rxBind
 
@@ -421,9 +419,7 @@ ext {
     
     /* Feature Profile */
     // ------------------------------------------
-    profileDependencies = [
-        [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
-    ]
+    profileDependencies = []
     profileDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
@@ -441,6 +437,7 @@ ext {
     originDependencies = [
 //        [configuration: "api", dependency: d_libs.cropiwa],
         [configuration: "api", dependency: project(modules.cropiwa)],
+        [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
                           support + view
