@@ -3,6 +3,9 @@ package com.ringoid.origin.feed.adapter.base
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.feed.IProfile
 import com.ringoid.domain.model.feed.Profile
@@ -36,8 +39,10 @@ abstract class OriginFeedViewHolder<T : IProfile>(view: View, viewPool: Recycler
 abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : OriginFeedViewHolder<T>(view, viewPool) {
 
-    internal val profileImageAdapter = ProfileImageAdapter()
+    internal val profileImageAdapter = ProfileImageAdapter(view.context)
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
+
+    private val imagePreloadListener: RecyclerViewPreloader<ProfileImageVO>
 
     init {
         val snapHelper = EnhancedPagerSnapHelper(duration = 30)
@@ -54,7 +59,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
 
-            setOnScrollListener(object : RecyclerView.OnScrollListener() {
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(rv, dx, dy)
                     rv.linearLayoutManager()?.let {
@@ -66,6 +71,8 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
                     }
                 }
             })
+            imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, ViewPreloadSizeProvider<ProfileImageVO>(), 10)
+            addOnScrollListener(imagePreloadListener)
         }
     }
 

@@ -15,9 +15,7 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
     override fun bind(model: UserImage) {
         ImageLoader.load(uri = model.uri, thumbnailUri = model.uriLocal,
             imageView = itemView.iv_image,
-            options = RequestOptions()
-                .override(itemView.width, itemView.height)
-                .centerCrop())
+            options = RequestOptions().centerCrop())
 
         itemView.tv_likes_count.text = "${model.numberOfLikes}"
     }

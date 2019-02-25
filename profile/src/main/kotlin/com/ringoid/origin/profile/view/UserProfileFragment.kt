@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
@@ -16,6 +19,7 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
@@ -42,6 +46,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     private var cropImageAfterLogin: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
+    private lateinit var imagePreloadListener: RecyclerViewPreloader<UserImage>
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
@@ -95,7 +100,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imagesAdapter = UserProfileImageAdapter()
+        imagesAdapter = UserProfileImageAdapter(activity!!)
             .apply {
                 onInsertListener = { count ->
                     showEmptyStub(needShow = count <= 0)
@@ -114,6 +119,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                     vm.onDeleteImage(empty = empty)
                 }
             }
+
+        imagePreloadListener = RecyclerViewPreloader(Glide.with(this), imagesAdapter, ViewPreloadSizeProvider<UserImage>(), 10)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -209,9 +216,15 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             setHasFixedSize(true)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+            addOnScrollListener(imagePreloadListener)
         }
 
         showEmptyStub(needShow = true)  // empty stub will be replaced on adapter's filled
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rv_items.removeOnScrollListener(imagePreloadListener)
     }
 
     override fun onDestroy() {

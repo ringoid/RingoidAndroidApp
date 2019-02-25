@@ -1,14 +1,21 @@
 package com.ringoid.origin.profile.adapter
 
+import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.ListPreloader
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.domain.model.image.EmptyUserImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.profile.R
+import com.ringoid.utility.image.ImageLoader
 
-class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageViewHolder>(UserProfileImageDiffCallback()) {
+class UserProfileImageAdapter(private val context: Context)
+    : BaseListAdapter<UserImage, BaseUserProfileImageViewHolder>(UserProfileImageDiffCallback()),
+    ListPreloader.PreloadModelProvider<UserImage> {
 
     var onInsertListener: ((count: Int) -> Unit)? = null
     var onRemoveListener: (() -> Unit)? = null
@@ -39,6 +46,14 @@ class UserProfileImageAdapter : BaseListAdapter<UserImage, BaseUserProfileImageV
             .find { it.id == imageId }
             ?.let { submitList(ArrayList(getModels()).apply { remove(it) }) }
     }
+
+    // ------------------------------------------
+    override fun getPreloadItems(position: Int): MutableList<UserImage> =
+        getModels().subList(position, position + 1).toMutableList()
+
+    override fun getPreloadRequestBuilder(item: UserImage): RequestBuilder<*>? =
+        ImageLoader.loadRequest(uri = item.uri, thumbnailUri = item.uriLocal, context = context,
+            options = RequestOptions().centerCrop())
 }
 
 // ------------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.ringoid.utility.R
@@ -26,39 +27,27 @@ object ImageLoader {
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
     fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
-        fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
+        loadRequest(uri, thumbnailUri, imageView.context, options)
+            ?.listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = optimalOptions(imageView.context, uri, options)))
+            ?.into(imageView)
+    }
 
+    fun loadRequest(uri: String?, thumbnailUri: String? = null, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? {
         if (uri.isNullOrBlank()) {
-            return
+            return null
         }
-
-        val cacheStrategy = if (isLocalUri(uri)) DiskCacheStrategy.NONE
-                            else DiskCacheStrategy.AUTOMATIC
-
-        val thumbnailCacheStrategy = if (isLocalUri(thumbnailUri)) DiskCacheStrategy.NONE
-                                     else DiskCacheStrategy.AUTOMATIC
-
-        val xOptions = wrapOptions(options)
-            .placeholder(getDrawableProgress(imageView.context))
-            .diskCacheStrategy(cacheStrategy)
-
-        val xThumbnailOptions = RequestOptions()
-            .placeholder(getDrawableProgress(imageView.context))
-            .diskCacheStrategy(thumbnailCacheStrategy)
 
         val thumbnailRequest =
             thumbnailUri?.let {
-                Glide.with(imageView)
+                Glide.with(context)
                     .load(it)
-                    .apply(xThumbnailOptions)
+                    .apply(optimalOptions(context, thumbnailUri, options))
             }
 
-        Glide.with(imageView)
+        return Glide.with(context)
             .load(uri)
-            .apply(xOptions)
-            .listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = xOptions))
+            .apply(optimalOptions(context, uri, options))
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
-            .into(imageView)
     }
 
     @Suppress("CheckResult")
@@ -104,6 +93,22 @@ object ImageLoader {
                 centerRadius = 30f
                 start()
             }
+
+    // ------------------------------------------
+    private fun optimalOptions(context: Context, uri: String?, options: RequestOptions?): RequestOptions {
+        fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
+
+        if (uri.isNullOrBlank()) {
+            return wrapOptions(options)
+        }
+
+        val cacheStrategy = if (isLocalUri(uri)) DiskCacheStrategy.NONE
+                            else DiskCacheStrategy.AUTOMATIC
+
+        return wrapOptions(options)
+            .placeholder(getDrawableProgress(context))
+            .diskCacheStrategy(cacheStrategy)
+    }
 
     private fun wrapOptions(options: RequestOptions?): RequestOptions =
         RequestOptions().apply { options?.let { apply(it) } }.error(R.drawable.ic_no_photo_placeholder_grey_96dp)

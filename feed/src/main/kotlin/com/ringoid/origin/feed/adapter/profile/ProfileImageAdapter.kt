@@ -1,16 +1,23 @@
 package com.ringoid.origin.feed.adapter.profile
 
+import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.ListPreloader
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.request.RequestOptions
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
-class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageViewHolder>(ProfileImageDiffCallback()) {
+class ProfileImageAdapter(private val context: Context)
+    : BaseListAdapter<ProfileImageVO, BaseProfileImageViewHolder>(ProfileImageDiffCallback()),
+    ListPreloader.PreloadModelProvider<ProfileImageVO> {
 
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
     var isLikeEnabled = true
@@ -38,6 +45,14 @@ class ProfileImageAdapter : BaseListAdapter<ProfileImageVO, BaseProfileImageView
 
     // --------------------------------------------------------------------------------------------
     override fun getStubItem(): ProfileImageVO = EmptyProfileImageVO
+
+    // ------------------------------------------
+    override fun getPreloadItems(position: Int): MutableList<ProfileImageVO> =
+        getModels().subList(position, position + 1).toMutableList()
+
+    override fun getPreloadRequestBuilder(item: ProfileImageVO): RequestBuilder<*>? =
+        ImageLoader.loadRequest(uri = item.image.uri, context = context,
+            options = RequestOptions().centerCrop())
 
     // ------------------------------------------
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
