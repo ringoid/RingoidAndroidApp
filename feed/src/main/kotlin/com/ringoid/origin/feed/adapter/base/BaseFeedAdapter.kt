@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 abstract class BaseFeedAdapter<T : IProfile, VH>(diffCb: BaseDiffCallback<T>, headerRows: Int = 0)
     : BaseListAdapter<T, VH>(diffCb, headerRows = headerRows) where VH : BaseViewHolder<T>, VH : IFeedViewHolder {
 
-    var onInsertItemsListener: (() -> Unit)? = null
     var settingsClickListener: ((model: T, position: Int, positionOfImage: Int) -> Unit)? = null
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
@@ -36,9 +35,6 @@ abstract class BaseFeedAdapter<T : IProfile, VH>(diffCb: BaseDiffCallback<T>, he
                 vh.setOnClickListener(null)  // clicks on the whole feed's item is no-op
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
-
-    override fun getOnInsertedCb(): ((position: Int, count: Int) -> Unit)? =
-        { _, _ -> onInsertItemsListener?.invoke() }
 
     // ------------------------------------------
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer
