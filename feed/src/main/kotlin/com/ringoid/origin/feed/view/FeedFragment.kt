@@ -76,6 +76,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     protected fun onClearState(mode: Int) {
         feedAdapter.clear()
         getEmptyStateInput(mode)?.let {
+            onIdleState()
             fl_empty_container.changeVisibility(isVisible = true)
             val emptyFragment = EmptyFragment.newInstance(it)
             childFragmentManager
