@@ -8,7 +8,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
@@ -39,8 +38,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     override fun getLayoutId(): Int = R.layout.activity_main
 
     protected abstract fun getListOfRootFragments(): List<Fragment>
-
-    protected fun bottomBar(): BottomNavigationView = bottom_bar
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
