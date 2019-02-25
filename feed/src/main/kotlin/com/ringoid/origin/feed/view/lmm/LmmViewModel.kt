@@ -8,7 +8,7 @@ import com.ringoid.domain.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.model.feed.Lmm
-import com.ringoid.origin.ScreenHelper
+import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe

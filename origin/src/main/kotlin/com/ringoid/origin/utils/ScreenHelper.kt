@@ -1,4 +1,4 @@
-package com.ringoid.origin
+package com.ringoid.origin.utils
 
 import android.content.Context
 import com.ringoid.domain.misc.ImageResolution

@@ -1,6 +1,7 @@
-package com.ringoid.origin
+package com.ringoid.origin.utils
 
 import android.content.Context
+import com.ringoid.origin.R
 import com.ringoid.origin.error.UnsupportedLocaleException
 import com.ringoid.utility.manager.LocaleManager
 

@@ -16,7 +16,7 @@ import com.ringoid.domain.interactor.image.GetUserImagesUseCase
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
-import com.ringoid.origin.ScreenHelper
+import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable

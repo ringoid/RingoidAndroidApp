@@ -14,7 +14,7 @@ import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
-import com.ringoid.origin.ScreenHelper
+import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable

@@ -2,7 +2,7 @@ package com.ringoid.origin.usersettings.view.language.adapter
 
 import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
-import com.ringoid.origin.LocaleUtils
+import com.ringoid.origin.utils.LocaleUtils
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_settings_lang.view.*
 

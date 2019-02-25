@@ -13,7 +13,7 @@ import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.feed.Feed
-import com.ringoid.origin.ScreenHelper
+import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
