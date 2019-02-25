@@ -66,6 +66,7 @@ class UserImageRepository @Inject constructor(
                         }
                         .toList()
                 }
+                .onErrorResumeNext { Single.just(emptyList()) }
                 .flatMap { local.userImages() }
                 .map { it.mapList() }
 
