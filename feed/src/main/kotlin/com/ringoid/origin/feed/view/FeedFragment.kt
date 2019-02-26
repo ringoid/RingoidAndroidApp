@@ -17,6 +17,7 @@ import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
+import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.navigation.*
@@ -120,6 +121,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70", rc = RequestCode.RC_BLOCK_DIALOG)
             }
         }
+        offsetScrollStrats = getOffsetScrollStrategies()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -179,7 +181,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            refreshes().compose(clickDebounce()).subscribe { onRefresh() }
+            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
@@ -208,70 +210,34 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
     }
 
-    // --------------------------------------------------------------------------------------------
-    protected open fun onRefresh() {
-        vm.onRefresh()
-        settingsBtnHide = false
-        settingsBtnShow = false
-        tabsHide = false
-        tabsShow = false
-    }
-
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
-    protected var BB_TOP: Int = 0
-    protected val LIKE_BTN_BOTTON = AppRes.FEED_ITEM_BIAS_BTN_TOP_OFFSET
-    protected val SETTINGS_BTN_BOTTOM = AppRes.FEED_ITEM_SETTINGS_BTN_TOP_OFFSET * 1.5f
-    protected val TABS_BOTTOM = AppRes.FEED_ITEM_TABS_INDICATOR_TOP_OFFSET * 1.5f
-    protected var likeBtnHide: Boolean = false
-    protected var likeBtnShow: Boolean = false
-    protected var settingsBtnHide: Boolean = false
-    protected var settingsBtnShow: Boolean = false
-    protected var tabsHide: Boolean = false
-    protected var tabsShow: Boolean = false
+    private lateinit var offsetScrollStrats: List<OffsetScrollStrategy>
 
-    protected open fun processItemViewControlVisibility(position: Int, view: View) {
-        Timber.v("TOP[$position]: ${view.top}, bbTop=$BB_TOP, sett=$SETTINGS_BTN_BOTTOM, tab=$TABS_BOTTOM")
-        if (BB_TOP - view.top >= TABS_BOTTOM) {
-            tabsHide = false
-//            if (!tabsShow) {
-                tabsShow = true
-                feedAdapter.notifyItemChanged(position, FeedViewHolderShowTabsIndicatorOnScroll)
-//            }
-        } else {
-            tabsShow = false
-//            if (!tabsHide) {
-                tabsHide = true
-                feedAdapter.notifyItemChanged(position, FeedViewHolderHideTabsIndicatorOnScroll)
-//            }
-        }
+    protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
+        listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
 
-        if (BB_TOP - view.top >= SETTINGS_BTN_BOTTOM) {
-            settingsBtnHide = false
-//            if (!settingsBtnShow) {
-                settingsBtnShow = true
-                feedAdapter.notifyItemChanged(position, FeedViewHolderShowSettingsBtnOnScroll)
-//            }
-        } else {
-            settingsBtnShow = false
-//            if (!settingsBtnHide) {
-                settingsBtnHide = true
-                feedAdapter.notifyItemChanged(position, FeedViewHolderHideSettingsBtnOnScroll)
-//            }
-        }
-
-        if (BB_TOP - view.top >= LIKE_BTN_BOTTON) {
-            likeBtnHide = false
-//            if (!likeBtnShow) {
-            likeBtnShow = true
-            feedAdapter.notifyItemChanged(position, FeedViewHolderShowLikeBtnOnScroll)
-//            }
-        } else {
-            likeBtnShow = false
-//            if (!likeBtnHide) {
-            likeBtnHide = true
-            feedAdapter.notifyItemChanged(position, FeedViewHolderHideLikeBtnOnScroll)
-//            }
+    protected fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
+        offsetScrollStrats.forEach {
+            view.post {  // avoid change rv during layout, leading to crash
+                when (it.type) {
+                    OffsetScrollStrategy.Type.TOP -> {
+                        if (top - view.top >= it.deltaOffset) {
+                            feedAdapter.notifyItemChanged(position, it.hide)
+                        } else {
+                            feedAdapter.notifyItemChanged(position, it.show)
+                        }
+                    }
+                    OffsetScrollStrategy.Type.BOTTOM -> {
+//                    if (bottom - view.top >= it.deltaOffset) {
+//                        feedAdapter.notifyItemChanged(position, it.show)
+//                    } else {
+//                        feedAdapter.notifyItemChanged(position, it.hide)
+//                    }
+                    }
+                }
+            }
         }
     }
 
@@ -279,9 +245,8 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             fun processItemView(position: Int, view: View?) {
                 view?.let {
-                    BB_TOP = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
-                    Timber.d("TOP[$position]: ${it.top}, bbTop=$BB_TOP")
-                    processItemViewControlVisibility(position, view)
+                    val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
+                    processItemViewControlVisibility(position, view, AppRes.BUTTON_HEIGHT, bottom)
                 }
             }
 

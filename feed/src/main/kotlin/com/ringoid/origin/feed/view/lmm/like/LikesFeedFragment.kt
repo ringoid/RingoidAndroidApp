@@ -1,16 +1,13 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import android.os.Bundle
-import android.view.View
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
-import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderHideChatControls
-import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderShowChatControls
+import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
+import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
@@ -68,35 +65,17 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
             ?.cachedLmm?.likes?.let { feedAdapter.submitList(it) }
     }
 
-    // --------------------------------------------------------------------------------------------
-    override fun onRefresh() {
-        super.onRefresh()
-        chatBtnHide = false
-        chatBtnShow = false
-        likeBtnHide = false
-        likeBtnShow = false
-    }
-
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
-    protected val CHAT_BTN_BOTTOM = AppRes.FEED_ITEM_MID_BTN_TOP_OFFSET
-    protected var chatBtnHide: Boolean = false
-    protected var chatBtnShow: Boolean = false
-
-    override fun processItemViewControlVisibility(position: Int, view: View) {
-        super.processItemViewControlVisibility(position, view)
-        if (BB_TOP - view.top >= CHAT_BTN_BOTTOM) {
-            chatBtnHide = false
-//            if (!chatBtnShow) {
-                chatBtnShow = true
-                feedAdapter.notifyItemChanged(position, FeedViewHolderShowChatBtnOnScroll)
-//            }
-        } else {
-            chatBtnShow = false
-//            if (!chatBtnHide) {
-                chatBtnHide = true
-                feedAdapter.notifyItemChanged(position, FeedViewHolderHideChatBtnOnScroll)
-//            }
-        }
-    }
+    override fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
+        mutableListOf<OffsetScrollStrategy>()
+            .apply {
+                addAll(super.getOffsetScrollStrategies())
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_BOTTOM, hide = FeedViewHolderHideLikeBtnOnScroll, show = FeedViewHolderShowLikeBtnOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_MID_BTN_BOTTOM, hide = FeedViewHolderHideChatBtnOnScroll, show = FeedViewHolderShowChatBtnOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_TOP, hide = FeedViewHolderHideLikeBtnOnScroll, show = FeedViewHolderShowLikeBtnOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_MID_BTN_TOP, hide = FeedViewHolderHideChatBtnOnScroll, show = FeedViewHolderShowChatBtnOnScroll))
+            }
 }
