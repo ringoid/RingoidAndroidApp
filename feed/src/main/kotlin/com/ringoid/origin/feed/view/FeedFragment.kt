@@ -181,7 +181,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() }
+            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() ; offsetScrollStrats = getOffsetScrollStrategies() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
