@@ -8,6 +8,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.AppRes
+import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
@@ -85,13 +86,13 @@ class ReportBottomSheetDialog : SimpleBaseDialogFragment() {
 
     private fun getReportReasonString(reason: Int): String =
         when (reason) {
-            10 -> resources.getString(R.string.report_profile_button_0)
-            20 -> resources.getString(R.string.report_profile_button_1)
-            30 -> resources.getString(R.string.report_profile_button_2)
-            40 -> resources.getString(R.string.report_profile_button_3)
-            50 -> resources.getString(R.string.report_profile_button_4)
-            60 -> resources.getString(R.string.report_profile_button_5)
-            70 -> resources.getString(R.string.report_profile_button_6)
+            10 -> resources.getString(OriginR_string.report_profile_button_0)
+            20 -> resources.getString(OriginR_string.report_profile_button_1)
+            30 -> resources.getString(OriginR_string.report_profile_button_2)
+            40 -> resources.getString(OriginR_string.report_profile_button_3)
+            50 -> resources.getString(OriginR_string.report_profile_button_4)
+            60 -> resources.getString(OriginR_string.report_profile_button_5)
+            70 -> resources.getString(OriginR_string.report_profile_button_6)
             else -> ""
         }
 }

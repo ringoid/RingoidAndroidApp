@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
+import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.clickDebounce
@@ -63,9 +64,9 @@ class DeleteUserProfileImageDialog : SimpleBaseDialogFragment() {
         }
 
         if (needWarn) {
-            Dialogs.showTextDialog(activity, titleResId = R.string.profile_dialog_image_delete_title,
-                descriptionResId = R.string.common_uncancellable,
-                positiveBtnLabelResId = R.string.button_delete, negativeBtnLabelResId = R.string.button_cancel,
+            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_delete_title,
+                descriptionResId = OriginR_string.common_uncancellable,
+                positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
                 positiveListener = { dialog, _ -> dialog.dismiss() ; deleteImageAndClose() })
         } else {
             deleteImageAndClose()
