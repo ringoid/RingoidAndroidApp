@@ -67,7 +67,8 @@ class DeleteUserProfileImageDialog : SimpleBaseDialogFragment() {
             Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_delete_title,
                 descriptionResId = OriginR_string.common_uncancellable,
                 positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
-                positiveListener = { dialog, _ -> dialog.dismiss() ; deleteImageAndClose() })
+                positiveListener = { dialog, _ -> dialog.dismiss() ; deleteImageAndClose() },
+                negativeListener = { dialog, _ -> dialog.dismiss() ; onCancel(dialog)})
         } else {
             deleteImageAndClose()
         }
