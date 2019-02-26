@@ -225,18 +225,26 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                     OffsetScrollStrategy.Type.BOTTOM -> {
                         if (bottom - view.top < AppRes.FEED_ITEM_MID_BTN_BOTTOM) {
                             if (bottom - view.top < it.deltaOffset) {
-                                feedAdapter.notifyItemChanged(position, it.hide)
+                                if (!it.isHiddenAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.hide)
+                                }
                             } else {
-                                feedAdapter.notifyItemChanged(position, it.show)
+                                if (!it.isShownAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.show)
+                                }
                             }
                         }
                     }
                     OffsetScrollStrategy.Type.TOP -> {
                         if (view.top - top < AppRes.FEED_ITEM_MID_BTN_TOP) {
                             if (top - view.top >= it.deltaOffset) {
-                                feedAdapter.notifyItemChanged(position, it.hide)
+                                if (!it.isHiddenAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.hide)
+                                }
                             } else {
-                                feedAdapter.notifyItemChanged(position, it.show)
+                                if (!it.isShownAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.show)
+                                }
                             }
                         }
                     }
