@@ -112,6 +112,14 @@ open class FeedRepository @Inject constructor(
                 .cacheMessagesFromLmm()
         }
 
+    override fun dropLmmChangedStatus(): Completable =
+        Completable.fromCallable {
+            badgeLikes.onNext(false)
+            badgeMatches.onNext(false)
+            badgeMessenger.onNext(false)
+            lmmChanged.onNext(false)
+        }
+
     // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.filterOutAlreadySeenProfilesFeed(): Single<FeedResponse> =
         filterOutProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())

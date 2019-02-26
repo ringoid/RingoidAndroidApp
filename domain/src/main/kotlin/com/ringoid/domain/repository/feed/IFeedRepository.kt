@@ -35,4 +35,6 @@ interface IFeedRepository {
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
 
     fun getLmm(resolution: ImageResolution): Single<Lmm>
+
+    fun dropLmmChangedStatus(): Completable
 }
