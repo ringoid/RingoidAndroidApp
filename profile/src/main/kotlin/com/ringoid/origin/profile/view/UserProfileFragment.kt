@@ -172,7 +172,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 showEmptyStub(needShow = true)  // no images added on login
             }
         } else {
-            vm.getUserImages()
+            vm.onRefresh()
         }
 
         globalImagePreviewReceiver()

@@ -68,7 +68,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun getUserImages() {
+    private fun getUserImages() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
         getUserImagesUseCase.source(params = params)
