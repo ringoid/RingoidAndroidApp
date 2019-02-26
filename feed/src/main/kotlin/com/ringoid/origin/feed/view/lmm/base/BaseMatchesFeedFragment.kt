@@ -22,18 +22,18 @@ abstract class BaseMatchesFeedFragment<VM : BaseLmmFeedViewModel> : BaseLmmFeedF
 
     override fun processItemViewControlVisibility(position: Int, view: View) {
         super.processItemViewControlVisibility(position, view)
-        if (Math.abs(BB_TOP - view.top) >= CHAT_BTN_BOTTOM) {
+        if (BB_TOP - view.top >= CHAT_BTN_BOTTOM) {
             chatBtnHide = false
-            if (!chatBtnShow) {
+//            if (!chatBtnShow) {
                 chatBtnShow = true
                 feedAdapter.notifyItemChanged(position, FeedViewHolderShowChatBtnOnScroll)
-            }
+//            }
         } else {
             chatBtnShow = false
-            if (!chatBtnHide) {
+//            if (!chatBtnHide) {
                 chatBtnHide = true
                 feedAdapter.notifyItemChanged(position, FeedViewHolderHideChatBtnOnScroll)
-            }
+//            }
         }
     }
 }

@@ -23,8 +23,11 @@ import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.utility.*
+import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.communicator
+import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -171,7 +174,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-//            addOnScrollListener(itemOffsetScrollListener)
+            addOnScrollListener(itemOffsetScrollListener)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
         swipe_refresh_layout.apply {
@@ -183,8 +186,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             scroll_fab.changeVisibility(isVisible = false)
             scrollToTopOfItemAtPosition(position = 0)
         }
-
-        BB_TOP = activity!!.getScreenHeight() - AppRes.MAIN_BOTTOM_BAR_HEIGHT
     }
 
     override fun onResume() {
@@ -202,7 +203,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun onDestroyView() {
         super.onDestroyView()
         rv_items.apply {
-//            removeOnScrollListener(itemOffsetScrollListener)
+            removeOnScrollListener(itemOffsetScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
         }
     }
@@ -219,8 +220,11 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
     protected var BB_TOP: Int = 0
-    protected val SETTINGS_BTN_BOTTOM = AppRes.FEED_ITEM_SETTINGS_BTN_TOP_OFFSET
-    protected val TABS_BOTTOM = AppRes.FEED_ITEM_TABS_INDICATOR_TOP_OFFSET
+    protected val LIKE_BTN_BOTTON = AppRes.FEED_ITEM_BIAS_BTN_TOP_OFFSET
+    protected val SETTINGS_BTN_BOTTOM = AppRes.FEED_ITEM_SETTINGS_BTN_TOP_OFFSET * 1.5f
+    protected val TABS_BOTTOM = AppRes.FEED_ITEM_TABS_INDICATOR_TOP_OFFSET * 1.5f
+    protected var likeBtnHide: Boolean = false
+    protected var likeBtnShow: Boolean = false
     protected var settingsBtnHide: Boolean = false
     protected var settingsBtnShow: Boolean = false
     protected var tabsHide: Boolean = false
@@ -228,7 +232,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
 
     protected open fun processItemViewControlVisibility(position: Int, view: View) {
         Timber.v("TOP[$position]: ${view.top}, bbTop=$BB_TOP, sett=$SETTINGS_BTN_BOTTOM, tab=$TABS_BOTTOM")
-        if (Math.abs(BB_TOP - view.top) >= TABS_BOTTOM) {
+        if (BB_TOP - view.top >= TABS_BOTTOM) {
             tabsHide = false
 //            if (!tabsShow) {
                 tabsShow = true
@@ -242,7 +246,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
 //            }
         }
 
-        if (Math.abs(BB_TOP - view.top) >= SETTINGS_BTN_BOTTOM) {
+        if (BB_TOP - view.top >= SETTINGS_BTN_BOTTOM) {
             settingsBtnHide = false
 //            if (!settingsBtnShow) {
                 settingsBtnShow = true
@@ -255,13 +259,29 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 feedAdapter.notifyItemChanged(position, FeedViewHolderHideSettingsBtnOnScroll)
 //            }
         }
+
+        if (BB_TOP - view.top >= LIKE_BTN_BOTTON) {
+            likeBtnHide = false
+//            if (!likeBtnShow) {
+            likeBtnShow = true
+            feedAdapter.notifyItemChanged(position, FeedViewHolderShowLikeBtnOnScroll)
+//            }
+        } else {
+            likeBtnShow = false
+//            if (!likeBtnHide) {
+            likeBtnHide = true
+            feedAdapter.notifyItemChanged(position, FeedViewHolderHideLikeBtnOnScroll)
+//            }
+        }
     }
 
     private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             fun processItemView(position: Int, view: View?) {
                 view?.let {
-                    if (it.top < BB_TOP) processItemViewControlVisibility(position, view)
+                    BB_TOP = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
+                    Timber.d("TOP[$position]: ${it.top}, bbTop=$BB_TOP")
+                    processItemViewControlVisibility(position, view)
                 }
             }
 

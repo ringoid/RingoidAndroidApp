@@ -53,7 +53,7 @@ object AppRes {
             BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT = getDimensionPixelSize(R.dimen.dialog_bottom_sheet_block_height)
             ICON_SIZE_36 = getDimensionPixelSize(R.dimen.std_icon_36)
             FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
-            FEED_ITEM_BIAS_BTN_TOP_OFFSET = (FEED_IMAGE_HEIGHT * 0.28f - ICON_SIZE_36 * 0.5f).toInt()
+            FEED_ITEM_BIAS_BTN_TOP_OFFSET = (FEED_IMAGE_HEIGHT * 0.34f).toInt()
             FEED_ITEM_MID_BTN_TOP_OFFSET = ((FEED_IMAGE_HEIGHT - ICON_SIZE_36) * 0.5f).toInt()
             FEED_ITEM_SETTINGS_BTN_TOP_OFFSET = getDimensionPixelSize(R.dimen.std_margin_24)
             FEED_ITEM_TABS_INDICATOR_TOP_OFFSET = getDimensionPixelSize(R.dimen.std_margin_16)

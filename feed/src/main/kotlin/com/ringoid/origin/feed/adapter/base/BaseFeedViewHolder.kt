@@ -102,7 +102,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         if (payloads.contains(FeedViewHolderHideTabsIndicatorOnScroll)) {
             itemView.tabs.changeVisibility(isVisible = false)
         }
-        if (payloads.contains(FeedViewHolderShowSettingsBtnOnScroll)) {
+        if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
             itemView.tabs.changeVisibility(isVisible = true)
         }
         if (payloads.contains(FeedViewHolderHideLikeBtnOnScroll)) {
