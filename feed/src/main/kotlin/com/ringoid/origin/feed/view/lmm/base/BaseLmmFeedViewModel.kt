@@ -10,22 +10,25 @@ import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
+import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
-import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
-abstract class BaseLmmFeedViewModel(protected val getLmmUseCase: GetLmmUseCase,
+abstract class BaseLmmFeedViewModel(
+    protected val getLmmUseCase: GetLmmUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    countUserImagesUseCase: CountUserImagesUseCase, app: Application)
-    : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
+    countUserImagesUseCase: CountUserImagesUseCase,
+    dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
+    : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, dropLmmChangedStatusUseCase, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
     private var cachedFeed: List<FeedItem>? = null

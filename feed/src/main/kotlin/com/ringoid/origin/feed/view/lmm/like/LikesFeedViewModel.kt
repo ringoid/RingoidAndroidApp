@@ -4,6 +4,7 @@ import android.app.Application
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
+import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
@@ -15,8 +16,8 @@ import javax.inject.Inject
 class LikesFeedViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    countUserImagesUseCase: CountUserImagesUseCase, app: Application)
-    : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app) {
+    countUserImagesUseCase: CountUserImagesUseCase, dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
+    : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, dropLmmChangedStatusUseCase, app) {
 
     private val numberOfLikes = mutableMapOf<String, MutableSet<String>>()
 

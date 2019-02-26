@@ -7,14 +7,14 @@ import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.feed.Feed
-import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -30,8 +30,8 @@ class ExploreViewModel @Inject constructor(
     private val cacheAlreadySeenProfileIdsUseCase: CacheAlreadySeenProfileIdsUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    countUserImagesUseCase: CountUserImagesUseCase, app: Application)
-    : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, app),
+    countUserImagesUseCase: CountUserImagesUseCase, dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
+    : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, dropLmmChangedStatusUseCase, app),
     IListScrollCallback {
 
     val feed by lazy { MutableLiveData<Feed>() }
