@@ -68,10 +68,10 @@ object AppRes {
             FEED_ITEM_BIAS_BTN_TOP = (FEED_ITEM_BIAS_BTN_BOTTOM - ICON_SIZE_36 * 0.3f).toInt()
             FEED_ITEM_MID_BTN_BOTTOM = ((FEED_IMAGE_HEIGHT + ICON_SIZE_36) * 0.5f).toInt()
             FEED_ITEM_MID_BTN_TOP = (FEED_ITEM_MID_BTN_BOTTOM - ICON_SIZE_36 * 0.5f).toInt()
-            FEED_ITEM_SETTINGS_BTN_TOP = getDimensionPixelSize(R.dimen.std_margin_24)
-            FEED_ITEM_SETTINGS_BTN_BOTTOM = (FEED_ITEM_SETTINGS_BTN_TOP * 1.5f).toInt()
             FEED_ITEM_TABS_INDICATOR_TOP = getDimensionPixelSize(R.dimen.std_margin_16)
             FEED_ITEM_TABS_INDICATOR_BOTTOM = (FEED_ITEM_TABS_INDICATOR_TOP * 1.5f).toInt()
+            FEED_ITEM_SETTINGS_BTN_TOP = FEED_ITEM_TABS_INDICATOR_TOP  // getDimensionPixelSize(R.dimen.std_margin_24)
+            FEED_ITEM_SETTINGS_BTN_BOTTOM = (FEED_ITEM_SETTINGS_BTN_TOP * 1.5f).toInt()
             MAIN_BOTTOM_BAR_HEIGHT = getDimensionPixelSize(R.dimen.main_bottom_bar_height)
 
             // ----------------------------------
