@@ -222,19 +222,23 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         offsetScrollStrats.forEach {
             view.post {  // avoid change rv during layout, leading to crash
                 when (it.type) {
-                    OffsetScrollStrategy.Type.TOP -> {
-                        if (top - view.top >= it.deltaOffset) {
-                            feedAdapter.notifyItemChanged(position, it.hide)
-                        } else {
-                            feedAdapter.notifyItemChanged(position, it.show)
+                    OffsetScrollStrategy.Type.BOTTOM -> {
+                        if (bottom - view.top < AppRes.FEED_ITEM_MID_BTN_BOTTOM) {
+                            if (bottom - view.top < it.deltaOffset) {
+                                feedAdapter.notifyItemChanged(position, it.hide)
+                            } else {
+                                feedAdapter.notifyItemChanged(position, it.show)
+                            }
                         }
                     }
-                    OffsetScrollStrategy.Type.BOTTOM -> {
-//                    if (bottom - view.top >= it.deltaOffset) {
-//                        feedAdapter.notifyItemChanged(position, it.show)
-//                    } else {
-//                        feedAdapter.notifyItemChanged(position, it.hide)
-//                    }
+                    OffsetScrollStrategy.Type.TOP -> {
+                        if (view.top - top < AppRes.FEED_ITEM_MID_BTN_TOP) {
+                            if (top - view.top >= it.deltaOffset) {
+                                feedAdapter.notifyItemChanged(position, it.hide)
+                            } else {
+                                feedAdapter.notifyItemChanged(position, it.show)
+                            }
+                        }
                     }
                 }
             }
