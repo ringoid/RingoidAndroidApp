@@ -75,7 +75,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
 
         item_delete_account.clicks().compose(clickDebounce()).subscribe {
             Dialogs.showTextDialog(activity, titleResId = OriginR_string.settings_account_delete_dialog_title,
-                descriptionResId = OriginR_string.settings_account_delete_dialog_description,
+                descriptionResId = OriginR_string.common_uncancellable,
                 positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
                 positiveListener = { _, _ -> vm.deleteAccount() })
         }

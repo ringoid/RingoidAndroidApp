@@ -16,6 +16,7 @@
     <string name="common_pull_to_refresh">Потяни, чтобы обновить</string>
     <string name="common_sex_male">Мужчина</string>
     <string name="common_sex_female">Женщина</string>
+    <string name="common_uncancellable">Восстановления нет.</string>
 
     <string name="error_common">Ой! Что-то пошло не так&#8230;</string>
     <string name="error_crop_image">Не удалось загрузить фото</string>
@@ -69,13 +70,13 @@
     <string name="profile_dialog_image_another_title">Что дальше?</string>
     <string name="profile_dialog_image_blocked_button">Условия использования</string>
     <string name="profile_dialog_image_blocked_title">Фото удалено за нарушения Условий использования</string>
+    <string name="profile_dialog_image_delete_title">Удалить фото?</string>
     <string name="profile_empty_images">Добавь фото, чтобы\nполучать лайки</string>
     <string name="profile_empty_title">Профиль</string>
 
     <!-- Settings screen -->
     <string name="settings_account_delete">Удалить Профиль</string>
     <string name="settings_account_delete_info">Если вы не открывали Рингоид более 16 дней, профиль автоматически удаляется.</string>
-    <string name="settings_account_delete_dialog_description">Восстановления нет.</string>
     <string name="settings_account_delete_dialog_title">Удалить Профиль?</string>
     <string name="settings_app_info">Информация</string>
     <string name="settings_language">Язык</string>

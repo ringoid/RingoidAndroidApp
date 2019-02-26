@@ -40,7 +40,8 @@ class DeleteUserProfileImageActivity : SimpleBaseDialogActivity(), IDeleteUserPr
     // --------------------------------------------------------------------------------------------
     private fun createDeleteUserImageDialogIfNeed() {
         if (deleteUserImageDialog == null) {
-            deleteUserImageDialog = DeleteUserProfileImageDialog.newInstance()
+            val needWarn = intent.extras?.getString("needWarn")?.toBoolean() ?: false
+            deleteUserImageDialog = DeleteUserProfileImageDialog.newInstance(needWarn)
                 .also { it.showNow(supportFragmentManager, DeleteUserProfileImageDialog.TAG) }
         }
     }

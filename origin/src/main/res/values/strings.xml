@@ -16,6 +16,7 @@
     <string name="common_pull_to_refresh">Pull to refresh</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
+    <string name="common_uncancellable">There is no undo.</string>
 
     <string name="error_common">Oops! Something went wrong&#8230;</string>
     <string name="error_crop_image">Failed to load and prepare photo</string>
@@ -68,19 +69,19 @@
     <string name="login_year_of_birth_et_hint">Year of Birth</string>
 
     <!-- Profile screen -->
-    <string name="profile_button_delete_image">Delete Photo</string>
+    <string name="profile_button_delete_image">Delete photo</string>
     <string name="profile_dialog_image_another_button_add">Add another photo</string>
     <string name="profile_dialog_image_another_button_cancel">Discover new users</string>
     <string name="profile_dialog_image_another_title">What\'s next?</string>
     <string name="profile_dialog_image_blocked_button">Terms of Service</string>
     <string name="profile_dialog_image_blocked_title">Your photo was deleted for violating Terms of Service</string>
+    <string name="profile_dialog_image_delete_title">Delete Photo?</string>
     <string name="profile_empty_images">Add photo to\nsee who likes you</string>
     <string name="profile_empty_title">Profile</string>
 
     <!-- Settings screen -->
     <string name="settings_account_delete">Delete Account</string>
     <string name="settings_account_delete_info">If you don\'t use Ringoid for more than 16 days, your account will be automatically deleted.</string>
-    <string name="settings_account_delete_dialog_description">There is no undo.</string>
     <string name="settings_account_delete_dialog_title">Delete Account?</string>
     <string name="settings_app_info">Legal</string>
     <string name="settings_language">Language</string>
