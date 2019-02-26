@@ -165,7 +165,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.images, imagesAdapter::submitList)
         }
-        if (communicator(IBaseMainActivity::class.java)?.isNewUser() != true) {
+
+        showBeginStub()  // empty stub will be replaced after adapter's filled
+        if (communicator(IBaseMainActivity::class.java)?.isNewUser() == true) {
+            if (!cropImageAfterLogin) {
+                showEmptyStub(needShow = true)  // no images added on login
+            }
+        } else {
             vm.getUserImages()
         }
 
@@ -219,8 +225,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(imagePreloadListener)
         }
-
-        showEmptyStub(needShow = true)  // empty stub will be replaced on adapter's filled
     }
 
     override fun onDestroyView() {
@@ -268,6 +272,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     }
 
     // ------------------------------------------
+    private fun showBeginStub() {
+        val input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title)
+        showEmptyStub(needShow = true, input = input)
+    }
+
     private fun showEmptyStub(needShow: Boolean) {
         showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.profile_empty_images))
         ibtn_delete_image.changeVisibility(isVisible = !needShow)

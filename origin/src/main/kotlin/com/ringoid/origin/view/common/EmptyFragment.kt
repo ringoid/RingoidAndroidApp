@@ -14,7 +14,7 @@ class EmptyFragment : Fragment() {
 
     companion object {
         data class Input(@LayoutRes val layoutResId: Int = R.layout.fragment_empty_text,
-                         @StringRes val emptyTitleResId: Int = 0, @StringRes val emptyTextResId: Int)
+                         @StringRes val emptyTitleResId: Int = 0, @StringRes val emptyTextResId: Int = 0)
 
         const val TAG = "EmptyFragment_tag"
 
@@ -54,7 +54,9 @@ class EmptyFragment : Fragment() {
                 emptyTitleResId
                     .takeIf { it != 0 }
                     ?.let { findViewById<TextView>(R.id.tv_empty_title)?.setText(it) }
-                findViewById<TextView>(R.id.tv_empty)?.setText(emptyTextResId)
+                emptyTextResId
+                    .takeIf { it != 0 }
+                    ?.let { findViewById<TextView>(R.id.tv_empty)?.setText(it) }
             }
     }
 }
