@@ -46,6 +46,9 @@ object AppRes {
     var EMAIL_SUPPORT_MAIL_SUBJECT = ""
         private set
 
+    var REPORT_DESCRIPTION = ""
+        private set
+
     var WEB_URL_LICENSES: String = ""
         private set
     var WEB_URL_PRIVACY: String = ""
@@ -77,6 +80,8 @@ object AppRes {
             // ----------------------------------
             EMAIL_OFFICER_MAIL_SUBJECT = getString(R.string.settings_info_email_officer_mail_subject)
             EMAIL_SUPPORT_MAIL_SUBJECT = getString(R.string.settings_support_mail_subject)
+
+            REPORT_DESCRIPTION = getString(R.string.report_profile_dialog_description)
 
             WEB_URL_LICENSES = getString(R.string.web_url_licenses)
             WEB_URL_PRIVACY = getString(R.string.web_url_privacy)

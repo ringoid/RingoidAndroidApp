@@ -41,6 +41,8 @@
     <string name="report_profile_button_4">Торговля людьми, рабство, криминал</string>
     <string name="report_profile_button_5">Несовершеннолетние пользователи</string>
     <string name="report_profile_button_6">Оскорбления, Угрозы или Домогательства</string>
+    <string name="report_profile_dialog_description">Пожаловаться на: %s.</string>
+    <string name="report_profile_dialog_title">Пожаловаться и Заблокировать?</string>
 
     <string name="feed_explore_empty_title">Поиск</string>
     <string name="feed_footer_item_label">Новых больше нет</string>

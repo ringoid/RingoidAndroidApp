@@ -7,7 +7,9 @@ import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
+import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
@@ -42,48 +44,20 @@ class ReportBottomSheetDialog : SimpleBaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val excludedReasons = arguments?.getIntArray(BUNDLE_KEY_EXCLUDED_REASONS)
 
-        btn_report_0.apply {
-            clicks().compose(clickDebounce()).subscribe {
-                communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = 10)
-                close()
-            }
-        }.changeVisibility(isVisible = excludedReasons?.contains(10) != true)
-        btn_report_1.apply {
-            clicks().compose(clickDebounce()).subscribe {
-                communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = 20)
-                close()
-            }
-        }.changeVisibility(isVisible = excludedReasons?.contains(20) != true)
-        btn_report_2.apply {
-            clicks().compose(clickDebounce()).subscribe {
-                communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = 30)
-                close()
-            }
-        }.changeVisibility(isVisible = excludedReasons?.contains(30) != true)
-        btn_report_3.apply {
-            clicks().compose(clickDebounce()).subscribe {
-                communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = 40)
-                close()
-            }
-        }.changeVisibility(isVisible = excludedReasons?.contains(40) != true)
-        btn_report_4.apply {
-            clicks().compose(clickDebounce()).subscribe {
-                communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = 50)
-                close()
-            }
-        }.changeVisibility(isVisible = excludedReasons?.contains(50) != true)
-        btn_report_5.apply {
-            clicks().compose(clickDebounce()).subscribe {
-                communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = 60)
-                close()
-            }
-        }.changeVisibility(isVisible = excludedReasons?.contains(60) != true)
-        btn_report_6.apply {
-            clicks().compose(clickDebounce()).subscribe {
-                communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = 70)
-                close()
-            }
-        }.changeVisibility(isVisible = excludedReasons?.contains(70) != true)
+        btn_report_0.apply { clicks().compose(clickDebounce()).subscribe { onProfileReport(reason = 10) } }
+            .changeVisibility(isVisible = excludedReasons?.contains(10) != true)
+        btn_report_1.apply { clicks().compose(clickDebounce()).subscribe { onProfileReport(reason = 20) } }
+            .changeVisibility(isVisible = excludedReasons?.contains(20) != true)
+        btn_report_2.apply { clicks().compose(clickDebounce()).subscribe { onProfileReport(reason = 30) } }
+            .changeVisibility(isVisible = excludedReasons?.contains(30) != true)
+        btn_report_3.apply { clicks().compose(clickDebounce()).subscribe { onProfileReport(reason = 40) } }
+            .changeVisibility(isVisible = excludedReasons?.contains(40) != true)
+        btn_report_4.apply { clicks().compose(clickDebounce()).subscribe { onProfileReport(reason = 50) } }
+            .changeVisibility(isVisible = excludedReasons?.contains(50) != true)
+        btn_report_5.apply { clicks().compose(clickDebounce()).subscribe { onProfileReport(reason = 60) } }
+            .changeVisibility(isVisible = excludedReasons?.contains(60) != true)
+        btn_report_6.apply { clicks().compose(clickDebounce()).subscribe { onProfileReport(reason = 70) } }
+            .changeVisibility(isVisible = excludedReasons?.contains(70) != true)
     }
 
     override fun onCancel(dialog: DialogInterface) {
@@ -95,4 +69,29 @@ class ReportBottomSheetDialog : SimpleBaseDialogFragment() {
     private fun close() {
         communicator(IBlockBottomSheetActivity::class.java)?.onClose()
     }
+
+    // ------------------------------------------
+    private fun onProfileReport(reason: Int) {
+        fun reportProfileAndClose() {
+            communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = reason)
+            close()
+        }
+
+        Dialogs.showTextDialog(activity, titleResId = R.string.report_profile_dialog_title,
+            description = String.format(AppRes.REPORT_DESCRIPTION, getReportReasonString(reason)),
+            positiveBtnLabelResId = R.string.block_profile_button_report, negativeBtnLabelResId = R.string.button_cancel,
+            positiveListener = { dialog, _ -> dialog.dismiss() ; reportProfileAndClose() })
+    }
+
+    private fun getReportReasonString(reason: Int): String =
+        when (reason) {
+            10 -> resources.getString(R.string.report_profile_button_0)
+            20 -> resources.getString(R.string.report_profile_button_1)
+            30 -> resources.getString(R.string.report_profile_button_2)
+            40 -> resources.getString(R.string.report_profile_button_3)
+            50 -> resources.getString(R.string.report_profile_button_4)
+            60 -> resources.getString(R.string.report_profile_button_5)
+            70 -> resources.getString(R.string.report_profile_button_6)
+            else -> ""
+        }
 }

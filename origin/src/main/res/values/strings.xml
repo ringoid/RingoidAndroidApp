@@ -46,6 +46,8 @@
     <string name="report_profile_button_4">Human and sex trafficking, Criminal activity</string>
     <string name="report_profile_button_5">Underage user, Child exploitation</string>
     <string name="report_profile_button_6">Harassment or threats, Abuse</string>
+    <string name="report_profile_dialog_description">You want to report: %s.</string>
+    <string name="report_profile_dialog_title">Report &#38; Block?</string>
 
     <string name="feed_explore_empty_title">Discover</string>
     <string name="feed_footer_item_label">No more new</string>
