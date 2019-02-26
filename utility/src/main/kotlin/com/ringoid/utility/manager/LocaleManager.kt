@@ -41,7 +41,7 @@ class LocaleManager(context: Context) {
 
     /* API */
     // --------------------------------------------------------------------------------------------
-    fun getLang(): String = prefs.getString(LANG_KEY, LANG_EN) ?: LANG_EN
+    fun getLang(): String = prefs.getString(LANG_KEY, null) ?: Locale.getDefault().language
 
     fun setLocale(context: Context) {
         update(context, getLang())
