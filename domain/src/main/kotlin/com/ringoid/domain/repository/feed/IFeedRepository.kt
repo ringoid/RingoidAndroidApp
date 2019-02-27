@@ -27,9 +27,6 @@ interface IFeedRepository {
     val badgeLikes: PublishSubject<Boolean>
     val badgeMatches: PublishSubject<Boolean>
     val badgeMessenger: PublishSubject<Boolean>
-    val feedLikes: PublishSubject<List<FeedItem>>
-    val feedMatches: PublishSubject<List<FeedItem>>
-    val feedMessages: PublishSubject<List<FeedItem>>
     val lmmChanged: PublishSubject<Boolean>
 
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
