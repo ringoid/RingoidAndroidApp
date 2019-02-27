@@ -2,6 +2,7 @@
 <resources>
     <item name="fab" type="id"/>
     <item name="iv_image" type="id"/>
+    <item name="iv_end_item" type="id"/>
     <item name="tv_empty" type="id"/>
     <item name="tv_empty_title" type="id"/>
     <item name="tv_end_item" type="id"/>

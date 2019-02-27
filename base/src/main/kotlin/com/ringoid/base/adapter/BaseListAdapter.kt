@@ -14,7 +14,7 @@ abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: B
 
     protected abstract fun instantiateViewHolder(view: View): VH
     protected abstract fun instantiateHeaderViewHolder(view: View): VH  // default header and footer viewHolders bind nothing
-    private fun instantiateFooterViewHolder(view: View): VH = instantiateHeaderViewHolder(view)  // so use same ViewHolder for stubs
+    protected abstract fun instantiateFooterViewHolder(view: View): VH
     private fun instantiateLoadingViewHolder(view: View): VH = instantiateHeaderViewHolder(view)  // same for loading viewHolder
     private fun instantiateErrorViewHolder(view: View): VH = instantiateHeaderViewHolder(view)  // same for error viewHolder
 

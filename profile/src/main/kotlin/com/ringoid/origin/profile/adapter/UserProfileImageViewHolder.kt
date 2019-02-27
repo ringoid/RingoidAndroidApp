@@ -27,3 +27,10 @@ class HeaderUserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHol
         // no-op
     }
 }
+
+class FooterUserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(view) {
+
+    override fun bind(model: UserImage) {
+        // no-op
+    }
+}

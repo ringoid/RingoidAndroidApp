@@ -30,6 +30,7 @@ class ProfileImageAdapter(private val context: Context)
         }
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderProfileImageViewHolder(view)
+    override fun instantiateFooterViewHolder(view: View) = FooterProfileImageViewHolder(view)
 
     override fun onBindViewHolder(holder: BaseProfileImageViewHolder, position: Int) {
         holder.setOnClickListener(getOnItemClickListener(holder))

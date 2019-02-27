@@ -27,6 +27,7 @@ class UserProfileImageAdapter(private val context: Context)
         UserProfileImageViewHolder(view)
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderUserProfileImageViewHolder(view)
+    override fun instantiateFooterViewHolder(view: View) = FooterUserProfileImageViewHolder(view)  // so use same ViewHolder for stubs
 
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 

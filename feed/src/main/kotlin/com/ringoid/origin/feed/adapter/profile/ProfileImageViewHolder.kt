@@ -55,3 +55,10 @@ class HeaderProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view
         // no-op
     }
 }
+
+class FooterProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
+
+    override fun bind(model: ProfileImageVO) {
+        // no-op
+    }
+}

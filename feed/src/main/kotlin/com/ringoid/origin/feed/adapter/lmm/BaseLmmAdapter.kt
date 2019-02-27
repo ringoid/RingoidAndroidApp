@@ -33,6 +33,7 @@ abstract class BaseLmmAdapter(headerRows: Int = 1) : BaseFeedAdapter<FeedItem, O
         LmmViewHolder(view, viewPool = imagesViewPool)
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderLmmViewHolder(view)
+    override fun instantiateFooterViewHolder(view: View) = FooterLmmViewHolder(view)
 
     // ------------------------------------------
     override fun getStubItem(): FeedItem = EmptyFeedItem

@@ -36,3 +36,14 @@ class HeaderSettingsLangViewHolder(view: View): SettingsLangViewHolder(view) {
         // no-op
     }
 }
+
+class FooterSettingsLangViewHolder(view: View): SettingsLangViewHolder(view) {
+
+    override fun bind(model: LanguageItemVO) {
+        // no-op
+    }
+
+    override fun bind(model: LanguageItemVO, payloads: List<Any>) {
+        // no-op
+    }
+}

@@ -16,6 +16,8 @@ object AppRes {
         private set
     var ICON_SIZE_36: Int = -1
         private set
+    var FEED_ITEM_FOOTER_LABEL_BOTTOM: Int = -1
+        private set
     var FEED_IMAGE_HEIGHT: Int = -1
         private set
     var FEED_ITEM_BIAS_BTN_BOTTOM: Int = -1
@@ -65,6 +67,7 @@ object AppRes {
             BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
             BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT = getDimensionPixelSize(R.dimen.dialog_bottom_sheet_block_height)
             ICON_SIZE_36 = getDimensionPixelSize(R.dimen.std_icon_36)
+            FEED_ITEM_FOOTER_LABEL_BOTTOM = getDimensionPixelSize(R.dimen.std_margin_16)
             FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
             FEED_ITEM_BIAS_BTN_BOTTOM = (FEED_IMAGE_HEIGHT * 0.34f).toInt()
             FEED_ITEM_BIAS_BTN_TOP = (FEED_ITEM_BIAS_BTN_BOTTOM - ICON_SIZE_36 * 0.6f).toInt()

@@ -19,6 +19,7 @@ class FeedAdapter : BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>>(Prof
         }
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderFeedViewHolder(view)
+    override fun instantiateFooterViewHolder(view: View) = FooterFeedViewHolder(view)
 
     // ------------------------------------------
     override fun getStubItem(): Profile = EmptyProfile

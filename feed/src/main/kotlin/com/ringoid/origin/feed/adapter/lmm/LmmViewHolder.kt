@@ -5,11 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
-import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
+import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.utility.changeVisibility
+import kotlinx.android.synthetic.main.rv_item_lmm_footer.view.*
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
@@ -83,5 +81,30 @@ class HeaderLmmViewHolder(view: View) : OriginFeedViewHolder<FeedItem>(view) {
 
     override fun bind(model: FeedItem) {
         // no-op
+    }
+}
+
+class FooterLmmViewHolder(view: View) : OriginFeedViewHolder<FeedItem>(view) {
+
+    override fun bind(model: FeedItem) {
+        showControls()
+    }
+
+    override fun bind(model: FeedItem, payloads: List<Any>) {
+        if (payloads.contains(FeedFooterViewHolderHideControls)) {
+            hideControls()
+        }
+        if (payloads.contains(FeedFooterViewHolderShowControls)) {
+            showControls()
+        }
+    }
+
+    // ------------------------------------------
+    private fun hideControls() {
+        itemView.iv_end_item.changeVisibility(isVisible = false)
+    }
+
+    private fun showControls() {
+        itemView.iv_end_item.changeVisibility(isVisible = true)
     }
 }

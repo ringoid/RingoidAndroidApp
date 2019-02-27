@@ -17,9 +17,10 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
-import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
+import kotlinx.android.synthetic.main.rv_item_feed_footer.view.*
+import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 interface IFeedViewHolder {
 
@@ -141,5 +142,30 @@ class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder<Profile>(view), IF
 
     override fun bind(model: Profile) {
         // no-op
+    }
+}
+
+class FooterFeedViewHolder(view: View) : OriginFeedViewHolder<Profile>(view), IFeedViewHolder {
+
+    override fun bind(model: Profile) {
+        showControls()
+    }
+
+    override fun bind(model: Profile, payloads: List<Any>) {
+        if (payloads.contains(FeedFooterViewHolderHideControls)) {
+            hideControls()
+        }
+        if (payloads.contains(FeedFooterViewHolderShowControls)) {
+            showControls()
+        }
+    }
+
+    // ------------------------------------------
+    private fun hideControls() {
+        itemView.tv_end_item.changeVisibility(isVisible = false)
+    }
+
+    private fun showControls() {
+        itemView.tv_end_item.changeVisibility(isVisible = true)
     }
 }

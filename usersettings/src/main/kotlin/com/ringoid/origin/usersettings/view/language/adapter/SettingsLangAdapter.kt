@@ -11,6 +11,7 @@ class SettingsLangAdapter : BaseListAdapter<LanguageItemVO, SettingsLangViewHold
     override fun instantiateViewHolder(view: View) = SettingsLangViewHolder(view)
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderSettingsLangViewHolder(view)
+    override fun instantiateFooterViewHolder(view: View) = FooterSettingsLangViewHolder(view)
 
     // ------------------------------------------
     override fun getStubItem(): LanguageItemVO = EmptyLanguageItemVO
