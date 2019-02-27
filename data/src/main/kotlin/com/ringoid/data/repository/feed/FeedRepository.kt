@@ -79,8 +79,6 @@ open class FeedRepository @Inject constructor(
             cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
                  .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime})")
                  .doOnSubscribe {
-                     // clear sent user messages because they will be restored with new Lmm
-                     sentMessagesLocal.deleteMessages()
                      badgeLikes.onNext(false)
                      badgeMatches.onNext(false)
                      badgeMessenger.onNext(false)
@@ -89,6 +87,8 @@ open class FeedRepository @Inject constructor(
                  .filterOutBlockedProfilesLmm()
                  .map { it.map() }
                  .doOnSuccess {
+                     // clear sent user messages because they will be restored with new Lmm
+                     sentMessagesLocal.deleteMessages()
                      badgeLikes.onNext(it.newLikesCount() > 0)
                      badgeMatches.onNext(it.newMatchesCount() > 0)
                      lmmChanged.onNext(it.containsNotSeenItems())  // have not seen items
