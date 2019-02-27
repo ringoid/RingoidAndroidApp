@@ -82,6 +82,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         profileImageAdapter.apply {
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
+            itemView.rv_items.post { itemView.rv_items.linearLayoutManager()?.scrollToPosition(0) }
         }
     }
 
