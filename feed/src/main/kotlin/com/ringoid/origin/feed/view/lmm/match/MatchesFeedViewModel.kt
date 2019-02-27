@@ -20,7 +20,7 @@ class MatchesFeedViewModel @Inject constructor(
 
     override fun isLmmEmpty(lmm: Lmm): Boolean = lmm.isMatchesEmpty()
 
-    override fun getLmmItems(lmm: Lmm): List<FeedItem> = lmm.matches
+    override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMatches
 
     override fun getFeedName(): String = "matches"
 }

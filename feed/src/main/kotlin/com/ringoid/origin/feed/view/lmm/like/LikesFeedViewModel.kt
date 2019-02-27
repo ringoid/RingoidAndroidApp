@@ -10,6 +10,7 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
+import io.reactivex.Observable
 import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(
@@ -22,7 +23,7 @@ class LikesFeedViewModel @Inject constructor(
 
     override fun isLmmEmpty(lmm: Lmm): Boolean = lmm.isLikesEmpty()
 
-    override fun getLmmItems(lmm: Lmm): List<FeedItem> = lmm.likes
+    override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedLikes
 
     override fun getFeedName(): String = "who_liked_me"
 

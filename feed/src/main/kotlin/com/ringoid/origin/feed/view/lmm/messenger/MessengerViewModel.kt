@@ -20,7 +20,7 @@ class MessengerViewModel @Inject constructor(
 
     override fun isLmmEmpty(lmm: Lmm): Boolean = lmm.isMessagesEmpty()
 
-    override fun getLmmItems(lmm: Lmm): List<FeedItem> = lmm.messages
+    override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMessages
 
     override fun getFeedName(): String = "messages"
 }

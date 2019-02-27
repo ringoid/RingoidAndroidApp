@@ -33,8 +33,15 @@ abstract class BaseLmmFeedViewModel(
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
     private var cachedFeed: List<FeedItem>? = null
 
+    init {
+        sourceFeed()
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ feed.value = it }, Timber::e)
+    }
+
     protected abstract fun isLmmEmpty(lmm: Lmm): Boolean
-    protected abstract fun getLmmItems(lmm: Lmm): List<FeedItem>
+    protected abstract fun sourceFeed(): Observable<List<FeedItem>>
 
     override fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
@@ -55,7 +62,7 @@ abstract class BaseLmmFeedViewModel(
                 }
             }
             .autoDisposable(this)
-            .subscribe({ feed.value = getLmmItems(it) }, Timber::e)
+            .subscribe({ Timber.v("Lmm has been loaded") }, Timber::e)
     }
 
     // --------------------------------------------------------------------------------------------
