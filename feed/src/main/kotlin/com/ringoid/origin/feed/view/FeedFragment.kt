@@ -16,6 +16,7 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
+import com.ringoid.origin.feed.R.id.rv_items
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -185,7 +186,10 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            refreshes().compose(clickDebounce()).subscribe { vm.onRefresh() ; offsetScrollStrats = getOffsetScrollStrategies() }
+            refreshes().compose(clickDebounce()).subscribe {
+                offsetScrollStrats = getOffsetScrollStrategies()
+                vm.onRefresh()
+            }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
@@ -218,6 +222,8 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     // --------------------------------------------------------------------------------------------
     private lateinit var offsetScrollStrats: List<OffsetScrollStrategy>
 
+    protected fun getStrategyByTag(tag: String): OffsetScrollStrategy? = offsetScrollStrats.find { it.tag == tag }
+
     protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
         listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
@@ -226,30 +232,33 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
 
     protected fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
         offsetScrollStrats.forEach {
-            view.post {  // avoid change rv during layout, leading to crash
-                when (it.type) {
-                    OffsetScrollStrategy.Type.BOTTOM -> {
-                        if (bottom - view.top < AppRes.FEED_ITEM_MID_BTN_BOTTOM) {
-                            if (bottom - view.top < it.deltaOffset) {
-                                if (!it.isHiddenAtAndSync(position)) {
-                                    feedAdapter.notifyItemChanged(position, it.hide)
-                                }
-                            } else {
-                                if (!it.isShownAtAndSync(position)) {
-                                    feedAdapter.notifyItemChanged(position, it.show)
+            if (it.isEnabledForPosition(position)) {
+                view.post {
+                    // avoid change rv during layout, leading to crash
+                    when (it.type) {
+                        OffsetScrollStrategy.Type.BOTTOM -> {
+                            if (bottom - view.top < AppRes.FEED_ITEM_MID_BTN_BOTTOM) {
+                                if (bottom - view.top < it.deltaOffset) {
+                                    if (!it.isHiddenAtAndSync(position)) {
+                                        feedAdapter.notifyItemChanged(position, it.hide)
+                                    }
+                                } else {
+                                    if (!it.isShownAtAndSync(position)) {
+                                        feedAdapter.notifyItemChanged(position, it.show)
+                                    }
                                 }
                             }
                         }
-                    }
-                    OffsetScrollStrategy.Type.TOP -> {
-                        if (view.top - top < AppRes.FEED_ITEM_MID_BTN_TOP) {
-                            if (top - view.top >= it.deltaOffset) {
-                                if (!it.isHiddenAtAndSync(position)) {
-                                    feedAdapter.notifyItemChanged(position, it.hide)
-                                }
-                            } else {
-                                if (!it.isShownAtAndSync(position)) {
-                                    feedAdapter.notifyItemChanged(position, it.show)
+                        OffsetScrollStrategy.Type.TOP -> {
+                            if (view.top - top < AppRes.FEED_ITEM_MID_BTN_TOP) {
+                                if (top - view.top >= it.deltaOffset) {
+                                    if (!it.isHiddenAtAndSync(position)) {
+                                        feedAdapter.notifyItemChanged(position, it.hide)
+                                    }
+                                } else {
+                                    if (!it.isShownAtAndSync(position)) {
+                                        feedAdapter.notifyItemChanged(position, it.show)
+                                    }
                                 }
                             }
                         }
