@@ -78,15 +78,19 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     }
 
     protected fun onClearState(mode: Int) {
-        feedAdapter.clear()
-        getEmptyStateInput(mode)?.let {
-            onIdleState()
+        fun showEmptyStub(input: EmptyFragment.Companion.Input? = null) {
             fl_empty_container.changeVisibility(isVisible = true)
-            val emptyFragment = EmptyFragment.newInstance(it)
+            val emptyFragment = EmptyFragment.newInstance(input)
             childFragmentManager
                 .beginTransaction()
                 .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
                 .commitNowAllowingStateLoss()
+        }
+
+        feedAdapter.clear()
+        getEmptyStateInput(mode)?.let {
+            onIdleState()
+            showEmptyStub(input = it)
         }
     }
 
