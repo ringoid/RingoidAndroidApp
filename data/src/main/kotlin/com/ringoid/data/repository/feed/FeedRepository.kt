@@ -13,6 +13,7 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
+import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
@@ -62,6 +63,9 @@ open class FeedRepository @Inject constructor(
     override val badgeLikes = PublishSubject.create<Boolean>()
     override val badgeMatches = PublishSubject.create<Boolean>()
     override val badgeMessenger = PublishSubject.create<Boolean>()
+    override val feedLikes = PublishSubject.create<List<FeedItem>>()
+    override val feedMatches = PublishSubject.create<List<FeedItem>>()
+    override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
 
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
@@ -91,6 +95,9 @@ open class FeedRepository @Inject constructor(
                      sentMessagesLocal.deleteMessages()
                      badgeLikes.onNext(it.newLikesCount() > 0)
                      badgeMatches.onNext(it.newMatchesCount() > 0)
+                     feedLikes.onNext(it.likes)
+                     feedMatches.onNext(it.matches)
+                     feedMessages.onNext(it.messages)
                      lmmChanged.onNext(it.containsNotSeenItems())  // have not seen items
                  }
                 .zipWith(messengerLocal.countChatMessages(),  // old total messages count
