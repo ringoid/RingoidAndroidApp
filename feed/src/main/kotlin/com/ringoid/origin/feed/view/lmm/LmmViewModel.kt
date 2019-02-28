@@ -43,6 +43,14 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase, app: Ap
             .subscribe({ badgeMessenger.value = it }, Timber::e)
     }
 
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onFreshCreate() {
+        super.onFreshCreate()
+        getLmm()
+    }
+
+    // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
         Timber.d("Received bus event: $event")
