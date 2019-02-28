@@ -65,6 +65,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
         super.onViewStateChange(newState)
         when (newState) {
+            is ViewState.CLEAR -> {
+                onIdleState()
+                when (newState.mode) {
+                    ViewState.CLEAR.MODE_EMPTY_DATA -> showEmptyStub(true)
+                    ViewState.CLEAR.MODE_NEED_REFRESH -> showErrorStub(true)
+                }
+            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)

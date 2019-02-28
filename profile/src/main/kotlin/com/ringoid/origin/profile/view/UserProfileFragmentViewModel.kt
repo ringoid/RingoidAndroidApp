@@ -73,12 +73,15 @@ class UserProfileFragmentViewModel @Inject constructor(
 
         getUserImagesUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .flatMap {
                 Observable.fromIterable(it)
                     .filter { !it.isBlocked }
                     .toList()
+            }
+            .doOnSuccess {
+                viewState.value = if (it.isEmpty()) ViewState.CLEAR(ViewState.CLEAR.MODE_EMPTY_DATA)
+                                  else ViewState.IDLE
             }
             .autoDisposable(this)
             .subscribe({ images.value = it.apply { sortBy { it.sortPosition } } }, Timber::e)
