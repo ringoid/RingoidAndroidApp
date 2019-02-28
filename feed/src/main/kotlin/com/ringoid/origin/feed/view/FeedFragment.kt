@@ -52,11 +52,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
-        fun onIdleState() {
-            fl_empty_container.changeVisibility(isVisible = false, soft = true)
-            swipe_refresh_layout.isRefreshing = false
-        }
-
         fun onErrorState() {
             onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
         }
@@ -84,7 +79,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
     }
 
-    protected fun onClearState(mode: Int) {
+    private fun onClearState(mode: Int) {
         fun showEmptyStub(input: EmptyFragment.Companion.Input? = null) {
             fl_empty_container.changeVisibility(isVisible = true)
             val emptyFragment = EmptyFragment.newInstance(input)
@@ -94,13 +89,16 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 .commitNowAllowingStateLoss()
         }
 
-        fl_empty_container.changeVisibility(isVisible = false, soft = true)
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
-
         getEmptyStateInput(mode)?.let {
-            swipe_refresh_layout.isRefreshing = false
+            onIdleState()
             showEmptyStub(input = it)
         }
+    }
+
+    private fun onIdleState() {
+        fl_empty_container.changeVisibility(isVisible = false, soft = true)
+        swipe_refresh_layout.isRefreshing = false
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
