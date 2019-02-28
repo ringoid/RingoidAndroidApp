@@ -21,7 +21,7 @@ class LikesFeedViewModel @Inject constructor(
 
     private val numberOfLikes = mutableMapOf<String, MutableSet<String>>()
 
-    override fun isLmmEmpty(lmm: Lmm): Boolean = lmm.isLikesEmpty()
+    override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
 
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedLikes
 

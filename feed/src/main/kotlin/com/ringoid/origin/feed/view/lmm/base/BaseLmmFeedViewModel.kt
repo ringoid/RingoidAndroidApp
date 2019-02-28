@@ -36,15 +36,12 @@ abstract class BaseLmmFeedViewModel(
     init {
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
-                                  else ViewState.IDLE
-            }
+            .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .autoDisposable(this)
-            .subscribe({ feed.value = it }, Timber::e)
+            .subscribe({}, Timber::e)
     }
 
-    protected abstract fun isLmmEmpty(lmm: Lmm): Boolean
+    protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
 
     override fun getFeed() {
@@ -63,6 +60,19 @@ abstract class BaseLmmFeedViewModel(
             }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
+    }
+
+    fun applyCachedFeed(lmm: Lmm?) {
+        lmm?.let { setLmmItems(getFeedFromLmm(it)) }
+    }
+
+    private fun setLmmItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
+        if (items.isEmpty()) {
+            viewState.value = ViewState.CLEAR(mode = clearMode)
+        } else {
+            feed.value = items
+            viewState.value = ViewState.IDLE
+        }
     }
 
     // --------------------------------------------------------------------------------------------

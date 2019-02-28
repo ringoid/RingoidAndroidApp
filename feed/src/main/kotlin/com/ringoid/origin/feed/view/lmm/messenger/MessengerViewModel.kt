@@ -18,7 +18,7 @@ class MessengerViewModel @Inject constructor(
     countUserImagesUseCase: CountUserImagesUseCase, dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
     : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, dropLmmChangedStatusUseCase, app) {
 
-    override fun isLmmEmpty(lmm: Lmm): Boolean = lmm.isMessagesEmpty()
+    override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.messages
 
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMessages
 

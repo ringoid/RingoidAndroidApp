@@ -61,14 +61,6 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
         }
     }
 
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        communicator(ILmmFragment::class.java)?.accessViewModel()
-            ?.cachedLmm?.likes?.let { feedAdapter.submitList(it) }
-    }
-
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
     override fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =

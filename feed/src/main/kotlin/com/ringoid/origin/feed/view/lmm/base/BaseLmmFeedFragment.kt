@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
-import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
@@ -113,13 +112,15 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
                     ?.let { activity?.debugToast("Repeat after delay exceeded time threshold") }
             }
         }
-        onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
         /**
          * Parent's [Fragment.onActivityCreated] is called before this method on any child [Fragment],
          * so it's safe to access parent's [ViewModel] here, because it's already initialized.
          */
         communicator(ILmmFragment::class.java)?.accessViewModel()
-            ?.let { viewLifecycleOwner.observe(it.listScrolls, ::scrollListToPosition) }
+            ?.let {
+                viewLifecycleOwner.observe(it.listScrolls, ::scrollListToPosition)
+                vm.applyCachedFeed(it.cachedLmm)
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

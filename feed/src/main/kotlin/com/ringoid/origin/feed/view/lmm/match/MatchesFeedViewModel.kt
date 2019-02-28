@@ -18,7 +18,7 @@ class MatchesFeedViewModel @Inject constructor(
     countUserImagesUseCase: CountUserImagesUseCase, dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
     : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase, dropLmmChangedStatusUseCase, app) {
 
-    override fun isLmmEmpty(lmm: Lmm): Boolean = lmm.isMatchesEmpty()
+    override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.matches
 
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMatches
 
