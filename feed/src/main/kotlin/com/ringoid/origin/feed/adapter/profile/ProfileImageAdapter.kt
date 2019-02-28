@@ -25,20 +25,20 @@ class ProfileImageAdapter(private val context: Context)
     override fun getLayoutId(): Int = R.layout.rv_item_profile_image
 
     override fun instantiateViewHolder(view: View): BaseProfileImageViewHolder =
-        ProfileImageViewHolder(view, isLikeEnabled).also { vh ->
-            vh.itemView.ibtn_like.clicks().compose(clickDebounce()).subscribe { getOnLikeButtonClickListener(vh).onClick(vh.itemView.ibtn_like) }
-        }
+        ProfileImageViewHolder(view, isLikeEnabled).also { initLikeButtonClickListener(it) }
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderProfileImageViewHolder(view)
     override fun instantiateFooterViewHolder(view: View) = FooterProfileImageViewHolder(view)
 
     override fun onBindViewHolder(holder: BaseProfileImageViewHolder, position: Int) {
         holder.setOnClickListener(getOnItemClickListener(holder))
+        initLikeButtonClickListener(holder)
         super.onBindViewHolder(holder, position)
     }
 
     override fun onBindViewHolder(holder: BaseProfileImageViewHolder, position: Int, payloads: List<Any>) {
         holder.setOnClickListener(getOnItemClickListener(holder))
+        initLikeButtonClickListener(holder)
         super.onBindViewHolder(holder, position, payloads)
     }
 
@@ -56,22 +56,18 @@ class ProfileImageAdapter(private val context: Context)
             options = RequestOptions().centerCrop())
 
     // ------------------------------------------
+    @Suppress("CheckResult")
+    private fun initLikeButtonClickListener(vh: BaseProfileImageViewHolder) {
+        vh.itemView.ibtn_like.clicks().compose(clickDebounce())
+            .subscribe { getOnLikeButtonClickListener(vh).onClick(vh.itemView.ibtn_like) }
+    }
+
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
         if (!isLikeEnabled) {
             super.getOnItemClickListener(vh)
         } else {
-            val clickListener = wrapOnItemClickListener(vh, getLikeClickListener(vh, alwaysLiked = true))
-//        vh.itemView.setOnTouchListener { _, event ->
-//            if (event.action == MotionEvent.ACTION_DOWN) {
-//                vh.itemView.iv_like_anim.apply {
-//                    x = event.x - width
-//                    y = event.y - height
-//                }
-//            }
-//            false
-//        }
-        clickListener
-    }
+            wrapOnItemClickListener(vh, getLikeClickListener(vh, alwaysLiked = true))
+        }
 
     private fun getOnLikeButtonClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
         wrapOnItemClickListener(vh) { model: ProfileImageVO, position: Int ->
