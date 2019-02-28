@@ -58,6 +58,13 @@ class UserProfileFragmentViewModel @Inject constructor(
             .subscribe({ imageDeleted.value = it }, Timber::e)
     }
 
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onFreshCreate() {
+        super.onFreshCreate()
+        onRefresh()
+    }
+
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {

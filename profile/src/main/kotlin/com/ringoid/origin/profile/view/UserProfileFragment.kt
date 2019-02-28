@@ -174,13 +174,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
-        if (communicator(IBaseMainActivity::class.java)?.isNewUser() == true) {
-            if (!cropImageAfterLogin) {
-                showEmptyStub(needShow = true)  // no images added on login
-            }
-        } else {
-            vm.onRefresh()
-        }
 
         globalImagePreviewReceiver()
             ?.doOnError(::onCropFailed)
