@@ -64,11 +64,27 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onAttach")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onCreateView")
         return inflater.inflate(getLayoutId(), container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onViewCreated")
     }
 
     /**
@@ -82,6 +98,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
      */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onActivityCreated")
         isActivityCreated = true
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // tie observer to view's lifecycle rather than Fragment's one
@@ -96,15 +114,39 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     override fun onResume() {
         isOnSaveInstanceState = false
         super.onResume()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onPause")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         isOnSaveInstanceState = true
         super.onSaveInstanceState(outState)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onSaveInstanceState")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onDestroyView")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         vm.unsubscribeFromBusEvents()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onDestroy")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onDetach")
     }
 }

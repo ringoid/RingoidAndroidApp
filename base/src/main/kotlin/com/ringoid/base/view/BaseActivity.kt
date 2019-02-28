@@ -61,6 +61,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     protected open fun onBeforeCreate() {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onBeforeCreate")
         app.localeManager.setLocale(this)
         LocaleManager.resetActivityTitle(this)
         spm.getThemeResId().takeIf { it != 0 }?.let { setTheme(it) }
@@ -84,9 +86,35 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
             ?: run { vm.onFreshCreate() }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onPause")
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(BUNDLE_KEY_CURRENT_RESULT_CODE, currentResult)
         super.onSaveInstanceState(outState)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onSaveInstanceState")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onStop")
     }
 
     override fun onDestroy() {
