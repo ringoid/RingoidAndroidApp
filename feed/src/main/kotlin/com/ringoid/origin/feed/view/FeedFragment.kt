@@ -89,7 +89,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 .commitNowAllowingStateLoss()
         }
 
-        feedAdapter.clear()
+        feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
         getEmptyStateInput(mode)?.let {
             onIdleState()
             showEmptyStub(input = it)
