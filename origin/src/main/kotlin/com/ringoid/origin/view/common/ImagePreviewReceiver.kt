@@ -25,13 +25,13 @@ class ImagePreviewReceiver(private val applicationContext: Context, private val 
                 override fun onCropFailed(e: Throwable) {
                     Timber.e(e, "Image crop has failed")
                     lastCropError = e
-                    callOnError(e)
+                    onError?.invoke(e)
                 }
 
                 override fun onCropSuccess(croppedUri: Uri) {
                     Timber.v("Image cropping has succeeded, uri: $croppedUri")
                     lastCropResult = croppedUri
-                    callOnSuccess(croppedUri)
+                    onSuccess?.invoke(croppedUri)
                 }
             })
             register(applicationContext)
