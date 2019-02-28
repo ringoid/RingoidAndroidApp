@@ -2,6 +2,7 @@ package com.ringoid.data.local.database.di
 
 import android.content.Context
 import androidx.room.Room
+import com.ringoid.data.local.database.BlockProfilesUserRingoidDatabase
 import com.ringoid.data.local.database.RingoidDatabase
 import com.ringoid.data.local.database.UserRingoidDatabase
 import com.ringoid.data.local.database.dao.feed.FeedDao
@@ -31,6 +32,12 @@ class DatabaseModule {
             .build()
 
     @Provides @Singleton
+    fun provideBlockProfilesUserDatabase(applicationContext: Context): BlockProfilesUserRingoidDatabase =
+        Room.databaseBuilder(applicationContext, BlockProfilesUserRingoidDatabase::class.java, BlockProfilesUserRingoidDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides @Singleton
     fun provideFeedDao(database: RingoidDatabase): FeedDao = database.feedDao()
 
     @Provides @Singleton @Named("feed")
@@ -55,5 +62,5 @@ class DatabaseModule {
     fun provideAlreadySeenUserFeedDao(database: UserRingoidDatabase): UserFeedDao = database.userFeedDao()
 
     @Provides @Singleton @Named("block")
-    fun provideBlockedUserFeedDao(database: UserRingoidDatabase): UserFeedDao = database.userFeedDao()
+    fun provideBlockedUserFeedDao(database: BlockProfilesUserRingoidDatabase): UserFeedDao = database.userFeedDao()
 }

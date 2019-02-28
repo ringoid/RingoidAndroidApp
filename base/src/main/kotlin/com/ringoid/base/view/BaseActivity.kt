@@ -100,6 +100,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     // --------------------------------------------------------------------------------------------
     fun setResultExposed(resultCode: Int, data: Intent? = null) {
         currentResult = resultCode
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("ResC=$resultCode, data=$data [${data?.extras}]")
         setResult(resultCode, data)
     }

@@ -43,6 +43,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("View State transition to: ${newState.javaClass.simpleName}")
         // override in subclasses
     }
@@ -53,6 +54,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     open fun onTabTransaction(payload: String?) {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onTabTransaction, payload: $payload")
         // override in subclasses
     }
