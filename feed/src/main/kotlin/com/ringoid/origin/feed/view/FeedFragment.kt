@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.eventbus.Bus.post
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.model.feed.IProfile
@@ -116,7 +117,8 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter().apply {
-//            onInsertItemsListener = { trackVisibility() }
+//            onFeedItemInsertListener = { trackVisibility() }
+//            onFeedItemRemoveListener = { trackScrollOffset() }
             settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {
@@ -270,21 +272,27 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
 
     private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-            fun processItemView(position: Int, view: View?) {
-                view?.let {
-                    val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
-                    processItemViewControlVisibility(position, view, AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT, bottom)
-                }
-            }
-
             super.onScrolled(rv, dx, dy)
-            rv.linearLayoutManager()?.let {
-                val from = it.findFirstVisibleItemPosition()
-                val to = it.findLastVisibleItemPosition()
-                for (i in from..to) processItemView(i, it.findViewByPosition(i))
-            }
+            trackScrollOffset(rv)
         }
     }
+
+    private fun processItemView(position: Int, view: View?) {
+        view?.let {
+            val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
+            processItemViewControlVisibility(position, view, AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT, bottom)
+        }
+    }
+
+    private fun trackScrollOffset(rv: RecyclerView) {
+        rv.linearLayoutManager()?.let {
+            val from = it.findFirstVisibleItemPosition()
+            val to = it.findLastVisibleItemPosition()
+            for (i in from..to) processItemView(i, it.findViewByPosition(i))
+        }
+    }
+
+    private fun trackScrollOffset() = rv_items?.let { it.itemAnimator?.isRunning { it.post { trackScrollOffset(it) } } }
 
     // ------------------------------------------
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
