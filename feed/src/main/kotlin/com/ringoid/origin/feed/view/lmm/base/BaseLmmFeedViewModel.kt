@@ -36,6 +36,10 @@ abstract class BaseLmmFeedViewModel(
     init {
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext {
+                viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
+                                  else ViewState.IDLE
+            }
             .autoDisposable(this)
             .subscribe({ feed.value = it }, Timber::e)
     }
@@ -48,10 +52,6 @@ abstract class BaseLmmFeedViewModel(
 
         getLmmUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess {
-                viewState.value = if (isLmmEmpty(it)) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
-                                  else ViewState.IDLE
-            }
             .doOnError {
                 if (it is ThresholdExceededException) {
                     oneShot.value = LiveEvent(it)
@@ -62,7 +62,7 @@ abstract class BaseLmmFeedViewModel(
                 }
             }
             .autoDisposable(this)
-            .subscribe({ Timber.v("Lmm has been loaded") }, Timber::e)
+            .subscribe({}, Timber::e)
     }
 
     // --------------------------------------------------------------------------------------------
