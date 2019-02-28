@@ -117,8 +117,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter().apply {
-//            onFeedItemInsertListener = { trackVisibility() }
-//            onFeedItemRemoveListener = { trackScrollOffset() }
             settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {
@@ -292,8 +290,6 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
         }
     }
 
-    private fun trackScrollOffset() = rv_items?.let { it.itemAnimator?.isRunning { it.post { trackScrollOffset(it) } } }
-
     // ------------------------------------------
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
@@ -326,6 +322,4 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             feedTrackingBus.postViewEvent(range)
         }
     }
-
-    protected fun trackVisibility() = rv_items?.post { rv_items?.let { trackVisibility(it) } }
 }
