@@ -111,6 +111,12 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         savedInstanceState ?: run { vm.onFreshCreate() }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onStart")
+    }
+
     override fun onResume() {
         isOnSaveInstanceState = false
         super.onResume()
