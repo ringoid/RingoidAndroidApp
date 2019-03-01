@@ -140,10 +140,8 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 }
 
                 val position = data.extras!!.getString("position", "0").toInt()
-                communicator(ILmmFragment::class.java)?.apply {
-                    showTabs(isVisible = true)
-                    scrollToTopOfItemAtPosition(position, offset = AppRes.BUTTON_HEIGHT)
-                }
+                communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
+                scrollToTopOfItemAtPosition(position, offset = AppRes.BUTTON_HEIGHT)
 
                 if (resultCode == Activity.RESULT_OK) {
                     val imageId = data.extras!!.getString("imageId")!!
