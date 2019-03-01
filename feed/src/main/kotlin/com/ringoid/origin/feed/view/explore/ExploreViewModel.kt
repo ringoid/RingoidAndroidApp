@@ -74,23 +74,20 @@ class ExploreViewModel @Inject constructor(
     }
 
     private fun getMoreFeed() {
-        actionObjectPool.triggerSource()
-            .flatMap {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
-                getNewFacesUseCase.source(params = prepareFeedParams())
-                    .doOnSubscribe { viewState.value = ViewState.PAGING }
-                    .doOnSuccess { viewState.value = ViewState.IDLE }
-                    .doOnError {
-                        if (it is ThresholdExceededException) {
-                            feed.value = Feed(profiles = emptyList())
-                        } else {
-                            viewState.value = ViewState.ERROR(it)
-                        }
-                    }
-                    .doFinally { isLoadingMore = false }
+        getNewFacesUseCase.source(params = prepareFeedParams())
+            .doOnSubscribe { viewState.value = ViewState.PAGING }
+            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnError {
+                if (it is ThresholdExceededException) {
+                    feed.value = Feed(profiles = emptyList())
+                } else {
+                    viewState.value = ViewState.ERROR(it)
+                }
             }
+            .doFinally { isLoadingMore = false }
             .autoDisposable(this)
             .subscribe({ feed.value = it }, Timber::e)
     }
