@@ -69,8 +69,11 @@ open class FeedRepository @Inject constructor(
     override val lmmChanged = PublishSubject.create<Boolean>()
 
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
+        aObjPool.triggerSource().flatMap { getNewFacesOnly(resolution, limit, lastActionTime = it) }
+
+    private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long): Single<Feed> =
         spm.accessSingle {
-            cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime = aObjPool.lastActionTime)
+            cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
                  .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime})")
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
@@ -79,8 +82,11 @@ open class FeedRepository @Inject constructor(
         }
 
     override fun getLmm(resolution: ImageResolution): Single<Lmm> =
+        aObjPool.triggerSource().flatMap { getLmmOnly(resolution, lastActionTime = it) }
+
+    private fun getLmmOnly(resolution: ImageResolution, lastActionTime: Long): Single<Lmm> =
         spm.accessSingle {
-            cloud.getLmm(it.accessToken, resolution, lastActionTime = aObjPool.lastActionTime)
+            cloud.getLmm(it.accessToken, resolution, lastActionTime)
                  .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime})")
                  .doOnSubscribe {
                      badgeLikes.onNext(false)
