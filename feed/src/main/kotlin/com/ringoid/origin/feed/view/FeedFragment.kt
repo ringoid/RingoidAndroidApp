@@ -26,11 +26,8 @@ import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
-import com.ringoid.utility.communicator
-import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -120,6 +117,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {
+                    showScrollFab(isVisible = false)
                     notifyItemChanged(position, FeedViewHolderHideControls)
                 }
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
@@ -142,6 +140,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
                 val position = data.extras!!.getString("position", "0").toInt()
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                 scrollToTopOfItemAtPosition(position, offset = AppRes.BUTTON_HEIGHT)
+                showScrollFab(isVisible = true, restoreVisibility = true)
 
                 if (resultCode == Activity.RESULT_OK) {
                     val imageId = data.extras!!.getString("imageId")!!
@@ -191,7 +190,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
-            scroll_fab.changeVisibility(isVisible = false)
+            showScrollFab(isVisible = false)
             scrollToTopOfItemAtPosition(position = 0)
         }
     }
@@ -214,6 +213,17 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             removeOnScrollListener(itemOffsetScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
         }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private var wasFabVisible: Boolean = false
+
+    protected fun showScrollFab(isVisible: Boolean, restoreVisibility: Boolean = false) {
+        val xIsVisible = if (restoreVisibility) {
+            wasFabVisible = scroll_fab.isVisible()
+            isVisible && wasFabVisible
+        } else isVisible
+        scroll_fab.changeVisibility(isVisible = xIsVisible)
     }
 
     /* Scroll listeners */

@@ -163,17 +163,17 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
             rv.linearLayoutManager()?.let {
                 if (dy > 0) {  // scroll list down - to see new items
                     if (scroll_fab.isVisible()) {
-                        scroll_fab.changeVisibility(isVisible = false)
+                        showScrollFab(isVisible = false)
                     }
                 } else {  // scroll list up - to see previous items
                     val offset = rv.computeVerticalScrollOffset()
                     if (scroll_fab.isVisible()) {
                         if (offset <= 0) {
-                            scroll_fab.changeVisibility(isVisible = false)
+                            showScrollFab(isVisible = false)
                         }
                     } else {
                         if (offset > 0) {
-                            scroll_fab.changeVisibility(isVisible = true)
+                            showScrollFab(isVisible = true)
                         }
                     }
                 }
