@@ -137,6 +137,12 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.v("onSaveInstanceState")
     }
 
+    override fun onStop() {
+        super.onStop()
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onStop")
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
