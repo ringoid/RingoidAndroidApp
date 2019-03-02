@@ -189,6 +189,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             val text = ChatInMemoryCache.getInputMessage(profileId = peerId)
             setText(text)
             setSelection(text?.length ?:0)
+            requestFocus()
         }
 
         dialog?.window?.showKeyboard()
