@@ -9,6 +9,7 @@ interface IDebugFeedRepository : IFeedRepository {
 
     fun debugGetNewFacesWithFailNTimesBeforeSuccessForPage(page: Int, failPage: Int, count: Int): Single<Feed>
     fun debugGetNewFacesWithRepeatForPageAfterDelay(page: Int, repeatPage: Int, delay: Long): Single<Feed>
+    fun debugGetNewFacesWithThresholdExceedOnAttempt(page: Int, failPage: Int): Single<Feed>
 
     fun dropFlags(): Completable
 }

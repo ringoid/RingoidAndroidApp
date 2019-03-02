@@ -9,6 +9,7 @@ import com.ringoid.data.remote.model.feed.ProfileEntity
 import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.feed.Feed
@@ -35,9 +36,11 @@ class DebugFeedRepository @Inject constructor(
     // --------------------------------------------------------------------------------------------
     private var requestAttempt: Int = 0
     private var requestRepeatAfterDelayAttempt: Int = 0
+    private var requestThresholdAttempt: Int = 0
 
     private fun getAndIncrementRequestAttempt(): Int = requestAttempt++
     private fun getAndIncrementRequestRepeatAfterDelayAttempt(): Int = requestRepeatAfterDelayAttempt++
+    private fun getAndIncrementRequestThresholdAttempt(): Int = requestThresholdAttempt++
 
     override fun debugGetNewFacesWithFailNTimesBeforeSuccessForPage(page: Int, failPage: Int, count: Int): Single<Feed> =
         if (page == failPage) {
@@ -72,11 +75,28 @@ class DebugFeedRepository @Inject constructor(
         .cacheNewFacesAsAlreadySeen()
         .map { it.map() }
 
+    override fun debugGetNewFacesWithThresholdExceedOnAttempt(page: Int, failPage: Int): Single<Feed> =
+        if (page == failPage) {
+            Single.just(DebugRepository.getFeed(page))
+                .flatMap {
+                    val i = getAndIncrementRequestThresholdAttempt()
+                    Single.just(it.convertToFeedResponse(repeatAfterSec = if (i < 2) BuildConfig.REQUEST_TIME_THRESHOLD / 2 + 10 else 0))
+                }
+        } else {
+            Single.just(DebugRepository.getFeed(page)).map { it.convertToFeedResponse() }
+        }
+        .handleError()
+        .filterOutAlreadySeenProfilesFeed()
+        .filterOutBlockedProfilesFeed()
+        .cacheNewFacesAsAlreadySeen()
+        .map { it.map() }
+
     override fun dropFlags(): Completable =
         Single.just(0L)
             .doOnSubscribe {
                 requestAttempt = 0
                 requestRepeatAfterDelayAttempt = 0
+                requestThresholdAttempt = 0
             }
             .ignoreElement()  // convert to Completable
 
