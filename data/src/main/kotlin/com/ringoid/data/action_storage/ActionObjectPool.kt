@@ -143,30 +143,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
     }
 
-    override fun triggerSource(): Single<Long> {
-        Timber.v("Start triggering source")
-        triggerInProgress.getAndIncrement()
-        return triggerSourceImpl()
-            .repeatWhen {
-                it.flatMap {
-                    if (triggerInProgress.decrementAndGet() > 0) {
-                        Timber.v("Repeat triggering source")
-                        Flowable.just(it)
-                    } else {
-                        Timber.v("Finish triggering source")
-                        Flowable.error(OnCompleteException())
-                    }
-                }
-            }
-            .single(lastActionTime)
-            .onErrorResumeNext { e: Throwable ->
-                if (e is OnCompleteException) {
-                    Single.just(lastActionTime)
-                } else {
-                    Single.error(e)
-                }
-            }
-    }
+    override fun triggerSource(): Single<Long> = triggerSourceImpl()
 
     private fun triggerSourceImpl(): Single<Long> {
         if (queue.isEmpty()) {
