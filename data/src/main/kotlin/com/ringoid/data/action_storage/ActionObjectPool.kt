@@ -3,6 +3,7 @@ package com.ringoid.data.action_storage
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.model.actions.ActionObject
@@ -10,6 +11,7 @@ import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
@@ -17,6 +19,8 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,6 +40,8 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
     private val numbers = mutableMapOf<Class<ActionObject>, Int>()
     private val strategies = mutableMapOf<Class<ActionObject>, List<TriggerStrategy>>()
     private val timers = mutableMapOf<Class<ActionObject>, Disposable?>()
+
+    private val triggerInProgress: AtomicInteger = AtomicInteger(0)
 
     // --------------------------------------------------------------------------------------------
     @Synchronized
@@ -127,7 +133,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
         if (queue.isEmpty()) {
-            Timber.v("Triggering empty queue - no-op")
+            Timber.v("Triggering empty queue [0] - no-op")
             return
         }
 
@@ -138,34 +144,63 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
     }
 
     override fun triggerSource(): Single<Long> {
+        Timber.v("Start triggering source")
+        triggerInProgress.getAndIncrement()
+        return triggerSourceImpl()
+            .repeatWhen {
+                it.flatMap {
+                    if (triggerInProgress.decrementAndGet() > 0) {
+                        Timber.v("Repeat triggering source")
+                        Flowable.just(it)
+                    } else {
+                        Timber.v("Finish triggering source")
+                        Flowable.empty()
+                    }
+                }
+            }
+            .single(lastActionTime)
+    }
+
+    private fun triggerSourceImpl(): Single<Long> {
         if (queue.isEmpty()) {
-            Timber.v("Triggering empty queue - no-op")
+            Timber.v("Triggering empty queue [1] - no-op")
             return Single.just(lastActionTime)
         }
 
         lastActionTime = queue.peek()?.actionTime ?: 0L
         return spm.accessSingle { accessToken ->
-            val essence = CommitActionsEssence(accessToken.accessToken, queue)
-            cloud.commitActions(essence)
+            if (queue.isEmpty()) {
+                Timber.v("Triggering empty queue [2] - no-op")
+                Single.just(CommitActionsResponse(lastActionTime))
+            } else {
+                val essence = CommitActionsEssence(accessToken.accessToken, queue)
+                cloud.commitActions(essence)
+            }
         }
         .subscribeOn(Schedulers.io())
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSubscribe {
             // TODO: cache the queue to restore later in case of failure all retries
-            Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime")
+            Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
             queue.clear()  // TODO: if no connection - clear queue at this stage leads to lost data
             numbers.clear()
             strategies.clear()
             timers.forEach { it.value?.dispose() }.also { timers.clear() }
         }
         .doOnSuccess {
-            Timber.d("Successfully committed all [${queue.size}] actions")
+            // TODO: queue.size == 0 always at this stage
+            Timber.d("Successfully committed all [${queue.size}] actions, triggering has finished")
             lastActionTime = it.lastActionTime
         }
         .doOnDispose {
             Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
             lastActionTime = 0L  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
+            triggerInProgress.set(0)
         }
         .map { it.lastActionTime }
     }
+
+    // ------------------------------------------
+    private fun printQueue(): String =
+        queue.joinToString(", ", "[", "]", transform = { it.toActionString() })
 }
