@@ -7,4 +7,7 @@ class UnlikeActionObject(actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String)
     : ActionObject(actionTime = actionTime, actionType = "UNLIKE", sourceFeed = sourceFeed,
                    targetImageId = targetImageId, targetUserId = targetUserId,
-                   triggerStrategies = listOf(CountFromLast(), DelayFromLast()))
+                   triggerStrategies = listOf(CountFromLast(), DelayFromLast())) {
+
+    override fun toActionString(): String = "UNLIKE"
+}
