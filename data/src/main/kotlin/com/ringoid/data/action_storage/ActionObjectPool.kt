@@ -154,11 +154,18 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
                         Flowable.just(it)
                     } else {
                         Timber.v("Finish triggering source")
-                        Flowable.empty()
+                        Flowable.error(OnCompleteException())
                     }
                 }
             }
             .single(lastActionTime)
+            .onErrorResumeNext { e: Throwable ->
+                if (e is OnCompleteException) {
+                    Single.just(lastActionTime)
+                } else {
+                    Single.error(e)
+                }
+            }
     }
 
     private fun triggerSourceImpl(): Single<Long> {
