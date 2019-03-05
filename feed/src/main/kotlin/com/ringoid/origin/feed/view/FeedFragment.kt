@@ -174,6 +174,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             adapter = feedAdapter
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
+            itemAnimator = FeedItemAnimator { rv_items.post { feedAdapter.notifyItemRangeChanged(it - 1, 2, FeedViewHolderShowControls) } }
             setHasFixedSize(true)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(itemOffsetScrollListener)
