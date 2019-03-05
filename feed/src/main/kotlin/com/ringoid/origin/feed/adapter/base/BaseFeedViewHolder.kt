@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 interface IFeedViewHolder {
 
+    var snapPositionListener: ((snapPosition: Int) -> Unit)?
     var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>?
 
     fun getCurrentImagePosition(): Int
@@ -31,6 +32,7 @@ interface IFeedViewHolder {
 abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<FeedItemVO>(view), IFeedViewHolder {
 
+    override var snapPositionListener: ((snapPosition: Int) -> Unit)? = null
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     override fun getCurrentImagePosition(): Int = 0
@@ -40,12 +42,11 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     : OriginFeedViewHolder(view, viewPool) {
 
     internal val profileImageAdapter = ProfileImageAdapter(view.context)
-    override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     private val imagePreloadListener: RecyclerViewPreloader<ProfileImageVO>
+    private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
 
     init {
-        val snapHelper = EnhancedPagerSnapHelper(duration = 30)
         itemView.rv_items.apply {
             adapter = profileImageAdapter.also { it.tabsObserver = itemView.tabs.adapterDataObserver }
             isNestedScrollingEnabled = false
@@ -68,6 +69,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                         val items = profileImageAdapter.getItemsExposed(from = from, to = to)
                         Timber.v("Visible profile images [${items.size}] [$from, $to]: $items")
                         trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
+
+                        // record current position
+                        val snapPosition = snapHelper.findSnapView(it)
+                            ?.let { view -> it.getPosition(view) }
+                            ?: 0
+                        snapPositionListener?.invoke(snapPosition)
                     }
                 }
             })
@@ -80,8 +87,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         showControls()  // cancel any effect caused by applied payloads
         profileImageAdapter.apply {
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
-            submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
-            itemView.rv_items.post { itemView.rv_items.linearLayoutManager()?.scrollToPosition(0) }
+            submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
+            itemView.rv_items.post { itemView.rv_items.linearLayoutManager()?.scrollToPosition(model.positionOfImage) }
         }
     }
 

@@ -10,11 +10,15 @@ import com.ringoid.domain.model.messenger.Message
 data class FeedItemVO(
     override val id: String, override val images: List<IImage>,
     override val messages: MutableList<Message> = mutableListOf(),
-    override val isRealModel: Boolean = true) : IFeedItem {
+    override val isRealModel: Boolean = true,
+    val likedImages: MutableMap<String, Boolean> = mutableMapOf(),
+    var positionOfImage: Int = 0) : IFeedItem {
 
     constructor(feedItem: FeedItem): this(id = feedItem.id, images = feedItem.images, messages = feedItem.messages)
 
     constructor(profile: Profile): this(id = profile.id, images = profile.images)
+
+    fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
 }
 
 val EmptyFeedItemVO = FeedItemVO(feedItem = EmptyFeedItem)

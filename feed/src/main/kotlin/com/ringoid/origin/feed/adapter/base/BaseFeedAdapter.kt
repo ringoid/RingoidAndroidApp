@@ -27,6 +27,7 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
         return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
             .takeIf { viewType == VIEW_TYPE_NORMAL }
             ?.also { vh ->
+                vh.snapPositionListener = { getModel(vh.adapterPosition).positionOfImage = it }
                 vh.trackingBus = this@BaseFeedAdapter.trackingBus
                 val wrapSettingsClickListener: ((model: FeedItemVO, position: Int) -> Unit)? =
                     { model: FeedItemVO, position: Int -> settingsClickListener?.invoke(model, position, vh.getCurrentImagePosition()) }

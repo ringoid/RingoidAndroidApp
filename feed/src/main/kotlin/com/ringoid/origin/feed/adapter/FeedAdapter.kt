@@ -15,7 +15,10 @@ class FeedAdapter : BaseFeedAdapter(FeedItemVODiffCallback()) {
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder =
         FeedViewHolder(view, viewPool = imagesViewPool).also { vh ->
-            vh.profileImageAdapter.itemClickListener = onLikeImageListener
+            vh.profileImageAdapter.itemClickListener = { model, position ->
+                getModel(vh.adapterPosition).likedImages[model.image.id] = model.isLiked
+                onLikeImageListener?.invoke(model, position)
+            }
         }
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderFeedViewHolder(view)
