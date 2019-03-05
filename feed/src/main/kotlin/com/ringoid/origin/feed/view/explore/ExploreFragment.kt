@@ -1,18 +1,21 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
+import android.text.TextUtils.isEmpty
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.R.id.swipe_refresh_layout
 import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.navigation.Payload
@@ -22,13 +25,13 @@ import com.ringoid.utility.debugToast
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
-class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
+class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     companion object {
         fun newInstance(): ExploreFragment = ExploreFragment()
     }
 
-    override fun createFeedAdapter(): BaseFeedAdapter<Profile, OriginFeedViewHolder<Profile>> =
+    override fun createFeedAdapter(): BaseFeedAdapter =
         FeedAdapter().apply {
             onLikeImageListener = { model: ProfileImageVO, _ ->
                 if (!connectionManager.isNetworkAvailable()) {
@@ -92,7 +95,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel, Profile>() {
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.feed) { feedAdapter.append(it.profiles) { !isEmpty() } }
+        viewLifecycleOwner.observe(vm.feed) { feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() } }
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 

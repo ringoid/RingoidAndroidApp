@@ -14,9 +14,12 @@ import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.AppRes
+import com.ringoid.origin.feed.R.id.rv_items
+import com.ringoid.origin.feed.R.id.scroll_fab
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.messenger.ChatPayload
@@ -30,7 +33,7 @@ import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
-abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM, FeedItem>(), IChatHost, IDialogCallback  {
+abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>(), IChatHost, IDialogCallback  {
 
     abstract fun instantiateFeedAdapter(): BaseLmmAdapter
 
@@ -105,7 +108,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.feed, feedAdapter::submitList)
+            observe(vm.feed) { feedAdapter.submitList(it.map { FeedItemVO(it) }) }
             observe(vm.oneShot) {
                 it.getContentIfNotHandled()
                     ?.takeIf { it is ThresholdExceededException }

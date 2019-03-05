@@ -3,15 +3,15 @@ package com.ringoid.origin.feed.adapter.lmm
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.memory.ChatInMemoryCache
-import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_lmm_footer.view.*
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedViewHolder<FeedItem>(view, viewPool) {
+    : BaseFeedViewHolder(view, viewPool) {
 
     init {
         // TODO: improve UX for fling
@@ -28,12 +28,12 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 //        }
     }
 
-    override fun bind(model: FeedItem) {
+    override fun bind(model: FeedItemVO) {
         super.bind(model)
         setMessengerIcon(model)
     }
 
-    override fun bind(model: FeedItem, payloads: List<Any>) {
+    override fun bind(model: FeedItemVO, payloads: List<Any>) {
         super.bind(model, payloads)
         setMessengerIcon(model)
 
@@ -58,7 +58,7 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     }
 
     // ------------------------------------------
-    private fun setMessengerIcon(model: FeedItem) {
+    private fun setMessengerIcon(model: FeedItemVO) {
         val iconResId = if (model.messages.isEmpty()) {
             R.drawable.ic_chat_bubble_outline_white
         } else {
@@ -77,20 +77,20 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     }
 }
 
-class HeaderLmmViewHolder(view: View) : OriginFeedViewHolder<FeedItem>(view) {
+class HeaderLmmViewHolder(view: View) : OriginFeedViewHolder(view) {
 
-    override fun bind(model: FeedItem) {
+    override fun bind(model: FeedItemVO) {
         // no-op
     }
 }
 
-class FooterLmmViewHolder(view: View) : OriginFeedViewHolder<FeedItem>(view) {
+class FooterLmmViewHolder(view: View) : OriginFeedViewHolder(view) {
 
-    override fun bind(model: FeedItem) {
+    override fun bind(model: FeedItemVO) {
         showControls()
     }
 
-    override fun bind(model: FeedItem, payloads: List<Any>) {
+    override fun bind(model: FeedItemVO, payloads: List<Any>) {
         if (payloads.contains(FeedFooterViewHolderHideControls)) {
             hideControls()
         }

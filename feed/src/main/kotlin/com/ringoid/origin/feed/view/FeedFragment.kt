@@ -20,6 +20,7 @@ import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.R.id.rv_items
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.navigation.*
@@ -33,9 +34,9 @@ import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
-abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment<VM>() {
+abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
-    protected lateinit var feedAdapter: BaseFeedAdapter<T, OriginFeedViewHolder<T>>
+    protected lateinit var feedAdapter: BaseFeedAdapter
         private set
     private lateinit var feedTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
@@ -43,7 +44,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
 
-    protected abstract fun createFeedAdapter(): BaseFeedAdapter<T, OriginFeedViewHolder<T>>
+    protected abstract fun createFeedAdapter(): BaseFeedAdapter
 
     protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
 
@@ -114,7 +115,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter().apply {
-            settingsClickListener = { model: T, position: Int, positionOfImage: Int ->
+            settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {
                     showScrollFab(isVisible = false)
@@ -314,7 +315,7 @@ abstract class FeedFragment<VM : FeedViewModel, T : IProfile> : BaseListFragment
             // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0' properly
             var range = EqualRange(from = from, to = to,
                 items = items.map {
-                    val image = if (it.isRealModel) it.images[0] else EmptyImage
+                    val image = if (it.isRealModel && it.images.isNotEmpty()) it.images[0] else EmptyImage
                     ProfileImageVO(profileId = it.id, image = image)
                 })
             range = range.takeIf { feedAdapter.withHeader() }

@@ -7,10 +7,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
-import com.ringoid.domain.model.feed.IProfile
-import com.ringoid.domain.model.feed.Profile
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.adapter.profile.ProfileImageItemAnimator
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
@@ -29,16 +28,16 @@ interface IFeedViewHolder {
     fun getCurrentImagePosition(): Int
 }
 
-abstract class OriginFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseViewHolder<T>(view), IFeedViewHolder {
+abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+    : BaseViewHolder<FeedItemVO>(view), IFeedViewHolder {
 
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     override fun getCurrentImagePosition(): Int = 0
 }
 
-abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : OriginFeedViewHolder<T>(view, viewPool) {
+abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+    : OriginFeedViewHolder(view, viewPool) {
 
     internal val profileImageAdapter = ProfileImageAdapter(view.context)
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
@@ -77,7 +76,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         }
     }
 
-    override fun bind(model: T) {
+    override fun bind(model: FeedItemVO) {
         showControls()  // cancel any effect caused by applied payloads
         profileImageAdapter.apply {
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
@@ -86,7 +85,7 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
         }
     }
 
-    override fun bind(model: T, payloads: List<Any>) {
+    override fun bind(model: FeedItemVO, payloads: List<Any>) {
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
         }
@@ -137,22 +136,22 @@ abstract class BaseFeedViewHolder<T : IProfile>(view: View, viewPool: RecyclerVi
 }
 
 class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedViewHolder<Profile>(view, viewPool)
+    : BaseFeedViewHolder(view, viewPool)
 
-class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder<Profile>(view), IFeedViewHolder {
+class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
 
-    override fun bind(model: Profile) {
+    override fun bind(model: FeedItemVO) {
         // no-op
     }
 }
 
-class FooterFeedViewHolder(view: View) : OriginFeedViewHolder<Profile>(view), IFeedViewHolder {
+class FooterFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
 
-    override fun bind(model: Profile) {
+    override fun bind(model: FeedItemVO) {
         showControls()
     }
 
-    override fun bind(model: Profile, payloads: List<Any>) {
+    override fun bind(model: FeedItemVO, payloads: List<Any>) {
         if (payloads.contains(FeedFooterViewHolderHideControls)) {
             hideControls()
         }
