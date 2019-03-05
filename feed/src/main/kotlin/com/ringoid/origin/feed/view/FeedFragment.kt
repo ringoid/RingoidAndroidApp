@@ -8,16 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.eventbus.Bus.post
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.model.feed.IProfile
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.R.id.rv_items
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
