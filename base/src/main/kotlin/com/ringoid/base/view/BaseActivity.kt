@@ -38,6 +38,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug
 
+    private var isOnFreshStart = true
     var isDestroying = false
         private set
     protected var currentResult: Int = Activity.RESULT_CANCELED
@@ -81,15 +82,18 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
             subscribeOnBusEvents()
             observe(viewState, ::onViewStateChange)
         }
-        savedInstanceState
-            ?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }
-            ?: run { vm.onFreshCreate() }
+        savedInstanceState?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }
+        isOnFreshStart = savedInstanceState == null
     }
 
     override fun onStart() {
         super.onStart()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onStart")
+        if (isOnFreshStart) {
+            vm.onFreshStart()
+            isOnFreshStart = false
+        }
     }
 
     override fun onResume() {

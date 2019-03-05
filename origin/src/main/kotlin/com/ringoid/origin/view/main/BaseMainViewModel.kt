@@ -13,8 +13,8 @@ abstract class BaseMainViewModel(app: Application) : BaseViewModel(app) {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onFreshCreate() {
-        super.onFreshCreate()
+    override fun onFreshStart() {
+        super.onFreshStart()
         SentryUtil.setUser(spm)
     }
 }

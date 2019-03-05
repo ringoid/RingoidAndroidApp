@@ -32,8 +32,8 @@ class MainViewModel @Inject constructor(getLmmUseCase: GetLmmUseCase, getUserIma
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onFreshCreate() {
-        super.onFreshCreate()
+    override fun onFreshStart() {
+        super.onFreshStart()
         clearCachedAlreadySeenProfileIdsUseCase.source()
             .autoDisposable(this)
             .subscribe({}, Timber::e)

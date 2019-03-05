@@ -34,6 +34,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     var isActivityCreated = false
         private set
+    private var isOnFreshStart = true
     var isOnSaveInstanceState = false
         private set
 
@@ -108,13 +109,17 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
                 observe(viewState, this@BaseFragment::onViewStateChange)
             }
         }
-        savedInstanceState ?: run { vm.onFreshCreate() }
+        isOnFreshStart = savedInstanceState == null
     }
 
     override fun onStart() {
         super.onStart()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onStart")
+        if (isOnFreshStart) {
+            vm.onFreshStart()
+            isOnFreshStart = false
+        }
     }
 
     override fun onResume() {

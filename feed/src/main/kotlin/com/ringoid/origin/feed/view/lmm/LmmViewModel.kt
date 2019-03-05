@@ -45,8 +45,8 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase, app: Ap
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onFreshCreate() {
-        super.onFreshCreate()
+    override fun onFreshStart() {
+        super.onFreshStart()
         getLmm()
     }
 

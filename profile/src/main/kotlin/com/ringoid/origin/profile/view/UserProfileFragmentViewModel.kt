@@ -60,8 +60,8 @@ class UserProfileFragmentViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onFreshCreate() {
-        super.onFreshCreate()
+    override fun onFreshStart() {
+        super.onFreshStart()
         onRefresh()
     }
 
