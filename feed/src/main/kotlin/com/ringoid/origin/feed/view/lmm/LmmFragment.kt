@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.fragment_lmm.*
 class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     companion object {
+        private const val BUNDLE_KEY_CURRENT_PAGE = "bundle_key_current_page"
+
         fun newInstance(): LmmFragment = LmmFragment()
     }
 
@@ -88,7 +90,9 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             observe(vm.badgeMatches, ::showBadgeOnMatches)
             observe(vm.badgeMessenger, ::showBadgeOnMessenger)
         }
-        selectPage(position = 2)  // open LikesYou at beginning
+
+        val page = savedInstanceState?.getInt(BUNDLE_KEY_CURRENT_PAGE) ?: 2
+        selectPage(position = page)  // open LikesYou at beginning
     }
 
     @Suppress("CheckResult", "AutoDispose")
@@ -135,5 +139,10 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
         lmmPagesAdapter.accessItem(position)?.userVisibleHint = true
         vp_pages?.setCurrentItem(position, false)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(BUNDLE_KEY_CURRENT_PAGE, vp_pages?.currentItem ?: 2)
     }
 }
