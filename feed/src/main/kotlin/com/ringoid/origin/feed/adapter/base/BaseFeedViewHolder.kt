@@ -69,12 +69,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                         val items = profileImageAdapter.getItemsExposed(from = from, to = to)
                         Timber.v("Visible profile images [${items.size}] [$from, $to]: $items")
                         trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
-
-                        // record current position
-                        val snapPosition = snapHelper.findSnapView(it)
-                            ?.let { view -> it.getPosition(view) }
-                            ?: 0
-                        snapPositionListener?.invoke(snapPosition)
+                        snapPositionListener?.invoke(from)
                     }
                 }
             })
