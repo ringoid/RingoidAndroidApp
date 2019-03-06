@@ -15,4 +15,7 @@ class DebugLogItemAdapter : BaseListAdapter<DebugLogItemVO, OriginDebugLogItemVi
 
     // ------------------------------------------
     override fun getStubItem(): DebugLogItemVO = EmptyDebugLogItemVO
+
+    // ------------------------------------------
+    fun getContentText(): String = helper.currentList.joinToString("\n", transform = { it.log.log() })
 }

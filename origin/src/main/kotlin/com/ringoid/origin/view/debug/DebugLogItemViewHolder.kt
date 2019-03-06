@@ -5,9 +5,7 @@ import androidx.core.content.ContextCompat
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.origin.WidgetR_color
-import com.ringoid.utility.time
 import kotlinx.android.synthetic.main.rv_item_debug_log.view.*
-import java.util.*
 
 abstract class OriginDebugLogItemViewHolder(view: View) : BaseViewHolder<DebugLogItemVO>(view)
 
@@ -23,7 +21,7 @@ class DebugLogItemViewHolder(view: View) : OriginDebugLogItemViewHolder(view) {
                 DebugLogLevel.WARNING -> WidgetR_color.warning
                 DebugLogLevel.ERROR -> WidgetR_color.red_love
             }
-            text = "${Date(model.log.ts).time()}: ${model.log.log}"
+            text = model.log.log()
             setTextColor(ContextCompat.getColor(context, textColorResId))
         }
     }
