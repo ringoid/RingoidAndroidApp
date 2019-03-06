@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.adapter.profile
 import android.view.View
 import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseViewHolder
+import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
@@ -17,6 +18,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
 
     init {
         itemView.ibtn_like.changeVisibility(isVisible = isLikeEnabled)
+        itemView.tv_image_id.changeVisibility(isVisible = BuildConfig.DEBUG)
     }
 
     override fun bind(model: ProfileImageVO) {
@@ -25,6 +27,10 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
             options = RequestOptions().centerCrop())
 
         setLiked(isLiked = model.isLiked)
+
+        if (BuildConfig.DEBUG) {
+            itemView.tv_image_id.text = model.image.id
+        }
     }
 
     override fun bind(model: ProfileImageVO, payloads: List<Any>) {

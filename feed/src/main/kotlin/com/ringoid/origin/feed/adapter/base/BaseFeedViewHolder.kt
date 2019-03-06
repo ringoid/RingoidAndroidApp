@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
+import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.adapter.profile.ProfileImageItemAnimator
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -76,6 +77,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, ViewPreloadSizeProvider<ProfileImageVO>(), 10)
             addOnScrollListener(imagePreloadListener)
         }
+        itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.DEBUG)
     }
 
     override fun bind(model: FeedItemVO) {
@@ -84,6 +86,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
             itemView.rv_items.post { itemView.rv_items.linearLayoutManager()?.scrollToPosition(model.positionOfImage) }
+        }
+
+        if (BuildConfig.DEBUG) {
+            itemView.tv_profile_id.text = model.id
         }
     }
 
