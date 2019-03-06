@@ -32,7 +32,7 @@ inline fun <reified T : BaseResponse> logRequestObservable(tag: String = "", var
     ObservableTransformer { it.doOnSubscribe { logBaseRequest(tag, *data) } }
 
 fun logBaseRequest(tag: String = "", vararg data: Pair<String, String>) {
-    DebugLogUtil.i("Request [$tag]: ${data.joinToString()}")
+    DebugLogUtil.i("--> [$tag]: ${data.joinToString()}")
 }
 
 // ----------------------------------------------
@@ -55,7 +55,7 @@ inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "") {
     SentryUtil.breadcrumb("Response [$tag]", "error code" to it.errorCode,
         "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
         "request url" to "${it.requestUrl ?: ""}", "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
-    DebugLogUtil.log("Response [$tag]: ${it.toLogString()} ${it.errorString()}".trim(),
+    DebugLogUtil.log("<== [$tag]: ${it.toLogString()} ${it.errorString()}".trim(),
                      level = if (it.isSuccessful()) DebugLogLevel.DEBUG else DebugLogLevel.ERROR)
 }
 

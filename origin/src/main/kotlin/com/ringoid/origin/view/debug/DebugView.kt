@@ -15,6 +15,7 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.copyToClipboard
 import com.ringoid.utility.toast
 import com.ringoid.origin.R
+import com.ringoid.utility.linearLayoutManager
 import com.uber.autodispose.AutoDispose.autoDisposable
 import com.uber.autodispose.android.scope
 import kotlinx.android.synthetic.main.widget_debug.view.*
@@ -23,7 +24,7 @@ import timber.log.Timber
 @DebugOnly
 class DebugView : ConstraintLayout {
 
-    private val debugLogItemAdapter = DebugLogItemAdapter { post { rv_debug_items.scrollToPosition(it) } }
+    private val debugLogItemAdapter = DebugLogItemAdapter { postDelayed({ rv_debug_items.linearLayoutManager()?.scrollToPositionWithOffset(it - 1, 0) }, 100L) }
 
     constructor(context: Context): this(context, null)
 
