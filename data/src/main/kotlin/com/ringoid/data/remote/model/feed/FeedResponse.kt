@@ -47,5 +47,7 @@ class FeedResponse(
 
     override fun map(): Feed = Feed(profiles = profiles.map { it.map() })
 
+    override fun toLogString(): String = "profiles[${profiles.size}]"
+
     override fun toString(): String = "FeedResponse(profiles=${profiles.joinToString(", ", "[", "]")}, ${super.toString()})"
 }

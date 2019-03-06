@@ -31,5 +31,7 @@ class UserImageListResponse(
 
     override fun map(): List<UserImage> = images.mapList()
 
+    override fun toLogString(): String = "images[${images.size}]"
+
     override fun toString(): String = "UserImageListResponse(images=${images.joinToString(", ", "[", "]")}, ${super.toString()})"
 }

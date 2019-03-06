@@ -27,5 +27,7 @@ class AuthCreateProfileResponse(
 
     override fun map(): CurrentUser = CurrentUser(id = userId, accessToken = accessToken)
 
+    override fun toLogString(): String = "userId=$userId"
+
     override fun toString(): String = "AuthCreateProfileResponse(userId='$userId', ${super.toString()})"
 }

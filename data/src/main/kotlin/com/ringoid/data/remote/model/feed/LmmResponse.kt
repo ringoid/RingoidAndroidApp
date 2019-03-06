@@ -36,6 +36,8 @@ class LmmResponse(
 
     override fun map(): Lmm = Lmm(likes = likes.mapList(), matches = matches.mapList(), messages = messages.mapList())
 
+    override fun toLogString(): String = "likes[${likes.size}], matches[${matches.size}], messages=[${messages.size}]"
+
     override fun toString(): String =
         "LmmResponse(likes=${likes.joinToString(", ", "[", "]")}, " +
                     "matches=${matches.joinToString(", ", "[", "]")}, " +

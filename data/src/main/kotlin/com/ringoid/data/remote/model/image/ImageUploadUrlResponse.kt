@@ -30,6 +30,8 @@ class ImageUploadUrlResponse(
 
     override fun map(): Image = Image(id = originImageId, uri = imageUri)
 
+    override fun toLogString(): String = "originId=$originImageId"
+
     override fun toString(): String =
         "ImageUploadUrlResponse(clientImageId='$clientImageId', originImageId='$originImageId', imageUri='$imageUri', ${super.toString()})"
 }

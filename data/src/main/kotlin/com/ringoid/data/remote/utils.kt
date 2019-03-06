@@ -55,7 +55,7 @@ inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "") {
     SentryUtil.breadcrumb("Response [$tag]", "error code" to it.errorCode,
         "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
         "request url" to "${it.requestUrl ?: ""}", "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
-    DebugLogUtil.log("Response [$tag] ${if (!it.isSuccessful()) it.errorMessage else ""}",
+    DebugLogUtil.log("Response [$tag]: ${it.toLogString()} ${it.errorString()}".trim(),
                      level = if (it.isSuccessful()) DebugLogLevel.DEBUG else DebugLogLevel.ERROR)
 }
 

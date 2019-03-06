@@ -20,5 +20,7 @@ class CommitActionsResponse(
         const val COLUMN_LAST_ACTION_TIME = "lastActionTime"
     }
 
+    override fun toLogString(): String = "lastActionTime=$lastActionTime"
+
     override fun toString(): String = "CommitActionsResponse(lastActionTime=$lastActionTime, ${super.toString()})"
 }
