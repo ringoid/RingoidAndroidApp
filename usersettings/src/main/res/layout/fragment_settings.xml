@@ -15,11 +15,12 @@
 
     <com.ringoid.widget.view.item_view.SwitchIconItemView
         android:id="@+id/item_theme"
+        android:visibility="gone"
         app:icon_item_icon="?attr/refDrawableThemeSwitch"
         app:icon_item_text="@string/settings_theme_dark"
         style="?attr/iconItemView"/>
 
-    <View style="@style/Underscore"/>
+    <View style="@style/Underscore" android:visibility="gone"/>
 
     <com.ringoid.widget.view.item_view.LabelIconItemView
         android:id="@+id/item_language"
