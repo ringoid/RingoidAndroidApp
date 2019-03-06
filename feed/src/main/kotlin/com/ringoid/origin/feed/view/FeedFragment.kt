@@ -10,6 +10,7 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
@@ -191,6 +192,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
             showScrollFab(isVisible = false)
             scrollToTopOfItemAtPosition(position = 0)
+        }
+
+        if (BuildConfig.DEBUG) {
+            debug_view.changeVisibility(isVisible = true)
         }
     }
 

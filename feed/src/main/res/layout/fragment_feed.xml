@@ -28,7 +28,8 @@
         android:id="@+id/debug_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom"
+        android:visibility="gone"/>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/scroll_fab"
