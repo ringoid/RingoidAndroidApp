@@ -14,7 +14,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.copyToClipboard
 import com.ringoid.utility.toast
-import com.ringoid.widget.R
+import com.ringoid.origin.R
 import com.uber.autodispose.AutoDispose.autoDisposable
 import com.uber.autodispose.android.scope
 import kotlinx.android.synthetic.main.widget_debug.view.*
