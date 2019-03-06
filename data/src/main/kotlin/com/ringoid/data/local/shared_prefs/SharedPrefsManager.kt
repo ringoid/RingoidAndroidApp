@@ -3,6 +3,8 @@ package com.ringoid.data.local.shared_prefs
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StyleRes
+import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -23,6 +25,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         const val SHARED_PREFS_FILE_NAME = "Ringoid.prefs"
 
         const val SP_KEY_THEME = "sp_key_theme"
+        @DebugOnly const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
 
         /* Auth */
         // --------------------------------------
@@ -36,6 +39,17 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     override fun saveThemeResId(@StyleRes themeResId: Int) {
         sharedPreferences.edit().putInt(SP_KEY_THEME, themeResId).apply()
+    }
+
+    // ------------------------------------------
+    @DebugOnly
+    override fun isDebugLogEnabled(): Boolean =
+        BuildConfig.IS_STAGING && sharedPreferences.getBoolean(SP_KEY_DEBUG_LOG_ENABLED, false)
+
+    @DebugOnly
+    override fun switchDebugLogEnabled() {
+        val currentFlag = isDebugLogEnabled()
+        sharedPreferences.edit().putBoolean(SP_KEY_DEBUG_LOG_ENABLED, !currentFlag).apply()
     }
 
     /* Auth */

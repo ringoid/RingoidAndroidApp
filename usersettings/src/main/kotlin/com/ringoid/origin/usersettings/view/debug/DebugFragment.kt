@@ -67,6 +67,10 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
             setText("Method: ${cloudDebug.get("request")}")
             setLabel("Resolution: ${cloudDebug.get("resolution")}")
         }
+        item_debug_log.apply {
+            setChecked(spm.isDebugLogEnabled())
+            clicks().compose(clickDebounce()).subscribe { spm.switchDebugLogEnabled() }
+        }
         item_screen_info.apply {
             clicks().compose(clickDebounce()).subscribe {
                 context?.let {

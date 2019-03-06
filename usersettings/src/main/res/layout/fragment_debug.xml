@@ -19,6 +19,14 @@
             app:layout_constraintTop_toTopOf="parent"
             style="@style/ProgressBar.Horizontal"/>
 
+        <com.ringoid.widget.view.item_view.SwitchIconItemView
+            android:id="@+id/item_debug_log"
+            app:icon_item_icon="?attr/refDrawableThemeSwitch"
+            app:icon_item_text="@string/debug_item_switch_debug_log"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
         <com.ringoid.widget.view.item_view.LabelIconItemView
             android:id="@+id/item_error_http"
             app:icon_item_text="@string/debug_item_response_error_http"

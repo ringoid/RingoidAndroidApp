@@ -18,7 +18,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
 
     init {
         itemView.ibtn_like.changeVisibility(isVisible = isLikeEnabled)
-        itemView.tv_image_id.changeVisibility(isVisible = BuildConfig.DEBUG)
+        itemView.tv_image_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
     override fun bind(model: ProfileImageVO) {
@@ -28,7 +28,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
 
         setLiked(isLiked = model.isLiked)
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.IS_STAGING) {
             itemView.tv_image_id.text = model.image.id
         }
     }

@@ -77,7 +77,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, ViewPreloadSizeProvider<ProfileImageVO>(), 10)
             addOnScrollListener(imagePreloadListener)
         }
-        itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.DEBUG)
+        itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
     override fun bind(model: FeedItemVO) {
@@ -88,7 +88,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             itemView.rv_items.post { itemView.rv_items.linearLayoutManager()?.scrollToPosition(model.positionOfImage) }
         }
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.IS_STAGING) {
             itemView.tv_profile_id.text = model.id
         }
     }
