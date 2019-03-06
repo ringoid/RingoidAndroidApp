@@ -86,7 +86,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
         item_theme.apply {
-            setChecked(ThemeUtils.isDarkTheme(spm))
+            setChecked(!ThemeUtils.isDefaultTheme(spm))
             clicks().compose(clickDebounce()).subscribe { vm.switchTheme() }
         }
     }

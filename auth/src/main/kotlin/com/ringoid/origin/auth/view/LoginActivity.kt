@@ -92,7 +92,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         }
         switch_theme.apply {
             setOnCheckedChangeListener(null)
-            isChecked = ThemeUtils.isDarkTheme(spm)
+            isChecked = !ThemeUtils.isDefaultTheme(spm)
             setOnCheckedChangeListener { _, _ -> vm.switchTheme() }
         }
         tv_sex_male.clicks().compose(clickDebounce()).subscribe {
