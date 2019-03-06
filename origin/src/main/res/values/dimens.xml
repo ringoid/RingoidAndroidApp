@@ -2,5 +2,5 @@
 <resources>
     <dimen name="dialog_bottom_sheet_block_height">94dp</dimen>
     <dimen name="dialog_bottom_sheet_report_height">188dp</dimen>
-    <dimen name="widget_debug_height">280dp</dimen>
+    <dimen name="widget_debug_height">140dp</dimen>
 </resources>
