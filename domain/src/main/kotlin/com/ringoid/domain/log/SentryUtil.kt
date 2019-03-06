@@ -2,6 +2,7 @@ package com.ringoid.domain.log
 
 import android.os.Build
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
@@ -83,6 +84,7 @@ object SentryUtil {
         } else {
             Sentry.capture(e)
         }
+        DebugLogUtil.e(e)  // capture exception to debug logs
     }
 
     private fun createEvent(message: String, level: Event.Level, `object`: Any? = null,
