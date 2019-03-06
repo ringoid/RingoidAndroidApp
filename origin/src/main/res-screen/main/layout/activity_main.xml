@@ -14,6 +14,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <com.ringoid.origin.view.debug.DebugView
+        android:id="@+id/debug_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widget_debug_height"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

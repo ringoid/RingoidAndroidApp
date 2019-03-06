@@ -13,6 +13,7 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
+import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -63,6 +64,11 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         processExtras(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        debug_view.changeVisibility(isVisible = spm.isDebugLogEnabled())
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

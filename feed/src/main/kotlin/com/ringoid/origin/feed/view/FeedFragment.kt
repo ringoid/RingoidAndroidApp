@@ -195,11 +195,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        debug_view.changeVisibility(isVisible = spm.isDebugLogEnabled())
-    }
-
     override fun onResume() {
         super.onResume()
         feedTrackingBus.subscribe()
