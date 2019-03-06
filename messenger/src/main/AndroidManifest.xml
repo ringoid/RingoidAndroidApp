@@ -6,7 +6,7 @@
             android:name=".view.ChatHostActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Light"
+            android:theme="@style/AppTheme.Dark"
             android:windowSoftInputMode="stateAlwaysVisible"/>
     </application>
 </manifest>

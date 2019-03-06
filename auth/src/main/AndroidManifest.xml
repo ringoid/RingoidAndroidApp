@@ -7,7 +7,7 @@
             android:name=".view.LoginActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Light"
+            android:theme="@style/AppTheme.Dark"
             android:windowSoftInputMode="stateAlwaysVisible">
 
             <intent-filter android:autoVerify="true" android:order="1">

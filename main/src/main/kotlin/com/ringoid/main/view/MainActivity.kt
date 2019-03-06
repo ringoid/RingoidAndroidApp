@@ -30,7 +30,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currentLocale = app.localeManager.getLang()
-        currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme)
+        currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme_Dark)
         observe(vm.badgeLmm, ::showBadgeOnLmm)
         observe(vm.badgeWarningProfile, ::showBadgeWarningOnProfile)
     }
