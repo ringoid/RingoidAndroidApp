@@ -2,6 +2,7 @@ package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.IEssence
@@ -31,7 +32,7 @@ inline fun <reified T : BaseResponse> logRequestObservable(tag: String = "", var
     ObservableTransformer { it.doOnSubscribe { logBaseRequest(tag, *data) } }
 
 fun logBaseRequest(tag: String = "", vararg data: Pair<String, String>) {
-    DebugLogUtil.d("Request [$tag]: ${data.joinToString()}")
+    DebugLogUtil.i("Request [$tag]: ${data.joinToString()}")
 }
 
 // ----------------------------------------------
@@ -54,7 +55,8 @@ inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "") {
     SentryUtil.breadcrumb("Response [$tag]", "error code" to it.errorCode,
         "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
         "request url" to "${it.requestUrl ?: ""}", "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
-    DebugLogUtil.d("Response [$tag]: $it")  // raw to string
+    DebugLogUtil.log("Response [$tag] ${if (!it.isSuccessful()) it.errorMessage else ""}",
+                     level = if (it.isSuccessful()) DebugLogLevel.DEBUG else DebugLogLevel.ERROR)
 }
 
 // ------------------------------------------------------------------------------------------------

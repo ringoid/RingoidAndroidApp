@@ -4,7 +4,8 @@ import android.view.View
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.R
 
-class DebugLogItemAdapter : BaseListAdapter<DebugLogItemVO, OriginDebugLogItemViewHolder>(DebugLogItemDiffCallback()) {
+class DebugLogItemAdapter(private val insertCb: ((total: Int) -> Unit)? = null)
+    : BaseListAdapter<DebugLogItemVO, OriginDebugLogItemViewHolder>(DebugLogItemDiffCallback()) {
 
     override fun getLayoutId(): Int = R.layout.rv_item_debug_log
 
@@ -12,6 +13,8 @@ class DebugLogItemAdapter : BaseListAdapter<DebugLogItemVO, OriginDebugLogItemVi
 
     override fun instantiateHeaderViewHolder(view: View) = HeaderDebugLogItemViewHolder(view)
     override fun instantiateFooterViewHolder(view: View) = FooterDebugLogItemViewHolder(view)
+
+    override fun getExposedCb(): (() -> Unit)? = { insertCb?.invoke(itemCount) }
 
     // ------------------------------------------
     override fun getStubItem(): DebugLogItemVO = EmptyDebugLogItemVO

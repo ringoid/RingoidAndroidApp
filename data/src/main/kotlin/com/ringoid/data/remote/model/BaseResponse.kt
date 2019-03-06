@@ -20,6 +20,8 @@ open class BaseResponse(
         const val COLUMN_UNEXPECTED = "unexpected"
     }
 
+    fun isSuccessful(): Boolean = (errorCode.isNullOrBlank() || errorCode == "null") && (errorMessage.isNullOrBlank() || errorMessage == "null")
+
     override fun toString(): String =
         "BaseResponse(errorCode='$errorCode', errorMessage='$errorMessage', repeatRequestAfter=$repeatRequestAfter, requestUrl='$requestUrl', unexpected='$unexpected')"
 }

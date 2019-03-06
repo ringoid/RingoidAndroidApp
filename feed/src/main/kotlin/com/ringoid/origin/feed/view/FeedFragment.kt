@@ -193,10 +193,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             showScrollFab(isVisible = false)
             scrollToTopOfItemAtPosition(position = 0)
         }
-
-        if (BuildConfig.DEBUG) {
-            debug_view.changeVisibility(isVisible = true)
-        }
+        debug_view.changeVisibility(isVisible = BuildConfig.DEBUG)
     }
 
     override fun onResume() {

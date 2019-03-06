@@ -26,7 +26,7 @@ object DebugLogUtil {
         }
     }
 
-    private fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
+    fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
         if (BuildConfig.DEBUG) {
             logger.onNext(DebugLogItem(log = log, level = level))
         }

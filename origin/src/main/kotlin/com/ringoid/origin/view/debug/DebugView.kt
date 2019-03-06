@@ -23,7 +23,7 @@ import timber.log.Timber
 @DebugOnly
 class DebugView : ConstraintLayout {
 
-    private val debugLogItemAdapter = DebugLogItemAdapter()
+    private val debugLogItemAdapter = DebugLogItemAdapter { post { rv_debug_items.scrollToPosition(it) } }
 
     constructor(context: Context): this(context, null)
 
@@ -43,7 +43,7 @@ class DebugView : ConstraintLayout {
 
         rv_debug_items.apply {
             adapter = debugLogItemAdapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context).also { it.stackFromEnd = true }
         }
 
         ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { debugLogItemAdapter.clear() }
