@@ -1,7 +1,7 @@
 package com.ringoid.data.remote.network
 
 import com.ringoid.data.remote.model.BaseResponse
-import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.log.SentryUtil
 import okhttp3.*
 import timber.log.Timber
 import java.net.SocketTimeoutException

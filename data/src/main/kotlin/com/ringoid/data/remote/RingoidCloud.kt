@@ -7,7 +7,7 @@ import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
-import com.ringoid.domain.breadcrumb
+import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence

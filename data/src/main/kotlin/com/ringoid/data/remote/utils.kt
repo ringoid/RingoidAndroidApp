@@ -2,7 +2,7 @@ package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.IEssence
 import io.reactivex.*
 import okhttp3.MediaType

@@ -2,7 +2,7 @@ package com.ringoid.data.repository
 
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.exception.*
 import io.reactivex.*
 import io.reactivex.functions.BiFunction

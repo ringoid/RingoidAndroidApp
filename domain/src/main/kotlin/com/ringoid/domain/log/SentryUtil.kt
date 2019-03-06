@@ -1,6 +1,7 @@
-package com.ringoid.domain
+package com.ringoid.domain.log
 
 import android.os.Build
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
@@ -43,11 +44,11 @@ object SentryUtil {
         }
     }
 
-    fun d(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.DEBUG,   extras = extras)
-    fun i(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.INFO,    extras = extras)
+    fun d(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.DEBUG, extras = extras)
+    fun i(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.INFO, extras = extras)
     fun w(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.WARNING, extras = extras)
-    fun e(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.ERROR,   extras = extras)
-    fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.FATAL,   extras = extras)
+    fun e(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.ERROR, extras = extras)
+    fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.FATAL, extras = extras)
 
     fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
                 extras: List<Pair<String, String>>? = null) {

@@ -6,7 +6,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params

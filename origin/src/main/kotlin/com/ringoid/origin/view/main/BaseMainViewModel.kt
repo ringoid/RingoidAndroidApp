@@ -2,7 +2,7 @@ package com.ringoid.origin.view.main
 
 import android.app.Application
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.log.SentryUtil
 
 abstract class BaseMainViewModel(app: Application) : BaseViewModel(app) {
 

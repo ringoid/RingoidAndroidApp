@@ -1,7 +1,9 @@
 package com.ringoid.domain.debug
 
+import com.ringoid.domain.BuildConfig
 import io.reactivex.subjects.PublishSubject
 
+@DebugOnly
 object DebugLogUtil {
 
     val logger: PublishSubject<DebugLogItem> = PublishSubject.create()
@@ -14,6 +16,8 @@ object DebugLogUtil {
     fun e(e: Throwable) = log(log = "${e.javaClass.simpleName}: ${e.message}".trim(), level = DebugLogLevel.ERROR)
 
     private fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
-        logger.onNext(DebugLogItem(log = log, level = level))
+        if (BuildConfig.DEBUG) {
+            logger.onNext(DebugLogItem(log = log, level = level))
+        }
     }
 }

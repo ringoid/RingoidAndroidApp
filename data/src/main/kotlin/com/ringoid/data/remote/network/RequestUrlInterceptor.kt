@@ -1,6 +1,6 @@
 package com.ringoid.data.remote.network
 
-import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.log.SentryUtil
 import okhttp3.Interceptor
 import okhttp3.Response
 

@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.SentryUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.model.feed.Lmm

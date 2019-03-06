@@ -15,7 +15,7 @@ import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.repository.*
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.breadcrumb
+import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
