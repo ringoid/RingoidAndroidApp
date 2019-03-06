@@ -3,6 +3,7 @@ package com.ringoid.domain.model.actions
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.action_storage.TriggerStrategy
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.IEssence
 
 sealed class BaseActionObject
@@ -42,5 +43,6 @@ open class ActionObject(
 
     open fun toActionString(): String = "ACTION"
 
+    @DebugOnly override fun toDebugPayload(): String = toActionString()
     override fun toSentryPayload(): String = "[${javaClass.simpleName}]"
 }

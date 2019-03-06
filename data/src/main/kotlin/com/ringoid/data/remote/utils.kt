@@ -2,6 +2,7 @@ package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.IEssence
 import io.reactivex.*
@@ -14,6 +15,26 @@ fun IEssence.toBody(): RequestBody = RequestBody.create(MediaType.parse("applica
 const val DEFAULT_TAG = "response"
 
 // ------------------------------------------------------------------------------------------------
+fun Completable.logRequest(tag: String = "", vararg data: Pair<String, String>): Completable = this  // no-op, for symmetry
+inline fun <reified T : BaseResponse> Maybe<T>.logRequest(tag: String = "", vararg data: Pair<String, String>): Maybe<T> = compose(logRequestMaybe<T>(tag, *data))
+inline fun <reified T : BaseResponse> Single<T>.logRequest(tag: String = "", vararg data: Pair<String, String>): Single<T> = compose(logRequestSingle<T>(tag, *data))
+inline fun <reified T : BaseResponse> Flowable<T>.logRequest(tag: String = "", vararg data: Pair<String, String>): Flowable<T> = compose(logRequestFlowable<T>(tag, *data))
+inline fun <reified T : BaseResponse> Observable<T>.logRequest(tag: String = "", vararg data: Pair<String, String>): Observable<T> = compose(logRequestObservable<T>(tag, *data))
+
+inline fun <reified T : BaseResponse> logRequestMaybe(tag: String = "", vararg data: Pair<String, String>): MaybeTransformer<T, T> =
+    MaybeTransformer { it.doOnSubscribe { logBaseRequest(tag, *data) } }
+inline fun <reified T : BaseResponse> logRequestSingle(tag: String = "", vararg data: Pair<String, String>): SingleTransformer<T, T> =
+    SingleTransformer { it.doOnSubscribe { logBaseRequest(tag, *data) } }
+inline fun <reified T : BaseResponse> logRequestFlowable(tag: String = "", vararg data: Pair<String, String>): FlowableTransformer<T, T> =
+    FlowableTransformer { it.doOnSubscribe { logBaseRequest(tag, *data) } }
+inline fun <reified T : BaseResponse> logRequestObservable(tag: String = "", vararg data: Pair<String, String>): ObservableTransformer<T, T> =
+    ObservableTransformer { it.doOnSubscribe { logBaseRequest(tag, *data) } }
+
+fun logBaseRequest(tag: String = "", vararg data: Pair<String, String>) {
+    DebugLogUtil.d("Request [$tag]: ${data.joinToString()}")
+}
+
+// ----------------------------------------------
 fun Completable.logResponse(tag: String = ""): Completable = this  // no-op, for symmetry
 inline fun <reified T : BaseResponse> Maybe<T>.logResponse(tag: String = ""): Maybe<T> = compose(logResponseMaybe<T>(tag))
 inline fun <reified T : BaseResponse> Single<T>.logResponse(tag: String = ""): Single<T> = compose(logResponseSingle<T>(tag))
@@ -33,6 +54,7 @@ inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "") {
     SentryUtil.breadcrumb("Response [$tag]", "error code" to it.errorCode,
         "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
         "request url" to "${it.requestUrl ?: ""}", "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
+    DebugLogUtil.d("Response [$tag]: $it")  // raw to string
 }
 
 // ------------------------------------------------------------------------------------------------

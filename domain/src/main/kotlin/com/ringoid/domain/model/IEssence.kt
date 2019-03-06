@@ -2,6 +2,7 @@ package com.ringoid.domain.model
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.ringoid.domain.debug.DebugOnly
 
 interface IEssence {
 
@@ -12,6 +13,9 @@ interface IEssence {
             .toJson(this)
 
     fun toJson(gson: Gson): String = gson.toJson(this)
+
+    @DebugOnly fun toDebugData(key: String? = "data"): Pair<String, String> = (key ?: javaClass.simpleName) to toDebugPayload()
+    @DebugOnly fun toDebugPayload(): String = toSentryPayload()
 
     fun toSentryData(): Pair<String, String> = javaClass.simpleName to toSentryPayload()
     fun toSentryPayload(): String = "${hashCode()}"

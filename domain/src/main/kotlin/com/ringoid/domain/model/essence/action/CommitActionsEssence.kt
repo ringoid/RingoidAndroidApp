@@ -14,5 +14,6 @@ data class CommitActionsEssence(
         const val COLUMN_ACTIONS = "actions"
     }
 
-    override fun toSentryPayload(): String = actions.joinToString(", ", "[", "]")
+    override fun toDebugPayload(): String = actions.joinToString(", ", "[", "]", transform = { it.toDebugPayload() })
+    override fun toSentryPayload(): String = actions.joinToString(", ", "[", "]", transform = { it.toSentryPayload() })
 }
