@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.adapter.lmm
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderHideChatControls
 import com.ringoid.origin.feed.adapter.base.LikeFeedViewHolderShowChatControls
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -17,12 +18,15 @@ class LikeFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
+        super.bind(model, payloads)
+        if (payloads.contains(FeedViewHolderShowControls)) {
+            itemView.ibtn_message.changeVisibility(isVisible = model.hasLiked())
+        }
         if (payloads.contains(LikeFeedViewHolderHideChatControls)) {
             itemView.ibtn_message.changeVisibility(isVisible = false)
         }
         if (payloads.contains(LikeFeedViewHolderShowChatControls)) {
             itemView.ibtn_message.changeVisibility(isVisible = true)
         }
-        super.bind(model, payloads)
     }
 }

@@ -19,6 +19,7 @@ data class FeedItemVO(
     constructor(profile: Profile): this(id = profile.id, images = profile.images)
 
     fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
+    fun hasLiked(): Boolean = likedImages.count { it.value } > 0
 }
 
 val EmptyFeedItemVO = FeedItemVO(feedItem = EmptyFeedItem)
