@@ -27,7 +27,7 @@
     <com.ringoid.origin.view.debug.DebugView
         android:id="@+id/debug_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/widget_debug_height"
         android:layout_gravity="bottom"
         android:visibility="gone"/>
 
