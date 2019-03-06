@@ -88,6 +88,10 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb:
         noMoreItems(emptyList()) { false }
     }
 
+    fun append(item: T) {
+        submitList(mutableListOf<T>().apply { addAll(helper.currentList) }.also { it.add(item) })
+    }
+
     fun append(list: List<T>?, isThereMore: List<T>.() -> Boolean = { false }) {
         if (!list.isNullOrEmpty()) {
             submitList(mutableListOf<T>().apply { addAll(helper.currentList) }.also { it.addAll(list) })
