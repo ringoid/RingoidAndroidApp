@@ -18,6 +18,7 @@ import com.ringoid.origin.R
 import com.ringoid.utility.linearLayoutManager
 import com.uber.autodispose.AutoDispose.autoDisposable
 import com.uber.autodispose.android.scope
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.widget_debug.view.*
 import timber.log.Timber
 
@@ -57,6 +58,7 @@ class DebugView : ConstraintLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         DebugLogUtil.logger
+            .observeOn(AndroidSchedulers.mainThread())
             .`as`(autoDisposable(scope()))
             .subscribe({ debugLogItemAdapter.append(DebugLogItemVO.from(it)) }, Timber::e)
     }
