@@ -21,7 +21,7 @@
 
         <com.ringoid.widget.view.item_view.SwitchIconItemView
             android:id="@+id/item_debug_log"
-            app:icon_item_icon="?attr/refDrawableThemeSwitch"
+            app:icon_item_icon="?attr/refDrawableDebug"
             app:icon_item_text="@string/debug_item_switch_debug_log"
             style="?attr/iconItemView"/>
 
