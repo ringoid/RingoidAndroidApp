@@ -1,5 +1,6 @@
 package com.ringoid.base.eventbus
 
+import com.ringoid.domain.debug.DebugLogUtil
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
@@ -7,6 +8,7 @@ object Bus {
 
     fun post(event: Any) {
         Timber.d("Post bus event: $event")
+        DebugLogUtil.b("Bus: $event")
         EventBus.getDefault().post(event)
     }
 

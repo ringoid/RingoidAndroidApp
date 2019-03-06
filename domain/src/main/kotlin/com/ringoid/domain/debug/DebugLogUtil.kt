@@ -9,6 +9,7 @@ object DebugLogUtil {
 
     val logger: PublishSubject<DebugLogItem> = PublishSubject.create()
 
+    fun b(log: String) = log(log, DebugLogLevel.BUS)
     fun v(log: String) = log(log, DebugLogLevel.VERBOSE)
     fun d(log: String) = log(log, DebugLogLevel.DEBUG)
     fun i(log: String) = log(log, DebugLogLevel.INFO)

@@ -7,12 +7,12 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.CreateUserImageUseCase
 import com.ringoid.domain.interactor.image.DeleteUserImageUseCase
 import com.ringoid.domain.interactor.image.GetUserImageByIdUseCase
 import com.ringoid.domain.interactor.image.GetUserImagesUseCase
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
@@ -23,9 +23,9 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import timber.log.Timber
 
 class UserProfileFragmentViewModel @Inject constructor(
     private val createUserImageUseCase: CreateUserImageUseCase,
