@@ -1,6 +1,7 @@
 package com.ringoid.data.remote.network
 
 import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import okhttp3.*
 import timber.log.Timber
@@ -28,6 +29,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         } catch (e: SocketTimeoutException) {
             errorMessage = "Connection timed out" ; Timber.e(e)
             unexpected = ERROR_CONNECTION_TIMED_OUT
+            DebugLogUtil.e(e)
         } catch (e: SSLHandshakeException) {
             errorMessage = "Connection is not secure" ; Timber.e(e)
             SentryUtil.capture(e, errorMessage)
@@ -35,6 +37,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         } catch (e: UnknownHostException) {
             errorMessage = "No network connection" ; Timber.e(e)
             unexpected = ERROR_NO_CONNECTION
+            DebugLogUtil.e(e)
         }
         val body = BaseResponse(requestUrl = request.url(), unexpected = unexpected)
         return Response.Builder()
