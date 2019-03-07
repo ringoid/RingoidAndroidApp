@@ -94,6 +94,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
             vm.onFreshStart()
             isOnFreshStart = false
         }
+        vm.onStart()
     }
 
     override fun onResume() {
@@ -119,6 +120,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         super.onStop()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onStop")
+        vm.onStop()
     }
 
     override fun onDestroy() {

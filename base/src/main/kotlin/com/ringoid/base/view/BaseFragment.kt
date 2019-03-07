@@ -120,6 +120,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
             vm.onFreshStart()
             isOnFreshStart = false
         }
+        vm.onStart()
     }
 
     override fun onResume() {
@@ -146,6 +147,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onStop()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onStop")
+        vm.onStop()
     }
 
     override fun onDestroyView() {
