@@ -38,6 +38,8 @@
         android:layout_marginBottom="@dimen/std_margin_8"
         android:ellipsize="end"
         android:maxLines="1"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
         android:textSize="@dimen/std_text_22"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
