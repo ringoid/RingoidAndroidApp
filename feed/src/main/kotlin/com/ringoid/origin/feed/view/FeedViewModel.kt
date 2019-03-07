@@ -36,6 +36,11 @@ abstract class FeedViewModel(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onStop() {
+        super.onStop()
+        advanceAndPushViewObjects()
+    }
+
     override fun onCleared() {
         super.onCleared()
         advanceAndPushViewObjects()
