@@ -153,6 +153,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             .flatMap { dropBackupQueue().toSingleDefault(it) }
 
     private fun triggerSourceImpl(): Single<Long> {
+        // TODO: in case of FAIL - try to trigger using backup queue
         DebugLogUtil.b("Commit actions [${queue.size}]")
         if (queue.isEmpty()) {
             Timber.v("Triggering empty queue [1] - no-op")
@@ -199,14 +200,22 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     // ------------------------------------------
     private fun backupQueue(): Completable =
-        Completable.fromCallable { local.addActionObjects(queue.map(mapper::map)) }
-            .doOnSubscribe { Timber.v("Started backup action objects' queue before triggering...") }
-            .doOnComplete { Timber.v("Action objects' queue has been backup-ed, before triggering") }
+        if (queue.isEmpty()) {
+            Completable.complete()
+        } else {
+            Completable.fromCallable { local.addActionObjects(queue.map(mapper::map)) }
+                .doOnSubscribe { Timber.v("Started backup action objects' queue before triggering...") }
+                .doOnComplete { Timber.v("Action objects' queue has been backup-ed, before triggering") }
+        }
 
     private fun dropBackupQueue(): Completable =
-        Completable.fromCallable { local.deleteActionObjects() }
-            .doOnSubscribe { Timber.v("Started to drop backup of action objects' queue after triggered...") }
-            .doOnComplete { Timber.v("Action objects' queue backup has been dropped after triggered") }
+        if (queue.isEmpty()) {
+            Completable.complete()
+        } else {
+            Completable.fromCallable { local.deleteActionObjects() }
+                .doOnSubscribe { Timber.v("Started to drop backup of action objects' queue after triggered...") }
+                .doOnComplete { Timber.v("Action objects' queue backup has been dropped after triggered") }
+        }
 
     private fun printQueue(): String =
         queue.joinToString(", ", "[", "]", transform = { it.toActionString() })
