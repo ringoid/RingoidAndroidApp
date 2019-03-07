@@ -53,8 +53,8 @@ class LoginViewModel @Inject constructor(
         val essence = AuthCreateProfileEssence(
             yearOfBirth = yearOfBirth,
             sex = gender?.string ?: Gender.MALE.string /* safe null-check */,
-            device = String.format("%s, %d", Build.VERSION.RELEASE, Build.VERSION.SDK_INT),
-            osVersion = String.format("%s, %s, %s", Build.MODEL, Build.MANUFACTURER, Build.PRODUCT))
+            device = String.format("%s, %s, %s", Build.MODEL, Build.MANUFACTURER, Build.PRODUCT),
+            osVersion = String.format("%s, %d", Build.VERSION.RELEASE, Build.VERSION.SDK_INT))
 
         createUserProfileUseCase.source(params = Params().put(essence))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
