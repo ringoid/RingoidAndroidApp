@@ -6,6 +6,7 @@ import com.ringoid.data.local.database.BlockProfilesUserRingoidDatabase
 import com.ringoid.data.local.database.DebugRingoidDatabase
 import com.ringoid.data.local.database.RingoidDatabase
 import com.ringoid.data.local.database.UserRingoidDatabase
+import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDaoHelper
 import com.ringoid.data.local.database.dao.feed.FeedDao
@@ -47,6 +48,9 @@ class DatabaseModule {
         Room.databaseBuilder(applicationContext, DebugRingoidDatabase::class.java, DebugRingoidDatabase.DATABASE_NAME)
             .fallbackToDestructiveMigration()
             .build()
+
+    @Provides @Singleton
+    fun provideActionObjectDao(database: RingoidDatabase): ActionObjectDao = database.actionObjectDao()
 
     @Provides @Singleton
     fun provideFeedDao(database: RingoidDatabase): FeedDao = database.feedDao()

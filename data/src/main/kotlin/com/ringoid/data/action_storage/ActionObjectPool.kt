@@ -1,5 +1,6 @@
 package com.ringoid.data.action_storage
 
+import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -25,8 +26,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, private val spm: SharedPrefsManager,
-                                           private val userScopeProvider: UserScopeProvider)
+class ActionObjectPool @Inject constructor(
+    private val cloud: RingoidCloud, private val local: ActionObjectDao,
+    private val spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
     : IActionObjectPool {
 
     companion object {
@@ -165,8 +167,8 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         .subscribeOn(Schedulers.io())
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSubscribe {
-            // TODO: cache the queue to restore later in case of failure all retries
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
+            backupQueue()
             queue.clear()  // TODO: if no connection - clear queue at this stage leads to lost data
             numbers.clear()
             strategies.clear()
@@ -191,6 +193,10 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
     }
 
     // ------------------------------------------
+    private fun backupQueue() {
+        // TODO backupQueue
+    }
+
     private fun printQueue(): String =
         queue.joinToString(", ", "[", "]", transform = { it.toActionString() })
 }
