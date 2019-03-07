@@ -18,5 +18,5 @@ class BlockActionObject(
 
     override fun propertyString(): String? = "blockReason=$numberOfBlockReason"
 
-    override fun toActionString(): String = "BLOCK"
+    override fun toActionString(): String = "BLOCK($numberOfBlockReason)"
 }

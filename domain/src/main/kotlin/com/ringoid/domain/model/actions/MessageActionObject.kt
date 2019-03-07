@@ -18,5 +18,5 @@ class MessageActionObject(
 
     override fun propertyString(): String? = "text=$text"
 
-    override fun toActionString(): String = "MESSAGE"
+    override fun toActionString(): String = "MESSAGE($text)"
 }

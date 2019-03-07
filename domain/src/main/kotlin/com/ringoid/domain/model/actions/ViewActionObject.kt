@@ -35,5 +35,5 @@ class ViewActionObject(
 
     override fun propertyString(): String? = "count=$count, timeInMillis=$timeInMillis"
 
-    override fun toActionString(): String = "VIEW"
+    override fun toActionString(): String = "VIEW($timeInMillis)"
 }
