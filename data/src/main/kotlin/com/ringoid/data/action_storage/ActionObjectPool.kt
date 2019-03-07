@@ -183,6 +183,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             // Queue.size == 0 always at this stage
             Timber.d("Successfully committed all [${queue.size}] actions, triggering has finished")
             if (lastActionTime != it.lastActionTime) {
+                Timber.w("Last action times differ: server=${it.lastActionTime}, client=$lastActionTime, delta=${it.lastActionTime - lastActionTime}")
                 SentryUtil.w("Last action time from Server differs from Client",
                     listOf("server last action time" to "${it.lastActionTime}",
                            "client last action time" to "$lastActionTime"))
