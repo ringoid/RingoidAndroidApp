@@ -4,12 +4,12 @@ import android.app.Application
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -39,6 +39,7 @@ abstract class FeedViewModel(
     override fun onStop() {
         super.onStop()
         advanceAndPushViewObjects()
+        // TODO: retrigger view aobjs on restart, if so
     }
 
     override fun onCleared() {
@@ -67,7 +68,8 @@ abstract class FeedViewModel(
     }
 
     fun onStartRefresh() {
-        advanceAndPushViewObjects()
+        // TODO: need to commit VIEWs, thar are in pool, and recreate them
+        // TODO: in order 'getFeed()' called with these new VIEWs after queue triggered
         actionObjectPool.trigger()
     }
 
