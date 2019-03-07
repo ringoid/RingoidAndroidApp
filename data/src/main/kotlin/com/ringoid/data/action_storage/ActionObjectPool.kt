@@ -12,7 +12,6 @@ import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
 import com.uber.autodispose.lifecycle.autoDisposable
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
@@ -20,7 +19,6 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -51,7 +49,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         when (aobj) {
             is ViewActionObject -> { /* no-op */ }
             else -> {
-                val viewAobj = ViewActionObject(actionTime = aobj.actionTime, sourceFeed = aobj.sourceFeed,
+                val viewAobj = ViewActionObject(actionTime = aobj.actionTime - 1, sourceFeed = aobj.sourceFeed,
                     targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId,
                     triggerStrategies = emptyList() /* no trigger strategies for synthetic action object */)
                 queue.offer(viewAobj)
