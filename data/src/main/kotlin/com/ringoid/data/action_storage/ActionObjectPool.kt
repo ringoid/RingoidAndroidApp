@@ -37,7 +37,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         private const val CAPACITY = 10
     }
 
-    private val queue: Queue<ActionObject> = ArrayDeque()
+    private val queue: Deque<ActionObject> = ArrayDeque()
     var lastActionTime: Long = 0L
         private set
 
@@ -172,7 +172,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         .subscribeOn(Schedulers.io())
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSubscribe {
-            lastActionTime = queue.peek()?.actionTime ?: 0L
+            lastActionTime = queue.peekLast()?.actionTime ?: 0L
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
             queue.clear()
             numbers.clear()
