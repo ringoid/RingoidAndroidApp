@@ -6,6 +6,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.*
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -146,6 +147,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
     override fun triggerSource(): Single<Long> = triggerSourceImpl()
 
     private fun triggerSourceImpl(): Single<Long> {
+        DebugLogUtil.b("Commit actions [${queue.size}]")
         if (queue.isEmpty()) {
             Timber.v("Triggering empty queue [1] - no-op")
             return Single.just(lastActionTime)
