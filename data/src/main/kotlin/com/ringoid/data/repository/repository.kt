@@ -3,8 +3,8 @@ package com.ringoid.data.repository
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.exception.*
+import com.ringoid.domain.log.SentryUtil
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
@@ -61,7 +61,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
                                 .doOnSubscribe {
-                                    val retryAttemptMessage = "Retry [$attemptNumber / $count] on: $error"
+                                    val retryAttemptMessage = "Retry [$attemptNumber / $count] on: ${error.message}"
                                     Timber.w(retryAttemptMessage); DebugLogUtil.w(retryAttemptMessage)
                                 }
                                 .doOnNext {
