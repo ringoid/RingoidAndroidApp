@@ -7,6 +7,7 @@ import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -174,6 +175,11 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud, priv
         .doOnSuccess {
             // TODO: queue.size == 0 always at this stage
             Timber.d("Successfully committed all [${queue.size}] actions, triggering has finished")
+            if (lastActionTime != it.lastActionTime) {
+                SentryUtil.w("Last action time from Server differs from Client",
+                    listOf("server last action time" to "${it.lastActionTime}",
+                           "client last action time" to "$lastActionTime"))
+            }
             lastActionTime = it.lastActionTime
         }
         .doOnDispose {
