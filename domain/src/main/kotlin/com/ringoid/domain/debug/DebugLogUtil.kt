@@ -28,7 +28,7 @@ object DebugLogUtil {
     }
 
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.IS_STAGING) {
             logger.onNext(DebugLogItem(log = log, level = level))
         }
     }
