@@ -139,9 +139,11 @@ abstract class FeedViewModel(
             }
 
         items.forEach {
-            addViewObjectToBuffer(ViewActionObject(
-                timeInMillis = 0L, sourceFeed = getFeedName(),
-                targetImageId = it.image.id, targetUserId = it.profileId))
+            if (it.image.isRealModel) {
+                addViewObjectToBuffer(ViewActionObject(
+                    timeInMillis = 0L, sourceFeed = getFeedName(),
+                    targetImageId = it.image.id, targetUserId = it.profileId))
+            }
         }
         prevRange = items
     }
