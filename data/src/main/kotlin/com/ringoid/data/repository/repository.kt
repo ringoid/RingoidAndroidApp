@@ -2,6 +2,7 @@ package com.ringoid.data.repository
 
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.exception.*
 import io.reactivex.*
@@ -59,7 +60,10 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                                .doOnSubscribe { Timber.w("Retry attempt [$attemptNumber / $count] after error: $error") }
+                                .doOnSubscribe {
+                                    val retryAttemptMessage = "Retry [$attemptNumber / $count] on: $error"
+                                    Timber.w(retryAttemptMessage); DebugLogUtil.w(retryAttemptMessage)
+                                }
                                 .doOnNext {
                                     if (error is RepeatRequestAfterSecException) {
                                         SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, extras = extras)

@@ -6,6 +6,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.ThresholdExceededException
@@ -136,6 +137,7 @@ class ExploreViewModel @Inject constructor(
             return
         }
         if (itemsLeftToEnd <= DomainUtil.LOAD_MORE_THRESHOLD) {
+            DebugLogUtil.b("Load next page")
             isLoadingMore = true
             actionObjectPool.trigger()
             getMoreFeed()
