@@ -9,7 +9,7 @@ object ThemeUtils {
     private val defaultTheme = R.style.AppTheme_Dark
 
     fun isDefaultTheme(spm: ISharedPrefsManager): Boolean = spm.getThemeResId(defaultTheme) == defaultTheme
-    fun isDarkTheme(spm: ISharedPrefsManager): Boolean = spm.getThemeResId() == R.style.AppTheme_Dark
+    fun isDarkTheme(spm: ISharedPrefsManager): Boolean = spm.getThemeResId(defaultTheme) == R.style.AppTheme_Dark
 
     @StyleRes
     fun switchTheme(spm: ISharedPrefsManager): Int {
