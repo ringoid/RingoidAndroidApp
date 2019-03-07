@@ -3,6 +3,7 @@ package com.ringoid.data.local.database.model.action_storage
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.ringoid.domain.model.actions.ActionObject
 
 @Entity(tableName = ActionObjectDbo.TABLE_NAME)
 data class ActionObjectDbo(
@@ -13,10 +14,10 @@ data class ActionObjectDbo(
     @ColumnInfo(name = COLUMN_TARGET_IMAGE_ID) val targetImageId: String,
     @ColumnInfo(name = COLUMN_TARGET_USER_ID) val targetUserId: String,
     // concrete action objects
-    @ColumnInfo(name = COLUMN_NUMBER_BLOCK_REASON) val blockReasonNumber: Int,
-    @ColumnInfo(name = COLUMN_MESSAGE_TEXT) val messageText: String,
-    @ColumnInfo(name = COLUMN_OPEN_CHAT_TIME_MILLIS) val openChatTimeMillis: Long,
-    @ColumnInfo(name = COLUMN_VIEW_TIME_MILLIS) val viewTimeMillis: Long) {
+    @ColumnInfo(name = COLUMN_NUMBER_BLOCK_REASON) var blockReasonNumber: Int = 0,
+    @ColumnInfo(name = COLUMN_MESSAGE_TEXT) var messageText: String = "",
+    @ColumnInfo(name = COLUMN_OPEN_CHAT_TIME_MILLIS) var openChatTimeMillis: Long = 0L,
+    @ColumnInfo(name = COLUMN_VIEW_TIME_MILLIS) var viewTimeMillis: Long = 0L) {
 
     companion object {
         const val COLUMN_ID = "id"
@@ -33,5 +34,8 @@ data class ActionObjectDbo(
         const val COLUMN_VIEW_TIME_MILLIS = "viewTimeMillis"
 
         const val TABLE_NAME = "ActionObjects"
+
+        fun from(aobj: ActionObject): ActionObjectDbo =
+            ActionObjectDbo(actionTime = aobj.actionTime, actionType = aobj.actionType, sourceFeed = aobj.sourceFeed, targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId)
     }
 }

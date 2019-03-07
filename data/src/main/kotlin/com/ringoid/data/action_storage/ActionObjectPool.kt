@@ -1,6 +1,7 @@
 package com.ringoid.data.action_storage
 
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
+import com.ringoid.data.local.database.model.action_storage.ActionObjectDboMapper
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -14,6 +15,7 @@ import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
@@ -26,8 +28,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ActionObjectPool @Inject constructor(
-    private val cloud: RingoidCloud, private val local: ActionObjectDao,
+class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
+    private val local: ActionObjectDao, private val mapper: ActionObjectDboMapper,
     private val spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
     : IActionObjectPool {
 
@@ -145,7 +147,10 @@ class ActionObjectPool @Inject constructor(
         // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
     }
 
-    override fun triggerSource(): Single<Long> = triggerSourceImpl()
+    override fun triggerSource(): Single<Long> =
+        backupQueue()
+            .andThen(triggerSourceImpl())
+            .flatMap { dropBackupQueue().toSingleDefault(it) }
 
     private fun triggerSourceImpl(): Single<Long> {
         DebugLogUtil.b("Commit actions [${queue.size}]")
@@ -168,14 +173,13 @@ class ActionObjectPool @Inject constructor(
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSubscribe {
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
-            backupQueue()
-            queue.clear()  // TODO: if no connection - clear queue at this stage leads to lost data
+            queue.clear()
             numbers.clear()
             strategies.clear()
             timers.forEach { it.value?.dispose() }.also { timers.clear() }
         }
         .doOnSuccess {
-            // TODO: queue.size == 0 always at this stage
+            // Queue.size == 0 always at this stage
             Timber.d("Successfully committed all [${queue.size}] actions, triggering has finished")
             if (lastActionTime != it.lastActionTime) {
                 SentryUtil.w("Last action time from Server differs from Client",
@@ -193,9 +197,15 @@ class ActionObjectPool @Inject constructor(
     }
 
     // ------------------------------------------
-    private fun backupQueue() {
-        // TODO backupQueue
-    }
+    private fun backupQueue(): Completable =
+        Completable.fromCallable { local.addActionObjects(queue.map(mapper::map)) }
+            .doOnSubscribe { Timber.v("Started backup action objects' queue before triggering...") }
+            .doOnComplete { Timber.v("Action objects' queue has been backup-ed, before triggering") }
+
+    private fun dropBackupQueue(): Completable =
+        Completable.fromCallable { local.deleteActionObjects() }
+            .doOnSubscribe { Timber.v("Started to drop backup of action objects' queue after triggered...") }
+            .doOnComplete { Timber.v("Action objects' queue backup has been dropped after triggered") }
 
     private fun printQueue(): String =
         queue.joinToString(", ", "[", "]", transform = { it.toActionString() })
