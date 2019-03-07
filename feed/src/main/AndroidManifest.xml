@@ -4,6 +4,6 @@
     <application>
         <activity
             android:name=".view.dialog.BlockBottomSheetActivity"
-            android:theme="@style/AppTheme.Light.SemiTransparent"/>
+            android:theme="@style/AppTheme.Dark.SemiTransparent"/>
     </application>
 </manifest>
