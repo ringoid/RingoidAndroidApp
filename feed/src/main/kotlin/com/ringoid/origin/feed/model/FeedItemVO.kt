@@ -20,6 +20,8 @@ data class FeedItemVO(
 
     fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
     fun hasLiked(): Boolean = likedImages.count { it.value } > 0
+
+    fun hashIdWithFirst7(): String = "${id.substring(0..7)}_${getModelId()}"
 }
 
 val EmptyFeedItemVO = FeedItemVO(feedItem = EmptyFeedItem)
