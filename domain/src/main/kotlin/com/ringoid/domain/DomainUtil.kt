@@ -14,4 +14,8 @@ object DomainUtil {
     const val CLIPBOARD_KEY_CHAT_MESSAGE = "chatMessage"
     const val CLIPBOARD_KEY_CUSTOMER_ID = "customerId"
     const val CLIPBOARD_KEY_DEBUG = "debug"
+
+    const val SOURCE_FEED_LIKES = "lmm_likes"
+    const val SOURCE_FEED_MATCHES = "lmm_matches"
+    const val SOURCE_FEED_MESSAGES = "lmm_messages"
 }

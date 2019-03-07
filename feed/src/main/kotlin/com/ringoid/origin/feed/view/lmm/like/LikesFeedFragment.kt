@@ -1,7 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.like
 
-import android.os.Bundle
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.*
@@ -9,10 +9,8 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
-import com.ringoid.utility.communicator
 import timber.log.Timber
 
 class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
@@ -37,6 +35,8 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh)
             else -> null
         }
+
+    override fun getSourceFeed(): String = DomainUtil.SOURCE_FEED_LIKES
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {

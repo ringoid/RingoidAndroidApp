@@ -11,12 +11,12 @@ import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.mapList
-import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
@@ -165,9 +165,10 @@ open class FeedRepository @Inject constructor(
     // --------------------------------------------------------------------------------------------
     private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
         doAfterSuccess {
-            val messages = mutableListOf<Message>()
-                .also { l -> it.messages.forEach { l.addAll(it.messages) } }
-                .map { MessageDbo.from(it) }
+            val messages = mutableListOf<MessageDbo>()
+            it.likes.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_LIKES) }) }
+            it.matches.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MATCHES) }) }
+            it.messages.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MESSAGES) }) }
             messengerLocal.addMessages(messages)  // cache new messages
         }
 }

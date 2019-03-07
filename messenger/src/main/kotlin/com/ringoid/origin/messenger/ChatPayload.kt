@@ -13,10 +13,13 @@ data class ChatPayload(
     @Expose @SerializedName(COLUMN_PEER_ID) val peerId: String = DomainUtil.BAD_ID,
     @Expose @SerializedName(COLUMN_PEER_IMAGE_ID) val peerImageId: String = DomainUtil.BAD_ID,
     @Expose @SerializedName(COLUMN_PEER_IMAGE_URI) val peerImageUri: String? = null,
-    @Expose @SerializedName(COLUMN_FIRST_USER_MESSAGE) var firstUserMessage: Message? = null) : IEssence, Parcelable {
+    @Expose @SerializedName(COLUMN_FIRST_USER_MESSAGE) var firstUserMessage: Message? = null,
+    @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES)
+    : IEssence, Parcelable {
 
     private constructor(source: Parcel): this(position = source.readInt(), peerId = source.readString() ?: DomainUtil.BAD_ID,
         peerImageId = source.readString() ?: DomainUtil.BAD_ID, peerImageUri = source.readString(),
+        sourceFeed = source.readString() ?: DomainUtil.SOURCE_FEED_MESSAGES,
         firstUserMessage = source.readParcelable(Message::class.java.classLoader))
 
     override fun describeContents(): Int = 0
@@ -27,6 +30,7 @@ data class ChatPayload(
             writeString(peerId)
             writeString(peerImageId)
             writeString(peerImageUri)
+            writeString(sourceFeed)
             writeParcelable(firstUserMessage, flags)
         }
     }
@@ -37,6 +41,7 @@ data class ChatPayload(
         const val COLUMN_PEER_IMAGE_ID = "peerImageId"
         const val COLUMN_PEER_IMAGE_URI = "peerImageUri"
         const val COLUMN_FIRST_USER_MESSAGE = "firstUserMessage"
+        const val COLUMN_SOURCE_FEED = "sourceFeed"
 
         @JvmField
         val CREATOR = object : Parcelable.Creator<ChatPayload> {

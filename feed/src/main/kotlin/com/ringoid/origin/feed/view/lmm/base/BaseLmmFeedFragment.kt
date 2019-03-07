@@ -45,6 +45,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
             }
         }
 
+    protected abstract fun getSourceFeed(): String
+
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(payload: ChatPayload) {
         vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = "chat")
@@ -91,8 +93,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         position = position,
                         peerId = peerId,
                         peerImageId = image?.id ?: DomainUtil.BAD_ID,
-                        peerImageUri = image?.uri
-                    )
+                        peerImageUri = image?.uri,
+                        sourceFeed = getSourceFeed())
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     scrollToTopOfItemAtPositionAndPost(position).post {
                         feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)

@@ -24,9 +24,11 @@ class ChatViewModel @Inject constructor(
     val messages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
 
-    fun getMessages(profileId: String) {
+    fun getMessages(profileId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES) {
+        val params = Params().put("chatId", profileId)
+                             .put("sourceFeed", sourceFeed)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
-        getMessagesForPeerUseCase.source(params = Params().put("chatId", profileId))
+        getMessagesForPeerUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }

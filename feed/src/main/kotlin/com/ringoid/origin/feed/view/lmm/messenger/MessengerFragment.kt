@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
@@ -29,4 +30,6 @@ class MessengerFragment : BaseMatchesFeedFragment<MessengerViewModel>() {
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh)
             else -> null
         }
+
+    override fun getSourceFeed(): String = DomainUtil.SOURCE_FEED_MESSAGES
 }

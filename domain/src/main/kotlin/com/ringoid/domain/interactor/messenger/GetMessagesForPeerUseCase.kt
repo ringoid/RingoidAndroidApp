@@ -1,10 +1,11 @@
 package com.ringoid.domain.interactor.messenger
 
+import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.exception.MissingRequiredParamsException
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.SingleUseCase
-import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import io.reactivex.Single
@@ -14,6 +15,12 @@ class GetMessagesForPeerUseCase @Inject constructor(private val repository: IMes
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<List<Message>>(threadExecutor, postExecutor) {
 
-    override fun sourceImpl(params: Params): Single<List<Message>> =
-        params.processSingle("chatId", repository::getMessages)
+    override fun sourceImpl(params: Params): Single<List<Message>> {
+        val chatId = params.get<String>("chatId")
+        val sourceFeed = params.get<String>("sourceFeed") ?: DomainUtil.SOURCE_FEED_MESSAGES
+        if (chatId.isNullOrBlank()) {
+            throw MissingRequiredParamsException()
+        }
+        return repository.getMessages(chatId = chatId, sourceFeed = sourceFeed)
+    }
 }
