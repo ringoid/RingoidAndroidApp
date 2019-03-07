@@ -39,7 +39,6 @@ abstract class FeedViewModel(
     override fun onCleared() {
         super.onCleared()
         advanceAndPushViewObjects()
-        prevRange = null
     }
 
     /* Feed */
@@ -63,6 +62,7 @@ abstract class FeedViewModel(
     }
 
     fun onStartRefresh() {
+        advanceAndPushViewObjects()
         actionObjectPool.trigger()
     }
 
@@ -166,6 +166,7 @@ abstract class FeedViewModel(
         viewActionObjectBuffer.apply {
             values.forEach { it.advance() ; actionObjectPool.put(it) }
             clear()
+            prevRange = null
         }
     }
 
