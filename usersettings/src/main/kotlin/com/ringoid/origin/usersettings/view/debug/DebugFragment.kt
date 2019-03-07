@@ -7,11 +7,13 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.*
+import timber.log.Timber
 import kotlinx.android.synthetic.main.fragment_debug.*
 import kotlinx.android.synthetic.main.fragment_debug.view.*
 
@@ -81,6 +83,17 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
             setLabel("Density: ${activity?.getScreenDensity()}, SW: ${activity?.getSmallestWidth()}, " +
                      "W: ${activity?.getScreenWidthDp()} dp [${activity?.getScreenWidth()} px], " +
                      "H: ${activity?.getScreenHeightDp()} dp [${activity?.getScreenHeight()} px]")
+        }
+        btn_clear_debug_log.clicks().compose(clickDebounce()).subscribe { DebugLogUtil.clear() }
+        btn_copy_debug_log.clicks().compose(clickDebounce()).subscribe {
+            DebugLogUtil.getDebugLog()
+                ?.map { it.joinToString("\n", transform = { it.log() }) }
+                ?.subscribe({ log ->
+                    context?.let {
+                        it.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = log)
+                        it.toast(OriginR_string.common_clipboard)
+                    }
+                }, Timber::e)
         }
     }
 }

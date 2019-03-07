@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.debug.EmptyDebugLogItem
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.copyToClipboard
 import com.ringoid.utility.toast
@@ -48,7 +49,7 @@ class DebugView : ConstraintLayout {
             layoutManager = LinearLayoutManager(context).also { it.stackFromEnd = true }
         }
 
-        ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { debugLogItemAdapter.clear() }
+        ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { clear() }
         ibtn_share_debug.clicks().compose(clickDebounce()).subscribe {
             context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = debugLogItemAdapter.getContentText())
             context.toast(R.string.common_clipboard)
@@ -60,6 +61,16 @@ class DebugView : ConstraintLayout {
         DebugLogUtil.logger
             .observeOn(AndroidSchedulers.mainThread())
             .`as`(autoDisposable(scope()))
-            .subscribe({ debugLogItemAdapter.append(DebugLogItemVO.from(it)) }, Timber::e)
+            .subscribe({
+                if (it == EmptyDebugLogItem) {
+                    clear()
+                } else {
+                    debugLogItemAdapter.append(DebugLogItemVO.from(it))
+                }
+            }, Timber::e)
+    }
+
+    private fun clear() {
+        debugLogItemAdapter.clear()
     }
 }

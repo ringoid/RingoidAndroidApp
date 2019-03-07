@@ -3,7 +3,9 @@ package com.ringoid.origin.app
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.BaseRingoidApplication
+import com.ringoid.origin.app.di.ApplicationComponent
 import com.ringoid.origin.app.di.DaggerApplicationComponent
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
@@ -17,4 +19,5 @@ class RingoidApplication : BaseRingoidApplication() {
             .cloudModule(CloudModule(appVersion = BuildConfig.BUILD_NUMBER))
             .ringoidCloudModule(RingoidCloudModule())
             .create(this)
+            .also { DebugLogUtil.connectToDb((it as ApplicationComponent).debugLogDao()) }
 }

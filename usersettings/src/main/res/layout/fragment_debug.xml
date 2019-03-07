@@ -25,6 +25,44 @@
             app:icon_item_text="@string/debug_item_switch_debug_log"
             style="?attr/iconItemView"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/std_margin_8"
+            android:layout_marginBottom="@dimen/std_margin_8"
+            android:layout_marginStart="@dimen/std_margin_16"
+            android:layout_marginEnd="@dimen/std_margin_16"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_clear_debug_log"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/raised_button_secondary_bg"
+                android:paddingTop="@dimen/std_margin_16"
+                android:paddingBottom="@dimen/std_margin_16"
+                android:text="@string/debug_item_clear_debug_log_button_label"
+                android:textSize="@dimen/std_text_20"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/RaisedButton"/>
+
+            <Button
+                android:id="@+id/btn_copy_debug_log"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/std_margin_16"
+                android:paddingTop="@dimen/std_margin_16"
+                android:paddingBottom="@dimen/std_margin_16"
+                android:text="@string/debug_item_copy_debug_log_button_label"
+                android:textSize="@dimen/std_text_20"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/RaisedButton"/>
+        </LinearLayout>
+
         <View style="@style/Underscore"/>
 
         <com.ringoid.widget.view.item_view.LabelIconItemView

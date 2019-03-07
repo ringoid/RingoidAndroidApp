@@ -1,6 +1,9 @@
 package com.ringoid.domain.debug
 
 import com.ringoid.domain.BuildConfig
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.sentry.event.Event
 
@@ -8,6 +11,7 @@ import io.sentry.event.Event
 object DebugLogUtil {
 
     val logger: PublishSubject<DebugLogItem> = PublishSubject.create()
+    private var dao: IDebugLogDaoHelper? = null
 
     fun b(log: String) = log(log, DebugLogLevel.BUS)
     fun v(log: String) = log(log, DebugLogLevel.VERBOSE)
@@ -29,7 +33,26 @@ object DebugLogUtil {
 
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
         if (BuildConfig.IS_STAGING) {
-            logger.onNext(DebugLogItem(log = log, level = level))
+            val logItem = DebugLogItem(log = log, level = level)
+            logger.onNext(logItem)
+            dao?.addDebugLog(logItem)
         }
     }
+
+    fun clear() {
+        if (BuildConfig.IS_STAGING) {
+            logger.onNext(EmptyDebugLogItem)
+            dao?.deleteDebugLog()
+        }
+    }
+
+    // ------------------------------------------
+    fun connectToDb(dao: IDebugLogDaoHelper) {
+        this.dao = dao
+    }
+
+    fun getDebugLog(): Single<List<DebugLogItem>>? =
+        dao?.debugLog()
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
 }
