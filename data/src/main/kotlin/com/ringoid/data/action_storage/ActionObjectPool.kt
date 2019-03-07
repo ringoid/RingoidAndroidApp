@@ -192,6 +192,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
             lastActionTime = 0L  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
             triggerInProgress.set(0)
+            dropBackupQueue().subscribe()
         }
         .map { it.lastActionTime }
     }
