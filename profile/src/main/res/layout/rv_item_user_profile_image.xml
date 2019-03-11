@@ -13,6 +13,22 @@
         android:contentDescription="@null"
         android:scaleType="centerCrop"/>
 
+    <TextView
+        android:id="@+id/tv_image_id"
+        android:layout_marginStart="@dimen/std_margin_8"
+        android:layout_marginBottom="@dimen/std_margin_40"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        android:textColor="@color/red_love"
+        android:textSize="@dimen/std_text_22"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Debug image id"
+        style="@style/StdText.Accent"/>
+
     <ProgressBar
         android:id="@+id/pb_image"
         android:visibility="gone"
