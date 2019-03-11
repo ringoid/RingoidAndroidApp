@@ -36,37 +36,23 @@ fun logBaseRequest(tag: String = "", vararg data: Pair<String, String>) {
 }
 
 // ----------------------------------------------
-fun Completable.logResponse(tag: String = ""): Completable = this  // no-op, for symmetry
-inline fun <reified T : BaseResponse> Maybe<T>.logResponse(tag: String = ""): Maybe<T> = compose(logResponseMaybe<T>(tag))
-inline fun <reified T : BaseResponse> Single<T>.logResponse(tag: String = ""): Single<T> = compose(logResponseSingle<T>(tag))
-inline fun <reified T : BaseResponse> Flowable<T>.logResponse(tag: String = ""): Flowable<T> = compose(logResponseFlowable<T>(tag))
-inline fun <reified T : BaseResponse> Observable<T>.logResponse(tag: String = ""): Observable<T> = compose(logResponseObservable<T>(tag))
-
-inline fun <reified T : BaseResponse> logResponseMaybe(tag: String = ""): MaybeTransformer<T, T> =
-    MaybeTransformer { it.doOnSuccess { logBaseResponse(it, tag) } }
-inline fun <reified T : BaseResponse> logResponseSingle(tag: String = ""): SingleTransformer<T, T> =
-    SingleTransformer { it.doOnSuccess { logBaseResponse(it, tag) } }
-inline fun <reified T : BaseResponse> logResponseFlowable(tag: String = ""): FlowableTransformer<T, T> =
-    FlowableTransformer { it.doOnNext { logBaseResponse(it, tag) } }
-inline fun <reified T : BaseResponse> logResponseObservable(tag: String = ""): ObservableTransformer<T, T> =
-    ObservableTransformer { it.doOnNext { logBaseResponse(it, tag) } }
-
-inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "") {
-    SentryUtil.breadcrumb("Response [$tag]", "error code" to it.errorCode,
+inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "", startTime: Long) {
+    val elapsedTime = System.currentTimeMillis() - startTime
+    SentryUtil.breadcrumb("Response [$tag]", "elapsedTime" to "$elapsedTime ms", "error code" to it.errorCode,
         "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
         "request url" to "${it.requestUrl ?: ""}", "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
-    DebugLogUtil.log("<== [$tag]: ${it.toLogString()} ${it.errorString()}".trim(),
+    DebugLogUtil.log("<== [$tag][$elapsedTime ms]: ${it.toLogString()} ${it.errorString()}".trim(),
                      level = if (it.isSuccessful()) DebugLogLevel.DEBUG else DebugLogLevel.ERROR)
 }
 
 // ------------------------------------------------------------------------------------------------
-fun Completable.checkResponseTime(tag: String = DEFAULT_TAG): Completable = compose(checkResponseTimeCompletable(tag))
-inline fun <reified T> Maybe<T>.checkResponseTime(tag: String = DEFAULT_TAG): Maybe<T> = compose(checkResponseTimeMaybe(tag))
-inline fun <reified T> Single<T>.checkResponseTime(tag: String = DEFAULT_TAG): Single<T> = compose(checkResponseTimeSingle(tag))
-inline fun <reified T> Flowable<T>.checkResponseTime(tag: String = DEFAULT_TAG): Flowable<T> = compose(checkResponseTimeFlowable(tag))
-inline fun <reified T> Observable<T>.checkResponseTime(tag: String = DEFAULT_TAG): Observable<T> = compose(checkResponseTimeObservable(tag))
+fun Completable.logResponse(tag: String = DEFAULT_TAG): Completable = compose(logResponseCompletable(tag))
+inline fun <reified T : BaseResponse> Maybe<T>.logResponse(tag: String = DEFAULT_TAG): Maybe<T> = compose(logResponseMaybe(tag))
+inline fun <reified T : BaseResponse> Single<T>.logResponse(tag: String = DEFAULT_TAG): Single<T> = compose(logResponseSingle(tag))
+inline fun <reified T : BaseResponse> Flowable<T>.logResponse(tag: String = DEFAULT_TAG): Flowable<T> = compose(logResponseFlowable(tag))
+inline fun <reified T : BaseResponse> Observable<T>.logResponse(tag: String = DEFAULT_TAG): Observable<T> = compose(logResponseObservable(tag))
 
-fun checkResponseTimeCompletable(tag: String = DEFAULT_TAG): CompletableTransformer =
+fun logResponseCompletable(tag: String = DEFAULT_TAG): CompletableTransformer =
     CompletableTransformer {
         var startTime = 0L
         it
@@ -74,35 +60,39 @@ fun checkResponseTimeCompletable(tag: String = DEFAULT_TAG): CompletableTransfor
             .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-inline fun <reified T> checkResponseTimeMaybe(tag: String = DEFAULT_TAG): MaybeTransformer<T, T> =
+inline fun <reified T : BaseResponse> logResponseMaybe(tag: String = DEFAULT_TAG): MaybeTransformer<T, T> =
     MaybeTransformer {
         var startTime = 0L
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
+            .doOnSuccess { logBaseResponse(it, tag, startTime) }
             .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-inline fun <reified T> checkResponseTimeSingle(tag: String = DEFAULT_TAG): SingleTransformer<T, T> =
+inline fun <reified T : BaseResponse> logResponseSingle(tag: String = DEFAULT_TAG): SingleTransformer<T, T> =
     SingleTransformer {
         var startTime = 0L
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
+            .doOnSuccess { logBaseResponse(it, tag, startTime) }
             .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-inline fun <reified T> checkResponseTimeFlowable(tag: String = DEFAULT_TAG): FlowableTransformer<T, T> =
+inline fun <reified T : BaseResponse> logResponseFlowable(tag: String = DEFAULT_TAG): FlowableTransformer<T, T> =
     FlowableTransformer {
         var startTime = 0L
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
+            .doOnNext { logBaseResponse(it, tag, startTime) }
             .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-inline fun <reified T> checkResponseTimeObservable(tag: String = DEFAULT_TAG): ObservableTransformer<T, T> =
+inline fun <reified T : BaseResponse> logResponseObservable(tag: String = DEFAULT_TAG): ObservableTransformer<T, T> =
     ObservableTransformer {
         var startTime = 0L
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
+            .doOnNext { logBaseResponse(it, tag, startTime) }
             .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
@@ -112,6 +102,6 @@ fun checkElapsedTimeAndWarn(startTime: Long, tag: String = DEFAULT_TAG) {
     if (elapsedTime >= BuildConfig.RESPONSE_TIME_THRESHOLD) {
         val message = "Waiting for $tag longer than expected ${BuildConfig.RESPONSE_TIME_THRESHOLD} ms"; Timber.w(message)
         SentryUtil.w(message, listOf("elapsed time" to "$elapsedTime", "threshold" to "${BuildConfig.RESPONSE_TIME_THRESHOLD}"))
-        DebugLogUtil.w("$message [$tag]")
+        DebugLogUtil.w("$message [$tag], duration=$elapsedTime")
     }
 }

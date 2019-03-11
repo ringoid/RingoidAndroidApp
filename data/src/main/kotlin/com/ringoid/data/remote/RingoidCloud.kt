@@ -34,7 +34,6 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("createUserProfile", essence.toSentryData())
             .logRequest("createUserProfile")
             .logResponse("createUserProfile")
-            .checkResponseTime()
 
     fun deleteUserProfile(accessToken: String): Single<BaseResponse> {
         val content = "{\"accessToken\":\"$accessToken\"}"
@@ -43,7 +42,6 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("deleteUserProfile", "accessToken" to "")
             .logRequest("deleteUserProfile")
             .logResponse("deleteUserProfile")
-            .checkResponseTime()
     }
 
     fun getUserSettings(accessToken: String): Single<UserSettingsResponse> =
@@ -51,14 +49,12 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("getUserSettings", "accessToken" to "")
             .logRequest("getUserSettings")
             .logResponse("getUserSettings")
-            .checkResponseTime()
 
     fun updateUserSettings(essence: UpdateUserSettingsEssence): Single<BaseResponse> =
         restAdapter.updateUserSettings(essence.toBody())
             .breadcrumb("updateUserSettings", essence.toSentryData())
             .logRequest("updateUserSettings")
             .logResponse("updateUserSettings")
-            .checkResponseTime()
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
@@ -67,7 +63,6 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("commitActions", essence.toSentryData())
             .logRequest("commitActions", essence.toDebugData())
             .logResponse("commitActions")
-            .checkResponseTime()
 
     /* Image */
     // --------------------------------------------------------------------------------------------
@@ -76,22 +71,19 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("getImageUploadUrl", essence.toSentryData())
             .logRequest("getImageUploadUrl")
             .logResponse("getImageUploadUrl")
-            .checkResponseTime()
 
     fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
         restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
             .keepDataForDebug(cloudDebug,"request" to "getUserImages", "resolution" to "$resolution")
             .breadcrumb("getUserImages", "accessToken" to "", "resolution" to "$resolution")
             .logRequest("getUserImages")
-            .logResponse("getUserImages")
-            .checkResponseTime("UserPhotos")
+            .logResponse("UserPhotos")
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
         restAdapter.deleteUserImage(essence.toBody())
             .breadcrumb("deleteUserImage", essence.toSentryData())
             .logRequest("deleteUserImage")
             .logResponse("deleteUserImage")
-            .checkResponseTime()
 
     fun uploadImage(url: String, image: File): Completable {
         val body = RequestBody.create(MediaType.parse("image/*"), image)
@@ -99,7 +91,6 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("uploadImage", "url" to url)
             .logRequest("uploadImage")
             .logResponse("uploadImage")
-            .checkResponseTime()
     }
 
     /* Feed */
@@ -110,8 +101,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("getNewFaces", "accessToken" to "", "resolution" to "$resolution",
                         "lastActionTime" to "$lastActionTime")
             .logRequest("getNewFaces", "lastActionTime" to "$lastActionTime")
-            .logResponse("getNewFaces")
-            .checkResponseTime("NewFaces")
+            .logResponse("NewFaces")
 
     fun getLmm(accessToken: String, resolution: ImageResolution, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, lastActionTime = lastActionTime)
@@ -119,8 +109,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("getLmm", "accessToken" to "",
                         "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .logRequest("getLmm", "lastActionTime" to "$lastActionTime")
-            .logResponse("getLmm")
-            .checkResponseTime("LMM")
+            .logResponse("LMM")
 
     /* Test */
     // --------------------------------------------------------------------------------------------
