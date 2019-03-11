@@ -113,9 +113,9 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     /* Test */
     // --------------------------------------------------------------------------------------------
-    fun debugTimeout(): Completable = restAdapter.debugTimeout().checkResponseTime()
-    fun debugInvalidToken(): Completable = restAdapter.debugInvalidToken().checkResponseTime()
-    fun debugNotSuccess(): Completable = restAdapter.debugNotSuccess().checkResponseTime()
-    fun debugOldVersion(): Completable = restAdapter.debugOldVersion().checkResponseTime()
-    fun debugServerError(): Completable = restAdapter.debugServerError().checkResponseTime()
+    fun debugTimeout(): Completable = restAdapter.debugTimeout().logResponse()
+    fun debugInvalidToken(): Completable = restAdapter.debugInvalidToken().logResponse()
+    fun debugNotSuccess(): Completable = restAdapter.debugNotSuccess().logResponse()
+    fun debugOldVersion(): Completable = restAdapter.debugOldVersion().logResponse()
+    fun debugServerError(): Completable = restAdapter.debugServerError().logResponse()
 }
