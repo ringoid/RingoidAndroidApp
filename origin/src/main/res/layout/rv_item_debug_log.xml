@@ -2,4 +2,5 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tv_debug_log_text"
     android:gravity="center_vertical|start"
+    android:textSize="@dimen/std_text_10"
     style="@style/StdText.Primary"/>
