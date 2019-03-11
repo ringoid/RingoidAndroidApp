@@ -112,5 +112,6 @@ fun checkElapsedTimeAndWarn(startTime: Long, tag: String = DEFAULT_TAG) {
     if (elapsedTime >= BuildConfig.RESPONSE_TIME_THRESHOLD) {
         val message = "Waiting for $tag longer than expected ${BuildConfig.RESPONSE_TIME_THRESHOLD} ms"; Timber.w(message)
         SentryUtil.w(message, listOf("elapsed time" to "$elapsedTime", "threshold" to "${BuildConfig.RESPONSE_TIME_THRESHOLD}"))
+        DebugLogUtil.w("$message [$tag]")
     }
 }

@@ -74,7 +74,6 @@ object SentryUtil {
     private fun log(message: String, level: Event.Level, `object`: Any? = null,
                     extras: List<Pair<String, String>>? = null) {
         Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
-        DebugLogUtil.log(message, level)
     }
 
     private fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
