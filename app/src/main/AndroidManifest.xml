@@ -6,7 +6,7 @@
         android:name=".RingoidApplication"
         android:label="${appName}"
         android:largeHeap="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme.Dark">
@@ -26,6 +26,7 @@
 
         <activity
             android:name="com.ringoid.origin.view.splash.SplashActivity"
+            android:icon="@drawable/ic_launcher"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
 
