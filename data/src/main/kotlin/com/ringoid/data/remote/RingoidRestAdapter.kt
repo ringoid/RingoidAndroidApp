@@ -60,6 +60,7 @@ interface RingoidRestAdapter {
     @GET("feeds/get_lmm")
     fun getLmm(@Query("accessToken") accessToken: String,
                @Query("resolution") resolution: String?,
+               @Query("source") source: String?,
                @Query("lastActionTime") lastActionTime: Long = 0L): Single<LmmResponse>
 
     /* Test */

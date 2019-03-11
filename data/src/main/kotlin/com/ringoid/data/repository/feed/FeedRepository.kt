@@ -81,12 +81,12 @@ open class FeedRepository @Inject constructor(
                  .map { it.map() }
         }
 
-    override fun getLmm(resolution: ImageResolution): Single<Lmm> =
-        aObjPool.triggerSource().flatMap { getLmmOnly(resolution, lastActionTime = it) }
+    override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
+        aObjPool.triggerSource().flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
 
-    private fun getLmmOnly(resolution: ImageResolution, lastActionTime: Long): Single<Lmm> =
+    private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long): Single<Lmm> =
         spm.accessSingle {
-            cloud.getLmm(it.accessToken, resolution, lastActionTime)
+            cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
                  .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime})")
                  .doOnSubscribe {
                      badgeLikes.onNext(false)

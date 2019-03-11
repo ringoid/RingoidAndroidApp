@@ -46,6 +46,7 @@ abstract class BaseLmmFeedViewModel(
 
     override fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+                             .put("source", getFeedName())
 
         getLmmUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }

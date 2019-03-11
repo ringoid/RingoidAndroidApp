@@ -61,6 +61,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase, app: Ap
 
     private fun getLmm() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+                             .put("source", "profile")
         getLmmUseCase.source(params = params)
             .autoDisposable(this)
             .subscribe({ cachedLmm = it }, Timber::e)

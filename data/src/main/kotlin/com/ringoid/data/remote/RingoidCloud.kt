@@ -103,11 +103,11 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logRequest("getNewFaces", "lastActionTime" to "$lastActionTime")
             .logResponse("NewFaces")
 
-    fun getLmm(accessToken: String, resolution: ImageResolution, lastActionTime: Long = 0L) =
-        restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, lastActionTime = lastActionTime)
+    fun getLmm(accessToken: String, resolution: ImageResolution, source: String?, lastActionTime: Long = 0L) =
+        restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, source = source, lastActionTime = lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getLmm", "resolution" to "$resolution")
             .breadcrumb("getLmm", "accessToken" to "",
-                        "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
+                        "resolution" to "$resolution", "source" to "$source", "lastActionTime" to "$lastActionTime")
             .logRequest("getLmm", "lastActionTime" to "$lastActionTime")
             .logResponse("LMM")
 
