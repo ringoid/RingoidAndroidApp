@@ -17,6 +17,7 @@ data class ActionObjectDbo(
     @ColumnInfo(name = COLUMN_NUMBER_BLOCK_REASON) var blockReasonNumber: Int = 0,
     @ColumnInfo(name = COLUMN_MESSAGE_TEXT) var messageText: String = "",
     @ColumnInfo(name = COLUMN_OPEN_CHAT_TIME_MILLIS) var openChatTimeMillis: Long = 0L,
+    @ColumnInfo(name = COLUMN_VIEW_CHAT_TIME_MILLIS) var viewChatTimeMillis: Long = 0L,
     @ColumnInfo(name = COLUMN_VIEW_TIME_MILLIS) var viewTimeMillis: Long = 0L) {
 
     companion object {
@@ -31,6 +32,7 @@ data class ActionObjectDbo(
         const val COLUMN_NUMBER_BLOCK_REASON = "blockReasonNum"
         const val COLUMN_MESSAGE_TEXT = "messageText"
         const val COLUMN_OPEN_CHAT_TIME_MILLIS = "openChatTimeMillis"
+        const val COLUMN_VIEW_CHAT_TIME_MILLIS = "viewChatTimeMillis"
         const val COLUMN_VIEW_TIME_MILLIS = "viewTimeMillis"
 
         const val TABLE_NAME = "ActionObjects"

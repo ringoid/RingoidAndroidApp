@@ -112,7 +112,7 @@ abstract class FeedViewModel(
             ?.let { System.currentTimeMillis() - it }
             ?: 0L  // weird, chat was closed but it's open timestamp hadn't been recorded
         advanceAndPushViewObject(imageId to profileId)
-        OpenChatActionObject(timeInMillis = chatTime, sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
+        ViewChatActionObject(timeInMillis = chatTime, sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
     }
 
