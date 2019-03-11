@@ -57,6 +57,7 @@
     <color name="warning">#ff9900</color>
     <color name="white_transparent">#6fffffff</color>
     <color name="white_half">#aaffffff</color>
+    <color name="white_80">#ccffffff</color>
 
     <array name="swipe_refresh_colors">
         <item name="progress_1">@color/accent</item>

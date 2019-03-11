@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.domain.DomainUtil
@@ -16,6 +17,7 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.copyToClipboard
 import com.ringoid.utility.toast
 import com.ringoid.origin.R
+import com.ringoid.origin.WidgetR_drawable
 import com.ringoid.utility.linearLayoutManager
 import com.uber.autodispose.AutoDispose.autoDisposable
 import com.uber.autodispose.android.scope
@@ -40,7 +42,7 @@ class DebugView : ConstraintLayout {
 
     @Suppress("CheckResult")
     private fun init(context: Context) {
-        setBackgroundColor(Color.WHITE)
+        background = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white_80_opaque)
         minimumHeight = resources.getDimensionPixelSize(R.dimen.widget_debug_height)
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
