@@ -17,11 +17,9 @@ import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
-import com.ringoid.origin.utils.LocaleUtils
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.manager.LocaleManager
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsFragment : BaseFragment<SettingsViewModel>() {
@@ -83,7 +81,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
         }
         item_language.apply {
             clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsFragment, path = "/settings_lang", rc = RequestCode.RC_SETTINGS_LANG) }
-            setLabel(LocaleUtils.getLangById(context, app?.localeManager?.getLang() ?: LocaleManager.LANG_RU))
+//            setLabel(LocaleUtils.getLangById(context, app?.localeManager?.getLang() ?: LocaleManager.LANG_RU))
         }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
