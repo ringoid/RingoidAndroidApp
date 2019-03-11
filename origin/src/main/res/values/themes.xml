@@ -2,6 +2,7 @@
 <resources>
     <style name="Base.V0.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:listDivider">@drawable/underscore</item>
+        <item name="android:navigationBarColor">?refColorBg</item>
         <item name="android:textColorHint">?refTextColorPrimary</item>
         <item name="android:windowBackground">?refColorBg</item>
         <item name="android:windowActivityTransitions">true</item>
