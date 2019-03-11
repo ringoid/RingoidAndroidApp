@@ -12,7 +12,7 @@
         <item name="refColorAccent">@color/grass</item>
         <item name="refColorPrimary">@color/steel</item>
         <item name="refColorPrimaryDark">@color/agat_semi</item>
-        <item name="refDrawableFabScrollBg">@drawable/black_half_oval_selector</item>
+        <item name="refDrawableFabScrollBg">@drawable/transparent_oval_selector</item>
         <item name="refDrawableFabScrollIcon">@drawable/ic_expand_less_white_24dp</item>
         <item name="refColorUnderscore">@color/underscore_dark</item>
         <item name="refTextColorPrimary">@color/primary_text</item>
