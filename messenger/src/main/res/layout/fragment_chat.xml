@@ -31,7 +31,8 @@
             android:paddingEnd="@dimen/chat_footer_et_padding_end"
             android:shadowColor="@color/text_shadow"
             android:shadowRadius="6"
-            android:textColor="@android:color/white">
+            android:textColor="@android:color/white"
+            android:textCursorDrawable="@drawable/chat_cursor">
             <requestFocus/>
         </com.ringoid.widget.view.KeyEditText>
     </LinearLayout>
