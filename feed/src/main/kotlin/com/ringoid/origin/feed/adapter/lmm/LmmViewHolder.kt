@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.adapter.lmm
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
@@ -26,11 +27,14 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 //                }
 //            }
 //        }
+        itemView.tv_seen_status.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
     override fun bind(model: FeedItemVO) {
         super.bind(model)
         setMessengerIcon(model)
+
+        itemView.tv_seen_status.text = if (model.isNotSeen) "Not Seen" else "Seen"
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
