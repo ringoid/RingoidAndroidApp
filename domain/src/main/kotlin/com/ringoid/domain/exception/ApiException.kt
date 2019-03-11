@@ -16,7 +16,7 @@ open class ApiException(val code: String, message: String? = null, val tag: Stri
     }
 }
 
-class InvalidAccessTokenApiException(message: String? = null, tag: String? = null)
+open class InvalidAccessTokenApiException(message: String? = null, tag: String? = null)
     : ApiException(code = INVALID_ACCESS_TOKEN, message = message, tag = tag)
 
 class InternalServerErrorApiException(message: String? = null, tag: String? = null)
