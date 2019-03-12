@@ -28,6 +28,7 @@ abstract class FeedViewModel(
 
     private var prevRange: EqualRange<ProfileImageVO>? = null
     private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
+    private val viewActionObjectBackup = mutableMapOf<Pair<String, String>, ViewActionObject>()
 
     private val openChatTimers = mutableMapOf<Pair<String, String>, Long>()
 
@@ -38,11 +39,16 @@ abstract class FeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onStart() {
         super.onStart()
+        viewActionObjectBackup.forEach { k, v ->
+            val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
+                targetImageId = v.targetImageId, targetUserId = v.targetUserId)
+            addViewObjectToBuffer(aobj)
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        advanceAndPushViewObjects()  // TODO: recreate only these VIEWs
+        advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
         actionObjectPool.trigger()
     }
 
@@ -151,8 +157,7 @@ abstract class FeedViewModel(
 
         items.forEach {
             if (it.image.isRealModel) {
-                addViewObjectToBuffer(ViewActionObject(
-                    timeInMillis = 0L, sourceFeed = getFeedName(),
+                addViewObjectToBuffer(ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
                     targetImageId = it.image.id, targetUserId = it.profileId))
             }
         }
@@ -173,9 +178,10 @@ abstract class FeedViewModel(
             ?.let { addViewObjectToBuffer(it.recreated()) }
     }
 
-    private fun advanceAndPushViewObjects() {
+    private fun advanceAndPushViewObjects(backupPool: MutableMap<Pair<String, String>, ViewActionObject>? = null) {
         viewActionObjectBuffer.apply {
             values.forEach { it.advance() ; actionObjectPool.put(it) }
+            backupPool?.putAll(this)
             clear()
             prevRange = null
         }
