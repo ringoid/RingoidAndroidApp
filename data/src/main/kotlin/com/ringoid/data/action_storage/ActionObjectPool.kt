@@ -160,6 +160,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             return Single.just(lastActionTime)
         }
 
+        lastActionTime = queue.peekLast()?.actionTime ?: 0L
         return spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
                 Timber.v("Triggering empty queue [2] - no-op")
@@ -172,7 +173,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         .subscribeOn(Schedulers.io())
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSubscribe {
-            lastActionTime = queue.peekLast()?.actionTime ?: 0L
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
             queue.clear()
             numbers.clear()
