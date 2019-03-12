@@ -13,7 +13,9 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
+import com.ringoid.domain.model.mapList
 import com.ringoid.domain.scope.UserScopeProvider
+import com.ringoid.utility.checkMainThread2
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -163,13 +165,12 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         } else source()
     }
 
-    private fun triggerSourceImpl(): Single<Long> {
-        // TODO: in case of FAIL - try to trigger using backup queue
-        if (queue.isEmpty()) {
-            return Single.just(lastActionTime)
+    private fun triggerSourceImpl(): Single<Long> {  // must be called outside of main thread
+        if (checkMainThread2()) {
+            throw AssertionError("Trigger queue must be performed out of main thread!")
         }
 
-        return spm.accessSingle { accessToken ->
+        val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
                 Single.just(CommitActionsResponse(lastActionTime))
             } else {
@@ -205,6 +206,14 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             finalizePool()  // clear state of pool
         }
         .map { it.lastActionTime }
+
+        return local.actionObjects()
+            .map { it.mapList() }
+            .flatMap {
+                it.reversed().forEach { queue.offerFirst(it) }
+                DebugLogUtil.v("Restored [${it.size}] action objects from backup, total: ${queue.size}")
+                source
+            }
     }
 
     override fun finalizePool() {

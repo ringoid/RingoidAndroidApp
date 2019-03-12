@@ -3,7 +3,8 @@ package com.ringoid.data.local.database.model.action_storage
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ringoid.domain.model.actions.ActionObject
+import com.ringoid.domain.model.Mappable
+import com.ringoid.domain.model.actions.*
 
 @Entity(tableName = ActionObjectDbo.TABLE_NAME)
 data class ActionObjectDbo(
@@ -18,7 +19,7 @@ data class ActionObjectDbo(
     @ColumnInfo(name = COLUMN_MESSAGE_TEXT) var messageText: String = "",
     @ColumnInfo(name = COLUMN_OPEN_CHAT_TIME_MILLIS) var openChatTimeMillis: Long = 0L,
     @ColumnInfo(name = COLUMN_VIEW_CHAT_TIME_MILLIS) var viewChatTimeMillis: Long = 0L,
-    @ColumnInfo(name = COLUMN_VIEW_TIME_MILLIS) var viewTimeMillis: Long = 0L) {
+    @ColumnInfo(name = COLUMN_VIEW_TIME_MILLIS) var viewTimeMillis: Long = 0L) : Mappable<ActionObject> {
 
     companion object {
         const val COLUMN_ID = "id"
@@ -38,6 +39,19 @@ data class ActionObjectDbo(
         const val TABLE_NAME = "ActionObjects"
 
         fun from(aobj: ActionObject): ActionObjectDbo =
-            ActionObjectDbo(actionTime = aobj.actionTime, actionType = aobj.actionType, sourceFeed = aobj.sourceFeed, targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId)
+            ActionObjectDbo(actionTime = aobj.actionTime, actionType = aobj.actionType, sourceFeed = aobj.sourceFeed,
+                            targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId)
     }
+
+    override fun map(): ActionObject =
+        when (actionType) {
+            ActionObject.ACTION_TYPE_BLOCK -> BlockActionObject(numberOfBlockReason = blockReasonNumber, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_LIKE -> LikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_MESSAGE -> MessageActionObject(text = messageText, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_OPEN_CHAT -> OpenChatActionObject(timeInMillis = openChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_UNLIKE -> UnlikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_VIEW -> ViewActionObject(timeInMillis = viewTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_VIEW_CHAT -> ViewChatActionObject(timeInMillis = viewChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            else -> throw IllegalArgumentException("Unsupported action type: $actionType")
+        }
 }

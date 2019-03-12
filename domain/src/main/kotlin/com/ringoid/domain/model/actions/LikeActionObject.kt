@@ -9,7 +9,7 @@ class LikeActionObject(
     @Expose @SerializedName(COLUMN_LIKE_COUNT) val likeCount: Int = 1,
     actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String)
-    : ActionObject(actionTime = actionTime, actionType = "LIKE", sourceFeed = sourceFeed,
+    : ActionObject(actionTime = actionTime, actionType = ACTION_TYPE_LIKE, sourceFeed = sourceFeed,
                    targetImageId = targetImageId, targetUserId = targetUserId,
                    triggerStrategies = listOf(CountFromLast(), DelayFromLast())) {
 

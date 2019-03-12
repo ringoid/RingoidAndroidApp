@@ -13,7 +13,7 @@ class ViewActionObject(
     actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String,
     triggerStrategies: List<TriggerStrategy> = listOf(DelayFromLast(VIEW_DELAY_ON_TRIGGER)))
-    : ActionObject(actionTime = actionTime, actionType = "VIEW", sourceFeed = sourceFeed,
+    : ActionObject(actionTime = actionTime, actionType = ACTION_TYPE_VIEW, sourceFeed = sourceFeed,
                    targetImageId = targetImageId, targetUserId = targetUserId,
                    triggerStrategies = triggerStrategies) {
 

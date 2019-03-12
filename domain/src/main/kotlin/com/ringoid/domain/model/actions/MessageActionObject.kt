@@ -8,7 +8,7 @@ class MessageActionObject(
     @Expose @SerializedName(COLUMN_TEXT) val text: String,
     actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String)
-    : ActionObject(actionTime = actionTime, actionType = "MESSAGE", sourceFeed = sourceFeed,
+    : ActionObject(actionTime = actionTime, actionType = ACTION_TYPE_MESSAGE, sourceFeed = sourceFeed,
                    targetImageId = targetImageId, targetUserId = targetUserId,
                    triggerStrategies = listOf(Immediate)) {
 

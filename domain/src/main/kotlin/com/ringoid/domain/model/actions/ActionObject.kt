@@ -32,6 +32,14 @@ open class ActionObject(
         const val COLUMN_SOURCE_FEED = "sourceFeed"
         const val COLUMN_TARGET_IMAGE_ID = "targetPhotoId"
         const val COLUMN_TARGET_USER_ID = "targetUserId"
+
+        const val ACTION_TYPE_BLOCK = "BLOCK"
+        const val ACTION_TYPE_LIKE = "LIKE"
+        const val ACTION_TYPE_MESSAGE = "MESSAGE"
+        const val ACTION_TYPE_OPEN_CHAT = "OPEN_CHAT"
+        const val ACTION_TYPE_UNLIKE = "UNLIKE"
+        const val ACTION_TYPE_VIEW = "VIEW"
+        const val ACTION_TYPE_VIEW_CHAT = "VIEW_CHAT"
     }
 
     protected open fun propertyString(): String? = null

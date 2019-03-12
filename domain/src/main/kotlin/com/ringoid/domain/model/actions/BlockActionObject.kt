@@ -8,7 +8,7 @@ class BlockActionObject(
     @Expose @SerializedName(COLUMN_NUMBER_BLOCK_REASON) val numberOfBlockReason: Int,
     actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String)
-    : ActionObject(actionTime = actionTime, actionType = "BLOCK", sourceFeed = sourceFeed,
+    : ActionObject(actionTime = actionTime, actionType = ACTION_TYPE_BLOCK, sourceFeed = sourceFeed,
                    targetImageId = targetImageId, targetUserId = targetUserId,
                    triggerStrategies = listOf(Immediate)) {
 

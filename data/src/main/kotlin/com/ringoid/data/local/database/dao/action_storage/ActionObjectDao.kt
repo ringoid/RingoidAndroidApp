@@ -10,8 +10,11 @@ import io.reactivex.Single
 @Dao
 interface ActionObjectDao {
 
+    @Query("SELECT COUNT(*) FROM ${ActionObjectDbo.TABLE_NAME}")
+    fun countActionObjects(): Single<Int>
+
     @Query("SELECT * FROM ${ActionObjectDbo.TABLE_NAME}")
-    fun actionObject(): Single<List<ActionObjectDbo>>
+    fun actionObjects(): Single<List<ActionObjectDbo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addActionObjects(objects: List<ActionObjectDbo>)
