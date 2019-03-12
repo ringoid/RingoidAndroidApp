@@ -165,11 +165,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         } else source()
     }
 
-    private fun triggerSourceImpl(): Single<Long> {  // must be called outside of main thread
-        if (checkMainThread2()) {
-            throw AssertionError("Trigger queue must be performed out of main thread!")
-        }
-
+    private fun triggerSourceImpl(): Single<Long> {
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
                 Single.just(CommitActionsResponse(lastActionTime))
@@ -214,6 +210,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                 DebugLogUtil.v("Restored [${it.size}] action objects from backup, total: ${queue.size}")
                 source
             }
+            .subscribeOn(Schedulers.io())
     }
 
     override fun finalizePool() {
