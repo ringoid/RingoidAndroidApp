@@ -68,12 +68,11 @@ abstract class FeedViewModel(
     }
 
     fun onStartRefresh() {
-        // TODO: need to commit VIEWs, thar are in pool, and recreate them
-        // TODO: in order 'getFeed()' called with these new VIEWs after queue triggered
         actionObjectPool.trigger()
     }
 
     open fun onRefresh() {
+        advanceAndPushViewObjects()
         actionObjectPool.trigger()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
