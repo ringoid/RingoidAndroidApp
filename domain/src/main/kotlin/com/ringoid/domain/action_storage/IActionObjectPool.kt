@@ -9,4 +9,6 @@ interface IActionObjectPool {
 
     fun trigger()
     fun triggerSource(): Single<Long>
+
+    fun finalizePool()
 }

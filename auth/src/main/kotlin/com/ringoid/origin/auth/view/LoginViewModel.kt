@@ -90,7 +90,8 @@ class LoginViewModel @Inject constructor(
         clearLocalUserDataUseCase.source()
             .doOnSubscribe {
                 ChatInMemoryCache.clear()
-                app.userScopeProvider.onLogout()
+                actionObjectPool.finalizePool()  // clear state of pool, if any
+                app.userScopeProvider.onLogout()  // prevent pool from receiving new state, if subscribed
             }
             .andThen(clearCachedAlreadySeenProfileIdsUseCase.source())
             .andThen(clearCachedBlockedProfileIdsUseCase.source())

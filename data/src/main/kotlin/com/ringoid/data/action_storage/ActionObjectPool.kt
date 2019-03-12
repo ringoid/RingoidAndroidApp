@@ -24,6 +24,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,14 +39,16 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     }
 
     private val queue: Deque<ActionObject> = ArrayDeque()
+    private val lastActionTimeValue = AtomicLong(0L)
     var lastActionTime: Long = 0L
+        get() = lastActionTimeValue.get()
         private set
 
     private val numbers = mutableMapOf<Class<ActionObject>, Int>()
     private val strategies = mutableMapOf<Class<ActionObject>, List<TriggerStrategy>>()
     private val timers = mutableMapOf<Class<ActionObject>, Disposable?>()
 
-    private val triggerInProgress: AtomicInteger = AtomicInteger(0)
+    private val triggerInProgress = TriggerSemaphore()
 
     // --------------------------------------------------------------------------------------------
     @Synchronized
@@ -160,7 +163,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             return Single.just(lastActionTime)
         }
 
-        lastActionTime = queue.peekLast()?.actionTime ?: 0L
         return spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
                 Timber.v("Triggering empty queue [2] - no-op")
@@ -173,7 +175,9 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         .subscribeOn(Schedulers.io())
         .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
         .doOnSubscribe {
+            lastActionTimeValue.set(queue.peekLast()?.actionTime ?: 0L)
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
+            triggerInProgress.increment()
             queue.clear()
             numbers.clear()
             strategies.clear()
@@ -188,15 +192,20 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                     listOf("server last action time" to "${it.lastActionTime}",
                            "client last action time" to "$lastActionTime"))
             }
-            lastActionTime = it.lastActionTime
+            lastActionTimeValue.set(it.lastActionTime)
         }
+        .doFinally { triggerInProgress.decrement() }
         .doOnDispose {
             Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
-            lastActionTime = 0L  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
-            triggerInProgress.set(0)
-            dropBackupQueue().subscribe()
+            finalizePool()  // clear state of pool
         }
         .map { it.lastActionTime }
+    }
+
+    override fun finalizePool() {
+        lastActionTimeValue.set(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
+        triggerInProgress.drop()
+        dropBackupQueue().subscribe()
     }
 
     // ------------------------------------------
