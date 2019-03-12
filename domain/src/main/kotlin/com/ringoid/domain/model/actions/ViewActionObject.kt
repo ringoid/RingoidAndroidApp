@@ -2,6 +2,7 @@ package com.ringoid.domain.model.actions
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.DelayFromLast
 import com.ringoid.domain.action_storage.TriggerStrategy
 import com.ringoid.domain.action_storage.VIEW_DELAY_ON_TRIGGER
@@ -35,5 +36,13 @@ class ViewActionObject(
 
     override fun propertyString(): String? = "count=$count, timeInMillis=$timeInMillis"
 
-    override fun toActionString(): String = "VIEW($timeInMillis,p=${targetUserId.substring(0..4)},i=${targetImageId.substring(0..4)})"
+    override fun toActionString(): String = "VIEW($timeInMillis," +
+            if (BuildConfig.IS_STAGING) {
+                "p=${targetUserId.substring(0..3)}," +
+                "i=${(targetImageId.indexOf('_')
+                        .takeIf { it != -1 }
+                        ?.let { targetImageId.substring(it + 1) }
+                        ?: targetImageId)
+                    .substring(0..3)})"
+            } else ""
 }
