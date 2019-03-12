@@ -146,13 +146,21 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         triggerSource()
             .autoDisposable(userScopeProvider)
             .subscribe({ Timber.d("Trigger Queue finished, last action time: $it") }, Timber::e)
-        // TODO: hold disposable and retry it on recovery after retryWhen failed, w/o losing previous queue
     }
 
-    override fun triggerSource(): Single<Long> =
-        backupQueue()
-            .andThen(triggerSourceImpl())
-            .flatMap { dropBackupQueue().toSingleDefault(it) }
+    override fun triggerSource(): Single<Long> {
+        fun source(): Single<Long> =
+            backupQueue()
+                .andThen(triggerSourceImpl())
+                .flatMap { dropBackupQueue().toSingleDefault(it) }
+
+        return if (triggerInProgress.check()) {
+            Single.just(0L)
+                  .doOnSubscribe { DebugLogUtil.v("Waiting for previous commit actions to finish...") }
+                  .delay(200, TimeUnit.MILLISECONDS)
+                  .flatMap { triggerSource() }  // recursive
+        } else source()
+    }
 
     private fun triggerSourceImpl(): Single<Long> {
         // TODO: in case of FAIL - try to trigger using backup queue
@@ -170,7 +178,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             }
         }
         .subscribeOn(Schedulers.io())
-        .handleError()  // TODO: on fail - notify and restrict user from a any new aobjs until recovered
+        .handleError()
         .doOnSubscribe {
             lastActionTimeValue.set(queue.peekLast()?.actionTime ?: 0L)
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
