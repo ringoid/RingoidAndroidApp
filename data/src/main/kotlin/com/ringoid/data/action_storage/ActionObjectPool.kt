@@ -140,7 +140,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
         if (queue.isEmpty()) {
-            Timber.v("Triggering empty queue [0] - no-op")
             return
         }
 
@@ -159,13 +158,11 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         // TODO: in case of FAIL - try to trigger using backup queue
         DebugLogUtil.b("Commit actions [${queue.size}]")
         if (queue.isEmpty()) {
-            Timber.v("Triggering empty queue [1] - no-op")
             return Single.just(lastActionTime)
         }
 
         return spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
-                Timber.v("Triggering empty queue [2] - no-op")
                 Single.just(CommitActionsResponse(lastActionTime))
             } else {
                 val essence = CommitActionsEssence(accessToken.accessToken, queue)
