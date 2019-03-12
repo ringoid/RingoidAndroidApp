@@ -157,7 +157,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
         return if (triggerInProgress.check()) {
             Single.just(0L)
-                  .doOnSubscribe { DebugLogUtil.v("Waiting for previous commit actions to finish...") }
+                  .doOnSubscribe { DebugLogUtil.v("Waiting for commit actions in progress to finish...") }
                   .delay(200, TimeUnit.MILLISECONDS)
                   .flatMap { triggerSource() }  // recursive
         } else source()

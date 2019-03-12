@@ -38,11 +38,11 @@ class ViewActionObject(
 
     override fun toActionString(): String = "VIEW($timeInMillis," +
             if (BuildConfig.IS_STAGING) {
-                "p=${targetUserId.substring(0..3)}," +
                 "i=${(targetImageId.indexOf('_')
                         .takeIf { it != -1 }
                         ?.let { targetImageId.substring(it + 1) }
                         ?: targetImageId)
-                    .substring(0..3)})"
+                    .substring(0..3)})," +
+                "p=${targetUserId.substring(0..3)}"
             } else ""
 }
