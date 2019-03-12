@@ -167,7 +167,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     private fun triggerSourceImpl(): Single<Long> {
         lastActionTimeValue.set(queue.peekLast()?.actionTime ?: 0L)
-        
+
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
                 Single.just(CommitActionsResponse(lastActionTime))
@@ -231,13 +231,9 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         }
 
     private fun dropBackupQueue(): Completable =
-        if (queue.isEmpty()) {
-            Completable.complete()
-        } else {
-            Completable.fromCallable { local.deleteActionObjects() }
-                .doOnSubscribe { Timber.v("Started to drop backup of action objects' queue after triggered...") }
-                .doOnComplete { Timber.v("Action objects' queue backup has been dropped after triggered") }
-        }
+        Completable.fromCallable { local.deleteActionObjects() }
+            .doOnSubscribe { Timber.v("Started to drop backup of action objects' queue after triggered...") }
+            .doOnComplete { Timber.v("Action objects' queue backup has been dropped after triggered") }
 
     private fun printQueue(): String =
         queue.joinToString(", ", "[", "]", transform = { it.toActionString() })
