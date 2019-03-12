@@ -151,6 +151,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     override fun triggerSource(): Single<Long> {
         fun source(): Single<Long> =
             backupQueue()
+                .subscribeOn(Schedulers.io())
                 .andThen(triggerSourceImpl())
                 .flatMap { dropBackupQueue().toSingleDefault(it) }
 
@@ -177,7 +178,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                 cloud.commitActions(essence)
             }
         }
-        .subscribeOn(Schedulers.io())
         .handleError()
         .doOnSubscribe {
             lastActionTimeValue.set(queue.peekLast()?.actionTime ?: 0L)
