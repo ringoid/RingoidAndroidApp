@@ -15,7 +15,6 @@ import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.scope.UserScopeProvider
-import com.ringoid.utility.checkMainThread2
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -25,7 +24,6 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
