@@ -2,6 +2,7 @@ package com.ringoid.domain.model.actions
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.TriggerStrategy
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.IEssence
@@ -49,7 +50,16 @@ open class ActionObject(
         return "${javaClass.simpleName}(${property}actionTime=$actionTime, actionType='$actionType', sourceFeed='$sourceFeed', targetImageId='$targetImageId', targetUserId='$targetUserId', triggerStrategies=$triggerStrategies)"
     }
 
-    open fun toActionString(): String = "ACTION"
+    open fun toActionString(): String = "ACTION(${targetIdsStr()})"
+    protected fun targetIdsStr(): String =
+        if (BuildConfig.IS_STAGING) {
+            "i=${(targetImageId.indexOf('_')
+                    .takeIf { it != -1 }
+                    ?.let { targetImageId.substring(it + 1) }
+                    ?: targetImageId)
+                .substring(0..3)}," +
+            "p=${targetUserId.substring(0..3)}"
+        } else ""
 
     @DebugOnly override fun toDebugPayload(): String = toActionString()
     override fun toSentryPayload(): String = "[${javaClass.simpleName}]"

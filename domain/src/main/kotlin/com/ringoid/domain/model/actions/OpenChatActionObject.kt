@@ -23,5 +23,5 @@ class OpenChatActionObject(
 
     override fun propertyString(): String? = "count=$count, timeInMillis=$timeInMillis"
 
-    override fun toActionString(): String = "OPEN_CHAT($timeInMillis)"
+    override fun toActionString(): String = "OPEN_CHAT($timeInMillis,${targetIdsStr()})"
 }

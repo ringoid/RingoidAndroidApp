@@ -36,13 +36,5 @@ class ViewActionObject(
 
     override fun propertyString(): String? = "count=$count, timeInMillis=$timeInMillis"
 
-    override fun toActionString(): String = "VIEW($timeInMillis," +
-            if (BuildConfig.IS_STAGING) {
-                "i=${(targetImageId.indexOf('_')
-                        .takeIf { it != -1 }
-                        ?.let { targetImageId.substring(it + 1) }
-                        ?: targetImageId)
-                    .substring(0..3)}," +
-                "p=${targetUserId.substring(0..3)})"
-            } else ""
+    override fun toActionString(): String = "VIEW($timeInMillis,${targetIdsStr()})"
 }

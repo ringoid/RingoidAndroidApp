@@ -21,5 +21,5 @@ class ViewChatActionObject(
 
     override fun propertyString(): String? = "timeInMillis=$timeInMillis"
 
-    override fun toActionString(): String = "VIEW_CHAT($timeInMillis)"
+    override fun toActionString(): String = "VIEW_CHAT($timeInMillis,${targetIdsStr()})"
 }
