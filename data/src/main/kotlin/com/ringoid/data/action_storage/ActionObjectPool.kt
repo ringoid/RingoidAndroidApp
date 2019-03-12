@@ -166,6 +166,8 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     }
 
     private fun triggerSourceImpl(): Single<Long> {
+        lastActionTimeValue.set(queue.peekLast()?.actionTime ?: 0L)
+        
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
                 Single.just(CommitActionsResponse(lastActionTime))
@@ -176,7 +178,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         }
         .handleError()
         .doOnSubscribe {
-            lastActionTimeValue.set(queue.peekLast()?.actionTime ?: 0L)
             DebugLogUtil.b("Commit actions [${queue.size}], local lat=$lastActionTime")
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
             triggerInProgress.increment()
