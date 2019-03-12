@@ -60,10 +60,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                                .doOnSubscribe {
-                                    val retryAttemptMessage = "Retry [$attemptNumber / $count] on: ${error.message}"
-                                    Timber.w(retryAttemptMessage); DebugLogUtil.w(retryAttemptMessage)
-                                }
+                                .doOnSubscribe { DebugLogUtil.w("Retry [$attemptNumber / $count] on: ${error.message}") }
                                 .doOnNext {
                                     if (error is RepeatRequestAfterSecException) {
                                         SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, extras = extras)

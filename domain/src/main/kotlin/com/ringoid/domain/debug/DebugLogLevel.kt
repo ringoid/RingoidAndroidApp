@@ -1,5 +1,12 @@
 package com.ringoid.domain.debug
 
-enum class DebugLogLevel(val char: Char) {
-    BUS('B'), VERBOSE('V'), DEBUG('D'), INFO('I'), WARNING('W'), ERROR('E')
+import android.util.Log
+
+enum class DebugLogLevel(val char: Char, val priority: Int) {
+    BUS('B', Log.DEBUG),
+    VERBOSE('V', Log.VERBOSE),
+    DEBUG('D', Log.DEBUG),
+    INFO('I', Log.INFO),
+    WARNING('W', Log.WARN),
+    ERROR('E', Log.ERROR)
 }

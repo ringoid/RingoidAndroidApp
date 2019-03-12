@@ -6,6 +6,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.sentry.event.Event
+import timber.log.Timber
 
 @DebugOnly
 object DebugLogUtil {
@@ -32,6 +33,7 @@ object DebugLogUtil {
     }
 
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
+        Timber.log(level.priority, log)
         if (BuildConfig.IS_STAGING) {
             val logItem = DebugLogItem(log = log, level = level)
             logger.onNext(logItem)
