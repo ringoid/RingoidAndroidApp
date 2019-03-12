@@ -36,15 +36,20 @@ abstract class FeedViewModel(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onStart() {
+        super.onStart()
+    }
+
     override fun onStop() {
         super.onStop()
-        advanceAndPushViewObjects()
-        // TODO: retrigger view aobjs on restart, if so
+        advanceAndPushViewObjects()  // TODO: recreate only these VIEWs
+        actionObjectPool.trigger()
     }
 
     override fun onCleared() {
         super.onCleared()
         advanceAndPushViewObjects()
+        actionObjectPool.trigger()
     }
 
     /* Feed */
