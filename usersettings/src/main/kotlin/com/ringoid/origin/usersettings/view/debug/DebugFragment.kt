@@ -63,7 +63,7 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         item_error_request_fail_all_attempts.clicks().compose(clickDebounce()).subscribe { vm.requestWithFailAllRetries() }
         item_error_request_n_fail_attempts.clicks().compose(clickDebounce()).subscribe { vm.requestWithFailNTimesBeforeSuccess(n = 3) }
         item_error_request_params.clicks().compose(clickDebounce()).subscribe { vm.requestWithWrongParams() }
-        item_error_request_repeat_after_delay.clicks().compose(clickDebounce()).subscribe { vm.requestWithNeedToRepeatAfterDelay(delay = 5L) }
+        item_error_request_repeat_after_delay.clicks().compose(clickDebounce()).subscribe { vm.requestWithNeedToRepeatAfterDelay(delay = 5000L) }
         item_error_timeout.clicks().compose(clickDebounce()).subscribe { vm.requestWithTimeOutResponse() }
         item_last_request.apply {
             setText("Method: ${cloudDebug.get("request")}")
