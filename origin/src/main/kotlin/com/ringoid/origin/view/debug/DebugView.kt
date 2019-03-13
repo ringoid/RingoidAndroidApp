@@ -55,7 +55,7 @@ class DebugView : ConstraintLayout {
         if (MIN_LP == null) MIN_LP = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, MIN_HEIGHT)
             .apply { bottomToBottom = ConstraintSet.PARENT_ID }
 
-        background = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white_80_opaque)
+        background = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white_70_opaque)
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
         rv_debug_items.apply {
