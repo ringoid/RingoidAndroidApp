@@ -12,6 +12,7 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
+import com.ringoid.domain.model.actions.ViewChatActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.scope.UserScopeProvider
@@ -52,7 +53,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     override fun put(aobj: ActionObject) {
         Timber.v("Put action object: $aobj")
         when (aobj) {
-            is ViewActionObject -> { /* no-op */ }
+            is ViewActionObject, is ViewChatActionObject -> { /* no-op */ }
             else -> {
                 val viewAobj = ViewActionObject(actionTime = aobj.actionTime - 1, sourceFeed = aobj.sourceFeed,
                     targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId,
