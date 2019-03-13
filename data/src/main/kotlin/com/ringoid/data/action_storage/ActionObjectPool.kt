@@ -40,9 +40,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     private val queue: Deque<ActionObject> = ArrayDeque()
     private val lastActionTimeValue = AtomicLong(0L)
-    var lastActionTime: Long = 0L
-        get() = lastActionTimeValue.get()
-        private set
 
     private val numbers = mutableMapOf<Class<ActionObject>, Int>()
     private val strategies = mutableMapOf<Class<ActionObject>, List<TriggerStrategy>>()
@@ -170,7 +167,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
-                Single.just(CommitActionsResponse(lastActionTime))
+                Single.just(CommitActionsResponse(lastActionTime()))
             } else {
                 val essence = CommitActionsEssence(accessToken.accessToken, queue)
                 cloud.commitActions(essence)
@@ -178,8 +175,8 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         }
         .handleError()
         .doOnSubscribe {
-            if (queue.isNotEmpty()) DebugLogUtil.b("Commit actions [${queue.size}], local lat=$lastActionTime: ${queue.joinToString(",", "[", "]", transform = { it.toActionString() })}")
-            Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
+            if (queue.isNotEmpty()) DebugLogUtil.b("Commit actions [${queue.size}], local lat=${lastActionTime()}: ${queue.joinToString(",", "[", "]", transform = { it.toActionString() })}")
+            Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: ${lastActionTime()}, queue: ${printQueue()}")
             queue.clear()
             numbers.clear()
             strategies.clear()
@@ -188,11 +185,11 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         .doOnSuccess {
             // Queue.size == 0 always at this stage
             Timber.d("Successfully committed all [${queue.size}] actions, triggering has finished")
-            if (lastActionTime != it.lastActionTime) {
-                Timber.w("Last action times differ: server=${it.lastActionTime}, client=$lastActionTime, delta=${it.lastActionTime - lastActionTime}")
+            if (lastActionTime() != it.lastActionTime) {
+                Timber.w("Last action times differ: server=${it.lastActionTime}, client=${lastActionTime()}, delta=${it.lastActionTime - lastActionTime()}")
                 SentryUtil.w("Last action time from Server differs from Client",
                     listOf("server last action time" to "${it.lastActionTime}",
-                           "client last action time" to "$lastActionTime"))
+                           "client last action time" to "${lastActionTime()}"))
             }
             lastActionTimeValue.set(it.lastActionTime)
         }
@@ -211,6 +208,8 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             }
             .subscribeOn(Schedulers.io())
     }
+
+    override fun lastActionTime(): Long = lastActionTimeValue.get()
 
     override fun finalizePool() {
         lastActionTimeValue.set(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out

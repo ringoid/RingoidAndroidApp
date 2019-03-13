@@ -74,7 +74,7 @@ open class FeedRepository @Inject constructor(
     private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long): Single<Feed> =
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
-                 .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime})")
+                 .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime()})")
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
                  .cacheNewFacesAsAlreadySeen()
@@ -87,7 +87,7 @@ open class FeedRepository @Inject constructor(
     private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long): Single<Lmm> =
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
-                 .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime})")
+                 .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})")
                  .doOnSubscribe {
                      badgeLikes.onNext(false)
                      badgeMatches.onNext(false)
