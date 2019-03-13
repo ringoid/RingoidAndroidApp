@@ -39,9 +39,9 @@ abstract class FeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onStart() {
         super.onStart()
-        viewActionObjectBackup.forEach { k, v ->
+        viewActionObjectBackup.values.forEach {
             val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
-                targetImageId = v.targetImageId, targetUserId = v.targetUserId)
+                targetImageId = it.targetImageId, targetUserId = it.targetUserId)
             addViewObjectToBuffer(aobj)
         }
     }
