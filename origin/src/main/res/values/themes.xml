@@ -2,7 +2,6 @@
 <resources>
     <style name="Base.V0.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:listDivider">@drawable/underscore</item>
-        <item name="android:navigationBarColor">?refColorBg</item>
         <item name="android:textColorHint">?refTextColorPrimary</item>
         <item name="android:windowBackground">?refColorBg</item>
         <item name="android:windowActivityTransitions">true</item>
@@ -27,6 +26,7 @@
 
     <style name="Base.V0.AppTheme.Light">
         <item name="android:colorEdgeEffect">@android:color/black</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
         <item name="refColorBottomBarIcon">@color/black_half</item>
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_black</item>
         <item name="refDrawableBottomBarExplore">@drawable/ic_menu_explore_black_36dp</item>
@@ -47,6 +47,7 @@
 
     <style name="Base.V0.AppTheme.Dark">
         <item name="android:colorEdgeEffect">@android:color/white</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
         <item name="refColorBottomBarIcon">@color/white_half</item>
         <item name="refColorBottomBarIconSelected">@color/bottom_bar_icon_white</item>
         <item name="refColorUnderscore">@color/underscore_light</item>
