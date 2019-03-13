@@ -163,7 +163,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     }
 
     private fun triggerSourceImpl(): Single<Long> {
-        lastActionTimeValue.set(queue.peekLast()?.actionTime ?: 0L)
+        lastActionTimeValue.set(queue.peekLast()?.actionTime ?: lastActionTime())
 
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
