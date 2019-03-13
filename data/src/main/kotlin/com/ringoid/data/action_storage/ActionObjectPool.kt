@@ -205,7 +205,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         return local.actionObjects()
             .map { it.mapList() }
             .flatMap {
-                it.reversed().forEach { queue.offerFirst(it) }
+//                it.reversed().forEach { queue.offerFirst(it) }
                 DebugLogUtil.v("Restored [${it.size}] action objects from backup, total: ${queue.size}")
                 source
             }
