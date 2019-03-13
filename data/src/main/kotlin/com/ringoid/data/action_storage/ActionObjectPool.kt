@@ -151,9 +151,11 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     override fun triggerSource(): Single<Long> {
         fun source(): Single<Long> =
             backupQueue()
+                .doOnSubscribe { triggerInProgress.increment() }
                 .subscribeOn(Schedulers.io())
                 .andThen(triggerSourceImpl())
                 .flatMap { dropBackupQueue().toSingleDefault(it) }
+                .doFinally { triggerInProgress.decrement() }
 
         return if (triggerInProgress.check()) {
             Single.just(0L)
@@ -178,7 +180,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         .doOnSubscribe {
             if (queue.isNotEmpty()) DebugLogUtil.b("Commit actions [${queue.size}], local lat=$lastActionTime: ${queue.joinToString(",", "[", "]", transform = { it.toActionString() })}")
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: $lastActionTime, queue: ${printQueue()}")
-            triggerInProgress.increment()
             queue.clear()
             numbers.clear()
             strategies.clear()
@@ -195,7 +196,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             }
             lastActionTimeValue.set(it.lastActionTime)
         }
-        .doFinally { triggerInProgress.decrement() }
         .doOnDispose {
             Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
             finalizePool()  // clear state of pool

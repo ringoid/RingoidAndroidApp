@@ -11,6 +11,7 @@ import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.exception.isFatalApiError
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
@@ -67,7 +68,13 @@ class UserImageRepository @Inject constructor(
                         }
                         .toList()
                 }
-                .onErrorResumeNext { Single.just(emptyList()) }
+                .onErrorResumeNext {
+                    if (it.isFatalApiError()) {
+                        Single.error(it)
+                    } else {
+                        Single.just(emptyList())
+                    }
+                }
                 .flatMap { local.userImages() }
                 .map { it.mapList() }
 
