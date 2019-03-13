@@ -215,7 +215,9 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     override fun finalizePool() {
         lastActionTimeValue.set(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
         triggerInProgress.drop()
-        dropBackupQueue().subscribe()
+        dropBackupQueue()
+            .subscribeOn(Schedulers.io())
+            .subscribe({}, Timber::e)
     }
 
     // ------------------------------------------
