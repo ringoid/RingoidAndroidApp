@@ -84,6 +84,10 @@
         <item name="android:textColor">?refTextColorSecondary</item>
     </style>
 
+    <style name="StdText.White">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <!-- Widget -->
     <style name="IconItemView">
         <item name="android:layout_width">match_parent</item>
