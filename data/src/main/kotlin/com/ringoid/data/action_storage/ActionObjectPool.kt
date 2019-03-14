@@ -149,7 +149,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     override fun triggerSource(): Single<Long> {
         fun source(): Single<Long> =
             backupQueue()
-                .doOnSubscribe { triggerInProgress.increment() }
                 .subscribeOn(Schedulers.io())
                 .andThen(triggerSourceImpl())
                 .flatMap { dropBackupQueue().toSingleDefault(it) }
@@ -160,7 +159,10 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                   .doOnSubscribe { DebugLogUtil.v("Waiting for commit actions in progress to finish...") }
                   .delay(200, TimeUnit.MILLISECONDS)
                   .flatMap { triggerSource() }  // recursive
-        } else source()
+        } else run {
+            triggerInProgress.increment()
+            source()
+        }
     }
 
     private fun triggerSourceImpl(): Single<Long> {
