@@ -62,7 +62,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
         restAdapter.commitActions(essence.toBody())
             .breadcrumb("commitActions", essence.toSentryData())
             .logRequest("commitActions", essence.toDebugData())
-            .logResponse("commitActions")
+            .logResponse("commitActions", essence.toDebugData())
 
     /* Image */
     // --------------------------------------------------------------------------------------------
