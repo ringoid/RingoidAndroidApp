@@ -65,6 +65,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
         if (queue.size >= CAPACITY || aobj.triggerStrategies.contains(Immediate)) {
             Timber.v("Trigger immediately at $aobj")
+            DebugLogUtil.v("# Trigger by strategy: Immediate")
             trigger()  // trigger immediately
             return
         }
@@ -95,6 +96,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                 ?.takeIf { it.count <= numbers[key] ?: 0 }  // test hit the threshold
                 ?.let {
                     Timber.v("Count strategy has just satisfied at $aobj")
+                    DebugLogUtil.v("# Trigger by strategy: CountFromLast")
                     trigger()
                     return
                 }
@@ -128,6 +130,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                 ?.let {
                     // schedule timer to trigger after delay
                     Observable.timer(it.delay, TimeUnit.SECONDS)
+                        .doOnComplete { DebugLogUtil.v("# Trigger by strategy: DelayFromLast") }
                         .doOnComplete(this::trigger)
                         .subscribe({ Timber.v("Delay strategy has just satisfied at $aobj") }, Timber::e)
                 }
