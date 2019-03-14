@@ -11,8 +11,6 @@ import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.ActionObject
-import com.ringoid.domain.model.actions.ViewActionObject
-import com.ringoid.domain.model.actions.ViewChatActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.scope.UserScopeProvider
@@ -47,6 +45,10 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     private val timers = mutableMapOf<Class<ActionObject>, Disposable?>()
 
     private val triggerInProgress = TriggerSemaphore()
+
+    init {
+        lastActionTimeValue.set(spm.getLastActionTime())
+    }
 
     // --------------------------------------------------------------------------------------------
     @Synchronized
@@ -169,7 +171,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     }
 
     private fun triggerSourceImpl(): Single<Long> {
-        lastActionTimeValue.set(queue.peekLast()?.actionTime ?: lastActionTime())
+        updateLastActionTime(queue.peekLast()?.actionTime ?: lastActionTime())
 
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
@@ -197,7 +199,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                     listOf("server last action time" to "${it.lastActionTime}",
                            "client last action time" to "${lastActionTime()}"))
             }
-            lastActionTimeValue.set(it.lastActionTime)
+            updateLastActionTime(it.lastActionTime)
         }
         .doOnDispose {
             Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
@@ -219,7 +221,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     @Suppress("CheckResult")
     override fun finalizePool() {
-        lastActionTimeValue.set(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
+        updateLastActionTime(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
         triggerInProgress.drop()
         dropBackupQueue()
             .subscribeOn(Schedulers.io())
@@ -243,4 +245,14 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     private fun printQueue(): String =
         queue.joinToString(", ", "[", "]", transform = { it.toActionString() })
+
+    // ------------------------------------------
+    private fun updateLastActionTime(lastActionTime: Long) {
+        lastActionTimeValue.set(lastActionTime)
+        if (lastActionTime == 0L) {
+            spm.deleteLastActionTime()
+        } else {
+            spm.saveLastActionTime(lastActionTime)
+        }
+    }
 }

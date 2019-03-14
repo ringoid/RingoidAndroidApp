@@ -31,6 +31,10 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         // --------------------------------------
         const val SP_KEY_AUTH_USER_ID = "sp_key_auth_user_id"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
+
+        /* Actions */
+        // --------------------------------------
+        const val SP_KEY_LAST_ACTION_TIME = "sp_key_last_action_time"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -81,6 +85,20 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
             .remove(SP_KEY_AUTH_USER_ID)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
             .apply()
+    }
+
+    /* Actions */
+    // --------------------------------------------------------------------------------------------
+    internal fun getLastActionTime(): Long = sharedPreferences.getLong(SP_KEY_LAST_ACTION_TIME, 0L)
+
+    internal fun saveLastActionTime(lastActionTime: Long) {
+        sharedPreferences.edit()
+            .putLong(SP_KEY_LAST_ACTION_TIME, lastActionTime)
+            .apply()
+    }
+
+    internal fun deleteLastActionTime() {
+        sharedPreferences.edit().remove(SP_KEY_LAST_ACTION_TIME).apply()
     }
 }
 
