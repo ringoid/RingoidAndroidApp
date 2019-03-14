@@ -10,7 +10,6 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
@@ -111,6 +110,16 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
              */
             vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
         }
+    }
+
+    override fun onBeforeTabSelect() {
+        super.onBeforeTabSelect()
+        vm.onStop()  // leaving Feed screen by switching Main tab
+    }
+
+    override fun onTabTransaction(payload: String?) {
+        super.onTabTransaction(payload)
+        vm.onStart()  // entering Feed screen by switching Main tab
     }
 
     /* Lifecycle */

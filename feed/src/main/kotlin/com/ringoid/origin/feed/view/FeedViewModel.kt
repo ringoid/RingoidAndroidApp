@@ -4,6 +4,7 @@ import android.app.Application
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -48,6 +49,7 @@ abstract class FeedViewModel(
 
     override fun onStop() {
         super.onStop()
+        DebugLogUtil.v("Hiding feed...")
         advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
         actionObjectPool.trigger()
     }

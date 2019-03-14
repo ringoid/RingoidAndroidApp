@@ -6,11 +6,6 @@ import com.ringoid.domain.log.SentryUtil
 
 abstract class BaseMainViewModel(app: Application) : BaseViewModel(app) {
 
-    // --------------------------------------------------------------------------------------------
-    fun onSwitchTab() {
-        actionObjectPool.trigger()
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onFreshStart() {

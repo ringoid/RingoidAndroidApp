@@ -50,6 +50,14 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     // ------------------------------------------
+    /**
+     * Called immediately before switching to another [Fragment], so that the current [Fragment] has
+     * the last chance to detect it's being left.
+     */
+    open fun onBeforeTabSelect() {
+        // override in subclasses
+    }
+
     open fun onTabReselect() {
         // override in subclasses
     }

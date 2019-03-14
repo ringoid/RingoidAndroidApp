@@ -54,7 +54,10 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
             }
 
         bottom_bar.apply {
-            setOnNavigationItemSelectedListener { vm.onSwitchTab() ; fragNav.switchTab(it) }
+            setOnNavigationItemSelectedListener {
+                (fragNav.currentFrag as? BaseFragment<*>)?.onBeforeTabSelect()
+                fragNav.switchTab(it)
+            }
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
 
