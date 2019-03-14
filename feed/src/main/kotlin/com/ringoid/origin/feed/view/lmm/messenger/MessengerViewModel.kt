@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
 import android.app.Application
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
@@ -22,5 +23,5 @@ class MessengerViewModel @Inject constructor(
 
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMessages
 
-    override fun getFeedName(): String = "messages"
+    override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
 }

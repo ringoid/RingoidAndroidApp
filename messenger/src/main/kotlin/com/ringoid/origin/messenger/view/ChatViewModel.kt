@@ -41,12 +41,13 @@ class ChatViewModel @Inject constructor(
     }
 
     @Suppress("CheckResult")
-    fun sendMessage(peerId: String, imageId: String = DomainUtil.BAD_ID, text: String?) {
+    fun sendMessage(peerId: String, imageId: String = DomainUtil.BAD_ID, text: String?,
+                    sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES) {
         if (text.isNullOrBlank()) {
             return  // don't send empty text
         }
 
-        val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = "messages", targetImageId = imageId, targetUserId = peerId)
+        val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = sourceFeed, targetImageId = imageId, targetUserId = peerId)
         val message = MessageEssence(peerId = peerId, text = text.trim(), aObjEssence = essence)
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
@@ -55,7 +56,4 @@ class ChatViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({ sentMessage.value = it }, Timber::e)
     }
-
-    /* Debug */
-    // ---------------------------------------------------------------------------
 }

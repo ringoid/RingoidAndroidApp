@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.lmm.like
 
 import android.app.Application
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
@@ -25,7 +26,7 @@ class LikesFeedViewModel @Inject constructor(
 
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedLikes
 
-    override fun getFeedName(): String = "who_liked_me"
+    override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
 
     fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
         if (!numberOfLikes.containsKey(profileId)) {

@@ -162,7 +162,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             }
 
             val imageId = payload?.peerImageId ?: BAD_ID
-            vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString())
+            vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString(),
+                           sourceFeed = payload?.sourceFeed ?: DomainUtil.SOURCE_FEED_MESSAGES)
             clearEditText()
         }
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }

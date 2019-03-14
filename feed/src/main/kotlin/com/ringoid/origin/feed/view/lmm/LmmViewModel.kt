@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
@@ -61,7 +62,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase, app: Ap
 
     private fun getLmm() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
-                             .put("source", "profile")
+                             .put("source", DomainUtil.SOURCE_FEED_PROFILE)
         getLmmUseCase.source(params = params)
             .autoDisposable(this)
             .subscribe({ cachedLmm = it }, Timber::e)

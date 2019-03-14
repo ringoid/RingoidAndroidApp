@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.match
 
 import android.app.Application
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
@@ -22,5 +23,5 @@ class MatchesFeedViewModel @Inject constructor(
 
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMatches
 
-    override fun getFeedName(): String = "matches"
+    override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MATCHES
 }
