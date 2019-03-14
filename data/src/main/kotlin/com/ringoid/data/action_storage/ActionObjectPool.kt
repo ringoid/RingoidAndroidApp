@@ -52,15 +52,15 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     @Synchronized
     override fun put(aobj: ActionObject) {
         Timber.v("Put action object: $aobj")
-        when (aobj) {
-            is ViewActionObject, is ViewChatActionObject -> { /* no-op */ }
-            else -> {
-                val viewAobj = ViewActionObject(actionTime = aobj.actionTime - 1, sourceFeed = aobj.sourceFeed,
-                    targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId,
-                    triggerStrategies = emptyList() /* no trigger strategies for synthetic action object */)
-                queue.offer(viewAobj)
-            }
-        }
+//        when (aobj) {
+//            is ViewActionObject, is ViewChatActionObject -> { /* no-op */ }
+//            else -> {
+//                val viewAobj = ViewActionObject(actionTime = aobj.actionTime - 1, sourceFeed = aobj.sourceFeed,
+//                    targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId,
+//                    triggerStrategies = emptyList() /* no trigger strategies for synthetic action object */)
+//                queue.offer(viewAobj)
+//            }
+//        }
         queue.offer(aobj)
 
         if (queue.size >= CAPACITY || aobj.triggerStrategies.contains(Immediate)) {
