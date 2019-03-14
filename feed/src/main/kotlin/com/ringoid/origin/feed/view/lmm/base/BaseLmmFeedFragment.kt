@@ -48,11 +48,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     protected abstract fun getSourceFeed(): String
 
     // --------------------------------------------------------------------------------------------
-    override fun onBlockFromChat(payload: ChatPayload) {
+    override fun onBlockFromChat(tag: String, payload: ChatPayload) {
         vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = "chat")
     }
 
-    override fun onReportFromChat(payload: ChatPayload, reasonNumber: Int) {
+    override fun onReportFromChat(tag: String, payload: ChatPayload, reasonNumber: Int) {
         vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = "chat")
     }
 
@@ -141,11 +141,13 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                     Timber.e(e); throw e
                 }
 
+                val tag = data.getStringExtra("tag")
+                val payload = data.getParcelableExtra<ChatPayload>("payload")
                 when (data.getStringExtra("action")) {
-                    "block" -> onBlockFromChat(payload = data.getParcelableExtra("payload"))
-                    "report" -> onReportFromChat(payload = data.getParcelableExtra("payload"), reasonNumber = data.getIntExtra("reason", 0))
-                    else -> onDialogDismiss(tag = data.getStringExtra("tag"), payload = data.getParcelableExtra("payload"))
+                    "block" -> onBlockFromChat(tag = tag, payload = payload)
+                    "report" -> onReportFromChat(tag = tag, payload = payload, reasonNumber = data.getIntExtra("reason", 0))
                 }
+                onDialogDismiss(tag = tag, payload = payload)
             }
         }
     }

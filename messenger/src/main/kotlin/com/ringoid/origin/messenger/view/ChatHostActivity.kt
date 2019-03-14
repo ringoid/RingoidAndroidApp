@@ -20,20 +20,22 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
     override fun getLayoutId(): Int = R.layout.activity_chat
 
     // --------------------------------------------------------------------------------------------
-    override fun onBlockFromChat(payload: ChatPayload) {
+    override fun onBlockFromChat(tag: String, payload: ChatPayload) {
         val data = Intent().apply {
             putExtra("action", "block")
             putExtra("payload", payload)
+            putExtra("tag", tag)
         }
         setResultExposed(Activity.RESULT_OK, data)
         finish()
     }
 
-    override fun onReportFromChat(payload: ChatPayload, reasonNumber: Int) {
+    override fun onReportFromChat(tag: String, payload: ChatPayload, reasonNumber: Int) {
         val data = Intent().apply {
             putExtra("action", "report")
             putExtra("payload", payload)
             putExtra("reason", reasonNumber)
+            putExtra("tag", tag)
         }
         setResultExposed(Activity.RESULT_OK, data)
         finish()
@@ -41,8 +43,8 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
 
     override fun onDialogDismiss(tag: String, payload: Parcelable?) {
         val data = Intent().apply {
-            putExtra("tag", tag)
             putExtra("payload", payload)
+            putExtra("tag", tag)
         }
         setResultExposed(Activity.RESULT_OK, data)
         finish()

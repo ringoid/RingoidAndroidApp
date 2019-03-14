@@ -5,6 +5,6 @@ import com.ringoid.utility.ICommunicator
 
 interface IChatHost : ICommunicator {
 
-    fun onBlockFromChat(payload: ChatPayload)
-    fun onReportFromChat(payload: ChatPayload, reasonNumber: Int)
+    fun onBlockFromChat(tag: String, payload: ChatPayload)
+    fun onReportFromChat(tag: String, payload: ChatPayload, reasonNumber: Int)
 }
