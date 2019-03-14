@@ -12,6 +12,7 @@ import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
@@ -75,6 +76,7 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
                  .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime()})")
+                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] before filter out seen/blocked profiles") }
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
                  .cacheNewFacesAsAlreadySeen()
@@ -94,6 +96,7 @@ open class FeedRepository @Inject constructor(
                      badgeMessenger.onNext(false)
                      lmmChanged.onNext(false)
                  }
+                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
                  .filterOutBlockedProfilesLmm()
                  .map { it.map() }
                  .doOnSuccess {
