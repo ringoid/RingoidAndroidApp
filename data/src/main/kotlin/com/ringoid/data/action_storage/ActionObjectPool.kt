@@ -212,6 +212,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     override fun lastActionTime(): Long = lastActionTimeValue.get()
 
+    @Suppress("CheckResult")
     override fun finalizePool() {
         lastActionTimeValue.set(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
         triggerInProgress.drop()
