@@ -1,6 +1,7 @@
 package com.ringoid.origin.view.debug
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -30,12 +31,20 @@ import timber.log.Timber
 class DebugView : ConstraintLayout {
 
     private val debugLogItemAdapter = DebugLogItemAdapter { postDelayed({ rv_debug_items.linearLayoutManager()?.scrollToPositionWithOffset(it - 1, 0) }, 100L) }
+    private var bgToggle = false
+        set(value) {
+            field = value
+            background = if (value) BG_TRANS else BG_SOLID
+        }
     private var sizeToggle = false
 
     companion object {
         private var MIN_HEIGHT = -1
         private var MAX_LP: ViewGroup.LayoutParams? = null
         private var MIN_LP: ViewGroup.LayoutParams? = null
+
+        private var BG_SOLID: Drawable? = null
+        private var BG_TRANS: Drawable? = null
     }
 
     constructor(context: Context): this(context, null)
@@ -50,12 +59,14 @@ class DebugView : ConstraintLayout {
 
     @Suppress("CheckResult")
     private fun init(context: Context) {
+        if (BG_SOLID == null) BG_SOLID = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white)
+        if (BG_TRANS == null) BG_TRANS = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white_70_opaque)
         if (MIN_HEIGHT == -1) MIN_HEIGHT = resources.getDimensionPixelSize(R.dimen.widget_debug_height)
         if (MAX_LP == null) MAX_LP = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
         if (MIN_LP == null) MIN_LP = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, MIN_HEIGHT)
             .apply { bottomToBottom = ConstraintSet.PARENT_ID }
 
-        background = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white)
+        background = BG_SOLID
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
         rv_debug_items.apply {
@@ -63,6 +74,7 @@ class DebugView : ConstraintLayout {
             layoutManager = LinearLayoutManager(context).also { it.stackFromEnd = true }
         }
 
+        ibtn_bg_flip_debug.clicks().compose(clickDebounce()).subscribe { bgToggle = !bgToggle }
         ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { clear() }
         ibtn_resize_debug.clicks().compose(clickDebounce()).subscribe {
             if (sizeToggle) minimize() else maximize()

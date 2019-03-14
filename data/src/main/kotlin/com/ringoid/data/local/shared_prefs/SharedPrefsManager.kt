@@ -48,7 +48,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     // ------------------------------------------
     @DebugOnly
     override fun isDebugLogEnabled(): Boolean =
-        BuildConfig.IS_STAGING && sharedPreferences.getBoolean(SP_KEY_DEBUG_LOG_ENABLED, false)
+        BuildConfig.IS_STAGING && sharedPreferences.getBoolean(SP_KEY_DEBUG_LOG_ENABLED, BuildConfig.IS_STAGING)
 
     @DebugOnly
     override fun switchDebugLogEnabled() {
