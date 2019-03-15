@@ -78,7 +78,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.setUserVisibleHint(isVisibleToUser)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("setUserVisibleHint: $isVisibleToUser")
-        DebugLogUtil.lifecycle(this, "setUserVisibleHint")
+        DebugLogUtil.lifecycle(this, "setUserVisibleHint: $isVisibleToUser")
         if (isViewModelInitialized) {
             vm.setUserVisibleHint(isVisibleToUser)
         }

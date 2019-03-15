@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.EmptyDebugLogItem
@@ -35,6 +36,11 @@ class DebugView : ConstraintLayout {
         set(value) {
             field = value
             background = if (value) BG_TRANS else BG_SOLID
+        }
+    private var lifecycleToggle = true
+        set(value) {
+            field = value
+            DebugLogUtil.w("Lifecycle logs has been turned ${if (value) "ON" else "OFF"}")
         }
     private var sizeToggle = false
 
@@ -76,6 +82,7 @@ class DebugView : ConstraintLayout {
 
         ibtn_bg_flip_debug.clicks().compose(clickDebounce()).subscribe { bgToggle = !bgToggle }
         ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { clear() }
+        ibtn_lifecycle_debug.clicks().compose(clickDebounce()).subscribe { lifecycleToggle = !lifecycleToggle }
         ibtn_resize_debug.clicks().compose(clickDebounce()).subscribe {
             if (sizeToggle) minimize() else maximize()
         }
@@ -95,7 +102,11 @@ class DebugView : ConstraintLayout {
                     clear()
                 } else {
                     Timber.v("DebugView item: ${it.log}")
-                    debugLogItemAdapter.append(DebugLogItemVO.from(it))
+                    if (it.level == DebugLogLevel.LIFECYCLE && !lifecycleToggle) {
+                        // ignore LIFECYCLE logs if they are turned off
+                    } else {
+                        debugLogItemAdapter.append(DebugLogItemVO.from(it))
+                    }
                 }
             }, Timber::e)
     }
