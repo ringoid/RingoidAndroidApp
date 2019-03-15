@@ -16,6 +16,7 @@ import com.ringoid.domain.model.mapList
 import com.ringoid.domain.scope.UserScopeProvider
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
@@ -157,17 +158,28 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                 .subscribeOn(Schedulers.io())
                 .andThen(triggerSourceImpl())
                 .flatMap { dropBackupQueue().toSingleDefault(it) }
-                .doFinally { triggerInProgress.decrement() }
 
-        return if (triggerInProgress.check()) {
-            Single.just(0L)
-                  .doOnSubscribe { DebugLogUtil.v("Waiting for commit actions in progress to finish...") }
-                  .delay(200, TimeUnit.MILLISECONDS)
-                  .flatMap { triggerSource() }  // recursive
-        } else run {
-            triggerInProgress.increment()
-            source()
-        }
+        DebugLogUtil.v("Triggering action objects' queue...")
+        return Single.just(0L)
+            .flatMap {
+                if (triggerInProgress.isLocked()) {
+                    Single.error(WaitUntilTriggerFinishedException())
+                } else {
+                    triggerInProgress.increment()
+                    source().doFinally { triggerInProgress.decrement() }
+                }
+            }
+            .retryWhen {
+                it.flatMap {
+                    if (it is WaitUntilTriggerFinishedException) {
+                        DebugLogUtil.v(it.message ?: "Waiting for commit actions in progress to finish...")
+                        Flowable.timer(200L, TimeUnit.MILLISECONDS)  // repeat
+                    } else {
+                        DebugLogUtil.e(it)
+                        Flowable.error(it)
+                    }
+                }
+            }
     }
 
     private fun triggerSourceImpl(): Single<Long> {
@@ -214,7 +226,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                 DebugLogUtil.v("Restored [${it.size}] action objects from backup, total: ${queue.size}")
                 source
             }
-            .subscribeOn(Schedulers.io())
     }
 
     override fun lastActionTime(): Long = lastActionTimeValue.get()
