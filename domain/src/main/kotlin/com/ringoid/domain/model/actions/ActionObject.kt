@@ -58,7 +58,8 @@ open class ActionObject(
                     ?.let { targetImageId.substring(it + 1) }
                     ?: targetImageId)
                 .substring(0..3)}," +
-            "p=${targetUserId.substring(0..3)}"
+            "p=${targetUserId.substring(0..3)}," +
+            "t=${actionTime % 1000000}"
         } else ""
 
     @DebugOnly override fun toDebugPayload(): String = toActionString()
