@@ -62,6 +62,11 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
         unsubscribeFromBusEvents()
     }
 
+    // ------------------------------------------
+    open fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        // override in subclasses
+    }
+
     /* Event Bus */
     // --------------------------------------------------------------------------------------------
     internal fun subscribeOnBusEvents() {

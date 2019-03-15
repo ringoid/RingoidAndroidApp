@@ -8,7 +8,6 @@ import io.reactivex.subjects.ReplaySubject
 import io.sentry.event.Event
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import kotlin.math.log
 
 @DebugOnly
 object DebugLogUtil {
@@ -16,6 +15,7 @@ object DebugLogUtil {
     val logger = ReplaySubject.createWithTimeAndSize<DebugLogItem>(15, TimeUnit.SECONDS, Schedulers.newThread(), 10)
     private var dao: IDebugLogDaoHelper? = null
 
+    fun lifecycle(`object`: Any, log: String) = log("${`object`.javaClass.simpleName}: $log", DebugLogLevel.LIFECYCLE)
     fun b(log: String) = log(log, DebugLogLevel.BUS)
     fun v(log: String) = log(log, DebugLogLevel.VERBOSE)
     fun d(log: String) = log(log, DebugLogLevel.DEBUG)

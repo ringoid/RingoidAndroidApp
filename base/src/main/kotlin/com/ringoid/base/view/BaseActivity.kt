@@ -10,6 +10,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -53,6 +54,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     protected open fun onViewStateChange(newState: ViewState) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("View State transition to: $newState")
+        DebugLogUtil.lifecycle(this, "onViewStateChange: $newState")
         // override in subclasses
     }
 
@@ -64,6 +66,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     protected open fun onBeforeCreate() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onBeforeCreate")
+        DebugLogUtil.lifecycle(this, "onBeforeCreate")
         app.localeManager.setLocale(this)
         LocaleManager.resetActivityTitle(this)
         spm.getThemeResId().takeIf { it != 0 }?.let { setTheme(it) }
@@ -73,6 +76,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onCreate($savedInstanceState)")
+        DebugLogUtil.lifecycle(this, "onCreate")
         isDestroying = false
         AndroidInjection.inject(this)
         onBeforeCreate()
@@ -90,6 +94,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         super.onStart()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onStart")
+        DebugLogUtil.lifecycle(this, "onStart")
         if (isOnFreshStart) {
             vm.onFreshStart()
             isOnFreshStart = false
@@ -101,12 +106,14 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         super.onResume()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onResume")
+        DebugLogUtil.lifecycle(this, "onResume")
     }
 
     override fun onPause() {
         super.onPause()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onPause")
+        DebugLogUtil.lifecycle(this, "onPause")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -114,18 +121,21 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         super.onSaveInstanceState(outState)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onSaveInstanceState")
+        DebugLogUtil.lifecycle(this, "onSaveInstanceState")
     }
 
     override fun onStop() {
         super.onStop()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onStop")
+        DebugLogUtil.lifecycle(this, "onStop")
         vm.onStop()
     }
 
     override fun onDestroy() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onDestroy")
+        DebugLogUtil.lifecycle(this, "onDestroy")
         isDestroying = true
         super.onDestroy()
         vm.unsubscribeFromBusEvents()

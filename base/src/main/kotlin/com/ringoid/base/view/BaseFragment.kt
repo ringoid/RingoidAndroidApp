@@ -13,6 +13,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -37,6 +38,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     private var isOnFreshStart = true
     var isOnSaveInstanceState = false
         private set
+    private var isViewModelInitialized = false
 
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
@@ -45,7 +47,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.v("View State transition to: ${newState.javaClass.simpleName}")
+        Timber.v("View State transition to: $newState")
+        DebugLogUtil.lifecycle(this, "onViewStateChange: $newState")
         // override in subclasses
     }
 
@@ -55,17 +58,30 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
      * the last chance to detect it's being left.
      */
     open fun onBeforeTabSelect() {
+        DebugLogUtil.lifecycle(this, "onBeforeTabSelect")
         // override in subclasses
     }
 
     open fun onTabReselect() {
+        DebugLogUtil.lifecycle(this, "onTabReselect")
         // override in subclasses
     }
 
     open fun onTabTransaction(payload: String?) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onTabTransaction, payload: $payload")
+        DebugLogUtil.lifecycle(this, "onTabTransaction")
         // override in subclasses
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("setUserVisibleHint: $isVisibleToUser")
+        DebugLogUtil.lifecycle(this, "setUserVisibleHint")
+        if (isViewModelInitialized) {
+            vm.setUserVisibleHint(isVisibleToUser)
+        }
     }
 
     /* Lifecycle */
@@ -75,18 +91,21 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onAttach(context)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onAttach")
+        DebugLogUtil.lifecycle(this, "onAttach")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onCreate")
+        DebugLogUtil.lifecycle(this, "onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onCreateView")
+        DebugLogUtil.lifecycle(this, "onCreateView")
         return inflater.inflate(getLayoutId(), container, false)
     }
 
@@ -94,6 +113,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onViewCreated")
+        DebugLogUtil.lifecycle(this, "onViewCreated")
     }
 
     /**
@@ -109,6 +129,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onActivityCreated(savedInstanceState)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onActivityCreated")
+        DebugLogUtil.lifecycle(this, "onActivityCreated")
         isActivityCreated = true
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // tie observer to view's lifecycle rather than Fragment's one
@@ -117,6 +138,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
                 observe(viewState, this@BaseFragment::onViewStateChange)
             }
         }
+        isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
     }
 
@@ -124,6 +146,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onStart()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onStart")
+        DebugLogUtil.lifecycle(this, "onStart")
         if (isOnFreshStart) {
             vm.onFreshStart()
             isOnFreshStart = false
@@ -136,12 +159,14 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onResume()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onResume")
+        DebugLogUtil.lifecycle(this, "onResume")
     }
 
     override fun onPause() {
         super.onPause()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onPause")
+        DebugLogUtil.lifecycle(this, "onPause")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -149,12 +174,14 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onSaveInstanceState(outState)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onSaveInstanceState")
+        DebugLogUtil.lifecycle(this, "onSaveInstanceState")
     }
 
     override fun onStop() {
         super.onStop()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onStop")
+        DebugLogUtil.lifecycle(this, "onStop")
         vm.onStop()
     }
 
@@ -162,6 +189,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onDestroyView()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onDestroyView")
+        DebugLogUtil.lifecycle(this, "onDestroyView")
     }
 
     override fun onDestroy() {
@@ -169,11 +197,13 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         vm.unsubscribeFromBusEvents()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onDestroy")
+        DebugLogUtil.lifecycle(this, "onDestroy")
     }
 
     override fun onDetach() {
         super.onDetach()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onDetach")
+        DebugLogUtil.lifecycle(this, "onDetach")
     }
 }

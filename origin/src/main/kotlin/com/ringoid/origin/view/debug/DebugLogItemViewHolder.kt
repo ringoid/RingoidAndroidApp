@@ -15,6 +15,7 @@ class DebugLogItemViewHolder(view: View) : OriginDebugLogItemViewHolder(view) {
     override fun bind(model: DebugLogItemVO) {
         with(itemView.tv_debug_log_text) {
             val textColorResId = when(model.log.level) {
+                DebugLogLevel.LIFECYCLE -> WidgetR_color.primary
                 DebugLogLevel.BUS -> WidgetR_color.sky
                 DebugLogLevel.VERBOSE -> WidgetR_color.secondary_text
                 DebugLogLevel.DEBUG -> WidgetR_color.primary_text

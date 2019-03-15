@@ -40,6 +40,7 @@ abstract class FeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onStart() {
         super.onStart()
+        Timber.v("Restore VIEW action objects on start Feed screen: ${viewActionObjectBackup.size}")
         viewActionObjectBackup.values.forEach {
             val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
                 targetImageId = it.targetImageId, targetUserId = it.targetUserId)
@@ -52,6 +53,15 @@ abstract class FeedViewModel(
         DebugLogUtil.v("Hiding feed...")
         advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
         actionObjectPool.trigger()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            onStart()
+        } else {
+            onStop()
+        }
     }
 
     override fun onCleared() {
