@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.*
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IListModel
 
-abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>, private val headerRows: Int = 0)
+abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(protected val diffCb: BaseDiffCallback<T>,
+                                                                         private val headerRows: Int = 0)
     : RecyclerView.Adapter<VH>() {
 
     init {

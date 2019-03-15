@@ -8,6 +8,7 @@ import io.reactivex.subjects.ReplaySubject
 import io.sentry.event.Event
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import kotlin.math.log
 
 @DebugOnly
 object DebugLogUtil {
@@ -33,6 +34,7 @@ object DebugLogUtil {
         }
     }
 
+    @Synchronized
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
         Timber.log(level.priority, log)
         if (BuildConfig.IS_STAGING) {
@@ -42,6 +44,7 @@ object DebugLogUtil {
         }
     }
 
+    @Synchronized
     fun clear() {
         if (BuildConfig.IS_STAGING) {
             logger.onNext(EmptyDebugLogItem)

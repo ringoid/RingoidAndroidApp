@@ -94,6 +94,7 @@ class DebugView : ConstraintLayout {
                 if (it == EmptyDebugLogItem) {
                     clear()
                 } else {
+                    Timber.v("DebugView item: ${it.log}")
                     debugLogItemAdapter.append(DebugLogItemVO.from(it))
                 }
             }, Timber::e)
