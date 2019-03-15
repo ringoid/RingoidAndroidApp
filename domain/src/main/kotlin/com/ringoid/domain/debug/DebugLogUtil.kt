@@ -45,6 +45,7 @@ object DebugLogUtil {
     fun clear() {
         if (BuildConfig.IS_STAGING) {
             logger.onNext(EmptyDebugLogItem)
+            logger.cleanupBuffer()
             dao?.deleteDebugLog()
         }
     }

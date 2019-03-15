@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedBlockedProfileIdsUseCase
@@ -90,6 +91,7 @@ class LoginViewModel @Inject constructor(
         clearLocalUserDataUseCase.source()
             .doOnSubscribe {
                 ChatInMemoryCache.clear()
+                DebugLogUtil.clear()
                 actionObjectPool.finalizePool()  // clear state of pool, if any
                 app.userScopeProvider.onLogout()  // prevent pool from receiving new state, if subscribed
             }
