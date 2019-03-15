@@ -4,14 +4,15 @@ import com.ringoid.domain.BuildConfig
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
 import io.sentry.event.Event
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 @DebugOnly
 object DebugLogUtil {
 
-    val logger: PublishSubject<DebugLogItem> = PublishSubject.create()
+    val logger = ReplaySubject.createWithTimeAndSize<DebugLogItem>(15, TimeUnit.SECONDS, Schedulers.newThread(), 10)
     private var dao: IDebugLogDaoHelper? = null
 
     fun b(log: String) = log(log, DebugLogLevel.BUS)
