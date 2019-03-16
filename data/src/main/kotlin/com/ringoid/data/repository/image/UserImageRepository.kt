@@ -30,6 +30,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -113,6 +114,9 @@ class UserImageRepository @Inject constructor(
                 }
             }
     }
+
+    override fun getUserImagesAsync(resolution: ImageResolution): Observable<List<UserImage>> =
+        Observable.concatArrayEager(local.userImages().map { it.mapList() }.toObservable(), getUserImages(resolution).toObservable())
 
     override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
         deleteUserImage(essence, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)

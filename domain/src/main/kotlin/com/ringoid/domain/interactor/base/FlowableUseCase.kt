@@ -13,7 +13,7 @@ abstract class FlowableUseCase<T>(threadExecutor: UseCaseThreadExecutor, postExe
     protected abstract fun sourceImpl(params: Params = Params()): Flowable<T>
 
     fun source(params: Params = Params()): Flowable<T> =
-        sourceImpl()
+        sourceImpl(params)
             .compose(transformer())
             .doOnSubscribe { Timber.v("Perform use case ${javaClass.simpleName} with params: $params") }
 

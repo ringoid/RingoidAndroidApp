@@ -13,7 +13,7 @@ abstract class MaybeUseCase<T>(threadExecutor: UseCaseThreadExecutor, postExecut
     protected abstract fun sourceImpl(params: Params = Params()): Maybe<T>
 
     fun source(params: Params = Params()): Maybe<T> =
-        sourceImpl()
+        sourceImpl(params)
             .compose(transformer())
             .doOnSubscribe { Timber.v("Perform use case ${javaClass.simpleName} with params: $params") }
 

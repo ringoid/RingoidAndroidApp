@@ -13,7 +13,7 @@ abstract class ObservableUseCase<T>(threadExecutor: UseCaseThreadExecutor, postE
     protected abstract fun sourceImpl(params: Params = Params()): Observable<T>
 
     fun source(params: Params = Params()): Observable<T> =
-        sourceImpl()
+        sourceImpl(params)
             .compose(transformer())
             .doOnSubscribe { Timber.v("Perform use case ${javaClass.simpleName} with params: $params") }
 

@@ -8,10 +8,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.image.CreateUserImageUseCase
-import com.ringoid.domain.interactor.image.DeleteUserImageUseCase
-import com.ringoid.domain.interactor.image.GetUserImageByIdUseCase
-import com.ringoid.domain.interactor.image.GetUserImagesUseCase
+import com.ringoid.domain.interactor.image.*
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
@@ -31,7 +28,8 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
-    private val getUserImagesUseCase: GetUserImagesUseCase, app: Application) : BaseViewModel(app) {
+    private val getUserImagesUseCase: GetUserImagesUseCase,
+    private val getUserImagesAsyncUseCase: GetUserImagesAsyncUseCase, app: Application) : BaseViewModel(app) {
 
     val imageBlocked by lazy { MutableLiveData<String>() }
     val imageCreated by lazy { MutableLiveData<UserImage>() }
@@ -71,15 +69,16 @@ class UserProfileFragmentViewModel @Inject constructor(
     private fun getUserImages() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
-        getUserImagesUseCase.source(params = params)
+        getUserImagesAsyncUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .flatMap {
                 Observable.fromIterable(it)
                     .filter { !it.isBlocked }
                     .toList()
+                    .toObservable()
             }
-            .doOnSuccess {
+            .doOnNext {
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(ViewState.CLEAR.MODE_EMPTY_DATA)
                                   else ViewState.IDLE
             }

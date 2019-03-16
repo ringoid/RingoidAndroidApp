@@ -4,6 +4,7 @@ import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.image.UserImage
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 
@@ -19,6 +20,7 @@ interface IUserImageRepository : IImageRepository {
 
     fun getUserImage(id: String): Single<UserImage>
     fun getUserImages(resolution: ImageResolution): Single<List<UserImage>>
+    fun getUserImagesAsync(resolution: ImageResolution): Observable<List<UserImage>>
 
     fun deleteUserImage(essence: ImageDeleteEssence): Completable
     fun deleteLocalUserImages(): Completable
