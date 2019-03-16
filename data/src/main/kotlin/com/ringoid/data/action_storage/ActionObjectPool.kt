@@ -152,21 +152,14 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             .subscribe({ Timber.d("Trigger Queue finished, last action time: $it") }, Timber::e)
     }
 
-    override fun triggerSource(): Single<Long> {
-        fun source(): Single<Long> =
-            backupQueue()
-                .subscribeOn(Schedulers.io())
-                .andThen(triggerSourceImpl())
-                .flatMap { dropBackupQueue().toSingleDefault(it) }
-
-        DebugLogUtil.v("Triggering action objects' queue...")
-        return Single.just(0L)
+    override fun triggerSource(): Single<Long> =
+        Single.just(0L)
             .flatMap {
                 if (triggerInProgress.isLocked()) {
                     Single.error(WaitUntilTriggerFinishedException())
                 } else {
                     triggerInProgress.increment()
-                    source().doFinally { triggerInProgress.decrement() }
+                    triggerSourceImpl().doFinally { triggerInProgress.decrement() }
                 }
             }
             .retryWhen {
@@ -180,10 +173,10 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                     }
                 }
             }
-    }
 
     private fun triggerSourceImpl(): Single<Long> {
         updateLastActionTime(queue.peekLast()?.actionTime ?: lastActionTime())
+        val backupQueue: Deque<ActionObject> = ArrayDeque()
 
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
@@ -197,6 +190,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         .doOnSubscribe {
             if (queue.isNotEmpty()) DebugLogUtil.b("Commit actions [${queue.size}], local lat=${lastActionTime()}: ${queue.joinToString(",", "[", "]", transform = { it.toActionString() })}")
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: ${lastActionTime()}, queue: ${printQueue()}")
+            backupQueue.addAll(queue)
             queue.clear()
             numbers.clear()
             strategies.clear()
@@ -217,15 +211,20 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
             finalizePool()  // clear state of pool
         }
+        .doOnError { backupQueue(backupQueue) }
+        .doFinally { backupQueue.clear() }
         .map { it.lastActionTime }
 
         return local.actionObjects()
+            .subscribeOn(Schedulers.io())
             .map { it.mapList() }
-            .flatMap {
-//                it.reversed().forEach { queue.offerFirst(it) }
+            .flatMapCompletable {
+                it.reversed().forEach { queue.offerFirst(it) }
                 DebugLogUtil.v("Restored [${it.size}] action objects from backup, total: ${queue.size}")
-                source
+                dropBackupQueue()
             }
+            .toSingleDefault(0L)
+            .flatMap { source }
     }
 
     override fun lastActionTime(): Long = lastActionTimeValue.get()
@@ -240,15 +239,16 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     }
 
     // ------------------------------------------
-    private fun backupQueue(): Completable =
-        if (queue.isEmpty()) {
-            Completable.complete()
-        } else {
-            Completable.fromCallable { local.addActionObjects(queue.map(mapper::map)) }
-                .doOnSubscribe { Timber.v("Started backup action objects' queue before triggering...") }
-                .doOnComplete { Timber.v("Action objects' queue has been backup-ed, before triggering") }
-        }
+    @Suppress("CheckResult")
+    private fun backupQueue(queue: Deque<ActionObject>) {
+        Completable.fromCallable { local.addActionObjects(queue.map(mapper::map)) }
+            .doOnSubscribe { Timber.v("Started backup action objects' queue before triggering...") }
+            .doOnComplete { Timber.v("Action objects' queue has been backup-ed, before triggering") }
+            .subscribeOn(Schedulers.io())
+            .subscribe({}, Timber::e)
+    }
 
+    @Suppress("CheckResult")
     private fun dropBackupQueue(): Completable =
         Completable.fromCallable { local.deleteActionObjects() }
             .doOnSubscribe { Timber.v("Started to drop backup of action objects' queue after triggered...") }
