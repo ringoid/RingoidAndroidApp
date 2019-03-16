@@ -46,6 +46,7 @@ abstract class FeedViewModel(
                 targetImageId = it.targetImageId, targetUserId = it.targetUserId)
             addViewObjectToBuffer(aobj)
         }
+        viewActionObjectBackup.clear()  // all backup-ed aobjs have been consumed
     }
 
     override fun onStop() {
