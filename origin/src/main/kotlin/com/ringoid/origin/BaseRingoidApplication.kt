@@ -7,6 +7,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.domain.scope.UserScopeProvider
 import com.ringoid.utility.manager.LocaleManager
@@ -124,6 +125,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
                 }
             }
             Timber.e(e, "Undeliverable exception received, not sure what to do")
+            DebugLogUtil.e(e)
         }
     }
 
