@@ -51,8 +51,8 @@ abstract class FeedViewModel(
 
     override fun onStop() {
         super.onStop()
-        DebugLogUtil.v("Hiding feed...")
         advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
+        DebugLogUtil.v("Hiding feed... push [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString(", ", "[", "]", transform = { it.toActionString() })}")
         actionObjectPool.trigger()
     }
 
