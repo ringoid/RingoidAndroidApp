@@ -59,7 +59,7 @@ open class ActionObject(
                     ?: targetImageId)
                 .substring(0..3)}," +
             "p=${targetUserId.substring(0..3)}," +
-            "t=${actionTime % 1000000}"
+            "t=${actionTime % 1000000},s=$sourceFeed"
         } else ""
 
     @DebugOnly override fun toDebugPayload(): String = toActionString()
