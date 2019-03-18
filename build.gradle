@@ -18,6 +18,20 @@ enum Environment {
 static String getAppId(Environment env) { return env.appId }
 static String getAppName(Environment env) { return env.appName }
 static String getApiUrl(Environment env) { return env.apiUrl }
+static String getSentryDsn(Environment env) {
+    String dsn = ""
+    switch (env) {
+        case Environment.PRODUCTION:
+            dsn = '"https://8c58a698f71a4eccbd7e9f4c81b3eea9@sentry.io/1417641"'
+            break
+        case Environment.DEVELOP:
+        case Environment.STAGING:
+        default:
+            dsn = '"https://e71e66c6bcfd4cbb8541f9a5536b0d9f@sentry.io/1387000"'
+            break
+    }
+    return dsn
+}
 
 static String getVersionName(Environment env, int major, int middle, int minor, int build) {
     String version = "$major.$middle.$minor.$build"
@@ -32,7 +46,7 @@ ext {
     host = '"ringoid.com"'
     authority = '"https://ringoid.com"'
     appnav = '"appnav://ringoid.com"'
-    sentryDSN = '"https://e71e66c6bcfd4cbb8541f9a5536b0d9f@sentry.io/1387000"'
+    sentryDSN = getSentryDsn(env)
 
     debounceClickMs = "500L"
     debounceInputMs = "200L"
