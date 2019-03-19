@@ -1,9 +1,12 @@
 package com.ringoid.origin.feed.view
 
 import android.app.Application
+import android.os.Build
+import android.text.TextUtils.indexOf
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
@@ -27,6 +30,7 @@ abstract class FeedViewModel(
     private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
     : BaseViewModel(app) {
 
+    private var verticalPrevRange: EqualRange<ProfileImageVO>? = null
     private val horizontalPrevRanges = mutableMapOf<String, EqualRange<ProfileImageVO>>()  // profileId : range
     private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()  // imageId, profileId : VIEW
     private val viewActionObjectBackup = mutableMapOf<Pair<String, String>, ViewActionObject>()  // imageId, profileId : VIEW
@@ -160,28 +164,46 @@ abstract class FeedViewModel(
     }
 
     fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
-        Timber.v("Incoming visible items: ${items.payloadToString()}")
+        Timber.v("Incoming visible items [horizontal]: ${items.payloadToString()}")
         items.pickOne()?.let {
             horizontalPrevRanges[it.profileId]
                 ?.delta(items)
                 ?.takeIf { !it.isRangeEmpty() }
                 ?.let {
-                    Timber.v("Excluded items in range ${it.range()}, consume VIEW action objects")
+                    Timber.v("Excluded items in [horizontal] range ${it.range()}, consume VIEW action objects")
+                    logViewObjectsBufferState()  // show view aobjs buffer contents in debug logs
                     advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
                 }
         }
 
-        items.forEach {
-            if (it.image.isRealModel) {
-                addViewObjectToBuffer(ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
-                    targetImageId = it.image.id, targetUserId = it.profileId))
-            }
-        }
+        addViewObjectsToBuffer(items)
         items.pickOne()?.let { horizontalPrevRanges[it.profileId] = items }
     }
 
     fun onViewVertical(items: EqualRange<ProfileImageVO>) {
-        //TODO
+        Timber.v("Incoming visible items [vertical]: ${items.payloadToString()}")
+        verticalPrevRange
+            ?.delta(items)
+            ?.takeIf { !it.isRangeEmpty() }
+            ?.let {
+                Timber.v("Excluded items in [vertical] range ${it.range()}, consume VIEW action objects")
+                logViewObjectsBufferState()  // show view aobjs buffer contents in debug logs
+                it.pickOne()
+                    ?.let { horizontalPrevRanges[it.profileId] }
+                    ?.also { advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId }) }
+            }
+
+        /**
+         * As imageId is not correctly supplied to items in incoming [items] range, because it's not
+         * feasible to access current image on current feed item in scroll callback (viewHolder is
+         * not accessible from outside), here we need to fixup those imageIds for each item in [items].
+         * It's possible because we keep track on what images we are looking at while scrolling
+         * horizontally.
+         */
+        val fixItems = items.map { ProfileImageVO(it.profileId, image = horizontalPrevRanges[it.profileId]?.pickOne()?.image ?: it.image, isLiked = it.isLiked) }
+        val fixRange = EqualRange(from = items.from, to = items.to, items = fixItems)
+        addViewObjectsToBuffer(fixRange)
+        verticalPrevRange = fixRange
     }
 
     // --------------------------------------------------------------------------------------------
@@ -205,10 +227,28 @@ abstract class FeedViewModel(
             clear()
         }
         horizontalPrevRanges.clear()
+        verticalPrevRange = null
     }
 
     private fun advanceAndPushViewObjects(keys: Collection<Pair<String, String>>) {
         keys.forEach { advanceAndPushViewObject(it) }
+    }
+
+    // ------------------------------------------
+    private fun logViewObjectsBufferState() {
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            DebugLogUtil.d("View buffer:\n${viewActionObjectBuffer.values.joinToString("\n\t\t","\t\t", transform = { it.toActionString() })}")
+        }
+    }
+
+    // ------------------------------------------
+    private fun addViewObjectsToBuffer(items: EqualRange<ProfileImageVO>) {
+        items.forEach {
+            if (it.image.isRealModel) {
+                addViewObjectToBuffer(ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
+                    targetImageId = it.image.id, targetUserId = it.profileId))
+            }
+        }
     }
 
     private fun addViewObjectToBuffer(aobj: ViewActionObject) {
@@ -217,6 +257,7 @@ abstract class FeedViewModel(
             return  // don't replace already added aobj, because it's creation time is tracking now
         }
 
+        Timber.v("Add View action object to buffer: $aobj")
         viewActionObjectBuffer[key] = aobj
     }
 }
