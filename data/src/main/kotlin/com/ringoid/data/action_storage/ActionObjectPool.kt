@@ -182,7 +182,18 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
             if (queue.isEmpty()) {
                 Single.just(CommitActionsResponse(lastActionTime()))
             } else {
-                val essence = CommitActionsEssence(accessToken.accessToken, queue)
+                /**
+                 * The Gson object is threadsafe, but serialization of user objects is not.
+                 * We should either make a defensive copy or use a lock when an object needs
+                 * serialized but can also be manipulated from other threads concurrently.
+                 *
+                 * This is the case when queue is being committed and populated from other places
+                 * at the same time. So use defensive copy here for serialization.
+                 *
+                 * @see https://github.com/google/gson/issues/1159
+                 */
+                val queueCopy = ArrayDeque(queue)
+                val essence = CommitActionsEssence(accessToken.accessToken, queueCopy)
                 cloud.commitActions(essence)
             }
         }
