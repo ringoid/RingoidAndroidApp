@@ -24,8 +24,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapter,
-                                       private val cloudDebug: ICloudDebug) {
+class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapter, private val cloudDebug: ICloudDebug) {
 
     /* User (Auth, Profile) */
     // --------------------------------------------------------------------------------------------
