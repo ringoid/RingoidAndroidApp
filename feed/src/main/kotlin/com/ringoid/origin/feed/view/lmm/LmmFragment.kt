@@ -68,6 +68,20 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     }
 
     // ------------------------------------------
+    override fun onBeforeTabSelect() {
+        super.onBeforeTabSelect()
+        vp_pages?.let {
+            lmmPagesAdapter.accessItem(it.currentItem)?.userVisibleHint = false
+        }
+    }
+
+    override fun onTabTransaction(payload: String?) {
+        super.onTabTransaction(payload)
+        vp_pages?.let {
+            lmmPagesAdapter.accessItem(it.currentItem)?.userVisibleHint = true
+        }
+    }
+
     override fun onTabReselect() {
         super.onTabReselect()
         vp_pages?.let {
