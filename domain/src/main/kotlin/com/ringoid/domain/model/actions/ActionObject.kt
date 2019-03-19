@@ -63,5 +63,5 @@ open class ActionObject(
         } else ""
 
     @DebugOnly override fun toDebugPayload(): String = toActionString()
-    override fun toSentryPayload(): String = "[${javaClass.simpleName}]"
+    override fun toSentryPayload(): String = toActionString()
 }
