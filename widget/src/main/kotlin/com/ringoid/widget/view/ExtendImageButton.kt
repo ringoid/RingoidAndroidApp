@@ -29,7 +29,7 @@ class ExtendImageButton : FrameLayout {
 
     // --------------------------------------------------------------------------------------------
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
-        background = ContextCompat.getDrawable(context, R.drawable.rect_debug_area)  //context.getSelectableItemBgBorderless()
+        background = context.getSelectableItemBgBorderless()  // ContextCompat.getDrawable(context, R.drawable.rect_debug_area)
         foreground = context.getSelectableItemBgBorderless()
         isClickable = true
         isFocusable = true
