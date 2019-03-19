@@ -327,7 +327,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             val items = feedAdapter.getItemsExposed(from = from, to = to)
             // TODO: find a way to 'getCurrentImagePosition' and set it instead of '0' properly
             var range = EqualRange(from = from, to = to,
-                orientation = EqualRange.Orientation.VERTICAL,
                 items = items.map {
                     val image = if (it.isRealModel && it.images.isNotEmpty()) it.images[0] else EmptyImage
                     ProfileImageVO(profileId = it.id, image = image)
