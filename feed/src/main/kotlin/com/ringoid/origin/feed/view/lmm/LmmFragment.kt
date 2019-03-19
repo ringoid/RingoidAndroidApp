@@ -70,16 +70,12 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     // ------------------------------------------
     override fun onBeforeTabSelect() {
         super.onBeforeTabSelect()
-        vp_pages?.let {
-            lmmPagesAdapter.accessItem(it.currentItem)?.userVisibleHint = false
-        }
+        setCurrentPageVisibleHint(false)
     }
 
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
-        vp_pages?.let {
-            lmmPagesAdapter.accessItem(it.currentItem)?.userVisibleHint = true
-        }
+        setCurrentPageVisibleHint(true)
     }
 
     override fun onTabReselect() {
@@ -124,22 +120,22 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     private fun selectPage(position: Int) {
         when (position) {
             0 -> {
-                lmmPagesAdapter.accessItem(1)?.userVisibleHint = false
-                lmmPagesAdapter.accessItem(2)?.userVisibleHint = false
+                setPageVisibleHint(1, false)
+                setPageVisibleHint(2, false)
                 btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_matches?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_messenger?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
             }
             1 -> {
-                lmmPagesAdapter.accessItem(0)?.userVisibleHint = false
-                lmmPagesAdapter.accessItem(2)?.userVisibleHint = false
+                setPageVisibleHint(0, false)
+                setPageVisibleHint(2, false)
                 btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_matches?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
                 btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
             }
             2 -> {
-                lmmPagesAdapter.accessItem(0)?.userVisibleHint = false
-                lmmPagesAdapter.accessItem(1)?.userVisibleHint = false
+                setPageVisibleHint(0, false)
+                setPageVisibleHint(1, false)
                 btn_tab_likes?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
                 btn_tab_matches?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
@@ -151,12 +147,31 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             vm.onTabReselect()
         }
 
-        lmmPagesAdapter.accessItem(position)?.userVisibleHint = true
+        setPageVisibleHint(position, true)
         vp_pages?.setCurrentItem(position, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setCurrentPageVisibleHint(true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        setCurrentPageVisibleHint(false)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(BUNDLE_KEY_CURRENT_PAGE, vp_pages?.currentItem ?: 2)
+    }
+
+    // ------------------------------------------
+    private fun setPageVisibleHint(position: Int, hint: Boolean) {
+        lmmPagesAdapter.accessItem(position)?.userVisibleHint = hint
+    }
+
+    private fun setCurrentPageVisibleHint(hint: Boolean) {
+        vp_pages?.let { lmmPagesAdapter.accessItem(it.currentItem)?.userVisibleHint = hint }
     }
 }
