@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.domain.debug.DebugLogUtil
@@ -18,10 +19,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.EmptyDebugLogItem
 import com.ringoid.origin.R
 import com.ringoid.origin.WidgetR_drawable
-import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.copyToClipboard
-import com.ringoid.utility.linearLayoutManager
-import com.ringoid.utility.toast
+import com.ringoid.utility.*
 import com.uber.autodispose.AutoDispose.autoDisposable
 import com.uber.autodispose.android.scope
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,7 +35,7 @@ class DebugView : ConstraintLayout {
             field = value
             background = if (value) BG_TRANS else BG_SOLID
         }
-    private var lifecycleToggle = true
+    private var lifecycleToggle = BuildConfig.DEBUG
         set(value) {
             field = value
             DebugLogUtil.w("Lifecycle logs has been turned ${if (value) "ON" else "OFF"}")
@@ -90,6 +88,8 @@ class DebugView : ConstraintLayout {
             context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = debugLogItemAdapter.getContentText())
             context.toast(R.string.common_clipboard)
         }
+
+        ibtn_lifecycle_debug.changeVisibility(BuildConfig.DEBUG)
     }
 
     override fun onAttachedToWindow() {
