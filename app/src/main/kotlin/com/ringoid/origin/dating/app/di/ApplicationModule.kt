@@ -1,4 +1,4 @@
-package com.ringoid.origin.app.di
+package com.ringoid.origin.dating.app.di
 
 import com.ringoid.data.repository.di.RepositoryModule
 import com.ringoid.origin.auth.di.LoginModule

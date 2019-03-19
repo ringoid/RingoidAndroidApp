@@ -1,4 +1,4 @@
-package com.ringoid.origin.app.deeplink
+package com.ringoid.origin.dating.app.deeplink
 
 import android.app.Activity
 import android.os.Bundle

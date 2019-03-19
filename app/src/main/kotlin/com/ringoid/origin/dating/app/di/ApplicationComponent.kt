@@ -1,4 +1,4 @@
-package com.ringoid.origin.app.di
+package com.ringoid.origin.dating.app.di
 
 import android.app.Application
 import android.content.Context
@@ -7,8 +7,8 @@ import com.ringoid.data.remote.di.RemoteModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.domain.debug.IDebugLogDaoHelper
 import com.ringoid.main.di.MainActivityModule
-import com.ringoid.origin.app.RingoidApplication
 import com.ringoid.origin.auth.di.LoginActivityModule
+import com.ringoid.origin.dating.app.RingoidApplication
 import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetActivityModule
 import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetDialogModule
 import com.ringoid.origin.feed.view.dialog.di.ReportBottomSheetDialogModule
