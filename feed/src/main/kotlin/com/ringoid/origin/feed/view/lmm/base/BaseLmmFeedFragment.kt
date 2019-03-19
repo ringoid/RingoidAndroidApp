@@ -14,8 +14,6 @@ import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.AppRes
-import com.ringoid.origin.feed.R.id.rv_items
-import com.ringoid.origin.feed.R.id.scroll_fab
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
