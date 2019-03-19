@@ -177,8 +177,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
-        imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onView), onError = Consumer(Timber::e))
+        feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
+        imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
         feedAdapter.trackingBus = imagesTrackingBus
     }
 

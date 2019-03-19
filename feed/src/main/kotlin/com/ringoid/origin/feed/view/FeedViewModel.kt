@@ -27,9 +27,9 @@ abstract class FeedViewModel(
     private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
     : BaseViewModel(app) {
 
-    private var prevRange: EqualRange<ProfileImageVO>? = null
-    private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()
-    private val viewActionObjectBackup = mutableMapOf<Pair<String, String>, ViewActionObject>()
+    private val horizontalPrevRanges = mutableMapOf<String, EqualRange<ProfileImageVO>>()  // profileId : range
+    private val viewActionObjectBuffer = mutableMapOf<Pair<String, String>, ViewActionObject>()  // imageId, profileId : VIEW
+    private val viewActionObjectBackup = mutableMapOf<Pair<String, String>, ViewActionObject>()  // imageId, profileId : VIEW
 
     private val openChatTimers = mutableMapOf<Pair<String, String>, Long>()
 
@@ -159,14 +159,17 @@ abstract class FeedViewModel(
             }, Timber::e)
     }
 
-    fun onView(items: EqualRange<ProfileImageVO>) {
+    fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
         Timber.v("Incoming visible items: ${items.payloadToString()}")
-        prevRange?.delta(items)
-            ?.takeIf { !it.isRangeEmpty() }
-            ?.let {
-                Timber.v("Excluded items in range ${it.range()}, consume VIEW action objects")
-                advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
-            }
+        items.pickOne()?.let {
+            horizontalPrevRanges[it.profileId]
+                ?.delta(items)
+                ?.takeIf { !it.isRangeEmpty() }
+                ?.let {
+                    Timber.v("Excluded items in range ${it.range()}, consume VIEW action objects")
+                    advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
+                }
+        }
 
         items.forEach {
             if (it.image.isRealModel) {
@@ -174,7 +177,11 @@ abstract class FeedViewModel(
                     targetImageId = it.image.id, targetUserId = it.profileId))
             }
         }
-        prevRange = items
+        items.pickOne()?.let { horizontalPrevRanges[it.profileId] = items }
+    }
+
+    fun onViewVertical(items: EqualRange<ProfileImageVO>) {
+        //TODO
     }
 
     // --------------------------------------------------------------------------------------------
@@ -196,8 +203,8 @@ abstract class FeedViewModel(
             values.forEach { it.advance() ; actionObjectPool.put(it) }
             backupPool?.putAll(this)
             clear()
-            prevRange = null
         }
+        horizontalPrevRanges.clear()
     }
 
     private fun advanceAndPushViewObjects(keys: Collection<Pair<String, String>>) {

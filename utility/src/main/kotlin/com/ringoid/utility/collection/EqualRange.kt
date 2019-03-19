@@ -21,6 +21,8 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
 
     fun isRangeEmpty(): Boolean = from < 0 && to < 0 && isEmpty()
 
+    fun pickOne(): T? = get(0)
+
     fun range(): Pair<Int, Int> = from to to
 
     /**
@@ -32,7 +34,7 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
      *  [c  [a   b]  d] -> []
      */
     fun delta(new: EqualRange<T>): EqualRange<T> {
-        if (isRangeEmpty()) {
+        if (isRangeEmpty() || new.isRangeEmpty()) {
             return this
         }
         /**
