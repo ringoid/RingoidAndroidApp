@@ -35,7 +35,7 @@ class DebugView : ConstraintLayout {
             field = value
             background = if (value) BG_TRANS else BG_SOLID
         }
-    private var lifecycleToggle = BuildConfig.DEBUG
+    private var lifecycleToggle = BuildConfig.IS_STAGING
         set(value) {
             field = value
             DebugLogUtil.w("Lifecycle logs has been turned ${if (value) "ON" else "OFF"}")
@@ -88,8 +88,6 @@ class DebugView : ConstraintLayout {
             context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = debugLogItemAdapter.getContentText())
             context.toast(R.string.common_clipboard)
         }
-
-        ibtn_lifecycle_debug.changeVisibility(BuildConfig.DEBUG)
     }
 
     override fun onAttachedToWindow() {
