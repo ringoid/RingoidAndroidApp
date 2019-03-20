@@ -43,7 +43,7 @@ abstract class FeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onStart() {
         super.onStart()
-        Timber.v("Restore VIEW action objects on start Feed screen: ${viewActionObjectBackup.size}")
+        DebugLogUtil.v("onStart(): show feed... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString(",", "[", "]", transform = { it.toActionString() })}")
         viewActionObjectBackup.values.forEach {
             val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
                 targetImageId = it.targetImageId, targetUserId = it.targetUserId)
@@ -55,7 +55,7 @@ abstract class FeedViewModel(
     override fun onStop() {
         super.onStop()
         advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
-        DebugLogUtil.v("Hiding feed... push [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString(", ", "[", "]", transform = { it.toActionString() })}")
+        DebugLogUtil.v("onStop(): hide feed... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString(", ", "[", "]", transform = { it.toActionString() })}")
         actionObjectPool.trigger()
     }
 
