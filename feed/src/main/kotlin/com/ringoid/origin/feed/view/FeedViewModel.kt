@@ -2,7 +2,6 @@ package com.ringoid.origin.feed.view
 
 import android.app.Application
 import android.os.Build
-import android.text.TextUtils.indexOf
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
