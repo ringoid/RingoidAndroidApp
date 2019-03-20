@@ -19,7 +19,10 @@ class LocaleManager(context: Context) {
 
     companion object {
         const val LANG_EN = "en"
+        const val LANG_BE = "be"
         const val LANG_RU = "ru"
+        const val LANG_UA = "ua"
+        const val LANG_UK = "uk"
 
         private const val LANG_KEY = "lang_key"
 
