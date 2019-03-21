@@ -76,13 +76,13 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     // --------------------------------------------------------------------------------------------
     protected fun getUserVisibleHint(): Boolean = userVisibilityHint
 
-    open fun setUserVisibleHint(isVisibleToUser: Boolean) {
+    open fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean =
         setUserVisibleHintInternal(isVisibleToUser)
-        // override in subclasses
-    }
 
-    internal fun setUserVisibleHintInternal(isVisibleToUser: Boolean) {
+    internal fun setUserVisibleHintInternal(isVisibleToUser: Boolean): Boolean {
+        val changed = userVisibilityHint != isVisibleToUser
         userVisibilityHint = isVisibleToUser  // only set flag without side effects
+        return changed
     }
 
     /* Event Bus */

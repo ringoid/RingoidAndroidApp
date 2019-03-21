@@ -35,14 +35,22 @@ abstract class FeedViewModel(
     private val viewActionObjectBackup = mutableMapOf<Pair<String, String>, ViewActionObject>()  // imageId, profileId : VIEW
 
     private val openChatTimers = mutableMapOf<Pair<String, String>, Long>()
+    private var willRestart: Boolean = false
 
     abstract fun getFeed()
     abstract fun getFeedName(): String
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
+    override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
+        val changed = super.setUserVisibleHint(isVisibleToUser)
+        if (changed) {
+            handleUserVisibleHint(isVisibleToUser)
+        }
+        return changed
+    }
+
+    private fun handleUserVisibleHint(isVisibleToUser: Boolean) {
         if (isVisibleToUser) {
             DebugLogUtil.v("Show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
             viewActionObjectBackup.values.forEach {
@@ -61,6 +69,25 @@ abstract class FeedViewModel(
             DebugLogUtil.v("Hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
             advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
             actionObjectPool.trigger()
+        }
+    }
+
+    // ------------------------------------------
+    override fun onStart() {
+        super.onStart()
+        if (willRestart) {
+            willRestart = false
+            DebugLogUtil.v("Restarting feed '${getFeedName()}'...")
+            setUserVisibleHint(isVisibleToUser = true)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        willRestart = getUserVisibleHint()
+        if (willRestart) {
+            DebugLogUtil.v("Stopping feed '${getFeedName()}'...")
+            setUserVisibleHint(isVisibleToUser = false)
         }
     }
 
