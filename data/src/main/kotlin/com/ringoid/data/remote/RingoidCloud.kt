@@ -57,7 +57,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logResponse("updateUserSettings")
 
     // ------------------------------------------
-    fun applyReferralCode(essence: ReferralCodeEssence): Completable =
+    fun applyReferralCode(essence: ReferralCodeEssence): Single<BaseResponse> =
         restAdapter.applyReferralCode(essence.toBody())
             .breadcrumb("applyReferralCode", essence.toSentryData())
             .logRequest("applyReferralCode")

@@ -31,7 +31,7 @@ interface RingoidRestAdapter {
 
     // ------------------------------------------
     @POST("auth/claim")
-    fun applyReferralCode(@Body body: RequestBody): Completable
+    fun applyReferralCode(@Body body: RequestBody): Single<BaseResponse>
 
     /* Actions */
     // --------------------------------------------------------------------------------------------

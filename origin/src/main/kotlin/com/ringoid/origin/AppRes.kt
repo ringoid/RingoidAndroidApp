@@ -49,6 +49,8 @@ object AppRes {
     // ------------------------------------------
     var BUTTON_REFERRAL = ""
         private set
+    var LABEL_REFERRAL_APPLIED = ""
+        private set
 
     var EMAIL_OFFICER_MAIL_SUBJECT = ""
         private set
@@ -91,6 +93,7 @@ object AppRes {
 
             // ----------------------------------
             BUTTON_REFERRAL = getString(R.string.profile_label_coins)
+            LABEL_REFERRAL_APPLIED = getString(R.string.referral_dialog_reward_message)
 
             EMAIL_OFFICER_MAIL_SUBJECT = getString(R.string.settings_info_email_officer_mail_subject)
             EMAIL_SUPPORT_MAIL_SUBJECT = getString(R.string.settings_support_mail_subject)

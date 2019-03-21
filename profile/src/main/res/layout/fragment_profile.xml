@@ -34,8 +34,6 @@
 
     <Button
         android:id="@+id/btn_referral"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginStart="@dimen/std_margin_16"
         android:textColor="?refTextColorPrimary"
         app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintStart_toStartOf="parent"

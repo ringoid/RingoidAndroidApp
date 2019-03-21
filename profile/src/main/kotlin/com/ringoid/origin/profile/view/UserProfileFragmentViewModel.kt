@@ -8,6 +8,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.*
 import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
@@ -120,10 +121,18 @@ class UserProfileFragmentViewModel @Inject constructor(
         DebugLogUtil.d("Applying referral code: $code")
         applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code!!)))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnComplete { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnComplete { viewState.value = ViewState.DONE(REFERRAL_CODE_ACCEPTED) }
+            .doOnError {
+                viewState.value = when (it) {
+                    is WrongRequestParamsClientApiException -> ViewState.DONE(REFERRAL_CODE_DECLINED)
+                    else -> ViewState.ERROR(it)
+                }
+            }
             .autoDisposable(this)
-            .subscribe({}, Timber::e)// TODO: response
+            .subscribe({
+                Timber.d("Successfully applied referral code: $code")
+                spm.setReferralCode(code)  // save accepted referral code
+            }, Timber::e)
     }
 
     // ------------------------------------------

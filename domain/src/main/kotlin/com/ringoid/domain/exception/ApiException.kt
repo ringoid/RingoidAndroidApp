@@ -12,7 +12,8 @@ open class ApiException(val code: String, message: String? = null, val tag: Stri
     companion object {
         const val INVALID_ACCESS_TOKEN = "InvalidAccessTokenClientError"
         const val OLD_APP_VERSION = "TooOldAppVersionClientError"
-        const val CLIENT_ERROR = "WrongRequestParamsClientError"
+        const val CLIENT_ERROR = "WrongParamsClientError"
+        const val CLIENT_ERROR_OLD = "WrongRequestParamsClientError"
         const val CLIENT_PARAM_ERROR_SEX = "WrongSexClientError"
         const val SERVER_ERROR = "InternalServerError"
     }

@@ -72,6 +72,14 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                     ViewState.CLEAR.MODE_NEED_REFRESH -> showErrorStub(true)
                 }
             }
+            is ViewState.DONE -> {
+                onIdleState()
+                updateReferralLabel()
+                when (newState.residual) {
+                    is REFERRAL_CODE_ACCEPTED -> Dialogs.showTextDialog(activity, title = String.format(AppRes.LABEL_REFERRAL_APPLIED, "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
+                    is REFERRAL_CODE_DECLINED -> Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_invalid_referral_code, description = null)
+                }
+            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
@@ -192,7 +200,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_referral.apply {
-            text = String.format(AppRes.BUTTON_REFERRAL, if (spm.hasReferralCode()) "5" else "0")
+            updateReferralLabel()
             clicks().compose(clickDebounce()).subscribe {
                 if (!spm.hasReferralCode()) {
                     Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.referral_dialog_title,
@@ -338,5 +346,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         ibtn_delete_image.changeVisibility(isVisible = isVisible)
         ibtn_settings.changeVisibility(isVisible = isVisible)
         tabs.changeVisibility(isVisible = isVisible)
+    }
+
+    // ------------------------------------------
+    private fun updateReferralLabel() {
+        btn_referral.text = String.format(AppRes.BUTTON_REFERRAL, if (spm.hasReferralCode()) "5" else "0")
     }
 }
