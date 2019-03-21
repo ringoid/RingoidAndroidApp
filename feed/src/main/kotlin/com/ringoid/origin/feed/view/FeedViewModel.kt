@@ -41,8 +41,8 @@ abstract class FeedViewModel(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         DebugLogUtil.v("onStart(): show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString(",", "[", "]", transform = { it.toActionString() })}")
         viewActionObjectBackup.values.forEach {
             val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
@@ -52,8 +52,8 @@ abstract class FeedViewModel(
         viewActionObjectBackup.clear()  // all backup-ed aobjs have been consumed
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         DebugLogUtil.v("onStop(): hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString(", ", "[", "]", transform = { it.toActionString() })}")
         advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
         actionObjectPool.trigger()
@@ -62,9 +62,9 @@ abstract class FeedViewModel(
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            onStart()
+            onResume()
         } else {
-            onStop()
+            onPause()
         }
     }
 
