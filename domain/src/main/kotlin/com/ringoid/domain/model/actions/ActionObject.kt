@@ -27,6 +27,8 @@ open class ActionObject(
     val triggerStrategies: List<TriggerStrategy> = emptyList())
     : BaseActionObject(), IEssence {
 
+    fun key(): Pair<String, String> = targetImageId to targetUserId
+
     companion object {
         const val COLUMN_ACTION_TIME = "actionTime"
         const val COLUMN_ACTION_TYPE = "actionType"

@@ -51,6 +51,12 @@ abstract class FeedViewModel(
                 addViewObjectToBuffer(aobj)
             }
             viewActionObjectBackup.clear()  // all backup-ed aobjs have been consumed
+            // reset time of creation ('actionTime') for hidden action objects as they've became visible now
+            viewActionObjectBuffer.values
+                .filter { it.sourceFeed == getFeedName() }
+                .filter { it.isHidden }
+                .map { it.recreated().apply { it.isHidden = false } }
+                .forEach { viewActionObjectBuffer[it.key()] = it }
         } else {
             DebugLogUtil.v("Hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
             advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
@@ -153,11 +159,6 @@ abstract class FeedViewModel(
     }
 
     fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
-        if (!getUserVisibleHint()) {
-            Timber.v("Ignore incoming visible items [horizontal]: ${getFeedName()} is not visible")
-            return
-        }
-
         Timber.v("Incoming visible items [horizontal, ${getFeedName()}]: ${items.payloadToString()}")
         items.pickOne()?.let {
             horizontalPrevRanges[it.profileId]
@@ -175,11 +176,6 @@ abstract class FeedViewModel(
     }
 
     fun onViewVertical(items: EqualRange<ProfileImageVO>) {
-        if (!getUserVisibleHint()) {
-            Timber.v("Ignore incoming visible items [vertical]: ${getFeedName()} is not visible")
-            return
-        }
-
         Timber.v("Incoming visible items [vertical, ${getFeedName()}]: ${items.payloadToString()}")
         verticalPrevRange
             ?.delta(items)
@@ -246,13 +242,14 @@ abstract class FeedViewModel(
             if (it.image.isRealModel) {
                 val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
                     targetImageId = it.image.id, targetUserId = it.profileId)
+                aobj.isHidden = !getUserVisibleHint()
                 addViewObjectToBuffer(aobj)
             }
         }
     }
 
     private fun addViewObjectToBuffer(aobj: ViewActionObject) {
-        val key = aobj.targetImageId to aobj.targetUserId
+        val key = aobj.key()
         if (viewActionObjectBuffer.containsKey(key)) {
             return  // don't replace already added aobj, because it's creation time is tracking now
         }
