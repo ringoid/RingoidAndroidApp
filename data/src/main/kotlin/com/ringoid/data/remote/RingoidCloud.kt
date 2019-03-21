@@ -14,6 +14,7 @@ import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
+import com.ringoid.domain.model.essence.user.ReferralCodeEssence
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssence
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -54,6 +55,13 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("updateUserSettings", essence.toSentryData())
             .logRequest("updateUserSettings")
             .logResponse("updateUserSettings")
+
+    // ------------------------------------------
+    fun applyReferralCode(essence: ReferralCodeEssence): Completable =
+        restAdapter.applyReferralCode(essence.toBody())
+            .breadcrumb("applyReferralCode", essence.toSentryData())
+            .logRequest("applyReferralCode")
+            .logResponse("applyReferralCode")
 
     /* Actions */
     // --------------------------------------------------------------------------------------------

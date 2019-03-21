@@ -193,7 +193,14 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         btn_referral.apply {
             text = String.format(AppRes.BUTTON_REFERRAL, if (spm.hasReferralCode()) "5" else "0")
-            clicks().compose(clickDebounce()).subscribe { vm.onReferralClick() }
+            clicks().compose(clickDebounce()).subscribe {
+                if (!spm.hasReferralCode()) {
+                    Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.referral_dialog_title,
+                        positiveBtnLabelResId = OriginR_string.button_apply,
+                        negativeBtnLabelResId = OriginR_string.button_close,
+                        positiveListener = { _, _, inputText -> vm.applyReferralCode(code = inputText) })
+                }
+            }
         }
         ibtn_add_image.clicks().compose(clickDebounce())
             .subscribe {

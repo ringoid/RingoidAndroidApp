@@ -3,12 +3,15 @@ package com.ringoid.data.repository.user
 import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.model.feed.ProfileDbo
+import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
+import com.ringoid.domain.model.essence.user.ReferralCodeEssence
+import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
 import com.ringoid.domain.repository.ISharedPrefsManager
@@ -26,6 +29,10 @@ class UserRepository @Inject constructor(
     : BaseRepository(cloud, spm, aObjPool), IUserRepository {
 
     override fun accessToken(): Single<AccessToken> = spm.accessSingle { Single.just(it) }
+
+    override fun applyReferralCode(essence: ReferralCodeEssenceUnauthorized): Completable =
+        spm.accessCompletable { cloud.applyReferralCode(ReferralCodeEssence.from(essence, it.accessToken)) }
+            .handleError()
 
     override fun createUserProfile(essence: AuthCreateProfileEssence): Single<CurrentUser> =
         cloud.createUserProfile(essence)

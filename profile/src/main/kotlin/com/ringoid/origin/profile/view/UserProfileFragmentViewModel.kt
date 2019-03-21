@@ -7,11 +7,14 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.*
+import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
+import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.utility.extension
@@ -25,6 +28,7 @@ import javax.inject.Inject
 import timber.log.Timber
 
 class UserProfileFragmentViewModel @Inject constructor(
+    private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
@@ -111,6 +115,21 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // ------------------------------------------
+    fun applyReferralCode(code: String?) {
+        if (code.isNullOrBlank()) {
+            return  // apply nothing
+        }
+
+        DebugLogUtil.d("Applying referral code: $code")
+        applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code!!)))
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnComplete { viewState.value = ViewState.IDLE }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)// TODO: response
+    }
+
+    // ------------------------------------------
     fun onDeleteImage(empty: Boolean) {
         if (empty) {
             Bus.post(event = BusEvent.NoImagesOnProfile)
@@ -125,11 +144,5 @@ class UserProfileFragmentViewModel @Inject constructor(
         actionObjectPool.trigger()
         getUserImages()
         Bus.post(event = BusEvent.RefreshOnProfile)
-    }
-
-    fun onReferralClick() {
-        if (!spm.hasReferralCode()) {
-            // TODO: show dialog
-        }
     }
 }

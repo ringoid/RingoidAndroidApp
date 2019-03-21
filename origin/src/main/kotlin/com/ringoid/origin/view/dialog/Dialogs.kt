@@ -11,6 +11,7 @@ import com.ringoid.base.isActivityDestroyed
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
 import com.ringoid.utility.randomLong
+import kotlinx.android.synthetic.main.dialog_edit_text.view.*
 
 object Dialogs {
 
@@ -132,19 +133,22 @@ object Dialogs {
     fun getEditTextDialog(activity: Activity?, @StringRes titleResId: Int = 0, @StringRes hintRestId: Int = 0,
                           @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                           @StringRes negativeBtnLabelResId: Int = 0,
-                          positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                          positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
                           negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
         activity?.let { activity ->
             val hash = hashOf(activity, titleResId, hintRestId.takeIf { it != 0}?.let { activity.resources.getString(it) }, positiveBtnLabelResId, negativeBtnLabelResId)
             val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_text, null)
             val builder = AlertDialog.Builder(activity).setView(view)
+            titleResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setTitle(resId) } }
+            positiveBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setPositiveButton(resId) { dialog, which -> positiveListener?.invoke(dialog, which, view?.et_dialog_entry?.text?.toString()) } } }
+            negativeBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setNegativeButton(resId, negativeListener) } }
             HashAlertDialog(dialog = builder.create(), hash = hash)
         } ?: throw NullPointerException("Unable to show dialog: Activity is null")
 
     fun showEditTextDialog(activity: BaseActivity<*>?, @StringRes titleResId: Int = 0, @StringRes hintRestId: Int = 0,
                            @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                            @StringRes negativeBtnLabelResId: Int = 0,
-                           positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                           positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
                            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
             activity?.takeIf { !it.isActivityDestroyed() }
                     ?.let {
@@ -160,7 +164,7 @@ object Dialogs {
     fun showEditTextDialog(activity: Activity?, @StringRes titleResId: Int = 0, @StringRes hintRestId: Int = 0,
                           @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                           @StringRes negativeBtnLabelResId: Int = 0,
-                          positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                          positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
                           negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
             activity?.takeIf { it is BaseActivity<*> }
                 ?.let {

@@ -29,6 +29,10 @@ interface RingoidRestAdapter {
     @POST("auth/update_settings")
     fun updateUserSettings(@Body body: RequestBody): Single<BaseResponse>
 
+    // ------------------------------------------
+    @POST("auth/claim")
+    fun applyReferralCode(@Body body: RequestBody): Completable
+
     /* Actions */
     // --------------------------------------------------------------------------------------------
     @POST("actions/actions")
