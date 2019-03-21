@@ -107,6 +107,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onResume")
         DebugLogUtil.lifecycle(this, "onResume")
+        vm.onResume()
     }
 
     override fun onPause() {
@@ -114,6 +115,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onPause")
         DebugLogUtil.lifecycle(this, "onPause")
+        vm.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -160,6 +160,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onResume")
         DebugLogUtil.lifecycle(this, "onResume")
+        vm.onResume()
     }
 
     override fun onPause() {
@@ -167,6 +168,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onPause")
         DebugLogUtil.lifecycle(this, "onPause")
+        vm.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

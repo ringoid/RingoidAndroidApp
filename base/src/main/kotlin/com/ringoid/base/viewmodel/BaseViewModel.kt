@@ -53,6 +53,14 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
         // override in subclasses
     }
 
+    open fun onResume() {
+        // override in subclasses
+    }
+
+    open fun onPause() {
+        // override in subclasses
+    }
+
     open fun onStop() {
         // override in subclasses
     }

@@ -121,12 +121,14 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
         super.onResume()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onResume")
+        vm.onResume()
     }
 
     override fun onPause() {
         super.onPause()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onPause")
+        vm.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
