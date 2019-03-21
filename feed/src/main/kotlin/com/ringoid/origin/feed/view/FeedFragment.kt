@@ -241,34 +241,38 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_FOOTER_LABEL_BOTTOM, hide = FeedFooterViewHolderHideControls, show = FeedFooterViewHolderShowControls))
 
-    protected fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
-        offsetScrollStrats.forEach {
-            if (it.isEnabledForPosition(position)) {
-                view.post {
-                    // avoid change rv during layout, leading to crash
-                    when (it.type) {
-                        OffsetScrollStrategy.Type.BOTTOM -> {
-                            if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
-                                if (bottom - view.top < it.deltaOffset) {
-                                    if (!it.isHiddenAtAndSync(position)) {
-                                        feedAdapter.notifyItemChanged(position, it.hide)
-                                    }
-                                } else {
-                                    if (!it.isShownAtAndSync(position)) {
-                                        feedAdapter.notifyItemChanged(position, it.show)
+    private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
+                offsetScrollStrats.forEach {
+                    if (it.isEnabledForPosition(position)) {
+                        view.post {
+                            // avoid change rv during layout, leading to crash
+                            when (it.type) {
+                                OffsetScrollStrategy.Type.BOTTOM -> {
+                                    if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
+                                        if (bottom - view.top < it.deltaOffset) {
+                                            if (!it.isHiddenAtAndSync(position)) {
+                                                feedAdapter.notifyItemChanged(position, it.hide)
+                                            }
+                                        } else {
+                                            if (!it.isShownAtAndSync(position)) {
+                                                feedAdapter.notifyItemChanged(position, it.show)
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                        OffsetScrollStrategy.Type.TOP -> {
-                            if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
-                                if (top - view.top >= it.deltaOffset) {
-                                    if (!it.isHiddenAtAndSync(position)) {
-                                        feedAdapter.notifyItemChanged(position, it.hide)
-                                    }
-                                } else {
-                                    if (!it.isShownAtAndSync(position)) {
-                                        feedAdapter.notifyItemChanged(position, it.show)
+                                OffsetScrollStrategy.Type.TOP -> {
+                                    if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
+                                        if (top - view.top >= it.deltaOffset) {
+                                            if (!it.isHiddenAtAndSync(position)) {
+                                                feedAdapter.notifyItemChanged(position, it.hide)
+                                            }
+                                        } else {
+                                            if (!it.isShownAtAndSync(position)) {
+                                                feedAdapter.notifyItemChanged(position, it.show)
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -276,60 +280,56 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     }
                 }
             }
-        }
-    }
 
-    private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            fun processItemView(position: Int, view: View?) {
+                view?.let {
+                    val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
+                    processItemViewControlVisibility(position, view, AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT, bottom)
+                }
+            }
+
+            fun trackScrollOffset(rv: RecyclerView) {
+                rv.linearLayoutManager()?.let {
+                    val from = it.findFirstVisibleItemPosition()
+                    val to = it.findLastVisibleItemPosition()
+                    for (i in from..to) processItemView(i, it.findViewByPosition(i))
+                }
+            }
+
             super.onScrolled(rv, dx, dy)
             trackScrollOffset(rv)
-        }
-    }
-
-    private fun processItemView(position: Int, view: View?) {
-        view?.let {
-            val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
-            processItemViewControlVisibility(position, view, AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT, bottom)
-        }
-    }
-
-    private fun trackScrollOffset(rv: RecyclerView) {
-        rv.linearLayoutManager()?.let {
-            val from = it.findFirstVisibleItemPosition()
-            val to = it.findLastVisibleItemPosition()
-            for (i in from..to) processItemView(i, it.findViewByPosition(i))
         }
     }
 
     // ------------------------------------------
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            fun trackVisibility(rv: RecyclerView) {
+                rv.linearLayoutManager()?.let {
+                    val from = it.findFirstVisibleItemPosition()
+                    val to = it.findLastVisibleItemPosition()
+                    val items = feedAdapter.getItemsExposed(from = from, to = to)
+                    // use 0th image, because cannot access currently visible image on feed item, see [FeedViewModel::onViewVertical] for more info
+                    var range = EqualRange(from = from, to = to,
+                        items = items.map {
+                            val image = if (it.isRealModel && it.images.isNotEmpty()) it.images[0] else EmptyImage
+                            ProfileImageVO(profileId = it.id, image = image)
+                        })
+                    range = range.takeIf { feedAdapter.withHeader() }
+                        ?.takeIf { from == 0 }
+                        ?.let { it.dropItems(n = 1) }  // exclude header item from visibility tracking
+                            ?: range  // no header item within the visible range
+                    range = range.takeIf { feedAdapter.withFooter() }
+                        ?.takeIf { to == feedAdapter.footerPosition() }
+                        ?.let { it.dropLastItems(n = 1) }  // exclude footer item from visibility tracking
+                            ?: range  // no footer item within the visible range
+                    Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
+                    feedTrackingBus.postViewEvent(range)
+                }
+            }
+
             super.onScrolled(rv, dx, dy)
             trackVisibility(rv)
-        }
-    }
-
-    protected fun trackVisibility(rv: RecyclerView) {
-        rv.linearLayoutManager()?.let {
-            val from = it.findFirstVisibleItemPosition()
-            val to = it.findLastVisibleItemPosition()
-            val items = feedAdapter.getItemsExposed(from = from, to = to)
-            // use 0th image, because cannot access currently visible image on feed item, see [FeedViewModel::onViewVertical] for more info
-            var range = EqualRange(from = from, to = to,
-                items = items.map {
-                    val image = if (it.isRealModel && it.images.isNotEmpty()) it.images[0] else EmptyImage
-                    ProfileImageVO(profileId = it.id, image = image)
-                })
-            range = range.takeIf { feedAdapter.withHeader() }
-                ?.takeIf { from == 0 }
-                ?.let { it.dropItems(n = 1) }  // exclude header item from visibility tracking
-                ?: range  // no header item within the visible range
-            range = range.takeIf { feedAdapter.withFooter() }
-                ?.takeIf { to == feedAdapter.footerPosition() }
-                ?.let { it.dropLastItems(n = 1) }  // exclude footer item from visibility tracking
-                ?: range  // no footer item within the visible range
-            Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
-            feedTrackingBus.postViewEvent(range)
         }
     }
 }
