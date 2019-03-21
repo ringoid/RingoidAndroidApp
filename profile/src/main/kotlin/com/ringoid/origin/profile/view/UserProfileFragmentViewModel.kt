@@ -126,4 +126,10 @@ class UserProfileFragmentViewModel @Inject constructor(
         getUserImages()
         Bus.post(event = BusEvent.RefreshOnProfile)
     }
+
+    fun onReferralClick() {
+        if (!spm.hasReferralCode()) {
+            // TODO: show dialog
+        }
+    }
 }

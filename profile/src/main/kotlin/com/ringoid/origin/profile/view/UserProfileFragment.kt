@@ -191,6 +191,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        btn_referral.apply {
+            text = String.format(AppRes.BUTTON_REFERRAL, if (spm.hasReferralCode()) "5" else "0")
+            clicks().compose(clickDebounce()).subscribe { vm.onReferralClick() }
+        }
         ibtn_add_image.clicks().compose(clickDebounce())
             .subscribe {
                 if (!connectionManager.isNetworkAvailable()) {

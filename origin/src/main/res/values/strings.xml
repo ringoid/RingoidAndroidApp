@@ -3,12 +3,14 @@
     <string name="app_name">Ringoid</string>
 
     <string name="button_add_photo">Add photo</string>
+    <string name="button_apply">Apply</string>
     <string name="button_browser">Open in browser</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_close">Close</string>
     <string name="button_delete">Delete</string>
     <string name="button_done">Done</string>
     <string name="button_later">Not now</string>
+    <string name="button_ok">OK</string>
 
     <string name="common_choose_image">Choose Photo</string>
     <string name="common_clipboard">Copied to clipboard</string>
@@ -20,6 +22,7 @@
 
     <string name="error_common">Oops! Something went wrong&#8230;</string>
     <string name="error_crop_image">Failed to load and prepare photo</string>
+    <string name="error_invalid_referral_code">Referral code is invalid</string>
 
     <!-- Debug screen -->
     <string name="debug_email_support_button_label">Email support@ringoid.com</string>
@@ -80,6 +83,11 @@
     <string name="profile_dialog_image_delete_title">Delete Photo?</string>
     <string name="profile_empty_images">Add photo to\nsee who likes you</string>
     <string name="profile_empty_title">Profile</string>
+    <string name="profile_label_coins">%s coins</string>
+
+    <!-- Referral code screen -->
+    <string name="referral_dialog_title">Referral code</string>
+    <string name="referral_dialog_reward_message">%s coins gifted</string>
 
     <!-- Settings screen -->
     <string name="settings_account_delete">Delete Account</string>

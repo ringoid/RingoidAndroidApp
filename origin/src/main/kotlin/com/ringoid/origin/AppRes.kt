@@ -47,6 +47,9 @@ object AppRes {
     lateinit var UNDERSCORE_DRAWABLE: Drawable
 
     // ------------------------------------------
+    var BUTTON_REFERRAL = ""
+        private set
+
     var EMAIL_OFFICER_MAIL_SUBJECT = ""
         private set
     var EMAIL_SUPPORT_MAIL_SUBJECT = ""
@@ -87,6 +90,8 @@ object AppRes {
             UNDERSCORE_DRAWABLE = ContextCompat.getDrawable(context, WidgetR_drawable.underscore)!!
 
             // ----------------------------------
+            BUTTON_REFERRAL = getString(R.string.profile_label_coins)
+
             EMAIL_OFFICER_MAIL_SUBJECT = getString(R.string.settings_info_email_officer_mail_subject)
             EMAIL_SUPPORT_MAIL_SUBJECT = getString(R.string.settings_support_mail_subject)
 

@@ -2,6 +2,7 @@ package com.ringoid.origin.view.dialog
 
 import android.app.Activity
 import android.content.DialogInterface
+import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -49,7 +50,7 @@ object Dialogs {
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
             negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null): HashAlertDialog =
-        getTextDialog(activity, titleResId, activity?.resources?.getString(descriptionResId),
+        getTextDialog(activity, titleResId, descriptionResId.takeIf { it != 0 }?.let { activity?.resources?.getString(it) },
             positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
 
     fun getTextDialog(
@@ -90,8 +91,8 @@ object Dialogs {
                         positiveBtnLabelResId, negativeBtnLabelResId,
                         positiveListener, negativeListener)
                     registry.takeIf { !it.contains(dialog.hash) }
-                                ?.add(dialog.hash)
-                                ?.also { dialog.dialog.show() }
+                            ?.add(dialog.hash)
+                            ?.also { dialog.dialog.show() }
                     dialog
                 }
 
@@ -122,8 +123,59 @@ object Dialogs {
                         positiveBtnLabelResId, negativeBtnLabelResId,
                         positiveListener, negativeListener)
                     registry.takeIf { !it.contains(dialog.hash) }
+                            ?.add(dialog.hash)
+                            ?.also { dialog.dialog.show() }
+                    dialog
+                }
+
+    // -------------------------------–––––––--------––---––---------------------------------------
+    fun getEditTextDialog(activity: Activity?, @StringRes titleResId: Int = 0, @StringRes hintRestId: Int = 0,
+                          @StringRes positiveBtnLabelResId: Int = R.string.button_close,
+                          @StringRes negativeBtnLabelResId: Int = 0,
+                          positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                          negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+        activity?.let { activity ->
+            val hash = hashOf(activity, titleResId, hintRestId.takeIf { it != 0}?.let { activity.resources.getString(it) }, positiveBtnLabelResId, negativeBtnLabelResId)
+            val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_text, null)
+            val builder = AlertDialog.Builder(activity).setView(view)
+            HashAlertDialog(dialog = builder.create(), hash = hash)
+        } ?: throw NullPointerException("Unable to show dialog: Activity is null")
+
+    fun showEditTextDialog(activity: BaseActivity<*>?, @StringRes titleResId: Int = 0, @StringRes hintRestId: Int = 0,
+                           @StringRes positiveBtnLabelResId: Int = R.string.button_close,
+                           @StringRes negativeBtnLabelResId: Int = 0,
+                           positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                           negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+            activity?.takeIf { !it.isActivityDestroyed() }
+                    ?.let {
+                        val dialog = getEditTextDialog(it, titleResId, hintRestId,
+                            positiveBtnLabelResId, negativeBtnLabelResId,
+                            positiveListener, negativeListener)
+                        registry.takeIf { !it.contains(dialog.hash) }
                                 ?.add(dialog.hash)
                                 ?.also { dialog.dialog.show() }
+                        dialog
+                    }
+
+    fun showEditTextDialog(activity: Activity?, @StringRes titleResId: Int = 0, @StringRes hintRestId: Int = 0,
+                          @StringRes positiveBtnLabelResId: Int = R.string.button_close,
+                          @StringRes negativeBtnLabelResId: Int = 0,
+                          positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                          negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+            activity?.takeIf { it is BaseActivity<*> }
+                ?.let {
+                    showEditTextDialog(it as BaseActivity<*>, titleResId, hintRestId,
+                        positiveBtnLabelResId, negativeBtnLabelResId,
+                        positiveListener, negativeListener)
+                }
+                ?: run {
+                    val dialog = getEditTextDialog(
+                        activity, titleResId, hintRestId,
+                        positiveBtnLabelResId, negativeBtnLabelResId,
+                        positiveListener, negativeListener)
+                    registry.takeIf { !it.contains(dialog.hash) }
+                            ?.add(dialog.hash)
+                            ?.also { dialog.dialog.show() }
                     dialog
                 }
 

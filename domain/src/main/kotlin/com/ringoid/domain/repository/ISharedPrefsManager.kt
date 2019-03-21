@@ -17,6 +17,7 @@ interface ISharedPrefsManager {
     @DebugOnly
     fun switchDebugLogEnabled()
 
+    /* Auth */
     // ------------------------------------------
     fun accessToken(): AccessToken?
 
@@ -25,4 +26,12 @@ interface ISharedPrefsManager {
     fun saveUserProfile(userId: String, accessToken: String)
 
     fun deleteUserProfile(userId: String)
+
+    /* Referral program */
+    // ------------------------------------------
+    fun getReferralCode(): String?
+
+    fun hasReferralCode(): Boolean
+
+    fun setReferralCode(code: String?)
 }

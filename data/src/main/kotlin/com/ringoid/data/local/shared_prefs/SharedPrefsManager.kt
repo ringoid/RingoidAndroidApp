@@ -35,6 +35,10 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         /* Actions */
         // --------------------------------------
         const val SP_KEY_LAST_ACTION_TIME = "sp_key_last_action_time"
+
+        /* Referral program */
+        // --------------------------------------
+        const val SP_KEY_REFERRAL_CODE = "sp_key_referral_code"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -99,6 +103,16 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     internal fun deleteLastActionTime() {
         sharedPreferences.edit().remove(SP_KEY_LAST_ACTION_TIME).apply()
+    }
+
+    /* Referral program */
+    // --------------------------------------------------------------------------------------------
+    override fun getReferralCode(): String? = sharedPreferences.getString(SP_KEY_REFERRAL_CODE, null)
+
+    override fun hasReferralCode(): Boolean = sharedPreferences.contains(SP_KEY_REFERRAL_CODE)
+
+    override fun setReferralCode(code: String?) {
+        sharedPreferences.edit().putString(SP_KEY_REFERRAL_CODE, code).apply()
     }
 }
 

@@ -3,12 +3,14 @@
     <string name="app_name">Рингоид</string>
 
     <string name="button_add_photo">Добавить фото</string>
+    <string name="button_apply">Применить</string>
     <string name="button_browser">Открыть в браузере</string>
     <string name="button_cancel">Отмена</string>
     <string name="button_close">Закрыть</string>
     <string name="button_delete">Удалить</string>
     <string name="button_done">Готово</string>
     <string name="button_later">Не сейчас</string>
+    <string name="button_ok">ОК</string>
 
     <string name="common_choose_image">Выбери фото</string>
     <string name="common_clipboard">Скопировано в буфер</string>
@@ -20,6 +22,7 @@
 
     <string name="error_common">Ой! Что-то пошло не так&#8230;</string>
     <string name="error_crop_image">Не удалось загрузить фото</string>
+    <string name="error_invalid_referral_code">Код неверен</string>
 
     <!-- Debug screen -->
     <string name="debug_email_support_button_label">Написать в support@ringoid.com</string>
@@ -75,6 +78,11 @@
     <string name="profile_dialog_image_delete_title">Удалить фото?</string>
     <string name="profile_empty_images">Добавь фото, чтобы\nполучать лайки</string>
     <string name="profile_empty_title">Профиль</string>
+    <string name="profile_label_coins">%s монет</string>
+
+    <!-- Referral code screen -->
+    <string name="referral_dialog_title">Код приглашения</string>
+    <string name="referral_dialog_reward_message">Начислено %s монет</string>
 
     <!-- Settings screen -->
     <string name="settings_account_delete">Удалить Профиль</string>
