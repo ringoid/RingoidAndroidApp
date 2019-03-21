@@ -33,6 +33,8 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
     val oneShot: MutableLiveData<LiveEvent<Any?>> by lazy { MutableLiveData<LiveEvent<Any?>>() }
 
+    private var userVisibilityHint: Boolean = false
+
     // --------------------------------------------------------------------------------------------
     fun obtainAccessToken() {
         getUserAccessTokenUseCase.source(Params.EMPTY)
@@ -70,9 +72,17 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
         unsubscribeFromBusEvents()
     }
 
-    // ------------------------------------------
+    /* Visibility */
+    // --------------------------------------------------------------------------------------------
+    protected fun getUserVisibleHint(): Boolean = userVisibilityHint
+
     open fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        setUserVisibleHintInternal(isVisibleToUser)
         // override in subclasses
+    }
+
+    internal fun setUserVisibleHintInternal(isVisibleToUser: Boolean) {
+        userVisibilityHint = isVisibleToUser  // only set flag without side effects
     }
 
     /* Event Bus */

@@ -29,7 +29,7 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
         setLiked(isLiked = model.isLiked)
 
         if (BuildConfig.IS_STAGING) {
-            itemView.tv_image_id.text = model.image.hashIdWithResolution()
+            itemView.tv_image_id.text = "Image: ${model.image.idWithFirstN()}"
         }
     }
 

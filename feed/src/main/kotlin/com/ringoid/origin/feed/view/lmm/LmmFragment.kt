@@ -120,45 +120,32 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     private fun selectPage(position: Int) {
         when (position) {
             0 -> {
-                setPageVisibleHint(1, false)
-                setPageVisibleHint(2, false)
                 btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_matches?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_messenger?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
             }
             1 -> {
-                setPageVisibleHint(0, false)
-                setPageVisibleHint(2, false)
                 btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_matches?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
                 btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
             }
             2 -> {
-                setPageVisibleHint(0, false)
-                setPageVisibleHint(1, false)
                 btn_tab_likes?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
                 btn_tab_matches?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
             }
         }
 
-        if (vp_pages?.currentItem == position) {
-            // current position reselected
-            vm.onTabReselect()
+        vp_pages?.currentItem?.let {
+            if (it == position) {
+                // current position reselected
+                vm.onTabReselect()
+            } else {
+                setPageVisibleHint(it, false)
+                setPageVisibleHint(position, true)
+                vp_pages?.setCurrentItem(position, false)
+            }
         }
-
-        setPageVisibleHint(position, true)
-        vp_pages?.setCurrentItem(position, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setCurrentPageVisibleHint(true)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        setCurrentPageVisibleHint(false)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

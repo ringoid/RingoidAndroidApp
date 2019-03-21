@@ -89,7 +89,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         if (BuildConfig.IS_STAGING) {
-            itemView.tv_profile_id.text = model.hashIdWithFirst4()
+            itemView.tv_profile_id.text = "Profile: ${model.idWithFirstN()}"
         }
     }
 

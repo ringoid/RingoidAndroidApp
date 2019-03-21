@@ -26,7 +26,7 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
         itemView.tv_likes_count.text = "${model.numberOfLikes}"
 
         if (BuildConfig.IS_STAGING) {
-            itemView.tv_image_id.text = model.hashIdWithResolution()
+            itemView.tv_image_id.text = "Image: ${model.idWithFirstN()}"
         }
     }
 }

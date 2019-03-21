@@ -14,4 +14,6 @@ interface IImage : IModel, Parcelable {
     fun getResolutionStr(): String? = id.indexOf('_').takeIf { it != -1 }?.let { id.substring(0, it) }
     fun getResolution(): ImageResolution? = getResolutionStr()?.let { str -> ImageResolution.values().find { it.resolution == str } }
     fun hashIdWithResolution(): String = "${getResolutionStr()}_${getImageIdStr().substring(0..3)}_${getModelId()}"
+
+    override fun idWithFirstN(N: Int): String = getImageIdStr().substring(0..minOf(N, id.length - 1))
 }

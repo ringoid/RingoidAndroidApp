@@ -34,8 +34,8 @@
 
     <TextView
         android:id="@+id/tv_profile_id"
-        android:layout_marginStart="@dimen/std_margin_8"
-        android:layout_marginBottom="@dimen/std_margin_8"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginBottom="@dimen/std_margin_16"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"
@@ -45,7 +45,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Debug profile id"
-        style="@style/StdText.Accent"/>
+        style="@style/StdText.White"/>
 
     <View
         android:id="@+id/underscore"

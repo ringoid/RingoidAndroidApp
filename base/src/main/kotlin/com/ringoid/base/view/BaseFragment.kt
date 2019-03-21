@@ -59,6 +59,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
      */
     open fun onBeforeTabSelect() {
         DebugLogUtil.lifecycle(this, "onBeforeTabSelect")
+        if (userVisibleHint) userVisibleHint = false
         // override in subclasses
     }
 
@@ -71,15 +72,17 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onTabTransaction, payload: $payload")
         DebugLogUtil.lifecycle(this, "onTabTransaction")
+        if (!userVisibleHint) userVisibleHint = true
         // override in subclasses
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        val changed = userVisibleHint != isVisibleToUser
         super.setUserVisibleHint(isVisibleToUser)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("setUserVisibleHint: $isVisibleToUser")
         DebugLogUtil.lifecycle(this, "setUserVisibleHint: $isVisibleToUser")
-        if (isViewModelInitialized) {
+        if (isViewModelInitialized && changed) {
             vm.setUserVisibleHint(isVisibleToUser)
         }
     }
@@ -132,6 +135,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         DebugLogUtil.lifecycle(this, "onActivityCreated")
         isActivityCreated = true
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
+            setUserVisibleHintInternal(userVisibleHint)  // actualize visible hint on viewModel
             // tie observer to view's lifecycle rather than Fragment's one
             with(viewLifecycleOwner) {
                 subscribeOnBusEvents()

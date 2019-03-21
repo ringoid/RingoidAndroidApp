@@ -199,7 +199,6 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         }
         .handleError()
         .doOnSubscribe {
-            if (queue.isNotEmpty()) DebugLogUtil.b("Commit actions [${queue.size}], local lat=${lastActionTime()}: ${queue.joinToString(",", "[", "]", transform = { it.toActionString() })}")
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: ${lastActionTime()}, queue: ${printQueue()}")
             backupQueue.addAll(queue)
             queue.clear()

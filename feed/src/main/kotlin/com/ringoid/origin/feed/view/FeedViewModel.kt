@@ -41,30 +41,20 @@ abstract class FeedViewModel(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onResume() {
-        super.onResume()
-        DebugLogUtil.v("onStart(): show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString(",", "[", "]", transform = { it.toActionString() })}")
-        viewActionObjectBackup.values.forEach {
-            val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
-                targetImageId = it.targetImageId, targetUserId = it.targetUserId)
-            addViewObjectToBuffer(aobj)
-        }
-        viewActionObjectBackup.clear()  // all backup-ed aobjs have been consumed
-    }
-
-    override fun onPause() {
-        super.onPause()
-        DebugLogUtil.v("onStop(): hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString(", ", "[", "]", transform = { it.toActionString() })}")
-        advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
-        actionObjectPool.trigger()
-    }
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            onResume()
+            DebugLogUtil.v("Show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
+            viewActionObjectBackup.values.forEach {
+                val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
+                    targetImageId = it.targetImageId, targetUserId = it.targetUserId)
+                addViewObjectToBuffer(aobj)
+            }
+            viewActionObjectBackup.clear()  // all backup-ed aobjs have been consumed
         } else {
-            onPause()
+            DebugLogUtil.v("Hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
+            advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
+            actionObjectPool.trigger()
         }
     }
 
@@ -163,7 +153,12 @@ abstract class FeedViewModel(
     }
 
     fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
-        Timber.v("Incoming visible items [horizontal]: ${items.payloadToString()}")
+        if (!getUserVisibleHint()) {
+            Timber.v("Ignore incoming visible items [horizontal]: ${getFeedName()} is not visible")
+            return
+        }
+
+        Timber.v("Incoming visible items [horizontal, ${getFeedName()}]: ${items.payloadToString()}")
         items.pickOne()?.let {
             horizontalPrevRanges[it.profileId]
                 ?.delta(items)
@@ -180,7 +175,12 @@ abstract class FeedViewModel(
     }
 
     fun onViewVertical(items: EqualRange<ProfileImageVO>) {
-        Timber.v("Incoming visible items [vertical]: ${items.payloadToString()}")
+        if (!getUserVisibleHint()) {
+            Timber.v("Ignore incoming visible items [vertical]: ${getFeedName()} is not visible")
+            return
+        }
+
+        Timber.v("Incoming visible items [vertical, ${getFeedName()}]: ${items.payloadToString()}")
         verticalPrevRange
             ?.delta(items)
             ?.takeIf { !it.isRangeEmpty() }
@@ -244,8 +244,9 @@ abstract class FeedViewModel(
     private fun addViewObjectsToBuffer(items: EqualRange<ProfileImageVO>) {
         items.forEach {
             if (it.image.isRealModel) {
-                addViewObjectToBuffer(ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
-                    targetImageId = it.image.id, targetUserId = it.profileId))
+                val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
+                    targetImageId = it.image.id, targetUserId = it.profileId)
+                addViewObjectToBuffer(aobj)
             }
         }
     }
@@ -256,7 +257,7 @@ abstract class FeedViewModel(
             return  // don't replace already added aobj, because it's creation time is tracking now
         }
 
-        Timber.v("Add View action object to buffer: $aobj")
+        DebugLogUtil.v("Create: ${aobj.toActionString()}")
         viewActionObjectBuffer[key] = aobj
     }
 }

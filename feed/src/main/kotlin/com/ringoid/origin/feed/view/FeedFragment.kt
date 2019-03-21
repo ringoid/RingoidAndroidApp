@@ -112,16 +112,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
     }
 
-    override fun onBeforeTabSelect() {
-        super.onBeforeTabSelect()
-        vm.onPause()  // leaving Feed screen by switching Main tab
-    }
-
-    override fun onTabTransaction(payload: String?) {
-        super.onTabTransaction(payload)
-        vm.onResume()  // entering Feed screen by switching Main tab
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
