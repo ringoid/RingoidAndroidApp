@@ -27,13 +27,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.ringoid.widget.view.BadgeButton
-            android:id="@+id/btn_tab_messenger"
+            android:id="@+id/btn_tab_likes"
             android:layout_width="0dp"
-            android:layout_weight="0.85"
+            android:layout_weight="1"
             android:background="?selectableItemBackground"
             android:gravity="center_vertical|end"
-            android:paddingEnd="@dimen/std_margin_16"
-            android:text="@string/lmm_tab_messenger"
+            android:paddingEnd="@dimen/std_margin_12"
+            android:text="@string/lmm_tab_likes"
             android:textColor="@color/tab_button_text_color"
             style="@style/FlatButton"/>
 
@@ -61,13 +61,13 @@
             android:background="?attr/refColorUnderscore"/>
 
         <com.ringoid.widget.view.BadgeButton
-            android:id="@+id/btn_tab_likes"
+            android:id="@+id/btn_tab_messenger"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.85"
             android:background="?selectableItemBackground"
             android:gravity="center_vertical|start"
-            android:paddingStart="@dimen/std_margin_12"
-            android:text="@string/lmm_tab_likes"
+            android:paddingStart="@dimen/std_margin_16"
+            android:text="@string/lmm_tab_messenger"
             android:textColor="@color/tab_button_text_color"
             style="@style/FlatButton"/>
     </LinearLayout>

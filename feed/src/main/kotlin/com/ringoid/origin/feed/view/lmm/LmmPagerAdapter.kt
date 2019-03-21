@@ -20,9 +20,9 @@ class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment =
         when (position) {
-            0 -> MessengerFragment.newInstance()
+            0 -> LikesFeedFragment.newInstance()
             1 -> MatchesFeedFragment.newInstance()
-            2 -> LikesFeedFragment.newInstance()
+            2 -> MessengerFragment.newInstance()
             else -> throw IllegalArgumentException("Page at position [$position] is not allowed")
         }
 

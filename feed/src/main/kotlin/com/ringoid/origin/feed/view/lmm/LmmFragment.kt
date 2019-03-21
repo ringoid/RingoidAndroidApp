@@ -101,7 +101,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             observe(vm.badgeMessenger, ::showBadgeOnMessenger)
         }
 
-        val page = savedInstanceState?.getInt(BUNDLE_KEY_CURRENT_PAGE) ?: 2
+        val page = savedInstanceState?.getInt(BUNDLE_KEY_CURRENT_PAGE) ?: 0
         selectPage(position = page)  // open LikesYou at beginning
     }
 
@@ -112,17 +112,17 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             adapter = lmmPagesAdapter
             offscreenPageLimit = 3
         }
-        btn_tab_likes.clicks().compose(clickDebounce()).subscribe { selectPage(2) }
+        btn_tab_likes.clicks().compose(clickDebounce()).subscribe { selectPage(0) }
         btn_tab_matches.clicks().compose(clickDebounce()).subscribe { selectPage(1) }
-        btn_tab_messenger.clicks().compose(clickDebounce()).subscribe { selectPage(0) }
+        btn_tab_messenger.clicks().compose(clickDebounce()).subscribe { selectPage(2) }
     }
 
     private fun selectPage(position: Int) {
         when (position) {
             0 -> {
-                btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
+                btn_tab_likes?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
                 btn_tab_matches?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
-                btn_tab_messenger?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
+                btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
             }
             1 -> {
                 btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
@@ -130,9 +130,9 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
                 btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
             }
             2 -> {
-                btn_tab_likes?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
+                btn_tab_likes?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
                 btn_tab_matches?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
-                btn_tab_messenger?.changeTypeface(textSize = AppRes.BUTTON_FLAT_TEXT_SIZE)
+                btn_tab_messenger?.changeTypeface(style = Typeface.BOLD, isSelected = true, textSize = AppRes.BUTTON_FLAT_INC_TEXT_SIZE)
             }
         }
 
@@ -150,7 +150,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(BUNDLE_KEY_CURRENT_PAGE, vp_pages?.currentItem ?: 2)
+        outState.putInt(BUNDLE_KEY_CURRENT_PAGE, vp_pages?.currentItem ?: 0)
     }
 
     // ------------------------------------------
