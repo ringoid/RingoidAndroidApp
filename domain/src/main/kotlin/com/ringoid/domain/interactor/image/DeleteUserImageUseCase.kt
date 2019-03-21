@@ -5,7 +5,7 @@ import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.processCompletable
-import com.ringoid.domain.model.essence.image.ImageDeleteEssence
+import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.repository.image.IUserImageRepository
 import io.reactivex.Completable
 import javax.inject.Inject
@@ -15,5 +15,5 @@ class DeleteUserImageUseCase @Inject constructor(private val repository: IUserIm
     : CompletableUseCase(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Completable =
-        params.processCompletable(ImageDeleteEssence::class.java, repository::deleteUserImage)
+        params.processCompletable(ImageDeleteEssenceUnauthorized::class.java, repository::deleteUserImage)
 }

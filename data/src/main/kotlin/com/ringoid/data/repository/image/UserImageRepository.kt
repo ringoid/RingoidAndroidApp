@@ -5,6 +5,7 @@ import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
+import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.image.UserImageEntity
@@ -13,10 +14,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.exception.isFatalApiError
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
-import com.ringoid.domain.model.essence.image.ImageDeleteEssence
-import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
-import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
+import com.ringoid.domain.model.essence.image.*
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.model.mapList
@@ -30,7 +28,6 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.io.File
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -118,8 +115,11 @@ class UserImageRepository @Inject constructor(
     override fun getUserImagesAsync(resolution: ImageResolution): Observable<List<UserImage>> =
         Observable.concatArrayEager(local.userImages().map { it.mapList() }.toObservable(), getUserImages(resolution).toObservable())
 
-    override fun deleteUserImage(essence: ImageDeleteEssence): Completable =
+    override fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized): Completable =
         deleteUserImage(essence, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
+
+    private fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized, retryCount: Int): Completable =
+        spm.accessCompletable { deleteUserImage(ImageDeleteEssence.from(essence, it.accessToken), retryCount) }
 
     private fun deleteUserImage(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)

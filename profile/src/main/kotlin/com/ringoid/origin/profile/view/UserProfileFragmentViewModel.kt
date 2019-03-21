@@ -13,6 +13,7 @@ import com.ringoid.domain.interactor.image.*
 import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
+import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
@@ -91,16 +92,12 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     fun deleteImage(id: String) {
-        spm.accessToken()?.let {
-            val essence = ImageDeleteEssence(accessToken = it.accessToken, imageId = id)
-
-            deleteUserImageUseCase.source(params = Params().put(essence))
-                .doOnSubscribe { viewState.value = ViewState.LOADING }
-                .doOnComplete { viewState.value = ViewState.IDLE }
-                .doOnError { viewState.value = ViewState.ERROR(it) }
-                .autoDisposable(this)
-                .subscribe({ Timber.d("Successfully deleted image: $it") }, Timber::e)
-        }
+        deleteUserImageUseCase.source(params = Params().put(ImageDeleteEssenceUnauthorized(imageId = id)))
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnComplete { viewState.value = ViewState.IDLE }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .autoDisposable(this)
+            .subscribe({ Timber.d("Successfully deleted image: $id") }, Timber::e)
     }
 
     fun uploadImage(uri: Uri) {

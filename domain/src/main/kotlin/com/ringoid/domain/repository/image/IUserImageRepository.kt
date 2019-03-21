@@ -2,6 +2,7 @@ package com.ringoid.domain.repository.image
 
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
+import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -22,7 +23,7 @@ interface IUserImageRepository : IImageRepository {
     fun getUserImages(resolution: ImageResolution): Single<List<UserImage>>
     fun getUserImagesAsync(resolution: ImageResolution): Observable<List<UserImage>>
 
-    fun deleteUserImage(essence: ImageDeleteEssence): Completable
+    fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized): Completable
     fun deleteLocalUserImages(): Completable
     fun deleteLocalUserImageRequests(): Completable
 }
