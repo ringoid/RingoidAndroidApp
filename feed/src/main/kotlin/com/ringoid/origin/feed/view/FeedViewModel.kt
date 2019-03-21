@@ -210,7 +210,7 @@ abstract class FeedViewModel(
         viewActionObjectBuffer.let {
             val aobj = it[key]?.advance()
             it.remove(key)
-            aobj
+            aobj as? ViewActionObject
         }?.also { actionObjectPool.put(it) }
 
     private fun advanceAndPushViewObject(key: Pair<String, String>, recreate: Boolean) {
