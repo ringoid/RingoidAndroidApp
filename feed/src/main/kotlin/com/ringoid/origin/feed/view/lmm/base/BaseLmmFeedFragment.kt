@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
@@ -101,6 +102,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
         }
+    }
+
+    // ------------------------------------------
+    internal fun clearScreen(mode: Int) {
+        vm.clearScreen(mode)
     }
 
     /* Lifecycle */

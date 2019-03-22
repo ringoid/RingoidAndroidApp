@@ -15,6 +15,11 @@ class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     private val map = SparseArray<WeakReference<Fragment>>()
 
     fun accessItem(position: Int): Fragment? = map[position]?.get()
+    fun doForEachItem(action: (item: Fragment?) -> Unit) {
+        for (i in 0 until count) {
+            action.invoke(map[i]?.get())
+        }
+    }
 
     override fun getCount(): Int = 3
 

@@ -8,6 +8,8 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
+import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -67,6 +69,10 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         tab_delim2.changeVisibility(isVisible)
     }
 
+    private fun clearAllFeeds(mode: Int) {
+        lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.clearScreen(mode) }
+    }
+
     // ------------------------------------------
     override fun onBeforeTabSelect() {
         super.onBeforeTabSelect()
@@ -99,6 +105,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             observe(vm.badgeLikes, ::showBadgeOnLikes)
             observe(vm.badgeMatches, ::showBadgeOnMatches)
             observe(vm.badgeMessenger, ::showBadgeOnMessenger)
+            observe(vm.clearAllFeeds, ::clearAllFeeds)
         }
 
         val page = savedInstanceState?.getInt(BUNDLE_KEY_CURRENT_PAGE) ?: 0

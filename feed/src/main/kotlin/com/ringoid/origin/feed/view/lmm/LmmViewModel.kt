@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lmm
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.log.SentryUtil
@@ -25,6 +26,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
     val badgeMatches by lazy { MutableLiveData<Boolean>() }
     val badgeMessenger by lazy { MutableLiveData<Boolean>() }
+    val clearAllFeeds by lazy { MutableLiveData<Int>() }
     val listScrolls by lazy { MutableLiveData<Int>() }
     var cachedLmm: Lmm? = null
         private set
@@ -70,6 +72,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         getLmm()
     }
 
+    // ------------------------------------------
     private fun getLmm() {
         countUserImagesUseCase.source()
             .filter { it > 0 }  // user has images in profile
@@ -79,7 +82,8 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
                 getLmmUseCase.source(params = params)
             }
             .autoDisposable(this)
-            .subscribe({ cachedLmm = it }, Timber::e)
+            .subscribe({ cachedLmm = it },
+                       { Timber.e(it); clearAllFeeds.value = ViewState.CLEAR.MODE_NEED_REFRESH })
     }
 
     // --------------------------------------------------------------------------------------------
