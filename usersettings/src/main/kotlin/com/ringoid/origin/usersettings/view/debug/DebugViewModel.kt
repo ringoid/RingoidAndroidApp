@@ -23,6 +23,7 @@ class DebugViewModel @Inject constructor(
     @DebugOnly private val wrongParamsRequestUseCase: WrongParamsRequestUseCase,
     @DebugOnly private val debugInvalidAccessTokenRequestUseCase: DebugInvalidAccessTokenRequestUseCase,
     @DebugOnly private val debugNotSuccessRequestUseCase: DebugNotSuccessRequestUseCase,
+    @DebugOnly private val debugResponseWith404UseCase: DebugResponseWith404UseCase,
     @DebugOnly private val debugServerErrorCauseRequestUseCase: DebugServerErrorCauseRequestUseCase,
     @DebugOnly private val debugTimeOutRequestUseCase: DebugTimeOutRequestUseCase,
     @DebugOnly private val debugUnsupportedAppVersionRequestUseCase: DebugUnsupportedAppVersionRequestUseCase,
@@ -70,6 +71,13 @@ class DebugViewModel @Inject constructor(
 
     fun requestWithNotSuccessResponse() {
         debugNotSuccessRequestUseCase.source()
+            .handleResult(this)
+            .autoDisposable(this)
+            .subscribe({ /* no-op */ }, Timber::e)
+    }
+
+    fun requestWith404Response() {
+        debugResponseWith404UseCase.source()
             .handleResult(this)
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)

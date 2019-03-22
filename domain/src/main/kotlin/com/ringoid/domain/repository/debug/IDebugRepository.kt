@@ -17,6 +17,7 @@ interface IDebugRepository {
 
     fun debugRequestTimeOut(): Completable
     fun debugNotSuccessResponse(): Completable
+    fun debugResponseWith404(): Completable
     fun debugRequestCausingServerError(): Completable
     fun debugRequestWithInvalidAccessToken(): Completable
     fun debugRequestWithUnsupportedAppVersion(): Completable

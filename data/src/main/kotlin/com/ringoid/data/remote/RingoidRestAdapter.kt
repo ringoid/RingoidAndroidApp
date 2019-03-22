@@ -78,6 +78,9 @@ interface RingoidRestAdapter {
     @POST("nonok")
     fun debugNotSuccess(): Completable
 
+    @POST("auth/delete_for404")
+    fun debugResponseWith404(): Completable
+
     @POST("old_version")
     fun debugOldVersion(): Completable
 

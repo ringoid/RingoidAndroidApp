@@ -2,6 +2,7 @@
 <resources>
     <!-- Debug screen -->
     <string name="debug_item_response_error_http" translatable="false">Response code not 200</string>
+    <string name="debug_item_response_error_http_404" translatable="false">Response code 404</string>
     <string name="debug_item_response_error_expired_token" translatable="false">Expired Access Token</string>
     <string name="debug_item_response_error_invalid_token" translatable="false">Invalid Access Token</string>
     <string name="debug_item_response_error_old_app_version" translatable="false">Too old app version</string>

@@ -56,6 +56,7 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         }
 
         item_error_http.clicks().compose(clickDebounce()).subscribe { vm.requestWithNotSuccessResponse() }
+        item_error_http_404.clicks().compose(clickDebounce()).subscribe { vm.requestWith404Response() }
         item_error_token.clicks().compose(clickDebounce()).subscribe { vm.requestWithInvalidAccessToken() }
         item_error_token_expired.clicks().compose(clickDebounce()).subscribe { vm.requestWithExpiredAccessToken() }
         item_error_app_version.clicks().compose(clickDebounce()).subscribe { vm.requestWithStaledAppVersion() }

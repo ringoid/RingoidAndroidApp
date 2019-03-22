@@ -123,6 +123,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun debugTimeout(): Completable = restAdapter.debugTimeout().logResponse()
     fun debugInvalidToken(): Completable = restAdapter.debugInvalidToken().logResponse()
     fun debugNotSuccess(): Completable = restAdapter.debugNotSuccess().logResponse()
+    fun debugResponseWith404(): Completable = restAdapter.debugResponseWith404().logResponse()
     fun debugOldVersion(): Completable = restAdapter.debugOldVersion().logResponse()
     fun debugServerError(): Completable = restAdapter.debugServerError().logResponse()
 }

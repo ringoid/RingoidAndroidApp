@@ -10,7 +10,7 @@ import io.reactivex.Completable
 import javax.inject.Inject
 
 @DebugOnly
-class DebugNotSuccessRequestUseCase @Inject constructor(val repository: IDebugRepository,
+class DebugNotSuccessRequestUseCase @Inject constructor(private val repository: IDebugRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {
 
