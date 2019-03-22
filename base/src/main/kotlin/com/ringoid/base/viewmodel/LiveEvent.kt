@@ -6,7 +6,7 @@ package com.ringoid.base.viewmodel
  * @see https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
  * @see https://github.com/googlesamples/android-architecture-components/issues/63
  */
-open class LiveEvent<out T>(private val content: T) {
+open class LiveEvent<out T>(private val content: T?) {
 
     var hasBeenHandled = false
         private set // Allow external read but not write
@@ -26,5 +26,5 @@ open class LiveEvent<out T>(private val content: T) {
     /**
      * Returns the content, even if it's already been handled.
      */
-    fun peekContent(): T = content
+    fun peekContent(): T? = content
 }

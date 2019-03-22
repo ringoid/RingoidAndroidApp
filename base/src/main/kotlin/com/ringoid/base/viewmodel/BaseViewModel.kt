@@ -29,7 +29,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
 
-    val accessToken: MutableLiveData<AccessToken?> by lazy { MutableLiveData<AccessToken?>() }
+    val accessToken: MutableLiveData<LiveEvent<AccessToken?>> by lazy { MutableLiveData<LiveEvent<AccessToken?>>() }
     val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
     val oneShot: MutableLiveData<LiveEvent<Any?>> by lazy { MutableLiveData<LiveEvent<Any?>>() }
 
@@ -39,7 +39,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     fun obtainAccessToken() {
         getUserAccessTokenUseCase.source(Params.EMPTY)
             .autoDisposable(this)
-            .subscribe({ accessToken.value = it }, { accessToken.value = null })
+            .subscribe({ accessToken.value = LiveEvent(it) }, { accessToken.value = LiveEvent(null) })
     }
 
     /* Lifecycle */
