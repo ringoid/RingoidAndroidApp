@@ -6,16 +6,6 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-List<String> sngLanguages = ['ba', 'be', 'bg', 'ce', 'cv', 'et',
-                             'kk', 'kv', 'lt', 'lv', 'mk', 'os',
-                             'pl', 'sah', 'sk', 'sl', 'tt', 'ua', 'uk']
-
-static String listToJavaArray(List<String> list) {
-    String result = ""
-    list.each { item -> result += (result.empty ? "" : ",") + "\"${item}\"" }
-    return "{${result}}"
-}
-
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -27,8 +17,6 @@ android {
         testInstrumentationRunner rootProject.ext.testInstrumentationRunner
 
         manifestPlaceholders = [appName:"${rootProject.ext.appName}"]
-
-        buildConfigField "String[]", "SNG_LANGUAGES", listToJavaArray(sngLanguages)
     }
     buildTypes {
         release {
@@ -64,20 +52,6 @@ dependencies {
 }
 
 android.applicationVariants.all { variant ->
-    variant.mergeResources.doFirst {
-        File tmpResDir = file(buildDir.absolutePath + '/tmp/res')
-        if (!tmpResDir.exists()) { tmpResDir.mkdirs() }
-        sngLanguages.each { language ->
-            File languageDir = file(tmpResDir.absolutePath + "/values-${language}")
-            if (!languageDir.exists()) { languageDir.mkdirs() }
-            copy {
-                from rootDir.absolutePath + '/origin/src/main/res/values-ru/'
-                into languageDir.absolutePath
-            }
-        }
-        android.sourceSets['main'].res.srcDirs += tmpResDir.absolutePath
-    }
-
     def flavor = variant.mergedFlavor
     variant.outputs.all { output ->
         def flavorName = variant.name.replace("Release", "")
