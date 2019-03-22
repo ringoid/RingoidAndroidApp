@@ -193,12 +193,13 @@ abstract class FeedViewModel(
                 ?.takeIf { !it.isRangeEmpty() }
                 ?.let {
                     Timber.v("Excluded items in [horizontal] range ${it.range()}, consume VIEW action objects")
-                    logViewObjectsBufferState()  // show view aobjs buffer contents in debug logs
+                    logViewObjectsBufferState(tag = "before [horizontal]")  // show view aobjs buffer contents in debug logs
                     advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
+                    logViewObjectsBufferState(tag = "after [horizontal]")
                 }
         }
 
-        addViewObjectsToBuffer(items)
+        addViewObjectsToBuffer(items, tag = "[horizontal]")
         items.pickOne()?.let { horizontalPrevRanges[it.profileId] = items }
     }
 
@@ -209,10 +210,11 @@ abstract class FeedViewModel(
             ?.takeIf { !it.isRangeEmpty() }
             ?.let {
                 Timber.v("Excluded items in [vertical] range ${it.range()}, consume VIEW action objects")
-                logViewObjectsBufferState()  // show view aobjs buffer contents in debug logs
+                logViewObjectsBufferState("before [vertical]")  // show view aobjs buffer contents in debug logs
                 it.pickOne()
                     ?.let { horizontalPrevRanges[it.profileId] }
                     ?.also { advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId }) }
+                    ?.also { logViewObjectsBufferState(tag = "after [vertical]") }
             }
 
         /**
@@ -224,7 +226,7 @@ abstract class FeedViewModel(
          */
         val fixItems = items.map { ProfileImageVO(it.profileId, image = horizontalPrevRanges[it.profileId]?.pickOne()?.image ?: it.image, isLiked = it.isLiked) }
         val fixRange = EqualRange(from = items.from, to = items.to, items = fixItems)
-        addViewObjectsToBuffer(fixRange)
+        addViewObjectsToBuffer(fixRange, tag = "[vertical]")
         verticalPrevRange = fixRange
     }
 
@@ -257,31 +259,31 @@ abstract class FeedViewModel(
     }
 
     // ------------------------------------------
-    private fun logViewObjectsBufferState() {
+    private fun logViewObjectsBufferState(tag: String) {
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            DebugLogUtil.d("View buffer:\n${viewActionObjectBuffer.values.joinToString("\n\t\t","\t\t", transform = { it.toActionString() })}")
+            DebugLogUtil.d("View buffer [$tag]:\n${viewActionObjectBuffer.values.joinToString("\n\t\t","\t\t", transform = { it.toActionString() })}")
         }
     }
 
     // ------------------------------------------
-    private fun addViewObjectsToBuffer(items: EqualRange<ProfileImageVO>) {
+    private fun addViewObjectsToBuffer(items: EqualRange<ProfileImageVO>, tag: String = "") {
         items.forEach {
             if (it.image.isRealModel) {
                 val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
                     targetImageId = it.image.id, targetUserId = it.profileId)
                 aobj.isHidden = !getUserVisibleHint()
-                addViewObjectToBuffer(aobj)
+                addViewObjectToBuffer(aobj, tag = tag)
             }
         }
     }
 
-    private fun addViewObjectToBuffer(aobj: ViewActionObject) {
+    private fun addViewObjectToBuffer(aobj: ViewActionObject, tag: String = "") {
         val key = aobj.key()
         if (viewActionObjectBuffer.containsKey(key)) {
             return  // don't replace already added aobj, because it's creation time is tracking now
         }
 
-        DebugLogUtil.v("Create: ${aobj.toActionString()}")
+        DebugLogUtil.v("Create${" $tag".trim()}: ${aobj.toActionString()}")
         viewActionObjectBuffer[key] = aobj
     }
 }
