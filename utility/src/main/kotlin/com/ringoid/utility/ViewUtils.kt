@@ -50,6 +50,17 @@ fun View.touchExtend(size: Int = 100): View {
     return this
 }
 
+fun RecyclerView.isVisibleToUser(vh: RecyclerView.ViewHolder): Boolean =
+        vh.adapterPosition
+            .takeIf { it != RecyclerView.NO_POSITION }
+            ?.let { position ->
+                linearLayoutManager()?.let {
+                    val from = it.findFirstVisibleItemPosition()
+                    val to = it.findLastVisibleItemPosition()
+                    position in from..to
+                } ?: false
+            }
+            ?: false
 fun RecyclerView.linearLayoutManager(): LinearLayoutManager? = layoutManager as? LinearLayoutManager
 
 fun TextView.changeTypeface(tf: Typeface? = null, style: Int = Typeface.NORMAL, isSelected: Boolean = false, textSize: Int? = null) {
