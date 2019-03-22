@@ -57,6 +57,14 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        // refresh on Explore Feed screen leads Lmm screen to refresh as well
+        getLmm()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
@@ -68,7 +76,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Profile screen leads Lmm screen to refresh
+        // refresh on Profile screen leads Lmm screen to refresh as well
         getLmm()
     }
 
