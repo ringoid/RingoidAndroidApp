@@ -64,7 +64,7 @@ abstract class BaseLmmFeedViewModel(
     }
 
     fun applyCachedFeed(lmm: Lmm?) {
-        lmm?.let { setLmmItems(getFeedFromLmm(it)) }
+        lmm?.let { setLmmItems(getFeedFromLmm(it)) } ?: run { setLmmItems(emptyList()) }
     }
 
     private fun setLmmItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
