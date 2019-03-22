@@ -176,7 +176,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rv_items.apply {
-            adapter = feedAdapter
+            adapter = feedAdapter.also { it.parentRecyclerView = this }
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
             itemAnimator = FeedItemAnimator { rv_items.post { feedAdapter.notifyItemRangeChanged(it - 1, 2, FeedViewHolderShowControls) } }

@@ -18,6 +18,8 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
 
     var onFeedItemRemoveListener: ((position: Int) -> Unit)? = null
     var settingsClickListener: ((model: FeedItemVO, position: Int, positionOfImage: Int) -> Unit)? = null
+
+    internal var parentRecyclerView: RecyclerView? = null
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
     protected var imagesViewPool = RecyclerView.RecycledViewPool()
@@ -27,6 +29,7 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
         return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
             .takeIf { viewType == VIEW_TYPE_NORMAL }
             ?.also { vh ->
+                vh.parentRecyclerView = this@BaseFeedAdapter.parentRecyclerView
                 vh.snapPositionListener = { positionOfImage ->
                     vh.adapterPosition
                         .takeIf { it != RecyclerView.NO_POSITION }
