@@ -17,13 +17,16 @@ import javax.inject.Singleton
 class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsManager {
 
     private val sharedPreferences: SharedPreferences
+    private val backupSharedPreferences: SharedPreferences
 
     init {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
+        backupSharedPreferences = context.getSharedPreferences(BACKUP_SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
     }
 
     companion object {
         const val SHARED_PREFS_FILE_NAME = "Ringoid.prefs"
+        const val BACKUP_SHARED_PREFS_FILE_NAME = "RingoidBackup.prefs"
 
         const val SP_KEY_THEME = "sp_key_theme"
         @DebugOnly const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
@@ -112,20 +115,20 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     override fun createPrivateKeyIfNotExists(): String =
         getPrivateKey() ?: randomString().also { setPrivateKey(it) }
 
-    override fun getPrivateKey(): String? = sharedPreferences.getString(SP_KEY_PRIVATE_KEY, null)
+    override fun getPrivateKey(): String? = backupSharedPreferences.getString(SP_KEY_PRIVATE_KEY, null)
 
-    override fun hasPrivateKey(): Boolean = sharedPreferences.contains(SP_KEY_PRIVATE_KEY)
+    override fun hasPrivateKey(): Boolean = backupSharedPreferences.contains(SP_KEY_PRIVATE_KEY)
 
     override fun setPrivateKey(privateKey: String?) {
-        sharedPreferences.edit().putString(SP_KEY_PRIVATE_KEY, privateKey).apply()
+        backupSharedPreferences.edit().putString(SP_KEY_PRIVATE_KEY, privateKey).apply()
     }
 
-    override fun getReferralCode(): String? = sharedPreferences.getString(SP_KEY_REFERRAL_CODE, null)
+    override fun getReferralCode(): String? = backupSharedPreferences.getString(SP_KEY_REFERRAL_CODE, null)
 
-    override fun hasReferralCode(): Boolean = sharedPreferences.contains(SP_KEY_REFERRAL_CODE)
+    override fun hasReferralCode(): Boolean = backupSharedPreferences.contains(SP_KEY_REFERRAL_CODE)
 
     override fun setReferralCode(code: String?) {
-        sharedPreferences.edit().putString(SP_KEY_REFERRAL_CODE, code).apply()
+        backupSharedPreferences.edit().putString(SP_KEY_REFERRAL_CODE, code).apply()
     }
 }
 
