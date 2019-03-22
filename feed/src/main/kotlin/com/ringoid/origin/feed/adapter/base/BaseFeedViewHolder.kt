@@ -15,7 +15,6 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
-import com.ringoid.utility.isVisibleToUser
 import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import timber.log.Timber
@@ -34,7 +33,6 @@ interface IFeedViewHolder {
 abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<FeedItemVO>(view), IFeedViewHolder {
 
-    internal var parentRecyclerView: RecyclerView? = null
     override var snapPositionListener: ((snapPosition: Int) -> Unit)? = null
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
@@ -69,13 +67,9 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     rv.linearLayoutManager()?.let {
                         val from = it.findFirstVisibleItemPosition()
                         val to = it.findLastVisibleItemPosition()
-                        parentRecyclerView
-                            ?.takeIf { isVisibleToUser(this@BaseFeedViewHolder) }
-                            ?.let {
-                                val items = profileImageAdapter.getItemsExposed(from = from, to = to)
-                                Timber.v("Visible profile images [${items.size}] [$from, $to]: $items")
-                                trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
-                            }
+                        val items = profileImageAdapter.getItemsExposed(from = from, to = to)
+                        Timber.v("Visible profile images [${items.size}] [$from, $to]: $items")
+                        trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
                         snapPositionListener?.invoke(from)
                     }
                 }
