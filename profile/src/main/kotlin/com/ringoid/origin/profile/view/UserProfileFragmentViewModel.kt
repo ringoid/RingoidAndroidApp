@@ -121,7 +121,6 @@ class UserProfileFragmentViewModel @Inject constructor(
         DebugLogUtil.d("Applying referral code: $code")
         applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code!!)))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnComplete { viewState.value = ViewState.DONE(REFERRAL_CODE_ACCEPTED) }
             .doOnError {
                 viewState.value = when (it) {
                     is WrongRequestParamsClientApiException -> ViewState.DONE(REFERRAL_CODE_DECLINED)
@@ -132,6 +131,7 @@ class UserProfileFragmentViewModel @Inject constructor(
             .subscribe({
                 Timber.d("Successfully applied referral code: $code")
                 spm.setReferralCode(code)  // save accepted referral code
+                viewState.value = ViewState.DONE(REFERRAL_CODE_ACCEPTED)
             }, Timber::e)
     }
 
