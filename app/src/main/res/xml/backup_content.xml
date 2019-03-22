@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- https://github.com/googlesamples/android-AutoBackupForApps/blob/master/Application/src/main/res/xml/backup.xml -->
+    <include domain="sharedpref" path="RingoidBackup.prefs"/>
+    <!-- https://blog.novoda.com/android-backup-and-restore-returning-users-part-2/ -->
+</full-backup-content>

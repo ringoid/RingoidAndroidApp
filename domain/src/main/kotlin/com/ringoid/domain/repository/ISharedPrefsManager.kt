@@ -17,6 +17,9 @@ interface ISharedPrefsManager {
     @DebugOnly
     fun switchDebugLogEnabled()
 
+    @DebugOnly
+    fun testBackup()
+
     /* Auth */
     // ------------------------------------------
     fun accessToken(): AccessToken?

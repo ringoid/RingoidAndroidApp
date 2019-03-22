@@ -10,6 +10,7 @@ import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.ISharedPrefsManager
 import com.ringoid.utility.randomString
 import io.reactivex.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -63,6 +64,13 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     override fun switchDebugLogEnabled() {
         val currentFlag = isDebugLogEnabled()
         sharedPreferences.edit().putBoolean(SP_KEY_DEBUG_LOG_ENABLED, !currentFlag).apply()
+    }
+
+    @DebugOnly
+    override fun testBackup() {
+        Timber.d("Test Backup: accessToken=${accessToken()}, userId=${currentUserId()}, %s backup[%s]",
+            "lastActionTime=${getLastActionTime()}, themeId=${getThemeResId()}, debugLog=${isDebugLogEnabled()}",
+                "privateKey=${getPrivateKey()}, referralId=${getReferralCode()}")
     }
 
     /* Auth */
