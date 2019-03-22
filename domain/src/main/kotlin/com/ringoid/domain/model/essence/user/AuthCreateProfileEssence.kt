@@ -14,7 +14,9 @@ import java.util.*
  *   "dtPN":1535120929, //unix time when Legal age was confirmed
  *   "locale":"en",
  *   "deviceModel":"device model info",
- *   "osVersion":"version of os"
+ *   "osVersion":"version of os",
+ *   "referralId":"masha123",
+ *   "privateKey":"ksjdhf9-lsdf-223jd"
  * }
  */
 data class AuthCreateProfileEssence(
@@ -25,7 +27,9 @@ data class AuthCreateProfileEssence(
     @Expose @SerializedName(COLUMN_LOCALE) val locale: String = Locale.getDefault().language,
     @Expose @SerializedName(COLUMN_SEX) val sex: String,
     @Expose @SerializedName(COLUMN_DEVICE) val device: String = "",
-    @Expose @SerializedName(COLUMN_OS_VERSION) val osVersion: String = "") : IEssence {
+    @Expose @SerializedName(COLUMN_OS_VERSION) val osVersion: String = "",
+    @Expose @SerializedName(COLUMN_PRIVATE_KEY) val privateKey: String? = null,
+    @Expose @SerializedName(COLUMN_REFERRAL_ID) val referralId: String? = null) : IEssence {
 
     companion object {
         const val COLUMN_BIRTH_YEAR = "yearOfBirth"
@@ -36,6 +40,8 @@ data class AuthCreateProfileEssence(
         const val COLUMN_SEX = "sex"
         const val COLUMN_DEVICE = "deviceModel"
         const val COLUMN_OS_VERSION = "osVersion"
+        const val COLUMN_PRIVATE_KEY = "privateKey"
+        const val COLUMN_REFERRAL_ID = "referralId"
     }
 
     override fun toSentryPayload(): String = "[yearOfBirth=$yearOfBirth, sex=$sex]"

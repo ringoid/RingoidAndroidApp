@@ -29,6 +29,14 @@ interface ISharedPrefsManager {
 
     /* Referral program */
     // ------------------------------------------
+    fun createPrivateKeyIfNotExists(): String?
+
+    fun getPrivateKey(): String?
+
+    fun hasPrivateKey(): Boolean
+
+    fun setPrivateKey(privateKey: String?)
+
     fun getReferralCode(): String?
 
     fun hasReferralCode(): Boolean

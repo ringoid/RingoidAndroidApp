@@ -8,6 +8,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.utility.randomString
 import io.reactivex.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,6 +39,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
         /* Referral program */
         // --------------------------------------
+        const val SP_KEY_PRIVATE_KEY = "sp_key_private_key"
         const val SP_KEY_REFERRAL_CODE = "sp_key_referral_code"
     }
 
@@ -107,6 +109,17 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     /* Referral program */
     // --------------------------------------------------------------------------------------------
+    override fun createPrivateKeyIfNotExists(): String =
+        getPrivateKey() ?: randomString().also { setPrivateKey(it) }
+
+    override fun getPrivateKey(): String? = sharedPreferences.getString(SP_KEY_PRIVATE_KEY, null)
+
+    override fun hasPrivateKey(): Boolean = sharedPreferences.contains(SP_KEY_PRIVATE_KEY)
+
+    override fun setPrivateKey(privateKey: String?) {
+        sharedPreferences.edit().putString(SP_KEY_PRIVATE_KEY, privateKey).apply()
+    }
+
     override fun getReferralCode(): String? = sharedPreferences.getString(SP_KEY_REFERRAL_CODE, null)
 
     override fun hasReferralCode(): Boolean = sharedPreferences.contains(SP_KEY_REFERRAL_CODE)

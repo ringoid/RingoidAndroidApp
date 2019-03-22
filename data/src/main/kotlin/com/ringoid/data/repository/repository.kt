@@ -125,7 +125,7 @@ private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer
             val apiError = when (it.errorCode) {
                 ApiException.OLD_APP_VERSION -> OldAppVersionApiException(message = it.errorMessage, tag = tag)
                 ApiException.INVALID_ACCESS_TOKEN -> InvalidAccessTokenApiException( message = it.errorMessage, tag = tag)
-                ApiException.CLIENT_ERROR, ApiException.CLIENT_ERROR_OLD, ApiException.CLIENT_PARAM_ERROR_SEX ->
+                ApiException.CLIENT_ERROR, ApiException.CLIENT_PARAM_ERROR_SEX ->
                     WrongRequestParamsClientApiException(message = it.errorMessage, tag = tag)
                 ApiException.SERVER_ERROR -> InternalServerErrorApiException(message = it.errorMessage, tag = tag)
                 else -> ApiException(code = it.errorCode, message = it.errorMessage, tag = tag)

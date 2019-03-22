@@ -55,7 +55,8 @@ class LoginViewModel @Inject constructor(
             yearOfBirth = yearOfBirth,
             sex = gender?.string ?: Gender.MALE.string /* safe null-check */,
             device = String.format("%s, %s, %s", Build.MODEL, Build.MANUFACTURER, Build.PRODUCT),
-            osVersion = String.format("%s, %d", Build.VERSION.RELEASE, Build.VERSION.SDK_INT))
+            osVersion = String.format("%s, %d", Build.VERSION.RELEASE, Build.VERSION.SDK_INT),
+            privateKey = spm.createPrivateKeyIfNotExists(), referralId = spm.getReferralCode())
 
         createUserProfileUseCase.source(params = Params().put(essence))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
