@@ -227,6 +227,8 @@ abstract class FeedViewModel(
         val fixItems = items.map { ProfileImageVO(it.profileId, image = horizontalPrevRanges[it.profileId]?.pickOne()?.image ?: it.image, isLiked = it.isLiked) }
         val fixRange = EqualRange(from = items.from, to = items.to, items = fixItems)
         addViewObjectsToBuffer(fixRange, tag = "[vertical]")
+        items.filter { !horizontalPrevRanges.containsKey(it.profileId) }
+             .forEach { horizontalPrevRanges[it.profileId] = EqualRange(from = 0, to = 0, items = listOf(it)) }
         verticalPrevRange = fixRange
     }
 
