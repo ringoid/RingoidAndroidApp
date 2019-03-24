@@ -184,6 +184,9 @@ abstract class FeedViewModel(
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
                 viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
             }, Timber::e)
+
+        // remove VIEW aobj associated with blocked profile from backup to prevent it from restoring
+        viewActionObjectBackup.remove(imageId to profileId)
     }
 
     fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
