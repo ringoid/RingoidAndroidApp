@@ -12,20 +12,22 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
 
     private var blockDialog: BlockBottomSheetDialog? = null
     private var reportDialog: ReportBottomSheetDialog? = null
+    private lateinit var outputData: Intent
 
     // --------------------------------------------------------------------------------------------
     override fun onClose() {
-        setResultExposed(currentResult, Intent().putExtras(intent.extras))
+        setResultExposed(currentResult, outputData)
         finish()
     }
 
     // ------------------------------------------
     override fun onBlock() {
-        setResultExposed(Activity.RESULT_OK, Intent().putExtras(intent.extras))
+        setResultExposed(Activity.RESULT_OK, outputData)
     }
 
     override fun onReport(reason: Int) {
-        setResultExposed(Activity.RESULT_OK, Intent().putExtras(intent.extras).putExtra(Extras.OUT_EXTRA_REPORT_REASON, reason))
+        outputData.putExtra(Extras.OUT_EXTRA_REPORT_REASON, reason)
+        setResultExposed(Activity.RESULT_OK, outputData)
     }
 
     override fun onReportSheetOpen() {
@@ -37,6 +39,7 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        outputData = Intent().putExtras(intent.extras!!)
         savedInstanceState ?: run {
             if (intent.dataString?.contains("block_dialog") == true) {
                 createBlockDialogIfNeed()
