@@ -22,8 +22,8 @@ object SentryUtil {
         fun e(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.ERROR,   extras = extras)
         fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.FATAL,   extras = extras)
 
-        fun capture(e: Throwable, message: String? = null, extras: List<Pair<String, String>>? = null) {
-            capture(e, message = message, `object` = `object`, extras = extras)
+        fun capture(e: Throwable, message: String? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
+            capture(e, message = message, `object` = `object`, tag = tag, extras = extras)
         }
 
         private fun log(message: String, level: Event.Level, extras: List<Pair<String, String>>? = null) {
@@ -52,14 +52,14 @@ object SentryUtil {
     fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.FATAL, extras = extras)
 
     fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
-                extras: List<Pair<String, String>>? = null) {
+                tag: String? = null, extras: List<Pair<String, String>>? = null) {
         Timber.d(message)
         val fullExtras = mutableListOf<Pair<String, String>>()
             .apply {
                 add(e.javaClass.simpleName to e.stackTraceString())
                 extras?.let { addAll(it) }
             }
-        capture(e, message = message, level = level, `object` = null, extras = fullExtras)
+        capture(e, message = message, level = level, `object` = null, tag = tag, extras = fullExtras)
     }
 
     fun setUser(spm: ISharedPrefsManager) {
@@ -77,14 +77,14 @@ object SentryUtil {
     }
 
     private fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
-                        `object`: Any? = null, extras: List<Pair<String, String>>? = null) {
+                        `object`: Any? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
         message?.let { breadcrumb(it) }
         if (!message.isNullOrBlank()) {
             Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
         } else {
             Sentry.capture(e)
         }
-        DebugLogUtil.e(e)  // capture exception to debug logs
+        DebugLogUtil.e(e, tag = tag)  // capture exception to debug logs
     }
 
     private fun createEvent(message: String, level: Event.Level, `object`: Any? = null,

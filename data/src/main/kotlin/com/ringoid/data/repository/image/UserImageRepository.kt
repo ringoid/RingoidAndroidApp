@@ -52,7 +52,7 @@ class UserImageRepository @Inject constructor(
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> {
         fun fetchUserImages(): Single<List<UserImage>> =
             spm.accessSingle { cloud.getUserImages(it.accessToken, resolution) }
-                .handleError()
+                .handleError(tag = "getUserImages($resolution)")
                 .flatMap {
                     Observable.fromIterable(it.images)  // images fetched from the Server
                         .zipWith(Observable.range(0, it.images.size), BiFunction { image: UserImageEntity, index: Int -> image to index })
