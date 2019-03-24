@@ -129,7 +129,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 if (resultCode == Activity.RESULT_OK) {
                     val tag = arguments?.getString(BUNDLE_KEY_TAG, TAG) ?: TAG
                     if (data?.hasExtra(Extras.OUT_EXTRA_REPORT_REASON) != null) {
-                        val reasonNumber = (data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0) + 1) * 10
+                        val reasonNumber = data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0)
                         communicator(IChatHost::class.java)?.onReportFromChat(tag = tag, payload = payload!!, reasonNumber = reasonNumber)
                     } else {
                         communicator(IChatHost::class.java)?.onBlockFromChat(tag = tag, payload = payload!!)

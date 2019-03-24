@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
-import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
@@ -28,7 +27,10 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
-import com.ringoid.utility.*
+import com.ringoid.utility.communicator
+import com.ringoid.utility.debugToast
+import com.ringoid.utility.isVisible
+import com.ringoid.utility.linearLayoutManager
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
