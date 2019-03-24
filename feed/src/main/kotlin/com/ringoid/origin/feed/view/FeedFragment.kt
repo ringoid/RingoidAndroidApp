@@ -101,17 +101,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         swipe_refresh_layout.isRefreshing = false
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (isActivityCreated && hidden) {
-            /**
-             * Purge feed when Main tab has switched from this Feed screen,
-             * swipe-to-refresh is required to get need data.
-             */
-            vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
-        }
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {

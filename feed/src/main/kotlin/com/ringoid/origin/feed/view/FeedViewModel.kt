@@ -114,6 +114,7 @@ abstract class FeedViewModel(
 
     // --------------------------------------------------------------------------------------------
     open fun clearScreen(mode: Int) {
+        viewActionObjectBackup.clear()
         viewState.value = ViewState.CLEAR(mode)
     }
 

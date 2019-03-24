@@ -88,7 +88,7 @@ class DebugView : ConstraintLayout {
             context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = debugLogItemAdapter.getContentText())
             context.toast(R.string.common_clipboard)
         }
-        ibtn_separator_debug.clicks().compose(clickDebounce()).subscribe { DebugLogUtil.w("------------------------------------------\n") }
+        ibtn_separator_debug.clicks().compose(clickDebounce()).subscribe { DebugLogUtil.w("------------------------------------------------------------------------------------\n") }
     }
 
     override fun onAttachedToWindow() {

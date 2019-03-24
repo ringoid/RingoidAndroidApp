@@ -47,7 +47,7 @@
         android:id="@+id/ibtn_resize_debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_24"
+        android:layout_marginTop="@dimen/std_margin_8"
         android:layout_marginEnd="@dimen/std_margin_8"
         android:background="?selectableItemBackground"
         android:contentDescription="@null"
