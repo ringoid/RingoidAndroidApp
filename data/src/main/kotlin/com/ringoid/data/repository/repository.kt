@@ -17,19 +17,19 @@ import java.util.concurrent.TimeUnit
 /* Retry with exponential backoff */
 // ------------------------------------------------------------------------------------------------
 fun Completable.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Completable =
-    doOnError { Timber.w("Retry on error $count") }.compose(expBackoffCompletable(count = count, delay = delay, tag = tag))
+    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffCompletable(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Maybe<T> =
-    doOnError { Timber.w("Retry on error $count") }.compose(expBackoffMaybe(count = count, delay = delay, tag = tag))
+    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffMaybe(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Single<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Single<T> =
-    doOnError { Timber.w("Retry on error $count") }.compose(expBackoffSingle(count = count, delay = delay, tag = tag))
+    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffSingle(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Flowable<T> =
-    doOnError { Timber.w("Retry on error $count") }.compose(expBackoffFlowable(count = count, delay = delay, tag = tag))
+    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffFlowable(count = count, delay = delay, tag = tag))
 
 inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null): Observable<T> =
-    doOnError { Timber.w("Retry on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
+    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag))
 
 // ----------------------------------------------
 private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: MutableList<Long>, tag: String? = null) =
@@ -60,7 +60,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                                .doOnSubscribe { DebugLogUtil.w("Retry [$attemptNumber / $count] on: ${error.message}") }
+                                .doOnSubscribe { DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}") }
                                 .doOnNext {
                                     if (error is RepeatRequestAfterSecException) {
                                         SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
