@@ -76,7 +76,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 onIdleState()
                 updateReferralLabel()
                 when (newState.residual) {
-                    is REFERRAL_CODE_ACCEPTED -> Dialogs.showTextDialog(activity, title = String.format(AppRes.LABEL_REFERRAL_APPLIED, "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
+                    is REFERRAL_CODE_ACCEPTED -> Dialogs.showTextDialog(activity, title = String.format(resources.getString(OriginR_string.referral_dialog_reward_message), "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
                     is REFERRAL_CODE_DECLINED -> Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_invalid_referral_code, description = null)
                 }
             }
@@ -350,6 +350,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
     // ------------------------------------------
     private fun updateReferralLabel() {
-        btn_referral.text = String.format(AppRes.BUTTON_REFERRAL, if (spm.hasReferralCode()) "5" else "0")
+        btn_referral.text = String.format(resources.getString(OriginR_string.profile_label_coins), if (spm.hasReferralCode()) "5" else "0")
     }
 }
