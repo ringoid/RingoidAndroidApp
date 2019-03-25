@@ -2,7 +2,7 @@
           package="com.ringoid.origin.dating.app">
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:backupInForeground="true"
         android:fullBackupContent="@xml/backup_content"
         android:restoreAnyVersion="true"
