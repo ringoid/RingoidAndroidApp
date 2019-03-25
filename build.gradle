@@ -39,7 +39,7 @@ static String getVersionName(Environment env, int major, int middle, int minor, 
 }
 
 ext {
-    env = Environment.STAGING
+    env = Environment.PRODUCTION  // change it when need to switch environment
     appName = getAppName(env)
     apiUrl = getApiUrl(env)
     isStaging = env == Environment.STAGING
@@ -86,7 +86,7 @@ allprojects {
         majorVersion = 1
         middleVersion = 0
         minorVersion = 0
-        buildVersion = 128
+        buildVersion = 129
 
         androidApplicationId = getAppId(env)
         androidVersionCode = buildVersion
