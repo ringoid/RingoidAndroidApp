@@ -76,7 +76,7 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
                  .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime()})")
-                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] before filter out seen/blocked profiles") }
+                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] before filter out cached/blocked profiles") }
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
                  .cacheNewFacesAsAlreadySeen()
