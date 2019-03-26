@@ -129,9 +129,8 @@ abstract class FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase.source()
             .andThen(
                 countUserImagesUseCase.source()
-                    .map { it > 0 }  // user has images in profile
                     .doOnSuccess {
-                        if (it) {
+                        if (checkImagesCount(it)) {
                             clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
                             getFeed()
                         } else {
@@ -141,6 +140,8 @@ abstract class FeedViewModel(
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
+
+    protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
     /* Action Objects */
     // --------------------------------------------------------------------------------------------

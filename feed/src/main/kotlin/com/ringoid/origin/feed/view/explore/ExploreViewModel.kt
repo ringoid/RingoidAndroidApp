@@ -132,6 +132,8 @@ class ExploreViewModel @Inject constructor(
             .subscribe()
     }
 
+    override fun checkImagesCount(count: Int): Boolean = true  // always allow to get feed regardless of count of images
+
     // ------------------------------------------
     override fun onScroll(itemsLeftToEnd: Int) {
         if (isLoadingMore) {
