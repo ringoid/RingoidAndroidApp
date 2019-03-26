@@ -11,6 +11,7 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.Onboarding
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
@@ -53,7 +54,10 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             is ViewState.IDLE -> onIdleState()
             is ViewState.CLOSE -> {
                 loginInMemoryCache.setNewUser(true)
-                ExternalNavigator.openGalleryToGetImage(this)
+                when (Onboarding.current()) {
+                    Onboarding.ADD_IMAGE -> ExternalNavigator.openGalleryToGetImage(this)
+                    Onboarding.DIRECT -> navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}")
+                }
             }
             is ViewState.DONE -> {
                 when (newState.residual) {
