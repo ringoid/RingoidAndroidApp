@@ -119,6 +119,7 @@ ext {
 
     d_support = [
             crashlytics: "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
+            firebase:    "com.google.firebase:firebase-core:${firebaseVersion}",
             leakCanary:  "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
             multidex:    "com.android.support:multidex:${multidexVersion}",
             sentry:      "io.sentry:sentry-android:${sentryVersion}",
@@ -461,7 +462,8 @@ ext {
     /* Base */
     // ------------------------------------------
     baseDependencies = [
-        [configuration: "api", dependency: d_libs.eventBus]
+        [configuration: "api", dependency: d_libs.eventBus],
+        [configuration: "api", dependency: d_support.firebase]
     ]
     baseDependencies += module_domain + module_utility + module_widget + android + arch + dagger + deeplink + kotlin +
                         log + autoDispose + rx + rxBind

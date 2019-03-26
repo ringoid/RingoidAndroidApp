@@ -60,3 +60,36 @@ android.applicationVariants.all { variant ->
         outputFileName = name
     }
 }
+
+// ------------------------------------------------------------------------------------------------
+/**
+ * Creates google-services.json file from predefined content
+ */
+task generateGmsJson(type: Copy) {
+    def output = 'google-services.json'
+    def filename = ""
+    if (rootProject.ext.isStaging) {
+        filename = 'google-services_staging.json'
+    } else {
+        filename = 'google-services_production.json'
+    }
+    copy {
+        from projectDir.absolutePath + '/' + filename
+        into '.'
+        rename (filename, output)
+    }
+}
+
+gradle.afterProject { project, projectState ->
+    if (projectState.failure) {
+        println "Evaluation of $project FAILED"
+    } else {
+        println "Evaluation of $project SUCCEEDED"
+        generateGmsJson
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+rootProject.appPluginsAtBottom.each {
+    apply plugin: it
+}

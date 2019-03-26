@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "691533652276",
+    "firebase_url": "https://ringoid-stage.firebaseio.com",
+    "project_id": "ringoid-stage",
+    "storage_bucket": "ringoid-stage.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691533652276:android:5e8b61a58126c7b0",
+        "android_client_info": {
+          "package_name": "com.ringoid.dating.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691533652276-9qohlkm0g8okknhknbg41c57o3i08j3c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ringoid.dating.staging",
+            "certificate_hash": "6e2ae1cbcdf25b39e526d722b805bb5405daf8ce"
+          }
+        },
+        {
+          "client_id": "691533652276-n70bqqf16qh6h3cl7lqb79q3epfvehtp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJujQfwVxupV1N3N_MBUvd6JmZjYtzpA4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691533652276-n70bqqf16qh6h3cl7lqb79q3epfvehtp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -40,3 +40,5 @@ hs_err_pid*
 /old_releases
 /release
 .externalNativeBuild
+
+/app/google-services.json

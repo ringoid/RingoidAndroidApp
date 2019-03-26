@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1080519350118",
+    "firebase_url": "https://ringoid-prod.firebaseio.com",
+    "project_id": "ringoid-prod",
+    "storage_bucket": "ringoid-prod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080519350118:android:19cade2c81e511ff",
+        "android_client_info": {
+          "package_name": "com.ringoid.dating"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080519350118-ngj7d5vnhbqorfl7hc56mjdf96bn19hs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ringoid.dating",
+            "certificate_hash": "6e2ae1cbcdf25b39e526d722b805bb5405daf8ce"
+          }
+        },
+        {
+          "client_id": "1080519350118-eac80oh87t9tcq4t6hp28o5qb8do42pc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7j_GgMPbo93lnCqg1_-eW9XAaFd7HAa0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080519350118-eac80oh87t9tcq4t6hp28o5qb8do42pc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

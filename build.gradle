@@ -39,7 +39,7 @@ static String getVersionName(Environment env, int major, int middle, int minor, 
 }
 
 ext {
-    env = Environment.PRODUCTION  // change it when need to switch environment
+    env = Environment.STAGING  // change it when need to switch environment
     appName = getAppName(env)
     apiUrl = getApiUrl(env)
     isStaging = env == Environment.STAGING
@@ -69,6 +69,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${buildGradleVersion}"
+        classpath "com.google.gms:google-services:${googleServicesVersion}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:${kotlinVersion}"
         classpath 'io.fabric.tools:gradle:1.+'
