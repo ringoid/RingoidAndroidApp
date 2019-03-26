@@ -57,7 +57,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 loginInMemoryCache.setNewUser(true)
                 when (Onboarding.current()) {
                     Onboarding.ADD_IMAGE -> ExternalNavigator.openGalleryToGetImage(this)
-                    Onboarding.DIRECT -> navigate(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}")
+                    Onboarding.DIRECT -> navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}")
                 }
             }
             is ViewState.DONE -> {
