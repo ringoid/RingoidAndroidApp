@@ -106,6 +106,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter().apply {
+            onBeforeLikeListener = { vm.onBeforeLike() }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {

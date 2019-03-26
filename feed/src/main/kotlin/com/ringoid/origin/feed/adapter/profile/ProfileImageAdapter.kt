@@ -19,6 +19,7 @@ class ProfileImageAdapter(private val context: Context)
     : BaseListAdapter<ProfileImageVO, BaseProfileImageViewHolder>(ProfileImageDiffCallback()),
     ListPreloader.PreloadModelProvider<ProfileImageVO> {
 
+    var onBeforeLikeListener: (() -> Boolean)? = null
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
     var isLikeEnabled = true
 
@@ -71,22 +72,26 @@ class ProfileImageAdapter(private val context: Context)
 
     private fun getOnLikeButtonClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
         wrapOnItemClickListener(vh) { model: ProfileImageVO, position: Int ->
-            if (!model.isLiked) {  // was liked
-                notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLikeButton)
-            } else {   // was unliked
-                notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateUnLikeButton)
+            if (onBeforeLikeListener?.invoke() != false) {
+                if (!model.isLiked) {  // was liked
+                    notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLikeButton)
+                } else {   // was unliked
+                    notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateUnLikeButton)
+                }
+                getLikeClickListener(vh)?.invoke(model, position)
             }
-            getLikeClickListener(vh)?.invoke(model, position)
         }
 
     private fun getLikeClickListener(vh: BaseProfileImageViewHolder, alwaysLiked: Boolean = false)
         : ((model: ProfileImageVO, position: Int) -> Unit)? =
             { model: ProfileImageVO, position: Int ->
-                val isLiked = if (alwaysLiked) true else !model.isLiked
-                model.isLiked = isLiked
-                if (isLiked) {  // animate on Like, don't animate on Unlike
-                    notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
+                if (onBeforeLikeListener?.invoke() != false) {
+                    val isLiked = if (alwaysLiked) true else !model.isLiked
+                    model.isLiked = isLiked
+                    if (isLiked) {  // animate on Like, don't animate on Unlike
+                        notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
+                    }
+                    itemClickListener?.invoke(model, position)
                 }
-                itemClickListener?.invoke(model, position)
             }
 }

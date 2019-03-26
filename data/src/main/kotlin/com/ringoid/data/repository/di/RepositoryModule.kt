@@ -3,6 +3,7 @@ package com.ringoid.data.repository.di
 import com.ringoid.data.action_storage.di.ActionObjectPoolModule
 import com.ringoid.data.executor.di.UseCaseExecutorModule
 import com.ringoid.data.local.database.di.DatabaseModule
+import com.ringoid.data.local.memory.UserInMemoryCache
 import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.repository.debug.DebugFeedRepository
@@ -12,6 +13,7 @@ import com.ringoid.data.repository.image.UserImageRepository
 import com.ringoid.data.repository.messenger.MessengerRepository
 import com.ringoid.data.repository.user.UserRepository
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
 import com.ringoid.domain.repository.debug.IDebugRepository
 import com.ringoid.domain.repository.feed.IFeedRepository
@@ -43,4 +45,7 @@ class RepositoryModule {
 
     @Provides @Singleton
     fun provideUserRepository(repository: UserRepository): IUserRepository = repository
+
+    @Provides @Singleton
+    fun provideUserInMemoryCache(cache: UserInMemoryCache): IUserInMemoryCache = cache
 }

@@ -14,6 +14,7 @@ import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.collection.EqualRange
@@ -26,7 +27,8 @@ abstract class FeedViewModel(
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
-    private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
+    private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
+    private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseViewModel(app) {
 
     private var verticalPrevRange: EqualRange<ProfileImageVO>? = null
@@ -145,6 +147,13 @@ abstract class FeedViewModel(
 
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
+    fun onBeforeLike(): Boolean =
+        if (userInMemoryCache.userImagesCount() > 0) true
+        else {
+            viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+            false
+        }
+
     fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         advanceAndPushViewObject(imageId to profileId, recreate = true)
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)

@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 interface IFeedViewHolder {
 
+    var onBeforeLikeListener: (() -> Boolean)?
     var snapPositionListener: ((snapPosition: Int) -> Unit)?
     var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>?
 
@@ -33,6 +34,7 @@ interface IFeedViewHolder {
 abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<FeedItemVO>(view), IFeedViewHolder {
 
+    override var onBeforeLikeListener: (() -> Boolean)? = null
     override var snapPositionListener: ((snapPosition: Int) -> Unit)? = null
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
@@ -42,6 +44,11 @@ abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledV
 abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : OriginFeedViewHolder(view, viewPool) {
 
+    override var onBeforeLikeListener: (() -> Boolean)? = null
+        set(value) {
+            field = value
+            profileImageAdapter.onBeforeLikeListener = value
+        }
     internal val profileImageAdapter = ProfileImageAdapter(view.context)
 
     private val imagePreloadListener: RecyclerViewPreloader<ProfileImageVO>
@@ -49,7 +56,11 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     init {
         itemView.rv_items.apply {
-            adapter = profileImageAdapter.also { it.tabsObserver = itemView.tabs.adapterDataObserver }
+            adapter = profileImageAdapter
+                .also {
+                    it.onBeforeLikeListener = onBeforeLikeListener
+                    it.tabsObserver = itemView.tabs.adapterDataObserver
+                }
             isNestedScrollingEnabled = false
             itemAnimator = ProfileImageItemAnimator()
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)

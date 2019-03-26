@@ -5,6 +5,7 @@ import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
+import com.ringoid.data.local.memory.UserInMemoryCache
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -36,6 +37,7 @@ import javax.inject.Singleton
 class UserImageRepository @Inject constructor(
     @Named("user") private val local: ImageDao,
     @Named("user") private val imageRequestLocal: ImageRequestDao,
+    private val userInMemoryCache: UserInMemoryCache,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
 
@@ -45,8 +47,13 @@ class UserImageRepository @Inject constructor(
     override val totalUserImages = PublishSubject.create<Int>()
 
     override fun countUserImages(): Single<Int> =
-        local.countUserImages().doOnSuccess { totalUserImages.onNext(it) }
+        local.countUserImages()
+             .doOnSuccess {
+                 userInMemoryCache.setUserImagesCount(it)
+                 totalUserImages.onNext(it)
+             }
 
+    // ------------------------------------------------------------------------
     override fun getUserImage(id: String): Single<UserImage> = local.userImage(id).map { it.map() }
 
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> {
@@ -73,6 +80,7 @@ class UserImageRepository @Inject constructor(
                         Single.just(emptyList())
                     }
                 }
+                .flatMap { countUserImages() }  // actualize user images count
                 .flatMap { local.userImages() }
                 .map { it.mapList() }
 
@@ -115,6 +123,7 @@ class UserImageRepository @Inject constructor(
     override fun getUserImagesAsync(resolution: ImageResolution): Observable<List<UserImage>> =
         Observable.concatArrayEager(local.userImages().map { it.mapList() }.toObservable(), getUserImages(resolution).toObservable())
 
+    // ------------------------------------------------------------------------
     override fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized): Completable =
         deleteUserImage(essence, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
 
@@ -123,16 +132,17 @@ class UserImageRepository @Inject constructor(
 
     private fun deleteUserImage(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)
-            .flatMapCompletable { localImage ->
-                spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                    .handleError(count = retryCount)
-                    .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
-                    .doOnSubscribe {
-                        local.deleteImage(id = essence.imageId)
-                        imageDeleted.onNext(essence.imageId)  // notify database changed
-                    }
-                    .ignoreElement()  // convert to Completable
+            .flatMap { localImage ->
+                Single.fromCallable { local.deleteImage(id = essence.imageId) }
+                    .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
+                    .flatMap { countUserImages() }  // actualize user images count
+                    .flatMap { _ ->
+                        spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
+                            .handleError(count = retryCount)
+                            .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
+                     }
             }
+            .ignoreElement()  // convert to Completable
 
     override fun deleteLocalUserImages(): Completable = Completable.fromCallable { local.deleteAllImages() }
 
@@ -155,28 +165,31 @@ class UserImageRepository @Inject constructor(
             val uriLocal = imageFile.uriString()
             val localImage = UserImageDbo(id = xessence.clientImageId, uri = uriLocal, uriLocal = uriLocal)
 
-            cloud.getImageUploadUrl(xessence)
-                .doOnSubscribe {
-                    local.addImage(localImage)
-                    imageCreated.onNext(xessence.clientImageId)  // notify database changed
+            Single.fromCallable { local.addImage(localImage) }
+                .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
+                .flatMap { countUserImages() }  // actualize user images count
+                .flatMap { _ ->
+                    cloud.getImageUploadUrl(xessence)
+                        .doOnSuccess { image ->
+                            if (image.imageUri.isNullOrBlank()) {
+                                throw NullPointerException("Upload uri is null: $image")
+                            }
+                            /**
+                             * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
+                             * for image in local cache, keeping [UserImageDbo.id] and [UserImageDbo.uriLocal] unchanged.
+                             */
+                            val updatedLocalImage =
+                                localImage.copyWith(originId = image.originImageId, uri = image.imageUri)
+                            local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
+                        }
+                        .flatMap { cloud.uploadImage(url = it.imageUri!!, image = imageFile).andThen(Single.just(it)) }
+                        .handleError(count = retryCount)
+                        .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence, imageFilePath)) }
+                        .map { it.map() }
                 }
-                .doOnSuccess { image ->
-                    if (image.imageUri.isNullOrBlank()) {
-                        throw NullPointerException("Upload uri is null: $image")
-                    }
-                    /**
-                     * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
-                     * for image in local cache, keeping [UserImageDbo.id] and [UserImageDbo.uriLocal] unchanged.
-                     */
-                    val updatedLocalImage = localImage.copyWith(originId = image.originImageId, uri = image.imageUri)
-                    local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
-                }
-                .flatMap { cloud.uploadImage(url = it.imageUri!!, image = imageFile).andThen(Single.just(it)) }
-                .handleError(count = retryCount)
-                .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence, imageFilePath)) }
-                .map { it.map() }
         }
 
+    // ------------------------------------------------------------------------
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
         spm.accessSingle { cloud.getImageUploadUrl(essence).map { it.map() } }
 
