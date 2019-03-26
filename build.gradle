@@ -42,7 +42,7 @@ static String getVersionName(Environment env, int major, int middle, int minor, 
 
 ext {
     env = Environment.STAGING  // change it when need to switch environment
-    onboarding = Onboarding.ADD_IMAGE  // change it to alter onboarding process
+    onboarding = Onboarding.DIRECT  // change it to alter onboarding process
 
     appName = getAppName(env)
     apiUrl = getApiUrl(env)
