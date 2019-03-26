@@ -65,6 +65,7 @@
 
     <!-- Login screen -->
     <string name="login_button">Продолжить и Загрузить фото</string>
+    <string name="login_button_direct">Продолжить</string>
     <string name="login_terms">Нажимая на кнопку ниже, вы подтверждаете, что ознакомились, понимаете и принимаете <a href="http://ringoid.com/terms.html">Условия использования</a> и <a href="http://ringoid.com/privacy.html">Политику конфиденциальности</a> Рингоид, а также, что вы достигли совершеннолетия в соответствии с законодательством страны, в которой вы находитесь или запускаете Рингоид.</string>
     <string name="login_year_of_birth_et_hint">Год рождения</string>
 

@@ -13,6 +13,7 @@ import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.Onboarding
 import com.ringoid.domain.misc.Gender
+import com.ringoid.origin.auth.OriginR_string
 import com.ringoid.origin.auth.R
 import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.auth.memory.LoginInMemoryCache
@@ -83,7 +84,13 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             vm.onLogout()
         }
 
-        btn_login.clicks().compose(clickDebounce()).subscribe { vm.login() }
+        with(btn_login) {
+            when (Onboarding.current()) {
+                Onboarding.ADD_IMAGE -> OriginR_string.login_button
+                Onboarding.DIRECT -> OriginR_string.login_button_direct
+            }.let { setText(it) }
+            clicks().compose(clickDebounce()).subscribe { vm.login() }
+        }
         et_year_of_birth.apply {
             requestFocus()
             setOnKeyPreImeListener { keyCode, event ->

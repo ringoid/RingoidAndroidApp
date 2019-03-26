@@ -70,6 +70,7 @@
 
     <!-- Login screen -->
     <string name="login_button">Continue to Upload Photo</string>
+    <string name="login_button_direct">Continue</string>
     <string name="login_terms">By tapping the button below, you confirm that you have read, understood, consent and agree to Ringoid\'s <a href="http://ringoid.com/terms.html">Terms of Service</a> and <a href="http://ringoid.com/privacy.html">Privacy Policy</a>, and that you are of the legal age of majority and adult, as defined by the jurisdiction in which you reside or from where you access Ringoid.</string>
     <string name="login_year_of_birth_et_hint">Year of Birth</string>
 
