@@ -10,6 +10,7 @@ import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
+import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import timber.log.Timber
 
@@ -24,8 +25,12 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
         LikeFeedAdapter().apply {
             onLikeImageListener = { model: ProfileImageVO, feedItemPosition: Int ->
-                Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
-                vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked, feedItemPosition = feedItemPosition)
+                if (!connectionManager.isNetworkAvailable()) {
+                    noConnection(this@LikesFeedFragment)
+                } else {
+                    Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
+                    vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked, feedItemPosition = feedItemPosition)
+                }
             }
         }
 
