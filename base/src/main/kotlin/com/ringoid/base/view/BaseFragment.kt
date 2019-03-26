@@ -38,7 +38,9 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     private var isOnFreshStart = true
     var isOnSaveInstanceState = false
         private set
-    private var isViewModelInitialized = false
+    protected var isViewModelInitialized = false
+        private set
+    private var lastTabTransactionPayload: String? = null
 
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
@@ -72,6 +74,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onTabTransaction, payload: $payload")
         DebugLogUtil.lifecycle(this, "onTabTransaction")
+        lastTabTransactionPayload = payload
         if (!userVisibleHint) userVisibleHint = true
         // override in subclasses
     }
@@ -85,6 +88,10 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         if (isViewModelInitialized && changed) {
             vm.setUserVisibleHint(isVisibleToUser)
         }
+    }
+
+    protected fun doPostponedTabTransaction() {
+        onTabTransaction(payload = lastTabTransactionPayload)
     }
 
     /* Lifecycle */

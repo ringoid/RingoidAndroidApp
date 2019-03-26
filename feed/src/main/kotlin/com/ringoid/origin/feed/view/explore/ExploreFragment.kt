@@ -70,6 +70,8 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     }
 
     // ------------------------------------------
+    private var postponedTabTransaction = false
+
     override fun onTabReselect() {
         super.onTabReselect()
         scrollToTopOfItemAtPosition(0)
@@ -77,6 +79,11 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
+        if (!isViewModelInitialized) {
+            postponedTabTransaction = true
+            return
+        }
+
         payload?.let {
             when (it) {
                 Payload.PAYLOAD_FEED_NEED_REFRESH -> {
@@ -93,6 +100,11 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.observe(vm.feed) { feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() } }
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+
+        if (postponedTabTransaction) {
+            doPostponedTabTransaction()
+            postponedTabTransaction = false
+        }
     }
 
     /* Scroll listeners */
