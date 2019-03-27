@@ -35,6 +35,7 @@
     <Button
         android:id="@+id/btn_referral"
         android:textColor="?refTextColorPrimary"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/FlatButton"/>
