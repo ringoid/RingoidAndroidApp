@@ -63,6 +63,8 @@ ext {
 //            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
             deeplink:       "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:eb7e520d87",
             deeplinkProcessor: "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch-processor:eb7e520d87",
+            firebase:          "com.google.firebase:firebase-core:${firebaseVersion}",
+            firebaseMessaging: "com.google.firebase:firebase-messaging:$firebaseMessagingVersion",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
             fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
@@ -119,7 +121,6 @@ ext {
 
     d_support = [
             crashlytics: "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
-            firebase:    "com.google.firebase:firebase-core:${firebaseVersion}",
             leakCanary:  "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
             multidex:    "com.android.support:multidex:${multidexVersion}",
             sentry:      "io.sentry:sentry-android:${sentryVersion}",
@@ -439,6 +440,7 @@ ext {
 //        [configuration: "api", dependency: d_libs.cropiwa],
         [configuration: "api", dependency: project(modules.cropiwa)],
         [configuration: "api", dependency: d_libs.glideRecycler, options: { transitive = true }],
+        [configuration: "implementation", dependency: d_libs.firebaseMessaging]
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
                           support + view
@@ -463,7 +465,7 @@ ext {
     // ------------------------------------------
     baseDependencies = [
         [configuration: "api", dependency: d_libs.eventBus],
-        [configuration: "api", dependency: d_support.firebase]
+        [configuration: "api", dependency: d_libs.firebase]
     ]
     baseDependencies += module_domain + module_utility + module_widget + android + arch + dagger + deeplink + kotlin +
                         log + autoDispose + rx + rxBind
