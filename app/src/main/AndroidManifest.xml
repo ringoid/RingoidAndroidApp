@@ -30,6 +30,7 @@
         <activity
             android:name="com.ringoid.origin.view.splash.SplashActivity"
             android:icon="@drawable/ic_launcher"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
 
@@ -39,9 +40,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Branch URI scheme -->
-            <intent-filter>
-                <data android:scheme="ringoid" android:host="open" />
+            <intent-filter>  <!-- Branch URI scheme -->
+                <data android:scheme="ringoid" />
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

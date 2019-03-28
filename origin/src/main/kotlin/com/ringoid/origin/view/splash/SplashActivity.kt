@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.splash
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.ringoid.base.view.SimpleBaseActivity
@@ -33,11 +34,16 @@ class SplashActivity : SimpleBaseActivity() {
         vm.obtainAccessToken()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
     // --------------------------------------------------------------------------------------------
     private fun initializeBranch() {
         Branch.getInstance().initSession({ params: JSONObject, error: BranchError? ->
             error?.let { Timber.e("Branch error [${it.errorCode}]: ${it.message}") }
                  ?: run { Timber.i("Branch success: $params") }
-        }, this)
+        }, intent.data, this)
     }
 }
