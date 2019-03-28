@@ -9,6 +9,7 @@ import com.ringoid.main.OriginR_style
 import com.ringoid.origin.feed.view.explore.ExploreFragment
 import com.ringoid.origin.feed.view.lmm.LmmFragment
 import com.ringoid.origin.profile.view.UserProfileFragment
+import com.ringoid.origin.utils.AppUtils
 import com.ringoid.origin.view.main.BaseMainActivity
 
 @AppNav("main")
@@ -33,6 +34,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme_Dark)
         observe(vm.badgeLmm, ::showBadgeOnLmm)
         observe(vm.badgeWarningProfile, ::showBadgeWarningOnProfile)
+        AppUtils.checkForGooglePlayServices(this)
     }
 
     override fun onStart() {
@@ -41,5 +43,10 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
             currentThemeResId != spm.getThemeResId(defaultThemeResId = currentThemeResId)) {
             recreate()  // locale or theme has changed outside, in some another Activity
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppUtils.checkForGooglePlayServices(this)
     }
 }

@@ -18,6 +18,8 @@ object Payload {
 
 object RequestCode {
 
+    const val RC_GOOGLE_PLAY = 10000
+
     const val RC_BLOCK_DIALOG = 11000
     const val RC_CHAT = 11002
     const val RC_DELETE_IMAGE_DIALOG = 11001
