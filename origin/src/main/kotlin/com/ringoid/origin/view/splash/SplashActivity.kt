@@ -3,8 +3,10 @@ package com.ringoid.origin.view.splash
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
+import com.google.firebase.iid.FirebaseInstanceId
 import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.splash
 import io.branch.referral.Branch
@@ -28,6 +30,8 @@ class SplashActivity : SimpleBaseActivity() {
         super.onCreate(savedInstanceState)
 
         initializeBranch()
+        initializeFirebase()
+
         vm.accessToken.observe(this, Observer {
             splash(this, path = it.getContentIfNotHandled()?.let { "/main" } ?: run { "/login" })
         })
@@ -45,5 +49,12 @@ class SplashActivity : SimpleBaseActivity() {
             error?.let { Timber.e("Branch error [${it.errorCode}]: ${it.message}") }
                  ?: run { Timber.i("Branch success: $params") }
         }, intent.data, this)
+    }
+
+    private fun initializeFirebase() {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener {
+                DebugLogUtil.i("FCM token: ${it.takeIf { it.isSuccessful }?.result?.token}")
+            }
     }
 }
