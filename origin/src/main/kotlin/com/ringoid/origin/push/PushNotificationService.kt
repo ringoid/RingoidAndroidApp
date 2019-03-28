@@ -17,7 +17,7 @@ class PushNotificationService : FirebaseMessagingService() {
                 when(type) {
                     // TODO: implement handler for each kind of push notification
                     PushType.DEEPLINK -> {}
-                    PushType.MESSAGE -> {}
+                    PushType.MESSAGE -> PushUtils.createNotification(applicationContext, title = it["text"])
                     PushType.SYSTEM -> {}
                     else -> {}
                 }
