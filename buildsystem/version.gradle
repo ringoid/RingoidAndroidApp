@@ -34,13 +34,15 @@ buildscript {
         deeplinkVersion = '3.1.1'
         glideVersion = '4.9.0'
         eventBusVersion = '3.1.1'
-        firebaseVersion = '16.0.8'
-        firebaseMessagingVersion = '17.3.3'
         fragNavVersion = '3.0.0'
         frescoVersion = '1.5.0'
         gsonVersion = '2.8.5'
         jobQueueVersion = '2.0.1'
         workManagerVersion = '1.3.0-alpha09'
+
+        branchVersion = '3.+'
+        firebaseVersion = '16.0.8'
+        firebaseMessagingVersion = '17.3.3'
 
         circularProgressVersion = '2.0.0'
         dotsIndicatorVersion = '2.1.0'

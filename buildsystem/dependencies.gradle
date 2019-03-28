@@ -59,6 +59,7 @@ ext {
             glideCompiler:  "com.github.bumptech.glide:compiler:${glideVersion}",
             glideRecycler:  "com.github.bumptech.glide:recyclerview-integration:${glideVersion}",
 
+            branch:         "io.branch.sdk.android:library:${branchVersion}",
 //            deeplink:       "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
 //            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
             deeplink:       "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:eb7e520d87",
@@ -309,7 +310,9 @@ ext {
     // --------------------------------------------------------------------------------------------
     /* App */
     // ------------------------------------------
-    appDependencies = []
+    appDependencies = [
+        [configuration: "implementation", dependency: d_libs.branch],
+    ]
     appDependencies += all_features + module_main + module_data + develop + android + dagger + deeplink + kotlin + log +
                        fragnav + net + room + support
 
@@ -440,7 +443,8 @@ ext {
 //        [configuration: "api", dependency: d_libs.cropiwa],
         [configuration: "api", dependency: project(modules.cropiwa)],
         [configuration: "api", dependency: d_libs.glideRecycler, options: { transitive = true }],
-        [configuration: "implementation", dependency: d_libs.firebaseMessaging]
+        [configuration: "implementation", dependency: d_libs.branch],
+        [configuration: "implementation", dependency: d_libs.firebaseMessaging],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
                           support + view
