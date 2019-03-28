@@ -6,6 +6,10 @@ import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.splash
+import io.branch.referral.Branch
+import io.branch.referral.BranchError
+import org.json.JSONObject
+import timber.log.Timber
 
 class SplashActivity : SimpleBaseActivity() {
 
@@ -22,9 +26,18 @@ class SplashActivity : SimpleBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initializeBranch()
         vm.accessToken.observe(this, Observer {
             splash(this, path = it.getContentIfNotHandled()?.let { "/main" } ?: run { "/login" })
         })
         vm.obtainAccessToken()
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun initializeBranch() {
+        Branch.getInstance().initSession({ params: JSONObject, error: BranchError? ->
+            error?.let { Timber.e("Branch error [${it.errorCode}]: ${it.message}") }
+                 ?: run { Timber.i("Branch success: $params") }
+        }, this)
     }
 }

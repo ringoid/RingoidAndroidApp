@@ -14,6 +14,7 @@ import com.ringoid.utility.manager.LocaleManager
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.support.DaggerApplication
+import io.branch.referral.Branch
 import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -88,6 +89,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     /* Programming Tools */
     // --------------------------------------------------------------------------------------------
     private fun initializeProgrammingTools() {
+        Branch.getAutoInstance(this)
         Sentry.init(com.ringoid.domain.BuildConfig.SENTRY_DSN)
     }
 

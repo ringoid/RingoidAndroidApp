@@ -38,10 +38,31 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Branch URI scheme -->
+            <intent-filter>
+                <data android:scheme="ringoid" android:host="open" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
         </activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="89dbf76a6060d765a50797055e5dbedaf7e0062d"/>
+
+        <!-- Branch init -->
+        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_kgTkZD3ITz3alAKLfE2c2dalxBoHl8Nv" />
+        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_gfGe7u8QOA5fatJQfs01lkkeszeUgXVO" />
+        <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
+
+        <!-- Branch install referrer tracking -->
+        <receiver android:name="io.branch.referral.InstallListener" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
