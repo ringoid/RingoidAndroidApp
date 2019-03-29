@@ -15,7 +15,4 @@ class BaseAppModule {
     @Provides @Singleton
     fun provideCropIwaResultReceiver(applicationContext: Context): IImagePreviewReceiver =
         ImagePreviewReceiver(applicationContext, CropIwaResultReceiver())
-
-    @Provides @Singleton
-    fun provideLocaleManager(context: Context): LocaleManager = LocaleManager(context)
 }
