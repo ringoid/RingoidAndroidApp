@@ -88,10 +88,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
             .addOnCompleteListener {
                 it.takeIf { it.isSuccessful }
                     ?.result?.token
-                    ?.let {
-                        DebugLogUtil.i("Obtained Firebase push token: $it")
-                        vm.updatePushToken(it)
-                    }
+                    ?.let { vm.updatePushToken(it) }
             }
     }
 
