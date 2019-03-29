@@ -3,7 +3,7 @@ package com.ringoid.domain.log
 import android.os.Build
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
 import io.reactivex.Single

@@ -14,7 +14,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.messenger.Message
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable

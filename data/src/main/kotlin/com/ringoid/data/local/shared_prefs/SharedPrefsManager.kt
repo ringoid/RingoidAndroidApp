@@ -7,7 +7,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.model.user.AccessToken
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.randomString
 import io.reactivex.*
 import timber.log.Timber

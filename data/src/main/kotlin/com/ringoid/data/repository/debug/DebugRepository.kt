@@ -24,7 +24,7 @@ import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.mapList
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.debug.IDebugRepository
 import io.reactivex.Completable
 import io.reactivex.Observable

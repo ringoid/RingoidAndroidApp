@@ -1,7 +1,7 @@
 package com.ringoid.data.local.shared_prefs.di
 
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

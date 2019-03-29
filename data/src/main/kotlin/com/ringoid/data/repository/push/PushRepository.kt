@@ -7,7 +7,7 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.model.essence.push.PushTokenEssence
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.push.IPushRepository
 import io.reactivex.Completable
 import javax.inject.Inject

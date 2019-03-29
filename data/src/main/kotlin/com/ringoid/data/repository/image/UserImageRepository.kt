@@ -19,7 +19,7 @@ import com.ringoid.domain.model.essence.image.*
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.model.mapList
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.utility.uriString
 import io.reactivex.Completable

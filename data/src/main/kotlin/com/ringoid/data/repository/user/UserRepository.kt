@@ -13,7 +13,7 @@ import com.ringoid.domain.model.essence.user.ReferralCodeEssence
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.user.IUserRepository
 import io.reactivex.Completable
 import io.reactivex.Single

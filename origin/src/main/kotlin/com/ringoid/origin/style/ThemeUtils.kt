@@ -1,7 +1,7 @@
 package com.ringoid.origin.style
 
 import androidx.annotation.StyleRes
-import com.ringoid.domain.repository.ISharedPrefsManager
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.origin.R
 
 object ThemeUtils {
