@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.ringoid.origin.R
-import timber.log.Timber
 
 object PushUtils {
 
