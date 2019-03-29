@@ -38,6 +38,7 @@ buildscript {
         frescoVersion = '1.5.0'
         gsonVersion = '2.8.5'
         jobQueueVersion = '2.0.1'
+        jodaTimeVersion = '2.10.1.2'
         workManagerVersion = '1.3.0-alpha09'
 
         branchVersion = '3.+'

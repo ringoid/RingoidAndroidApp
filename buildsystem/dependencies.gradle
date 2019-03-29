@@ -72,6 +72,7 @@ ext {
             fresco:         "com.facebook.fresco:fresco:${frescoVersion}",
             gson:           "com.google.code.gson:gson:${gsonVersion}",
             jobQueue:       "com.birbit:android-priority-jobqueue:${jobQueueVersion}",
+            jodaTime:       "net.danlew:android.joda:${jodaTimeVersion}",
             workManager:    "com.evernote:android-job:${workManagerVersion}",
     ]
 
@@ -512,7 +513,9 @@ ext {
 
     /* Utility */
     // ------------------------------------------
-    utilityDependencies = []
+    utilityDependencies = [
+        [configuration: "implementation", dependency: d_libs.jodaTime],
+    ]
     utilityDependencies += android + kotlin + glide + log + rx
     testUtilityDependencies = test
 
