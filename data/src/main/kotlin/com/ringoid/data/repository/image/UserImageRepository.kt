@@ -138,7 +138,7 @@ class UserImageRepository @Inject constructor(
                     .flatMap { countUserImages() }  // actualize user images count
                     .flatMap { _ ->
                         spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                            .handleError(count = retryCount)
+                            .handleError(count = retryCount, tag = "deleteUserImage")
                             .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
                      }
             }
@@ -183,7 +183,7 @@ class UserImageRepository @Inject constructor(
                             local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
                         }
                         .flatMap { cloud.uploadImage(url = it.imageUri!!, image = imageFile).andThen(Single.just(it)) }
-                        .handleError(count = retryCount)
+                        .handleError(count = retryCount, tag = "createImage")
                         .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence, imageFilePath)) }
                         .map { it.map() }
                 }

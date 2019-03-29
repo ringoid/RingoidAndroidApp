@@ -197,7 +197,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                 cloud.commitActions(essence)
             }
         }
-        .handleError()
+        .handleError(tag = "commitActions")
         .doOnSubscribe {
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: ${lastActionTime()}, queue: ${printQueue()}")
             backupQueue.addAll(queue)
