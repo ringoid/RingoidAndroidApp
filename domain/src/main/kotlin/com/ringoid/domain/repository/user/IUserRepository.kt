@@ -2,6 +2,7 @@ package com.ringoid.domain.repository.user
 
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
+import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
 import io.reactivex.Completable
@@ -16,4 +17,6 @@ interface IUserRepository {
 
     fun deleteUserProfile(): Completable
     fun deleteUserLocalData(): Completable
+
+    fun updateUserSettings(essence: UpdateUserSettingsEssenceUnauthorized): Completable
 }

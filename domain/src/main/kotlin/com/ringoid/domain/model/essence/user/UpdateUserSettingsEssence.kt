@@ -7,26 +7,25 @@ import com.ringoid.domain.model.IEssence
 /**
  * {
  *   "accessToken":"adasdasd-fadfs-sdffd",
- *   "safeDistanceInMeter":0,
- *   "pushMessages":true,
- *   "pushMatches":true,
- *   "pushLikes":"EVERY" //possible values NONE/EVERY/10_NEW/100_NEW
+ *   "locale":"en",
+ *   "push":true,
+ *   "timeZone":3
  * }
  */
 data class UpdateUserSettingsEssence(
     @Expose @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String,
-    @Expose @SerializedName(COLUMN_PUSH_LIKES) val pushLikes: Boolean,
-    @Expose @SerializedName(COLUMN_PUSH_MATCHES) val pushMatches: Boolean,
-    @Expose @SerializedName(COLUMN_PUSH_MESSAGES) val pushMessages: Boolean,
-    @Expose @SerializedName(COLUMN_PUSH_SAFE_DISTANCE) val safeDistance: Int) : IEssence {
+    @Expose @SerializedName(COLUMN_LOCALE) val locale: String? = null,
+    @Expose @SerializedName(COLUMN_PUSH) val push: Boolean? = null,
+    @Expose @SerializedName(COLUMN_TIMEZONE) val timeZone: Int? = null) : IEssence {
 
     companion object {
         const val COLUMN_ACCESS_TOKEN = "accessToken"
-        const val COLUMN_PUSH_LIKES = "pushLikes"
-        const val COLUMN_PUSH_MATCHES = "pushMatches"
-        const val COLUMN_PUSH_MESSAGES = "pushMessages"
-        const val COLUMN_PUSH_SAFE_DISTANCE = "safeDistanceInMeter"
-    }
+        const val COLUMN_LOCALE = "locale"
+        const val COLUMN_PUSH = "push"
+        const val COLUMN_TIMEZONE = "timeZone"
 
-    override fun toSentryPayload(): String = "[pushLikes=$pushLikes, pushMatches=$pushMatches, pushMessages=$pushMessages, safeDistance=$safeDistance]"
+        fun from(essence: UpdateUserSettingsEssenceUnauthorized, accessToken: String): UpdateUserSettingsEssence =
+            UpdateUserSettingsEssence(accessToken = accessToken, locale = essence.userSettings.locale,
+                                      push = essence.userSettings.push, timeZone = essence.userSettings.timeZone)
+    }
 }

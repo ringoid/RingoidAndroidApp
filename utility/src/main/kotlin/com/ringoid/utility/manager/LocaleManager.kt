@@ -26,9 +26,9 @@ class LocaleManager(context: Context) {
 
         private const val LANG_KEY = "lang_key"
 
-        fun getLocale(resources: Resources) =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) resources.configuration.locales[0]
-            else resources.configuration.locale
+//        fun getLocale(resources: Resources) =
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) resources.configuration.locales[0]
+//            else resources.configuration.locale
 
         fun resetActivityTitle(activity: Activity) {
             try {

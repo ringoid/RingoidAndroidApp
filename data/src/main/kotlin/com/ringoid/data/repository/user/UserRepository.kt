@@ -8,12 +8,10 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.log.SentryUtil
-import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
-import com.ringoid.domain.model.essence.user.ReferralCodeEssence
-import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.domain.model.essence.user.*
 import com.ringoid.domain.repository.user.IUserRepository
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -50,8 +48,12 @@ class UserRepository @Inject constructor(
             .doOnSuccess { clearUserLocalData() }
             .ignoreElement()  // convert to Completable
 
-    override fun deleteUserLocalData(): Completable =
-        Completable.fromCallable { clearUserLocalData() }
+    override fun deleteUserLocalData(): Completable = Completable.fromCallable { clearUserLocalData() }
+
+    override fun updateUserSettings(essence: UpdateUserSettingsEssenceUnauthorized): Completable =
+        spm.accessSingle { cloud.updateUserSettings(UpdateUserSettingsEssence.from(essence, it.accessToken)) }
+            .handleError()
+            .ignoreElement()  // convert to Completable
 
     // ------------------------------------------
     private fun clearUserLocalData() {
