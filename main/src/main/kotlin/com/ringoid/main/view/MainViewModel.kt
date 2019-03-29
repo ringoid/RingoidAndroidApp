@@ -6,15 +6,18 @@ import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCas
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.GetUserImagesUseCase
 import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
+import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.origin.view.main.BaseMainViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(getLmmUseCase: GetLmmUseCase, getUserImagesUseCase: GetUserImagesUseCase,
+class MainViewModel @Inject constructor(
+    getLmmUseCase: GetLmmUseCase, getUserImagesUseCase: GetUserImagesUseCase,
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
-    updatePushTokenUseCase: UpdatePushTokenUseCase, app: Application) : BaseMainViewModel(updatePushTokenUseCase, app) {
+    updatePushTokenUseCase: UpdatePushTokenUseCase, updateUserSettingsUseCase: UpdateUserSettingsUseCase,
+    app: Application) : BaseMainViewModel(updatePushTokenUseCase, updateUserSettingsUseCase, app) {
 
     val badgeLmm by lazy { MutableLiveData<Boolean>() }
     val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
