@@ -20,5 +20,6 @@ class ManagerModule {
     fun provideUserSettingsManager(localeManager: LocaleManager, spm: SharedPrefsManager, timezoneManager: TimezoneManager)
             : IUserSettingsManager = UserSettingsManager(localeManager, spm, timezoneManager)
 
+    @Provides @Singleton
     fun provideTimezoneManager(context: Context): TimezoneManager = TimezoneManager(context)
 }
