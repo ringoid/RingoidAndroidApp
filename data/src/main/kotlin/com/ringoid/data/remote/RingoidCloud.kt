@@ -13,6 +13,7 @@ import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
+import com.ringoid.domain.model.essence.push.PushTokenEssence
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.essence.user.ReferralCodeEssence
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssence
@@ -117,6 +118,14 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
                         "resolution" to "$resolution", "source" to "$source", "lastActionTime" to "$lastActionTime")
             .logRequest("getLmm", "lastActionTime" to "$lastActionTime")
             .logResponse("LMM")
+
+    /* Push */
+    // --------------------------------------------------------------------------------------------
+    fun updatePushToken(essence: PushTokenEssence): Single<BaseResponse> =
+        restAdapter.updatePushToken(essence.toBody())
+            .breadcrumb("updatePushToken", essence.toSentryData())
+            .logRequest("updatePushToken")
+            .logResponse("updatePushToken")
 
     /* Test */
     // --------------------------------------------------------------------------------------------

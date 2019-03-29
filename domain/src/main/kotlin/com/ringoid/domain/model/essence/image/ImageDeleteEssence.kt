@@ -2,7 +2,6 @@ package com.ringoid.domain.model.essence.image
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.ringoid.domain.model.IEssence
 
 /**
  * {
@@ -23,6 +22,4 @@ data class ImageDeleteEssence(
     }
 
     fun copyWith(imageId: String): ImageDeleteEssence = ImageDeleteEssence(accessToken, imageId)
-
-    override fun toSentryPayload(): String = "[photoId=$imageId]"
 }

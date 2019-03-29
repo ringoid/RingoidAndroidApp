@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.google.firebase.iid.FirebaseInstanceId
-import com.ringoid.base.view.SimpleBaseActivity
+import com.ringoid.base.view.BaseActivity
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.R
@@ -14,7 +14,9 @@ import io.branch.referral.BranchError
 import org.json.JSONObject
 import timber.log.Timber
 
-class SplashActivity : SimpleBaseActivity() {
+class SplashActivity : BaseActivity<SplashViewModel>() {
+
+    override fun getVmClass(): Class<SplashViewModel> = SplashViewModel::class.java
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -54,7 +56,12 @@ class SplashActivity : SimpleBaseActivity() {
     private fun initializeFirebase() {
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener {
-                DebugLogUtil.i("FCM token: ${it.takeIf { it.isSuccessful }?.result?.token}")
+                it.takeIf { it.isSuccessful }
+                    ?.result?.token
+                    ?.let {
+                        DebugLogUtil.i("Obtained Firebase push token: $it")
+                        vm.updatePushToken(it)
+                    }
             }
     }
 }

@@ -67,6 +67,11 @@ interface RingoidRestAdapter {
                @Query("source") source: String?,
                @Query("lastActionTime") lastActionTime: Long = 0L): Single<LmmResponse>
 
+    /* Push */
+    // --------------------------------------------------------------------------------------------
+    @POST("push/update_token")
+    fun updatePushToken(@Body body: RequestBody): Single<BaseResponse>
+
     /* Test */
     // --------------------------------------------------------------------------------------------
     @POST("timeout")

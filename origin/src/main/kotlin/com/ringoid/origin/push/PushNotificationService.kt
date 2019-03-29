@@ -3,9 +3,13 @@ package com.ringoid.origin.push
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
+import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import timber.log.Timber
 
-class PushNotificationService : FirebaseMessagingService() {
+class PushNotificationService(private val updatePushTokenUseCase: UpdatePushTokenUseCase)
+    : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage?) {
         super.onMessageReceived(message)
@@ -25,5 +29,12 @@ class PushNotificationService : FirebaseMessagingService() {
                 Timber.v("PUSH: Payload data is empty in push notification")
             }
         }
+    }
+
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        val params = Params().put(PushTokenEssenceUnauthorized(token))
+        updatePushTokenUseCase.source(params = params)
+            .subscribe({ DebugLogUtil.i("Successfully uploaded Firebase push token: $token") }, Timber::e)
     }
 }

@@ -1,23 +1,16 @@
-package com.ringoid.origin.view.main
+package com.ringoid.origin.view.splash
 
 import android.app.Application
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import timber.log.Timber
+import javax.inject.Inject
 
-abstract class BaseMainViewModel(private val updatePushTokenUseCase: UpdatePushTokenUseCase,
-                                 app: Application) : BaseViewModel(app) {
-
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
-    override fun onFreshStart() {
-        super.onFreshStart()
-        SentryUtil.setUser(spm)
-    }
+class SplashViewModel @Inject constructor(
+    private val updatePushTokenUseCase: UpdatePushTokenUseCase, app: Application) : BaseViewModel(app) {
 
     // --------------------------------------------------------------------------------------------
     fun updatePushToken(token: String) {
