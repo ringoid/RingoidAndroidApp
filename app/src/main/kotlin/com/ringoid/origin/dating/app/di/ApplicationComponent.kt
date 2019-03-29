@@ -2,6 +2,7 @@ package com.ringoid.origin.dating.app.di
 
 import android.app.Application
 import android.content.Context
+import com.ringoid.data.manager.di.ManagerModule
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RemoteModule
 import com.ringoid.data.remote.di.RingoidCloudModule
@@ -46,7 +47,7 @@ import dagger.android.AndroidInjector
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, ApplicationModule::class, RemoteModule::class,
+@Component(modules = [AndroidInjectionModule::class, ApplicationModule::class, ManagerModule::class, RemoteModule::class,
                       /** Screen modules */
                       AboutDialogModule::class,
                       BlockBottomSheetActivityModule::class, BlockBottomSheetDialogModule::class,

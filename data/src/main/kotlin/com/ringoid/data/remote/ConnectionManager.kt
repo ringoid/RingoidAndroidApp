@@ -7,8 +7,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ConnectionManager @Inject constructor(private val context: Context) :
-    IConnectionManager {
+class ConnectionManager @Inject constructor(private val context: Context)
+    : IConnectionManager {
 
     override fun isNetworkAvailable(): Boolean =
         context.getSystemService(Context.CONNECTIVITY_SERVICE)

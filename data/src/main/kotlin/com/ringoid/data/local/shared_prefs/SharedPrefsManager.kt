@@ -43,8 +43,12 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
         /* Referral program */
         // --------------------------------------
-        const val SP_KEY_PRIVATE_KEY = "sp_key_private_key"
-        const val SP_KEY_REFERRAL_CODE = "sp_key_referral_code"
+        internal const val SP_KEY_PRIVATE_KEY = "sp_key_private_key"
+        internal const val SP_KEY_REFERRAL_CODE = "sp_key_referral_code"
+
+        /* User Settings */
+        // --------------------------------------
+        const val SP_KEY_USER_SETTINGS_PUSH_ENABLED = "sp_key_user_settings_push_enabled"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -137,6 +141,14 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     override fun setReferralCode(code: String?) {
         backupSharedPreferences.edit().putString(SP_KEY_REFERRAL_CODE, code).apply()
+    }
+
+    /* User Settings */
+    // --------------------------------------------------------------------------------------------
+    override fun getUserSettingPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_PUSH_ENABLED, true)
+
+    override fun setUserSettingPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_PUSH_ENABLED, pushEnabled).apply()
     }
 }
 
