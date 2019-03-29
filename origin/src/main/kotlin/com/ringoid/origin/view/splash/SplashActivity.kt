@@ -9,6 +9,8 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.splash
+import com.ringoid.origin.utils.ReferralUtils
+import com.ringoid.utility.paths
 import io.branch.referral.Branch
 import io.branch.referral.BranchError
 import org.json.JSONObject
@@ -34,6 +36,7 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
         initializeBranch()
         initializeFirebase()
 
+        vm.analyzeIntent(intent)
         vm.accessToken.observe(this, Observer {
             splash(this, path = it.getContentIfNotHandled()?.let { "/main" } ?: run { "/login" })
         })
@@ -43,6 +46,9 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
+        if (isViewModelInitialized) {
+            vm.analyzeIntent(intent)
+        }
     }
 
     // --------------------------------------------------------------------------------------------

@@ -129,7 +129,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     override fun getPrivateKey(): String? = backupSharedPreferences.getString(SP_KEY_PRIVATE_KEY, null)
 
-    override fun hasPrivateKey(): Boolean = backupSharedPreferences.contains(SP_KEY_PRIVATE_KEY)
+    override fun hasPrivateKey(): Boolean = !backupSharedPreferences.getString(SP_KEY_PRIVATE_KEY, null).isNullOrBlank()
 
     override fun setPrivateKey(privateKey: String?) {
         backupSharedPreferences.edit().putString(SP_KEY_PRIVATE_KEY, privateKey).apply()
@@ -137,7 +137,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     override fun getReferralCode(): String? = backupSharedPreferences.getString(SP_KEY_REFERRAL_CODE, null)
 
-    override fun hasReferralCode(): Boolean = backupSharedPreferences.contains(SP_KEY_REFERRAL_CODE)
+    override fun hasReferralCode(): Boolean = !backupSharedPreferences.getString(SP_KEY_REFERRAL_CODE, null).isNullOrBlank()
 
     override fun setReferralCode(code: String?) {
         backupSharedPreferences.edit().putString(SP_KEY_REFERRAL_CODE, code).apply()

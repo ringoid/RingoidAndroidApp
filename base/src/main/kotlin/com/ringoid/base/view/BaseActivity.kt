@@ -42,6 +42,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     private var isOnFreshStart = true
     var isDestroying = false
         private set
+    protected var isViewModelInitialized = false
+        private set
     protected var currentResult: Int = Activity.RESULT_CANCELED
         private set
 
@@ -87,6 +89,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
             observe(viewState, ::onViewStateChange)
         }
         savedInstanceState?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }
+        isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
     }
 
