@@ -8,6 +8,7 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.manager.IUserSettingsManager
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.domain.scope.UserScopeProvider
 import com.ringoid.utility.manager.LocaleManager
@@ -34,6 +35,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     @Inject override lateinit var imagePreviewReceiver: IImagePreviewReceiver
     @Inject override lateinit var loginInMemoryCache: ILoginInMemoryCache
     @Inject override lateinit var userScopeProvider: UserScopeProvider
+    @Inject override lateinit var userSettingsManager: IUserSettingsManager
 
     companion object {
         fun refWatcher(context: Context?): RefWatcher? =
