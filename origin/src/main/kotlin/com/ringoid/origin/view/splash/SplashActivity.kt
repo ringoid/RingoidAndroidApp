@@ -64,10 +64,7 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
             .addOnCompleteListener {
                 it.takeIf { it.isSuccessful }
                     ?.result?.token
-                    ?.let {
-                        DebugLogUtil.i("Obtained Firebase push token: $it")
-                        vm.updatePushToken(it)
-                    }
+                    ?.let { vm.updatePushToken(it) }
             }
     }
 }
