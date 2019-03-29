@@ -28,4 +28,6 @@ data class UpdateUserSettingsEssence(
             UpdateUserSettingsEssence(accessToken = accessToken, locale = essence.userSettings.locale,
                                       push = essence.userSettings.push, timeZone = essence.userSettings.timeZone)
     }
+
+    override fun toDebugPayload(): String = "[locale=$locale,push=$push,timezone=$timeZone]"
 }

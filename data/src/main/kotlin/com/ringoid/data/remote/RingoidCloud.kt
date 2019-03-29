@@ -54,7 +54,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun updateUserSettings(essence: UpdateUserSettingsEssence): Single<BaseResponse> =
         restAdapter.updateUserSettings(essence.toBody())
             .breadcrumb("updateUserSettings", essence.toSentryData())
-            .logRequest("updateUserSettings")
+            .logRequest("updateUserSettings", essence.toDebugData())
             .logResponse("updateUserSettings")
 
     // ------------------------------------------
