@@ -46,6 +46,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
+
+            <intent-filter>
+                <data android:scheme="https" android:host="ringoid.app.link"/>
+                <data android:scheme="https" android:host="ringoid.com" android:pathPrefix="/r"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
         </activity>
 
         <meta-data
