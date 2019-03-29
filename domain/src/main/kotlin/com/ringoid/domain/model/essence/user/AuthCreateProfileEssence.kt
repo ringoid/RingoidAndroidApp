@@ -3,6 +3,7 @@ package com.ringoid.domain.model.essence.user
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.model.IEssence
+import com.ringoid.domain.model.user.UserSettings
 import java.util.*
 
 /**
@@ -16,7 +17,12 @@ import java.util.*
  *   "deviceModel":"device model info",
  *   "osVersion":"version of os",
  *   "referralId":"masha123",
- *   "privateKey":"ksjdhf9-lsdf-223jd"
+ *   "privateKey":"ksjdhf9-lsdf-223jd",
+ *   "settings":{
+ *      "locale":"en",
+ *      "push":true,
+ *      "timeZone":3
+ *   }
  * }
  */
 data class AuthCreateProfileEssence(
@@ -29,7 +35,8 @@ data class AuthCreateProfileEssence(
     @Expose @SerializedName(COLUMN_DEVICE) val device: String = "",
     @Expose @SerializedName(COLUMN_OS_VERSION) val osVersion: String = "",
     @Expose @SerializedName(COLUMN_PRIVATE_KEY) val privateKey: String? = null,
-    @Expose @SerializedName(COLUMN_REFERRAL_ID) val referralId: String? = null) : IEssence {
+    @Expose @SerializedName(COLUMN_REFERRAL_ID) val referralId: String? = null,
+    @Expose @SerializedName(COLUMN_SETTINGS) val settings: UserSettings? = null) : IEssence {
 
     companion object {
         const val COLUMN_BIRTH_YEAR = "yearOfBirth"
@@ -42,6 +49,7 @@ data class AuthCreateProfileEssence(
         const val COLUMN_OS_VERSION = "osVersion"
         const val COLUMN_PRIVATE_KEY = "privateKey"
         const val COLUMN_REFERRAL_ID = "referralId"
+        const val COLUMN_SETTINGS = "settings"
     }
 
     override fun toSentryPayload(): String = "[yearOfBirth=$yearOfBirth, sex=$sex]"
