@@ -7,9 +7,11 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import timber.log.Timber
+import javax.inject.Inject
 
-class PushNotificationService(private val updatePushTokenUseCase: UpdatePushTokenUseCase)
-    : FirebaseMessagingService() {
+class PushNotificationService : FirebaseMessagingService() {
+
+    @Inject lateinit var updatePushTokenUseCase: UpdatePushTokenUseCase
 
     override fun onMessageReceived(message: RemoteMessage?) {
         super.onMessageReceived(message)
