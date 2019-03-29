@@ -30,6 +30,7 @@
         <attr name="icon_item_icon" format="reference"/>
         <attr name="icon_item_hide_icon" format="boolean"/>
         <attr name="icon_item_text" format="reference|string"/>
+        <attr name="icon_item_text_label" format="reference|string"/>
         <attr name="refItemViewArrow" format="reference"/>
     </declare-styleable>
 </resources>

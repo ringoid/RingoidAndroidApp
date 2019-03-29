@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_switch_icon_item_view_layout.view.*
 
-class SwitchIconItemView : IconItemView {
+open class SwitchIconItemView : IconItemView {
 
     constructor(context: Context) : this(context, null)
 
