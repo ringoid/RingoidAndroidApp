@@ -4,10 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.observe
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.ThresholdExceededException
@@ -29,9 +27,6 @@ import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.communicator
 import com.ringoid.utility.debugToast
-import com.ringoid.utility.isVisible
-import com.ringoid.utility.linearLayoutManager
-import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>(), IChatHost, IDialogCallback  {
@@ -154,42 +149,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                     "report" -> onReportFromChat(tag = tag, payload = payload, reasonNumber = data.getIntExtra("reason", 0))
                 }
                 onDialogDismiss(tag = tag, payload = payload)
-            }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        rv_items.addOnScrollListener(topScrollListener)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        rv_items.removeOnScrollListener(topScrollListener)
-    }
-
-    /* Scroll listeners */
-    // --------------------------------------------------------------------------------------------
-    private val topScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(rv, dx, dy)
-            rv.linearLayoutManager()?.let {
-                if (dy > 0) {  // scroll list down - to see new items
-                    if (scroll_fab.isVisible()) {
-                        showScrollFab(isVisible = false)
-                    }
-                } else {  // scroll list up - to see previous items
-                    val offset = rv.computeVerticalScrollOffset()
-                    if (scroll_fab.isVisible()) {
-                        if (offset <= 0) {
-                            showScrollFab(isVisible = false)
-                        }
-                    } else {
-                        if (offset > 0) {
-                            showScrollFab(isVisible = true)
-                        }
-                    }
-                }
             }
         }
     }

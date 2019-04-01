@@ -173,6 +173,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             setHasFixedSize(true)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(itemOffsetScrollListener)
+            addOnScrollListener(topScrollListener)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
         swipe_refresh_layout.apply {
@@ -205,6 +206,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         super.onDestroyView()
         rv_items.apply {
             removeOnScrollListener(itemOffsetScrollListener)
+            removeOnScrollListener(topScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
         }
     }
@@ -222,6 +224,31 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
+    private val topScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(rv, dx, dy)
+            rv.linearLayoutManager()?.let {
+                if (dy > 0) {  // scroll list down - to see new items
+                    if (scroll_fab.isVisible()) {
+                        showScrollFab(isVisible = false)
+                    }
+                } else {  // scroll list up - to see previous items
+                    val offset = rv.computeVerticalScrollOffset()
+                    if (scroll_fab.isVisible()) {
+                        if (offset <= 0) {
+                            showScrollFab(isVisible = false)
+                        }
+                    } else {
+                        if (offset > 0) {
+                            showScrollFab(isVisible = true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------
     private lateinit var offsetScrollStrats: List<OffsetScrollStrategy>
 
     protected fun getStrategyByTag(tag: String): OffsetScrollStrategy? = offsetScrollStrats.find { it.tag == tag }
