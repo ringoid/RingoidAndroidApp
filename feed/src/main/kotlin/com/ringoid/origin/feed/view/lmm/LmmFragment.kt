@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lmm
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
@@ -13,6 +14,7 @@ import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.manager.LocaleManager
 import kotlinx.android.synthetic.main.fragment_lmm.*
 
 class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
@@ -122,6 +124,14 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         btn_tab_likes.clicks().compose(clickDebounce()).subscribe { selectPage(0) }
         btn_tab_matches.clicks().compose(clickDebounce()).subscribe { selectPage(1) }
         btn_tab_messenger.clicks().compose(clickDebounce()).subscribe { selectPage(2) }
+
+        // adjust layout params based on selected locale
+        val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.weight = when (app?.localeManager?.getLang()) {
+            LocaleManager.LANG_EN -> 0.85f
+            else -> 0.63f
+        }
+        btn_tab_messenger.layoutParams = lp
     }
 
     private fun selectPage(position: Int) {

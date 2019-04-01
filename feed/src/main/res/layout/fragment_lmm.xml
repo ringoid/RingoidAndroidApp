@@ -63,7 +63,7 @@
         <com.ringoid.widget.view.BadgeButton
             android:id="@+id/btn_tab_messenger"
             android:layout_width="0dp"
-            android:layout_weight="0.85"
+            android:layout_weight="0.63"
             android:background="?selectableItemBackground"
             android:gravity="center_vertical|start"
             android:paddingStart="@dimen/std_margin_16"
