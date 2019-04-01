@@ -18,7 +18,8 @@
         android:layout_weight="1"
         android:layout_gravity="center_vertical|start"
         android:layout_marginEnd="@dimen/std_margin_8"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/std_margin_8">
 
         <TextView
             android:id="@+id/tv_text"
