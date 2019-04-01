@@ -87,7 +87,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
         item_push.apply {
             setChecked(spm.getUserSettingPushEnabled())
             showLabel(isVisible = isChecked())
-            clicks().compose(clickDebounce()).subscribe {
+            clicks().subscribe {
                 showLabel(isVisible = isChecked())
                 vm.updateUserSettingPush(isChecked())
             }

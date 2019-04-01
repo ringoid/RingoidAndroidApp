@@ -2,6 +2,8 @@ package com.ringoid.widget.view.item_view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
+import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import com.ringoid.utility.changeVisibility
 import com.ringoid.widget.R
@@ -45,5 +47,9 @@ class SwitchLabelIconItemView : SwitchIconItemView {
 
     fun showLabel(isVisible: Boolean) {
         tv_label.changeVisibility(isVisible)
+        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.gravity = if (isVisible) Gravity.TOP or Gravity.END
+                     else Gravity.CENTER_VERTICAL or Gravity.END
+        switcher.layoutParams = lp
     }
 }

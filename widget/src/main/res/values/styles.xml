@@ -92,6 +92,7 @@
     <style name="IconItemView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/icon_item_view_height</item>
+        <item name="android:minHeight">@dimen/icon_item_view_height</item>
         <item name="icon_item_color">?refTextColorPrimary</item>
     </style>
 

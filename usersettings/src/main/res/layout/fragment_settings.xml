@@ -24,6 +24,7 @@
 
     <com.ringoid.widget.view.item_view.SwitchLabelIconItemView
         android:id="@+id/item_push"
+        android:layout_height="wrap_content"
         app:icon_item_hide_icon="false"
         app:icon_item_text="@string/settings_push"
         app:icon_item_text_label="@string/settings_push_explanatory"
