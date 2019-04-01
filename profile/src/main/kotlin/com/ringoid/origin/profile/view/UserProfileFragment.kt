@@ -304,13 +304,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     }
 
     private fun showEmptyStub(needShow: Boolean) {
-        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.profile_empty_images))
+        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
         ibtn_delete_image.changeVisibility(isVisible = !needShow)
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
     private fun showErrorStub(needShow: Boolean) {
-        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title, emptyTextResId = OriginR_string.common_pull_to_refresh))
+        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh))
     }
 
     private fun showEmptyStub(needShow: Boolean, input: EmptyFragment.Companion.Input) {
