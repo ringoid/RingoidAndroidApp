@@ -93,9 +93,9 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
             }
         }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
-        item_theme.apply {
-            setChecked(!ThemeUtils.isDefaultTheme(spm))
-            clicks().compose(clickDebounce()).subscribe { vm.switchTheme() }
-        }
+//        item_theme.apply {
+//            setChecked(!ThemeUtils.isDefaultTheme(spm))
+//            clicks().compose(clickDebounce()).subscribe { vm.switchTheme() }
+//        }
     }
 }
