@@ -32,7 +32,7 @@ import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.*
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
-import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_profile_2.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 
@@ -50,7 +50,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
-    override fun getLayoutId(): Int = R.layout.fragment_profile
+    override fun getLayoutId(): Int = R.layout.fragment_profile_2
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
@@ -345,6 +345,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         ibtn_add_image.changeVisibility(isVisible = isVisible)
         ibtn_delete_image.changeVisibility(isVisible = isVisible)
         ibtn_settings.changeVisibility(isVisible = isVisible)
+        ll_profile_header.changeVisibility(isVisible = isVisible)
         tabs.changeVisibility(isVisible = isVisible)
     }
 
