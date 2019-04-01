@@ -106,6 +106,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         vm.clearScreen(mode)
     }
 
+    override fun onRefresh() {
+        super.onRefresh()
+        communicator(ILmmFragment::class.java)?.onRefresh()
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {

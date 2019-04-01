@@ -178,10 +178,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            refreshes().compose(clickDebounce()).subscribe {
-                offsetScrollStrats = getOffsetScrollStrategies()
-                vm.onRefresh()
-            }
+            refreshes().compose(clickDebounce()).subscribe { onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
@@ -212,6 +209,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     // --------------------------------------------------------------------------------------------
+    protected open fun onRefresh() {
+        offsetScrollStrats = getOffsetScrollStrategies()
+        vm.onRefresh()
+    }
+
+    // ------------------------------------------
     private var wasFabVisible: Boolean = false
 
     protected fun showScrollFab(isVisible: Boolean, restoreVisibility: Boolean = false) {
