@@ -119,5 +119,5 @@
     <string name="web_page_licenses">Лицензии открытого ПО</string>
     <string name="web_page_privacy">Политика конфиденциальности</string>
     <string name="web_page_terms">Условия использования</string>
-    <string name="web_url_error_status">http://ringoid.com/status-ru.html</string>
+    <string name="web_url_error_status">https://ringoid.com/status-ru.html</string>
 </resources>
