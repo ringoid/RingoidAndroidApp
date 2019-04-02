@@ -124,8 +124,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                         imagesAdapter.getModelAdapterPosition { it.id == imageOnViewPortId }
                             .takeIf { it != DomainUtil.BAD_POSITION }
                             ?.let { scrollToPosition(it) }
-                    } else if (count > 0) {
-                        scrollToPosition(0)  // inserted single item
+                    } else if (count > 0) {  // inserted single item
+                        scrollToPosition(imagesAdapter.itemCount - 1)
                     }
                 }
                 onRemoveListener = {
