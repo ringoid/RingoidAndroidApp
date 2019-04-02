@@ -89,18 +89,15 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
                     .put("source", DomainUtil.SOURCE_FEED_PROFILE)
                 getLmmUseCase.source(params = params)
             }
+            .doOnSuccess { listScrolls.value = 0 }  // scroll to top position
             .autoDisposable(this)
             .subscribe({ cachedLmm = it },
                        { Timber.e(it); clearAllFeeds.value = ViewState.CLEAR.MODE_NEED_REFRESH })
     }
 
     // --------------------------------------------------------------------------------------------
-    fun onRefresh() {
+    fun onTabReselect() {
         actionObjectPool.trigger()
         listScrolls.value = 0  // scroll to top position
-    }
-
-    fun onTabReselect() {
-        onRefresh()
     }
 }

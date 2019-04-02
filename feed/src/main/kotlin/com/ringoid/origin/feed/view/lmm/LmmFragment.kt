@@ -39,10 +39,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun accessViewModel(): LmmViewModel = vm
 
-    override fun onRefresh() {
-        vm.onRefresh()
-    }
-
     private fun showBadgeOnLikes(isVisible: Boolean) {
         badge_likes_visibilityPrev = isVisible
         btn_tab_likes.showBadge(isVisible)
