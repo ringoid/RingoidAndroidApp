@@ -40,4 +40,10 @@ class MessengerViewModel @Inject constructor(
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMessages
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
+
+    // --------------------------------------------------------------------------------------------
+    override fun onChatClose(profileId: String, imageId: String) {
+        super.onChatClose(profileId, imageId)
+        markFeedItemAsSeen(feedItemId = profileId)
+    }
 }

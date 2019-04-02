@@ -86,7 +86,7 @@ abstract class BaseLmmFeedViewModel(
     }
 
     // ------------------------------------------
-    private fun markFeedItemAsSeen(feedItemId: String) {
+    protected fun markFeedItemAsSeen(feedItemId: String) {
         if (notSeenFeedItemIds.isEmpty()) {
             return
         }

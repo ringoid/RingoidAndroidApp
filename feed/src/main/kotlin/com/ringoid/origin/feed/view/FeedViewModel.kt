@@ -176,7 +176,7 @@ abstract class FeedViewModel(
         openChatTimers[profileId to imageId] = System.currentTimeMillis()  // record open chat time
     }
 
-    fun onChatClose(profileId: String, imageId: String) {
+    open fun onChatClose(profileId: String, imageId: String) {
         val chatTime = openChatTimers
             .takeIf { it.containsKey(profileId to imageId) }
             ?.let { it[profileId to imageId] }
