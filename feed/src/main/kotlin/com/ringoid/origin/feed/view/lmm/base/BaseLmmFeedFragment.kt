@@ -7,6 +7,7 @@ import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.ringoid.base.observe
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
@@ -18,6 +19,7 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
+import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
@@ -42,6 +44,19 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         }
 
     protected abstract fun getSourceFeed(): String
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE -> {
+                newState.residual
+                    .takeIf { it is SEEN_ALL_FEED }
+                    ?.let { it as SEEN_ALL_FEED }
+                    ?.let { onSeenAllFeed(it.sourceFeed) }
+            }
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(tag: String, payload: ChatPayload) {
@@ -105,6 +120,14 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     internal fun clearScreen(mode: Int) {
         vm.clearScreen(mode)
     }
+
+    private fun onSeenAllFeed(sourceFeed: Int) =
+        when (sourceFeed) {
+            SEEN_ALL_FEED.FEED_LIKES -> communicator(ILmmFragment::class.java)?.showBadgeOnLikes(false)
+            SEEN_ALL_FEED.FEED_MATCHES -> communicator(ILmmFragment::class.java)?.showBadgeOnMatches(false)
+            SEEN_ALL_FEED.FEED_MESSENGER -> communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(false)
+            else -> { /* no-op */ }
+        }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

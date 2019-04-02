@@ -39,17 +39,18 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun accessViewModel(): LmmViewModel = vm
 
-    private fun showBadgeOnLikes(isVisible: Boolean) {
+    // ------------------------------------------
+    override fun showBadgeOnLikes(isVisible: Boolean) {
         badge_likes_visibilityPrev = isVisible
         btn_tab_likes.showBadge(isVisible)
     }
 
-    private fun showBadgeOnMatches(isVisible: Boolean) {
+    override fun showBadgeOnMatches(isVisible: Boolean) {
         badge_matches_visibilityPrev = isVisible
         btn_tab_matches.showBadge(isVisible)
     }
 
-    private fun showBadgeOnMessenger(isVisible: Boolean) {
+    override fun showBadgeOnMessenger(isVisible: Boolean) {
         badge_messages_visibilityPrev = isVisible
         btn_tab_messenger.showBadge(isVisible)
     }

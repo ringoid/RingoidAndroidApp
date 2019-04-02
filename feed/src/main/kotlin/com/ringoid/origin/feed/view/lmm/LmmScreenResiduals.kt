@@ -1,0 +1,11 @@
+package com.ringoid.origin.feed.view.lmm
+
+import com.ringoid.base.view.Residual
+
+data class SEEN_ALL_FEED(val sourceFeed: Int) : Residual() {
+    companion object {
+        const val FEED_LIKES = 0
+        const val FEED_MATCHES = 1
+        const val FEED_MESSENGER = 2
+    }
+}

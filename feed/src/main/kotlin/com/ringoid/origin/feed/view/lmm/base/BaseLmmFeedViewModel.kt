@@ -17,6 +17,7 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -35,15 +36,18 @@ abstract class BaseLmmFeedViewModel(
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
     private var cachedFeed: List<FeedItem>? = null
+    private var notSeenCount: Int = 0
 
     init {
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe({ countNotSeen(it) }, Timber::e)
     }
 
+    protected abstract fun countNotSeen(feed: List<FeedItem>): Int
+    protected abstract fun getFeedFlag(): Int
     protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
 
@@ -75,6 +79,19 @@ abstract class BaseLmmFeedViewModel(
             viewState.value = ViewState.CLEAR(mode = clearMode)
         } else {
             feed.value = items
+            viewState.value = ViewState.IDLE
+        }
+    }
+
+    // ------------------------------------------
+    private fun decrementNotSeenCount() {
+        if (notSeenCount <= 0) {
+            notSeenCount = 0
+            return  // cannot decrement under 0
+        }
+        --notSeenCount
+        if (notSeenCount == 0) {
+            viewState.value = ViewState.DONE(SEEN_ALL_FEED(getFeedFlag()))
             viewState.value = ViewState.IDLE
         }
     }

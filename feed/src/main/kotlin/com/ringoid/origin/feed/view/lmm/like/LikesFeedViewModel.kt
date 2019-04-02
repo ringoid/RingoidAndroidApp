@@ -11,6 +11,7 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -24,6 +25,10 @@ class LikesFeedViewModel @Inject constructor(
                            countUserImagesUseCase, dropLmmChangedStatusUseCase, userInMemoryCache, app) {
 
     private val numberOfLikes = mutableMapOf<String, MutableSet<String>>()
+
+    override fun countNotSeen(feed: List<FeedItem>): Int = feed.count { it.isNotSeen }
+
+    override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
 
