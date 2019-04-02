@@ -26,8 +26,6 @@ class LikesFeedViewModel @Inject constructor(
 
     private val numberOfLikes = mutableMapOf<String, MutableSet<String>>()
 
-    override fun countNotSeen(feed: List<FeedItem>): Int = feed.count { it.isNotSeen }
-
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes

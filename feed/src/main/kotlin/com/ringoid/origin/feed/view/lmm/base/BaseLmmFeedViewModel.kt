@@ -36,17 +36,19 @@ abstract class BaseLmmFeedViewModel(
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
     private var cachedFeed: List<FeedItem>? = null
-    private var notSeenCount: Int = 0
+    private var notSeenFeedItemIds = mutableSetOf<String>()
 
     init {
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .autoDisposable(this)
-            .subscribe({ countNotSeen(it) }, Timber::e)
+            .subscribe({ notSeenFeedItemIds.addAll(countNotSeen(it)) }, Timber::e)
     }
 
-    protected abstract fun countNotSeen(feed: List<FeedItem>): Int
+    protected open fun countNotSeen(feed: List<FeedItem>): List<String> =
+        feed.filter { it.isNotSeen }.map { it.id }
+
     protected abstract fun getFeedFlag(): Int
     protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
@@ -84,13 +86,12 @@ abstract class BaseLmmFeedViewModel(
     }
 
     // ------------------------------------------
-    private fun decrementNotSeenCount() {
-        if (notSeenCount <= 0) {
-            notSeenCount = 0
-            return  // cannot decrement under 0
+    private fun markFeedItemAsSeen(feedItemId: String) {
+        if (notSeenFeedItemIds.isEmpty()) {
+            return
         }
-        --notSeenCount
-        if (notSeenCount == 0) {
+        notSeenFeedItemIds.remove(feedItemId)
+        if (notSeenFeedItemIds.isEmpty()) {
             viewState.value = ViewState.DONE(SEEN_ALL_FEED(getFeedFlag()))
             viewState.value = ViewState.IDLE
         }

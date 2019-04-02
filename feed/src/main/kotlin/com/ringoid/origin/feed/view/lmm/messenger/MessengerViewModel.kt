@@ -24,16 +24,14 @@ class MessengerViewModel @Inject constructor(
     : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase,
                            countUserImagesUseCase, dropLmmChangedStatusUseCase, userInMemoryCache, app) {
 
-    override fun countNotSeen(feed: List<FeedItem>): Int =
+    override fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.takeIf { it.isNotEmpty() }
             ?.let {
                 it.map { it.id to it.countOfPeerMessages() }
                     .filter { it.second > 0 }
                     .filter { it.second != ChatInMemoryCache.getPeerMessagesCount(it.first) }
-                    .map { it.second }
-                    .reduce { acc, i -> acc + i }
-            }
-            ?: 0
+                    .map { it.first }
+            } ?: emptyList()
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER
 

@@ -23,8 +23,6 @@ class MatchesFeedViewModel @Inject constructor(
     : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase,
                            countUserImagesUseCase, dropLmmChangedStatusUseCase, userInMemoryCache, app) {
 
-    override fun countNotSeen(feed: List<FeedItem>): Int = feed.count { it.isNotSeen }
-
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MATCHES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.matches
