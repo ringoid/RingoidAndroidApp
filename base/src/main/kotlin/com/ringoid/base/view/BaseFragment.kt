@@ -65,6 +65,14 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         if (isViewModelInitialized) {
             vm.onBeforeTabSelect()
         }
+        if (isAdded) {
+            childFragmentManager.fragments.forEach {
+                it.takeIf { it.isAdded }
+                    ?.takeIf { it is BaseFragment<*> }
+                    ?.let { it as BaseFragment<*> }
+                    ?.onBeforeTabSelect()
+            }
+        }
         // override in subclasses
     }
 
