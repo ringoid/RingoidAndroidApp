@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.interactor.base.Params
@@ -40,6 +41,14 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
         getUserAccessTokenUseCase.source(Params.EMPTY)
             .autoDisposable(this)
             .subscribe({ accessToken.value = LiveEvent(it) }, { accessToken.value = LiveEvent(null) })
+    }
+
+    // ------------------------------------------
+    /**
+     * @see [BaseFragment.onBeforeTabSelect].
+     */
+    open fun onBeforeTabSelect() {
+        // override in subclasses
     }
 
     /* Lifecycle */

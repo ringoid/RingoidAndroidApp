@@ -62,6 +62,9 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     open fun onBeforeTabSelect() {
         DebugLogUtil.lifecycle(this, "onBeforeTabSelect")
         if (userVisibleHint) userVisibleHint = false
+        if (isViewModelInitialized) {
+            vm.onBeforeTabSelect()
+        }
         // override in subclasses
     }
 

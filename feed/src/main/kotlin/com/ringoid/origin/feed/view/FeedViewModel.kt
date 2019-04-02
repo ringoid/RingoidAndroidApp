@@ -42,6 +42,16 @@ abstract class FeedViewModel(
     abstract fun getFeed()
     abstract fun getFeedName(): String
 
+    // --------------------------------------------------------------------------------------------
+    override fun onBeforeTabSelect() {
+        super.onBeforeTabSelect()
+        viewState.value
+            .takeIf { it is ViewState.CLEAR }
+            ?.let { it as ViewState.CLEAR }
+            ?.takeIf { it.mode == ViewState.CLEAR.MODE_EMPTY_DATA }
+            ?.let { viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_NEED_REFRESH) }
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
@@ -99,7 +109,7 @@ abstract class FeedViewModel(
         actionObjectPool.trigger()
     }
 
-    /* Feed */
+    /* Event Bus */
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -114,6 +124,7 @@ abstract class FeedViewModel(
             .subscribe({ Timber.d("Badges on Lmm have been dropped because no images in user's profile") }, Timber::e)
     }
 
+    /* Feed */
     // --------------------------------------------------------------------------------------------
     open fun clearScreen(mode: Int) {
         viewActionObjectBackup.clear()
