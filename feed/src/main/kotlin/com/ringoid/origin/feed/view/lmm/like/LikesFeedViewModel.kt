@@ -34,6 +34,7 @@ class LikesFeedViewModel @Inject constructor(
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
 
+    // --------------------------------------------------------------------------------------------
     fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
         if (!numberOfLikes.containsKey(profileId)) {
             numberOfLikes[profileId] = mutableSetOf()
@@ -44,5 +45,10 @@ class LikesFeedViewModel @Inject constructor(
                               else ViewState.DONE(HAS_LIKES_ON_PROFILE(feedItemPosition))
         }
         onLike(profileId, imageId, isLiked)
+    }
+
+    override fun onViewFeedItem(feedItemId: String) {
+        super.onViewFeedItem(feedItemId)
+        markFeedItemAsSeen(feedItemId = feedItemId)
     }
 }

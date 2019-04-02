@@ -30,4 +30,10 @@ class MatchesFeedViewModel @Inject constructor(
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMatches
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MATCHES
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewFeedItem(feedItemId: String) {
+        super.onViewFeedItem(feedItemId)
+        markFeedItemAsSeen(feedItemId = feedItemId)
+    }
 }

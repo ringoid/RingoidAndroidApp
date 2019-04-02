@@ -212,8 +212,8 @@ abstract class FeedViewModel(
 
     fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
         Timber.v("Incoming visible items [horizontal, ${getFeedName()}]: ${items.payloadToString()}")
-        items.pickOne()?.let {
-            horizontalPrevRanges[it.profileId]
+        items.pickOne()?.let { profileImage ->
+            horizontalPrevRanges[profileImage.profileId]
                 ?.delta(items)
                 ?.takeIf { !it.isRangeEmpty() }
                 ?.let {
@@ -221,6 +221,7 @@ abstract class FeedViewModel(
                     logViewObjectsBufferState(tag = "before [horizontal]")  // show view aobjs buffer contents in debug logs
                     advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
                     logViewObjectsBufferState(tag = "after [horizontal]")
+                    onViewFeedItem(profileImage.profileId)
                 }
         }
 
@@ -237,7 +238,9 @@ abstract class FeedViewModel(
                 Timber.v("Excluded items in [vertical] range ${it.range()}, consume VIEW action objects")
                 logViewObjectsBufferState("before [vertical]")  // show view aobjs buffer contents in debug logs
                 it.pickOne()
-                    ?.let { horizontalPrevRanges[it.profileId] }
+                    ?.let { it.profileId to horizontalPrevRanges[it.profileId] }
+                    ?.also { onViewFeedItem(it.first) }
+                    ?.let { it.second }
                     ?.also { advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId }) }
                     ?.also { logViewObjectsBufferState(tag = "after [vertical]") }
             }
@@ -255,6 +258,10 @@ abstract class FeedViewModel(
         items.filter { !horizontalPrevRanges.containsKey(it.profileId) }
              .forEach { horizontalPrevRanges[it.profileId] = EqualRange(from = 0, to = 0, items = listOf(it)) }
         verticalPrevRange = fixRange
+    }
+
+    protected open fun onViewFeedItem(feedItemId: String) {
+        // do something when feed item with id specified has been viewed
     }
 
     // --------------------------------------------------------------------------------------------
