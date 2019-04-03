@@ -10,6 +10,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
@@ -17,6 +18,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.manager.KeyboardManager
 import com.ringoid.utility.manager.KeyboardStatus
 import com.ringoid.utility.manager.LocaleManager
+import com.ringoid.utility.toast
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
@@ -147,6 +149,14 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun recreate() {
+        if (BuildConfig.IS_STAGING) {
+            DebugLogUtil.w("Recreating screen: ${javaClass.simpleName}")
+            toast("Recreate ${javaClass.simpleName}")
+        }
+        super.recreate()
+    }
+
     fun setResultExposed(resultCode: Int, data: Intent? = null) {
         currentResult = resultCode
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
