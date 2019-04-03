@@ -11,9 +11,11 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
+import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.communicator
 import com.ringoid.utility.manager.LocaleManager
 import kotlinx.android.synthetic.main.fragment_lmm.*
 
@@ -43,16 +45,19 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun showBadgeOnLikes(isVisible: Boolean) {
         badge_likes_visibilityPrev = isVisible
         btn_tab_likes.showBadge(isVisible)
+        hasAnyBadgeShown()
     }
 
     override fun showBadgeOnMatches(isVisible: Boolean) {
         badge_matches_visibilityPrev = isVisible
         btn_tab_matches.showBadge(isVisible)
+        hasAnyBadgeShown()
     }
 
     override fun showBadgeOnMessenger(isVisible: Boolean) {
         badge_messages_visibilityPrev = isVisible
         btn_tab_messenger.showBadge(isVisible)
+        hasAnyBadgeShown()
     }
 
     override fun showTabs(isVisible: Boolean) {
@@ -74,6 +79,11 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     private fun clearAllFeeds(mode: Int) {
         lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.clearScreen(mode) }
+    }
+
+    private fun hasAnyBadgeShown() {
+        communicator(IBaseMainActivity::class.java)
+            ?.showBadgeOnLmm(isVisible = btn_tab_likes.isBadgeVisible() || btn_tab_matches.isBadgeVisible() || btn_tab_messenger.isBadgeVisible())
     }
 
     // ------------------------------------------

@@ -6,5 +6,6 @@ interface IBaseMainActivity : ICommunicator {
 
     fun isNewUser(): Boolean
 
+    fun showBadgeOnLmm(isVisible: Boolean)
     fun showBadgeWarningOnProfile(isVisible: Boolean)
 }

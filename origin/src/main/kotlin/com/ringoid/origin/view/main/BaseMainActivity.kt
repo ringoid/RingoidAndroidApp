@@ -130,7 +130,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
         }
 
     // --------------------------------------------------------------------------------------------
-    protected fun showBadgeOnLmm(isVisible: Boolean) {
+    override fun showBadgeOnLmm(isVisible: Boolean) {
         bottom_bar.showBadgeOnLmm(isVisible)
     }
 

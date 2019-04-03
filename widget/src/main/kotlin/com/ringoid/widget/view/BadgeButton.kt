@@ -51,6 +51,8 @@ class BadgeButton : Button {
     }
 
     // ------------------------------------------
+    fun isBadgeVisible(): Boolean = isBadgeVisible
+
     fun showBadge(isVisible: Boolean) {
         isBadgeVisible = isVisible
         postInvalidate()
