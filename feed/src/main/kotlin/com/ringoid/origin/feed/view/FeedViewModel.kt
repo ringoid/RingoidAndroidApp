@@ -261,6 +261,7 @@ abstract class FeedViewModel(
     }
 
     protected open fun onViewFeedItem(feedItemId: String) {
+        DebugLogUtil.v("On View profile: ${feedItemId.substring(0..3)}")
         // do something when feed item with id specified has been viewed
     }
 

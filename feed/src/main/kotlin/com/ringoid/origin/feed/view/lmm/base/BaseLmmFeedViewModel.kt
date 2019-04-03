@@ -6,6 +6,7 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
@@ -43,7 +44,7 @@ abstract class BaseLmmFeedViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .autoDisposable(this)
-            .subscribe({ notSeenFeedItemIds.addAll(countNotSeen(it)) }, Timber::e)
+            .subscribe({}, Timber::e)
     }
 
     protected open fun countNotSeen(feed: List<FeedItem>): List<String> =
@@ -82,6 +83,8 @@ abstract class BaseLmmFeedViewModel(
         } else {
             feed.value = items
             viewState.value = ViewState.IDLE
+            notSeenFeedItemIds.addAll(countNotSeen(items))
+            DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
         }
     }
 
@@ -91,9 +94,10 @@ abstract class BaseLmmFeedViewModel(
             return
         }
         notSeenFeedItemIds.remove(feedItemId)
+        DebugLogUtil.b("Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
         if (notSeenFeedItemIds.isEmpty()) {
             viewState.value = ViewState.DONE(SEEN_ALL_FEED(getFeedFlag()))
-            viewState.value = ViewState.IDLE
+            DebugLogUtil.b("All seen [${getFeedName()}]")
         }
     }
 
