@@ -131,6 +131,11 @@ abstract class FeedViewModel(
         viewState.value = ViewState.CLEAR(mode)
     }
 
+    fun onClearScreen() {
+        horizontalPrevRanges.clear()
+        verticalPrevRange = null
+    }
+
     fun onStartRefresh() {
         actionObjectPool.trigger()
     }
@@ -285,8 +290,6 @@ abstract class FeedViewModel(
             backupPool?.putAll(this)
             clear()
         }
-        horizontalPrevRanges.clear()
-        verticalPrevRange = null
     }
 
     private fun advanceAndPushViewObjects(keys: Collection<Pair<String, String>>) {
