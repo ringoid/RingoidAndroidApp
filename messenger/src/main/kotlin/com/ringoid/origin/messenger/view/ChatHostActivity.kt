@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.view.dialog.IDialogCallback
@@ -26,6 +27,7 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
             putExtra("payload", payload)
             putExtra("tag", tag)
         }
+        DebugLogUtil.v("Chat Host: onBlockFromChat")
         setResultExposed(Activity.RESULT_OK, data)
         finish()
     }
@@ -37,6 +39,7 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
             putExtra("reason", reasonNumber)
             putExtra("tag", tag)
         }
+        DebugLogUtil.v("Chat Host: onReportFromChat")
         setResultExposed(Activity.RESULT_OK, data)
         finish()
     }
@@ -46,6 +49,7 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
             putExtra("payload", payload)
             putExtra("tag", tag)
         }
+        DebugLogUtil.v("Chat Host: onDialogDismiss")
         setResultExposed(Activity.RESULT_OK, data)
         finish()
     }
