@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "1ffb1a35844c8f9adfb1b574fb3df392",
+    "identityHash": "e9dd0aafd2835b3ffd39345a04034d35",
     "entities": [
       {
         "tableName": "ActionObjects",
@@ -139,7 +139,7 @@
       },
       {
         "tableName": "Messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `peerId` TEXT NOT NULL, `text` TEXT NOT NULL, `sourceFeed` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `peerId` TEXT NOT NULL, `text` TEXT NOT NULL, `sourceFeed` TEXT NOT NULL, `unread` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -169,6 +169,12 @@
             "fieldPath": "sourceFeed",
             "columnName": "sourceFeed",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unread",
+            "columnName": "unread",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -269,7 +275,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1ffb1a35844c8f9adfb1b574fb3df392\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e9dd0aafd2835b3ffd39345a04034d35\")"
     ]
   }
 }

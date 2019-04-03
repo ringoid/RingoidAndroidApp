@@ -109,6 +109,14 @@ open class FeedRepository @Inject constructor(
                      feedMessages.onNext(it.messages)
                      lmmChanged.onNext(it.containsNotSeenItems())  // have not seen items
                  }
+                .zipWith(messengerLocal.countUnreadMessages(),
+                    BiFunction { lmm: Lmm, count: Int ->
+                        if (count > 0) {
+                            badgeMessenger.onNext(true)
+                            lmmChanged.onNext(true)  // have unread messages since last update
+                        }
+                        lmm
+                    })
                 .zipWith(messengerLocal.countChatMessages(),  // old total messages count
                     BiFunction { lmm: Lmm, count: Int ->
                         val newCount = lmm.messagesCount()

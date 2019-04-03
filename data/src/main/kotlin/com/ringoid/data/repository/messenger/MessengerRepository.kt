@@ -14,6 +14,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
@@ -33,7 +34,8 @@ class MessengerRepository @Inject constructor(
 
     // messages cached since last network request + sent user messages (cache locally)
     override fun getMessages(chatId: String, sourceFeed: String): Single<List<Message>> =
-        local.messages(chatId = chatId, sourceFeed = sourceFeed)
+        Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId, sourceFeed = sourceFeed) }
+            .flatMap { local.messages(chatId = chatId, sourceFeed = sourceFeed) }
             .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.mapList().reversed() }
