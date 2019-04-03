@@ -218,14 +218,14 @@ abstract class FeedViewModel(
                 ?.takeIf { !it.isRangeEmpty() }
                 ?.let {
                     Timber.v("Excluded items in [horizontal] range ${it.range()}, consume VIEW action objects")
-                    logViewObjectsBufferState(tag = "before [horizontal]")  // show view aobjs buffer contents in debug logs
+                    logViewObjectsBufferState(tag = "before [horiz]")  // show view aobjs buffer contents in debug logs
                     advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
-                    logViewObjectsBufferState(tag = "after [horizontal]")
+                    logViewObjectsBufferState(tag = "after [horiz]")
                     onViewFeedItem(profileImage.profileId)
                 }
         }
 
-        addViewObjectsToBuffer(items, tag = "[horizontal]")
+        addViewObjectsToBuffer(items, tag = "[horiz]")
         items.pickOne()?.let { horizontalPrevRanges[it.profileId] = items }
     }
 
@@ -236,13 +236,13 @@ abstract class FeedViewModel(
             ?.takeIf { !it.isRangeEmpty() }
             ?.let {
                 Timber.v("Excluded items in [vertical] range ${it.range()}, consume VIEW action objects")
-                logViewObjectsBufferState("before [vertical]")  // show view aobjs buffer contents in debug logs
+                logViewObjectsBufferState("before [vert]")  // show view aobjs buffer contents in debug logs
                 it.pickOne()
                     ?.let { it.profileId to horizontalPrevRanges[it.profileId] }
                     ?.also { onViewFeedItem(it.first) }
                     ?.let { it.second }
                     ?.also { advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId }) }
-                    ?.also { logViewObjectsBufferState(tag = "after [vertical]") }
+                    ?.also { logViewObjectsBufferState(tag = "after [vert]") }
             }
 
         /**
@@ -254,7 +254,7 @@ abstract class FeedViewModel(
          */
         val fixItems = items.map { ProfileImageVO(it.profileId, image = horizontalPrevRanges[it.profileId]?.pickOne()?.image ?: it.image, isLiked = it.isLiked) }
         val fixRange = EqualRange(from = items.from, to = items.to, items = fixItems)
-        addViewObjectsToBuffer(fixRange, tag = "[vertical]")
+        addViewObjectsToBuffer(fixRange, tag = "[vert]")
         items.filter { !horizontalPrevRanges.containsKey(it.profileId) }
              .forEach { horizontalPrevRanges[it.profileId] = EqualRange(from = 0, to = 0, items = listOf(it)) }
         verticalPrevRange = fixRange
