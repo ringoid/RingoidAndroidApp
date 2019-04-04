@@ -1,8 +1,6 @@
 package com.ringoid.origin.view.debug
 
 import android.view.View
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.ListUpdateCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.base.adapter.SimpleListDiffer
 import com.ringoid.origin.R
@@ -17,9 +15,7 @@ class DebugLogItemAdapter(private val insertCb: ((total: Int) -> Unit)? = null)
     override fun instantiateHeaderViewHolder(view: View) = HeaderDebugLogItemViewHolder(view)
     override fun instantiateFooterViewHolder(view: View) = FooterDebugLogItemViewHolder(view)
 
-    override val helper by lazy {
-        SimpleListDiffer(getAdapterListUpdateCallback(), diffCb)
-    }
+    override val helper by lazy { SimpleListDiffer(getAdapterListUpdateCallback(), diffCb) }
 
     override fun getExposedCb(): (() -> Unit)? = { insertCb?.invoke(itemCount) }
 
