@@ -180,6 +180,6 @@ open class FeedRepository @Inject constructor(
             it.likes.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_LIKES) }) }
             it.matches.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MATCHES) }) }
             it.messages.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MESSAGES) }) }
-            messengerLocal.addMessages(messages)  // cache new messages
+            messengerLocal.insertMessages(messages)  // cache new messages
         }
 }
