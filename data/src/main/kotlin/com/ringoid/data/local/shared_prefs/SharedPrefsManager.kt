@@ -23,14 +23,16 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     init {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
         backupSharedPreferences = context.getSharedPreferences(BACKUP_SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
+        getAppUid()  // generate app uid, if not exists
     }
 
     companion object {
-        const val SHARED_PREFS_FILE_NAME = "Ringoid.prefs"
-        const val BACKUP_SHARED_PREFS_FILE_NAME = "RingoidBackup.prefs"
+        private const val SHARED_PREFS_FILE_NAME = "Ringoid.prefs"
+        private const val BACKUP_SHARED_PREFS_FILE_NAME = "RingoidBackup.prefs"
 
-        const val SP_KEY_THEME = "sp_key_theme"
-        @DebugOnly const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
+        private const val SP_KEY_THEME = "sp_key_theme"
+        private const val SP_KEY_APP_UID = "sp_key_app_uid"
+        @DebugOnly private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
 
         /* Auth */
         // --------------------------------------
@@ -52,6 +54,11 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun getAppUid(): String =
+        sharedPreferences.getString(SP_KEY_APP_UID, null)
+            ?: run { randomString().also { sharedPreferences.edit().putString(SP_KEY_APP_UID, it).apply() } }
+
+    // ------------------------------------------
     @StyleRes
     override fun getThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_THEME, defaultThemeResId)
 

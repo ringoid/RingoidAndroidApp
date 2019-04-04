@@ -6,6 +6,9 @@ import com.ringoid.domain.model.user.AccessToken
 
 interface ISharedPrefsManager {
 
+    fun getAppUid(): String
+
+    // ------------------------------------------
     fun getThemeResId(@StyleRes defaultThemeResId: Int = 0): Int
 
     fun saveThemeResId(@StyleRes themeResId: Int)
