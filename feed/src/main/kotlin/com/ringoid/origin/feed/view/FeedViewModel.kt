@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view
 import android.app.Application
 import android.os.Build
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.manager.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.BuildConfig
@@ -175,6 +176,8 @@ abstract class FeedViewModel(
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
                    else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
+        analyticsManager.fire(if (isLiked) Analytics.ACTION_USER_LIKE_PHOTO
+                              else Analytics.ACTION_USER_UNLIKE_PHOTO, "sourceFeed" to getFeedName())
     }
 
     fun onChatOpen(profileId: String, imageId: String) {
@@ -201,6 +204,8 @@ abstract class FeedViewModel(
         BlockActionObject(numberOfBlockReason = reasonNumber,
             sourceFeed = sourceFeed, targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
+
+        analyticsManager.fire(Analytics.ACTION_USER_BLOCK_OTHER, "reason" to "$reasonNumber", "sourceFeed" to sourceFeed)
 
         // remove profile from feed, filter it from backend responses in future
         cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))

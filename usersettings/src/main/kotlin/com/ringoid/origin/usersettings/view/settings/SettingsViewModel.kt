@@ -1,6 +1,7 @@
 package com.ringoid.origin.usersettings.view.settings
 
 import android.app.Application
+import com.ringoid.base.manager.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
@@ -26,7 +27,10 @@ class SettingsViewModel @Inject constructor(
             .doOnComplete { viewState.value = ViewState.CLOSE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({ Timber.i("Successfully deleted user account") }, Timber::e)
+            .subscribe({
+                Timber.i("Successfully deleted user account")
+                analyticsManager.fire(Analytics.AUTH_USER_CALL_DELETE_HIMSELF)
+            }, Timber::e)
     }
 
     // ------------------------------------------

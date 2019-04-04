@@ -9,7 +9,6 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.ringoid.base.IBaseRingoidApplication
-import com.ringoid.base.manager.AnalyticsManager
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
@@ -30,7 +29,6 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
-    @Inject protected lateinit var analyticsManager: AnalyticsManager
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug

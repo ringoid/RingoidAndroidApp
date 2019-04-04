@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.manager.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
@@ -105,7 +106,10 @@ class UserProfileFragmentViewModel @Inject constructor(
             .doOnComplete { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({ Timber.d("Successfully deleted image: $id") }, Timber::e)
+            .subscribe({
+                Timber.d("Successfully deleted image: $id")
+                analyticsManager.fire(Analytics.IMAGE_USER_DELETE_PHOTO)
+            }, Timber::e)
     }
 
     fun uploadImage(uri: Uri) {
@@ -116,7 +120,10 @@ class UserProfileFragmentViewModel @Inject constructor(
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({ Timber.d("Successfully uploaded image: $it") }, Timber::e)
+            .subscribe({
+                Timber.d("Successfully uploaded image: $it")
+                analyticsManager.fire(Analytics.IMAGE_USER_UPLOAD_PHOTO)
+            }, Timber::e)
     }
 
     // ------------------------------------------

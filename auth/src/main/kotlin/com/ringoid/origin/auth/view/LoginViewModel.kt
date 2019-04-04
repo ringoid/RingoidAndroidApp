@@ -3,6 +3,7 @@ package com.ringoid.origin.auth.view
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.manager.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
@@ -49,6 +50,13 @@ class LoginViewModel @Inject constructor(
         }
     private var yearOfBirth: Int = 0
 
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onFreshStart() {
+        super.onFreshStart()
+        analyticsManager.fire(Analytics.SCREEN_SIGN_UP)
+    }
+
     // --------------------------------------------------------------------------------------------
     fun login() {
         val essence = AuthCreateProfileEssence(
@@ -66,6 +74,7 @@ class LoginViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully signed up, current user: $it")
+                analyticsManager.fire(Analytics.AUTH_USER_PROFILE_CREATED, "yearOfBirth" to "${essence.yearOfBirth}", "sex" to essence.sex)
                 app.userScopeProvider.onLogin()
             }, Timber::e)
     }

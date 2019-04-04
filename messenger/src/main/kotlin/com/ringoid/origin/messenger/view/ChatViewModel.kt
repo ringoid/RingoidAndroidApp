@@ -2,6 +2,7 @@ package com.ringoid.origin.messenger.view
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.manager.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
@@ -54,6 +55,9 @@ class ChatViewModel @Inject constructor(
             .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT(it)) }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({ sentMessage.value = it }, Timber::e)
+            .subscribe({
+                analyticsManager.fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed)
+                sentMessage.value = it
+            }, Timber::e)
     }
 }
