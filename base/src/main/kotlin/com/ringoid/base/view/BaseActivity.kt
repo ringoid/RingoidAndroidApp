@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.ringoid.base.IBaseRingoidApplication
+import com.ringoid.base.manager.AnalyticsManager
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
@@ -37,6 +38,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     protected lateinit var vm: T
     private val keyboardManager by lazy { KeyboardManager(this) }
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
+    @Inject protected lateinit var analyticsManager: AnalyticsManager
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug

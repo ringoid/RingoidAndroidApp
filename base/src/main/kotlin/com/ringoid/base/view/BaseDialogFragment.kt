@@ -10,6 +10,7 @@ import android.view.Window
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.ringoid.base.manager.AnalyticsManager
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
@@ -29,6 +30,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
 
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
+    @Inject protected lateinit var analyticsManager: AnalyticsManager
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug
