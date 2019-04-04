@@ -117,12 +117,12 @@ open class FeedRepository @Inject constructor(
                         }
                         lmm
                     })
-                .zipWith(messengerLocal.countChatMessages(),  // old total messages count
+                .zipWith(messengerLocal.countPeerMessages(),  // old total messages count from any peer
                     BiFunction { lmm: Lmm, count: Int ->
-                        val newCount = lmm.messagesCount()
-                        if (newCount != 0 && count != newCount) {
+                        val peerMessagesCount = lmm.peerMessagesCount()
+                        if (peerMessagesCount != 0 && count != peerMessagesCount) {
                             badgeMessenger.onNext(true)
-                            lmmChanged.onNext(true)  // have new messages
+                            lmmChanged.onNext(true)  // have new messages from any peer
                         }
                         lmm
                     })

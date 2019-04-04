@@ -16,6 +16,9 @@ interface MessageDao {
     @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun countChatMessages(chatId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Int>
 
+    @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_PEER_ID} != '${DomainUtil.CURRENT_USER_ID}' AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
+    fun countPeerMessages(sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Int>
+
     // 'chatId' is normally equal to 'peerId', but 'peerId' could be equal to CURRENT_USER_ID
     @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :peerId AND ${MessageDbo.COLUMN_PEER_ID} = :peerId AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun countPeerMessages(peerId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Int>
