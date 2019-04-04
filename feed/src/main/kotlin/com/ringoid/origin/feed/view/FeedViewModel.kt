@@ -195,17 +195,17 @@ abstract class FeedViewModel(
             .also { actionObjectPool.put(it) }
     }
 
-    fun onBlock(profileId: String, imageId: String, sourceFeed: String = getFeedName()) {
-        onReport(profileId = profileId, imageId = imageId, reasonNumber = 0, sourceFeed = sourceFeed)
+    fun onBlock(profileId: String, imageId: String, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
+        onReport(profileId = profileId, imageId = imageId, reasonNumber = 0, sourceFeed = sourceFeed, fromChat = fromChat)
     }
 
-    fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String = getFeedName()) {
+    fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
         advanceAndPushViewObject(imageId to profileId)
         BlockActionObject(numberOfBlockReason = reasonNumber,
             sourceFeed = sourceFeed, targetImageId = imageId, targetUserId = profileId)
             .also { actionObjectPool.put(it) }
 
-        analyticsManager.fire(Analytics.ACTION_USER_BLOCK_OTHER, "reason" to "$reasonNumber", "sourceFeed" to sourceFeed)
+        analyticsManager.fire(Analytics.ACTION_USER_BLOCK_OTHER, "reason" to "$reasonNumber", "sourceFeed" to sourceFeed, "fromChat" to "$fromChat")
 
         // remove profile from feed, filter it from backend responses in future
         cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))
