@@ -205,6 +205,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adjustViews()
         btn_referral.apply {
             updateReferralLabel()
             clicks().compose(clickDebounce()).subscribe {
@@ -358,5 +359,20 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // ------------------------------------------
     private fun updateReferralLabel() {
         btn_referral.text = String.format(resources.getString(OriginR_string.profile_label_coins), if (spm.hasReferralCode()) "5" else "0")
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun adjustViews() {
+        val density = activity?.getScreenDensity() ?: 4.0f
+        if (density <= 3.0f) {
+            val margin8 = (AppRes.STD_MARGIN_8 * density / 4.5f).toInt()
+            val margin16 = (AppRes.STD_MARGIN_16 * density / 4.5f).toInt()
+            with (ibtn_add_image) {
+                setPadding(margin16, margin8, margin16, margin8)
+            }
+            with (ibtn_settings) {
+                setPadding(margin16, margin8, margin16, margin8)
+            }
+        }
     }
 }

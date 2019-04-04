@@ -42,6 +42,10 @@ object AppRes {
         private set
     var MAIN_BOTTOM_BAR_HEIGHT: Int = -1
         private set
+    var STD_MARGIN_8: Int = -1
+        private set
+    var STD_MARGIN_16: Int = -1
+        private set
 
     // ------------------------------------------
     lateinit var UNDERSCORE_DRAWABLE: Drawable
@@ -82,6 +86,8 @@ object AppRes {
             FEED_ITEM_SETTINGS_BTN_BOTTOM = (FEED_ITEM_SETTINGS_BTN_TOP * 1.5f).toInt()
             LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT = (BUTTON_HEIGHT * 0.67f).toInt()
             MAIN_BOTTOM_BAR_HEIGHT = getDimensionPixelSize(R.dimen.main_bottom_bar_height)
+            STD_MARGIN_8 = getDimensionPixelSize(R.dimen.std_margin_8)
+            STD_MARGIN_16 = getDimensionPixelSize(R.dimen.std_margin_16)
 
             // ----------------------------------
             UNDERSCORE_DRAWABLE = ContextCompat.getDrawable(context, WidgetR_drawable.underscore)!!
