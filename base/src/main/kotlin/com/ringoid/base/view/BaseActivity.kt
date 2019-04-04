@@ -95,6 +95,13 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         isOnFreshStart = savedInstanceState == null
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("onNewIntent(${intent.action} [${intent.dataString}]: ${intent.extras})")
+        DebugLogUtil.lifecycle(this, "onNewIntent")
+    }
+
     override fun onStart() {
         super.onStart()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
