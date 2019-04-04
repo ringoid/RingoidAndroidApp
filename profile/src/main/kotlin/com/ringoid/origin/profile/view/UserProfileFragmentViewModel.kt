@@ -79,6 +79,13 @@ class UserProfileFragmentViewModel @Inject constructor(
         getUserImages()
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        onRefresh()  // app reopen leads Profile screen to refresh cascade
+    }
+
     // --------------------------------------------------------------------------------------------
     private fun getUserImages() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))

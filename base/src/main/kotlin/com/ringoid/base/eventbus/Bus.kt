@@ -36,4 +36,5 @@ sealed class BusEvent {
     object RefreshOnExplore : BusEvent()
     object RefreshOnLmm : BusEvent()
     object RefreshOnProfile : BusEvent()
+    object ReOpenApp: BusEvent()
 }

@@ -1,6 +1,8 @@
 package com.ringoid.origin.view.main
 
 import android.app.Application
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
@@ -28,6 +30,10 @@ abstract class BaseMainViewModel(
         SentryUtil.setUser(spm)
         applyReferralCodeIfAny()
         updateUserSettings()
+    }
+
+    fun onAppReOpen() {
+        Bus.post(event = BusEvent.ReOpenApp)
     }
 
     // --------------------------------------------------------------------------------------------

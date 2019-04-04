@@ -67,9 +67,17 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
         processExtras(intent)
     }
 
+    /**
+     * App has been started already, but it's been requested to restart somehow. This may be caused
+     * either by click on app's launcher icon on device's Home screen, or by click on push notification.
+     * In these cases normally app starts from Splash screen and then navigates here to Main screen,
+     * but the latter had been started already and sits on some single task (launch mode is 'singleTask'),
+     * so this Main screen just receives 'new Intent' and restarts without recreation.
+     */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         processExtras(intent)
+        vm.onAppReOpen()
     }
 
     override fun onStart() {

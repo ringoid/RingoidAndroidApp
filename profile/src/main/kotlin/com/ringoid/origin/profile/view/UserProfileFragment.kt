@@ -186,13 +186,19 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             ?.doOnError(::onCropFailed)
             ?.doOnSuccess(::onCropSuccess)
 
+        /**
+         * Initialization logic: when new user has just logged in, if he (she) has uploaded any image
+         * during sign up process, then get that last prepared image, otherwise show empty stub.
+         * When user has already logged in and then restarts the app, if it had not been started yet,
+         * the app does refresh on Profile screen.
+         */
         if (communicator(IBaseMainActivity::class.java)?.isNewUser() == true) {
             if (!cropImageAfterLogin) {
                 showEmptyStub(needShow = true)
             }
             globalImagePreviewReceiver()?.subscribe()  // get last prepared image, if any
         } else {
-            vm.onRefresh()
+            vm.onRefresh()  // refresh Profile screen for already logged in user on a fresh app's start
         }
     }
 
