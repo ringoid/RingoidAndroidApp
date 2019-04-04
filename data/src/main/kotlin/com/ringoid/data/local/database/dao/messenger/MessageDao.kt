@@ -23,7 +23,7 @@ interface MessageDao {
     @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_PEER_ID} = '${DomainUtil.CURRENT_USER_ID}' AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun countUserMessages(chatId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Int>
 
-    @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_PEER_ID} <> '${DomainUtil.CURRENT_USER_ID}' AND ${MessageDbo.COLUMN_UNREAD} = 1 AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
+    @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_PEER_ID} != '${DomainUtil.CURRENT_USER_ID}' AND ${MessageDbo.COLUMN_UNREAD} != 0 AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun countUnreadMessages(sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Int>
 
     @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
