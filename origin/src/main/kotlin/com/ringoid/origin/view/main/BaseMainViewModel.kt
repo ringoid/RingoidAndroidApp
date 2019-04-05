@@ -28,12 +28,17 @@ abstract class BaseMainViewModel(
     override fun onFreshStart() {
         super.onFreshStart()
         SentryUtil.setUser(spm)
-        applyReferralCodeIfAny()
-        updateUserSettings()
+        onEachAppStart()
     }
 
     fun onAppReOpen() {
         Bus.post(event = BusEvent.ReOpenApp)
+        onEachAppStart()
+    }
+
+    private fun onEachAppStart() {
+        applyReferralCodeIfAny()
+        updateUserSettings()
     }
 
     // --------------------------------------------------------------------------------------------
