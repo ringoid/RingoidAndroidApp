@@ -35,7 +35,9 @@ abstract class BaseLmmFeedViewModel(
                     userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
-    private var cachedFeed: List<FeedItem>? = null
+    private var cachedFeed: List<FeedItem>? = null  // cache is used when fetching for feed has failed, see usage
+    private var likedFeedItemIds = mutableSetOf<String>()  // cached feed items that were liked, to restore likes on cached feed
+    private var messagedFeedItemIds = mutableSetOf<String>()  // cached feed items that have only user messages inside, sent after receiving feed
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
     init {
@@ -63,6 +65,7 @@ abstract class BaseLmmFeedViewModel(
                 if (it is ThresholdExceededException) {
                     oneShot.value = LiveEvent(it)
                     feed.value = cachedFeed
+                    applyCachedChangesOnFeedIfAny()
                     viewState.value = ViewState.IDLE
                 } else {
                     viewState.value = ViewState.ERROR(it)
@@ -105,10 +108,39 @@ abstract class BaseLmmFeedViewModel(
         }
     }
 
+    /* Action Objects */
+    // --------------------------------------------------------------------------------------------
+    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
+        super.onLike(profileId, imageId, isLiked)
+        if (isLiked) {
+            likedFeedItemIds.add(profileId)
+        } else {
+            likedFeedItemIds.remove(profileId)
+        }
+    }
+
+    fun onFirstUserMessageSent(profileId: String) {
+        messagedFeedItemIds.add(profileId)  // keep those peers that user has sent the first message to
+    }
+
     // --------------------------------------------------------------------------------------------
     override fun onRefresh() {
         cachedFeed = feed.value  // cache feed before purging it on refresh, to be able to restore it later if fetching new feed will fail
         super.onRefresh()
         Bus.post(event = BusEvent.RefreshOnLmm)
+    }
+
+    // ------------------------------------------
+    /**
+     * Cached feed represented with [cachedFeed] is used when fetching of original feed has failed,
+     * basically due to exceeded request threshold, that is actually expressed via [ThresholdExceededException].
+     * But this is only done upon refreshing the feed. Before that user could like some feed items
+     * and / or compose the very first message to some peers (which then changes appearance of chat icon).
+     * Thus, upon failed to refresh, feed is restored from the cache, but that cache lacks this information,
+     * so that information is kept in special field such as [likedFeedItemIds] and [messagedFeedItemIds]
+     * and hence could be applied to cache feed, restoring it to user.
+     */
+    private fun applyCachedChangesOnFeedIfAny() {
+        // TODO: apply
     }
 }

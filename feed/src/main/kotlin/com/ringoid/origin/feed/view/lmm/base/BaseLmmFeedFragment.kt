@@ -80,7 +80,10 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
-                        it.firstUserMessage?.let { message -> feedAdapter.getModel(it.position).messages.add(message) }
+                        it.firstUserMessage?.let {
+                            message -> feedAdapter.getModel(it.position).messages.add(message)
+                            vm.onFirstUserMessageSent(profileId = it.peerId)
+                        }
                         getRecyclerView().post {
                             feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
                         }
