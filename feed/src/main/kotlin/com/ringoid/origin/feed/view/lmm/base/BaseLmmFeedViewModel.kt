@@ -108,12 +108,8 @@ abstract class BaseLmmFeedViewModel(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun clearScreen(mode: Int) {
-        cachedFeed = feed.value
-        super.clearScreen(mode)
-    }
-
     override fun onRefresh() {
+        cachedFeed = feed.value  // cache feed before purging it on refresh, to be able to restore it later if fetching new feed will fail
         super.onRefresh()
         Bus.post(event = BusEvent.RefreshOnLmm)
     }

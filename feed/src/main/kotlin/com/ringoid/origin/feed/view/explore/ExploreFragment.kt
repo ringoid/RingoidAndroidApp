@@ -55,7 +55,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
                 when (newState.e) {
                     is ThresholdExceededException -> {
                         activity?.debugToast("Repeat after delay exceeded time threshold")
-                        vm.clearScreen(ViewState.CLEAR.MODE_EMPTY_DATA)
+                        vm.clearScreen(ViewState.CLEAR.MODE_EMPTY_DATA)  // purge Explore feed if fetching has failed with timeout
                         return
                     }
                     else -> feedAdapter.error()
@@ -99,7 +99,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.observe(vm.feed) { feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() } }
-        vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+        vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // Explore feed is initially purged
 
         if (postponedTabTransaction) {
             doPostponedTabTransaction()

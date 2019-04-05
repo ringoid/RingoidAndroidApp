@@ -128,7 +128,7 @@ abstract class FeedViewModel(
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
-    open fun clearScreen(mode: Int) {
+    fun clearScreen(mode: Int) {
         viewActionObjectBackup.clear()
         viewState.value = ViewState.CLEAR(mode)
     }
@@ -151,7 +151,7 @@ abstract class FeedViewModel(
                 countUserImagesUseCase.source()
                     .doOnSuccess {
                         if (checkImagesCount(it)) {
-                            clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)
+                            clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge feed on refresh, before fetching a new one
                             getFeed()
                         } else {
                             viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
