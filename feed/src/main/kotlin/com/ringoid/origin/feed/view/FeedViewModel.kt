@@ -11,7 +11,6 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
@@ -29,7 +28,6 @@ abstract class FeedViewModel(
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
-    private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseViewModel(app) {
 
@@ -120,10 +118,6 @@ abstract class FeedViewModel(
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // deleting all images on Profile screen leads any Feed screen to purge it's content
         clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
-
-        dropLmmChangedStatusUseCase.source()  // drop changed status (red dot badges)
-            .autoDisposable(this)
-            .subscribe({ Timber.d("Badges on Lmm have been dropped because no images in user's profile") }, Timber::e)
     }
 
     /* Feed */
