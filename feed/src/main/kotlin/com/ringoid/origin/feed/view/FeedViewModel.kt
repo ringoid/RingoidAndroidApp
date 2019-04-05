@@ -64,6 +64,12 @@ abstract class FeedViewModel(
     }
 
     private fun handleUserVisibleHint(isVisibleToUser: Boolean) {
+        fun onViewFeedItems() {
+            val userIds = mutableSetOf<String>()
+            viewActionObjectBuffer.keys.forEach { userIds.add(it.second) }
+            userIds.forEach { onViewFeedItem(feedItemId = it) }
+        }
+
         if (isVisibleToUser) {
             DebugLogUtil.v("Show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
             viewActionObjectBackup.values.forEach {
@@ -80,6 +86,7 @@ abstract class FeedViewModel(
                 .forEach { viewActionObjectBuffer[it.key()] = it }
         } else {
             DebugLogUtil.v("Hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
+            onViewFeedItems()  // mark feed items as seen, must be called prior to clearing buffer
             advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
             actionObjectPool.trigger()
         }
@@ -231,7 +238,7 @@ abstract class FeedViewModel(
                     logViewObjectsBufferState(tag = "before [horiz]")  // show view aobjs buffer contents in debug logs
                     advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
                     logViewObjectsBufferState(tag = "after [horiz]")
-                    onViewFeedItem(profileImage.profileId)
+                    onViewFeedItem(profileImage.profileId)  // mark feed item as seen
                 }
         }
 
@@ -249,7 +256,7 @@ abstract class FeedViewModel(
                 logViewObjectsBufferState("before [vert]")  // show view aobjs buffer contents in debug logs
                 it.pickOne()
                     ?.let { it.profileId to horizontalPrevRanges[it.profileId] }
-                    ?.also { onViewFeedItem(it.first) }
+                    ?.also { onViewFeedItem(it.first) }  // mark feed item as seen
                     ?.let { it.second }
                     ?.also { advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId }) }
                     ?.also { logViewObjectsBufferState(tag = "after [vert]") }
@@ -291,7 +298,10 @@ abstract class FeedViewModel(
 
     private fun advanceAndPushViewObjects(backupPool: MutableMap<Pair<String, String>, ViewActionObject>? = null) {
         viewActionObjectBuffer.apply {
-            values.forEach { it.advance() ; actionObjectPool.put(it) }
+            values.forEach {
+                it.advance()
+                actionObjectPool.put(it)
+            }
             backupPool?.putAll(this)
             clear()
         }
