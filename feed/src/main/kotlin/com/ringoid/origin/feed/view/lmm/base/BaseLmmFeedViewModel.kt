@@ -94,13 +94,15 @@ abstract class BaseLmmFeedViewModel(
         if (notSeenFeedItemIds.isEmpty()) {
             return
         }
-        notSeenFeedItemIds.remove(feedItemId)
-        DebugLogUtil.b("Seen [${feedItemId.substring(0..3)}]. Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
-        if (notSeenFeedItemIds.isEmpty()) {
-            DebugLogUtil.b("All seen [${getFeedName()}]")
-            runOnUiThread {
-                viewState.value = ViewState.DONE(SEEN_ALL_FEED(getFeedFlag()))
-                viewState.value = ViewState.IDLE
+
+        if (notSeenFeedItemIds.remove(feedItemId)) {
+            DebugLogUtil.b("Seen [${feedItemId.substring(0..3)}]. Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
+            if (notSeenFeedItemIds.isEmpty()) {
+                DebugLogUtil.b("All seen [${getFeedName()}]")
+                runOnUiThread {
+                    viewState.value = ViewState.DONE(SEEN_ALL_FEED(getFeedFlag()))
+                    viewState.value = ViewState.IDLE
+                }
             }
         }
     }

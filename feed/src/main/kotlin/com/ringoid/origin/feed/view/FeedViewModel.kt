@@ -17,6 +17,7 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.*
+import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -64,12 +65,6 @@ abstract class FeedViewModel(
     }
 
     private fun handleUserVisibleHint(isVisibleToUser: Boolean) {
-        fun onViewFeedItems() {
-            val userIds = mutableSetOf<String>()
-            viewActionObjectBuffer.keys.forEach { userIds.add(it.second) }
-            userIds.forEach { onViewFeedItem(feedItemId = it) }
-        }
-
         if (isVisibleToUser) {
             DebugLogUtil.v("Show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
             viewActionObjectBackup.values.forEach {
@@ -86,7 +81,6 @@ abstract class FeedViewModel(
                 .forEach { viewActionObjectBuffer[it.key()] = it }
         } else {
             DebugLogUtil.v("Hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
-            onViewFeedItems()  // mark feed items as seen, must be called prior to clearing buffer
             advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
             actionObjectPool.trigger()
         }
@@ -229,8 +223,8 @@ abstract class FeedViewModel(
 
     fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
         Timber.v("Incoming visible items [horizontal, ${getFeedName()}]: ${items.payloadToString()}")
-        items.pickOne()?.let { profileImage ->
-            horizontalPrevRanges[profileImage.profileId]
+        items.pickOne()?.let {
+            horizontalPrevRanges[it.profileId]
                 ?.delta(items)
                 ?.takeIf { !it.isRangeEmpty() }
                 ?.let {
@@ -238,7 +232,6 @@ abstract class FeedViewModel(
                     logViewObjectsBufferState(tag = "before [horiz]")  // show view aobjs buffer contents in debug logs
                     advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
                     logViewObjectsBufferState(tag = "after [horiz]")
-                    onViewFeedItem(profileImage.profileId)  // mark feed item as seen
                 }
         }
 
@@ -255,9 +248,7 @@ abstract class FeedViewModel(
                 Timber.v("Excluded items in [vertical] range ${it.range()}, consume VIEW action objects")
                 logViewObjectsBufferState("before [vert]")  // show view aobjs buffer contents in debug logs
                 it.pickOne()
-                    ?.let { it.profileId to horizontalPrevRanges[it.profileId] }
-                    ?.also { onViewFeedItem(it.first) }  // mark feed item as seen
-                    ?.let { it.second }
+                    ?.let { horizontalPrevRanges[it.profileId] }
                     ?.also { advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId }) }
                     ?.also { logViewObjectsBufferState(tag = "after [vert]") }
             }
@@ -277,8 +268,11 @@ abstract class FeedViewModel(
         verticalPrevRange = fixRange
     }
 
+    /**
+     * Profile represented as [FeedItem] instance has been seen by user.
+     */
     protected open fun onViewFeedItem(feedItemId: String) {
-        DebugLogUtil.v("On View profile: ${feedItemId.substring(0..3)}")
+        DebugLogUtil.v("On View profile [${getFeedName()}]: ${feedItemId.substring(0..3)}")
         // do something when feed item with id specified has been viewed
     }
 
@@ -288,7 +282,9 @@ abstract class FeedViewModel(
             val aobj = it[key]?.advance()
             it.remove(key)
             aobj as? ViewActionObject
-        }?.also { actionObjectPool.put(it) }
+        }
+        ?.also { onViewFeedItem(it.targetUserId) }
+        ?.also { actionObjectPool.put(it) }
 
     private fun advanceAndPushViewObject(key: Pair<String, String>, recreate: Boolean) {
         advanceAndPushViewObject(key)
@@ -298,6 +294,10 @@ abstract class FeedViewModel(
 
     private fun advanceAndPushViewObjects(backupPool: MutableMap<Pair<String, String>, ViewActionObject>? = null) {
         viewActionObjectBuffer.apply {
+            mutableSetOf<String>()
+                .apply { keys.forEach { add(it.second) } }
+                .forEach { onViewFeedItem(feedItemId = it) }
+
             values.forEach {
                 it.advance()
                 actionObjectPool.put(it)
