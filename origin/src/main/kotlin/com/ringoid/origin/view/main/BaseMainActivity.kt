@@ -77,7 +77,9 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         processExtras(intent)
-        vm.onAppReOpen()
+        if (isStopped) {
+            vm.onAppReOpen()
+        }
     }
 
     override fun onStart() {

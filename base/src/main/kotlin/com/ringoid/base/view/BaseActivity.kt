@@ -42,6 +42,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     @Inject protected lateinit var cloudDebug: ICloudDebug
 
     private var isOnFreshStart = true
+    protected var isStopped = false
+        private set
     var isDestroying = false
         private set
     protected var isViewModelInitialized = false
@@ -107,6 +109,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onStart")
         DebugLogUtil.lifecycle(this, "onStart")
+        isStopped = false
         if (isOnFreshStart) {
             vm.onFreshStart()
             isOnFreshStart = false
@@ -143,6 +146,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onStop")
         DebugLogUtil.lifecycle(this, "onStop")
+        isStopped = true
         vm.onStop()
     }
 
