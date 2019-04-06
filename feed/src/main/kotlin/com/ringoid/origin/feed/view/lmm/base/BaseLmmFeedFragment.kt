@@ -13,7 +13,6 @@ import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.EmptyMessage
-import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
