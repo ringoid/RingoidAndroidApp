@@ -17,6 +17,8 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
+import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.utility.runOnUiThread
@@ -36,7 +38,7 @@ abstract class BaseLmmFeedViewModel(
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
     private var cachedFeed: List<FeedItem>? = null  // cache is used when fetching for feed has failed, see usage
-    private var likedFeedItemIds = mutableSetOf<String>()  // cached feed items that were liked, to restore likes on cached feed
+    private var likedFeedItemIds = mutableMapOf<String, MutableList<String>>()  // cached feed items that were liked, to restore likes on cached feed
     private var messagedFeedItemIds = mutableSetOf<String>()  // cached feed items that have only user messages inside, sent after receiving feed
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
@@ -112,10 +114,14 @@ abstract class BaseLmmFeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         super.onLike(profileId, imageId, isLiked)
+        if (!likedFeedItemIds.containsKey(profileId)) {
+            likedFeedItemIds[profileId] = mutableListOf()
+        }
+
         if (isLiked) {
-            likedFeedItemIds.add(profileId)
+            likedFeedItemIds[profileId]?.add(imageId)
         } else {
-            likedFeedItemIds.remove(profileId)
+            likedFeedItemIds[profileId]?.remove(imageId)
         }
     }
 
@@ -141,6 +147,7 @@ abstract class BaseLmmFeedViewModel(
      * and hence could be applied to cache feed, restoring it to user.
      */
     private fun applyCachedChangesOnFeedIfAny() {
-        // TODO: apply
+        likedFeedItemIds.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_LIKES(it)) }
+        messagedFeedItemIds.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_USER_MESSAGES(it)) }
     }
 }

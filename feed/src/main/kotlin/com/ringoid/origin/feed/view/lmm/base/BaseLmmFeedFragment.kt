@@ -12,6 +12,8 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.domain.model.messenger.EmptyMessage
+import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
@@ -19,6 +21,8 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
+import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
+import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
@@ -50,10 +54,55 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.DONE -> {
-                newState.residual
-                    .takeIf { it is SEEN_ALL_FEED }
-                    ?.let { it as SEEN_ALL_FEED }
-                    ?.let { onSeenAllFeed(it.sourceFeed) }
+                when (newState.residual) {
+                    /**
+                     * When Lmm feed has been restored from a cache, there could be some liked images
+                     * on some feed items, that were liked by user in between first successful fetch
+                     * for feed and the following unsuccessful fetch, when time threshold has been hit.
+                     * In that case, cache Lmm is restored and those likes should also be restored.
+                     */
+                    is RESTORE_CACHED_LIKES -> (newState.residual as RESTORE_CACHED_LIKES)
+                        .let {
+                            it.likedFeedItemIds.let { map ->
+                                map.keys.forEach { id ->
+                                    feedAdapter.findModelAndPosition { it.id == id }
+                                        ?.also { model -> map[id]?.forEach { model.second.likedImages[it] = true } }
+                                        ?.also { feedAdapter.notifyItemChanged(it.first) }
+                                }
+                            }
+                        }
+                    /**
+                     * When Lmm feed has been restored from a cache, there could be some profiles that
+                     * user has sent a single message to. This affect appearance of feed item in list
+                     * (in particular, a chat icon changes). That messages could be sent by user in
+                     * between first successful fetch for feed and the following unsuccessful fetch,
+                     * when time threshold has been hit. In that case, cache Lmm is restored and fictive
+                     * messages should be applied to such feed items to apply changes on their appearance.
+                     */
+                    is RESTORE_CACHED_USER_MESSAGES -> (newState.residual as RESTORE_CACHED_USER_MESSAGES)
+                        .let {
+                            it.messagedFeedItemIds.forEach { id ->
+                                feedAdapter.findModelAndPosition { it.id == id }
+                                    ?.also { it.second.messages.add(EmptyMessage) }
+                                    ?.also { feedAdapter.notifyItemChanged(it.first) }
+                            }
+                        }
+                    /**
+                     * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
+                     * have been seen by user, so it's time to hide red badge on a corresponding Lmm tab.
+                     */
+                    is SEEN_ALL_FEED -> {
+                        (newState.residual as SEEN_ALL_FEED)
+                            .let {
+                                when (it.sourceFeed) {
+                                    SEEN_ALL_FEED.FEED_LIKES -> communicator(ILmmFragment::class.java)?.showBadgeOnLikes(false)
+                                    SEEN_ALL_FEED.FEED_MATCHES -> communicator(ILmmFragment::class.java)?.showBadgeOnMatches(false)
+                                    SEEN_ALL_FEED.FEED_MESSENGER -> communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(false)
+                                    else -> { /* no-op */ }
+                                }
+                            }
+                    }
+                }
             }
         }
     }
@@ -123,14 +172,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     internal fun clearScreen(mode: Int) {
         vm.clearScreen(mode)
     }
-
-    private fun onSeenAllFeed(sourceFeed: Int) =
-        when (sourceFeed) {
-            SEEN_ALL_FEED.FEED_LIKES -> communicator(ILmmFragment::class.java)?.showBadgeOnLikes(false)
-            SEEN_ALL_FEED.FEED_MATCHES -> communicator(ILmmFragment::class.java)?.showBadgeOnMatches(false)
-            SEEN_ALL_FEED.FEED_MESSENGER -> communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(false)
-            else -> { /* no-op */ }
-        }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
