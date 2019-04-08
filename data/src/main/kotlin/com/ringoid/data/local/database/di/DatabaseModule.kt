@@ -14,6 +14,7 @@ import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
+import com.ringoid.data.local.database.dao.messenger.Migration_9_10
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.IDebugLogDaoHelper
@@ -26,29 +27,28 @@ import javax.inject.Singleton
 class DatabaseModule {
 
     @Provides @Singleton
-    fun provideDatabase(applicationContext: Context): RingoidDatabase =
+    fun provideDatabase(applicationContext: Context, migration_9_10: Migration_9_10): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-            .fallbackToDestructiveMigration()
+            .addMigrations(migration_9_10)
             .build()
 
     @Provides @Singleton
-    fun provideUserDatabase(applicationContext: Context): UserRingoidDatabase =
+    fun provideUserDatabase(applicationContext: Context, migration_9_10: Migration_9_10): UserRingoidDatabase =
         Room.databaseBuilder(applicationContext, UserRingoidDatabase::class.java, UserRingoidDatabase.DATABASE_NAME)
-            .fallbackToDestructiveMigration()
+            .addMigrations(migration_9_10)
             .build()
 
     @Provides @Singleton
     fun provideBlockProfilesUserDatabase(applicationContext: Context): BlockProfilesUserRingoidDatabase =
         Room.databaseBuilder(applicationContext, BlockProfilesUserRingoidDatabase::class.java, BlockProfilesUserRingoidDatabase.DATABASE_NAME)
-            .fallbackToDestructiveMigration()
             .build()
 
     @Provides @Singleton @DebugOnly
     fun provideDebugRingoidDatabase(applicationContext: Context): DebugRingoidDatabase =
         Room.databaseBuilder(applicationContext, DebugRingoidDatabase::class.java, DebugRingoidDatabase.DATABASE_NAME)
-            .fallbackToDestructiveMigration()
             .build()
 
+    // ------------------------------------------
     @Provides @Singleton
     fun provideActionObjectDao(database: RingoidDatabase): ActionObjectDao = database.actionObjectDao()
 
