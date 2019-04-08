@@ -227,7 +227,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     // ------------------------------------------
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        rv_items.scrollBy(0, -1)
+        rv_items?.scrollBy(0, -1)
     }
 
     /* Scroll listeners */
