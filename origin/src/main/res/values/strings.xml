@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Ringoid</string>
-
     <string name="button_add_photo">Add photo</string>
     <string name="button_apply">Apply</string>
     <string name="button_browser">Open in browser</string>
@@ -28,7 +26,7 @@
     <string name="debug_email_support_button_label">Email support@ringoid.com</string>
 
     <!-- Error screen -->
-    <string name="error_screen_no_network_connection">No Internet connection</string>
+    <string name="error_screen_no_network_connection">No internet</string>
     <string name="error_screen_no_network_connection_button_label">Retry</string>
     <string name="error_screen_old_app_version">Please update the app</string>
     <string name="error_screen_old_app_version_button_label">Open Google Play</string>
@@ -49,16 +47,15 @@
     <string name="report_profile_button_4">Human and sex trafficking, Criminal activity</string>
     <string name="report_profile_button_5">Underage user, Child exploitation</string>
     <string name="report_profile_button_6">Harassment or threats, Abuse</string>
-    <string name="report_profile_dialog_description">You want to report: %s.</string>
-    <string name="report_profile_dialog_title">Report &#38; Block?</string>
+    <string name="report_profile_dialog_description">Report reason: %s.</string>
 
     <string name="feed_explore_empty_title">Discover</string>
     <string name="feed_footer_item_label">No more new</string>
 
-    <string name="feed_explore_dialog_no_user_photo_description">Add photo so others can like you</string>
+    <string name="feed_explore_dialog_no_user_photo_description">Add photo to receive likes</string>
     <string name="feed_explore_empty_no_data">No one new around</string>
     <string name="feed_likes_you_empty_no_data">No likes yet</string>
-    <string name="feed_matches_empty_no_data">No matches (mutual likes) yet</string>
+    <string name="feed_matches_empty_no_data">No mutual likes yet</string>
     <string name="feed_messages_empty_no_data">No messages yet</string>
 
     <!-- Image Preview screen -->
@@ -82,7 +79,7 @@
     <string name="profile_dialog_image_blocked_button">Terms of Service</string>
     <string name="profile_dialog_image_blocked_title">Your photo was deleted for violating Terms of Service</string>
     <string name="profile_dialog_image_delete_title">Delete Photo?</string>
-    <string name="profile_empty_images">Add photo to\nsee who likes you</string>
+    <string name="profile_empty_images">Add photo to\nreceive likes</string>
     <string name="profile_empty_title">Profile</string>
     <string name="profile_label_coins">%s coins</string>
 
@@ -97,8 +94,8 @@
     <string name="settings_app_info">Legal</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email support@ringoid.com</string>
-    <string name="settings_push">Push notifications</string>
-    <string name="settings_push_explanatory">Once per day if you have new like, match, message, or new users around</string>
+    <string name="settings_push">Push Notifications</string>
+    <string name="settings_push_explanatory">Once per day if you have new like, match, message, or new users</string>
     <string name="settings_support">Email support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Settings</string>

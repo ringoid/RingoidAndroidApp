@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name" translatable="false">Ringoid</string>
     <string name="bullet" translatable="false">&#8226;</string>
 
     <string name="channel_id_default" translatable="false">fcm_default_push_channel</string>

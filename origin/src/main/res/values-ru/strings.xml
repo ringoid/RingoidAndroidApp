@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Рингоид</string>
-
     <string name="button_add_photo">Добавить фото</string>
     <string name="button_apply">Применить</string>
     <string name="button_browser">Открыть в браузере</string>
@@ -44,8 +42,7 @@
     <string name="report_profile_button_4">Торговля людьми, рабство, криминал</string>
     <string name="report_profile_button_5">Несовершеннолетние пользователи</string>
     <string name="report_profile_button_6">Оскорбления, Угрозы или Домогательства</string>
-    <string name="report_profile_dialog_description">Пожаловаться на: %s.</string>
-    <string name="report_profile_dialog_title">Пожаловаться и Заблокировать?</string>
+    <string name="report_profile_dialog_description">Причина жалобы: %s.</string>
 
     <string name="feed_explore_empty_title">Поиск</string>
     <string name="feed_footer_item_label">Новых больше нет</string>
@@ -53,7 +50,7 @@
     <string name="feed_explore_dialog_no_user_photo_description">Добавь фото, чтобы получать лайки</string>
     <string name="feed_explore_empty_no_data">Новых пока нет</string>
     <string name="feed_likes_you_empty_no_data">Лайков ещё нет</string>
-    <string name="feed_matches_empty_no_data">Взаимных симпатий (совпадений) ещё нет</string>
+    <string name="feed_matches_empty_no_data">Взаимных лайков ещё нет</string>
     <string name="feed_messages_empty_no_data">Сообщений ещё нет</string>
 
     <!-- Image Preview screen -->
@@ -66,7 +63,7 @@
     <!-- Login screen -->
     <string name="login_button">Продолжить и Загрузить фото</string>
     <string name="login_button_direct">Продолжить</string>
-    <string name="login_terms">Нажимая на кнопку ниже, вы подтверждаете, что ознакомились, понимаете и принимаете <a href="http://ringoid.com/terms.html">Условия использования</a> и <a href="http://ringoid.com/privacy.html">Политику конфиденциальности</a> Рингоид, а также, что вы достигли совершеннолетия в соответствии с законодательством страны, в которой вы находитесь или запускаете Рингоид.</string>
+    <string name="login_terms">Нажимая на кнопку ниже, вы подтверждаете, что ознакомились, понимаете и принимаете <a href="http://ringoid.com/terms.html">Условия использования</a> и <a href="http://ringoid.com/privacy.html">Политику конфиденциальности</a> Ringoid, а также, что вы достигли совершеннолетия в соответствии с законодательством страны, в которой вы находитесь или запускаете Ringoid.</string>
     <string name="login_year_of_birth_et_hint">Год рождения</string>
 
     <!-- Profile screen -->
@@ -86,26 +83,26 @@
     <string name="referral_dialog_reward_message">Начислено %s монет</string>
 
     <!-- Settings screen -->
-    <string name="settings_account_delete">Удалить Профиль</string>
-    <string name="settings_account_delete_info">Если вы не открывали Рингоид более 16 дней, профиль автоматически удаляется.</string>
-    <string name="settings_account_delete_dialog_title">Удалить Профиль?</string>
+    <string name="settings_account_delete">Удалить аккаунт</string>
+    <string name="settings_account_delete_info">Если вы не открывали Ringoid более 16 дней, профиль автоматически удаляется.</string>
+    <string name="settings_account_delete_dialog_title">Удалить аккаунт?</string>
     <string name="settings_app_info">Информация</string>
     <string name="settings_language">Язык</string>
-    <string name="settings_language_help">Если вы хотите помочь и перевести Рингоид на родной язык, пожалуйста, напишите в support@ringoid.com</string>
+    <string name="settings_language_help">Если вы хотите помочь и перевести Ringoid на родной язык, пожалуйста, напишите в support@ringoid.com</string>
     <string name="settings_push">Push&#45;уведомления</string>
     <string name="settings_push_explanatory">Один раз в день, если есть лайк, взаимная симпатия, сообщение, или новые люди</string>
-    <string name="settings_support">Написать в support@ringoid.com</string>
+    <string name="settings_support">Написать support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_theme_dark">Ночной режим</string>
 
     <!-- Settings Info screen -->
-    <string name="settings_info_about">О Приложении</string>
-    <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2019.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2018.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
-    <string name="settings_info_about_dialog_title">Рингоид</string>
+    <string name="settings_info_about">О приложении</string>
+    <string name="settings_info_about_dialog_description">Copyright © Ringoid Ltd, 2019.\n\nRINGOID LTD is registered in England with Company No. 09427326 and VAT Reg No: GB 208660511. \n\nRegistered Office: 97 Friars Mead, London, E14 3JY, England.\n\nRingoid is a registered trademark of Ringoid Ltd.\n\nRingoid Ltd is trading as Ringoid.\n\nRingoid is registered with the UK\'s Information Commissioner\'s Office with registration number ZA455969 and operates within compliance of the EU General Data Protection Regulation 2019.\n\nEmail: support@ringoid.com\nWeb: <a href="http://ringoid.com">www.ringoid.com</a></string>
+    <string name="settings_info_about_dialog_title">Ringoid</string>
     <string name="settings_info_customer_info">Идентификатор пользователя</string>
     <string name="settings_info_email_officer">Написать в Отдел защиты данных</string>
-    <string name="settings_info_email_officer_mail_subject">Уважаемый Отдел защиты данных Рингоид,\n\nМой идентификатор пользователя %s\n\n</string>
+    <string name="settings_info_email_officer_mail_subject">Уважаемый Отдел защиты данных Ringoid,\n\nМой идентификатор пользователя %s\n\n</string>
     <string name="settings_info_licenses">Лицензии открытого ПО</string>
     <string name="settings_info_privacy">Политика конфиденциальности</string>
     <string name="settings_info_terms">Условия использования</string>
