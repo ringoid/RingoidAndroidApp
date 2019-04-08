@@ -224,6 +224,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         scroll_fab.changeVisibility(isVisible = xIsVisible)
     }
 
+    // ------------------------------------------
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        rv_items.scrollBy(0, -1)
+    }
+
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
     private val topScrollListener = object : RecyclerView.OnScrollListener() {
