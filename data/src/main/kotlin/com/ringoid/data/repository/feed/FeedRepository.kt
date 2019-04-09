@@ -13,6 +13,7 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
@@ -76,9 +77,15 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
                  .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime()})")
+                 .doOnSuccess {
+                     DebugLogUtil.v("# NewFaces: [${it.toLogString()}] as received from Server, before filter out duplicates")
+                     if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for NewFaces")
+                 }
+                 .filterOutDuplicateProfilesFeed()
                  .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] before filter out cached/blocked profiles") }
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
+                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] after filtering, final") }
                  .cacheNewFacesAsAlreadySeen()
                  .map { it.map() }
         }
@@ -96,8 +103,11 @@ open class FeedRepository @Inject constructor(
                      badgeMessenger.onNext(false)
                      lmmChanged.onNext(false)
                  }
+                 .filterOutDuplicateProfilesLmm()
+                 .detectCollisionProfilesLmm()
                  .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
                  .filterOutBlockedProfilesLmm()
+                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering, final") }
                  .map { it.map() }
                  .doOnSuccess {
                      // clear sent user messages because they will be restored with new Lmm
@@ -144,7 +154,7 @@ open class FeedRepository @Inject constructor(
     protected fun Single<FeedResponse>.filterOutBlockedProfilesFeed(): Single<FeedResponse> =
         filterOutProfilesFeed(idsSource = getBlockedProfileIds().toObservable())
 
-    protected fun Single<FeedResponse>.filterOutProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
+    private fun Single<FeedResponse>.filterOutProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
         toObservable()
         .withLatestFrom(idsSource,
             BiFunction { feed: FeedResponse, blockedIds: List<String> ->
@@ -157,7 +167,28 @@ open class FeedRepository @Inject constructor(
             })
         .single(FeedResponse()  /* by default - empty feed */)
 
+    private fun Single<FeedResponse>.filterOutDuplicateProfilesFeed(): Single<FeedResponse> =
+        flatMap { response ->
+            val filterFeed = response.profiles.distinctBy { it.id }
+                .also { if (it.size != response.profiles.size) SentryUtil.w("Duplicate profiles detected for NewFaces") }
+            Single.just(response.copyWith(profiles = filterFeed))
+        }
+
     // ------------------------------------------
+    private fun Single<LmmResponse>.detectCollisionProfilesLmm(): Single<LmmResponse> =
+        doOnSuccess {
+            val totalSize = it.likes.size + it.matches.size + it.messages.size
+            val totalSizeDistinct = mutableListOf<String>()
+                .apply { addAll(it.likes.map { it.id }) }
+                .apply { addAll(it.matches.map { it.id }) }
+                .apply { addAll(it.messages.map { it.id }) }
+                .distinct().size
+
+            if (totalSize != totalSizeDistinct) {
+                SentryUtil.e("Collision for profiles in LMM")
+            }
+        }
+
     private fun Single<LmmResponse>.filterOutBlockedProfilesLmm(): Single<LmmResponse> =
         toObservable()
         .withLatestFrom(getBlockedProfileIds().toObservable(),
@@ -172,6 +203,18 @@ open class FeedRepository @Inject constructor(
                     } ?: lmm
             })
         .single(LmmResponse()  /* by default - empty lmm */)
+
+    private fun Single<LmmResponse>.filterOutDuplicateProfilesLmm(): Single<LmmResponse> =
+        flatMap { response ->
+            val message = "Duplicate profiles detected for "
+            val filterLikes = response.likes.distinctBy { it.id }
+                .also { if (it.size != response.likes.size) SentryUtil.w("$message LikesYou") }
+            val filterMatches = response.matches.distinctBy { it.id }
+                .also { if (it.size != response.matches.size) SentryUtil.w("$message Matches") }
+            val filterMessenger = response.messages.distinctBy { it.id }
+                .also { if (it.size != response.messages.size) SentryUtil.w("$message Messages") }
+            Single.just(response.copyWith(likes = filterLikes, matches = filterMatches, messages = filterMessenger))
+        }
 
     // --------------------------------------------------------------------------------------------
     private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
