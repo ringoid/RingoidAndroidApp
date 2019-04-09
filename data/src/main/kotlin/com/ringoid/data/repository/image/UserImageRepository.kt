@@ -100,7 +100,7 @@ class UserImageRepository @Inject constructor(
                                         }
                                         ImageRequestDbo.TYPE_DELETE -> {
                                             Timber.v("Execute 'delete image' request again, as it's failed before")
-                                            deleteUserImage(request.deleteRequestEssence(), retryCount = 0)
+                                            deleteUserImageAsync(request.deleteRequestEssence(), retryCount = 0)
                                         }
                                         else -> Completable.complete()  // ignored item
                                     }
@@ -128,9 +128,13 @@ class UserImageRepository @Inject constructor(
         deleteUserImage(essence, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
 
     private fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized, retryCount: Int): Completable =
-        spm.accessCompletable { deleteUserImage(ImageDeleteEssence.from(essence, it.accessToken), retryCount) }
+        spm.accessCompletable { deleteUserImageAsync(ImageDeleteEssence.from(essence, it.accessToken), retryCount) }
 
-    private fun deleteUserImage(essence: ImageDeleteEssence, retryCount: Int): Completable =
+    /**
+     * Perform deleting image locally and then remotely. If remote delete has failed, record that
+     * as pending request to repeat later, on next [getUserImages] call.
+     */
+    private fun deleteUserImageAsync(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)
             .flatMap { localImage ->
                 Single.fromCallable { local.deleteImage(id = essence.imageId) }
@@ -142,6 +146,23 @@ class UserImageRepository @Inject constructor(
                             .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
                      }
             }
+            .ignoreElement()  // convert to Completable
+
+    /**
+     * Perform deleting image remotely and then, if succeeded, locally. If failed, show error.
+     * Perform less retries in order to fallback earlier in case of error.
+     */
+    private fun deleteUserImageSync(essence: ImageDeleteEssence): Completable =
+        local.userImage(id = essence.imageId)
+            .flatMap { localImage ->
+                spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
+                    .handleError(count = 3 /* less retries */, tag = "deleteUserImage")
+            }
+            .flatMap {
+                Single.fromCallable { local.deleteImage(id = essence.imageId) }
+                      .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
+            }
+            .flatMap { countUserImages() }
             .ignoreElement()  // convert to Completable
 
     override fun deleteLocalUserImages(): Completable = Completable.fromCallable { local.deleteAllImages() }
