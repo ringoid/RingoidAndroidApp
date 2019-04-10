@@ -1,8 +1,12 @@
 package com.ringoid.domain.memory
 
+import com.ringoid.domain.manager.ISharedPrefsManager
+import timber.log.Timber
+
 object ChatInMemoryCache {
 
-    val BOTTOM_CHAT_POSITION: Pair<Int, Int> = 0 to 0
+    private val BOTTOM_CHAT_POSITION: Pair<Int, Int> = 0 to 0
+    private val SP_KEY_CHAT_CACHE = "sp_key_chat_cache"
 
     private val chatInputMessage = mutableMapOf<String, CharSequence>()
     private val chatPeerMessagesCount = mutableMapOf<String, Int>()
@@ -76,4 +80,20 @@ object ChatInMemoryCache {
         chatPeerMessagesCount.clear()
         chatScrollPosition.clear()
     }
+
+    fun persist(spm: ISharedPrefsManager) {
+        spm.saveByKey(SP_KEY_CHAT_CACHE, toJson())
+    }
+
+    fun restore(spm: ISharedPrefsManager) {
+        spm.getByKey(SP_KEY_CHAT_CACHE)?.let {
+            Timber.v("Restored cached chat data: $it")
+            // TODO: restore content data
+        }
+    }
+
+    private fun toJson(): String =
+        "{\"chatInputMessage\":${chatInputMessage.entries.joinToString(",", "[", "]", transform = { "{\"${it.key}\":\"${it.value}\"}" })}," +
+         "\"chatPeerMessagesCount\":${chatPeerMessagesCount.entries.joinToString(",", "[", "]", transform = { "{\"${it.key}\":${it.value}}" })}," +
+         "\"chatScrollPosition\":${chatScrollPosition.entries.joinToString(",", "[", "]", transform = { "{\"${it.key}\":[${it.value.first},${it.value.second}]}" })}}"
 }

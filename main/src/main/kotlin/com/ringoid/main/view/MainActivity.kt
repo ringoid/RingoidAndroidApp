@@ -3,8 +3,11 @@ package com.ringoid.main.view
 import android.os.Bundle
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
+import com.google.firebase.iid.FirebaseInstanceId
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.observe
+import com.ringoid.main.OriginR_drawable
+import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_style
 import com.ringoid.origin.feed.view.explore.ExploreFragment
 import com.ringoid.origin.feed.view.lmm.LmmFragment
@@ -14,7 +17,6 @@ import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
-import com.ringoid.origin.view.particles.ParticleAnimator
 
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
@@ -41,7 +43,10 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         observe(vm.newLikesCount) { showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = it) }
         observe(vm.newMatchesCount) { showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = it) }
         observe(vm.newMessagesCount) { showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = it) }
+
         AppUtils.checkForGooglePlayServices(this)
+        initializeFirebase()
+        initializeParticleAnimation()
     }
 
     override fun onStart() {
@@ -55,5 +60,24 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     override fun onResume() {
         super.onResume()
         AppUtils.checkForGooglePlayServices(this)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun initializeFirebase() {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener {
+                it.takeIf { it.isSuccessful }
+                    ?.result?.token
+                    ?.let { vm.updatePushToken(it) }
+            }
+    }
+
+    private fun initializeParticleAnimation() {
+        with(particleAnimator) {
+            setContainerView(findViewById(OriginR_id.fl_container))
+            addGeneratorForResource(PARTICLE_TYPE_LIKE, this@MainActivity, OriginR_drawable.ic_particle_like)
+            addGeneratorForResource(PARTICLE_TYPE_MATCH, this@MainActivity, OriginR_drawable.ic_particle_match)
+            addGeneratorForResource(PARTICLE_TYPE_MESSAGE, this@MainActivity, OriginR_drawable.ic_particle_message)
+        }
     }
 }

@@ -58,6 +58,12 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         sharedPreferences.getString(SP_KEY_APP_UID, null)
             ?: run { randomString().also { sharedPreferences.edit().putString(SP_KEY_APP_UID, it).apply() } }
 
+    override fun getByKey(key: String): String? = sharedPreferences.getString(key, null)
+
+    override fun saveByKey(key: String, json: String) {
+        sharedPreferences.edit().putString(key, json).apply()
+    }
+
     // ------------------------------------------
     @StyleRes
     override fun getThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_THEME, defaultThemeResId)

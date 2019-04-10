@@ -8,6 +8,10 @@ interface ISharedPrefsManager {
 
     fun getAppUid(): String
 
+    fun getByKey(key: String): String?
+
+    fun saveByKey(key: String, json: String)
+
     // ------------------------------------------
     fun getThemeResId(@StyleRes defaultThemeResId: Int = 0): Int
 

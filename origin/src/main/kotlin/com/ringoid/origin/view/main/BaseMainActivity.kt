@@ -3,7 +3,6 @@ package com.ringoid.origin.view.main
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.firebase.iid.FirebaseInstanceId
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
@@ -14,9 +13,6 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.activity_main.*
@@ -69,8 +65,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
 
-        initializeFirebase()
-        initializeParticleAnimation()
         processExtras(intent)
     }
 
@@ -97,25 +91,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         fragNav.onSaveInstanceState(outState)
-    }
-
-    // --------------------------------------------------------------------------------------------
-    private fun initializeFirebase() {
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnCompleteListener {
-                it.takeIf { it.isSuccessful }
-                    ?.result?.token
-                    ?.let { vm.updatePushToken(it) }
-            }
-    }
-
-    private fun initializeParticleAnimation() {
-        with(particleAnimator) {
-            setContainerView(fl_container)
-            addGeneratorForResource(PARTICLE_TYPE_LIKE, this@BaseMainActivity, R.drawable.ic_particle_like)
-            addGeneratorForResource(PARTICLE_TYPE_MATCH, this@BaseMainActivity, R.drawable.ic_particle_match)
-            addGeneratorForResource(PARTICLE_TYPE_MESSAGE, this@BaseMainActivity, R.drawable.ic_particle_message)
-        }
     }
 
     private fun processExtras(intent: Intent) {
