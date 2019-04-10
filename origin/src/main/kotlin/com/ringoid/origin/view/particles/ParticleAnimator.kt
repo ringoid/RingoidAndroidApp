@@ -51,6 +51,7 @@ class ParticleAnimator @Inject constructor() {
             .setAccelerationX(-50f, 25f)
             .setTargetVelocityX(0f, 12.5f)
             .setVelocityY(-660f, 80f)
+            .setTTL(3000L)
             .enableFadeOut(ParticleInterpolator(random.nextFloat() / 10f))
             .animate()
     }
