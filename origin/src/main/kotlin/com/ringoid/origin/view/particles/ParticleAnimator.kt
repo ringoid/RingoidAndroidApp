@@ -47,10 +47,10 @@ class ParticleAnimator @Inject constructor() {
 
         ConfettiManager(containerView.context, generators[id], source, containerView)
             .setNumInitialCount(1)
-            .setVelocityX(100f, 50f)
+            .setVelocityX(-25f, 75f)
             .setAccelerationX(-50f, 25f)
             .setTargetVelocityX(0f, 12.5f)
-            .setVelocityY(-220f, 80f)
+            .setVelocityY(-660f, 80f)
             .enableFadeOut(ParticleInterpolator(random.nextFloat() / 10f))
             .animate()
     }
