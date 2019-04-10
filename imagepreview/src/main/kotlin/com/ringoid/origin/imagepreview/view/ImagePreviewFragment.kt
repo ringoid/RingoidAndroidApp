@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.origin.GlideApp
 import com.ringoid.origin.imagepreview.OriginR_string
 import com.ringoid.origin.imagepreview.R
@@ -56,7 +57,20 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         uri = arguments?.getParcelable<Uri>(BUNDLE_KEY_IMAGE_URI)?.also {
-            activity?.contentResolver?.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            with(activity!!) {
+                // @see: https://stackoverflow.com/questions/37993762/java-lang-securityexception-on-takepersistableuripermission-saf
+                try {
+                    grantUriPermission(packageName, it, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+                } catch (e: IllegalArgumentException) {
+                    grantUriPermission(packageName, it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                try {
+                    contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                } catch (e: SecurityException) {
+                    SentryUtil.capture(e, "No persistable permission grants found")
+                    uri = null  // preventing from further getting content by input uri
+                }
+            }
         }
     }
 
@@ -95,6 +109,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
                arguments?.getString(BUNDLE_KEY_NAVIGATE_FROM)
                              ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
                              ?.let { navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
+                             ?: run { onFailure(NullPointerException("Uri is null")) }
            }
     }
 
@@ -104,6 +119,11 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
             setOnImageLoadListener(null)
         }
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        uri?.let { activity?.revokeUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION) }
     }
 
     // --------------------------------------------------------------------------------------------
