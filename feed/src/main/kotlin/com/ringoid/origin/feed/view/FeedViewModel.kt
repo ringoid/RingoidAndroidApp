@@ -7,6 +7,7 @@ import com.ringoid.base.manager.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
@@ -171,8 +172,26 @@ abstract class FeedViewModel(
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
                    else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
-        analyticsManager.fire(if (isLiked) Analytics.ACTION_USER_LIKE_PHOTO
-                              else Analytics.ACTION_USER_UNLIKE_PHOTO, "sourceFeed" to getFeedName())
+
+        // analytics
+        with (analyticsManager) {
+            val sourceFeed = getFeedName()
+            if (isLiked) {
+                fire(Analytics.ACTION_USER_LIKE_PHOTO, "sourceFeed" to sourceFeed)
+                when (sourceFeed) {
+                    DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_LIKES)
+                    DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MATCHES)
+                    DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MESSAGES)
+                }
+            } else {
+                fire(Analytics.ACTION_USER_UNLIKE_PHOTO, "sourceFeed" to sourceFeed)
+                when (sourceFeed) {
+                    DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_UNLIKE_PHOTO_FROM_LIKES)
+                    DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_UNLIKE_PHOTO_FROM_MATCHES)
+                    DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_UNLIKE_PHOTO_FROM_MESSAGES)
+                }
+            }
+        }
     }
 
     fun onChatOpen(profileId: String, imageId: String) {

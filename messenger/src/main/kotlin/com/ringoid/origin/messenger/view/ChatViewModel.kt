@@ -49,15 +49,24 @@ class ChatViewModel @Inject constructor(
         }
 
         val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = sourceFeed, targetImageId = imageId, targetUserId = peerId)
-        val message = MessageEssence(peerId = peerId, text = text.trim(), aObjEssence = essence)
+        val message = MessageEssence(peerId = peerId, text = text?.trim() ?: "", aObjEssence = essence)
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT(it)) }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
-                analyticsManager.fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed)
                 sentMessage.value = it
+
+                // analytics
+                with (analyticsManager) {
+                    fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed)
+                    when (sourceFeed) {
+                        DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_LIKES)
+                        DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MATCHES)
+                        DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MESSAGES)
+                    }
+                }
             }, Timber::e)
     }
 }
