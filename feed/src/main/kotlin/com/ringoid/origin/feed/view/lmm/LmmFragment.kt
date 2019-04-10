@@ -9,7 +9,6 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeTypeface
