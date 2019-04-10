@@ -152,11 +152,11 @@ class UserImageRepository @Inject constructor(
      * Perform deleting image remotely and then, if succeeded, locally. If failed, show error.
      * Perform less retries in order to fallback earlier in case of error.
      */
-    private fun deleteUserImageSync(essence: ImageDeleteEssence): Completable =
+    private fun deleteUserImageSync(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)
             .flatMap { localImage ->
                 spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                    .handleError(count = 3 /* less retries */, tag = "deleteUserImage")
+                    .handleError(count = minOf(3, retryCount) /* less retries */, tag = "deleteUserImage")
             }
             .flatMap {
                 Single.fromCallable { local.deleteImage(id = essence.imageId) }
