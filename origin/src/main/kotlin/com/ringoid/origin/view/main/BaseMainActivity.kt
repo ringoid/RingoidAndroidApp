@@ -15,12 +15,16 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
+import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
+import javax.inject.Inject
 
 abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IBaseMainActivity,
     FragNavController.TransactionListener {
+
+    @Inject lateinit var particleAnimator: ParticleAnimator
 
     private lateinit var fragNav: FragNavController
     private val loginInMemoryCache: ILoginInMemoryCache by lazy { app.loginInMemoryCache }
@@ -64,6 +68,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
         }
 
         initializeFirebase()
+        initializeParticleAnimation()
         processExtras(intent)
     }
 
@@ -100,6 +105,10 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
                     ?.result?.token
                     ?.let { vm.updatePushToken(it) }
             }
+    }
+
+    private fun initializeParticleAnimation() {
+        particleAnimator.init(fl_container)
     }
 
     private fun processExtras(intent: Intent) {
