@@ -11,10 +11,12 @@ import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.activity_main.*
@@ -108,7 +110,12 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     }
 
     private fun initializeParticleAnimation() {
-        particleAnimator.init(fl_container)
+        with(particleAnimator) {
+            setContainerView(fl_container)
+            addGeneratorForResource(PARTICLE_TYPE_LIKE, this@BaseMainActivity, R.drawable.ic_particle_like)
+            addGeneratorForResource(PARTICLE_TYPE_MATCH, this@BaseMainActivity, R.drawable.ic_particle_match)
+            addGeneratorForResource(PARTICLE_TYPE_MESSAGE, this@BaseMainActivity, R.drawable.ic_particle_message)
+        }
     }
 
     private fun processExtras(intent: Intent) {
@@ -155,6 +162,10 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
 
     override fun showBadgeWarningOnProfile(isVisible: Boolean) {
         bottom_bar.showWarningOnProfile(isVisible)
+    }
+
+    override fun showParticleAnimation(id: String) {
+        particleAnimator.animateOnce(id)
     }
 
     // --------------------------------------------------------------------------------------------
