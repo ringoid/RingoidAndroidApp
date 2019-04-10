@@ -11,6 +11,10 @@ import com.ringoid.origin.feed.view.lmm.LmmFragment
 import com.ringoid.origin.profile.view.UserProfileFragment
 import com.ringoid.origin.utils.AppUtils
 import com.ringoid.origin.view.main.BaseMainActivity
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
+import com.ringoid.origin.view.particles.ParticleAnimator
 
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
@@ -34,6 +38,9 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme_Dark)
         observe(vm.badgeLmm, ::showBadgeOnLmm)
         observe(vm.badgeWarningProfile, ::showBadgeWarningOnProfile)
+        observe(vm.newLikesCount) { showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = it) }
+        observe(vm.newMatchesCount) { showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = it) }
+        observe(vm.newMessagesCount) { showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = it) }
         AppUtils.checkForGooglePlayServices(this)
     }
 

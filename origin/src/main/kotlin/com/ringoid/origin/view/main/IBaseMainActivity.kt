@@ -8,5 +8,5 @@ interface IBaseMainActivity : ICommunicator {
 
     fun showBadgeOnLmm(isVisible: Boolean)
     fun showBadgeWarningOnProfile(isVisible: Boolean)
-    fun showParticleAnimation(id: String)
+    fun showParticleAnimation(id: String, count: Int = 1)
 }

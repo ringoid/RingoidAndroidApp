@@ -69,6 +69,9 @@ open class FeedRepository @Inject constructor(
     override val feedMatches = PublishSubject.create<List<FeedItem>>()
     override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
+    override val newLikesCount = PublishSubject.create<Int>()
+    override val newMatchesCount = PublishSubject.create<Int>()
+    override val newMessagesCount = PublishSubject.create<Int>()
 
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         aObjPool.triggerSource().flatMap { getNewFacesOnly(resolution, limit, lastActionTime = it) }
@@ -112,12 +115,18 @@ open class FeedRepository @Inject constructor(
                  .doOnSuccess {
                      // clear sent user messages because they will be restored with new Lmm
                      sentMessagesLocal.deleteMessages()
-                     badgeLikes.onNext(it.newLikesCount() > 0)
-                     badgeMatches.onNext(it.newMatchesCount() > 0)
+
+                     val _newLikesCount = it.newLikesCount()
+                     val _newMatchesCount = it.newMatchesCount()
+
+                     badgeLikes.onNext(_newLikesCount > 0)
+                     badgeMatches.onNext(_newMatchesCount > 0)
                      feedLikes.onNext(it.likes)
                      feedMatches.onNext(it.matches)
                      feedMessages.onNext(it.messages)
                      lmmChanged.onNext(it.containsNotSeenItems())  // have not seen items
+                     newLikesCount.onNext(_newLikesCount)
+                     newMatchesCount.onNext(_newMatchesCount)
                  }
                 .zipWith(messengerLocal.countUnreadMessages(),
                     BiFunction { lmm: Lmm, count: Int ->
@@ -133,6 +142,7 @@ open class FeedRepository @Inject constructor(
                         if (peerMessagesCount != 0 && count != peerMessagesCount) {
                             badgeMessenger.onNext(true)
                             lmmChanged.onNext(true)  // have new messages from any peer
+                            newMessagesCount.onNext(peerMessagesCount - count)
                         }
                         lmm
                     })

@@ -11,6 +11,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.github.jinatonic.confetti.ConfettiManager
 import com.github.jinatonic.confetti.ConfettiSource
+import com.ringoid.origin.AppRes
 import dagger.Reusable
 import timber.log.Timber
 import java.util.*
@@ -42,7 +43,7 @@ class ParticleAnimator @Inject constructor() {
             return
         }
 
-        val source = ConfettiSource(0, containerView.height)
+        val source = ConfettiSource(containerView.width / 3, containerView.height - AppRes.MAIN_BOTTOM_BAR_HEIGHT_HALF)
 
         ConfettiManager(containerView.context, generators[id], source, containerView)
             .setNumInitialCount(1)
@@ -52,6 +53,14 @@ class ParticleAnimator @Inject constructor() {
             .setVelocityY(-220f, 80f)
             .enableFadeOut(ParticleInterpolator(random.nextFloat() / 10f))
             .animate()
+    }
+
+    fun animate(id: String, count: Int) {
+        if (count <= 0 || !generators.containsKey(id)) {
+            return
+        }
+
+        (1..count).forEach { animateOnce(id) }
     }
 
     fun setContainerView(containerView: ViewGroup) {

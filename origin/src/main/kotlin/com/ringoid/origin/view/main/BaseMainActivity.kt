@@ -164,8 +164,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
         bottom_bar.showWarningOnProfile(isVisible)
     }
 
-    override fun showParticleAnimation(id: String) {
-        particleAnimator.animateOnce(id)
+    override fun showParticleAnimation(id: String, count: Int) {
+        particleAnimator.animate(id, count)
     }
 
     // --------------------------------------------------------------------------------------------

@@ -24,12 +24,30 @@ class MainViewModel @Inject constructor(
 
     val badgeLmm by lazy { MutableLiveData<Boolean>() }
     val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
+    val newLikesCount by lazy { MutableLiveData<Int>() }
+    val newMatchesCount by lazy { MutableLiveData<Int>() }
+    val newMessagesCount by lazy { MutableLiveData<Int>() }
 
     init {
         getLmmUseCase.repository.lmmChanged
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeLmm.value = it }, Timber::e)
+
+        getLmmUseCase.repository.newLikesCount
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ newLikesCount.value = it }, Timber::e)
+
+        getLmmUseCase.repository.newMatchesCount
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ newMatchesCount.value = it }, Timber::e)
+
+        getLmmUseCase.repository.newMessagesCount
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ newMessagesCount.value = it }, Timber::e)
 
         getUserImagesUseCase.repository.totalUserImages
             .observeOn(AndroidSchedulers.mainThread())
