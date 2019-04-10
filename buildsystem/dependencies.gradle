@@ -444,6 +444,7 @@ ext {
 //        [configuration: "api", dependency: d_libs.cropiwa],
         [configuration: "api", dependency: project(modules.cropiwa)],
         [configuration: "api", dependency: d_libs.glideRecycler, options: { transitive = true }],
+        [configuration: "implementation", dependency: d_libs.confetti],
         [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
     ]
