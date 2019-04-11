@@ -37,7 +37,7 @@ abstract class BaseLmmFeedViewModel(
                     userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
-    private var cachedFeed: List<FeedItem>? = null  // cache is used when fetching for feed has failed, see usage
+    private var cachedFeed: List<FeedItem> = emptyList()  // cache is used when fetching for feed has failed, see usage
     private var likedFeedItemIds = mutableMapOf<String, MutableList<String>>()  // cached feed items that were liked, to restore likes on cached feed
     private var messagedFeedItemIds = mutableSetOf<String>()  // cached feed items that have only user messages inside, sent after receiving feed
     private var notSeenFeedItemIds = mutableSetOf<String>()
@@ -131,7 +131,8 @@ abstract class BaseLmmFeedViewModel(
 
     // --------------------------------------------------------------------------------------------
     override fun onRefresh() {
-        cachedFeed = feed.value  // cache feed before purging it on refresh, to be able to restore it later if fetching new feed will fail
+        // cache feed before purging it on refresh, to be able to restore it later if fetching new feed will fail
+        cachedFeed = feed.value ?: emptyList()
         super.onRefresh()
         Bus.post(event = BusEvent.RefreshOnLmm)
     }
