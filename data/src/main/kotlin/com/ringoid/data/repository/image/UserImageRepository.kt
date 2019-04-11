@@ -204,6 +204,7 @@ class UserImageRepository @Inject constructor(
             val localImage = UserImageDbo(id = xessence.clientImageId, uri = uriLocal, uriLocal = uriLocal)
 
             Single.fromCallable { local.addImage(localImage) }
+                // TODO: probably notify before adding image to db, to avoid delay on large image files
                 .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
                 .flatMap { countUserImages() }  // actualize user images count
                 .flatMap { createImageRemoteImpl(localImage = localImage, essence = xessence, imageFilePath = imageFilePath, retryCount = retryCount) }
