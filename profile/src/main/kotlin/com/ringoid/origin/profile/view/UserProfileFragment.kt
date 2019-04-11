@@ -306,8 +306,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
     // ------------------------------------------
     private fun showBeginStub() {
-        val input = EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.profile_empty_title)
-        showEmptyStub(needShow = true, input = input)
+        showEmptyStub(needShow = true, input = EmptyFragment.Companion.Input())
     }
 
     private fun showEmptyStub(needShow: Boolean) {
