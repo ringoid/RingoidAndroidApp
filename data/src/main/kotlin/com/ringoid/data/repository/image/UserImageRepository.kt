@@ -14,6 +14,7 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.exception.isFatalApiError
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.*
 import com.ringoid.domain.model.image.Image
@@ -137,18 +138,22 @@ class UserImageRepository @Inject constructor(
      */
     private fun deleteUserImageAsync(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)
-            .flatMap { localImage ->
+            .flatMapCompletable { localImage ->
                 Single.fromCallable { local.deleteImage(id = essence.imageId) }
                     .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
                     .flatMap { countUserImages() }  // actualize user images count
-                    .flatMap {
-                        // TODO: if originId is empty, dont try to delete image remotely,  but Sentry with some alert
-                        spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                            .handleError(count = retryCount, tag = "deleteUserImage")
-                            .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
+                    .flatMapCompletable {
+                        if (localImage.originId.isNullOrBlank()) {
+                            SentryUtil.w("Deleted local image that has no remote pair")
+                            Completable.complete()
+                        } else {
+                            spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
+                                .handleError(count = retryCount, tag = "deleteUserImage")
+                                .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
+                                .ignoreElement()
+                        }
                      }
             }
-            .ignoreElement()  // convert to Completable
 
     /**
      * Perform deleting image remotely and then, if succeeded, locally. If failed, show error.
@@ -157,8 +162,13 @@ class UserImageRepository @Inject constructor(
     private fun deleteUserImageSync(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)
             .flatMap { localImage ->
-                spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                    .handleError(count = minOf(3, retryCount) /* less retries */, tag = "deleteUserImage")
+                if (localImage.originId.isNullOrBlank()) {
+                    SentryUtil.w("Deleted local image that has no remote pair")
+                    Single.just(0L)
+                } else {
+                    spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
+                        .handleError(count = minOf(3, retryCount) /* less retries */, tag = "deleteUserImage")
+                }
             }
             .flatMap {
                 Single.fromCallable { local.deleteImage(id = essence.imageId) }
