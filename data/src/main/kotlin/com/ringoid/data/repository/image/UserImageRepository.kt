@@ -95,6 +95,7 @@ class UserImageRepository @Inject constructor(
                                     when (request.type) {
                                         ImageRequestDbo.TYPE_CREATE -> {
                                             Timber.v("Execute 'create image' request again, as it's failed before")
+                                            // TODO: retry only image uploading, not full chain with local image creation
                                             createImage(request.createRequestEssence(), request.imageFilePath, retryCount = 0)
                                                 .ignoreElement()
                                         }
@@ -140,7 +141,8 @@ class UserImageRepository @Inject constructor(
                 Single.fromCallable { local.deleteImage(id = essence.imageId) }
                     .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
                     .flatMap { countUserImages() }  // actualize user images count
-                    .flatMap { _ ->
+                    .flatMap {
+                        // TODO: if originId is empty, dont try to delete image remotely,  but Sentry with some alert
                         spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
                             .handleError(count = retryCount, tag = "deleteUserImage")
                             .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
@@ -189,7 +191,7 @@ class UserImageRepository @Inject constructor(
             Single.fromCallable { local.addImage(localImage) }
                 .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
                 .flatMap { countUserImages() }  // actualize user images count
-                .flatMap { _ ->
+                .flatMap {
                     cloud.getImageUploadUrl(xessence)
                         .doOnSuccess { image ->
                             if (image.imageUri.isNullOrBlank()) {
@@ -199,6 +201,7 @@ class UserImageRepository @Inject constructor(
                              * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
                              * for image in local cache, keeping [UserImageDbo.id] and [UserImageDbo.uriLocal] unchanged.
                              */
+                            // TODO: use flat map to update local image
                             val updatedLocalImage =
                                 localImage.copyWith(originId = image.originImageId, uri = image.imageUri)
                             local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
