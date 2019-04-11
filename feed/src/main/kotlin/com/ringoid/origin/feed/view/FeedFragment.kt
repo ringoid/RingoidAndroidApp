@@ -81,12 +81,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     private fun onClearState(mode: Int) {
         fun showEmptyStub(input: EmptyFragment.Companion.Input? = null) {
-            fl_empty_container.changeVisibility(isVisible = true)
-            val emptyFragment = EmptyFragment.newInstance(input)
-            childFragmentManager
-                .beginTransaction()
-                .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
-                .commitNowAllowingStateLoss()
+            fl_empty_container?.let {
+                it.changeVisibility(isVisible = true)
+                val emptyFragment = EmptyFragment.newInstance(input)
+                childFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
+                    .commitNowAllowingStateLoss()
+            }
         }
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
@@ -98,8 +100,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     private fun onIdleState() {
-        fl_empty_container.changeVisibility(isVisible = false, soft = true)
-        swipe_refresh_layout.isRefreshing = false
+        fl_empty_container?.changeVisibility(isVisible = false, soft = true)
+        swipe_refresh_layout?.isRefreshing = false
     }
 
     /* Lifecycle */
