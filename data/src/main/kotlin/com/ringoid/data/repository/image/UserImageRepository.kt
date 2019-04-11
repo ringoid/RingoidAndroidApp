@@ -211,7 +211,7 @@ class UserImageRepository @Inject constructor(
                         .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence, imageFilePath)) }
                         .map { it.map() }
                 }
-        }
+        }// TODO: image upload could be cancelled (on app close), so need to detect that and retry upload
 
     // ------------------------------------------------------------------------
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
