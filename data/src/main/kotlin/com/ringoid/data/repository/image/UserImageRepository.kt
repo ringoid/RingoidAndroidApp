@@ -13,6 +13,7 @@ import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.isFatalApiError
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.misc.ImageResolution
@@ -87,7 +88,7 @@ class UserImageRepository @Inject constructor(
 
         return imageRequestLocal.countRequests()
             .flatMap { count ->
-                Timber.v("Total count of failed image requests: $count")
+                DebugLogUtil.i("Total count of failed image requests: $count")
                 if (count > 0) {
                     imageRequestLocal.requests()
                         .flatMap {
@@ -95,12 +96,12 @@ class UserImageRepository @Inject constructor(
                                 .map { request ->
                                     when (request.type) {
                                         ImageRequestDbo.TYPE_CREATE -> {
-                                            Timber.v("Execute 'create image' request again, as it's failed before")
+                                            DebugLogUtil.i("Execute 'create image' request again, as it's failed before")
                                             createImageRemote(request.createRequestEssence(), request.imageFilePath, retryCount = 0)
                                                 .ignoreElement()
                                         }
                                         ImageRequestDbo.TYPE_DELETE -> {
-                                            Timber.v("Execute 'delete image' request again, as it's failed before")
+                                            DebugLogUtil.i("Execute 'delete image' request again, as it's failed before")
                                             deleteUserImageRemote(request.deleteRequestEssence(), retryCount = 0)
                                         }
                                         else -> Completable.complete()  // ignored item
