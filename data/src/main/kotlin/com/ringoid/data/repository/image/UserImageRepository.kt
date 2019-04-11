@@ -92,6 +92,7 @@ class UserImageRepository @Inject constructor(
                 if (count > 0) {
                     imageRequestLocal.requests()
                         .flatMap {
+                            DebugLogUtil.v("Pending image requests [${it.size}]: ${it.joinToString("\n\t\t", "\n\t\t", "\n", transform = { it.type })}")
                             Observable.fromIterable(it)
                                 .map { request ->
                                     when (request.type) {
@@ -149,16 +150,28 @@ class UserImageRepository @Inject constructor(
         local.userImage(id = essence.imageId)
             .flatMapCompletable { deleteUserImageRemoteImpl(localImage = it, essence = essence, retryCount = retryCount) }
 
-    private fun deleteUserImageRemoteImpl(localImage: UserImageDbo, essence: ImageDeleteEssence, retryCount: Int): Completable =
-        if (localImage.originId.isNullOrBlank()) {
+    private fun deleteUserImageRemoteImpl(localImage: UserImageDbo, essence: ImageDeleteEssence, retryCount: Int): Completable {
+        fun addPendingDeleteImageRequest() {
+            imageRequestLocal.addRequest(ImageRequestDbo.from(essence))
+        }
+
+        return if (localImage.originId.isNullOrBlank()) {
             SentryUtil.w("Deleted local image that has no remote pair")
             Completable.complete()
         } else {
             spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
                 .handleError(count = retryCount, tag = "deleteUserImage")
-                .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
+                .doOnDispose {
+                    DebugLogUtil.i("Cancelled image delete")
+                    addPendingDeleteImageRequest()
+                }
+                .doOnError {
+                    DebugLogUtil.w("Failed to delete image")
+                    addPendingDeleteImageRequest()
+                }
                 .ignoreElement()
         }
+    }
 
     /**
      * Perform deleting image remotely and then, if succeeded, locally. If failed, show error.
@@ -207,14 +220,18 @@ class UserImageRepository @Inject constructor(
                 .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
                 .flatMap { countUserImages() }  // actualize user images count
                 .flatMap { createImageRemoteImpl(localImage = localImage, essence = xessence, imageFilePath = imageFilePath, retryCount = retryCount) }
-        }// TODO: image upload could be cancelled (on app close), so need to detect that and retry upload
+        }
 
     private fun createImageRemote(essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> =
         local.userImage(id = essence.clientImageId)
             .flatMap { createImageRemoteImpl(localImage = it, essence = essence, imageFilePath = imageFilePath, retryCount = retryCount) }
 
-    private fun createImageRemoteImpl(localImage: UserImageDbo, essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> =
-        cloud.getImageUploadUrl(essence)
+    private fun createImageRemoteImpl(localImage: UserImageDbo, essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> {
+        fun addPendingCreateImageRequest(imageFilePath: String) {
+            imageRequestLocal.addRequest(ImageRequestDbo.from(essence, imageFilePath))
+        }
+
+        return cloud.getImageUploadUrl(essence)
             .flatMap { image ->
                 if (image.imageUri.isNullOrBlank()) {
                     Single.error(NullPointerException("Upload uri is null: $image"))
@@ -231,11 +248,19 @@ class UserImageRepository @Inject constructor(
             .flatMap {
                 val imageFile = File(imageFilePath)
                 cloud.uploadImage(url = it.imageUri!!, image = imageFile)
-                     .andThen(Single.just(it))
+                    .andThen(Single.just(it))
             }
             .handleError(count = retryCount, tag = "createImage")
-            .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence, imageFilePath)) }
+            .doOnDispose {
+                DebugLogUtil.i("Cancelled image create and upload")
+                addPendingCreateImageRequest(imageFilePath)
+            }
+            .doOnError {
+                DebugLogUtil.w("Failed to create and upload image")
+                addPendingCreateImageRequest(imageFilePath)
+            }
             .map { it.map() }
+    }
 
     // ------------------------------------------------------------------------
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
