@@ -96,13 +96,12 @@ class UserImageRepository @Inject constructor(
                                     when (request.type) {
                                         ImageRequestDbo.TYPE_CREATE -> {
                                             Timber.v("Execute 'create image' request again, as it's failed before")
-                                            // TODO: retry only image uploading, not full chain with local image creation
-                                            createImage(request.createRequestEssence(), request.imageFilePath, retryCount = 0)
+                                            createImageRemote(request.createRequestEssence(), request.imageFilePath, retryCount = 0)
                                                 .ignoreElement()
                                         }
                                         ImageRequestDbo.TYPE_DELETE -> {
                                             Timber.v("Execute 'delete image' request again, as it's failed before")
-                                            deleteUserImageAsync(request.deleteRequestEssence(), retryCount = 0)
+                                            deleteUserImageRemote(request.deleteRequestEssence(), retryCount = 0)
                                         }
                                         else -> Completable.complete()  // ignored item
                                     }
@@ -142,18 +141,23 @@ class UserImageRepository @Inject constructor(
                 Single.fromCallable { local.deleteImage(id = essence.imageId) }
                     .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
                     .flatMap { countUserImages() }  // actualize user images count
-                    .flatMapCompletable {
-                        if (localImage.originId.isNullOrBlank()) {
-                            SentryUtil.w("Deleted local image that has no remote pair")
-                            Completable.complete()
-                        } else {
-                            spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                                .handleError(count = retryCount, tag = "deleteUserImage")
-                                .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
-                                .ignoreElement()
-                        }
-                     }
+                    .flatMapCompletable { deleteUserImageRemoteImpl(localImage, essence, retryCount) }
             }
+
+    private fun deleteUserImageRemote(essence: ImageDeleteEssence, retryCount: Int): Completable =
+        local.userImage(id = essence.imageId)
+            .flatMapCompletable { deleteUserImageRemoteImpl(localImage = it, essence = essence, retryCount = retryCount) }
+
+    private fun deleteUserImageRemoteImpl(localImage: UserImageDbo, essence: ImageDeleteEssence, retryCount: Int): Completable =
+        if (localImage.originId.isNullOrBlank()) {
+            SentryUtil.w("Deleted local image that has no remote pair")
+            Completable.complete()
+        } else {
+            spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
+                .handleError(count = retryCount, tag = "deleteUserImage")
+                .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
+                .ignoreElement()
+        }
 
     /**
      * Perform deleting image remotely and then, if succeeded, locally. If failed, show error.
@@ -201,27 +205,36 @@ class UserImageRepository @Inject constructor(
             Single.fromCallable { local.addImage(localImage) }
                 .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
                 .flatMap { countUserImages() }  // actualize user images count
-                .flatMap {
-                    cloud.getImageUploadUrl(xessence)
-                        .doOnSuccess { image ->
-                            if (image.imageUri.isNullOrBlank()) {
-                                throw NullPointerException("Upload uri is null: $image")
-                            }
-                            /**
-                             * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
-                             * for image in local cache, keeping [UserImageDbo.id] and [UserImageDbo.uriLocal] unchanged.
-                             */
-                            // TODO: use flat map to update local image
-                            val updatedLocalImage =
-                                localImage.copyWith(originId = image.originImageId, uri = image.imageUri)
-                            local.updateUserImage(updatedLocalImage)  // local image now has proper originId and remote url
-                        }
-                        .flatMap { cloud.uploadImage(url = it.imageUri!!, image = imageFile).andThen(Single.just(it)) }
-                        .handleError(count = retryCount, tag = "createImage")
-                        .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(xessence, imageFilePath)) }
-                        .map { it.map() }
-                }
+                .flatMap { createImageRemoteImpl(localImage = localImage, essence = xessence, imageFilePath = imageFilePath, retryCount = retryCount) }
         }// TODO: image upload could be cancelled (on app close), so need to detect that and retry upload
+
+    private fun createImageRemote(essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> =
+        local.userImage(id = essence.clientImageId)
+            .flatMap { createImageRemoteImpl(localImage = it, essence = essence, imageFilePath = imageFilePath, retryCount = retryCount) }
+
+    private fun createImageRemoteImpl(localImage: UserImageDbo, essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> =
+        cloud.getImageUploadUrl(essence)
+            .flatMap { image ->
+                if (image.imageUri.isNullOrBlank()) {
+                    Single.error(NullPointerException("Upload uri is null: $image"))
+                } else {
+                    /**
+                     * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
+                     * for image in local cache, keeping [UserImageDbo.id] and [UserImageDbo.uriLocal] unchanged.
+                     */
+                    val updatedLocalImage = localImage.copyWith(originId = image.originImageId, uri = image.imageUri)
+                    Completable.fromCallable { local.updateUserImage(updatedLocalImage) }  // local image now has proper originId and remote url
+                        .toSingleDefault(image)
+                }
+            }
+            .flatMap {
+                val imageFile = File(imageFilePath)
+                cloud.uploadImage(url = it.imageUri!!, image = imageFile)
+                     .andThen(Single.just(it))
+            }
+            .handleError(count = retryCount, tag = "createImage")
+            .doOnError { imageRequestLocal.addRequest(ImageRequestDbo.from(essence, imageFilePath)) }
+            .map { it.map() }
 
     // ------------------------------------------------------------------------
     override fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<Image> =
