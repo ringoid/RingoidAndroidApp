@@ -164,6 +164,7 @@ class UserImageRepository @Inject constructor(
                 .doOnDispose {
                     DebugLogUtil.i("Cancelled image delete")
                     addPendingDeleteImageRequest()
+                    // TODO: mot enough time to perform db insert, process terminates
                 }
                 .doOnError {
                     DebugLogUtil.w("Failed to delete image")
@@ -254,6 +255,7 @@ class UserImageRepository @Inject constructor(
             .doOnDispose {
                 DebugLogUtil.i("Cancelled image create and upload")
                 addPendingCreateImageRequest(imageFilePath)
+                // TODO: mot enough time to perform db insert, process terminates
             }
             .doOnError {
                 DebugLogUtil.w("Failed to create and upload image")
