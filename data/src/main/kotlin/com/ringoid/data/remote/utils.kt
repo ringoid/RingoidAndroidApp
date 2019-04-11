@@ -16,12 +16,14 @@ fun IEssence.toBody(): RequestBody = RequestBody.create(MediaType.parse("applica
 const val DEFAULT_TAG = "response"
 
 // ------------------------------------------------------------------------------------------------
-fun Completable.logRequest(tag: String = "", vararg data: Pair<String, String>): Completable = this  // no-op, for symmetry
+fun Completable.logRequest(tag: String = "", vararg data: Pair<String, String>): Completable = compose(logRequestCompletable(tag, *data))
 inline fun <reified T : BaseResponse> Maybe<T>.logRequest(tag: String = "", vararg data: Pair<String, String>): Maybe<T> = compose(logRequestMaybe<T>(tag, *data))
 inline fun <reified T : BaseResponse> Single<T>.logRequest(tag: String = "", vararg data: Pair<String, String>): Single<T> = compose(logRequestSingle<T>(tag, *data))
 inline fun <reified T : BaseResponse> Flowable<T>.logRequest(tag: String = "", vararg data: Pair<String, String>): Flowable<T> = compose(logRequestFlowable<T>(tag, *data))
 inline fun <reified T : BaseResponse> Observable<T>.logRequest(tag: String = "", vararg data: Pair<String, String>): Observable<T> = compose(logRequestObservable<T>(tag, *data))
 
+fun logRequestCompletable(tag: String = "", vararg data: Pair<String, String>): CompletableTransformer =
+    CompletableTransformer { it.doOnSubscribe { logBaseRequest(tag, *data) } }
 inline fun <reified T : BaseResponse> logRequestMaybe(tag: String = "", vararg data: Pair<String, String>): MaybeTransformer<T, T> =
     MaybeTransformer { it.doOnSubscribe { logBaseRequest(tag, *data) } }
 inline fun <reified T : BaseResponse> logRequestSingle(tag: String = "", vararg data: Pair<String, String>): SingleTransformer<T, T> =
@@ -36,6 +38,12 @@ fun logBaseRequest(tag: String = "", vararg data: Pair<String, String>) {
 }
 
 // ----------------------------------------------
+private fun logBaseResponse(tag: String = "", startTime: Long, vararg data: Pair<String, String>) {
+    val elapsedTime = System.currentTimeMillis() - startTime
+    SentryUtil.breadcrumb("Response [$tag]", "elapsedTime" to "$elapsedTime ms")
+    DebugLogUtil.d("<== [$tag][$elapsedTime ms]: ${data.joinToString()}".trim())
+}
+
 inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "", startTime: Long, vararg data: Pair<String, String>) {
     val elapsedTime = System.currentTimeMillis() - startTime
     SentryUtil.breadcrumb("Response [$tag]", "elapsedTime" to "$elapsedTime ms", "error code" to it.errorCode,
@@ -57,6 +65,7 @@ fun logResponseCompletable(tag: String = DEFAULT_TAG, vararg data: Pair<String, 
         var startTime = 0L
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
+            .doOnComplete { logBaseResponse(tag, startTime, *data) }
             .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
