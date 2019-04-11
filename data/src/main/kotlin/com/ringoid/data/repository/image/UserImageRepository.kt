@@ -122,7 +122,7 @@ class UserImageRepository @Inject constructor(
     }
 
     override fun getUserImagesAsync(resolution: ImageResolution): Observable<List<UserImage>> =
-        Observable.concatArrayEager(local.userImages().map { it.mapList() }.toObservable(), getUserImages(resolution).toObservable())
+        Observable.concatArray(local.userImages().map { it.mapList() }.toObservable(), getUserImages(resolution).toObservable())
 
     // ------------------------------------------------------------------------
     override fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized): Completable =
