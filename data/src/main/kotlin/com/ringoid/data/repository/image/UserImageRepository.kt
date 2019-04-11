@@ -204,8 +204,7 @@ class UserImageRepository @Inject constructor(
             val localImage = UserImageDbo(id = xessence.clientImageId, uri = uriLocal, uriLocal = uriLocal)
 
             Single.fromCallable { local.addImage(localImage) }
-                // Notify before adding image to db, to avoid delay on large image files
-                .doOnSubscribe { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
+                .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
                 .flatMap { countUserImages() }  // actualize user images count
                 .flatMap { createImageRemoteImpl(localImage = localImage, essence = xessence, imageFilePath = imageFilePath, retryCount = retryCount) }
         }// TODO: image upload could be cancelled (on app close), so need to detect that and retry upload
