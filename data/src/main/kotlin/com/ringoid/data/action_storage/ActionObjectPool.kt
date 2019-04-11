@@ -153,19 +153,19 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     }
 
     override fun triggerSource(): Single<Long> =
-        Single.just(0L)
+        Single.just(tid++)
             .flatMap {
                 if (triggerInProgress.isLocked()) {
-                    Single.error(WaitUntilTriggerFinishedException())
+                    Single.error(WaitUntilTriggerFinishedException(tid = it))
                 } else {
                     triggerInProgress.increment()
-                    triggerSourceImpl().doFinally { triggerInProgress.decrement() }
+                    triggerSourceImpl().doFinally { triggerInProgress.decrement(); --tid }
                 }
             }
             .retryWhen {
                 it.flatMap {
                     if (it is WaitUntilTriggerFinishedException) {
-                        DebugLogUtil.v(it.message ?: "Waiting for commit actions in progress to finish...")
+                        DebugLogUtil.v(it.message ?: "Waiting for commit actions in progress to finish... [${it.tid} of ($tid)]")
                         Flowable.timer(200L, TimeUnit.MILLISECONDS)  // repeat
                     } else {
                         DebugLogUtil.e(it)
@@ -173,6 +173,8 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                     }
                 }
             }
+
+    private var tid: Long = 0L  // thread id
 
     private fun triggerSourceImpl(): Single<Long> {
         updateLastActionTime(queue.peekLast()?.actionTime ?: lastActionTime())
