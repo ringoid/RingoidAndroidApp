@@ -14,18 +14,6 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     : BaseFeedViewHolder(view, viewPool) {
 
     init {
-        // TODO: improve UX for fling
-//        itemView.ibtn_message.setOnFlingListener {
-//            val rv = itemView.rv_items
-//            when (it) {
-//                Direction.left -> {  // next page
-//                    rv.smoothScrollToPosition(adapterPosition + 1)
-//                }
-//                Direction.right -> {  // previous page
-//                    rv.smoothScrollToPosition(adapterPosition - 1)
-//                }
-//            }
-//        }
         itemView.tv_seen_status.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
