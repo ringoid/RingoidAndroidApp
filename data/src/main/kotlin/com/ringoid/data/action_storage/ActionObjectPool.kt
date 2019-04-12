@@ -160,18 +160,18 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
                 } else {
                     triggerInProgress.increment()
                     triggerSourceImpl()
-                        .doOnSubscribe { DebugLogUtil.v("Commit actions started by ${thread.first}") }
+                        .doOnSubscribe { DebugLogUtil.d("Commit actions started by [${thread.first}]") }
                         .doFinally {
                             triggerInProgress.decrement()
                             --tcount
-                            DebugLogUtil.v("Commit actions has finished by ${thread.first}")
+                            DebugLogUtil.d("Commit actions has finished by [${thread.first}]")
                         }
                 }
             }
             .retryWhen {
                 it.flatMap {
                     if (it is WaitUntilTriggerFinishedException) {
-                        DebugLogUtil.v(it.message ?: "Waiting for commit actions in progress to finish... [${it.tid} of ($tcount)]")
+                        DebugLogUtil.v(it.message ?: "Waiting for commit actions in progress to finish... [${it.tid} of $tcount]")
                         Flowable.timer(200L, TimeUnit.MILLISECONDS)  // repeat
                     } else {
                         DebugLogUtil.e(it)
