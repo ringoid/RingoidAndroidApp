@@ -65,8 +65,8 @@ open class FeedRepository @Inject constructor(
 
     // ------------------------------------------
     override fun clearCachedLmmProfileIds(): Completable =
-        Completable.fromCallable { newLikesProfilesCache.deleteProfileIds() }
-                   .andThen { newMatchesProfilesCache.deleteProfileIds() }
+        Single.fromCallable { newLikesProfilesCache.deleteProfileIds() }
+              .flatMapCompletable { Completable.fromCallable { newMatchesProfilesCache.deleteProfileIds() } }
 
     // --------------------------------------------------------------------------------------------
     override val badgeLikes = PublishSubject.create<Boolean>()
