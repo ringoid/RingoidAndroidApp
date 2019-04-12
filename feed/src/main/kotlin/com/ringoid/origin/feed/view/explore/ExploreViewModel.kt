@@ -144,7 +144,7 @@ class ExploreViewModel @Inject constructor(
         if (itemsLeftToEnd <= DomainUtil.LOAD_MORE_THRESHOLD) {
             DebugLogUtil.b("Load next page")
             isLoadingMore = true
-            actionObjectPool.trigger()
+//            actionObjectPool.trigger()
             getMoreFeed()
         }
     }

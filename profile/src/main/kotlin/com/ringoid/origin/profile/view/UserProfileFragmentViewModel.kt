@@ -164,7 +164,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     fun onStartRefresh() {
-        actionObjectPool.trigger()
+//        actionObjectPool.trigger()
     }
 
     fun onRefresh() {

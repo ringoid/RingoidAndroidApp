@@ -134,12 +134,12 @@ abstract class FeedViewModel(
     }
 
     fun onStartRefresh() {
-        actionObjectPool.trigger()
+//        actionObjectPool.trigger()
     }
 
     open fun onRefresh() {
         advanceAndPushViewObjects()
-        actionObjectPool.trigger()
+//        actionObjectPool.trigger()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
             .andThen(
