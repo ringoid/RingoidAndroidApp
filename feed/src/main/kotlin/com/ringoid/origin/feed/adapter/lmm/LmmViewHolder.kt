@@ -8,7 +8,6 @@ import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.utility.changeVisibility
-import kotlinx.android.synthetic.main.rv_item_lmm_footer.view.*
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
 open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
@@ -105,10 +104,10 @@ class FooterLmmViewHolder(view: View) : OriginFeedViewHolder(view) {
 
     // ------------------------------------------
     private fun hideControls() {
-        itemView.iv_end_item.changeVisibility(isVisible = false)
+//        itemView.iv_end_item.changeVisibility(isVisible = false)
     }
 
     private fun showControls() {
-        itemView.iv_end_item.changeVisibility(isVisible = true)
+//        itemView.iv_end_item.changeVisibility(isVisible = true)
     }
 }
