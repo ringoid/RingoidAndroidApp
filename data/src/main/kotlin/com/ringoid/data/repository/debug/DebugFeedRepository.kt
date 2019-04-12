@@ -28,9 +28,12 @@ class DebugFeedRepository @Inject constructor(
     messengerLocal: MessageDao, @Named("user") sentMessagesLocal: MessageDao,
     @Named("alreadySeen") alreadySeenProfilesCache: UserFeedDao,
     @Named("block") blockedProfilesCache: UserFeedDao,
+    @Named("newLikes") newLikesProfilesCache: UserFeedDao,
+    @Named("newMatches") newMatchesProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
-    : FeedRepository(messengerLocal, sentMessagesLocal, alreadySeenProfilesCache, blockedProfilesCache, cloud, spm, aObjPool),
-      IDebugFeedRepository {
+    : FeedRepository(messengerLocal, sentMessagesLocal, alreadySeenProfilesCache, blockedProfilesCache,
+                     newLikesProfilesCache, newMatchesProfilesCache, cloud, spm, aObjPool),
+    IDebugFeedRepository {
 
     /* Debug */
     // --------------------------------------------------------------------------------------------
