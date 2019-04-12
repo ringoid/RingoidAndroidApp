@@ -30,7 +30,7 @@ abstract class ParticleGenerator(internal val id: String, activity: Activity) : 
     internal open val targetVelocityY = 0f
     internal open val targetVelocityDevY = 0f
 
-    internal open val ttl = -1L
+    internal open val ttl = 3500L
 }
 
 sealed class BitmapParticleGenerator(id: String, activity: Activity, private val bitmap: Bitmap)
@@ -55,8 +55,6 @@ class LikesParticleGenerator(activity: Activity)
     override val velocityDevY = velocityY * 0.5f
     override val targetVelocityY = -h / 4.5f
     override val targetVelocityDevY = targetVelocityY * 0.5f
-
-    override val ttl = -1L
 }
 
 class MatchesParticleGenerator(activity: Activity)
@@ -75,8 +73,6 @@ class MatchesParticleGenerator(activity: Activity)
     override val velocityDevY = velocityY * 0.5f
     override val targetVelocityY = -h / 4.5f
     override val targetVelocityDevY = targetVelocityY * 0.5f
-
-    override val ttl = -1L
 }
 
 class MessagesParticleGenerator(activity: Activity)
@@ -86,15 +82,13 @@ class MessagesParticleGenerator(activity: Activity)
     override val accelerationDevX = accelerationX * 0.1f
     override val velocityX = -10f
     override val velocityDevX = -velocityX * 3f
-    override val targetVelocityX = 250f
+    override val targetVelocityX = 75f
     override val targetVelocityDevX = targetVelocityX * 3f
 
     override val accelerationY = h / 15f
     override val accelerationDevY = accelerationY * 0.1f
     override val velocityY = -h / 3.3f
     override val velocityDevY = velocityY * 0.5f
-    override val targetVelocityY = -h / 4.5f
+    override val targetVelocityY = -h / 3.3f
     override val targetVelocityDevY = targetVelocityY * 0.5f
-
-    override val ttl = -1L
 }

@@ -33,11 +33,14 @@ class ParticleAnimator @Inject constructor() {
             return
         }
 
+        val duration = 3500L
         val generator = generators[id]!!
-        val source = ConfettiSource(containerView.width / 3, containerView.height - AppRes.MAIN_BOTTOM_BAR_HEIGHT_HALF)
+        val source = ConfettiSource(containerView.width / 3 - AppRes.ICON_SIZE_36 / 2, containerView.height - AppRes.MAIN_BOTTOM_BAR_HEIGHT)
 
         ConfettiManager(containerView.context, generator, source, containerView)
-            .setNumInitialCount(count)
+            .setEmissionDuration(duration)
+            .setEmissionRate(count * 1000f / duration)
+            .setNumInitialCount(1)
             .setVelocityX(generator.velocityX, generator.velocityDevX)
             .setAccelerationX(generator.accelerationX, generator.accelerationDevX)
             .setTargetVelocityX(generator.targetVelocityX, generator.targetVelocityDevX)
