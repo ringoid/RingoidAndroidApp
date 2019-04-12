@@ -1,19 +1,11 @@
 package com.ringoid.origin.view.particles
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.VectorDrawable
 import android.view.ViewGroup
 import android.view.animation.Interpolator
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import com.github.jinatonic.confetti.ConfettiManager
 import com.github.jinatonic.confetti.ConfettiSource
 import com.ringoid.origin.AppRes
 import dagger.Reusable
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -28,65 +20,37 @@ class ParticleAnimator @Inject constructor() {
     private lateinit var containerView: ViewGroup
     private val generators = mutableMapOf<String, ParticleGenerator>()
 
-    fun addGeneratorForResource(id: String, context: Context, @DrawableRes resId: Int) {
-        if (generators.containsKey(id)) {
-            return
-        }
-
-        getBitmap(context, resId)?.let {
-            generators[id] = BitmapParticleGenerator(it)
-        }
-    }
-
-    fun animateOnce(id: String) {
-        if (!generators.containsKey(id)) {
-            return
-        }
-
-        val source = ConfettiSource(containerView.width / 3, containerView.height - AppRes.MAIN_BOTTOM_BAR_HEIGHT_HALF)
-
-        ConfettiManager(containerView.context, generators[id], source, containerView)
-            .setNumInitialCount(1)
-            .setVelocityX(-25f, 75f)
-            .setAccelerationX(-50f, 25f)
-            .setTargetVelocityX(0f, 12.5f)
-            .setVelocityY(-660f, 80f)
-            .setTTL(3000L)
-            .enableFadeOut(ParticleInterpolator(random.nextFloat() / 10f))
-            .animate()
+    fun addGenerator(generator: ParticleGenerator) {
+        generators[generator.id] = generator
     }
 
     fun animate(id: String, count: Int) {
+        animateN(id, count)
+    }
+
+    private fun animateN(id: String, count: Int) {
         if (count <= 0 || !generators.containsKey(id)) {
             return
         }
 
-        (1..count).forEach { animateOnce(id) }
+        val generator = generators[id]!!
+        val source = ConfettiSource(containerView.width / 3, containerView.height - AppRes.MAIN_BOTTOM_BAR_HEIGHT_HALF)
+
+        ConfettiManager(containerView.context, generator, source, containerView)
+            .setNumInitialCount(count)
+            .setVelocityX(generator.velocityX, generator.velocityDevX)
+            .setAccelerationX(generator.accelerationX, generator.accelerationDevX)
+            .setTargetVelocityX(generator.targetVelocityX, generator.targetVelocityDevX)
+            .setVelocityY(generator.velocityY, generator.velocityDevY)
+            .setAccelerationY(generator.accelerationY, generator.accelerationDevY)
+            .setTargetVelocityY(generator.targetVelocityY, generator.targetVelocityDevY)
+            .setTTL(generator.ttl)
+            .enableFadeOut(ParticleInterpolator(random.nextFloat() * 0.1f))
+            .animate()
     }
 
     fun setContainerView(containerView: ViewGroup) {
         this.containerView = containerView
-    }
-
-    // --------------------------------------------------------------------------------------------
-    private fun getBitmap(context: Context, @DrawableRes resId: Int): Bitmap? =
-        ContextCompat.getDrawable(context, resId)?.let {
-            when (it) {
-                is BitmapDrawable -> it.bitmap
-                is VectorDrawable -> getBitmap(it)
-                else -> {
-                    Timber.e("Unsupported drawable type: ${it.javaClass.simpleName}")
-                    null
-                }
-            }
-        }
-
-    private fun getBitmap(drawable: VectorDrawable): Bitmap {
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bitmap
     }
 }
 

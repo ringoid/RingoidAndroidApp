@@ -78,6 +78,7 @@
     <string name="profile_dialog_image_blocked_button">Terms of Service</string>
     <string name="profile_dialog_image_blocked_title">Your photo was deleted for violating Terms of Service</string>
     <string name="profile_dialog_image_delete_title">Delete Photo?</string>
+    <string name="profile_dialog_simulate_particles_title">Simulate particles</string>
     <string name="profile_empty_images">Add photo to\nreceive likes</string>
     <string name="profile_empty_title">Profile</string>
     <string name="profile_label_coins">%s coins</string>

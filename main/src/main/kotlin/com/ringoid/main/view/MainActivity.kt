@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.observe
-import com.ringoid.main.OriginR_drawable
 import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_style
 import com.ringoid.origin.feed.view.explore.ExploreFragment
@@ -14,9 +13,7 @@ import com.ringoid.origin.feed.view.lmm.LmmFragment
 import com.ringoid.origin.profile.view.UserProfileFragment
 import com.ringoid.origin.utils.AppUtils
 import com.ringoid.origin.view.main.BaseMainActivity
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
+import com.ringoid.origin.view.particles.*
 
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
@@ -75,9 +72,9 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     private fun initializeParticleAnimation() {
         with(particleAnimator) {
             setContainerView(findViewById(OriginR_id.fl_container))
-            addGeneratorForResource(PARTICLE_TYPE_LIKE, this@MainActivity, OriginR_drawable.ic_particle_like)
-            addGeneratorForResource(PARTICLE_TYPE_MATCH, this@MainActivity, OriginR_drawable.ic_particle_match)
-            addGeneratorForResource(PARTICLE_TYPE_MESSAGE, this@MainActivity, OriginR_drawable.ic_particle_message)
+            addGenerator(LikesParticleGenerator(this@MainActivity))
+            addGenerator(MatchesParticleGenerator(this@MainActivity))
+            addGenerator(MessagesParticleGenerator(this@MainActivity))
         }
     }
 }

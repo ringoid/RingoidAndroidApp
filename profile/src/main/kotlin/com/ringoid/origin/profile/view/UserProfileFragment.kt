@@ -17,7 +17,9 @@ import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppRes
@@ -29,6 +31,9 @@ import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.*
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
@@ -258,6 +263,17 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(imagePreloadListener)
         }
+        with (tv_app_title) {
+            if (BuildConfig.IS_STAGING) {
+                isClickable = true
+                clicks().compose(clickDebounce()).subscribe {
+                    Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.profile_dialog_simulate_particles_title,
+                        positiveBtnLabelResId = OriginR_string.button_apply,
+                        negativeBtnLabelResId = OriginR_string.button_close,
+                        positiveListener = { _, _, inputText -> simulateParticles(inputText?.toInt() ?: 0) })
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -372,6 +388,18 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             with (ibtn_settings) {
                 setPadding(margin16, margin8, margin16, margin8)
             }
+        }
+    }
+
+    @DebugOnly
+    private fun simulateParticles(count: Int) {
+        if (count <= 0) {
+            return
+        }
+        communicator((IBaseMainActivity::class.java))?.let {
+            it.showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = count)
+            it.showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = count / 10)
+            it.showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = count / 20)
         }
     }
 }
