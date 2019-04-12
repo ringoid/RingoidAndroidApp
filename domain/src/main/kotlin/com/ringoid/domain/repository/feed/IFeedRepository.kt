@@ -23,6 +23,9 @@ interface IFeedRepository {
 
     fun deleteBlockedProfileIds(): Completable
 
+    // ------------------------------------------
+    fun clearCachedLmmProfileIds(): Completable
+
     // --------------------------------------------------------------------------------------------
     val badgeLikes: PublishSubject<Boolean>
     val badgeMatches: PublishSubject<Boolean>

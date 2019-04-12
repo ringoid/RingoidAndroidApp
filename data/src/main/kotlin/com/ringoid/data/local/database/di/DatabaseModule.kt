@@ -2,10 +2,7 @@ package com.ringoid.data.local.database.di
 
 import android.content.Context
 import androidx.room.Room
-import com.ringoid.data.local.database.BlockProfilesUserRingoidDatabase
-import com.ringoid.data.local.database.DebugRingoidDatabase
-import com.ringoid.data.local.database.RingoidDatabase
-import com.ringoid.data.local.database.UserRingoidDatabase
+import com.ringoid.data.local.database.*
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDaoHelper
@@ -43,6 +40,16 @@ class DatabaseModule {
         Room.databaseBuilder(applicationContext, BlockProfilesUserRingoidDatabase::class.java, BlockProfilesUserRingoidDatabase.DATABASE_NAME)
             .build()
 
+    @Provides @Singleton
+    fun provideNewLikesProfilesUserDatabase(applicationContext: Context): NewLikesProfilesUserRingoidDatabase =
+        Room.databaseBuilder(applicationContext, NewLikesProfilesUserRingoidDatabase::class.java, NewLikesProfilesUserRingoidDatabase.DATABASE_NAME)
+            .build()
+
+    @Provides @Singleton
+    fun provideNewMatchesProfilesUserDatabase(applicationContext: Context): NewMatchesProfilesUserRingoidDatabase =
+        Room.databaseBuilder(applicationContext, NewMatchesProfilesUserRingoidDatabase::class.java, NewMatchesProfilesUserRingoidDatabase.DATABASE_NAME)
+            .build()
+
     @Provides @Singleton @DebugOnly
     fun provideDebugRingoidDatabase(applicationContext: Context): DebugRingoidDatabase =
         Room.databaseBuilder(applicationContext, DebugRingoidDatabase::class.java, DebugRingoidDatabase.DATABASE_NAME)
@@ -78,6 +85,12 @@ class DatabaseModule {
 
     @Provides @Singleton @Named("block")
     fun provideBlockedUserFeedDao(database: BlockProfilesUserRingoidDatabase): UserFeedDao = database.userFeedDao()
+
+    @Provides @Singleton @Named("newLikes")
+    fun provideNewLikesUserFeedDao(database: NewLikesProfilesUserRingoidDatabase): UserFeedDao = database.userFeedDao()
+
+    @Provides @Singleton @Named("newMatches")
+    fun provideNewMatchesUserFeedDao(database: NewMatchesProfilesUserRingoidDatabase): UserFeedDao = database.userFeedDao()
 
     @Provides @Singleton @DebugOnly
     fun provideDebugLogDao(database: DebugRingoidDatabase): DebugLogDao = database.debugLogDao()

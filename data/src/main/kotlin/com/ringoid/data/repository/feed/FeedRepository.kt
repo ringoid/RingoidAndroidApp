@@ -14,12 +14,12 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.mapList
-import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -35,6 +35,8 @@ open class FeedRepository @Inject constructor(
     private val messengerLocal: MessageDao, @Named("user") private val sentMessagesLocal: MessageDao,
     @Named("alreadySeen") private val alreadySeenProfilesCache: UserFeedDao,
     @Named("block") private val blockedProfilesCache: UserFeedDao,
+    @Named("newLikes") private val newLikesProfilesCache: UserFeedDao,
+    @Named("newMatches") private val newMatchesProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
@@ -60,6 +62,11 @@ open class FeedRepository @Inject constructor(
 
     override fun deleteBlockedProfileIds(): Completable =
         Completable.fromCallable { blockedProfilesCache.deleteProfileIds() }
+
+    // ------------------------------------------
+    override fun clearCachedLmmProfileIds(): Completable =
+        Completable.fromCallable { newLikesProfilesCache.deleteProfileIds() }
+                   .andThen { newMatchesProfilesCache.deleteProfileIds() }
 
     // --------------------------------------------------------------------------------------------
     override val badgeLikes = PublishSubject.create<Boolean>()
@@ -97,9 +104,6 @@ open class FeedRepository @Inject constructor(
 
     /* LMM */
     // ------------------------------------------
-    private val newLikesProfileIds = mutableSetOf<String>()
-    private val newMatchesProfileIds = mutableSetOf<String>()
-
     override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
         aObjPool.triggerSource().flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
 
@@ -122,43 +126,11 @@ open class FeedRepository @Inject constructor(
                  .doOnSuccess {
                      // clear sent user messages because they will be restored with new Lmm
                      sentMessagesLocal.deleteMessages()
-
-                     val _notSeenLikesProfileIds = it.notSeenLikesProfileIds()
-                     val _notSeenMatchesProfileIds = it.notSeenMatchesProfileIds()
-                     val _oldLikesCount = newLikesProfileIds.size
-                     val _oldMatchesCount = newMatchesProfileIds.size
-                     newLikesProfileIds.addAll(_notSeenLikesProfileIds)
-                     newMatchesProfileIds.addAll(_notSeenMatchesProfileIds)
-                     val _newLikesCount = maxOf(0, newLikesProfileIds.size - _oldLikesCount)
-                     val _newMatchesCount = maxOf(0, newMatchesProfileIds.size - _oldMatchesCount)
-
-                     badgeLikes.onNext(_notSeenLikesProfileIds.size > 0)
-                     badgeMatches.onNext(_notSeenMatchesProfileIds.size > 0)
-                     feedLikes.onNext(it.likes)
-                     feedMatches.onNext(it.matches)
-                     feedMessages.onNext(it.messages)
                      lmmChanged.onNext(it.containsNotSeenItems())  // have not seen items
-                     newLikesCount.onNext(_newLikesCount)
-                     newMatchesCount.onNext(_newMatchesCount)
                  }
-                .zipWith(messengerLocal.countUnreadMessages(),
-                    BiFunction { lmm: Lmm, count: Int ->
-                        if (count > 0) {
-                            badgeMessenger.onNext(true)
-                            lmmChanged.onNext(true)  // have unread messages since last update
-                        }
-                        lmm
-                    })
-                .zipWith(messengerLocal.countPeerMessages(),  // old total messages count from any peer
-                    BiFunction { lmm: Lmm, count: Int ->
-                        val peerMessagesCount = lmm.peerMessagesCount()
-                        if (peerMessagesCount != 0 && count != peerMessagesCount) {
-                            badgeMessenger.onNext(true)
-                            lmmChanged.onNext(true)  // have new messages from any peer
-                            newMessagesCount.onNext(peerMessagesCount - count)
-                        }
-                        lmm
-                    })
+                .checkForNewLikes()
+                .checkForNewMatches()
+                .checkForNewMessages()
                 .cacheMessagesFromLmm()
         }
 
@@ -248,4 +220,59 @@ open class FeedRepository @Inject constructor(
             it.messages.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MESSAGES) }) }
             messengerLocal.insertMessages(messages)  // cache new messages
         }
+
+    private fun Single<Lmm>.checkForNewLikes(): Single<Lmm> =
+        doOnSuccess {
+            badgeLikes.onNext(it.notSeenLikesCount() > 0)
+            feedLikes.onNext(it.likes)
+        }
+        .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
+        .flatMap {
+            val profiles = it.first.notSeenLikesProfileIds().map { ProfileIdDbo(it) }
+            Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }.toSingleDefault(it)
+        }
+        .zipWith(newLikesProfilesCache.countProfileIds(),
+            BiFunction { lmm_oldCount, newCount ->
+                val diff = newCount - lmm_oldCount.second
+                if (diff > 0) { newLikesCount.onNext(diff) }
+                lmm_oldCount.first
+            })
+
+    private fun Single<Lmm>.checkForNewMatches(): Single<Lmm> =
+        doOnSuccess {
+            badgeMatches.onNext(it.notSeenMatchesCount() > 0)
+            feedMatches.onNext(it.matches)
+        }
+        .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
+        .flatMap {
+            val profiles = it.first.notSeenMatchesProfileIds().map { ProfileIdDbo(it) }
+            Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }.toSingleDefault(it)
+        }
+        .zipWith(newMatchesProfilesCache.countProfileIds(),
+            BiFunction { lmm_oldCount, newCount ->
+                val diff = newCount - lmm_oldCount.second
+                if (diff > 0) { newMatchesCount.onNext(diff) }
+                lmm_oldCount.first
+            })
+
+    private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
+        doOnSuccess { feedMessages.onNext(it.messages) }
+        .zipWith(messengerLocal.countUnreadMessages(),
+            BiFunction { lmm: Lmm, count: Int ->
+                if (count > 0) {
+                    badgeMessenger.onNext(true)
+                    lmmChanged.onNext(true)  // have unread messages since last update
+                }
+                lmm
+            })
+        .zipWith(messengerLocal.countPeerMessages(),  // old total messages count from any peer
+            BiFunction { lmm: Lmm, count: Int ->
+                val peerMessagesCount = lmm.peerMessagesCount()
+                if (peerMessagesCount != 0 && count != peerMessagesCount) {
+                    badgeMessenger.onNext(true)
+                    lmmChanged.onNext(true)  // have new messages from any peer
+                    newMessagesCount.onNext(peerMessagesCount - count)
+                }
+                lmm
+            })
 }

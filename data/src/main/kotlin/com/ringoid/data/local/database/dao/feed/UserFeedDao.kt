@@ -10,6 +10,9 @@ import io.reactivex.Single
 @Dao
 interface UserFeedDao {
 
+    @Query("SELECT COUNT(*) FROM ${ProfileIdDbo.TABLE_NAME}")
+    fun countProfileIds(): Single<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addProfileId(profileId: ProfileIdDbo)
 
