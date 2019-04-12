@@ -73,6 +73,8 @@ open class FeedRepository @Inject constructor(
     override val newMatchesCount = PublishSubject.create<Int>()
     override val newMessagesCount = PublishSubject.create<Int>()
 
+    /* New Faces */
+    // ------------------------------------------
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         aObjPool.triggerSource().flatMap { getNewFacesOnly(resolution, limit, lastActionTime = it) }
 
@@ -92,6 +94,11 @@ open class FeedRepository @Inject constructor(
                  .cacheNewFacesAsAlreadySeen()
                  .map { it.map() }
         }
+
+    /* LMM */
+    // ------------------------------------------
+    private val newLikesProfileIds = mutableSetOf<String>()
+    private val newMatchesProfileIds = mutableSetOf<String>()
 
     override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
         aObjPool.triggerSource().flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
@@ -116,11 +123,17 @@ open class FeedRepository @Inject constructor(
                      // clear sent user messages because they will be restored with new Lmm
                      sentMessagesLocal.deleteMessages()
 
-                     val _newLikesCount = it.newLikesCount()
-                     val _newMatchesCount = it.newMatchesCount()
+                     val _notSeenLikesProfileIds = it.notSeenLikesProfileIds()
+                     val _notSeenMatchesProfileIds = it.notSeenMatchesProfileIds()
+                     val _oldLikesCount = newLikesProfileIds.size
+                     val _oldMatchesCount = newMatchesProfileIds.size
+                     newLikesProfileIds.addAll(_notSeenLikesProfileIds)
+                     newMatchesProfileIds.addAll(_notSeenMatchesProfileIds)
+                     val _newLikesCount = maxOf(0, newLikesProfileIds.size - _oldLikesCount)
+                     val _newMatchesCount = maxOf(0, newMatchesProfileIds.size - _oldMatchesCount)
 
-                     badgeLikes.onNext(_newLikesCount > 0)
-                     badgeMatches.onNext(_newMatchesCount > 0)
+                     badgeLikes.onNext(_notSeenLikesProfileIds.size > 0)
+                     badgeMatches.onNext(_notSeenMatchesProfileIds.size > 0)
                      feedLikes.onNext(it.likes)
                      feedMatches.onNext(it.matches)
                      feedMessages.onNext(it.messages)

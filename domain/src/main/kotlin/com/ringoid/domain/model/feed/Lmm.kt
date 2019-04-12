@@ -21,7 +21,10 @@ data class Lmm(val likes: List<FeedItem>, val matches: List<FeedItem>, val messa
                 }
                 ?: 0
 
-    fun newLikesCount(): Int = likes.count { it.isNotSeen }
-    fun newMatchesCount(): Int = matches.count { it.isNotSeen }
-    fun containsNotSeenItems(): Boolean = newLikesCount() > 0 || newMatchesCount() > 0
+    fun notSeenLikesProfileIds() = likes.filter { it.isNotSeen }.map { it.id }
+    fun notSeenMatchesProfileIds() = matches.filter { it.isNotSeen }.map { it.id }
+
+    fun notSeenLikesCount(): Int = likes.count { it.isNotSeen }
+    fun notSeenMatchesCount(): Int = matches.count { it.isNotSeen }
+    fun containsNotSeenItems(): Boolean = notSeenLikesCount() > 0 || notSeenMatchesCount() > 0
 }
