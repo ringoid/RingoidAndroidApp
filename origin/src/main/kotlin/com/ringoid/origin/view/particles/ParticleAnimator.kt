@@ -33,7 +33,7 @@ class ParticleAnimator @Inject constructor() {
             return
         }
 
-        val duration = 3500L
+        val duration = 3000L
         val generator = generators[id]!!
         val source = ConfettiSource(containerView.width / 3 - AppRes.ICON_SIZE_36 / 2, containerView.height - AppRes.MAIN_BOTTOM_BAR_HEIGHT)
 
