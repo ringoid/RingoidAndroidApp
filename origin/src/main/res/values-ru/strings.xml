@@ -28,8 +28,7 @@
     <!-- Error screen -->
     <string name="error_screen_no_network_connection">Нет интернета</string>
     <string name="error_screen_no_network_connection_button_label">Повторить попытку</string>
-    <string name="error_screen_old_app_version">Пожалуйста, обновите приложение</string>
-    <string name="error_screen_old_app_version_button_label">Открыть Google Play</string>
+    <string name="error_screen_old_app_version_button_label">Обновить приложение</string>
 
     <!-- Feed screen -->
     <string name="block_profile_button_block">Заблокировать</string>
@@ -62,8 +61,8 @@
 
     <!-- Login screen -->
     <string name="login_button">Продолжить и Загрузить фото</string>
-    <string name="login_button_direct">Продолжить</string>
-    <string name="login_terms">Нажимая на кнопку ниже, вы подтверждаете, что ознакомились, понимаете и принимаете <a href="http://ringoid.com/terms.html">Условия использования</a> и <a href="http://ringoid.com/privacy.html">Политику конфиденциальности</a> Ringoid, а также, что вы достигли совершеннолетия в соответствии с законодательством страны, в которой вы находитесь или запускаете Ringoid.</string>
+    <string name="login_button_direct">Согласиться и продолжить</string>
+    <string name="login_terms">Нажимая на кнопку \&#34;Согласиться и продолжить\&#34;, вы подтверждаете, что ознакомились, понимаете и принимаете <a href="http://ringoid.com/terms.html">Условия использования</a> и <a href="http://ringoid.com/privacy.html">Политику конфиденциальности</a> Ringoid, а также, что вы достигли совершеннолетия в соответствии с законодательством страны, в которой вы находитесь или запускаете Ringoid.</string>
     <string name="login_year_of_birth_et_hint">Год рождения</string>
 
     <!-- Profile screen -->
