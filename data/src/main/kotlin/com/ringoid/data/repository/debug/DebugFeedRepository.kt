@@ -1,6 +1,7 @@
 package com.ringoid.data.repository.debug
 
 import com.ringoid.data.action_storage.ActionObjectPool
+import com.ringoid.data.di.*
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.remote.RingoidCloud
@@ -12,24 +13,23 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.messenger.Message
-import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton @DebugOnly
 class DebugFeedRepository @Inject constructor(
-    messengerLocal: MessageDao, @Named("user") sentMessagesLocal: MessageDao,
-    @Named("alreadySeen") alreadySeenProfilesCache: UserFeedDao,
-    @Named("block") blockedProfilesCache: UserFeedDao,
-    @Named("newLikes") newLikesProfilesCache: UserFeedDao,
-    @Named("newMatches") newMatchesProfilesCache: UserFeedDao,
+    messengerLocal: MessageDao, @PerUser sentMessagesLocal: MessageDao,
+    @PerAlreadySeen alreadySeenProfilesCache: UserFeedDao,
+    @PerBlock blockedProfilesCache: UserFeedDao,
+    @PerLmmLikes newLikesProfilesCache: UserFeedDao,
+    @PerLmmMatches newMatchesProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : FeedRepository(messengerLocal, sentMessagesLocal, alreadySeenProfilesCache, blockedProfilesCache,
                      newLikesProfilesCache, newMatchesProfilesCache, cloud, spm, aObjPool),

@@ -2,6 +2,7 @@ package com.ringoid.data.local.database.di
 
 import android.content.Context
 import androidx.room.Room
+import com.ringoid.data.di.*
 import com.ringoid.data.local.database.*
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDao
@@ -17,7 +18,6 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.IDebugLogDaoHelper
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -62,34 +62,34 @@ class DatabaseModule {
     @Provides @Singleton
     fun provideFeedDao(database: RingoidDatabase): FeedDao = database.feedDao()
 
-    @Provides @Singleton @Named("feed")
+    @Provides @Singleton @PerFeed
     fun provideFeedImageDao(database: RingoidDatabase): ImageDao = database.imageDao()
 
-    @Provides @Singleton @Named("user")
+    @Provides @Singleton @PerUser
     fun provideUserImageDao(database: UserRingoidDatabase): ImageDao = database.imageDao()
 
-    @Provides @Singleton @Named("user")
+    @Provides @Singleton @PerUser
     fun provideUserImageRequestDao(database: UserRingoidDatabase): ImageRequestDao = database.imageRequestDao()
 
     @Provides @Singleton
     fun provideMessageDao(database: RingoidDatabase): MessageDao = database.messageDao()
 
-    @Provides @Singleton @Named("user")
+    @Provides @Singleton @PerUser
     fun provideUserDao(database: UserRingoidDatabase): UserDao = database.userDao()
 
-    @Provides @Singleton @Named("user")
+    @Provides @Singleton @PerUser
     fun provideUserMessageDao(database: UserRingoidDatabase): MessageDao = database.messageDao()
 
-    @Provides @Singleton @Named("alreadySeen")
+    @Provides @Singleton @PerAlreadySeen
     fun provideAlreadySeenUserFeedDao(database: UserRingoidDatabase): UserFeedDao = database.userFeedDao()
 
-    @Provides @Singleton @Named("block")
+    @Provides @Singleton @PerBlock
     fun provideBlockedUserFeedDao(database: BlockProfilesUserRingoidDatabase): UserFeedDao = database.userFeedDao()
 
-    @Provides @Singleton @Named("newLikes")
+    @Provides @Singleton @PerLmmLikes
     fun provideNewLikesUserFeedDao(database: NewLikesProfilesUserRingoidDatabase): UserFeedDao = database.userFeedDao()
 
-    @Provides @Singleton @Named("newMatches")
+    @Provides @Singleton @PerLmmMatches
     fun provideNewMatchesUserFeedDao(database: NewMatchesProfilesUserRingoidDatabase): UserFeedDao = database.userFeedDao()
 
     @Provides @Singleton @DebugOnly

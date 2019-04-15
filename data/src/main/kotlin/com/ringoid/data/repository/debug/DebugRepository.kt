@@ -1,6 +1,10 @@
 package com.ringoid.data.repository.debug
 
 import com.ringoid.data.action_storage.ActionObjectPool
+import com.ringoid.data.di.PerAlreadySeen
+import com.ringoid.data.di.PerBlock
+import com.ringoid.data.di.PerFeed
+import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
@@ -13,10 +17,13 @@ import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.DaggerCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.model.BaseResponse
-import com.ringoid.data.repository.*
+import com.ringoid.data.repository.BaseRepository
+import com.ringoid.data.repository.handleError
+import com.ringoid.data.repository.handleErrorNoRetry
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.log.breadcrumb
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.feed.EmptyFeed
@@ -24,7 +31,6 @@ import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.mapList
-import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.debug.IDebugRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -32,17 +38,16 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton @DebugOnly
 class DebugRepository @Inject constructor(
-    @Named("feed") private val imageLocal: ImageDao,
-    @Named("user") private val userImageLocal: ImageDao,
+    @PerFeed private val imageLocal: ImageDao,
+    @PerUser private val userImageLocal: ImageDao,
     private val feedLocal: FeedDao, private val messageLocal: MessageDao,
-    @Named("user") private val userLocal: UserDao,
-    @Named("alreadySeen") private val alreadySeenProfilesCache: UserFeedDao,
-    @Named("block") private val blockedProfilesCache: UserFeedDao,
+    @PerUser private val userLocal: UserDao,
+    @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
+    @PerBlock private val blockedProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IDebugRepository {
 
