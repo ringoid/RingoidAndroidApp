@@ -92,8 +92,8 @@ class LoginViewModel @Inject constructor(
                     ?: run {
                         text.toIntOrNull()
                             ?.takeIf { isAdultAge(it, calendar) }
-                            ?.let { yearOfBirth = it; WidgetState.NORMAL }
-                            ?: WidgetState.NORMAL
+                            ?.let { yearOfBirth = it; WidgetState.ACTIVE }
+                            ?: WidgetState.ERROR
                     }
 
         enableLoginButton()
@@ -127,7 +127,7 @@ class LoginViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     private fun enableLoginButton(){
-        val isValidYearOfBirth = yearOfBirthEntryState.value == WidgetState.NORMAL
+        val isValidYearOfBirth = yearOfBirthEntryState.value == WidgetState.ACTIVE
         loginButtonEnableState.value = isValidYearOfBirth && gender != null
     }
 }

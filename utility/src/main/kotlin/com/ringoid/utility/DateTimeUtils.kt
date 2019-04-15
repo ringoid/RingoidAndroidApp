@@ -2,8 +2,8 @@ package com.ringoid.utility
 
 import java.util.*
 
-fun isAdultAge(yearOfBirth: Int, calendar: Calendar, adultThreshold: Int = 0): Boolean =
-    yearOfBirth in 1919..(calendar.get(Calendar.YEAR) - adultThreshold)
+fun isAdultAge(yearOfBirth: Int, calendar: Calendar, adultThreshold: Int = 18): Boolean =
+    yearOfBirth in 1938..(calendar.get(Calendar.YEAR) - adultThreshold)
 
 fun Date.time(): String = "${wrapTimeUnit(hours)}:${wrapTimeUnit(minutes)}:${wrapTimeUnit(seconds)}"
 
