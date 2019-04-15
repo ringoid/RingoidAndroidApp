@@ -184,7 +184,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     private var tcount: Long = 0L  // count of threads
 
     private fun triggerSourceImpl(): Single<Long> {
-        //updateLastActionTime(queue.peekLast()?.actionTime ?: lastActionTime())
+        val localLastActionTime = queue.peekLast()?.actionTime ?: lastActionTime()
         val backupQueue: Deque<ActionObject> = ArrayDeque()
 
         val source = spm.accessSingle { accessToken ->
@@ -218,7 +218,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         .doOnSuccess {
             // Queue.size == 0 always at this stage
             Timber.d("Successfully committed all [${queue.size}] actions, triggering has finished")
-            if (lastActionTime() != it.lastActionTime) {
+            if (localLastActionTime != it.lastActionTime) {
                 Timber.w("Last action times differ: server=${it.lastActionTime}, client=${lastActionTime()}, delta=${it.lastActionTime - lastActionTime()}")
                 SentryUtil.w("Last action time from Server differs from Client",
                     listOf("server last action time" to "${it.lastActionTime}",
