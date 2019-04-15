@@ -9,6 +9,8 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.ringoid.base.IBaseRingoidApplication
+import com.ringoid.base.manager.permission.IPermissionCaller
+import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
@@ -30,6 +32,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
     @Inject protected lateinit var connectionManager: IConnectionManager
+    @Inject protected lateinit var permissionManager: PermissionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug
 
@@ -52,6 +55,19 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.v("View State transition to: $newState")
         DebugLogUtil.lifecycle(this, "onViewStateChange: $newState")
         // override in subclasses
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    protected fun registerPermissionCaller(rc: Int, caller: IPermissionCaller?) {
+        permissionManager.registerPermissionCaller(rc, caller)
+    }
+
+    protected fun unregisterPermissionCaller(rc: Int, caller: IPermissionCaller?) {
+        permissionManager.unregisterPermissionCaller(rc, caller)
     }
 
     // ------------------------------------------

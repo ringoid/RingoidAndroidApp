@@ -10,6 +10,8 @@ import android.view.Window
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.ringoid.base.manager.permission.IPermissionCaller
+import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
@@ -30,6 +32,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
     protected lateinit var vm: T
     @Inject protected lateinit var vmFactory: DaggerViewModelFactory<T>
     @Inject protected lateinit var connectionManager: IConnectionManager
+    @Inject protected lateinit var permissionManager: PermissionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug
 
@@ -48,6 +51,19 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
     protected open fun onViewStateChange(newState: ViewState) {
         Timber.v("View State transition to: ${newState.javaClass.simpleName}")
         // override in subclasses
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    protected fun registerPermissionCaller(rc: Int, caller: IPermissionCaller?) {
+        permissionManager.registerPermissionCaller(rc, caller)
+    }
+
+    protected fun unregisterPermissionCaller(rc: Int, caller: IPermissionCaller?) {
+        permissionManager.unregisterPermissionCaller(rc, caller)
     }
 
     /* Lifecycle */

@@ -3,7 +3,7 @@ package com.ringoid.origin.auth.view
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.manager.Analytics
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil

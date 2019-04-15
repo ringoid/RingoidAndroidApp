@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.manager.AnalyticsManager
+import com.ringoid.base.manager.analytics.AnalyticsManager
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.action_storage.IActionObjectPool

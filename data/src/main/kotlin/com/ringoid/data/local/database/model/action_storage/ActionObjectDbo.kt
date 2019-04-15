@@ -11,9 +11,10 @@ data class ActionObjectDbo(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) val id: Int = 0,
     @ColumnInfo(name = COLUMN_ACTION_TIME) val actionTime: Long,
     @ColumnInfo(name = COLUMN_ACTION_TYPE) val actionType: String,
-    @ColumnInfo(name = COLUMN_SOURCE_FEED) val sourceFeed: String,
-    @ColumnInfo(name = COLUMN_TARGET_IMAGE_ID) val targetImageId: String,
-    @ColumnInfo(name = COLUMN_TARGET_USER_ID) val targetUserId: String,
+    // advanced properties
+    @ColumnInfo(name = COLUMN_SOURCE_FEED) var sourceFeed: String = "",
+    @ColumnInfo(name = COLUMN_TARGET_IMAGE_ID) var targetImageId: String = "",
+    @ColumnInfo(name = COLUMN_TARGET_USER_ID) var targetUserId: String = "",
     // concrete action objects
     @ColumnInfo(name = COLUMN_NUMBER_BLOCK_REASON) var blockReasonNumber: Int = 0,
     @ColumnInfo(name = COLUMN_MESSAGE_TEXT) var messageText: String = "",
@@ -38,9 +39,8 @@ data class ActionObjectDbo(
 
         const val TABLE_NAME = "ActionObjects"
 
-        fun from(aobj: ActionObject): ActionObjectDbo =
-            ActionObjectDbo(actionTime = aobj.actionTime, actionType = aobj.actionType, sourceFeed = aobj.sourceFeed,
-                            targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId)
+        fun from(aobj: OriginActionObject): ActionObjectDbo =
+            ActionObjectDbo(actionTime = aobj.actionTime, actionType = aobj.actionType)
     }
 
     override fun map(): ActionObject =
