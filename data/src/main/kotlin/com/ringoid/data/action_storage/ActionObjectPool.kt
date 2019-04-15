@@ -184,7 +184,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     private var tcount: Long = 0L  // count of threads
 
     private fun triggerSourceImpl(): Single<Long> {
-        updateLastActionTime(queue.peekLast()?.actionTime ?: lastActionTime())
+        //updateLastActionTime(queue.peekLast()?.actionTime ?: lastActionTime())
         val backupQueue: Deque<ActionObject> = ArrayDeque()
 
         val source = spm.accessSingle { accessToken ->
