@@ -82,8 +82,8 @@ class MainViewModel @Inject constructor(
         onEachAppStart()
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    override fun onStop() {
+        super.onStop()
         ChatInMemoryCache.persist(spm)
     }
 
