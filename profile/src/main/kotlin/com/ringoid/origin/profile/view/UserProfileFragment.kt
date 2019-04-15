@@ -28,6 +28,8 @@ import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
+import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderHideControls
+import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderShowControls
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
@@ -60,6 +62,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onIdleState() {
+            imagesAdapter.notifyItemRangeChanged(0, imagesAdapter.itemCount, UserProfileImageViewHolderShowControls)
             pb_profile.changeVisibility(isVisible = false)
             swipe_refresh_layout.isRefreshing = false
         }
@@ -86,7 +89,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = BuildConfig.IS_STAGING)
+            is ViewState.LOADING -> {
+                imagesAdapter.notifyItemRangeChanged(0, imagesAdapter.itemCount, UserProfileImageViewHolderHideControls)
+                pb_profile.changeVisibility(isVisible = BuildConfig.IS_STAGING)
+            }
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }

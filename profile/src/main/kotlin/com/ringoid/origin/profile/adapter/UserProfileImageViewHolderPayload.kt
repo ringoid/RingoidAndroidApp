@@ -1,0 +1,6 @@
+package com.ringoid.origin.profile.adapter
+
+sealed class UserProfileImageViewHolderPayload
+
+object UserProfileImageViewHolderHideControls : UserProfileImageViewHolderPayload()
+object UserProfileImageViewHolderShowControls : UserProfileImageViewHolderPayload()

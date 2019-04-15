@@ -29,6 +29,17 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
             itemView.tv_image_id.text = "Image: ${model.idWithFirstN()}"
         }
     }
+
+    override fun bind(model: UserImage, payloads: List<Any>) {
+        if (payloads.contains(UserProfileImageViewHolderHideControls)) {
+            itemView.iv_likes.changeVisibility(isVisible = false)
+            itemView.tv_likes_count.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(UserProfileImageViewHolderShowControls)) {
+            itemView.iv_likes.changeVisibility(isVisible = true)
+            itemView.tv_likes_count.changeVisibility(isVisible = true)
+        }
+    }
 }
 
 class HeaderUserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(view) {
