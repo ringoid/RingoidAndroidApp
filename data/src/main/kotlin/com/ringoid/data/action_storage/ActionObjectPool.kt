@@ -157,7 +157,6 @@ class ActionObjectPool @Inject constructor(
 
     override fun triggerSource(): Single<Long> =
         Single.just(ProcessingPayload(threadId = tid++) to tcount++)
-//            .doOnSubscribe { DebugLogUtil.v("Thread [t=${tid - 1}] has entered commit actions section...") }
             .flatMap { thread ->
                 if (triggerInProgress.isLocked()) {
                     Single.error(WaitUntilTriggerFinishedException(tpayload = thread.first))
