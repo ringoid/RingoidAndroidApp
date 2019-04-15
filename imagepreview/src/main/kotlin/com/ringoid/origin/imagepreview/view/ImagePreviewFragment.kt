@@ -91,7 +91,6 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
             inflateMenu(com.ringoid.origin.R.menu.menu_done)
-            setBackgroundColor(ContextCompat.getColor(context, com.ringoid.origin.R.color.semitransparent_soft))
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     com.ringoid.origin.R.id.menu_done -> { cropImage() ; true }
