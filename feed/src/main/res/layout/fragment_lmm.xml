@@ -39,7 +39,7 @@
 
         <View
             android:id="@+id/tab_delim1"
-            android:layout_width="2dp"
+            android:layout_width="6dp"
             android:layout_height="8dp"
             android:layout_gravity="center_vertical"
             android:background="?attr/refColorUnderscore"/>
@@ -55,7 +55,7 @@
 
         <View
             android:id="@+id/tab_delim2"
-            android:layout_width="2dp"
+            android:layout_width="6dp"
             android:layout_height="8dp"
             android:layout_gravity="center_vertical"
             android:background="?attr/refColorUnderscore"/>
