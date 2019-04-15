@@ -154,29 +154,29 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     }
 
     override fun triggerSource(): Single<Long> =
-        Single.just(tid++ to tcount++)
+        Single.just(ProcessingPayload(threadId = tid++) to tcount++)
             .flatMap { thread ->
                 if (triggerInProgress.isLocked()) {
-                    Single.error(WaitUntilTriggerFinishedException(tid = thread.first))
+                    Single.error(WaitUntilTriggerFinishedException(tpayload = thread.first))
                 } else {
                     triggerInProgress.increment()
                     triggerSourceImpl()
-                        .doOnSubscribe { DebugLogUtil.d("Commit actions started by [${thread.first}]") }
+                        .doOnSubscribe { DebugLogUtil.d("Commit actions started by [t=${thread.first.threadId}] at ${thread.first.startTime} ms") }
                         .doFinally {
                             triggerInProgress.decrement()
                             --tcount
-                            DebugLogUtil.d("Commit actions has finished by [${thread.first}]")
+                            DebugLogUtil.d("Commit actions has finished by [t=${thread.first.threadId}], elapsed time ${System.currentTimeMillis() - thread.first.startTime} ms")
                         }
                 }
             }
             .retryWhen {
-                it.flatMap {
-                    if (it is WaitUntilTriggerFinishedException) {
-                        DebugLogUtil.v(it.message ?: "Waiting for commit actions in progress to finish... [${it.tid} of $tcount]")
+                it.flatMap { e ->
+                    if (e is WaitUntilTriggerFinishedException) {
+                        DebugLogUtil.v("${e.message}, count $tcount")
                         Flowable.timer(200L, TimeUnit.MILLISECONDS)  // repeat
                     } else {
-                        DebugLogUtil.e(it)
-                        Flowable.error(it)
+                        DebugLogUtil.e(e)
+                        Flowable.error(e)
                     }
                 }
             }
