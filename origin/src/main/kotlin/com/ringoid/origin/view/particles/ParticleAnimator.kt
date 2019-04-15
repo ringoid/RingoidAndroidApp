@@ -75,6 +75,7 @@ class ParticleAnimator @Inject constructor() {
     }
 
     fun terminate() {
+        // TODO concurrent
         managers.forEach { it.terminate() }
         managers.clear()
     }

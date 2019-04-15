@@ -42,7 +42,7 @@
             android:layout_width="6dp"
             android:layout_height="8dp"
             android:layout_gravity="center_vertical"
-            android:background="?attr/refColorUnderscore"/>
+            android:background="@android:color/transparent"/>
 
         <com.ringoid.widget.view.BadgeButton
             android:id="@+id/btn_tab_matches"
@@ -58,7 +58,7 @@
             android:layout_width="6dp"
             android:layout_height="8dp"
             android:layout_gravity="center_vertical"
-            android:background="?attr/refColorUnderscore"/>
+            android:background="@android:color/transparent"/>
 
         <com.ringoid.widget.view.BadgeButton
             android:id="@+id/btn_tab_messenger"
