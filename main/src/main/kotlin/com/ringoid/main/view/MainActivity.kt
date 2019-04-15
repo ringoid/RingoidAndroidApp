@@ -124,7 +124,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
                         override fun onProviderDisabled(provider: String) {}
                         override fun onProviderEnabled(provider: String) {}
                     }
-                    it.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 5f, listener)
+                    it.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 250f, listener)
                 }
         }
 
