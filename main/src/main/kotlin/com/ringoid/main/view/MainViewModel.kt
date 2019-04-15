@@ -2,6 +2,7 @@ package com.ringoid.main.view
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
@@ -123,5 +124,10 @@ class MainViewModel @Inject constructor(
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)
             .subscribe({ DebugLogUtil.i("Successfully updated user settings") }, Timber::e)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    fun onLocationPermissionGranted() {
+        // TODO: access GPS, get lat/lon and compose LOCATION aobj, trigger queue
     }
 }

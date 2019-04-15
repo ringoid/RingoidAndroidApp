@@ -2,7 +2,7 @@ package com.ringoid.origin.messenger.view
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.manager.Analytics
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil

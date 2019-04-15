@@ -1,4 +1,4 @@
-package com.ringoid.base.manager
+package com.ringoid.base.manager.analytics
 
 import android.app.Activity
 import android.content.Context
