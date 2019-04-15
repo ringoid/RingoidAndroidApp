@@ -4,6 +4,7 @@
     android:layout_height="@dimen/list_loading_item_height">
 
     <ProgressBar
+        android:id="@+id/pb_item_loading"
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="@dimen/std_margin_16"
         style="@style/ProgressBar"/>
