@@ -71,7 +71,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
 
     private fun initializeParticleAnimation() {
         with(particleAnimator) {
-            init(this)
+            init(this@MainActivity)
             setContainerView(findViewById(OriginR_id.fl_container))
             addGenerator(LikesParticleGenerator(this@MainActivity))
             addGenerator(MatchesParticleGenerator(this@MainActivity))

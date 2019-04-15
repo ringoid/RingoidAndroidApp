@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.ViewGroup
 import android.view.animation.Interpolator
 import com.github.jinatonic.confetti.ConfettiManager
+import com.github.jinatonic.confetti.ConfettiManager.INFINITE_DURATION
 import com.github.jinatonic.confetti.ConfettiSource
 import com.ringoid.origin.AppRes
 import dagger.Reusable
@@ -39,13 +40,13 @@ class ParticleAnimator @Inject constructor() {
             return
         }
 
-        val duration = 3000L
+        val duration = count / 2 * 1000L
         val generator = generators[id]!!
         val source = ConfettiSource(containerView.width / 3 - AppRes.ICON_SIZE_36 / 2, containerView.height - AppRes.MAIN_BOTTOM_BAR_HEIGHT)
 
         ConfettiManager(containerView.context, generator, source, containerView)
             .setEmissionDuration(duration)
-            .setEmissionRate(count * 1000f / duration)
+            .setEmissionRate(2f)
             .setNumInitialCount(1)
             .setVelocityX(generator.velocityX, generator.velocityDevX)
             .setAccelerationX(generator.accelerationX, generator.accelerationDevX)

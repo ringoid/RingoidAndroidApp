@@ -49,11 +49,11 @@ class LikesParticleGenerator(activity: Activity)
     override val targetVelocityX = 50f
     override val targetVelocityDevX = targetVelocityX * 3f
 
-    override val accelerationY = h / 15f
+    override val accelerationY = -h / 15f
     override val accelerationDevY = accelerationY * 0.1f
     override val velocityY = -h / 3.3f
     override val velocityDevY = velocityY * 0.5f
-    override val targetVelocityY = -h / 4.5f
+    override val targetVelocityY = -h / 4.5f / 6f
     override val targetVelocityDevY = targetVelocityY * 0.5f
 }
 
@@ -67,11 +67,11 @@ class MatchesParticleGenerator(activity: Activity)
     override val targetVelocityX = 125f
     override val targetVelocityDevX = targetVelocityX * 3f
 
-    override val accelerationY = h / 15f
+    override val accelerationY = -h / 15f
     override val accelerationDevY = accelerationY * 0.1f
     override val velocityY = -h / 3.3f
     override val velocityDevY = velocityY * 0.5f
-    override val targetVelocityY = -h / 4.5f
+    override val targetVelocityY = -h / 4.5f / 6f
     override val targetVelocityDevY = targetVelocityY * 0.5f
 }
 
@@ -85,10 +85,10 @@ class MessagesParticleGenerator(activity: Activity)
     override val targetVelocityX = 75f
     override val targetVelocityDevX = targetVelocityX * 3f
 
-    override val accelerationY = h / 15f
+    override val accelerationY = -h / 15f
     override val accelerationDevY = accelerationY * 0.1f
     override val velocityY = -h / 3.3f
     override val velocityDevY = velocityY * 0.5f
-    override val targetVelocityY = -h / 3.3f
+    override val targetVelocityY = -h / 3.3f / 6f
     override val targetVelocityDevY = targetVelocityY * 0.5f
 }
