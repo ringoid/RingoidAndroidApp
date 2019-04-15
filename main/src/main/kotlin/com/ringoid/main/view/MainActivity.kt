@@ -125,6 +125,8 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
                         override fun onProviderEnabled(provider: String) {}
                     }
                     it.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 250f, listener)
+                    it.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                        ?.let { vm.onLocationChanged(latitude = it.latitude, longitude = it.longitude) }
                 }
         }
 
