@@ -134,18 +134,18 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                     iv_status.also { it.changeVisibility(isVisible = false) }
                 }
                 WidgetState.ACTIVE -> {
-                    et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_green)
-                    iv_status.also {
-                        it.changeVisibility(isVisible = true)
-                        it.setImageResource(R.drawable.ic_check_green_16dp)
-                    }
+//                    et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_green)
+//                    iv_status.also {
+//                        it.changeVisibility(isVisible = true)
+//                        it.setImageResource(R.drawable.ic_check_green_16dp)
+//                    }
                 }
                 WidgetState.ERROR -> {
-                    et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_orange)
-                    iv_status.also {
-                        it.changeVisibility(isVisible = true)
-                        it.setImageResource(WidgetR_drawable.ic_error_red_16dp)
-                    }
+//                    et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_orange)
+//                    iv_status.also {
+//                        it.changeVisibility(isVisible = true)
+//                        it.setImageResource(WidgetR_drawable.ic_error_red_16dp)
+//                    }
                 }
                 else -> { /* no-op */ }
             }
