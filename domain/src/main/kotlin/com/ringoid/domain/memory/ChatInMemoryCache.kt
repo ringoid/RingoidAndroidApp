@@ -84,6 +84,7 @@ object ChatInMemoryCache {
     }
 
     fun persist(spm: ISharedPrefsManager) {
+        Timber.v("Saving cached chat data... ${if (BuildConfig.DEBUG) toJson() else ""}")
         spm.saveByKey(SP_KEY_CHAT_CACHE, toJson())
     }
 
