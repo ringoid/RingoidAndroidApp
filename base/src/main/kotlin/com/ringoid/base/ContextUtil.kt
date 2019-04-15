@@ -1,8 +1,10 @@
 package com.ringoid.base
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.PowerManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.ringoid.base.view.BaseActivity
@@ -10,6 +12,10 @@ import com.ringoid.base.view.BaseFragment
 import java.util.*
 
 fun Activity.isActivityDestroyed(): Boolean = ContextUtil.isActivityDestroyed(this)
+fun Activity.isInPowerSafeMode(): Boolean =
+    (getSystemService(Context.POWER_SERVICE) as? PowerManager)?.let {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && it.isPowerSaveMode
+    } ?: false
 
 object ContextUtil {
 

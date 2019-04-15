@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.particles
 
+import android.app.Activity
 import android.view.ViewGroup
 import android.view.animation.Interpolator
 import com.github.jinatonic.confetti.ConfettiManager
@@ -17,8 +18,13 @@ const val PARTICLE_TYPE_MESSAGE = "particle_type_message"
 class ParticleAnimator @Inject constructor() {
 
     @Inject lateinit var random: Random
+    private lateinit var context: Activity
     private lateinit var containerView: ViewGroup
     private val generators = mutableMapOf<String, ParticleGenerator>()
+
+    fun init(activity: Activity) {
+        context = activity
+    }
 
     fun addGenerator(generator: ParticleGenerator) {
         generators[generator.id] = generator
