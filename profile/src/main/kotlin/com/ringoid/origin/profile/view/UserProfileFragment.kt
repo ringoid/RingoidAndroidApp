@@ -86,7 +86,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = true)
+            is ViewState.LOADING -> pb_profile.changeVisibility(isVisible = BuildConfig.IS_STAGING)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
