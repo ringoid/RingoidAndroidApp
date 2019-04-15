@@ -23,7 +23,7 @@ class ParticleAnimator @Inject constructor() {
     private lateinit var context: Activity
     private lateinit var containerView: ViewGroup
     private val generators = mutableMapOf<String, ParticleGenerator>()
-    private val managers = mutableListOf<ConfettiManager>()
+    private val managers = mutableListOf<Pair<ConfettiManager, Boolean>>()
 
     fun init(activity: Activity) {
         context = activity
@@ -61,8 +61,12 @@ class ParticleAnimator @Inject constructor() {
             .setTargetVelocityY(generator.targetVelocityY, generator.targetVelocityDevY)
             .setTTL(generator.ttl)
             .setConfettiAnimationListener(object : ConfettiManager.ConfettiAnimationListener {
-                override fun onAnimationStart(confettiManager: ConfettiManager) { managers.add(confettiManager) }
-                override fun onAnimationEnd(confettiManager: ConfettiManager) { managers.remove(confettiManager) }
+                override fun onAnimationStart(confettiManager: ConfettiManager) { managers.add(confettiManager to true) }
+                override fun onAnimationEnd(confettiManager: ConfettiManager) {
+                    managers.indexOfFirst { it.first == confettiManager && it.second }
+                        .takeIf { it != -1 }
+                        ?.let { managers[it] = managers[it].first to false }
+                }
                 override fun onConfettoEnter(confetto: Confetto?) {}
                 override fun onConfettoExit(confetto: Confetto?) {}
             })
@@ -75,8 +79,14 @@ class ParticleAnimator @Inject constructor() {
     }
 
     fun terminate() {
-        // TODO concurrent
-        managers.forEach { it.terminate() }
+        managers
+            .filter { it.second }
+            .forEach {
+                it.first.let {
+                    it.setConfettiAnimationListener(null)
+                    it.terminate()
+                }
+            }
         managers.clear()
     }
 }
