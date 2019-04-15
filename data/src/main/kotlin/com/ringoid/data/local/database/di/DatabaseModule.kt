@@ -50,6 +50,11 @@ class DatabaseModule {
         Room.databaseBuilder(applicationContext, NewMatchesProfilesUserRingoidDatabase::class.java, NewMatchesProfilesUserRingoidDatabase.DATABASE_NAME)
             .build()
 
+    @Provides @Singleton
+    fun provideBackupRingoidDatabase(applicationContext: Context): BackupRingoidDatabase =
+        Room.databaseBuilder(applicationContext, BackupRingoidDatabase::class.java, BackupRingoidDatabase.DATABASE_NAME)
+            .build()
+
     @Provides @Singleton @DebugOnly
     fun provideDebugRingoidDatabase(applicationContext: Context): DebugRingoidDatabase =
         Room.databaseBuilder(applicationContext, DebugRingoidDatabase::class.java, DebugRingoidDatabase.DATABASE_NAME)
@@ -58,6 +63,9 @@ class DatabaseModule {
     // ------------------------------------------
     @Provides @Singleton
     fun provideActionObjectDao(database: RingoidDatabase): ActionObjectDao = database.actionObjectDao()
+
+    @Provides @Singleton @PerBackup
+    fun provideBackupActionObjectDao(database: BackupRingoidDatabase): ActionObjectDao = database.actionObjectDao()
 
     @Provides @Singleton
     fun provideFeedDao(database: RingoidDatabase): FeedDao = database.feedDao()

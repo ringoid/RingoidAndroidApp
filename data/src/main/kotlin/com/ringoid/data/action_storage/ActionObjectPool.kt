@@ -1,5 +1,6 @@
 package com.ringoid.data.action_storage
 
+import com.ringoid.data.di.PerBackup
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.model.action_storage.ActionObjectDboMapper
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
@@ -30,8 +31,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
-    private val backup: ActionObjectDao, private val mapper: ActionObjectDboMapper,
+class ActionObjectPool @Inject constructor(
+    private val cloud: RingoidCloud, @PerBackup private val backup: ActionObjectDao,
+    private val local: ActionObjectDao, private val mapper: ActionObjectDboMapper,
     private val spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
     : IActionObjectPool {
 
