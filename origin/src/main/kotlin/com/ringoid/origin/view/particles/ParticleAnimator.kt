@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import android.view.animation.Interpolator
 import com.github.jinatonic.confetti.ConfettiManager
 import com.github.jinatonic.confetti.ConfettiSource
+import com.github.jinatonic.confetti.confetto.Confetto
+import com.ringoid.base.isInPowerSafeMode
 import com.ringoid.origin.AppRes
 import dagger.Reusable
 import java.util.*
@@ -21,6 +23,7 @@ class ParticleAnimator @Inject constructor() {
     private lateinit var context: Activity
     private lateinit var containerView: ViewGroup
     private val generators = mutableMapOf<String, ParticleGenerator>()
+    private val managers = mutableListOf<ConfettiManager>()
 
     fun init(activity: Activity) {
         context = activity
@@ -35,6 +38,9 @@ class ParticleAnimator @Inject constructor() {
     }
 
     private fun animateN(id: String, count: Int) {
+        if (context.isInPowerSafeMode()) {
+            return
+        }
         if (count <= 0 || !generators.containsKey(id)) {
             return
         }
@@ -54,12 +60,23 @@ class ParticleAnimator @Inject constructor() {
 //            .setAccelerationY(generator.accelerationY, generator.accelerationDevY)
             .setTargetVelocityY(generator.targetVelocityY, generator.targetVelocityDevY)
             .setTTL(generator.ttl)
+            .setConfettiAnimationListener(object : ConfettiManager.ConfettiAnimationListener {
+                override fun onAnimationStart(confettiManager: ConfettiManager) { managers.add(confettiManager) }
+                override fun onAnimationEnd(confettiManager: ConfettiManager) { managers.remove(confettiManager) }
+                override fun onConfettoEnter(confetto: Confetto?) {}
+                override fun onConfettoExit(confetto: Confetto?) {}
+            })
             .enableFadeOut(ParticleInterpolator(random.nextFloat() * 0.1f))
             .animate()
     }
 
     fun setContainerView(containerView: ViewGroup) {
         this.containerView = containerView
+    }
+
+    fun terminate() {
+        managers.forEach { it.terminate() }
+        managers.clear()
     }
 }
 

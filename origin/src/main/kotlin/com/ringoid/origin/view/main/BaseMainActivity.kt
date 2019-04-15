@@ -1,7 +1,11 @@
 package com.ringoid.origin.view.main
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.os.PowerManager
 import androidx.fragment.app.Fragment
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavLogger
@@ -25,6 +29,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     @Inject lateinit var particleAnimator: ParticleAnimator
 
     private lateinit var fragNav: FragNavController
+    private val powerSafeModeReceiver = PowerSafeModeBroadcastReceiver()
     private val loginInMemoryCache: ILoginInMemoryCache by lazy { app.loginInMemoryCache }
 
     private var tabPayload: String? = null  // payload to pass to subscreen on tab switch
@@ -56,6 +61,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
                 transactionListener = this@BaseMainActivity
                 initialize(index = FragNavController.TAB1, savedInstanceState = savedInstanceState)
             }
+
+        registerReceiver(powerSafeModeReceiver, IntentFilter().apply { addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED) })
 
         bottom_bar.apply {
             setOnNavigationItemSelectedListener {
@@ -107,6 +114,11 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
         } ?: run { openInitialTab() }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(powerSafeModeReceiver)
+    }
+
     // ------------------------------------------
     override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
     }
@@ -145,4 +157,11 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
 
     // --------------------------------------------------------------------------------------------
     override fun isNewUser(): Boolean = loginInMemoryCache.isNewUser()
+
+    // --------------------------------------------------------------------------------------------
+    inner class PowerSafeModeBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent) {
+            particleAnimator.terminate()
+        }
+    }
 }
