@@ -28,6 +28,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.io.File
@@ -152,7 +153,8 @@ class UserImageRepository @Inject constructor(
 
     private fun deleteUserImageRemoteImpl(localImage: UserImageDbo, essence: ImageDeleteEssence, retryCount: Int): Completable {
         fun addPendingDeleteImageRequest() {
-            imageRequestLocal.addRequest(ImageRequestDbo.from(essence))
+            Completable.fromCallable { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
+                       .subscribeOn(Schedulers.io())
         }
 
         return if (localImage.originId.isNullOrBlank()) {
@@ -164,7 +166,7 @@ class UserImageRepository @Inject constructor(
                 .doOnDispose {
                     DebugLogUtil.i("Cancelled image delete")
                     addPendingDeleteImageRequest()
-                    // TODO: mot enough time to perform db insert, process terminates
+                    // TODO: not enough time to perform db insert, process terminates
                 }
                 .doOnError {
                     DebugLogUtil.w("Failed to delete image")
@@ -229,7 +231,8 @@ class UserImageRepository @Inject constructor(
 
     private fun createImageRemoteImpl(localImage: UserImageDbo, essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> {
         fun addPendingCreateImageRequest(imageFilePath: String) {
-            imageRequestLocal.addRequest(ImageRequestDbo.from(essence, imageFilePath))
+            Completable.fromCallable { imageRequestLocal.addRequest(ImageRequestDbo.from(essence, imageFilePath)) }
+                       .subscribeOn(Schedulers.io())
         }
 
         return cloud.getImageUploadUrl(essence)
@@ -255,7 +258,7 @@ class UserImageRepository @Inject constructor(
             .doOnDispose {
                 DebugLogUtil.i("Cancelled image create and upload")
                 addPendingCreateImageRequest(imageFilePath)
-                // TODO: mot enough time to perform db insert, process terminates
+                // TODO: not enough time to perform db insert, process terminates
             }
             .doOnError {
                 DebugLogUtil.w("Failed to create and upload image")
