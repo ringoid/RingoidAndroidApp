@@ -31,7 +31,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
-    private val local: ActionObjectDao, private val mapper: ActionObjectDboMapper,
+    private val backup: ActionObjectDao, private val mapper: ActionObjectDboMapper,
     private val spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
     : IActionObjectPool {
 
@@ -236,7 +236,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         .doFinally { backupQueue.clear() }
         .map { it.lastActionTime }
 
-        return local.actionObjects()
+        return backup.actionObjects()
             .subscribeOn(Schedulers.io())
             .map { it.mapList() }
             .flatMapCompletable {
@@ -262,7 +262,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
     // ------------------------------------------
     @Suppress("CheckResult")
     private fun backupQueue(queue: Deque<OriginActionObject>) {
-        Completable.fromCallable { local.addActionObjects(queue.map(mapper::map)) }
+        Completable.fromCallable { backup.addActionObjects(queue.map(mapper::map)) }
             .doOnSubscribe { Timber.v("Started backup action objects' queue before triggering...") }
             .doOnComplete { Timber.v("Action objects' queue has been backup-ed, before triggering") }
             .subscribeOn(Schedulers.io())
@@ -271,7 +271,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     @Suppress("CheckResult")
     private fun dropBackupQueue(): Completable =
-        Completable.fromCallable { local.deleteActionObjects() }
+        Completable.fromCallable { backup.deleteActionObjects() }
             .doOnSubscribe { Timber.v("Started to drop backup of action objects' queue after triggered...") }
             .doOnComplete { Timber.v("Action objects' queue backup has been dropped after triggered") }
 
