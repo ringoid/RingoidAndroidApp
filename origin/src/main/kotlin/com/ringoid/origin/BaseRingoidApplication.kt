@@ -47,6 +47,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate() {
+        initializeLogger()  // Logger must be initialized to show logs at the very beginning
         super.onCreate()
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This processSingle is dedicated to LeakCanary for heap analysis.
@@ -57,7 +58,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         initializeResources()
 //        initializeLeakDetection()
         initializeCrashlytics()
-        initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeProgrammingTools()
         initializeRxErrorHandler()
 
