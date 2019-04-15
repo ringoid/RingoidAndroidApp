@@ -8,6 +8,7 @@ interface ISharedPrefsManager {
 
     fun getAppUid(): String
 
+    // ------------------------------------------
     fun getByKey(key: String): String?
 
     fun saveByKey(key: String, json: String)

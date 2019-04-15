@@ -24,14 +24,20 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         sharedPreferences = context.getSharedPreferences(SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
         backupSharedPreferences = context.getSharedPreferences(BACKUP_SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
         getAppUid()  // generate app uid, if not exists
+        if (isAppUpdated()) {
+            Timber.d("App has been updated to ${BuildConfig.BUILD_NUMBER}")
+            sharedPreferences.edit().putInt(SP_KEY_BUILD_CODE, BuildConfig.BUILD_NUMBER).apply()
+            deleteLastActionTime()
+        }
     }
 
     companion object {
         private const val SHARED_PREFS_FILE_NAME = "Ringoid.prefs"
         private const val BACKUP_SHARED_PREFS_FILE_NAME = "RingoidBackup.prefs"
 
-        private const val SP_KEY_THEME = "sp_key_theme"
+        private const val SP_KEY_BUILD_CODE = "sp_key_build_code"
         private const val SP_KEY_APP_UID = "sp_key_app_uid"
+        private const val SP_KEY_THEME = "sp_key_theme"
         @DebugOnly private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
 
         /* Auth */
@@ -58,6 +64,10 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         sharedPreferences.getString(SP_KEY_APP_UID, null)
             ?: run { randomString().also { sharedPreferences.edit().putString(SP_KEY_APP_UID, it).apply() } }
 
+    private fun isAppUpdated(): Boolean =
+        sharedPreferences.getInt(SP_KEY_BUILD_CODE, 0) < BuildConfig.BUILD_NUMBER
+
+    // ------------------------------------------
     override fun getByKey(key: String): String? = sharedPreferences.getString(key, null)
 
     override fun saveByKey(key: String, json: String) {

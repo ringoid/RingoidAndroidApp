@@ -57,10 +57,6 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         getLmm()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
