@@ -11,6 +11,7 @@ import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.ActionObject
+import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.scope.UserScopeProvider
@@ -38,12 +39,12 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
         private const val CAPACITY = 10
     }
 
-    private val queue: Deque<ActionObject> = ArrayDeque()
+    private val queue: Deque<OriginActionObject> = ArrayDeque()
     private val lastActionTimeValue = AtomicLong(0L)
 
-    private val numbers = mutableMapOf<Class<ActionObject>, Int>()
-    private val strategies = mutableMapOf<Class<ActionObject>, List<TriggerStrategy>>()
-    private val timers = mutableMapOf<Class<ActionObject>, Disposable?>()
+    private val numbers = mutableMapOf<Class<OriginActionObject>, Int>()
+    private val strategies = mutableMapOf<Class<OriginActionObject>, List<TriggerStrategy>>()
+    private val timers = mutableMapOf<Class<OriginActionObject>, Disposable?>()
 
     private val triggerInProgress = TriggerSemaphore()
 
@@ -53,7 +54,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     // --------------------------------------------------------------------------------------------
     @Synchronized
-    override fun put(aobj: ActionObject) {
+    override fun put(aobj: OriginActionObject) {
         Timber.v("Put action object: $aobj")
 //        when (aobj) {
 //            is ViewActionObject, is ViewChatActionObject -> { /* no-op */ }
@@ -185,7 +186,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     private fun triggerSourceImpl(): Single<Long> {
         val localLastActionTime = queue.peekLast()?.actionTime ?: lastActionTime()
-        val backupQueue: Deque<ActionObject> = ArrayDeque()
+        val backupQueue: Deque<OriginActionObject> = ArrayDeque()
 
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
@@ -259,7 +260,7 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     // ------------------------------------------
     @Suppress("CheckResult")
-    private fun backupQueue(queue: Deque<ActionObject>) {
+    private fun backupQueue(queue: Deque<OriginActionObject>) {
         Completable.fromCallable { local.addActionObjects(queue.map(mapper::map)) }
             .doOnSubscribe { Timber.v("Started backup action objects' queue before triggering...") }
             .doOnComplete { Timber.v("Action objects' queue has been backup-ed, before triggering") }

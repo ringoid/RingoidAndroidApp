@@ -7,14 +7,24 @@ import javax.inject.Singleton
 @Singleton
 class ActionObjectDboMapper @Inject constructor() {
 
-    fun map(aobj: ActionObject): ActionObjectDbo {
+    fun map(aobj: OriginActionObject): ActionObjectDbo {
         val dbo = ActionObjectDbo.from(aobj)
         return when (aobj) {
-            is BlockActionObject -> dbo.apply { blockReasonNumber = aobj.numberOfBlockReason }
-            is MessageActionObject -> dbo.apply { messageText = aobj.text }
-            is OpenChatActionObject -> dbo.apply { openChatTimeMillis = aobj.timeInMillis }
-            is ViewChatActionObject -> dbo.apply { viewChatTimeMillis = aobj.timeInMillis }
-            is ViewActionObject -> dbo.apply { viewTimeMillis = aobj.timeInMillis }
+            is ActionObject -> {
+                val xDbo = when (aobj) {
+                    is BlockActionObject -> dbo.apply { blockReasonNumber = aobj.numberOfBlockReason }
+                    is MessageActionObject -> dbo.apply { messageText = aobj.text }
+                    is OpenChatActionObject -> dbo.apply { openChatTimeMillis = aobj.timeInMillis }
+                    is ViewChatActionObject -> dbo.apply { viewChatTimeMillis = aobj.timeInMillis }
+                    is ViewActionObject -> dbo.apply { viewTimeMillis = aobj.timeInMillis }
+                    else -> dbo
+                }
+                xDbo.apply {
+                    sourceFeed = aobj.sourceFeed
+                    targetImageId = aobj.targetImageId
+                    targetUserId = aobj.targetUserId
+                }
+            }
             else -> dbo
         }
     }
