@@ -28,7 +28,7 @@ open class OriginActionObject(
         return "${javaClass.simpleName}(${property}actionTime=$actionTime, actionType='$actionType', triggerStrategies=$triggerStrategies)"
     }
 
-    open fun toActionString(): String = "ACTION(aT=${actionTime % 1000000})"
+    open fun toActionString(): String = "$actionType(${propertyString()},aT=${actionTime % 1000000})"
 
     @DebugOnly override fun toDebugPayload(): String = toActionString()
     override fun toSentryPayload(): String = toActionString()
@@ -62,6 +62,7 @@ open class ActionObject(
 
         const val ACTION_TYPE_BLOCK = "BLOCK"
         const val ACTION_TYPE_LIKE = "LIKE"
+        const val ACTION_TYPE_LOCATION = "LOCATION"
         const val ACTION_TYPE_MESSAGE = "MESSAGE"
         const val ACTION_TYPE_OPEN_CHAT = "OPEN_CHAT"
         const val ACTION_TYPE_UNLIKE = "UNLIKE"
@@ -74,7 +75,7 @@ open class ActionObject(
         return "${javaClass.simpleName}(${property}actionTime=$actionTime, actionType='$actionType', sourceFeed='$sourceFeed', targetImageId='$targetImageId', targetUserId='$targetUserId', triggerStrategies=$triggerStrategies)"
     }
 
-    override fun toActionString(): String = "ACTION(${targetIdsStr()})"
+    override fun toActionString(): String = "$actionType(${propertyString()},${targetIdsStr()})"
     protected fun targetIdsStr(): String =
         if (BuildConfig.IS_STAGING) {
             "i=${(targetImageId.indexOf('_')

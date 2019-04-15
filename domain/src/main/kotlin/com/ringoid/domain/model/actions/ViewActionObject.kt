@@ -30,5 +30,5 @@ class ViewActionObject(
 
     override fun propertyString(): String? = "count=$count, timeInMillis=$timeInMillis"
 
-    override fun toActionString(): String = "VIEW($timeInMillis ms,${targetIdsStr()}${if (isHidden) ",hidden" else ""})"
+    override fun toActionString(): String = "$actionType($timeInMillis ms,${targetIdsStr()}${if (isHidden) ",hidden" else ""})"
 }

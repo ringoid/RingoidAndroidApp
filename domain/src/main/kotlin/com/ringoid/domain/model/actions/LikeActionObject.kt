@@ -18,6 +18,4 @@ class LikeActionObject(
     }
 
     override fun propertyString(): String? = "likeCount=$likeCount"
-
-    override fun toActionString(): String = "LIKE(${targetIdsStr()})"
 }

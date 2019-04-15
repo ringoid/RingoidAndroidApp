@@ -21,5 +21,5 @@ class ViewChatActionObject(
 
     override fun propertyString(): String? = "timeInMillis=$timeInMillis"
 
-    override fun toActionString(): String = "VIEW_CHAT($timeInMillis ms,${targetIdsStr()}${if (isHidden) ",hidden" else ""})"
+    override fun toActionString(): String = "$actionType($timeInMillis ms,${targetIdsStr()}${if (isHidden) ",hidden" else ""})"
 }
