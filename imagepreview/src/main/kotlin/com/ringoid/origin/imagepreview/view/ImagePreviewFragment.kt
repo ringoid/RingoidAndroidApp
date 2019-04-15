@@ -60,11 +60,11 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
             with(activity!!) {
                 // @see: https://stackoverflow.com/questions/37993762/java-lang-securityexception-on-takepersistableuripermission-saf
                 try {
-                    grantUriPermission(packageName, it, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-                } catch (e: IllegalArgumentException) {
-                    grantUriPermission(packageName, it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
-                try {
+                    try {
+                        grantUriPermission(packageName, it, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+                    } catch (e: IllegalArgumentException) {
+                        grantUriPermission(packageName, it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
                     contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 } catch (e: SecurityException) {
                     SentryUtil.capture(e, "No persistable permission grants found")
