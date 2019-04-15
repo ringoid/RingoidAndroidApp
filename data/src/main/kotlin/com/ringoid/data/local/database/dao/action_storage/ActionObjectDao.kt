@@ -17,6 +17,9 @@ interface ActionObjectDao {
     fun actionObjects(): Single<List<ActionObjectDbo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addActionObject(aobj: ActionObjectDbo)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addActionObjects(objects: List<ActionObjectDbo>)
 
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME}")

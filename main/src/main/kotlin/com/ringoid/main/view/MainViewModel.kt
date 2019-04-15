@@ -91,6 +91,7 @@ class MainViewModel @Inject constructor(
     override fun onStop() {
         super.onStop()
         ChatInMemoryCache.persist(spm)
+        actionObjectPool.trigger()
     }
 
     // --------------------------------------------------------------------------------------------
