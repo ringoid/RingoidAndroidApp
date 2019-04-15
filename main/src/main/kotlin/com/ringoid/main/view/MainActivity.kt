@@ -1,5 +1,9 @@
 package com.ringoid.main.view
 
+import android.content.Context
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
@@ -8,6 +12,7 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.observe
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_style
@@ -33,6 +38,18 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
                 LmmFragment.newInstance(),
                 UserProfileFragment.newInstance(),
                 ExploreFragment.newInstance())
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is ASK_LOCATION_PERMISSION -> permissionManager.askForLocationPermission(this)
+                }
+            }
+        }
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -94,9 +111,21 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     // --------------------------------------------------------------------------------------------
     private inner class LocationPermissionCaller : IPermissionCaller {
 
+        @SuppressWarnings("MissingPermission")
         override fun onGranted() {
             DebugLogUtil.i("Location permission has been granted")
-            vm.onLocationPermissionGranted()
+            (getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
+                ?.let {
+                    val listener = object : LocationListener {
+                        override fun onLocationChanged(location: Location) {
+                            vm.onLocationChanged(latitude = location.latitude, longitude = location.longitude)
+                        }
+                        override fun onStatusChanged(provider: String, status: Int, extras: Bundle?) {}
+                        override fun onProviderDisabled(provider: String) {}
+                        override fun onProviderEnabled(provider: String) {}
+                    }
+                    it.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 5f, listener)
+                }
         }
 
         override fun onDenied() {

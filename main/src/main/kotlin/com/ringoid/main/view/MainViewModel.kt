@@ -2,7 +2,9 @@ package com.ringoid.main.view
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.permission.IPermissionCaller
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
@@ -14,12 +16,15 @@ import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.model.actions.LocationActionObject
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.origin.view.main.BaseMainViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -127,7 +132,31 @@ class MainViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun onLocationPermissionGranted() {
-        // TODO: access GPS, get lat/lon and compose LOCATION aobj, trigger queue
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        viewState.value = ViewState.DONE(ASK_LOCATION_PERMISSION)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        viewState.value = ViewState.DONE(ASK_LOCATION_PERMISSION)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        viewState.value = ViewState.DONE(ASK_LOCATION_PERMISSION)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    fun onLocationChanged(latitude: Double, longitude: Double) {
+        val aobj = LocationActionObject(latitude, longitude)
+        actionObjectPool.put(aobj)
+        actionObjectPool.trigger()
     }
 }
