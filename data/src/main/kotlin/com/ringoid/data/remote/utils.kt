@@ -50,7 +50,7 @@ inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "", s
         "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
         "request url" to "${it.requestUrl ?: ""}", "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
     DebugLogUtil.log("<== [$tag][$elapsedTime ms]: ${it.toLogString()} ${data.joinToString()} ${it.errorString()}".trim(),
-                     level = if (it.isSuccessful()) DebugLogLevel.DEBUG else DebugLogLevel.ERROR)
+                     level = if (it.isSuccessful()) DebugLogLevel.DEBUG2 else DebugLogLevel.ERROR)
 }
 
 // ------------------------------------------------------------------------------------------------

@@ -155,13 +155,14 @@ class ActionObjectPool @Inject constructor(private val cloud: RingoidCloud,
 
     override fun triggerSource(): Single<Long> =
         Single.just(ProcessingPayload(threadId = tid++) to tcount++)
+//            .doOnSubscribe { DebugLogUtil.v("Thread [t=${tid - 1}] has entered commit actions section...") }
             .flatMap { thread ->
                 if (triggerInProgress.isLocked()) {
                     Single.error(WaitUntilTriggerFinishedException(tpayload = thread.first))
                 } else {
                     triggerInProgress.increment()
                     triggerSourceImpl()
-                        .doOnSubscribe { DebugLogUtil.d("Commit actions started by [t=${thread.first.threadId}] at ${thread.first.startTime} ms") }
+                        .doOnSubscribe { DebugLogUtil.d("Commit actions started by [t=${thread.first.threadId}] at ${thread.first.startTime % 1000000} ms, queue: ${if (queue.isEmpty()) "empty" else queue.joinToString("\n\t\t", "\n\t\t", "", transform = { it.toActionString() })}") }
                         .doFinally {
                             triggerInProgress.decrement()
                             --tcount

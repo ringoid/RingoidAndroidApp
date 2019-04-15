@@ -7,6 +7,7 @@ enum class DebugLogLevel(val char: Char, val priority: Int) {
     BUS('B', Log.DEBUG),
     VERBOSE('V', Log.VERBOSE),
     DEBUG('D', Log.DEBUG),
+    DEBUG2('D', Log.DEBUG),
     INFO('I', Log.INFO),
     WARNING('W', Log.WARN),
     ERROR('E', Log.ERROR)
