@@ -52,6 +52,7 @@
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
         android:textColor="@android:color/white"
+        android:textSize="@dimen/std_text_22"
         app:layout_constraintTop_toBottomOf="@id/iv_likes"
         app:layout_constraintStart_toStartOf="@id/iv_likes"
         app:layout_constraintEnd_toEndOf="@id/iv_likes"
