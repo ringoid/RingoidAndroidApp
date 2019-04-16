@@ -18,10 +18,12 @@ data class ActionObjectDbo(
     @ColumnInfo(name = COLUMN_TARGET_USER_ID) var targetUserId: String = "",
     // concrete action objects
     @ColumnInfo(name = COLUMN_NUMBER_BLOCK_REASON) var blockReasonNumber: Int = 0,
+    @ColumnInfo(name = COLUMN_LOCATION_LATITUDE) var latitude: Double = 0.0,
+    @ColumnInfo(name = COLUMN_LOCATION_LONGITUDE) var longitude: Double = 0.0,
     @ColumnInfo(name = COLUMN_MESSAGE_TEXT) var messageText: String = "",
     @ColumnInfo(name = COLUMN_OPEN_CHAT_TIME_MILLIS) var openChatTimeMillis: Long = 0L,
     @ColumnInfo(name = COLUMN_VIEW_CHAT_TIME_MILLIS) var viewChatTimeMillis: Long = 0L,
-    @ColumnInfo(name = COLUMN_VIEW_TIME_MILLIS) var viewTimeMillis: Long = 0L) : Mappable<ActionObject> {
+    @ColumnInfo(name = COLUMN_VIEW_TIME_MILLIS) var viewTimeMillis: Long = 0L) : Mappable<OriginActionObject> {
 
     companion object {
         const val COLUMN_ID = "id"
@@ -36,6 +38,8 @@ data class ActionObjectDbo(
 
         // concrete action objects
         const val COLUMN_NUMBER_BLOCK_REASON = "blockReasonNum"
+        const val COLUMN_LOCATION_LATITUDE = "latitude"
+        const val COLUMN_LOCATION_LONGITUDE = "longitude"
         const val COLUMN_MESSAGE_TEXT = "messageText"
         const val COLUMN_OPEN_CHAT_TIME_MILLIS = "openChatTimeMillis"
         const val COLUMN_VIEW_CHAT_TIME_MILLIS = "viewChatTimeMillis"
@@ -47,9 +51,10 @@ data class ActionObjectDbo(
             ActionObjectDbo(actionTime = aobj.actionTime, actionType = aobj.actionType)
     }
 
-    override fun map(): ActionObject =
+    override fun map(): OriginActionObject =
         when (actionType) {
             ActionObject.ACTION_TYPE_BLOCK -> BlockActionObject(numberOfBlockReason = blockReasonNumber, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_LOCATION -> LocationActionObject(latitude = latitude, longitude = longitude, actionTime = actionTime)
             ActionObject.ACTION_TYPE_LIKE -> LikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_MESSAGE -> MessageActionObject(text = messageText, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_OPEN_CHAT -> OpenChatActionObject(timeInMillis = openChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)

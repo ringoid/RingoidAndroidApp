@@ -6,6 +6,7 @@ import com.ringoid.data.di.*
 import com.ringoid.data.local.database.*
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectMigration_10_11
+import com.ringoid.data.local.database.dao.action_storage.ActionObjectMigration_11_12
 import com.ringoid.data.local.database.dao.debug.DebugLogDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDaoHelper
 import com.ringoid.data.local.database.dao.feed.FeedDao
@@ -26,9 +27,10 @@ class DatabaseModule {
 
     @Provides @Singleton
     fun provideDatabase(applicationContext: Context, migration_9_10: MessageMigration_9_10,
-                        migration_10_11: ActionObjectMigration_10_11): RingoidDatabase =
+                        migration_10_11: ActionObjectMigration_10_11,
+                        migration_11_12: ActionObjectMigration_11_12): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-            .addMigrations(migration_9_10, migration_10_11)
+            .addMigrations(migration_9_10, migration_10_11, migration_11_12)
             .build()
 
     @Provides @Singleton
