@@ -25,6 +25,7 @@ class ActionObjectDboMapper @Inject constructor() {
                     targetUserId = aobj.targetUserId
                 }
             }
+            is LocationActionObject -> dbo.apply { latitude = aobj.latitude ; longitude = aobj.longitude }
             else -> dbo
         }
     }
