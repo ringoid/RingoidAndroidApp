@@ -6,6 +6,9 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
 
+const val LOCATION_EPSf = 0.000001f
+const val LOCATION_EPS = 0.000001
+
 fun Uri.extension(): String =
     toString().takeIf { it.contains('.') }
               ?.let { it.substring(it.lastIndexOf('.') + 1) } ?: ""
