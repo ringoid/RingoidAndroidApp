@@ -103,6 +103,12 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
             .doOnSuccess { listScrolls.value = 0 }  // scroll to top position
             .autoDisposable(this)
             .subscribe({ cachedLmm = it },
+                        /**
+                         * Typical case of error is when there is no images in profile, so 'Single.filter()'
+                         * will emit zero items, though it must emit at least one by design. Instead,
+                         * it will throw [NoSuchElementException] that will propagate here in 'onError()'.
+                         * In this case, if any of Lmm feed screens are living, they should be purged.
+                         */
                        { Timber.e(it); clearAllFeeds.value = ViewState.CLEAR.MODE_NEED_REFRESH })
     }
 
