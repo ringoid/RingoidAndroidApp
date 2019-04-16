@@ -1,9 +1,5 @@
 package com.ringoid.main.view
 
-import android.content.Context
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
@@ -114,20 +110,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         @SuppressWarnings("MissingPermission")
         override fun onGranted() {
             DebugLogUtil.i("Location permission has been granted")
-            (getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
-                ?.let {
-                    val listener = object : LocationListener {
-                        override fun onLocationChanged(location: Location) {
-                            vm.onLocationChanged(latitude = location.latitude, longitude = location.longitude)
-                        }
-                        override fun onStatusChanged(provider: String, status: Int, extras: Bundle?) {}
-                        override fun onProviderDisabled(provider: String) {}
-                        override fun onProviderEnabled(provider: String) {}
-                    }
-                    it.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 250f, listener)
-                    it.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                        ?.let { vm.onLocationChanged(latitude = it.latitude, longitude = it.longitude) }
-                }
+            vm.onLocationPermissionGranted()
         }
 
         override fun onDenied() {

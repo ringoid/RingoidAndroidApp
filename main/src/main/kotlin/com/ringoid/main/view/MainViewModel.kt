@@ -1,8 +1,11 @@
 package com.ringoid.main.view
 
 import android.app.Application
+import android.location.Location
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.manager.location.ILocationProvider
+import com.ringoid.base.manager.location.LocationPrecision
 import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
@@ -35,6 +38,8 @@ class MainViewModel @Inject constructor(
     private val updatePushTokenUseCase: UpdatePushTokenUseCase,
     private val updateUserSettingsUseCase: UpdateUserSettingsUseCase, app: Application)
     : BaseMainViewModel(app) {
+
+    @Inject lateinit var locationProvider: ILocationProvider
 
     val badgeLmm by lazy { MutableLiveData<Boolean>() }
     val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
@@ -155,9 +160,14 @@ class MainViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun onLocationChanged(latitude: Double, longitude: Double) {
-        val aobj = LocationActionObject(latitude, longitude)
-        actionObjectPool.put(aobj)
-        actionObjectPool.trigger()
+    fun onLocationPermissionGranted() {
+        fun onLocationChanged(location: Location) {
+            val aobj = LocationActionObject(location.latitude, location.longitude)
+            actionObjectPool.put(aobj)
+            actionObjectPool.trigger()
+        }
+
+        locationProvider.getLocation(LocationPrecision.COARSE)
+            .subscribe(::onLocationChanged, Timber::e)
     }
 }
