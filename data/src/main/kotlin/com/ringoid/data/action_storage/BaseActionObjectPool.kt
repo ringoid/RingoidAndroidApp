@@ -19,7 +19,7 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
         private const val CAPACITY = 10
     }
 
-    protected val lastActionTimeValue = AtomicLong(0L)
+    private val lastActionTimeValue = AtomicLong(0L)
 
     init {
         lastActionTimeValue.set(spm.getLastActionTime())
