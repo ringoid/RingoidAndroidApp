@@ -97,7 +97,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
             .filter { it > 0 }  // user has images in profile
             .flatMapSingle {
                 val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
-                    .put("source", DomainUtil.SOURCE_FEED_PROFILE)
+                                     .put("source", DomainUtil.SOURCE_FEED_PROFILE)
                 getLmmUseCase.source(params = params)
             }
             .doOnSuccess { listScrolls.value = 0 }  // scroll to top position
