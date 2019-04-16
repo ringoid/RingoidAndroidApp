@@ -10,7 +10,6 @@ import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
-import com.ringoid.utility.LOCATION_EPSf
 import com.ringoid.utility.randomString
 import io.reactivex.*
 import timber.log.Timber
@@ -141,12 +140,12 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     /* Location */
     // --------------------------------------------------------------------------------------------
-    override fun getLocation(): Pair<Float, Float>? {
-        val latitude = sharedPreferences.getFloat(SP_KEY_LOCATION_LATITUDE, 0.0f)
-        val longitude = sharedPreferences.getFloat(SP_KEY_LOCATION_LONGITUDE, 0.0f)
-        return if (Math.abs(latitude) < LOCATION_EPSf && Math.abs(longitude) < LOCATION_EPSf) {
+    override fun getLocation(): Pair<Double, Double>? {
+        val latitude = sharedPreferences.getString(SP_KEY_LOCATION_LATITUDE, null)
+        val longitude = sharedPreferences.getString(SP_KEY_LOCATION_LONGITUDE, null)
+        return if (latitude.isNullOrBlank() || longitude.isNullOrBlank()) {
             null
-        } else latitude to longitude
+        } else latitude!!.toDouble() to longitude!!.toDouble()
     }
 
     override fun saveLocation(location: Location) {
@@ -154,8 +153,8 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
             deleteLocation()
         } else {
             sharedPreferences.edit()
-                .putFloat(SP_KEY_LOCATION_LATITUDE, location.latitude.toFloat())
-                .putFloat(SP_KEY_LOCATION_LONGITUDE, location.longitude.toFloat())
+                .putString(SP_KEY_LOCATION_LATITUDE, "${location.latitude}")
+                .putString(SP_KEY_LOCATION_LONGITUDE, "${location.longitude}")
                 .apply()
         }
     }

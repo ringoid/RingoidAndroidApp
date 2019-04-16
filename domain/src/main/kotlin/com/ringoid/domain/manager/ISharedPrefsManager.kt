@@ -41,7 +41,7 @@ interface ISharedPrefsManager {
 
     /* Location */
     // ------------------------------------------
-    fun getLocation(): Pair<Float, Float>?
+    fun getLocation(): Pair<Double, Double>?
 
     fun saveLocation(location: Location)
 
