@@ -60,6 +60,7 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
          * [a  [c   d]  b] => [a  c)(d  b]
          */
         if (new.from in from..to && to > new.to) {
+            // TODO sublist -> java.lang.IndexOutOfBoundsException: toIndex = 3 (> size) on fast scroll feed, vertical
             val l = subList(0, new.from + 1 - from).apply { addAll(subList(new.to + 1 - from, to + 1 - from)) }
             return EqualRange(from, from + l.size + 1, l)
         }
