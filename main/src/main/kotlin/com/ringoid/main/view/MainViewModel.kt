@@ -168,6 +168,7 @@ class MainViewModel @Inject constructor(
         }
 
         locationProvider.getLocation(LocationPrecision.COARSE)
+            .filter { it.latitude != 0.0 && it.longitude != 0.0 }
             .subscribe(::onLocationChanged, Timber::e)
     }
 }
