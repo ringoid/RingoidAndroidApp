@@ -1,6 +1,6 @@
 package com.ringoid.data.action_storage.di
 
-import com.ringoid.data.action_storage.ActionObjectPool
+import com.ringoid.data.action_storage.PersistActionObjectPool
 import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -12,5 +12,5 @@ import javax.inject.Singleton
 class ActionObjectPoolModule {
 
     @Provides @Singleton
-    fun provideActionObjectPool(pool: ActionObjectPool): IActionObjectPool = pool
+    fun provideActionObjectPool(pool: PersistActionObjectPool): IActionObjectPool = pool
 }

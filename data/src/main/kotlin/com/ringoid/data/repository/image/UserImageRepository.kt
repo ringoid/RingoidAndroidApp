@@ -1,6 +1,5 @@
 package com.ringoid.data.repository.image
 
-import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
@@ -14,6 +13,7 @@ import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.isFatalApiError
 import com.ringoid.domain.log.SentryUtil
@@ -41,7 +41,7 @@ class UserImageRepository @Inject constructor(
     @PerUser private val local: ImageDao,
     @PerUser private val imageRequestLocal: ImageRequestDao,
     private val userInMemoryCache: UserInMemoryCache,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
 
     override val imageBlocked = PublishSubject.create<String>()

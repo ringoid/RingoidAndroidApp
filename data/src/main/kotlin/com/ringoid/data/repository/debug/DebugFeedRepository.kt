@@ -1,6 +1,5 @@
 package com.ringoid.data.repository.debug
 
-import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.di.*
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
@@ -12,6 +11,7 @@ import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.model.feed.Feed
@@ -30,7 +30,7 @@ class DebugFeedRepository @Inject constructor(
     @PerBlock blockedProfilesCache: UserFeedDao,
     @PerLmmLikes newLikesProfilesCache: UserFeedDao,
     @PerLmmMatches newMatchesProfilesCache: UserFeedDao,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : FeedRepository(messengerLocal, sentMessagesLocal, alreadySeenProfilesCache, blockedProfilesCache,
                      newLikesProfilesCache, newMatchesProfilesCache, cloud, spm, aObjPool),
     IDebugFeedRepository {

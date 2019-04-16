@@ -1,6 +1,5 @@
 package com.ringoid.data.repository.debug
 
-import com.ringoid.data.action_storage.ActionObjectPool
 import com.ringoid.data.di.PerAlreadySeen
 import com.ringoid.data.di.PerBlock
 import com.ringoid.data.di.PerFeed
@@ -21,6 +20,7 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.data.repository.handleErrorNoRetry
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.manager.ISharedPrefsManager
@@ -48,7 +48,7 @@ class DebugRepository @Inject constructor(
     @PerUser private val userLocal: UserDao,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
     @PerBlock private val blockedProfilesCache: UserFeedDao,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IDebugRepository {
 
     companion object {
