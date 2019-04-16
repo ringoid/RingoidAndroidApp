@@ -30,10 +30,9 @@ class ActionObjectPool @Inject constructor(
     cloud: RingoidCloud, @PerBackup private val backup: ActionObjectDao,
     private val local: ActionObjectDao, private val mapper: ActionObjectDboMapper,
     spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
-    : BaseActionObjectPool(cloud, spm) {
+    : BarrierActionObjectPool(cloud, spm) {
 
     private val queue: Deque<OriginActionObject> = ArrayDeque()
-    private val triggerInProgress = TriggerSemaphore()
 
     // ------------------------------------------------------------------------
     override fun getTotalQueueSize(): Int = queue.size
@@ -67,41 +66,7 @@ class ActionObjectPool @Inject constructor(
             .subscribe({ Timber.d("Trigger Queue finished, last action time: $it") }, Timber::e)
     }
 
-    /**
-     * Not synchronized method, because synchronization is achieved via semaphore.
-     */
-    override fun triggerSource(): Single<Long> =
-        Single.just(ProcessingPayload(threadId = tid++) to tcount++)
-            .flatMap { thread ->
-                if (triggerInProgress.isLocked()) {
-                    Single.error(WaitUntilTriggerFinishedException(tpayload = thread.first))
-                } else {
-                    triggerInProgress.increment()
-                    triggerSourceImpl()
-                        .doOnSubscribe { DebugLogUtil.d("Commit actions started by [t=${thread.first.threadId}] at ${thread.first.startTime % 1000000} ms, queue: ${if (queue.isEmpty()) "empty" else queue.joinToString("\n\t\t", "\n\t\t", "", transform = { it.toActionString() })}") }
-                        .doFinally {
-                            triggerInProgress.decrement()
-                            --tcount
-                            DebugLogUtil.d("Commit actions has finished by [t=${thread.first.threadId}], elapsed time ${System.currentTimeMillis() - thread.first.startTime} ms")
-                        }
-                }
-            }
-            .retryWhen {
-                it.flatMap { e ->
-                    if (e is WaitUntilTriggerFinishedException) {
-                        DebugLogUtil.v("${e.message}, count $tcount")
-                        Flowable.timer(200L, TimeUnit.MILLISECONDS)  // repeat
-                    } else {
-                        DebugLogUtil.e(e)
-                        Flowable.error(e)
-                    }
-                }
-            }
-
-    private var tid: Long = 0L  // thread id
-    private var tcount: Long = 0L  // count of threads
-
-    private fun triggerSourceImpl(): Single<Long> {
+    override fun triggerSourceImpl(): Single<Long> {
         val localLastActionTime = queue.maxBy { it.actionTime }?.actionTime ?: lastActionTime()
         val backupQueue: Deque<OriginActionObject> = ArrayDeque()
 
@@ -165,7 +130,6 @@ class ActionObjectPool @Inject constructor(
     @Suppress("CheckResult")
     override fun finalizePool() {
         super.finalizePool()
-        triggerInProgress.drop()
         dropBackupQueue()
             .subscribeOn(Schedulers.io())
             .subscribe({}, Timber::e)

@@ -25,7 +25,7 @@ class PersistActionObjectPool @Inject constructor(
     cloud: RingoidCloud, @PerBackup private val backup: ActionObjectDao,
     private val local: ActionObjectDao, private val mapper: ActionObjectDboMapper,
     spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
-    : BaseActionObjectPool(cloud, spm) {
+    : BarrierActionObjectPool(cloud, spm) {
 
     // ------------------------------------------------------------------------
     override fun getTotalQueueSize(): Int = 0  // don't trigger by capacity hit
@@ -54,7 +54,7 @@ class PersistActionObjectPool @Inject constructor(
             .subscribe({ Timber.d("Trigger Queue finished, last action time: $it") }, Timber::e)
     }
 
-    override fun triggerSource(): Single<Long> =
+    override fun triggerSourceImpl(): Single<Long> =
         local.countActionObjects()
             .subscribeOn(Schedulers.io())
             .flatMap { count ->
@@ -69,6 +69,9 @@ class PersistActionObjectPool @Inject constructor(
                         .map { it.map { it.map() } }  // map from dbo to domain model
                         .flatMap { queue ->
                             spm.accessSingle {
+                                /**
+                                 * @see [ActionObjectPool.triggerSourceImpl] for explanation.
+                                 */
                                 val queueCopy = ArrayDeque(queue)
                                 val essence = CommitActionsEssence(it.accessToken, queueCopy)
                                 cloud.commitActions(essence)
