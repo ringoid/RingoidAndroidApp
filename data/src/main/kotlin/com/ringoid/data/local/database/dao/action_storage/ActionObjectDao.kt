@@ -22,6 +22,12 @@ interface ActionObjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addActionObjects(objects: List<ActionObjectDbo>)
 
+    @Query("UPDATE ${ActionObjectDbo.TABLE_NAME} SET ${ActionObjectDbo.COLUMN_USED} = :used WHERE ${ActionObjectDbo.COLUMN_ID} IN (:ids)")
+    fun markActionObjectsAsUsed(ids: List<Int>, used: Int = 1): Int
+
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME}")
     fun deleteActionObjects()
+
+    @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME} WHERE ${ActionObjectDbo.COLUMN_USED} = 1")
+    fun deleteUsedActionObjects()
 }

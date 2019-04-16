@@ -1,5 +1,6 @@
 package com.ringoid.data.action_storage
 
+import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
@@ -9,11 +10,19 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicLong
 
-abstract class BaseActionObjectPool(protected val cloud: RingoidCloud) : IActionObjectPool {
+abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected val spm: SharedPrefsManager)
+    : IActionObjectPool {
 
     companion object {
         private const val CAPACITY = 10
+    }
+
+    protected val lastActionTimeValue = AtomicLong(0L)
+
+    init {
+        lastActionTimeValue.set(spm.getLastActionTime())
     }
 
     private val numbers = mutableMapOf<Class<OriginActionObject>, Int>()
@@ -21,6 +30,12 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud) : IAction
     private val timers = mutableMapOf<Class<OriginActionObject>, Disposable?>()
 
     protected abstract fun getTotalQueueSize(): Int
+
+    protected fun dropStrategyData() {
+        numbers.clear()
+        strategies.clear()
+        timers.forEach { it.value?.dispose() }.also { timers.clear() }
+    }
 
     /**
      * Analyze every incoming [ActionObject], in particular it's [ActionObject.triggerStrategies]
@@ -103,6 +118,22 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud) : IAction
                         .doOnComplete(this::trigger)
                         .subscribe({ Timber.v("Delay strategy has just satisfied at $aobj") }, Timber::e)
                 }
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    override fun finalizePool() {
+        updateLastActionTime(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
+    }
+
+    override fun lastActionTime(): Long = lastActionTimeValue.get()
+
+    protected fun updateLastActionTime(lastActionTime: Long) {
+        lastActionTimeValue.set(lastActionTime)
+        if (lastActionTime == 0L) {
+            spm.deleteLastActionTime()
+        } else {
+            spm.saveLastActionTime(lastActionTime)
         }
     }
 }

@@ -11,6 +11,7 @@ data class ActionObjectDbo(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) val id: Int = 0,
     @ColumnInfo(name = COLUMN_ACTION_TIME) val actionTime: Long,
     @ColumnInfo(name = COLUMN_ACTION_TYPE) val actionType: String,
+    @ColumnInfo(name = COLUMN_USED) val used: Int = 0,
     // advanced properties
     @ColumnInfo(name = COLUMN_SOURCE_FEED) var sourceFeed: String = "",
     @ColumnInfo(name = COLUMN_TARGET_IMAGE_ID) var targetImageId: String = "",
@@ -26,6 +27,9 @@ data class ActionObjectDbo(
         const val COLUMN_ID = "id"
         const val COLUMN_ACTION_TIME = "actionTime"
         const val COLUMN_ACTION_TYPE = "actionType"
+        const val COLUMN_USED = "used"
+
+        // advanced properties
         const val COLUMN_SOURCE_FEED = "sourceFeed"
         const val COLUMN_TARGET_IMAGE_ID = "targetPhotoId"
         const val COLUMN_TARGET_USER_ID = "targetUserId"

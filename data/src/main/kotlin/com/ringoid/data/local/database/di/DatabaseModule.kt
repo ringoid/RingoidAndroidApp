@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.ringoid.data.di.*
 import com.ringoid.data.local.database.*
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
+import com.ringoid.data.local.database.dao.action_storage.ActionObjectMigration_10_11
 import com.ringoid.data.local.database.dao.debug.DebugLogDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDaoHelper
 import com.ringoid.data.local.database.dao.feed.FeedDao
@@ -12,7 +13,7 @@ import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
-import com.ringoid.data.local.database.dao.messenger.Migration_9_10
+import com.ringoid.data.local.database.dao.messenger.MessageMigration_9_10
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.IDebugLogDaoHelper
@@ -24,13 +25,14 @@ import javax.inject.Singleton
 class DatabaseModule {
 
     @Provides @Singleton
-    fun provideDatabase(applicationContext: Context, migration_9_10: Migration_9_10): RingoidDatabase =
+    fun provideDatabase(applicationContext: Context, migration_9_10: MessageMigration_9_10,
+                        migration_10_11: ActionObjectMigration_10_11): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-            .addMigrations(migration_9_10)
+            .addMigrations(migration_9_10, migration_10_11)
             .build()
 
     @Provides @Singleton
-    fun provideUserDatabase(applicationContext: Context, migration_9_10: Migration_9_10): UserRingoidDatabase =
+    fun provideUserDatabase(applicationContext: Context, migration_9_10: MessageMigration_9_10): UserRingoidDatabase =
         Room.databaseBuilder(applicationContext, UserRingoidDatabase::class.java, UserRingoidDatabase.DATABASE_NAME)
             .addMigrations(migration_9_10)
             .build()
@@ -53,6 +55,7 @@ class DatabaseModule {
     @Provides @Singleton
     fun provideBackupRingoidDatabase(applicationContext: Context): BackupRingoidDatabase =
         Room.databaseBuilder(applicationContext, BackupRingoidDatabase::class.java, BackupRingoidDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigration()
             .build()
 
     @Provides @Singleton @DebugOnly

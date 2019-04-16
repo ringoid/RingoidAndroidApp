@@ -22,7 +22,6 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,17 +29,11 @@ import javax.inject.Singleton
 class ActionObjectPool @Inject constructor(
     cloud: RingoidCloud, @PerBackup private val backup: ActionObjectDao,
     private val local: ActionObjectDao, private val mapper: ActionObjectDboMapper,
-    private val spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
-    : BaseActionObjectPool(cloud) {
+    spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
+    : BaseActionObjectPool(cloud, spm) {
 
     private val queue: Deque<OriginActionObject> = ArrayDeque()
-    private val lastActionTimeValue = AtomicLong(0L)
-
     private val triggerInProgress = TriggerSemaphore()
-
-    init {
-        lastActionTimeValue.set(spm.getLastActionTime())
-    }
 
     // ------------------------------------------------------------------------
     override fun getTotalQueueSize(): Int = queue.size
@@ -66,7 +59,7 @@ class ActionObjectPool @Inject constructor(
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
         if (queue.isEmpty()) {
-            return
+            return  // do nothing on empty queue
         }
 
         triggerSource()
@@ -74,6 +67,9 @@ class ActionObjectPool @Inject constructor(
             .subscribe({ Timber.d("Trigger Queue finished, last action time: $it") }, Timber::e)
     }
 
+    /**
+     * Not synchronized method, because synchronization is achieved via semaphore.
+     */
     override fun triggerSource(): Single<Long> =
         Single.just(ProcessingPayload(threadId = tid++) to tcount++)
             .flatMap { thread ->
@@ -133,9 +129,7 @@ class ActionObjectPool @Inject constructor(
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: ${lastActionTime()}, queue: ${printQueue()}")
             backupQueue.addAll(queue)
             queue.clear()
-            numbers.clear()
-            strategies.clear()
-            timers.forEach { it.value?.dispose() }.also { timers.clear() }
+            dropStrategyData()
         }
         .doOnSuccess {
             // Queue.size == 0 always at this stage
@@ -168,11 +162,9 @@ class ActionObjectPool @Inject constructor(
             .flatMap { source }
     }
 
-    override fun lastActionTime(): Long = lastActionTimeValue.get()
-
     @Suppress("CheckResult")
     override fun finalizePool() {
-        updateLastActionTime(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
+        super.finalizePool()
         triggerInProgress.drop()
         dropBackupQueue()
             .subscribeOn(Schedulers.io())
@@ -197,14 +189,4 @@ class ActionObjectPool @Inject constructor(
 
     private fun printQueue(): String =
         queue.joinToString(", ", "[", "]", transform = { it.toActionString() })
-
-    // ------------------------------------------
-    private fun updateLastActionTime(lastActionTime: Long) {
-        lastActionTimeValue.set(lastActionTime)
-        if (lastActionTime == 0L) {
-            spm.deleteLastActionTime()
-        } else {
-            spm.saveLastActionTime(lastActionTime)
-        }
-    }
 }
