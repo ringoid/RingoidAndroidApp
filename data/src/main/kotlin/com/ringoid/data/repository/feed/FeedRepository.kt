@@ -137,6 +137,10 @@ open class FeedRepository @Inject constructor(
                 .checkForNewMessages()
                 .cacheLmm()
                 .cacheMessagesFromLmm()
+                .onErrorResumeNext {
+                    DebugLogUtil.e(it, "Fallback to get cached Lmm")
+                    getCachedLmm()
+                }
         }
 
     private fun getCachedLmm(): Single<Lmm> =
