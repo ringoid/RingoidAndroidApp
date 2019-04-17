@@ -17,7 +17,7 @@ import com.ringoid.domain.model.mapList
  * @see https://androidkt.com/database-relationships/
  */
 data class FullFeedItemDbo(
-    @Embedded var feedItem: FeedItemDbo = FeedItemDbo(id = DomainUtil.BAD_ID, isNotSeen = false),
+    @Embedded var feedItem: FeedItemDbo = FeedItemDbo(id = DomainUtil.BAD_ID, isNotSeen = false, sourceFeed = ""),
     @Relation(parentColumn = FeedItemDbo.COLUMN_ID,
               entityColumn = ImageDbo.COLUMN_PROFILE_ID,
               entity = ImageDbo::class)

@@ -1,8 +1,10 @@
 package com.ringoid.data.repository.feed
 
 import com.ringoid.data.di.*
+import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
+import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
@@ -32,7 +34,8 @@ import javax.inject.Singleton
 
 @Singleton
 open class FeedRepository @Inject constructor(
-    private val messengerLocal: MessageDao, @PerUser private val sentMessagesLocal: MessageDao,
+    private val local: FeedDao, private val messengerLocal: MessageDao,
+    @PerUser private val sentMessagesLocal: MessageDao,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
     @PerBlock private val blockedProfilesCache: UserFeedDao,
     @PerLmmLikes private val newLikesProfilesCache: UserFeedDao,
@@ -131,6 +134,7 @@ open class FeedRepository @Inject constructor(
                 .checkForNewLikes()
                 .checkForNewMatches()
                 .checkForNewMessages()
+                .cacheLmm()
                 .cacheMessagesFromLmm()
         }
 
@@ -213,12 +217,25 @@ open class FeedRepository @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
-        doAfterSuccess {
+        flatMap {
             val messages = mutableListOf<MessageDbo>()
             it.likes.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_LIKES) }) }
             it.matches.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MATCHES) }) }
             it.messages.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MESSAGES) }) }
-            messengerLocal.insertMessages(messages)  // cache new messages
+            Completable.fromCallable { messengerLocal.insertMessages(messages) }  // cache new messages
+                                .toSingleDefault(it)
+        }
+
+    private fun Single<Lmm>.cacheLmm(): Single<Lmm> =
+        flatMap { lmm ->
+            val feedItems = mutableListOf<FeedItemDbo>()
+                .apply {
+                    addAll(lmm.likes.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_LIKES) })
+                    addAll(lmm.matches.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MATCHES) })
+                    addAll(lmm.messages.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES) })
+                }
+            Completable.fromCallable { local.addFeedItems(feedItems) }
+                                .toSingleDefault(lmm)
         }
 
     private fun Single<Lmm>.checkForNewLikes(): Single<Lmm> =
