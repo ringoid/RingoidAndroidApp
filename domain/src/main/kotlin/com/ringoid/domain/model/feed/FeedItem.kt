@@ -1,7 +1,6 @@
 package com.ringoid.domain.model.feed
 
 import com.ringoid.domain.model.image.IImage
-import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.utility.randomString
 

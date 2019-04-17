@@ -7,6 +7,7 @@ import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
+import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo

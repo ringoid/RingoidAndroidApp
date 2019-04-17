@@ -3,6 +3,7 @@ package com.ringoid.data.local.database.model.feed
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.ringoid.data.local.database.model.image.ImageDbo
+import com.ringoid.domain.DomainUtil
 
 /**
  * For one-to-many relations (one Profile to many BaseImages):
@@ -12,7 +13,7 @@ import com.ringoid.data.local.database.model.image.ImageDbo
  * @see https://androidkt.com/database-relationships/
  */
 data class ProfileWithImagesDbo(
-    @Embedded var profile: ProfileDbo = ProfileDbo(id = ""),
+    @Embedded var profile: ProfileDbo = ProfileDbo(id = DomainUtil.BAD_ID),
     @Relation(parentColumn = ProfileDbo.COLUMN_ID,
               entityColumn = ImageDbo.COLUMN_PROFILE_ID,
               entity = ImageDbo::class)
