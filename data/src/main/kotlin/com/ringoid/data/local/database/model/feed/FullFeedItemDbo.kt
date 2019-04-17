@@ -5,6 +5,9 @@ import androidx.room.Relation
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.model.Mappable
+import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.mapList
 
 /**
  * For one-to-many relations (one FeedItem to many Images, Messages):
@@ -22,4 +25,8 @@ data class FullFeedItemDbo(
     @Relation(parentColumn = FeedItemDbo.COLUMN_ID,
               entityColumn = MessageDbo.COLUMN_CHAT_ID,
               entity = MessageDbo::class)
-    var messages: List<MessageDbo> = emptyList())
+    var messages: List<MessageDbo> = emptyList()) : Mappable<FeedItem> {
+
+    override fun map(): FeedItem =
+        FeedItem(id = feedItem.id, isNotSeen = feedItem.isNotSeen, images = images.mapList(), messages = messages.mapList().toMutableList())
+}
