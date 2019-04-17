@@ -1,9 +1,11 @@
 package com.ringoid.data.local.database.dao.messenger
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.domain.DomainUtil
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
