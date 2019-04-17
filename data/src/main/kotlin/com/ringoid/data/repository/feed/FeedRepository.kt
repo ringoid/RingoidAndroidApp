@@ -112,7 +112,7 @@ open class FeedRepository @Inject constructor(
         aObjPool.triggerSource()
                 .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
                 .onErrorResumeNext {
-                    DebugLogUtil.e(it, "Fallback to get cached Lmm")
+                    SentryUtil.capture(it, message = "Fallback to get cached Lmm")
                     getCachedLmm()
                 }
 
