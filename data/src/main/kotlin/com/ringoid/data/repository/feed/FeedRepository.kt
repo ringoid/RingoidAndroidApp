@@ -109,7 +109,12 @@ open class FeedRepository @Inject constructor(
     /* LMM */
     // ------------------------------------------
     override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
-        aObjPool.triggerSource().flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
+        aObjPool.triggerSource()
+                .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
+                .onErrorResumeNext {
+                    DebugLogUtil.e(it, "Fallback to get cached Lmm")
+                    getCachedLmm()
+                }
 
     private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long): Single<Lmm> =
         spm.accessSingle {
@@ -137,10 +142,6 @@ open class FeedRepository @Inject constructor(
                 .checkForNewMessages()
                 .cacheLmm()
                 .cacheMessagesFromLmm()
-                .onErrorResumeNext {
-                    DebugLogUtil.e(it, "Fallback to get cached Lmm")
-                    getCachedLmm()
-                }
         }
 
     private fun getCachedLmm(): Single<Lmm> =
