@@ -242,7 +242,8 @@ open class FeedRepository @Inject constructor(
                     addAll(lmm.matches.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MATCHES) })
                     addAll(lmm.messages.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES) })
                 }
-            Completable.fromCallable { local.addFeedItems(feedItems) }
+            Completable.fromCallable { local.deleteFeedItems() }  // clear old cache before inserting new data
+                                .andThen { Completable.fromCallable { local.addFeedItems(feedItems) } }
                                 .toSingleDefault(lmm)
         }
 

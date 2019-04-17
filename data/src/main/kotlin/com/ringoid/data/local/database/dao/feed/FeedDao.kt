@@ -32,4 +32,7 @@ interface FeedDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addFeedItems(feedItems: Collection<FeedItemDbo>)
+
+    @Query("DELETE FROM ${FeedItemDbo.TABLE_NAME}")
+    fun deleteFeedItems()
 }
