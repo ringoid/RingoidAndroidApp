@@ -97,12 +97,18 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
             .filter { it > 0 }  // user has images in profile
             .flatMapSingle {
                 val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
-                    .put("source", DomainUtil.SOURCE_FEED_PROFILE)
+                                     .put("source", DomainUtil.SOURCE_FEED_PROFILE)
                 getLmmUseCase.source(params = params)
             }
             .doOnSuccess { listScrolls.value = 0 }  // scroll to top position
             .autoDisposable(this)
             .subscribe({ cachedLmm = it },
+                        /**
+                         * Typical case of error is when there is no images in profile, so 'Single.filter()'
+                         * will emit zero items, though it must emit at least one by design. Instead,
+                         * it will throw [NoSuchElementException] that will propagate here in 'onError()'.
+                         * In this case, if any of Lmm feed screens are living, they should be purged.
+                         */
                        { Timber.e(it); clearAllFeeds.value = ViewState.CLEAR.MODE_NEED_REFRESH })
     }
 

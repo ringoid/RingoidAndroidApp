@@ -2,12 +2,14 @@ package com.ringoid.data.local.shared_prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.location.Location
 import androidx.annotation.StyleRes
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
-import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.domain.model.user.AccessToken
+import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
 import io.reactivex.*
 import timber.log.Timber
@@ -44,6 +46,11 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         // --------------------------------------
         const val SP_KEY_AUTH_USER_ID = "sp_key_auth_user_id"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
+
+        /* Location */
+        // --------------------------------------
+        const val SP_KEY_LOCATION_LATITUDE = "sp_key_location_latitude"
+        const val SP_KEY_LOCATION_LONGITUDE = "sp_key_location_longitude"
 
         /* Actions */
         // --------------------------------------
@@ -128,6 +135,34 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         sharedPreferences.edit()
             .remove(SP_KEY_AUTH_USER_ID)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
+            .apply()
+    }
+
+    /* Location */
+    // --------------------------------------------------------------------------------------------
+    override fun getLocation(): Pair<Double, Double>? {
+        val latitude = sharedPreferences.getString(SP_KEY_LOCATION_LATITUDE, null)
+        val longitude = sharedPreferences.getString(SP_KEY_LOCATION_LONGITUDE, null)
+        return if (latitude.isNullOrBlank() || longitude.isNullOrBlank()) {
+            null
+        } else latitude!!.toDouble() to longitude!!.toDouble()
+    }
+
+    override fun saveLocation(location: Location) {
+        if (Math.abs(location.latitude) < LOCATION_EPS && Math.abs(location.longitude) < LOCATION_EPS) {
+            deleteLocation()
+        } else {
+            sharedPreferences.edit()
+                .putString(SP_KEY_LOCATION_LATITUDE, "${location.latitude}")
+                .putString(SP_KEY_LOCATION_LONGITUDE, "${location.longitude}")
+                .apply()
+        }
+    }
+
+    override fun deleteLocation() {
+        sharedPreferences.edit()
+            .remove(SP_KEY_LOCATION_LATITUDE)
+            .remove(SP_KEY_LOCATION_LONGITUDE)
             .apply()
     }
 

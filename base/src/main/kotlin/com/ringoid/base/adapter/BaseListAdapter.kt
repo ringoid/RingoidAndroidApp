@@ -5,7 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.ringoid.base.R
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.model.IListModel
+import com.ringoid.utility.changeVisibility
+import kotlinx.android.synthetic.main.rv_item_loading.view.*
 
 abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>, headerRows: Int = 0)
     : OriginListAdapter<T, VH>(diffCb, headerRows = headerRows) {
@@ -32,7 +35,7 @@ abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: B
         return when (viewType) {
             VIEW_TYPE_HEADER -> instantiateHeaderViewHolder(view)
             VIEW_TYPE_FOOTER -> instantiateFooterViewHolder(view)
-            VIEW_TYPE_LOADING -> instantiateLoadingViewHolder(view)
+            VIEW_TYPE_LOADING -> instantiateLoadingViewHolder(view).apply { itemView.pb_item_loading.changeVisibility(isVisible = BuildConfig.IS_STAGING, soft = true) }
             VIEW_TYPE_ERROR -> instantiateErrorViewHolder(view)
             else -> instantiateViewHolder(view).apply { setOnClickListener(getOnItemClickListener(this)) }
         }

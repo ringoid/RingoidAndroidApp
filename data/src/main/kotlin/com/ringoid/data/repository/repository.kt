@@ -38,16 +38,17 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
             .flatMap { errorWithAttempt ->
                 val attemptNumber = errorWithAttempt.first
                 val error = errorWithAttempt.second
+                var exception: Throwable? = null
                 val extras = tag?.let { listOf("tag" to "$tag [${error.javaClass.simpleName}]") }
                 val delayTime = when (error) {
                     is RepeatRequestAfterSecException -> {
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
                             SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold", level = Event.Level.WARNING, tag = tag, extras = extras)
-                            throw ThresholdExceededException()
+                            exception = ThresholdExceededException()
                         }
                         elapsedTimes.add(error.delay)
-                        error.delay  // in ms
+                        error.delay  // delay in ms
                     }
                     // don't retry on fatal network errors
                     is InvalidAccessTokenApiException,
@@ -55,11 +56,13 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                     is NetworkUnexpected -> throw error
                     is WrongRequestParamsClientApiException -> {
                         SentryUtil.capture(error, message = "Wrong request params on client", tag = tag, extras = extras)
-                        throw error
+                        exception = error
+                        0  // delay in ms
                     }
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
                 }
-                Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
+                exception?.let { Flowable.error<Long>(it) }
+                    ?: Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
                                 .doOnSubscribe { DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}") }
                                 .doOnNext {
                                     if (error is RepeatRequestAfterSecException) {

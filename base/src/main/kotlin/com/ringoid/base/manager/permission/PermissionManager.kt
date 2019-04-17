@@ -57,6 +57,7 @@ class PermissionManager @Inject constructor() {
 
     private fun askForPermission(activity: Activity, permission: String, rc: Int) {
         if (hasPermission(activity, permission)) {
+            callers[rc]?.forEach { it?.onGranted() }
             return
         }
 
@@ -67,6 +68,7 @@ class PermissionManager @Inject constructor() {
 
     private fun askForPermission(fragment: Fragment, permission: String, rc: Int) {
         if (hasPermission(fragment.activity!!, permission)) {
+            callers[rc]?.forEach { it?.onGranted() }
             return
         }
 

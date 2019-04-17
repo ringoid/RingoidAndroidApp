@@ -1,29 +1,29 @@
 package com.ringoid.data.repository.messenger
 
-import com.ringoid.data.action_storage.ActionObjectPool
+import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.action_storage.IActionObjectPool
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.model.actions.MessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
-import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class MessengerRepository @Inject constructor(
-    private val local: MessageDao, @Named("user") private val sentMessagesLocal: MessageDao,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    private val local: MessageDao, @PerUser private val sentMessagesLocal: MessageDao,
+    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
     override fun clearMessages(): Completable =

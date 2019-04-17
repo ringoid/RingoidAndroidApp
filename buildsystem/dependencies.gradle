@@ -482,6 +482,7 @@ ext {
     basePlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
+        xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
     ]
 

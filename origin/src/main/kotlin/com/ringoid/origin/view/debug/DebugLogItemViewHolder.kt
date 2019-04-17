@@ -19,6 +19,7 @@ class DebugLogItemViewHolder(view: View) : OriginDebugLogItemViewHolder(view) {
                 DebugLogLevel.BUS -> WidgetR_color.sky
                 DebugLogLevel.VERBOSE -> WidgetR_color.secondary_text
                 DebugLogLevel.DEBUG -> WidgetR_color.primary_text
+                DebugLogLevel.DEBUG2 -> WidgetR_color.green
                 DebugLogLevel.INFO -> WidgetR_color.grass
                 DebugLogLevel.WARNING -> WidgetR_color.warning
                 DebugLogLevel.ERROR -> WidgetR_color.red_love

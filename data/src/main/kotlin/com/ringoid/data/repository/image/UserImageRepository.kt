@@ -1,6 +1,6 @@
 package com.ringoid.data.repository.image
 
-import com.ringoid.data.action_storage.ActionObjectPool
+import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.model.image.ImageRequestDbo
@@ -13,15 +13,16 @@ import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.isFatalApiError
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.*
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.model.mapList
-import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.utility.uriString
 import io.reactivex.Completable
@@ -33,15 +34,14 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class UserImageRepository @Inject constructor(
-    @Named("user") private val local: ImageDao,
-    @Named("user") private val imageRequestLocal: ImageRequestDao,
+    @PerUser private val local: ImageDao,
+    @PerUser private val imageRequestLocal: ImageRequestDao,
     private val userInMemoryCache: UserInMemoryCache,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
 
     override val imageBlocked = PublishSubject.create<String>()

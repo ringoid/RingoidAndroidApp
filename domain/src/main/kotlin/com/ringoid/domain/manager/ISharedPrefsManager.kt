@@ -1,5 +1,6 @@
 package com.ringoid.domain.manager
 
+import android.location.Location
 import androidx.annotation.StyleRes
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.user.AccessToken
@@ -37,6 +38,14 @@ interface ISharedPrefsManager {
     fun saveUserProfile(userId: String, accessToken: String)
 
     fun deleteUserProfile(userId: String)
+
+    /* Location */
+    // ------------------------------------------
+    fun getLocation(): Pair<Double, Double>?
+
+    fun saveLocation(location: Location)
+
+    fun deleteLocation()
 
     /* Referral program */
     // ------------------------------------------

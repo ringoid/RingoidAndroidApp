@@ -1,9 +1,11 @@
 package com.ringoid.main.view
 
 import android.app.Application
+import android.location.Location
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.manager.permission.IPermissionCaller
+import com.ringoid.base.manager.location.ILocationProvider
+import com.ringoid.base.manager.location.LocationPrecision
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
@@ -21,6 +23,7 @@ import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.origin.view.main.BaseMainViewModel
+import com.ringoid.utility.LOCATION_EPS
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
@@ -35,6 +38,8 @@ class MainViewModel @Inject constructor(
     private val updatePushTokenUseCase: UpdatePushTokenUseCase,
     private val updateUserSettingsUseCase: UpdateUserSettingsUseCase, app: Application)
     : BaseMainViewModel(app) {
+
+    @Inject lateinit var locationProvider: ILocationProvider
 
     val badgeLmm by lazy { MutableLiveData<Boolean>() }
     val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
@@ -91,6 +96,7 @@ class MainViewModel @Inject constructor(
     override fun onStop() {
         super.onStop()
         ChatInMemoryCache.persist(spm)
+        actionObjectPool.trigger()
     }
 
     // --------------------------------------------------------------------------------------------
@@ -154,9 +160,25 @@ class MainViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun onLocationChanged(latitude: Double, longitude: Double) {
-        val aobj = LocationActionObject(latitude, longitude)
-        actionObjectPool.put(aobj)
-        actionObjectPool.trigger()
+    fun onLocationPermissionGranted() {
+        fun onLocationChanged(location: Location) {
+            val prevLocation = spm.getLocation()
+            if (prevLocation != null &&
+                Math.abs(prevLocation.first - location.latitude) < LOCATION_EPS &&
+                Math.abs(prevLocation.second - location.longitude) < LOCATION_EPS) {
+                DebugLogUtil.v("Location has not changed")
+                return
+            }
+
+            DebugLogUtil.v("Location has changed enough")
+            spm.saveLocation(location)
+            val aobj = LocationActionObject(location.latitude, location.longitude)
+            actionObjectPool.put(aobj)
+            actionObjectPool.trigger()
+        }
+
+        locationProvider.getLocation(LocationPrecision.COARSE)
+            .filter { it.latitude != 0.0 && it.longitude != 0.0 }
+            .subscribe(::onLocationChanged, Timber::e)
     }
 }

@@ -1,6 +1,6 @@
 package com.ringoid.data.repository.feed
 
-import com.ringoid.data.action_storage.ActionObjectPool
+import com.ringoid.data.di.*
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
@@ -12,6 +12,7 @@ import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
@@ -27,17 +28,16 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 open class FeedRepository @Inject constructor(
-    private val messengerLocal: MessageDao, @Named("user") private val sentMessagesLocal: MessageDao,
-    @Named("alreadySeen") private val alreadySeenProfilesCache: UserFeedDao,
-    @Named("block") private val blockedProfilesCache: UserFeedDao,
-    @Named("newLikes") private val newLikesProfilesCache: UserFeedDao,
-    @Named("newMatches") private val newMatchesProfilesCache: UserFeedDao,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: ActionObjectPool)
+    private val messengerLocal: MessageDao, @PerUser private val sentMessagesLocal: MessageDao,
+    @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
+    @PerBlock private val blockedProfilesCache: UserFeedDao,
+    @PerLmmLikes private val newLikesProfilesCache: UserFeedDao,
+    @PerLmmMatches private val newMatchesProfilesCache: UserFeedDao,
+    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
     // --------------------------------------------------------------------------------------------

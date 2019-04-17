@@ -49,7 +49,7 @@ class ExploreViewModel @Inject constructor(
     fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Profile screen leads Feed screen to purge
+        // refresh on Lmm screen leads Feed screen to purge
         clearScreen(ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 
