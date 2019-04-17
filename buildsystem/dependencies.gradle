@@ -90,6 +90,7 @@ ext {
     d_rx = [
             rx:              "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
             rxAndroid:       "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
+            rxKotlin:        "io.reactivex.rxjava2:rxkotlin:${rxKotlinVersion}",
             rxBinding:       "com.jakewharton.rxbinding3:rxbinding:${rxBindingVersion}",
             rxBindCore:      "com.jakewharton.rxbinding3:rxbinding-core:${rxBindingVersion}",
             rxBindCompat:    "com.jakewharton.rxbinding3:rxbinding-appcompat:${rxBindingVersion}",
@@ -488,7 +489,9 @@ ext {
 
     /* Data */
     // ------------------------------------------
-    dataDependencies = []
+    dataDependencies = [
+        [configuration: "implementation", dependency: d_rx.rxKotlin]
+    ]
     dataDependencies += module_domain + module_utility + kotlin + dagger + log + autoDispose + net + room + rx
     testDataDependencies = test
 

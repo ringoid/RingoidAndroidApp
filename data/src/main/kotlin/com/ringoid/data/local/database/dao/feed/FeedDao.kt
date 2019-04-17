@@ -6,14 +6,14 @@ import com.ringoid.data.local.database.model.feed.FullFeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileDbo
 import com.ringoid.data.local.database.model.feed.ProfileWithImagesDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
-import io.reactivex.Observable
+import io.reactivex.Single
 
 @Dao
 interface FeedDao {
 
     @Transaction
     @Query("SELECT * FROM ${ProfileDbo.TABLE_NAME}")
-    fun profiles(): Observable<List<ProfileWithImagesDbo>>
+    fun profiles(): Single<List<ProfileWithImagesDbo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addProfiles(profiles: Collection<ProfileDbo>)
@@ -24,7 +24,11 @@ interface FeedDao {
     // ------------------------------------------
     @Transaction
     @Query("SELECT * FROM ${FeedItemDbo.TABLE_NAME}")
-    fun feedItems(): Observable<List<FullFeedItemDbo>>
+    fun feedItems(): Single<List<FullFeedItemDbo>>
+
+    @Transaction
+    @Query("SELECT * FROM ${FeedItemDbo.TABLE_NAME} WHERE ${FeedItemDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
+    fun feedItems(sourceFeed: String): Single<List<FullFeedItemDbo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addFeedItems(feedItems: Collection<FeedItemDbo>)

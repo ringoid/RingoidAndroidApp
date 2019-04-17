@@ -28,6 +28,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -137,6 +138,13 @@ open class FeedRepository @Inject constructor(
                 .cacheLmm()
                 .cacheMessagesFromLmm()
         }
+
+    private fun getCachedLmm(): Single<Lmm> =
+        Single.zip(
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES).map { it.mapList() },
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MATCHES).map { it.mapList() },
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES).map { it.mapList() },
+            Function3 { likes, matches, messages -> Lmm(likes, matches, messages) })
 
     override fun dropLmmChangedStatus(): Completable =
         Completable.fromCallable {
