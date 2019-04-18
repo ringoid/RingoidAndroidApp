@@ -131,7 +131,7 @@ abstract class BaseLmmFeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         super.onLike(profileId, imageId, isLiked)
-        addLikedImageForFeedItemIdUseCase.source(params = Params().put("feedITemId", profileId).put("imageId", imageId))
+        addLikedImageForFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId).put("imageId", imageId))
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
