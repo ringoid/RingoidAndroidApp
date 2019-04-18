@@ -3,10 +3,12 @@ package com.ringoid.data.repository.feed
 import com.ringoid.data.di.*
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
+import com.ringoid.data.local.database.dao.feed.property.FeedPropertyDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
+import com.ringoid.data.local.database.model.feed.property.LikedFeedItemIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
@@ -24,6 +26,7 @@ import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.property.LikedFeedItemIds
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
@@ -37,8 +40,11 @@ import javax.inject.Singleton
 
 @Singleton
 open class FeedRepository @Inject constructor(
-    private val local: FeedDao, private val imagesLocal: ImageDao,
-    private val messengerLocal: MessageDao, @PerUser private val sentMessagesLocal: MessageDao,
+    private val local: FeedDao,
+    private val feedPropertiesLocal: FeedPropertyDao,
+    private val imagesLocal: ImageDao,
+    private val messengerLocal: MessageDao,
+    @PerUser private val sentMessagesLocal: MessageDao,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
     @PerBlock private val blockedProfilesCache: UserFeedDao,
     @PerLmmLikes private val newLikesProfilesCache: UserFeedDao,
@@ -70,6 +76,17 @@ open class FeedRepository @Inject constructor(
         Completable.fromCallable { blockedProfilesCache.deleteProfileIds() }
 
     // ------------------------------------------
+    override fun cacheLikedFeedItemIds(ids: LikedFeedItemIds): Completable =
+        Completable.fromCallable {
+            val xIds = mutableListOf<LikedFeedItemIdDbo>()
+                .apply {
+                    ids.ids.keys.forEach { key ->
+                        ids.ids[key]?.map { LikedFeedItemIdDbo(id = key, imageId = it) }?.let { addAll(it) }
+                    }
+                }
+            feedPropertiesLocal.addLikedFeedItemIds(xIds)
+        }
+
     override fun clearCachedLmmProfileIds(): Completable =
         Single.fromCallable { newLikesProfilesCache.deleteProfileIds() }
               .flatMapCompletable { Completable.fromCallable { newMatchesProfilesCache.deleteProfileIds() } }
