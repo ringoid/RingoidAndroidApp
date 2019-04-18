@@ -16,10 +16,10 @@ interface FeedPropertyDao {
     @Query("SELECT * FROM ${LikedFeedItemIdDbo.TABLE_NAME}")
     fun likedFeedItemIds(): Single<List<LikedFeedItemIdDbo>>
 
-    @Query("SELECT * FROM ${LikedFeedItemIdDbo.TABLE_NAME} WHERE ${LikedFeedItemIdDbo.COLUMN_ID} = :feedItemId")
+    @Query("SELECT * FROM ${LikedFeedItemIdDbo.TABLE_NAME} WHERE ${LikedFeedItemIdDbo.COLUMN_FEED_ITEM_ID} = :feedItemId")
     fun likedImagesForFeedItemId(feedItemId: String): Single<List<LikedFeedItemIdDbo>>
 
-    @Query("SELECT * FROM ${LikedFeedItemIdDbo.TABLE_NAME} WHERE ${LikedFeedItemIdDbo.COLUMN_ID} IN (:feedItemIds)")
+    @Query("SELECT * FROM ${LikedFeedItemIdDbo.TABLE_NAME} WHERE ${LikedFeedItemIdDbo.COLUMN_FEED_ITEM_ID} IN (:feedItemIds)")
     fun likedImagesForFeedItemIds(feedItemIds: List<String>): Single<List<LikedFeedItemIdDbo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

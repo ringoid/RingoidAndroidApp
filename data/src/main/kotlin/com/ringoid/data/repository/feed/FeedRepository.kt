@@ -21,6 +21,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.SimulatedException
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
@@ -78,39 +79,39 @@ open class FeedRepository @Inject constructor(
 
     // ------------------------------------------
     override fun cacheLikedFeedItemId(feedItemId: String, imageId: String): Completable =
-        Completable.fromCallable { feedPropertiesLocal.addLikedFeedItemId(LikedFeedItemIdDbo(id = feedItemId, imageId = imageId)) }
+        Completable.fromCallable { feedPropertiesLocal.addLikedFeedItemId(LikedFeedItemIdDbo(feedItemId = feedItemId, imageId = imageId)) }
 
     override fun cacheLikedFeedItemIds(ids: LikedFeedItemIds): Completable =
         Completable.fromCallable {
             val xIds = mutableListOf<LikedFeedItemIdDbo>()
                 .apply {
                     ids.ids.keys.forEach { key ->
-                        ids.ids[key]?.map { LikedFeedItemIdDbo(id = key, imageId = it) }?.let { addAll(it) }
+                        ids.ids[key]?.map { LikedFeedItemIdDbo(feedItemId = key, imageId = it) }?.let { addAll(it) }
                     }
                 }
             feedPropertiesLocal.addLikedFeedItemIds(xIds)
         }
 
     override fun cacheUserMessagedFeedItemId(feedItemId: String): Completable =
-        Completable.fromCallable { feedPropertiesLocal.addUserMessagedFeedItemId(UserMessagedFeedItemIdDbo(feedItemId)) }
+        Completable.fromCallable { feedPropertiesLocal.addUserMessagedFeedItemId(UserMessagedFeedItemIdDbo(feedItemId = feedItemId)) }
 
     override fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds> =
         feedPropertiesLocal.likedImagesForFeedItemIds(ids)
             .map {
                 val map = mutableMapOf<String, MutableList<String>>()
                 it.forEach {
-                    if (!map.containsKey(it.id)) {
-                        map[it.id] = mutableListOf()
+                    if (!map.containsKey(it.feedItemId)) {
+                        map[it.feedItemId] = mutableListOf()
                     }
 
-                    map[it.id]?.add(it.imageId)
+                    map[it.feedItemId]?.add(it.imageId)
                 }
                 map
             }
             .map { LikedFeedItemIds(it) }
 
     override fun getUserMessagedFeedItemIds(): Single<List<String>> =
-        feedPropertiesLocal.userMessagedFeedItemIds().map { it.map { it.id } }
+        feedPropertiesLocal.userMessagedFeedItemIds().map { it.map { it.feedItemId } }
 
     override fun clearCachedLikedFeedItemIds(): Completable =
         Completable.fromCallable { feedPropertiesLocal.deleteLikedFeedItemIds() }
@@ -165,7 +166,13 @@ open class FeedRepository @Inject constructor(
     // ------------------------------------------
     override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
         aObjPool.triggerSource()
-                .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
+                .flatMap {
+                    if (DomainUtil.withSimulatedError()) {
+                        Single.error<Lmm>(SimulatedException())
+                    } else {
+                        getLmmOnly(resolution, source = source, lastActionTime = it)
+                    }
+                }
                 .onErrorResumeNext {
                     SentryUtil.capture(it, message = "Fallback to get cached Lmm")
                     getCachedLmm()
