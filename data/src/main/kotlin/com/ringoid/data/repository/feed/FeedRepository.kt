@@ -76,6 +76,9 @@ open class FeedRepository @Inject constructor(
         Completable.fromCallable { blockedProfilesCache.deleteProfileIds() }
 
     // ------------------------------------------
+    override fun cacheLikedFeedItemId(feedItemId: String, imageId: String): Completable =
+        Completable.fromCallable { feedPropertiesLocal.addLikedFeedItemId(LikedFeedItemIdDbo(id = feedItemId, imageId = imageId)) }
+
     override fun cacheLikedFeedItemIds(ids: LikedFeedItemIds): Completable =
         Completable.fromCallable {
             val xIds = mutableListOf<LikedFeedItemIdDbo>()
@@ -86,6 +89,26 @@ open class FeedRepository @Inject constructor(
                 }
             feedPropertiesLocal.addLikedFeedItemIds(xIds)
         }
+
+    override fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds> =
+        feedPropertiesLocal.likedImagesForFeedItemIds(ids)
+            .map {
+                val map = mutableMapOf<String, MutableList<String>>()
+                it.forEach {
+                    if (!map.containsKey(it.id)) {
+                        map[it.id] = mutableListOf()
+                    }
+
+                    map[it.id]?.add(it.imageId)
+                }
+                map
+            }
+            .map { LikedFeedItemIds(it) }
+
+    override fun clearCachedLikedFeedItemIds(): Completable =
+        Completable.fromCallable { feedPropertiesLocal.deleteLikedFeedItemIds() }
+
+    override fun clearCachedLmm(): Completable = Completable.fromCallable { local.deleteFeedItems() }
 
     override fun clearCachedLmmProfileIds(): Completable =
         Single.fromCallable { newLikesProfilesCache.deleteProfileIds() }

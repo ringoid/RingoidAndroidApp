@@ -11,6 +11,8 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
+import com.ringoid.domain.interactor.feed.property.AddLikedImageForFeedItemIdUseCase
+import com.ringoid.domain.interactor.feed.property.GetLikedFeedItemIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
@@ -26,24 +28,46 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
+/**
+ * Cached feed represented with [Lmm] is used when fetching of original feed has failed,
+ * basically due to exceeded request threshold, that is actually expressed via [ThresholdExceededException].
+ * But this is only done upon refreshing the feed. Before that user could like some feed items
+ * and / or compose the very first message to some peers (which then changes appearance of chat icon).
+ * Thus, upon failed to refresh, feed is restored from the cache, but that cache lacks this information,
+ * so that information is kept in special sources such as [getLikedFeedItemIdsUseCase] and [messagedFeedItemIds]
+ * and hence could be applied on a cached feed, restoring the information to user.
+ */
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
+    private val getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
+    private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
-    : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase,
-                    userInMemoryCache, app) {
+    : FeedViewModel(
+        clearCachedAlreadySeenProfileIdsUseCase,
+        cacheBlockedProfileIdUseCase, countUserImagesUseCase,
+        userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
-    private var likedFeedItemIds = mutableMapOf<String, MutableList<String>>()  // cached feed items that were liked, to restore likes on cached feed
-    private var messagedFeedItemIds = mutableSetOf<String>()  // cached feed items that have only user messages inside, sent after receiving feed
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
     init {
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
+            .flatMap {
+                // get cached feed items that were liked, to restore likes on cached feed
+                val params = Params().put("feedItemIds", it.map { it.id })
+                getLikedFeedItemIdsUseCase.source(params = params).toObservable()
+            }
+            .doOnNext { it.ids.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_LIKES(it)) } }
+            // TODO: also apply user message
+//            .flatMap {
+                // cached feed items that have only user messages inside, sent after receiving feed
+//            }
+//            .doOnNext { messagedFeedItemIds.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_USER_MESSAGES(it)) } }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
@@ -103,39 +127,19 @@ abstract class BaseLmmFeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         super.onLike(profileId, imageId, isLiked)
-        if (!likedFeedItemIds.containsKey(profileId)) {
-            likedFeedItemIds[profileId] = mutableListOf()
-        }
-
-        if (isLiked) {
-            likedFeedItemIds[profileId]?.add(imageId)
-        } else {
-            likedFeedItemIds[profileId]?.remove(imageId)
-        }
+        addLikedImageForFeedItemIdUseCase.source(params = Params().put("feedITemId", profileId).put("imageId", imageId))
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
     }
 
     fun onFirstUserMessageSent(profileId: String) {
-        messagedFeedItemIds.add(profileId)  // keep those peers that user has sent the first message to
+        // TODO: impl save messaged feed item
+//        messagedFeedItemIds.add(profileId)  // keep those peers that user has sent the first message to
     }
 
     // --------------------------------------------------------------------------------------------
     override fun onRefresh() {
         super.onRefresh()
         Bus.post(event = BusEvent.RefreshOnLmm)
-    }
-
-    // ------------------------------------------
-    /**
-     * Cached feed represented with [cachedFeed] is used when fetching of original feed has failed,
-     * basically due to exceeded request threshold, that is actually expressed via [ThresholdExceededException].
-     * But this is only done upon refreshing the feed. Before that user could like some feed items
-     * and / or compose the very first message to some peers (which then changes appearance of chat icon).
-     * Thus, upon failed to refresh, feed is restored from the cache, but that cache lacks this information,
-     * so that information is kept in special field such as [likedFeedItemIds] and [messagedFeedItemIds]
-     * and hence could be applied to cache feed, restoring it to user.
-     */
-    private fun applyCachedChangesOnFeedIfAny() {
-        likedFeedItemIds.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_LIKES(it)) }
-        messagedFeedItemIds.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_USER_MESSAGES(it)) }
     }
 }

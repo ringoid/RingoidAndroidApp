@@ -11,6 +11,8 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedBlockedProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedLmmProfileIdsUseCase
+import com.ringoid.domain.interactor.feed.ClearCachedLmmUseCase
+import com.ringoid.domain.interactor.feed.property.ClearCachedLikedFeedItemIdsUseCase
 import com.ringoid.domain.interactor.image.ClearCachedImageRequestsUseCase
 import com.ringoid.domain.interactor.image.ClearCachedUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesUseCase
@@ -34,6 +36,8 @@ class LoginViewModel @Inject constructor(
     private val clearLocalUserDataUseCase: ClearLocalUserDataUseCase,
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val clearCachedBlockedProfileIdsUseCase: ClearCachedBlockedProfileIdsUseCase,
+    private val clearCachedLikedFeedItemIdsUseCase: ClearCachedLikedFeedItemIdsUseCase,
+    private val clearCachedLmmUseCase: ClearCachedLmmUseCase,
     private val clearCachedLmmProfileIdsUseCase: ClearCachedLmmProfileIdsUseCase,
     private val clearCachedUserImagesUseCase: ClearCachedUserImagesUseCase,
     private val clearCachedImageRequestsUseCase: ClearCachedImageRequestsUseCase,
@@ -110,6 +114,8 @@ class LoginViewModel @Inject constructor(
             }
             .andThen(clearCachedAlreadySeenProfileIdsUseCase.source())
             .andThen(clearCachedBlockedProfileIdsUseCase.source())
+            .andThen(clearCachedLikedFeedItemIdsUseCase.source())
+            .andThen(clearCachedLmmUseCase.source())
             .andThen(clearCachedLmmProfileIdsUseCase.source())
             .andThen(clearCachedUserImagesUseCase.source())
             .andThen(clearCachedImageRequestsUseCase.source())

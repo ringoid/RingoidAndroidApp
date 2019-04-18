@@ -25,8 +25,12 @@ interface IFeedRepository {
     fun deleteBlockedProfileIds(): Completable
 
     // ------------------------------------------
+    fun cacheLikedFeedItemId(feedItemId: String, imageId: String): Completable
     fun cacheLikedFeedItemIds(ids: LikedFeedItemIds): Completable
+    fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds>
 
+    fun clearCachedLikedFeedItemIds(): Completable
+    fun clearCachedLmm(): Completable
     fun clearCachedLmmProfileIds(): Completable
 
     // --------------------------------------------------------------------------------------------
