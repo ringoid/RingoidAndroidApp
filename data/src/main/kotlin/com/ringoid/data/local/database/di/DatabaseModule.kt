@@ -27,14 +27,9 @@ import javax.inject.Singleton
 class DatabaseModule {
 
     @Provides @Singleton
-    fun provideDatabase(applicationContext: Context,
-                        migration_9_10: MessageMigration_9_10,
-                        migration_10_11: ActionObjectMigration_10_11,
-                        migration_11_12: ActionObjectMigration_11_12,
-                        majorMigration_14_100: MajorMigration_14_100): RingoidDatabase =
+    fun provideDatabase(applicationContext: Context): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-//            .addMigrations(migration_9_10, migration_10_11, migration_11_12, majorMigration_14_100)
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 100)
             .build()
 
     @Provides @Singleton
