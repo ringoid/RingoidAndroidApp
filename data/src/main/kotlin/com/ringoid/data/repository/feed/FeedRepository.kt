@@ -121,26 +121,22 @@ open class FeedRepository @Inject constructor(
 
     private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long): Single<Lmm> =
         spm.accessSingle {
-            if (DomainUtil.withSimulatedError()) {
-                Single.error<Lmm>(SimulatedException())
-            } else {
-                cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
-                    .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})")
-                    .dropLmmResponseStatsOnSubscribe()
-                    .filterOutDuplicateProfilesLmm()
-                    .detectCollisionProfilesLmm()
-                    .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
-                    .filterOutBlockedProfilesLmm()
-                    .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering, final") }
-                    .map { it.map() }
-                    .doOnSuccess { sentMessagesLocal.deleteMessages() }  // clear sent user messages because they will be restored with new Lmm
-                    .checkForNewFeedItems()
-                    .checkForNewLikes()
-                    .checkForNewMatches()
-                    .checkForNewMessages()
-                    .cacheLmm()
-                    .cacheMessagesFromLmm()
-            }
+            cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
+                .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})")
+                .dropLmmResponseStatsOnSubscribe()
+                .filterOutDuplicateProfilesLmm()
+                .detectCollisionProfilesLmm()
+                .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
+                .filterOutBlockedProfilesLmm()
+                .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering, final") }
+                .map { it.map() }
+                .doOnSuccess { sentMessagesLocal.deleteMessages() }  // clear sent user messages because they will be restored with new Lmm
+                .checkForNewFeedItems()
+                .checkForNewLikes()
+                .checkForNewMatches()
+                .checkForNewMessages()
+                .cacheLmm()
+                .cacheMessagesFromLmm()
         }
 
     private fun getCachedLmm(): Single<Lmm> =
