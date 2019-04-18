@@ -5,8 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ringoid.data.local.database.model.feed.property.LikedFeedItemIdDbo
-import io.reactivex.Completable
-import io.reactivex.Single
 
 @Dao
 interface FeedPropertyDao {
