@@ -9,6 +9,7 @@ import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.feed.property.LikedFeedItemIdDbo
+import com.ringoid.data.local.database.model.feed.property.UserMessagedFeedItemIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
@@ -90,6 +91,9 @@ open class FeedRepository @Inject constructor(
             feedPropertiesLocal.addLikedFeedItemIds(xIds)
         }
 
+    override fun cacheUserMessagedFeedItemId(feedItemId: String): Completable =
+        Completable.fromCallable { feedPropertiesLocal.addUserMessagedFeedItemId(UserMessagedFeedItemIdDbo(feedItemId)) }
+
     override fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds> =
         feedPropertiesLocal.likedImagesForFeedItemIds(ids)
             .map {
@@ -105,11 +109,20 @@ open class FeedRepository @Inject constructor(
             }
             .map { LikedFeedItemIds(it) }
 
+    override fun getUserMessagedFeedItemIds(): Single<List<String>> =
+        feedPropertiesLocal.userMessagedFeedItemIds().map { it.map { it.id } }
+
     override fun clearCachedLikedFeedItemIds(): Completable =
         Completable.fromCallable { feedPropertiesLocal.deleteLikedFeedItemIds() }
 
+    override fun clearCachedUserMessagedFeedItemIds(): Completable =
+        Completable.fromCallable { feedPropertiesLocal.deleteUserMessagedFeedItemIds() }
+
     override fun clearCachedLmm(): Completable = Completable.fromCallable { local.deleteFeedItems() }
 
+    /**
+     * Clear data that was used to track profiles that have already contributed to new likes and matches.
+     */
     override fun clearCachedLmmProfileIds(): Completable =
         Single.fromCallable { newLikesProfilesCache.deleteProfileIds() }
               .flatMapCompletable { Completable.fromCallable { newMatchesProfilesCache.deleteProfileIds() } }
@@ -174,7 +187,8 @@ open class FeedRepository @Inject constructor(
                 .checkForNewLikes()
                 .checkForNewMatches()
                 .checkForNewMessages()
-                .cacheLmm()
+                .clearCachedFeedItemIds()  // drop any previous user data applicable on cached Lmm
+                .cacheLmm()  // cache new Lmm data fetched from the Server
                 .cacheMessagesFromLmm()
         }
 
@@ -304,6 +318,13 @@ open class FeedRepository @Inject constructor(
                     Single.fromCallable { imagesLocal.addImages(images) }
                 }
                 .flatMap { Single.just(lmm) }
+        }
+
+    private fun Single<Lmm>.clearCachedFeedItemIds(): Single<Lmm> =
+        flatMap { lmm ->
+            Single.fromCallable { feedPropertiesLocal.deleteLikedFeedItemIds() }
+                  .flatMapCompletable { Completable.fromCallable { feedPropertiesLocal.deleteUserMessagedFeedItemIds() } }
+                  .toSingleDefault(lmm)
         }
 
     // ------------------------------------------

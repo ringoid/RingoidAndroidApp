@@ -12,7 +12,9 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.feed.property.AddLikedImageForFeedItemIdUseCase
+import com.ringoid.domain.interactor.feed.property.AddUserMessagedFeedItemIdUseCase
 import com.ringoid.domain.interactor.feed.property.GetLikedFeedItemIdsUseCase
+import com.ringoid.domain.interactor.feed.property.GetUserMessagedFeedItemIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
@@ -40,7 +42,9 @@ import timber.log.Timber
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
     private val getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
+    private val getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
+    private val addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
@@ -63,11 +67,11 @@ abstract class BaseLmmFeedViewModel(
                 getLikedFeedItemIdsUseCase.source(params = params).toObservable()
             }
             .doOnNext { it.ids.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_LIKES(it)) } }
-            // TODO: also apply user message
-//            .flatMap {
+            .flatMap {
                 // cached feed items that have only user messages inside, sent after receiving feed
-//            }
-//            .doOnNext { messagedFeedItemIds.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_USER_MESSAGES(it)) } }
+                getUserMessagedFeedItemIdsUseCase.source().toObservable()
+            }
+            .doOnNext { it.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_USER_MESSAGES(it)) } }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
@@ -133,8 +137,9 @@ abstract class BaseLmmFeedViewModel(
     }
 
     fun onFirstUserMessageSent(profileId: String) {
-        // TODO: impl save messaged feed item
-//        messagedFeedItemIds.add(profileId)  // keep those peers that user has sent the first message to
+        addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)  // keep those peers that user has sent the first message to
     }
 
     // --------------------------------------------------------------------------------------------

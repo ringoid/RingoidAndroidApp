@@ -10,12 +10,14 @@ import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.action_storage.ActionObjectDbo
 import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.property.LikedFeedItemIdDbo
+import com.ringoid.data.local.database.model.feed.property.UserMessagedFeedItemIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 
-@Database(version = 102,
+@Database(version = 103,
           entities = [ActionObjectDbo::class, ImageDbo::class, MessageDbo::class,
-                      FeedItemDbo::class, LikedFeedItemIdDbo::class])
+                      FeedItemDbo::class, LikedFeedItemIdDbo::class,
+                      UserMessagedFeedItemIdDbo::class])
 abstract class RingoidDatabase : RoomDatabase() {
 
     companion object {

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ringoid.data.local.database.model.feed.property.LikedFeedItemIdDbo
+import com.ringoid.data.local.database.model.feed.property.UserMessagedFeedItemIdDbo
 import io.reactivex.Single
 
 @Dao
@@ -32,4 +33,15 @@ interface FeedPropertyDao {
 
     @Query("DELETE FROM ${LikedFeedItemIdDbo.TABLE_NAME}")
     fun deleteLikedFeedItemIds(): Int
+
+    /* Messaged Feed Item */
+    // --------------------------------------------------------------------------------------------
+    @Query("SELECT * FROM ${UserMessagedFeedItemIdDbo.TABLE_NAME}")
+    fun userMessagedFeedItemIds(): Single<List<UserMessagedFeedItemIdDbo>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addUserMessagedFeedItemId(item: UserMessagedFeedItemIdDbo)
+
+    @Query("DELETE FROM ${UserMessagedFeedItemIdDbo.TABLE_NAME}")
+    fun deleteUserMessagedFeedItemIds(): Int
 }
