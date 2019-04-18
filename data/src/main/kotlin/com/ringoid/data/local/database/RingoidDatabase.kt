@@ -2,24 +2,20 @@ package com.ringoid.data.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.dao.feed.FeedDao
+import com.ringoid.data.local.database.dao.feed.property.FeedPropertyDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.action_storage.ActionObjectDbo
 import com.ringoid.data.local.database.model.feed.FeedItemDbo
-import com.ringoid.data.local.database.model.feed.ProfileDbo
+import com.ringoid.data.local.database.model.feed.property.LikedFeedItemIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
-import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Database(version = 101,
+@Database(version = 102,
           entities = [ActionObjectDbo::class, ImageDbo::class, MessageDbo::class,
-                      FeedItemDbo::class])
+                      FeedItemDbo::class, LikedFeedItemIdDbo::class])
 abstract class RingoidDatabase : RoomDatabase() {
 
     companion object {
@@ -28,14 +24,8 @@ abstract class RingoidDatabase : RoomDatabase() {
 
     abstract fun actionObjectDao(): ActionObjectDao
     abstract fun feedDao(): FeedDao
+    abstract fun feedPropertyDao(): FeedPropertyDao
     abstract fun imageDao(): ImageDao
     abstract fun messageDao(): MessageDao
 }
 
-@Singleton
-class MajorMigration_14_100 @Inject constructor() : Migration(14, 100) {
-
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("DROP TABLE IF EXISTS ${UserImageDbo.TABLE_NAME}")
-    }
-}
