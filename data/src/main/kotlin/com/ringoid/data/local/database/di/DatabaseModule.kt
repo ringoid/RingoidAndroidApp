@@ -13,6 +13,7 @@ import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
+import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.messenger.MessageMigration_9_10
 import com.ringoid.data.local.database.dao.user.UserDao
@@ -26,17 +27,22 @@ import javax.inject.Singleton
 class DatabaseModule {
 
     @Provides @Singleton
-    fun provideDatabase(applicationContext: Context, migration_9_10: MessageMigration_9_10,
+    fun provideDatabase(applicationContext: Context,
+                        migration_9_10: MessageMigration_9_10,
                         migration_10_11: ActionObjectMigration_10_11,
-                        migration_11_12: ActionObjectMigration_11_12): RingoidDatabase =
+                        migration_11_12: ActionObjectMigration_11_12,
+                        majorMigration_14_100: MajorMigration_14_100): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-            .addMigrations(migration_9_10, migration_10_11, migration_11_12)
+//            .addMigrations(migration_9_10, migration_10_11, migration_11_12, majorMigration_14_100)
+            .fallbackToDestructiveMigration()
             .build()
 
     @Provides @Singleton
-    fun provideUserDatabase(applicationContext: Context, migration_9_10: MessageMigration_9_10): UserRingoidDatabase =
+    fun provideUserDatabase(applicationContext: Context,
+                            migration_9_10: MessageMigration_9_10,
+                            majorMigration_10_100: MajorMigration_10_100): UserRingoidDatabase =
         Room.databaseBuilder(applicationContext, UserRingoidDatabase::class.java, UserRingoidDatabase.DATABASE_NAME)
-            .addMigrations(migration_9_10)
+            .addMigrations(migration_9_10, majorMigration_10_100)
             .build()
 
     @Provides @Singleton
@@ -75,11 +81,11 @@ class DatabaseModule {
     @Provides @Singleton
     fun provideFeedDao(database: RingoidDatabase): FeedDao = database.feedDao()
 
-    @Provides @Singleton @PerFeed
+    @Provides @Singleton
     fun provideFeedImageDao(database: RingoidDatabase): ImageDao = database.imageDao()
 
-    @Provides @Singleton @PerUser
-    fun provideUserImageDao(database: UserRingoidDatabase): ImageDao = database.imageDao()
+    @Provides @Singleton
+    fun provideUserImageDao(database: UserRingoidDatabase): UserImageDao = database.userImageDao()
 
     @Provides @Singleton @PerUser
     fun provideUserImageRequestDao(database: UserRingoidDatabase): ImageRequestDao = database.imageRequestDao()

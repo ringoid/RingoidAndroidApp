@@ -85,6 +85,7 @@ class DebugView : ConstraintLayout {
             if (sizeToggle) minimize() else maximize()
         }
         ibtn_share_debug.clicks().compose(clickDebounce()).subscribe {
+            DomainUtil.simulateError()
             context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = debugLogItemAdapter.getContentText())
             context.toast(R.string.common_clipboard)
         }

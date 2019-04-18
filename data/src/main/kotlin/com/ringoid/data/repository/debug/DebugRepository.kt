@@ -2,11 +2,11 @@ package com.ringoid.data.repository.debug
 
 import com.ringoid.data.di.PerAlreadySeen
 import com.ringoid.data.di.PerBlock
-import com.ringoid.data.di.PerFeed
 import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
+import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
@@ -42,8 +42,7 @@ import javax.inject.Singleton
 
 @Singleton @DebugOnly
 class DebugRepository @Inject constructor(
-    @PerFeed private val imageLocal: ImageDao,
-    @PerUser private val userImageLocal: ImageDao,
+    private val imageLocal: ImageDao, private val userImageLocal: UserImageDao,
     private val feedLocal: FeedDao, private val messageLocal: MessageDao,
     @PerUser private val userLocal: UserDao,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,

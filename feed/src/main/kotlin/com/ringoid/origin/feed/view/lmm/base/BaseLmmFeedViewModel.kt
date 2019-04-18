@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
@@ -37,7 +36,6 @@ abstract class BaseLmmFeedViewModel(
                     userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
-    private var cachedFeed: List<FeedItem> = emptyList()  // cache is used when fetching for feed has failed, see usage
     private var likedFeedItemIds = mutableMapOf<String, MutableList<String>>()  // cached feed items that were liked, to restore likes on cached feed
     private var messagedFeedItemIds = mutableSetOf<String>()  // cached feed items that have only user messages inside, sent after receiving feed
     private var notSeenFeedItemIds = mutableSetOf<String>()
@@ -63,16 +61,7 @@ abstract class BaseLmmFeedViewModel(
 
         getLmmUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnError {
-                if (it is ThresholdExceededException) {
-                    oneShot.value = LiveEvent(it)
-                    feed.value = cachedFeed
-                    applyCachedChangesOnFeedIfAny()
-                    viewState.value = ViewState.IDLE
-                } else {
-                    viewState.value = ViewState.ERROR(it)
-                }
-            }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
@@ -131,8 +120,6 @@ abstract class BaseLmmFeedViewModel(
 
     // --------------------------------------------------------------------------------------------
     override fun onRefresh() {
-        // cache feed before purging it on refresh, to be able to restore it later if fetching new feed will fail
-        cachedFeed = feed.value ?: emptyList()
         super.onRefresh()
         Bus.post(event = BusEvent.RefreshOnLmm)
     }

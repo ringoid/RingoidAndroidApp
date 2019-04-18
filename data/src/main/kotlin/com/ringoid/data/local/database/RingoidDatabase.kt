@@ -2,6 +2,8 @@ package com.ringoid.data.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
@@ -12,10 +14,12 @@ import com.ringoid.data.local.database.model.feed.ProfileDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@Database(version = 14,
+@Database(version = 101,
           entities = [ActionObjectDbo::class, ImageDbo::class, MessageDbo::class,
-                      FeedItemDbo::class, ProfileDbo::class, UserImageDbo::class])
+                      FeedItemDbo::class])
 abstract class RingoidDatabase : RoomDatabase() {
 
     companion object {
@@ -26,4 +30,12 @@ abstract class RingoidDatabase : RoomDatabase() {
     abstract fun feedDao(): FeedDao
     abstract fun imageDao(): ImageDao
     abstract fun messageDao(): MessageDao
+}
+
+@Singleton
+class MajorMigration_14_100 @Inject constructor() : Migration(14, 100) {
+
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP TABLE IF EXISTS ${UserImageDbo.TABLE_NAME}")
+    }
 }

@@ -1,62 +1,9 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 10,
-    "identityHash": "fedace234097adc3dbcd8b0023e9c6b3",
+    "version": 100,
+    "identityHash": "8bff37fbcbcfa64983e336227bbed26c",
     "entities": [
-      {
-        "tableName": "Images",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`profileId` TEXT NOT NULL, `id` TEXT NOT NULL, `uri` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`profileId`) REFERENCES `FeedItems`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "profileId",
-            "columnName": "profileId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "uri",
-            "columnName": "uri",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [
-          {
-            "name": "index_Images_profileId",
-            "unique": false,
-            "columnNames": [
-              "profileId"
-            ],
-            "createSql": "CREATE  INDEX `index_Images_profileId` ON `${TABLE_NAME}` (`profileId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "FeedItems",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "profileId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
-      },
       {
         "tableName": "ImageRequests",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accessToken` TEXT NOT NULL, `clientImageId` TEXT NOT NULL, `originImageId` TEXT NOT NULL, `extension` TEXT NOT NULL, `imageFilePath` TEXT NOT NULL, `type` TEXT NOT NULL)",
@@ -161,47 +108,6 @@
           "autoGenerate": false
         },
         "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "FeedItems",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `notSeen` INTEGER NOT NULL, `sourceFeed` TEXT NOT NULL, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isNotSeen",
-            "columnName": "notSeen",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "sourceFeed",
-            "columnName": "sourceFeed",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [
-          {
-            "name": "index_FeedItems_id",
-            "unique": false,
-            "columnNames": [
-              "id"
-            ],
-            "createSql": "CREATE  INDEX `index_FeedItems_id` ON `${TABLE_NAME}` (`id`)"
-          }
-        ],
         "foreignKeys": []
       },
       {
@@ -321,7 +227,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"fedace234097adc3dbcd8b0023e9c6b3\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8bff37fbcbcfa64983e336227bbed26c\")"
     ]
   }
 }

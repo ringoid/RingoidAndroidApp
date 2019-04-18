@@ -3,9 +3,11 @@ package com.ringoid.data.repository.feed
 import com.ringoid.data.di.*
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
+import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
+import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -16,6 +18,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.SimulatedException
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
@@ -35,8 +38,8 @@ import javax.inject.Singleton
 
 @Singleton
 open class FeedRepository @Inject constructor(
-    private val local: FeedDao, private val messengerLocal: MessageDao,
-    @PerUser private val sentMessagesLocal: MessageDao,
+    private val local: FeedDao, private val imagesLocal: ImageDao,
+    private val messengerLocal: MessageDao, @PerUser private val sentMessagesLocal: MessageDao,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
     @PerBlock private val blockedProfilesCache: UserFeedDao,
     @PerLmmLikes private val newLikesProfilesCache: UserFeedDao,
@@ -118,33 +121,37 @@ open class FeedRepository @Inject constructor(
 
     private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long): Single<Lmm> =
         spm.accessSingle {
-            cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
-                 .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})")
-                 .doOnSubscribe {
-                     badgeLikes.onNext(false)
-                     badgeMatches.onNext(false)
-                     badgeMessenger.onNext(false)
-                     lmmChanged.onNext(false)
-                 }
-                 .filterOutDuplicateProfilesLmm()
-                 .detectCollisionProfilesLmm()
-                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
-                 .filterOutBlockedProfilesLmm()
-                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering, final") }
-                 .map { it.map() }
-                 .doOnSuccess {
-                     // clear sent user messages because they will be restored with new Lmm
-                     sentMessagesLocal.deleteMessages()
-                     lmmChanged.onNext(it.containsNotSeenItems())  // have not seen items
-                 }
-                .checkForNewLikes()
-                .checkForNewMatches()
-                .checkForNewMessages()
-                .cacheLmm()
-                .cacheMessagesFromLmm()
+            if (DomainUtil.withSimulatedError()) {
+                Single.error<Lmm>(SimulatedException())
+            } else {
+                cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
+                    .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})")
+                    .dropLmmResponseStatsOnSubscribe()
+                    .filterOutDuplicateProfilesLmm()
+                    .detectCollisionProfilesLmm()
+                    .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
+                    .filterOutBlockedProfilesLmm()
+                    .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering, final") }
+                    .map { it.map() }
+                    .doOnSuccess { sentMessagesLocal.deleteMessages() }  // clear sent user messages because they will be restored with new Lmm
+                    .checkForNewFeedItems()
+                    .checkForNewLikes()
+                    .checkForNewMatches()
+                    .checkForNewMessages()
+                    .cacheLmm()
+                    .cacheMessagesFromLmm()
+            }
         }
 
     private fun getCachedLmm(): Single<Lmm> =
+        getCachedLmmOnly()
+            .dropLmmStatsOnSubscribe()
+            .checkForNewFeedItems()
+            .checkForNewLikes()
+            .checkForNewMatches()
+            .checkForNewMessages()
+
+    private fun getCachedLmmOnly(): Single<Lmm> =
         Single.zip(
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES).map { it.mapList() },
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MATCHES).map { it.mapList() },
@@ -241,16 +248,32 @@ open class FeedRepository @Inject constructor(
 
     private fun Single<Lmm>.cacheLmm(): Single<Lmm> =
         flatMap { lmm ->
-            val feedItems = mutableListOf<FeedItemDbo>()
-                .apply {
-                    addAll(lmm.likes.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_LIKES) })
-                    addAll(lmm.matches.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MATCHES) })
-                    addAll(lmm.messages.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES) })
+            Single.fromCallable { local.deleteFeedItems() }  // clear old cache before inserting new data
+                .flatMap { Single.fromCallable { imagesLocal.deleteImages() } }
+                .flatMap {
+                    val feedItems = mutableListOf<FeedItemDbo>()
+                        .apply {
+                            addAll(lmm.likes.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_LIKES) })
+                            addAll(lmm.matches.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MATCHES) })
+                            addAll(lmm.messages.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES) })
+                        }
+                    Single.fromCallable { local.addFeedItems(feedItems) }
                 }
-            Completable.fromCallable { local.deleteFeedItems() }  // clear old cache before inserting new data
-                                .andThen { Completable.fromCallable { local.addFeedItems(feedItems) } }
-                                .toSingleDefault(lmm)
+                .flatMap {
+                    val images = mutableListOf<ImageDbo>()
+                        .apply {
+                            lmm.likes.forEach { feedItem -> addAll(feedItem.images.map { ImageDbo.from(profileId = feedItem.id, image = it) }) }
+                            lmm.matches.forEach { feedItem -> addAll(feedItem.images.map { ImageDbo.from(profileId = feedItem.id, image = it) }) }
+                            lmm.messages.forEach { feedItem -> addAll(feedItem.images.map { ImageDbo.from(profileId = feedItem.id, image = it) }) }
+                        }
+                    Single.fromCallable { imagesLocal.addImages(images) }
+                }
+                .flatMap { Single.just(lmm) }
         }
+
+    // ------------------------------------------
+    private fun Single<Lmm>.checkForNewFeedItems(): Single<Lmm> =
+        doOnSuccess { lmmChanged.onNext(it.containsNotSeenItems()) }  // have not seen items
 
     private fun Single<Lmm>.checkForNewLikes(): Single<Lmm> =
         doOnSuccess {
@@ -306,4 +329,20 @@ open class FeedRepository @Inject constructor(
                 }
                 lmm
             })
+
+    private fun Single<LmmResponse>.dropLmmResponseStatsOnSubscribe(): Single<LmmResponse> =
+        doOnSubscribe {
+            badgeLikes.onNext(false)
+            badgeMatches.onNext(false)
+            badgeMessenger.onNext(false)
+            lmmChanged.onNext(false)
+        }
+
+    private fun Single<Lmm>.dropLmmStatsOnSubscribe(): Single<Lmm> =
+        doOnSubscribe {
+            badgeLikes.onNext(false)
+            badgeMatches.onNext(false)
+            badgeMessenger.onNext(false)
+            lmmChanged.onNext(false)
+        }
 }

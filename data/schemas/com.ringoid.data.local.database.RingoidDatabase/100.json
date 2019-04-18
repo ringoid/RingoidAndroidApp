@@ -1,12 +1,110 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 10,
-    "identityHash": "fedace234097adc3dbcd8b0023e9c6b3",
+    "version": 100,
+    "identityHash": "9956b668fd075d7019c3a43b5d49cd0f",
     "entities": [
       {
+        "tableName": "ActionObjects",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `actionTime` INTEGER NOT NULL, `actionType` TEXT NOT NULL, `used` INTEGER NOT NULL, `sourceFeed` TEXT NOT NULL, `targetPhotoId` TEXT NOT NULL, `targetUserId` TEXT NOT NULL, `blockReasonNum` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `messageText` TEXT NOT NULL, `openChatTimeMillis` INTEGER NOT NULL, `viewChatTimeMillis` INTEGER NOT NULL, `viewTimeMillis` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actionTime",
+            "columnName": "actionTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actionType",
+            "columnName": "actionType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "used",
+            "columnName": "used",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourceFeed",
+            "columnName": "sourceFeed",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "targetImageId",
+            "columnName": "targetPhotoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "targetUserId",
+            "columnName": "targetUserId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "blockReasonNumber",
+            "columnName": "blockReasonNum",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "messageText",
+            "columnName": "messageText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "openChatTimeMillis",
+            "columnName": "openChatTimeMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "viewChatTimeMillis",
+            "columnName": "viewChatTimeMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "viewTimeMillis",
+            "columnName": "viewTimeMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
         "tableName": "Images",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`profileId` TEXT NOT NULL, `id` TEXT NOT NULL, `uri` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`profileId`) REFERENCES `FeedItems`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`profileId` TEXT NOT NULL, `id` TEXT NOT NULL, `uri` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`profileId`) REFERENCES `FeedItems`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profileId`) REFERENCES `Profiles`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "profileId",
@@ -54,64 +152,19 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "Profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "profileId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
-      },
-      {
-        "tableName": "ImageRequests",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accessToken` TEXT NOT NULL, `clientImageId` TEXT NOT NULL, `originImageId` TEXT NOT NULL, `extension` TEXT NOT NULL, `imageFilePath` TEXT NOT NULL, `type` TEXT NOT NULL)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "accessToken",
-            "columnName": "accessToken",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "clientImageId",
-            "columnName": "clientImageId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "originImageId",
-            "columnName": "originImageId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "extension",
-            "columnName": "extension",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "imageFilePath",
-            "columnName": "imageFilePath",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "type",
-            "columnName": "type",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [],
-        "foreignKeys": []
       },
       {
         "tableName": "Messages",
@@ -232,96 +285,11 @@
           }
         ],
         "foreignKeys": []
-      },
-      {
-        "tableName": "ProfileIds",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [
-          {
-            "name": "index_ProfileIds_id",
-            "unique": false,
-            "columnNames": [
-              "id"
-            ],
-            "createSql": "CREATE  INDEX `index_ProfileIds_id` ON `${TABLE_NAME}` (`id`)"
-          }
-        ],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "UserImages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`originPhotoId` TEXT NOT NULL, `likes` INTEGER NOT NULL, `blocked` INTEGER NOT NULL, `sortPosition` INTEGER NOT NULL, `uriLocal` TEXT, `id` TEXT NOT NULL, `uri` TEXT, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "originId",
-            "columnName": "originPhotoId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "numberOfLikes",
-            "columnName": "likes",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isBlocked",
-            "columnName": "blocked",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "sortPosition",
-            "columnName": "sortPosition",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "uriLocal",
-            "columnName": "uriLocal",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "uri",
-            "columnName": "uri",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"fedace234097adc3dbcd8b0023e9c6b3\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9956b668fd075d7019c3a43b5d49cd0f\")"
     ]
   }
 }
