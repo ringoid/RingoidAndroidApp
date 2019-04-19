@@ -15,8 +15,7 @@ class DatabaseModule {
     @Provides @Singleton
     fun provideDatabase(applicationContext: Context): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-//            .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 100)
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigrationFrom(10)
             .build()
 
     @Provides @Singleton
@@ -30,26 +29,30 @@ class DatabaseModule {
     @Provides @Singleton
     fun provideBlockProfilesUserDatabase(applicationContext: Context): BlockProfilesUserRingoidDatabase =
         Room.databaseBuilder(applicationContext, BlockProfilesUserRingoidDatabase::class.java, BlockProfilesUserRingoidDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigrationFrom(1)
             .build()
 
     @Provides @Singleton
     fun provideNewLikesProfilesUserDatabase(applicationContext: Context): NewLikesProfilesUserRingoidDatabase =
         Room.databaseBuilder(applicationContext, NewLikesProfilesUserRingoidDatabase::class.java, NewLikesProfilesUserRingoidDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigrationFrom(1)
             .build()
 
     @Provides @Singleton
     fun provideNewMatchesProfilesUserDatabase(applicationContext: Context): NewMatchesProfilesUserRingoidDatabase =
         Room.databaseBuilder(applicationContext, NewMatchesProfilesUserRingoidDatabase::class.java, NewMatchesProfilesUserRingoidDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigrationFrom(1)
             .build()
 
     @Provides @Singleton
     fun provideBackupRingoidDatabase(applicationContext: Context): BackupRingoidDatabase =
         Room.databaseBuilder(applicationContext, BackupRingoidDatabase::class.java, BackupRingoidDatabase.DATABASE_NAME)
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigrationFrom(3)
             .build()
 
     @Provides @Singleton @DebugOnly
     fun provideDebugRingoidDatabase(applicationContext: Context): DebugRingoidDatabase =
         Room.databaseBuilder(applicationContext, DebugRingoidDatabase::class.java, DebugRingoidDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigrationFrom(1)
             .build()
 }
