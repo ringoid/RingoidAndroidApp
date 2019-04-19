@@ -13,6 +13,7 @@ import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.EmptyMessage
+import com.ringoid.domain.model.messenger.userMessage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
@@ -82,7 +83,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         .let {
                             it.messagedFeedItemIds.forEach { id ->
                                 feedAdapter.findModelAndPosition { it.id == id }
-                                    ?.also { it.second.messages.add(EmptyMessage) }
+                                    ?.also { it.second.messages.add(userMessage(chatId = it.second.id)) }
                                     ?.also { feedAdapter.notifyItemChanged(it.first) }
                             }
                         }
