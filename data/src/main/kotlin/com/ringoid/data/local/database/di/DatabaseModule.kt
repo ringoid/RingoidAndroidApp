@@ -15,7 +15,7 @@ class DatabaseModule {
     @Provides @Singleton
     fun provideDatabase(applicationContext: Context): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-            .fallbackToDestructiveMigrationFrom(10)
+            .fallbackToDestructiveMigration()//From(10)
             .build()
 
     @Provides @Singleton

@@ -37,6 +37,8 @@ interface IFeedRepository {
     fun clearCachedLmm(): Completable
     fun clearCachedLmmProfileIds(): Completable
 
+    fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable
+
     // --------------------------------------------------------------------------------------------
     val badgeLikes: PublishSubject<Boolean>
     val badgeMatches: PublishSubject<Boolean>

@@ -128,6 +128,10 @@ open class FeedRepository @Inject constructor(
         Single.fromCallable { newLikesProfilesCache.deleteProfileIds() }
               .flatMapCompletable { Completable.fromCallable { newMatchesProfilesCache.deleteProfileIds() } }
 
+    // ------------------------------------------
+    override fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable =
+        Completable.fromCallable { local.markFeedItemAsSeen(feedItemId, isNotSeen) }
+
     // --------------------------------------------------------------------------------------------
     override val badgeLikes = PublishSubject.create<Boolean>()
     override val badgeMatches = PublishSubject.create<Boolean>()

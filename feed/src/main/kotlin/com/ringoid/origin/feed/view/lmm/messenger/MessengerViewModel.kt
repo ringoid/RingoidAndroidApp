@@ -5,10 +5,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.AddLikedImageForFeedItemIdUseCase
-import com.ringoid.domain.interactor.feed.property.AddUserMessagedFeedItemIdUseCase
-import com.ringoid.domain.interactor.feed.property.GetLikedFeedItemIdsUseCase
-import com.ringoid.domain.interactor.feed.property.GetUserMessagedFeedItemIdsUseCase
+import com.ringoid.domain.interactor.feed.property.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -25,6 +22,7 @@ class MessengerViewModel @Inject constructor(
     getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
+    updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
@@ -35,6 +33,7 @@ class MessengerViewModel @Inject constructor(
         getUserMessagedFeedItemIdsUseCase,
         addLikedImageForFeedItemIdUseCase,
         addUserMessagedFeedItemIdUseCase,
+        updateFeedItemAsSeenUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,

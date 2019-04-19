@@ -11,10 +11,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.AddLikedImageForFeedItemIdUseCase
-import com.ringoid.domain.interactor.feed.property.AddUserMessagedFeedItemIdUseCase
-import com.ringoid.domain.interactor.feed.property.GetLikedFeedItemIdsUseCase
-import com.ringoid.domain.interactor.feed.property.GetUserMessagedFeedItemIdsUseCase
+import com.ringoid.domain.interactor.feed.property.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
@@ -45,6 +42,7 @@ abstract class BaseLmmFeedViewModel(
     private val getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     private val addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
+    private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
@@ -114,6 +112,10 @@ abstract class BaseLmmFeedViewModel(
         if (notSeenFeedItemIds.isEmpty()) {
             return
         }
+
+        updateFeedItemAsSeenUseCase.source(params = Params().put("feedItemId", feedItemId).put("isNotSeen", false))
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
 
         if (notSeenFeedItemIds.remove(feedItemId)) {
             DebugLogUtil.b("Seen [${feedItemId.substring(0..3)}]. Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
