@@ -18,9 +18,10 @@ class UploadImageUseCase @Inject constructor(private val repository: IUserImageR
         val url = params.get<String>("url")
         val filename = params.get<String>("filename")
 
-        if (url.isNullOrBlank() || filename.isNullOrBlank()) {
-            throw MissingRequiredParamsException()
+        return if (url.isNullOrBlank() || filename.isNullOrBlank()) {
+            Completable.error(MissingRequiredParamsException())
+        } else {
+            repository.uploadImage(url = url.orEmpty(), image = File(filename))
         }
-        return repository.uploadImage(url = url, image = File(filename))
     }
 }

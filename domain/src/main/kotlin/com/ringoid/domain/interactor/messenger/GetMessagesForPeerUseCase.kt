@@ -18,9 +18,9 @@ class GetMessagesForPeerUseCase @Inject constructor(private val repository: IMes
     override fun sourceImpl(params: Params): Single<List<Message>> {
         val chatId = params.get<String>("chatId")
         val sourceFeed = params.get<String>("sourceFeed") ?: DomainUtil.SOURCE_FEED_MESSAGES
-        if (chatId.isNullOrBlank()) {
-            throw MissingRequiredParamsException()
-        }
-        return repository.getMessages(chatId = chatId, sourceFeed = sourceFeed)
+
+        return chatId.takeIf { !it.isNullOrBlank() }
+            ?.let { repository.getMessages(chatId = it, sourceFeed = sourceFeed) }
+            ?: Single.error(MissingRequiredParamsException())
     }
 }

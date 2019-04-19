@@ -17,10 +17,10 @@ class AddLikedImageForFeedItemIdUseCase @Inject constructor(private val reposito
         val feedItemId = params.get<String>("feedItemId")
         val imageId = params.get<String>("imageId")
 
-        if (feedItemId.isNullOrBlank() || imageId.isNullOrBlank()) {
-            throw MissingRequiredParamsException()
+        return if (feedItemId.isNullOrBlank() || imageId.isNullOrBlank()) {
+            Completable.error(MissingRequiredParamsException())
+        } else {
+            repository.cacheLikedFeedItemId(feedItemId.orEmpty(), imageId.orEmpty())
         }
-
-        return repository.cacheLikedFeedItemId(feedItemId.orEmpty(), imageId.orEmpty())
     }
 }
