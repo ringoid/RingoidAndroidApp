@@ -44,7 +44,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                     is RepeatRequestAfterSecException -> {
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
-                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold", level = Event.Level.WARNING, tag = tag, extras = extras)
+                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = Event.Level.WARNING, tag = tag, extras = extras)
                             exception = ThresholdExceededException()
                         }
                         elapsedTimes.add(error.delay)
@@ -66,7 +66,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                                 .doOnSubscribe { DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}") }
                                 .doOnNext {
                                     if (error is RepeatRequestAfterSecException) {
-                                        SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
+//                                        SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
                                         if (attemptNumber >= 3) {
                                             SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row", tag = tag, extras = extras)
                                         }
