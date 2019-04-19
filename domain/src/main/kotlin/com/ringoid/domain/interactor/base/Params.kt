@@ -41,34 +41,34 @@ class Params {
 
 // ------------------------------------------------------------------------------------------------
 inline fun <reified T> Params.processCompletable(key: String, body: (p: T) -> Completable): Completable =
-    get<T>(key)?.let { body(it) } ?: Completable.error { MissingRequiredParamsException() }
+    get<T>(key)?.let { body(it) } ?: Completable.error(MissingRequiredParamsException())
 
 inline fun <reified T> Params.processCompletable(klass: Class<T>, body: (p: T) -> Completable): Completable =
-    get(klass)?.let { body(it) } ?: Completable.error { MissingRequiredParamsException() }
+    get(klass)?.let { body(it) } ?: Completable.error(MissingRequiredParamsException())
 
 inline fun <reified T, reified R> Params.processMaybe(key: String, body: (p: T) -> Maybe<R>): Maybe<R> =
-    get<T>(key)?.let { body(it) } ?: Maybe.error<R> { MissingRequiredParamsException() }
+    get<T>(key)?.let { body(it) } ?: Maybe.error<R>(MissingRequiredParamsException())
 
 inline fun <reified T, reified R> Params.processMaybe(klass: Class<T>, body: (p: T) -> Maybe<R>): Maybe<R> =
-    get(klass)?.let { body(it) } ?: Maybe.error<R> { MissingRequiredParamsException() }
+    get(klass)?.let { body(it) } ?: Maybe.error<R>(MissingRequiredParamsException())
 
 inline fun <reified T, reified R> Params.processSingle(key: String, body: (p: T) -> Single<R>): Single<R> =
-    get<T>(key)?.let { body(it) } ?: Single.error<R> { MissingRequiredParamsException() }
+    get<T>(key)?.let { body(it) } ?: Single.error<R>(MissingRequiredParamsException())
 
 inline fun <reified T, reified R> Params.processSingle(klass: Class<T>, body: (p: T) -> Single<R>): Single<R> =
-    get(klass)?.let { body(it) } ?: Single.error<R> { MissingRequiredParamsException() }
+    get(klass)?.let { body(it) } ?: Single.error<R>(MissingRequiredParamsException())
 
 inline fun <reified T, reified R> Params.processFlowable(key: String, body: (p: T) -> Flowable<R>): Flowable<R> =
-    get<T>(key)?.let { body(it) } ?: Flowable.error<R> { MissingRequiredParamsException() }
+    get<T>(key)?.let { body(it) } ?: Flowable.error<R>(MissingRequiredParamsException())
 
 inline fun <reified T, reified R> Params.processFlowable(klass: Class<T>, body: (p: T) -> Flowable<R>): Flowable<R> =
-    get(klass)?.let { body(it) } ?: Flowable.error<R> { MissingRequiredParamsException() }
+    get(klass)?.let { body(it) } ?: Flowable.error<R>(MissingRequiredParamsException())
 
 inline fun <reified T, reified R> Params.processObservable(key: String, body: (p: T) -> Observable<R>): Observable<R> =
-    get<T>(key)?.let { body(it) } ?: Observable.error<R> { MissingRequiredParamsException() }
+    get<T>(key)?.let { body(it) } ?: Observable.error<R>(MissingRequiredParamsException())
 
 inline fun <reified T, reified R> Params.processObservable(klass: Class<T>, body: (p: T) -> Observable<R>): Observable<R> =
-    get(klass)?.let { body(it) } ?: Observable.error<R> { MissingRequiredParamsException() }
+    get(klass)?.let { body(it) } ?: Observable.error<R>(MissingRequiredParamsException())
 
 // ----------------------------------------------
 inline fun <reified T> Params.optionalCompletable(key: String, body: (p: T?) -> Completable): Completable =

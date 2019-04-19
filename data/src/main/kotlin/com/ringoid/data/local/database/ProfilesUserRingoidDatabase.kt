@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 
-@Database(version = 1, entities = [ProfileIdDbo::class])
+@Database(version = 100, entities = [ProfileIdDbo::class])
 abstract class BlockProfilesUserRingoidDatabase : RoomDatabase() {
 
     companion object {
@@ -15,7 +15,7 @@ abstract class BlockProfilesUserRingoidDatabase : RoomDatabase() {
     abstract fun userFeedDao(): UserFeedDao
 }
 
-@Database(version = 1, entities = [ProfileIdDbo::class])
+@Database(version = 100, entities = [ProfileIdDbo::class])
 abstract class NewLikesProfilesUserRingoidDatabase : RoomDatabase() {
 
     companion object {
@@ -25,7 +25,7 @@ abstract class NewLikesProfilesUserRingoidDatabase : RoomDatabase() {
     abstract fun userFeedDao(): UserFeedDao
 }
 
-@Database(version = 1, entities = [ProfileIdDbo::class])
+@Database(version = 100, entities = [ProfileIdDbo::class])
 abstract class NewMatchesProfilesUserRingoidDatabase : RoomDatabase() {
 
     companion object {

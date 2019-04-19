@@ -10,8 +10,8 @@ import com.ringoid.domain.model.messenger.Message
 @Entity(tableName = MessageDbo.TABLE_NAME)
 data class MessageDbo(
     @PrimaryKey @ColumnInfo(name = COLUMN_ID) val id: String,
-    @ColumnInfo(name = COLUMN_CHAT_ID) val chatId: String,
-    @ColumnInfo(name = COLUMN_PEER_ID) val peerId: String,
+    @ColumnInfo(name = COLUMN_CHAT_ID) val chatId: String,  // same as peerId (profileId)
+    @ColumnInfo(name = COLUMN_PEER_ID) val peerId: String,  // can be either profileId or [DomainUtil.CURRENT_USER_ID]
     @ColumnInfo(name = COLUMN_TEXT) val text: String,
     @ColumnInfo(name = COLUMN_SOURCE_FEED) val sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES,
     @ColumnInfo(name = COLUMN_UNREAD) val unread: Int = 1)

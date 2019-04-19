@@ -9,6 +9,7 @@ sealed class ViewState {
 
     object IDLE : ViewState()
     object LOADING : ViewState()
+    object PROGRESS : ViewState()  // extends LOADING in some cases
     object CLOSE : ViewState()
     object PAGING : ViewState()
 

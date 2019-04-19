@@ -84,7 +84,7 @@ object SentryUtil {
         } else {
             Sentry.capture(e)
         }
-        DebugLogUtil.e(e, tag = tag)  // capture exception to debug logs
+        DebugLogUtil.e(e, message.orEmpty(), tag = tag)  // capture exception to debug logs
     }
 
     private fun createEvent(message: String, level: Event.Level, `object`: Any? = null,

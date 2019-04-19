@@ -150,7 +150,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     override fun saveLocation(location: Location) {
         if (Math.abs(location.latitude) < LOCATION_EPS && Math.abs(location.longitude) < LOCATION_EPS) {
-            deleteLocation()
+            deleteLocation()  // location is near (0, 0) point, so delete it
         } else {
             sharedPreferences.edit()
                 .putString(SP_KEY_LOCATION_LATITUDE, "${location.latitude}")

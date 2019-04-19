@@ -70,6 +70,9 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             onIdleState()
             showErrorStub(needShow = true)
         }
+        fun onLoadingState() {
+            pb_profile.changeVisibility(isVisible = BuildConfig.IS_STAGING)
+        }
 
         super.onViewStateChange(newState)
         when (newState) {
@@ -89,9 +92,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.LOADING -> {
+            is ViewState.LOADING -> onLoadingState()
+            is ViewState.PROGRESS -> {
                 imagesAdapter.notifyItemRangeChanged(0, imagesAdapter.itemCount, UserProfileImageViewHolderHideControls)
-                pb_profile.changeVisibility(isVisible = BuildConfig.IS_STAGING)
+                onLoadingState()
             }
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }

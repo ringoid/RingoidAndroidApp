@@ -23,7 +23,7 @@ import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.origin.view.main.BaseMainViewModel
-import com.ringoid.utility.LOCATION_EPS
+import com.ringoid.utility.LOCATION_110m
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
@@ -164,8 +164,8 @@ class MainViewModel @Inject constructor(
         fun onLocationChanged(location: Location) {
             val prevLocation = spm.getLocation()
             if (prevLocation != null &&
-                Math.abs(prevLocation.first - location.latitude) < LOCATION_EPS &&
-                Math.abs(prevLocation.second - location.longitude) < LOCATION_EPS) {
+                Math.abs(prevLocation.first - location.latitude) < LOCATION_110m &&
+                Math.abs(prevLocation.second - location.longitude) < LOCATION_110m) {
                 DebugLogUtil.v("Location has not changed")
                 return
             }

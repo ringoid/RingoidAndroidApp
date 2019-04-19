@@ -22,7 +22,7 @@ object DebugLogUtil {
     fun i(log: String) = log(log, DebugLogLevel.INFO)
     fun w(log: String) = log(log, DebugLogLevel.WARNING)
     fun e(log: String) = log(log, DebugLogLevel.ERROR)
-    fun e(e: Throwable, tag: String? = null) = log(log = "${e.javaClass.simpleName}[$tag]: ${e.message}".trim(), level = DebugLogLevel.ERROR)
+    fun e(e: Throwable, message: String = "", tag: String? = null) = log(log = "${e.javaClass.simpleName}[$tag]: $message ${e.message.orEmpty()}".trim(), level = DebugLogLevel.ERROR)
 
     fun log(log: String, level: Event.Level) {
         when (level) {

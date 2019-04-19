@@ -178,11 +178,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.feed) { feedAdapter.submitList(it.map { FeedItemVO(it) }) }
-            observe(vm.oneShot) {
-                it.getContentIfNotHandled()
-                    ?.takeIf { it is ThresholdExceededException }
-                    ?.let { activity?.debugToast("Repeat after delay exceeded time threshold") }
-            }
         }
         /**
          * Parent's [Fragment.onActivityCreated] is called before this method on any child [Fragment],

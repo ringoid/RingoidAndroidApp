@@ -18,10 +18,13 @@ class CreateUserImageUseCase @Inject constructor(val repository: IUserImageRepos
     : SingleUseCase<Image>(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Single<Image> {
-        val imageFileUri = params.get<Uri>("uri") ?: throw MissingRequiredParamsException()
+        val imageFileUri = params.get<Uri>("uri")
 
-        return params.processSingle(IImageUploadUrlEssence::class.java) {
-            repository.createImage(essence = it, imageFilePath = imageFileUri.path!!)
-        }
+        return imageFileUri?.path
+            ?.let { uriPath ->
+                params.processSingle(IImageUploadUrlEssence::class.java) {
+                    repository.createImage(essence = it, imageFilePath = uriPath)
+                }
+            } ?: Single.error(MissingRequiredParamsException())
     }
 }

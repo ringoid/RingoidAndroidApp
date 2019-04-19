@@ -19,6 +19,7 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
     }
 
     override fun bind(model: UserImage) {
+        showControls()  // cancel any effect caused by applied payloads
         ImageLoader.load(uri = model.uri, thumbnailUri = model.uriLocal,
             imageView = itemView.iv_image,
             options = RequestOptions().centerCrop())
@@ -32,13 +33,16 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
 
     override fun bind(model: UserImage, payloads: List<Any>) {
         if (payloads.contains(UserProfileImageViewHolderHideControls)) {
-            itemView.iv_likes.changeVisibility(isVisible = false)
-            itemView.tv_likes_count.changeVisibility(isVisible = false)
+            showControls(isVisible = false)
         }
         if (payloads.contains(UserProfileImageViewHolderShowControls)) {
-            itemView.iv_likes.changeVisibility(isVisible = true)
-            itemView.tv_likes_count.changeVisibility(isVisible = true)
+            showControls()
         }
+    }
+
+    private fun showControls(isVisible: Boolean = true) {
+        itemView.iv_likes.changeVisibility(isVisible = isVisible)
+        itemView.tv_likes_count.changeVisibility(isVisible = isVisible)
     }
 }
 

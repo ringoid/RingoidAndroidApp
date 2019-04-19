@@ -5,6 +5,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
+import com.ringoid.domain.interactor.feed.property.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -16,11 +17,27 @@ import io.reactivex.Observable
 import javax.inject.Inject
 
 class MessengerViewModel @Inject constructor(
-    getLmmUseCase: GetLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
+    getLmmUseCase: GetLmmUseCase,
+    getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
+    getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
+    addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
+    addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
+    updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
+    clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    countUserImagesUseCase: CountUserImagesUseCase, userInMemoryCache: IUserInMemoryCache, app: Application)
-    : BaseLmmFeedViewModel(getLmmUseCase, clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase,
-                           countUserImagesUseCase, userInMemoryCache, app) {
+    countUserImagesUseCase: CountUserImagesUseCase,
+    userInMemoryCache: IUserInMemoryCache, app: Application)
+    : BaseLmmFeedViewModel(
+        getLmmUseCase,
+        getLikedFeedItemIdsUseCase,
+        getUserMessagedFeedItemIdsUseCase,
+        addLikedImageForFeedItemIdUseCase,
+        addUserMessagedFeedItemIdUseCase,
+        updateFeedItemAsSeenUseCase,
+        clearCachedAlreadySeenProfileIdsUseCase,
+        cacheBlockedProfileIdUseCase,
+        countUserImagesUseCase,
+        userInMemoryCache, app) {
 
     override fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.takeIf { it.isNotEmpty() }

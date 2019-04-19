@@ -97,6 +97,9 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         // override in subclasses
     }
 
+    /**
+     * Called upon switching on new [Fragment] by tab.
+     */
     open fun onTabTransaction(payload: String?) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onTabTransaction, payload: $payload")

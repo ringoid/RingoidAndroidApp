@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.model.action_storage.ActionObjectDbo
 
-@Database(version = 3, entities = [ActionObjectDbo::class])
+@Database(version = 100, entities = [ActionObjectDbo::class])
 abstract class BackupRingoidDatabase : RoomDatabase() {
 
     companion object {

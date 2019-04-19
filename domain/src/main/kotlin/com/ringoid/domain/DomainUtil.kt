@@ -1,5 +1,7 @@
 package com.ringoid.domain
 
+import com.ringoid.domain.debug.DebugLogUtil
+
 object DomainUtil {
 
     const val BAD_ID: String = ""
@@ -19,4 +21,18 @@ object DomainUtil {
     const val SOURCE_FEED_MATCHES = "matches"
     const val SOURCE_FEED_MESSAGES = "messages"
     const val SOURCE_FEED_PROFILE = "profile"
+
+    // ------------------------------------------
+    private var withError: Boolean = false
+
+    fun withSimulatedError(): Boolean {
+        val value = withError
+        withError = false
+        return value
+    }
+
+    fun simulateError() {
+        DebugLogUtil.w("Next request will fail with simulated error")
+        withError = true
+    }
 }

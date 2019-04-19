@@ -14,5 +14,5 @@ class CacheAlreadySeenProfileIdsUseCase @Inject constructor(private val reposito
     : CompletableUseCase(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Completable =
-        params.processCompletable("profileId", repository::cacheAlreadySeenProfileIds)
+        params.processCompletable("profileIds", repository::cacheAlreadySeenProfileIds)
 }

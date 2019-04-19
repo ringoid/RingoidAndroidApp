@@ -7,7 +7,7 @@ import com.ringoid.data.local.database.model.debug.DebugLogItemDbo
 import com.ringoid.domain.debug.DebugOnly
 
 @DebugOnly
-@Database(version = 1, entities = [DebugLogItemDbo::class])
+@Database(version = 100, entities = [DebugLogItemDbo::class])
 abstract class DebugRingoidDatabase : RoomDatabase() {
 
     companion object {
