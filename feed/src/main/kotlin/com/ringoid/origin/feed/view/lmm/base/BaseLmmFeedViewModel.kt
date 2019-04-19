@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
@@ -100,6 +101,9 @@ abstract class BaseLmmFeedViewModel(
         if (items.isEmpty()) {
             viewState.value = ViewState.CLEAR(mode = clearMode)
         } else {
+            if (BuildConfig.DEBUG) {
+                Timber.v(items.joinToString("\n\t\t", "\t*** LMM ***\n\t\t", "\n\t***\n", transform = { "LMM: ${it.toShortString()} :: ${getFeedName()}" }))
+            }
             feed.value = items
             viewState.value = ViewState.IDLE
             notSeenFeedItemIds.addAll(countNotSeen(items))
