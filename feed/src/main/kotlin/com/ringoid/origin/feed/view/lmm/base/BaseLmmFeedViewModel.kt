@@ -98,6 +98,7 @@ abstract class BaseLmmFeedViewModel(
     }
 
     private fun setLmmItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
+        notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
         if (items.isEmpty()) {
             viewState.value = ViewState.CLEAR(mode = clearMode)
         } else {
