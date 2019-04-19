@@ -6,8 +6,18 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
 
+/* Location GPS */
+// ------------------------------------------------------------------------------------------------
+/**
+ * For accuracy:
+ *
+ * @see https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude
+ */
+const val LOCATION_110m = 0.001
 const val LOCATION_EPS = 0.000001
 
+/* Misc */
+// ------------------------------------------------------------------------------------------------
 fun Uri.extension(): String =
     toString().takeIf { it.contains('.') }
               ?.let { it.substring(it.lastIndexOf('.') + 1) } ?: ""
