@@ -60,6 +60,10 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     }
 
     override fun showTabs(isVisible: Boolean) {
+        if (ll_tabs_container == null) {
+            return  // view has not been initialized yet
+        }
+
         if (isVisible) {
             btn_tab_likes.showBadge(badge_likes_visibilityPrev)
             btn_tab_matches.showBadge(badge_matches_visibilityPrev)
