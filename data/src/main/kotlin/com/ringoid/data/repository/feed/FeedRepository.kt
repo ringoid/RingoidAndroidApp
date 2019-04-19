@@ -194,11 +194,11 @@ open class FeedRepository @Inject constructor(
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering, final") }
                 .map { it.map() }
                 .doOnSuccess { sentMessagesLocal.deleteMessages() }  // clear sent user messages because they will be restored with new Lmm
-                .checkForNewFeedItems()
+                .clearCachedPropertyFeedItemIds()  // drop any previous user data (properties) applicable on cached Lmm
+                .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
                 .checkForNewLikes()
                 .checkForNewMatches()
                 .checkForNewMessages()
-                .clearCachedFeedItemIds()  // drop any previous user data applicable on cached Lmm
                 .cacheLmm()  // cache new Lmm data fetched from the Server
                 .cacheMessagesFromLmm()
         }
@@ -331,7 +331,7 @@ open class FeedRepository @Inject constructor(
                 .flatMap { Single.just(lmm) }
         }
 
-    private fun Single<Lmm>.clearCachedFeedItemIds(): Single<Lmm> =
+    private fun Single<Lmm>.clearCachedPropertyFeedItemIds(): Single<Lmm> =
         flatMap { lmm ->
             Single.fromCallable { feedPropertiesLocal.deleteLikedFeedItemIds() }
                   .flatMapCompletable { Completable.fromCallable { feedPropertiesLocal.deleteUserMessagedFeedItemIds() } }
