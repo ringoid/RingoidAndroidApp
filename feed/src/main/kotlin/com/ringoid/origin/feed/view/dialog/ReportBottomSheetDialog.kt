@@ -79,7 +79,7 @@ class ReportBottomSheetDialog : SimpleBaseDialogFragment() {
         }
 
         Dialogs.showTextDialog(activity, titleResId = 0,
-            description = String.format(AppRes.REPORT_DESCRIPTION, getReportReasonString(reason)),
+            description = String.format(resources.getString(OriginR_string.report_profile_dialog_description), getReportReasonString(reason)),
             positiveBtnLabelResId = OriginR_string.block_profile_button_report, negativeBtnLabelResId = OriginR_string.button_cancel,
             positiveListener = { dialog, _ -> dialog.dismiss() ; reportProfileAndClose() },
             negativeListener = { dialog, _ -> dialog.dismiss() ; onCancel(dialog)})
