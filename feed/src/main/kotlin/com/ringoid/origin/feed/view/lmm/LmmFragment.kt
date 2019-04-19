@@ -94,6 +94,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
         setCurrentPageVisibleHint(true)
+        showTabs(isVisible = true)
     }
 
     override fun onTabReselect() {
