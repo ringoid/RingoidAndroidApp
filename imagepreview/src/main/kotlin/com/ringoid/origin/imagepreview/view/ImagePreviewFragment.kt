@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.origin.GlideApp
