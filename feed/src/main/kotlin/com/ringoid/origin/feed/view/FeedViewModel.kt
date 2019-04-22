@@ -156,6 +156,10 @@ abstract class FeedViewModel(
             .subscribe({}, Timber::e)
     }
 
+    open fun onSettingsClick(profileId: String) {
+        // override in subclasses
+    }
+
     protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
     /* Action Objects */

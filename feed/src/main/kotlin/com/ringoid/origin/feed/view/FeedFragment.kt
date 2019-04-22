@@ -116,6 +116,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     showScrollFab(isVisible = false)
                     notifyItemChanged(position, FeedViewHolderHideControls)
                 }
+                vm.onSettingsClick(model.id)
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
                 navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70", rc = RequestCode.RC_BLOCK_DIALOG)
             }
