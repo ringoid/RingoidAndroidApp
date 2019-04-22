@@ -336,6 +336,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 rv.linearLayoutManager()?.let {
                     val from = it.findFirstVisibleItemPosition()
                     val to = it.findLastVisibleItemPosition()
+                    if (from == RecyclerView.NO_POSITION || to == RecyclerView.NO_POSITION) {
+                        return  // avoid internal inconsistent calls while RecyclerView is adjusting
+                    }
+
                     val items = feedAdapter.getItemsExposed(from = from, to = to)
                     // use 0th image, because cannot access currently visible image on feed item, see [FeedViewModel::onViewVertical] for more info
                     var range = EqualRange(from = from, to = to,

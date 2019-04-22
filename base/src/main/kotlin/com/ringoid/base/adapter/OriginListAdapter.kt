@@ -174,6 +174,9 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     // ------------------------------------------
     fun getItemExposed(position: Int): T = getItem(position)
     fun getItemsExposed(from: Int, to: Int): List<T> {
+        if (to < from) {
+            throw IllegalArgumentException("Invalid range: [$from, $to]")
+        }
         if (isEmpty()) {
             return emptyList()
         }
