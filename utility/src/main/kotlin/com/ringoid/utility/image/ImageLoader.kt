@@ -3,8 +3,6 @@ package com.ringoid.utility.image
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -85,15 +83,6 @@ object ImageLoader {
     private fun getDrawableFuture(uri: String?, imageView: ImageView, options: RequestOptions? = null): Future<Drawable> =
         Glide.with(imageView).load(uri).apply(wrapOptions(options)).submit()
 
-    private fun getDrawableProgress(context: Context) =
-        CircularProgressDrawable(context)
-            .apply {
-                setColorSchemeColors(ContextCompat.getColor(context, R.color.util_grass))
-                strokeWidth = 5f
-                centerRadius = 30f
-                start()
-            }
-
     // ------------------------------------------
     private fun optimalOptions(context: Context, uri: String?, options: RequestOptions?): RequestOptions {
         fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
@@ -106,7 +95,6 @@ object ImageLoader {
                             else DiskCacheStrategy.AUTOMATIC
 
         return wrapOptions(options)
-            .placeholder(getDrawableProgress(context))
             .diskCacheStrategy(cacheStrategy)
     }
 
