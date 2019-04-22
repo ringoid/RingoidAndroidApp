@@ -48,7 +48,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
                 rootFragments = getListOfRootFragments()
                 navigationStrategy = UnlimitedTabHistoryStrategy(object : FragNavSwitchController {
                     override fun switchTab(index: Int, transactionOptions: FragNavTransactionOptions?) {
-                        bottom_bar.selectedItem = index
+                        bottom_bar.selectedItem = NavTab.get(index)
                     }
                 })
                 fragNavLogger = object : FragNavLogger {
@@ -67,7 +67,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
         bottom_bar.apply {
             setOnNavigationItemSelectedListener {
                 (fragNav.currentFrag as? BaseFragment<*>)?.onBeforeTabSelect()
-                fragNav.switchTab(it)
+                fragNav.switchTab(it.ordinal)
             }
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
@@ -134,11 +134,11 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun tabNameToIndex(tabName: String): Int =
+    private fun tabNameToIndex(tabName: String): NavTab =
         when (tabName) {
-            NavigateFrom.MAIN_TAB_LMM -> 0
-            NavigateFrom.MAIN_TAB_PROFILE -> 1
-            NavigateFrom.MAIN_TAB_FEED -> 2
+            NavigateFrom.MAIN_TAB_EXPLORE -> NavTab.EXPLORE
+            NavigateFrom.MAIN_TAB_LMM -> NavTab.LMM
+            NavigateFrom.MAIN_TAB_PROFILE -> NavTab.PROFILE
             else -> throw IllegalArgumentException("Unknown tab name: $tabName")
         }
 

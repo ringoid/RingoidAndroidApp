@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.origin.R
+import com.ringoid.origin.view.main.NavTab
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getAttributeDrawable
@@ -19,9 +20,9 @@ class BottomBar : LinearLayout {
     private lateinit var ivItemLmm: ImageView
     private lateinit var ivItemProfile: ImageView
 
-    var prevSelectedItem: Int? = null
+    var prevSelectedItem: NavTab? = null
         private set
-    var selectedItem: Int? = null
+    var selectedItem: NavTab? = null
         set(newValue) {
             if (newValue == null) {
                 return
@@ -37,8 +38,8 @@ class BottomBar : LinearLayout {
             }
         }
 
-    private var selectListener: ((itemName: Int) -> Unit)? = null
-    private var reSelectListener: ((itemName: Int) -> Unit)? = null
+    private var selectListener: ((itemName: NavTab) -> Unit)? = null
+    private var reSelectListener: ((itemName: NavTab) -> Unit)? = null
 
     private var feedIcon: Drawable? = null
     private var feedSelectIcon: Drawable? = null
@@ -52,12 +53,12 @@ class BottomBar : LinearLayout {
     constructor(context: Context, attributes: AttributeSet?): this(context, attributes, 0)
 
     constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int): super(context, attributes, defStyleAttr) {
-        init(context, attributes, defStyleAttr)
+        init(context)
     }
 
     // ------------------------------------------
     @Suppress("CheckResult")
-    private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
+    private fun init(context: Context) {
         feedIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarExplore)
         feedSelectIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarExplorePressed)
         lmmIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarLmm)
@@ -68,9 +69,9 @@ class BottomBar : LinearLayout {
         minimumHeight = resources.getDimensionPixelSize(R.dimen.main_bottom_bar_height)
         orientation = HORIZONTAL
         LayoutInflater.from(context).inflate(R.layout.widget_bottom_bar, this, true)
-        fl_item_lmm.clicks().compose(clickDebounce()).subscribe { selectedItem = 0 }
-        fl_item_profile.clicks().compose(clickDebounce()).subscribe { selectedItem = 1 }
-        fl_item_feed.clicks().compose(clickDebounce()).subscribe { selectedItem = 2 }
+        fl_item_feed.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.EXPLORE }
+        fl_item_lmm.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.LMM }
+        fl_item_profile.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.PROFILE }
 
         ivItemLmm = findViewById(R.id.iv_item_lmm)
         ivItemProfile = findViewById(R.id.iv_item_profile)
@@ -79,11 +80,11 @@ class BottomBar : LinearLayout {
 
     /* API */
     // --------------------------------------------------------------------------------------------
-    fun setOnNavigationItemSelectedListener(l: ((item: Int) -> Unit)?) {
+    fun setOnNavigationItemSelectedListener(l: ((item: NavTab) -> Unit)?) {
         selectListener = l
     }
 
-    fun setOnNavigationItemReselectedListener(l: ((item: Int) -> Unit)?) {
+    fun setOnNavigationItemReselectedListener(l: ((item: NavTab) -> Unit)?) {
         reSelectListener = l
     }
 
@@ -98,16 +99,16 @@ class BottomBar : LinearLayout {
     // --------------------------------------------------------------------------------------------
     private fun changeItemAppearance() {
         when (prevSelectedItem) {
-            0 -> ivItemLmm.apply { setImageDrawable(lmmIcon) }
-            1 -> ivItemProfile.apply { setImageDrawable(profileIcon) }
-            2 -> ivItemFeed.apply { setImageDrawable(feedIcon) }
+            NavTab.EXPLORE -> ivItemFeed.apply { setImageDrawable(feedIcon) }
+            NavTab.LMM -> ivItemLmm.apply { setImageDrawable(lmmIcon) }
+            NavTab.PROFILE -> ivItemProfile.apply { setImageDrawable(profileIcon) }
             else -> null
         }?.also { it.isSelected = false }
 
         when (selectedItem) {
-            0 -> ivItemLmm.apply { setImageDrawable(lmmSelectIcon) }
-            1 -> ivItemProfile.apply { setImageDrawable(profileSelectIcon) }
-            2 -> ivItemFeed.apply { setImageDrawable(feedSelectIcon) }
+            NavTab.EXPLORE -> ivItemFeed.apply { setImageDrawable(feedSelectIcon) }
+            NavTab.LMM -> ivItemLmm.apply { setImageDrawable(lmmSelectIcon) }
+            NavTab.PROFILE -> ivItemProfile.apply { setImageDrawable(profileSelectIcon) }
             else -> null
         }?.also { it.isSelected = true }
     }

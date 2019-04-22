@@ -308,7 +308,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
             negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
             positiveListener = { _, _ -> cropImageAfterLogin = true ; onAddImage() },
-            negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_FEED}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}") })
+            negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}") })
     }
 
     private fun doOnBlockedImage(imageId: String) {

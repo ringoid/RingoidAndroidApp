@@ -12,9 +12,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_style
-import com.ringoid.origin.feed.view.explore.ExploreFragment
-import com.ringoid.origin.feed.view.lmm.LmmFragment
-import com.ringoid.origin.profile.view.UserProfileFragment
+import com.ringoid.main.listOfMainScreens
 import com.ringoid.origin.utils.AppUtils
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.particles.*
@@ -29,11 +27,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
 
     override fun getVmClass() = MainViewModel::class.java
 
-    override fun getListOfRootFragments(): List<Fragment> =
-            listOf(
-                LmmFragment.newInstance(),
-                UserProfileFragment.newInstance(),
-                ExploreFragment.newInstance())
+    override fun getListOfRootFragments(): List<Fragment> = listOfMainScreens()
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
