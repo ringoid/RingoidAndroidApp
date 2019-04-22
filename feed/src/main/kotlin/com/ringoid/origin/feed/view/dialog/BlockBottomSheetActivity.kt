@@ -10,6 +10,10 @@ import com.ringoid.origin.view.base.SimpleBaseDialogActivity
 @AppNav("block_dialog", "report_dialog")
 class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetActivity {
 
+    companion object {
+        private const val BUNDLE_KEY_OUTPUT_DATA = "bundle_key_output_data"
+    }
+
     private var blockDialog: BlockBottomSheetDialog? = null
     private var reportDialog: ReportBottomSheetDialog? = null
     private lateinit var outputData: Intent
@@ -39,7 +43,8 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        outputData = Intent().putExtras(intent.extras!!)
+        outputData = savedInstanceState?.let { it.getParcelable<Intent>(BUNDLE_KEY_OUTPUT_DATA) }
+            ?: Intent().putExtras(intent.extras!!)
         savedInstanceState ?: run {
             if (intent.dataString?.contains("block_dialog") == true) {
                 createBlockDialogIfNeed()
@@ -54,6 +59,11 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
 
     override fun onBackPressed() {
         onClose()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(BUNDLE_KEY_OUTPUT_DATA, outputData)
     }
 
     override fun onDestroy() {

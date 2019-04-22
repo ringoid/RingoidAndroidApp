@@ -10,6 +10,7 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
@@ -129,9 +130,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         when (requestCode) {
             RequestCode.RC_BLOCK_DIALOG -> {
                 if (data == null) {
-                    // TODO: crashes on app recreate, save bundle lack of 'data'
-                    val e = NullPointerException("No output from Block/Report dialog - this is an error!")
-                    Timber.e(e); throw e
+                    SentryUtil.w("No output from Block/Report dialog")
+                    return
                 }
 
                 val position = data.extras!!.getString("position", "0").toInt()
