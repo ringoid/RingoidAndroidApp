@@ -21,7 +21,6 @@
             android:layout_gravity="center_vertical"
             android:background="@android:color/transparent"
             android:gravity="center_vertical|start"
-            android:imeOptions="flagNoPersonalizedLearning"
             android:inputType="textMultiLine"
             android:maxLength="1000"
             android:maxLines="4"
