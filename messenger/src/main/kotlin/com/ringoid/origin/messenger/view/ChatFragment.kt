@@ -95,10 +95,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         payload = arguments?.getParcelable(BUNDLE_KEY_PAYLOAD)
         ChatInMemoryCache.addProfileIfNotExists(profileId = peerId)
 
-        chatAdapter = ChatAdapter().apply {
-            itemClickListener = { _, _ -> closeChat() }
-            onMessageInsertListener = { _ -> scrollToTopOfItemAtPosition(0) }  // scroll to last message
-        }
+        chatAdapter = ChatAdapter().apply { itemClickListener = { _, _ -> closeChat() } }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
@@ -207,18 +204,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         dismiss()
     }
 
-    private fun scrollListToPosition(position: Int) {
-        rv_chat_messages?.post { rv_chat_messages?.scrollToPosition(position) }
-    }
-
-    private fun scrollToTopOfItemAtPosition(position: Int) {
-        rv_chat_messages?.post {
-            rv_chat_messages?.linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
-        }
-    }
-
     private fun scrollToItemAtCachedPosition() {
-        // TODO: call only if no new messages
         val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
         rv_chat_messages?.post {
             rv_chat_messages?.linearLayoutManager()?.scrollToPositionWithOffset(position.first, position.second)
