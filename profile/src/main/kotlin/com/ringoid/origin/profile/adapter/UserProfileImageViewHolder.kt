@@ -41,8 +41,8 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
     }
 
     private fun showControls(isVisible: Boolean = true) {
-        itemView.iv_likes.changeVisibility(isVisible = isVisible)
-        itemView.tv_likes_count.changeVisibility(isVisible = isVisible)
+//        itemView.iv_likes.changeVisibility(isVisible = isVisible)
+//        itemView.tv_likes_count.changeVisibility(isVisible = isVisible)
     }
 }
 
