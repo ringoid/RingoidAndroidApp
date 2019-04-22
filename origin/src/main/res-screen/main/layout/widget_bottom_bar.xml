@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fl_item_lmm"
+        android:id="@+id/fl_item_feed"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -13,14 +13,37 @@
         android:paddingTop="4dp">
 
         <ImageView
-            android:id="@+id/iv_item_lmm"
+            android:id="@+id/iv_item_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
             android:layout_marginEnd="@dimen/std_margin_8"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_menu_explore_white_36dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fl_item_lmm"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:background="?selectableItemBackground"
+        android:paddingTop="4dp">
+
+        <ImageView
+            android:id="@+id/iv_item_lmm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:tint="@drawable/main_bottom_bar_items_selector"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_favorite_white_outline_36dp"/>
 
@@ -37,9 +60,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fl_item_profile"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.4"
+        android:layout_weight="1"
         android:background="?selectableItemBackground"
         android:paddingTop="4dp">
 
@@ -47,13 +70,13 @@
             android:id="@+id/iv_item_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginStart="@dimen/std_margin_8"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_profile_outline_white_36dp"/>
 
         <ImageView
@@ -65,27 +88,5 @@
             android:visibility="invisible"
             app:layout_constraintTop_toTopOf="@id/iv_item_profile"
             app:layout_constraintEnd_toEndOf="@id/iv_item_profile"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fl_item_feed"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="?selectableItemBackground"
-        android:paddingTop="4dp">
-
-        <ImageView
-            android:id="@+id/iv_item_feed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"
-            android:layout_marginStart="@dimen/std_margin_8"
-            android:contentDescription="@null"
-            android:tint="@drawable/main_bottom_bar_items_selector"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_menu_explore_white_36dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>
