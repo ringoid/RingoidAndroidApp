@@ -161,10 +161,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         }
 
         vp_pages?.currentItem?.let {
-            if (it == position) {
-                // current position reselected
-                vm.onTabReselect()
-            } else {
+            if (it != position) {
                 setPageVisibleHint(it, false)
                 setPageVisibleHint(position, true)
                 vp_pages?.setCurrentItem(position, false)

@@ -6,11 +6,11 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -110,11 +110,5 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
                          * In this case, if any of Lmm feed screens are living, they should be purged.
                          */
                        { Timber.e(it); clearAllFeeds.value = ViewState.CLEAR.MODE_NEED_REFRESH })
-    }
-
-    // --------------------------------------------------------------------------------------------
-    fun onTabReselect() {
-        actionObjectPool.trigger()
-        listScrolls.value = 0  // scroll to top position
     }
 }
