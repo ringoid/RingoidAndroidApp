@@ -152,7 +152,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IB
     }
 
     override fun showParticleAnimation(id: String, count: Int) {
-        particleAnimator.animate(id, count)
+//        particleAnimator.animate(id, count)
     }
 
     // --------------------------------------------------------------------------------------------
