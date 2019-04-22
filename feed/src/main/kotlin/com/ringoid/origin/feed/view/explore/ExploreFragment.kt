@@ -72,11 +72,6 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     // ------------------------------------------
     private var postponedTabTransaction = false
 
-    override fun onTabReselect() {
-        super.onTabReselect()
-        scrollToTopOfItemAtPosition(0)
-    }
-
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
         if (!isViewModelInitialized) {
