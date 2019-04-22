@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,11 +17,9 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.memory.ChatInMemoryCache
-import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.messenger.ChatPayload
-import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
@@ -100,10 +97,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
         chatAdapter = ChatAdapter().apply {
             itemClickListener = { _, _ -> closeChat() }
-            onMessageClickListener = { model: Message, _ ->
-                context?.copyToClipboard(DomainUtil.CLIPBOARD_KEY_CHAT_MESSAGE, model.text)
-                context?.toast(OriginR_string.common_clipboard, gravity = Gravity.CENTER)
-            }
             onMessageInsertListener = { _ -> scrollToTopOfItemAtPosition(0) }  // scroll to last message
         }
     }

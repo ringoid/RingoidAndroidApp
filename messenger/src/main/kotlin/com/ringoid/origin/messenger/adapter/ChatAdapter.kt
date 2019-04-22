@@ -3,7 +3,6 @@ package com.ringoid.origin.messenger.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.jakewharton.rxbinding3.view.clicks
-import com.jakewharton.rxbinding3.view.longClicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.EmptyMessage
@@ -18,7 +17,6 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
         const val VIEW_TYPE_NORMAL_MY = 5
     }
 
-    var onMessageClickListener: ((model: Message, position: Int) -> Unit)? = null
     var onMessageInsertListener: ((position: Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatViewHolder {
@@ -43,8 +41,6 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
                 vh.setOnClickListener(getOnItemClickListener(vh))
                 vh.itemView.tv_chat_message.also { view ->
                     view.clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(view) }
-                    view.longClicks().compose(clickDebounce())
-                        .subscribe { wrapOnItemClickListener(vh, onMessageClickListener).onClick(view) }
                 }
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
