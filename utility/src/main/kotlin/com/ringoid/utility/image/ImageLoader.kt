@@ -7,7 +7,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.ringoid.utility.R
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -70,13 +69,7 @@ object ImageLoader {
                     }
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ imageView.post { imageView.setImageDrawable(it) } },
-                       {
-                           Timber.e(it)
-                           if (!withThumbnail) {
-                               imageView.post { imageView.setImageResource(R.drawable.ic_no_photo_placeholder_grey_96dp) }
-                           }
-                       })
+            .subscribe({ imageView.post { imageView.setImageDrawable(it) } }, Timber::e)
     }
 
     // ------------------------------------------
@@ -94,10 +87,9 @@ object ImageLoader {
         val cacheStrategy = if (isLocalUri(uri)) DiskCacheStrategy.NONE
                             else DiskCacheStrategy.AUTOMATIC
 
-        return wrapOptions(options)
-            .diskCacheStrategy(cacheStrategy)
+        return wrapOptions(options).diskCacheStrategy(cacheStrategy)
     }
 
     private fun wrapOptions(options: RequestOptions?): RequestOptions =
-        RequestOptions().apply { options?.let { apply(it) } }.error(R.drawable.ic_no_photo_placeholder_grey_96dp)
+        RequestOptions().apply { options?.let { apply(it) } }
 }
