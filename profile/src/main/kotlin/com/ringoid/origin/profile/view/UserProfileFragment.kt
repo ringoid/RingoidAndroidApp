@@ -102,20 +102,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     }
 
     // ------------------------------------------
-    override fun onTabReselect() {
-        super.onTabReselect()
-        if (imagesAdapter.itemCount < 2) {
-            return
-        }
-
-        rv_items.linearLayoutManager()
-            ?.let {
-                val currentPage = it.findFirstCompletelyVisibleItemPosition()
-                val nextPage = currentPage + 1
-                it.scrollToPosition(nextPage.takeIf { it >= imagesAdapter.itemCount }?.let { 0 } ?: nextPage)
-            }
-    }
-
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
         payload?.let {
