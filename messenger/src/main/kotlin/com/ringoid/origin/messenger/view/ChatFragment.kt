@@ -109,7 +109,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)
-            ?.subscribe({ scrollToItemAtCachedPosition() }, Timber::e)
+            ?.subscribe({ scrollToTopOfItemAtPosition(0) }, Timber::e)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -202,6 +202,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         }
         et_message.hideKeyboard()
         dismiss()
+    }
+
+    private fun scrollToTopOfItemAtPosition(position: Int) {
+        rv_chat_messages?.post {
+            rv_chat_messages?.linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
+        }
     }
 
     private fun scrollToItemAtCachedPosition() {
