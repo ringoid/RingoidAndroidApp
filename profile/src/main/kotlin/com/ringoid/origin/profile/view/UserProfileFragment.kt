@@ -126,7 +126,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                             .takeIf { it != DomainUtil.BAD_POSITION }
                             ?.let { scrollToPosition(it) }
                     } else if (count > 0) {  // inserted single item
-                        scrollToPosition(imagesAdapter.itemCount - 1)
+                        scrollToPosition(0)  // for append: imagesAdapter.itemCount - 1
                     }
                 }
                 onRemoveListener = {
@@ -177,7 +177,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.imageBlocked, ::doOnBlockedImage)
-            observe(vm.imageCreated, imagesAdapter::append)
+            observe(vm.imageCreated, imagesAdapter::prepend)
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.images, imagesAdapter::submitList)
         }
