@@ -101,14 +101,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         showTabs(isVisible = true)
     }
 
-    override fun onTabReselect() {
-        super.onTabReselect()
-        vp_pages?.let {
-            val nextPage = it.currentItem + 1
-            selectPage(nextPage.takeIf { it > 2 }?.let { 0 } ?: nextPage)
-        }
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
