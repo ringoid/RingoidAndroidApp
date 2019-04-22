@@ -128,10 +128,12 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                     } else if (count > 0) {  // inserted single item
                         scrollToPosition(0)  // for append: imagesAdapter.itemCount - 1
                     }
+                    showDotTabs()
                 }
                 onRemoveListener = {
                     val empty = imagesAdapter.isEmpty()
                     showEmptyStub(needShow = empty)
+                    showDotTabs()
                     vm.onDeleteImage(empty = empty)
                 }
             }
@@ -385,6 +387,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 setPadding(margin16, margin8, margin16, margin8)
             }
         }
+    }
+
+    private fun showDotTabs() {
+        tabs?.post { tabs?.changeVisibility(isVisible = imagesAdapter.itemCount > 1, soft = true) }
     }
 
     @DebugOnly
