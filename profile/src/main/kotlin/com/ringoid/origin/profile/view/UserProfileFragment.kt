@@ -94,6 +94,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 when (newState.residual) {
                     is REFERRAL_CODE_ACCEPTED -> Dialogs.showTextDialog(activity, title = String.format(resources.getString(OriginR_string.referral_dialog_reward_message), "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
                     is REFERRAL_CODE_DECLINED -> Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_invalid_referral_code, description = null)
+                    is REQUEST_TO_ADD_IMAGE -> onAddImageNoPermission()
                 }
             }
             is ViewState.IDLE -> onIdleState()
@@ -298,8 +299,12 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
     // --------------------------------------------------------------------------------------------
     private fun onAddImage() {
         if (permissionManager.askForLocationPermission(this)) {
-            ExternalNavigator.openGalleryToGetImageFragment(this)
+            onAddImageNoPermission()
         }
+    }
+
+    private fun onAddImageNoPermission() {
+        ExternalNavigator.openGalleryToGetImageFragment(this)
     }
 
     private fun doOnCropErrorAfterLogin() {
@@ -427,7 +432,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
         @SuppressWarnings("MissingPermission")
         override fun onGranted() {
             DebugLogUtil.i("Location permission has been granted")
-//            vm.onLocationPermissionGranted()
+            vm.onLocationPermissionGranted()
         }
 
         override fun onDenied() {

@@ -7,7 +7,7 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.viewmodel.advanced.BaseLocationViewModel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
@@ -35,7 +35,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
     private val getUserImagesUseCase: GetUserImagesUseCase,
-    private val getUserImagesAsyncUseCase: GetUserImagesAsyncUseCase, app: Application) : BaseViewModel(app) {
+    private val getUserImagesAsyncUseCase: GetUserImagesAsyncUseCase, app: Application) : BaseLocationViewModel(app) {
 
     val imageBlocked by lazy { MutableLiveData<String>() }
     val imageCreated by lazy { MutableLiveData<UserImage>() }
@@ -161,6 +161,10 @@ class UserProfileFragmentViewModel @Inject constructor(
         if (empty) {
             Bus.post(event = BusEvent.NoImagesOnProfile)
         }
+    }
+
+    override fun onLocationReceived() {
+        viewState.value = ViewState.DONE(REQUEST_TO_ADD_IMAGE)
     }
 
     fun onStartRefresh() {
