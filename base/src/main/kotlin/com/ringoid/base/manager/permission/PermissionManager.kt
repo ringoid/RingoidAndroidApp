@@ -9,10 +9,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.ringoid.utility.priorVersion
 import com.ringoid.utility.targetVersion
-import dagger.Reusable
 import javax.inject.Inject
 
-@Reusable
 class PermissionManager @Inject constructor() {
 
     companion object {
