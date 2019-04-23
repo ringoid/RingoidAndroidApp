@@ -105,9 +105,9 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
            ?: run {
                Timber.w("No image uri supplied on ImagePreview screen.")
                arguments?.getString(BUNDLE_KEY_NAVIGATE_FROM)
-                             ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
-                             ?.let { navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
-                             ?: run { onFailure(NullPointerException("Uri is null")) }
+                         ?.takeIf { it == NavigateFrom.SCREEN_LOGIN }
+                         ?.let { navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}") }
+                         ?: run { onFailure(NullPointerException("Uri is null")) }
            }
     }
 
