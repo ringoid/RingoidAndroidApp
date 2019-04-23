@@ -134,6 +134,7 @@ abstract class FeedViewModel(
     }
 
     override fun onLocationReceived() {
+        viewState.value = ViewState.PROGRESS
         onRefresh()  // request for feed data with potentially updated location data
     }
 

@@ -81,6 +81,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 }
             }
             is ViewState.IDLE -> onIdleState()
+            is ViewState.PROGRESS -> swipe_refresh_layout?.isRefreshing = true
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
