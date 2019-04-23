@@ -195,9 +195,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
             refreshes().compose(clickDebounce()).subscribe {
                 offsetScrollStrats = getOffsetScrollStrategies()
-                if (permissionManager.askForLocationPermission(this@FeedFragment)) {
-                    vm.onRefresh()
-                }
+                /**
+                 * Asks for location permission, and if granted - callback will then handle
+                 * to call refreshing procedure.
+                 */
+                permissionManager.askForLocationPermission(this@FeedFragment)
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }

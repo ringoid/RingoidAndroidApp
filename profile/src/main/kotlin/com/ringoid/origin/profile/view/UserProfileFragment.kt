@@ -298,9 +298,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
 
     // --------------------------------------------------------------------------------------------
     private fun onAddImage() {
-        if (permissionManager.askForLocationPermission(this)) {
-            onAddImageNoPermission()
-        }
+        /**
+         * Asks for location permission, and if granted - callback will then handle
+         * opening Gallery to pick image.
+         */
+        permissionManager.askForLocationPermission(this)
     }
 
     private fun onAddImageNoPermission() {
