@@ -199,7 +199,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                  * Asks for location permission, and if granted - callback will then handle
                  * to call refreshing procedure.
                  */
-                permissionManager.askForLocationPermission(this@FeedFragment)
+                if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
+                    onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                }
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
