@@ -1,12 +1,7 @@
 package com.ringoid.main.view
 
 import android.app.Application
-import android.location.Location
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.manager.location.ILocationProvider
-import com.ringoid.base.manager.location.LocationPrecision
-import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
@@ -18,16 +13,12 @@ import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
-import com.ringoid.domain.model.actions.LocationActionObject
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.origin.view.main.BaseMainViewModel
-import com.ringoid.utility.LOCATION_110m
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -38,8 +29,6 @@ class MainViewModel @Inject constructor(
     private val updatePushTokenUseCase: UpdatePushTokenUseCase,
     private val updateUserSettingsUseCase: UpdateUserSettingsUseCase, app: Application)
     : BaseMainViewModel(app) {
-
-    @Inject lateinit var locationProvider: ILocationProvider
 
     val badgeLmm by lazy { MutableLiveData<Boolean>() }
     val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
@@ -135,50 +124,5 @@ class MainViewModel @Inject constructor(
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)
             .subscribe({ DebugLogUtil.i("Successfully updated user settings") }, Timber::e)
-    }
-
-    // --------------------------------------------------------------------------------------------
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        viewState.value = ViewState.DONE(ASK_LOCATION_PERMISSION)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        viewState.value = ViewState.DONE(ASK_LOCATION_PERMISSION)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        viewState.value = ViewState.DONE(ASK_LOCATION_PERMISSION)
-    }
-
-    // --------------------------------------------------------------------------------------------
-    fun onLocationPermissionGranted() {
-        fun onLocationChanged(location: Location) {
-            val prevLocation = spm.getLocation()
-            if (prevLocation != null &&
-                Math.abs(prevLocation.first - location.latitude) < LOCATION_110m &&
-                Math.abs(prevLocation.second - location.longitude) < LOCATION_110m) {
-                DebugLogUtil.v("Location has not changed")
-                return
-            }
-
-            DebugLogUtil.v("Location has changed enough")
-            spm.saveLocation(location)
-            val aobj = LocationActionObject(location.latitude, location.longitude)
-            actionObjectPool.put(aobj)
-            actionObjectPool.trigger()
-        }
-
-        locationProvider.getLocation(LocationPrecision.COARSE)
-            .filter { it.latitude != 0.0 && it.longitude != 0.0 }
-            .subscribe(::onLocationChanged, Timber::e)
     }
 }

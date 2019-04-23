@@ -5,11 +5,7 @@ import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.base.manager.permission.IPermissionCaller
-import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.observe
-import com.ringoid.base.view.ViewState
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_style
 import com.ringoid.main.listOfMainScreens
@@ -23,23 +19,9 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     private var currentLocale: String? = null
     @StyleRes private var currentThemeResId: Int = 0
 
-    private val locationPermissionCaller = LocationPermissionCaller()
-
     override fun getVmClass() = MainViewModel::class.java
 
     override fun getListOfRootFragments(): List<Fragment> = listOfMainScreens()
-
-    // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is ASK_LOCATION_PERMISSION -> permissionManager.askForLocationPermission(this)
-                }
-            }
-        }
-    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -56,7 +38,6 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         AppUtils.checkForGooglePlayServices(this)
         initializeFirebase()
         initializeParticleAnimation()
-        registerPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
     }
 
     override fun onStart() {
@@ -70,11 +51,6 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     override fun onResume() {
         super.onResume()
         AppUtils.checkForGooglePlayServices(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
     }
 
     // --------------------------------------------------------------------------------------------
@@ -94,21 +70,6 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
             addGenerator(LikesParticleGenerator(this@MainActivity))
             addGenerator(MatchesParticleGenerator(this@MainActivity))
             addGenerator(MessagesParticleGenerator(this@MainActivity))
-        }
-    }
-
-    /* Permission */
-    // --------------------------------------------------------------------------------------------
-    private inner class LocationPermissionCaller : IPermissionCaller {
-
-        @SuppressWarnings("MissingPermission")
-        override fun onGranted() {
-            DebugLogUtil.i("Location permission has been granted")
-            vm.onLocationPermissionGranted()
-        }
-
-        override fun onDenied() {
-            DebugLogUtil.w("Location permission has been denied")
         }
     }
 }

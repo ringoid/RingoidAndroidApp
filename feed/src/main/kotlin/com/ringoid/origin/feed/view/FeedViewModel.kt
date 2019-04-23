@@ -1,9 +1,12 @@
 package com.ringoid.origin.feed.view
 
 import android.app.Application
+import android.location.Location
 import android.os.Build
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
+import com.ringoid.base.manager.location.ILocationProvider
+import com.ringoid.base.manager.location.LocationPrecision
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.BuildConfig
@@ -19,11 +22,13 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.utility.LOCATION_110m
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import javax.inject.Inject
 
 abstract class FeedViewModel(
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -31,6 +36,8 @@ abstract class FeedViewModel(
     private val countUserImagesUseCase: CountUserImagesUseCase,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseViewModel(app) {
+
+    @Inject lateinit var locationProvider: ILocationProvider
 
     private var verticalPrevRange: EqualRange<ProfileImageVO>? = null
     private val horizontalPrevRanges = mutableMapOf<String, EqualRange<ProfileImageVO>>()  // profileId : range
@@ -362,5 +369,28 @@ abstract class FeedViewModel(
 
         DebugLogUtil.v("Create${" $tag".trim()}: ${aobj.toActionString()}")
         viewActionObjectBuffer[key] = aobj
+    }
+
+    /* Permission */
+    // --------------------------------------------------------------------------------------------
+    internal fun onLocationPermissionGranted() {
+        fun onLocationChanged(location: Location) {
+            val prevLocation = spm.getLocation()
+            if (prevLocation != null &&
+                Math.abs(prevLocation.first - location.latitude) < LOCATION_110m &&
+                Math.abs(prevLocation.second - location.longitude) < LOCATION_110m) {
+                DebugLogUtil.v("Location has not changed")
+            } else {
+                DebugLogUtil.d("Location has changed enough")
+                spm.saveLocation(location)
+                val aobj = LocationActionObject(location.latitude, location.longitude)
+                actionObjectPool.put(aobj)
+            }
+            onRefresh()  // request for feed data with potentially updated location data
+        }
+
+        locationProvider.getLocation(LocationPrecision.COARSE)
+            .filter { it.latitude != 0.0 && it.longitude != 0.0 }
+            .subscribe(::onLocationChanged, Timber::e)
     }
 }

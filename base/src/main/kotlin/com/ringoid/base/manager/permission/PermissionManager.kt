@@ -21,13 +21,11 @@ class PermissionManager @Inject constructor() {
 
     private val callers = mutableMapOf<Int, MutableList<IPermissionCaller?>>()
 
-    fun askForLocationPermission(activity: Activity) {
+    fun askForLocationPermission(activity: Activity): Boolean =
         askForPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION, RC_PERMISSION_LOCATION)
-    }
 
-    fun askForLocationPermission(fragment: Fragment) {
+    fun askForLocationPermission(fragment: Fragment): Boolean =
         askForPermission(fragment, Manifest.permission.ACCESS_FINE_LOCATION, RC_PERMISSION_LOCATION)
-    }
 
     // ------------------------------------------
     internal fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -55,25 +53,27 @@ class PermissionManager @Inject constructor() {
         priorVersion(Build.VERSION_CODES.M) ||
         ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 
-    private fun askForPermission(activity: Activity, permission: String, rc: Int) {
+    private fun askForPermission(activity: Activity, permission: String, rc: Int): Boolean {
         if (hasPermission(activity, permission)) {
             callers[rc]?.forEach { it?.onGranted() }
-            return
+            return true
         }
 
         if (targetVersion(Build.VERSION_CODES.M)) {
             activity.requestPermissions(arrayOf(permission), rc)
         }
+        return false
     }
 
-    private fun askForPermission(fragment: Fragment, permission: String, rc: Int) {
+    private fun askForPermission(fragment: Fragment, permission: String, rc: Int): Boolean {
         if (hasPermission(fragment.activity!!, permission)) {
             callers[rc]?.forEach { it?.onGranted() }
-            return
+            return true
         }
 
         if (targetVersion(Build.VERSION_CODES.M)) {
             fragment.requestPermissions(arrayOf(permission), rc)
         }
+        return false
     }
 }

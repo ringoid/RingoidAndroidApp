@@ -3,13 +3,18 @@ package com.ringoid.origin.feed.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.manager.permission.IPermissionCaller
+import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.view.BaseListFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
@@ -125,6 +130,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         offsetScrollStrats = getOffsetScrollStrategies()
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        registerPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -185,7 +195,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
             refreshes().compose(clickDebounce()).subscribe {
                 offsetScrollStrats = getOffsetScrollStrategies()
-                vm.onRefresh()
+                if (permissionManager.askForLocationPermission(this@FeedFragment)) {
+                    vm.onRefresh()
+                }
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
@@ -214,6 +226,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             removeOnScrollListener(topScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
         }
+        unregisterPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
     }
 
     // --------------------------------------------------------------------------------------------
@@ -231,6 +244,23 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         rv_items?.scrollBy(0, -1)
+    }
+
+    /* Permission */
+    // --------------------------------------------------------------------------------------------
+    private val locationPermissionCaller = LocationPermissionCaller()
+
+    private inner class LocationPermissionCaller : IPermissionCaller {
+
+        @SuppressWarnings("MissingPermission")
+        override fun onGranted() {
+            DebugLogUtil.i("Location permission has been granted")
+            vm.onLocationPermissionGranted()
+        }
+
+        override fun onDenied() {
+            DebugLogUtil.w("Location permission has been denied")
+        }
     }
 
     /* Scroll listeners */
