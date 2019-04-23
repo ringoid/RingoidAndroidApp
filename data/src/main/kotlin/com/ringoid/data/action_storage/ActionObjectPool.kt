@@ -16,12 +16,10 @@ import com.ringoid.domain.model.mapList
 import com.ringoid.domain.scope.UserScopeProvider
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
