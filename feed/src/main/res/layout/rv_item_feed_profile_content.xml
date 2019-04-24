@@ -17,6 +17,7 @@
         android:layout_height="@dimen/feed_tab_layout_height"
         android:layout_marginTop="@dimen/std_margin_16"
         android:layout_marginStart="@dimen/std_margin_8"
+        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
         app:ci_gravity="center_vertical|start"/>
 

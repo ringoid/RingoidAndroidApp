@@ -119,10 +119,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             itemView.ibtn_settings.changeVisibility(isVisible = true)
         }
         if (payloads.contains(FeedViewHolderHideTabsIndicatorOnScroll)) {
-            itemView.tabs.changeVisibility(isVisible = false)
+//            itemView.tabs.changeVisibility(isVisible = false)
         }
         if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
-            itemView.tabs.changeVisibility(isVisible = true)
+//            itemView.tabs.changeVisibility(isVisible = true)
         }
         if (payloads.contains(FeedViewHolderHideLikeBtnOnScroll)) {
             profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
@@ -135,7 +135,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     // ------------------------------------------------------------------------
     protected open fun hideControls() {
         itemView.apply {
-            tabs.changeVisibility(isVisible = false)
+//            tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
@@ -143,7 +143,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     protected open fun showControls() {
         itemView.apply {
-            tabs.changeVisibility(isVisible = true)
+//            tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
