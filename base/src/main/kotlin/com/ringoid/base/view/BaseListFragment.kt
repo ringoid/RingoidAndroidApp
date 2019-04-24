@@ -3,11 +3,12 @@ package com.ringoid.base.view
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.view.advanced.BasePermissionFragment
+import com.ringoid.base.viewmodel.advanced.BasePermissionViewModel
 import com.ringoid.domain.DomainUtil
 import com.ringoid.utility.linearLayoutManager
 
-abstract class BaseListFragment<T : BaseViewModel> : BaseFragment<T>() {
+abstract class BaseListFragment<T : BasePermissionViewModel> : BasePermissionFragment<T>() {
 
     protected abstract fun getRecyclerView(): RecyclerView
 

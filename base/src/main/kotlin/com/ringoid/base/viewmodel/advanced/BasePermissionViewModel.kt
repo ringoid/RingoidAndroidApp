@@ -10,11 +10,11 @@ import com.ringoid.domain.model.actions.LocationActionObject
 import timber.log.Timber
 import javax.inject.Inject
 
-abstract class BaseLocationViewModel(app: Application) : BaseViewModel(app) {
+abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
 
     @Inject lateinit var locationProvider: ILocationProvider
 
-    protected abstract fun onLocationReceived()
+    protected open fun onLocationReceived() {}
 
     /* Permission */
     // --------------------------------------------------------------------------------------------

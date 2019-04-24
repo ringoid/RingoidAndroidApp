@@ -12,8 +12,8 @@ import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
-import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.advanced.BasePermissionActivity
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
-abstract class BaseMainActivity<VM : BaseMainViewModel> : BaseActivity<VM>(), IBaseMainActivity,
+abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity<VM>(), IBaseMainActivity,
     FragNavController.TransactionListener {
 
     @Inject lateinit var particleAnimator: ParticleAnimator

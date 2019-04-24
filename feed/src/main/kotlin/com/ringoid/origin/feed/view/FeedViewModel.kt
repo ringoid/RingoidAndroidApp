@@ -5,7 +5,7 @@ import android.os.Build
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.advanced.BaseLocationViewModel
+import com.ringoid.base.viewmodel.advanced.BasePermissionViewModel
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -30,7 +30,7 @@ abstract class FeedViewModel(
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
-    : BaseLocationViewModel(app) {
+    : BasePermissionViewModel(app) {
 
     private var verticalPrevRange: EqualRange<ProfileImageVO>? = null
     private val horizontalPrevRanges = mutableMapOf<String, EqualRange<ProfileImageVO>>()  // profileId : range
@@ -134,6 +134,7 @@ abstract class FeedViewModel(
     }
 
     override fun onLocationReceived() {
+        super.onLocationReceived()
         viewState.value = ViewState.PROGRESS
         onRefresh()  // request for feed data with potentially updated location data
     }

@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,10 +15,9 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.manager.permission.IPermissionCaller
-import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.observe
-import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.view.advanced.BasePermissionFragment
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -48,7 +45,7 @@ import kotlinx.android.synthetic.main.fragment_profile_2.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 
-class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
+class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>() {
 
     companion object {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
@@ -145,11 +142,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
             }
 
         imagePreloadListener = RecyclerViewPreloader(Glide.with(this), imagesAdapter, ViewPreloadSizeProvider<UserImage>(), 10)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        registerPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -283,12 +275,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        rv_items.removeOnScrollListener(imagePreloadListener)
-        unregisterPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
     }
 
     override fun onDestroy() {
