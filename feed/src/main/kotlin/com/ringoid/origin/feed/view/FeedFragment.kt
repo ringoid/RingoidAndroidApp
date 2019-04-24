@@ -187,13 +187,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
             refreshes().compose(clickDebounce()).subscribe {
-                offsetScrollStrats = getOffsetScrollStrategies()
-                /**
-                 * Asks for location permission, and if granted - callback will then handle
-                 * to call refreshing procedure.
-                 */
-                if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
-                    onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                if (!connectionManager.isNetworkAvailable()) {
+                    noConnection(this@FeedFragment)
+                } else {
+                    offsetScrollStrats = getOffsetScrollStrategies()
+                    /**
+                     * Asks for location permission, and if granted - callback will then handle
+                     * to call refreshing procedure.
+                     */
+                    if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
+                        onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                    }
                 }
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
