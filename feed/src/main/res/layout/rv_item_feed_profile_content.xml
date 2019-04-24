@@ -51,6 +51,7 @@
         android:id="@+id/underscore"
         android:layout_height="2dp"
         android:background="@android:color/black"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         style="@style/Underscore"/>
 </merge>
