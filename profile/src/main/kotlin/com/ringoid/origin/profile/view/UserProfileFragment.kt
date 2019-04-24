@@ -113,6 +113,9 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     if (isAdded) {
                         onAddImage()
                     } else {
+                        /**
+                         * Postpone call [onAddImage] until all necessary fields initialized.
+                         */
                         handleRequestToAddImage = true
                     }
                 }
