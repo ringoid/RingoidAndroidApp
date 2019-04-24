@@ -188,6 +188,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
             refreshes().compose(clickDebounce()).subscribe {
                 if (!connectionManager.isNetworkAvailable()) {
+                    swipe_refresh_layout.isRefreshing = false
                     noConnection(this@FeedFragment)
                 } else {
                     offsetScrollStrats = getOffsetScrollStrategies()

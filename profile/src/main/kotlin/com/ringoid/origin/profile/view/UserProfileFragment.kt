@@ -261,6 +261,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe {
                 if (!connectionManager.isNetworkAvailable()) {
+                    swipe_refresh_layout.isRefreshing = false
                     noConnection(this@UserProfileFragment)
                 } else {
                     imageOnViewPortId = imageOnViewPort()?.id ?: DomainUtil.BAD_ID
