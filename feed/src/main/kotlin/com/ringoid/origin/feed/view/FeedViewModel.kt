@@ -5,7 +5,6 @@ import android.os.Build
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.advanced.BasePermissionViewModel
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -19,6 +18,7 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe

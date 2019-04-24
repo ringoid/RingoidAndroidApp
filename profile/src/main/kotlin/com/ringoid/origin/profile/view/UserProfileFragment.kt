@@ -14,13 +14,10 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
-import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.view.advanced.BasePermissionFragment
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
@@ -32,6 +29,7 @@ import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderHideControls
 import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderShowControls
+import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
@@ -408,23 +406,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             it.showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = count)
             it.showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = count / 10)
             it.showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = count / 20)
-        }
-    }
-
-    /* Permission */
-    // --------------------------------------------------------------------------------------------
-    private val locationPermissionCaller = LocationPermissionCaller()
-
-    private inner class LocationPermissionCaller : IPermissionCaller {
-
-        @SuppressWarnings("MissingPermission")
-        override fun onGranted() {
-            DebugLogUtil.i("Location permission has been granted")
-            vm.onLocationPermissionGranted()
-        }
-
-        override fun onDenied() {
-            DebugLogUtil.w("Location permission has been denied")
         }
     }
 }

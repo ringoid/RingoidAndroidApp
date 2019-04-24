@@ -1,29 +1,26 @@
-package com.ringoid.base.view.advanced
+package com.ringoid.origin.view.base
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.base.manager.permission.PermissionManager
-import com.ringoid.base.view.BaseFragment
-import com.ringoid.base.viewmodel.advanced.BasePermissionViewModel
+import com.ringoid.base.view.BaseActivity
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import javax.inject.Inject
 
-abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragment<T>() {
+abstract class BasePermissionActivity<T : BasePermissionViewModel> : BaseActivity<T>() {
 
     @Inject protected lateinit var permissionManager: PermissionManager
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         registerPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         unregisterPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
     }
 
@@ -31,7 +28,7 @@ abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragmen
     // --------------------------------------------------------------------------------------------
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
 
     private fun registerPermissionCaller(rc: Int, caller: IPermissionCaller?) {
@@ -54,8 +51,12 @@ abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragmen
             vm.onLocationPermissionGranted()
         }
 
-        override fun onDenied() {
+        override fun onDenied(): Boolean {
             DebugLogUtil.w("Location permission has been denied")
+            return false
+        }
+
+        override fun onShowRationale() {
         }
     }
 }

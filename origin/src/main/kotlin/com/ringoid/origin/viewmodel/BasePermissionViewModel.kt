@@ -1,4 +1,4 @@
-package com.ringoid.base.viewmodel.advanced
+package com.ringoid.origin.viewmodel
 
 import android.app.Application
 import android.location.Location
@@ -27,7 +27,8 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
             onLocationReceived()
         }
 
-        locationProvider.getLocation(LocationPrecision.COARSE)
+        locationProvider
+            .getLocation(LocationPrecision.COARSE)
             .filter { it.latitude != 0.0 && it.longitude != 0.0 }
             .subscribe(::onLocationChanged, Timber::e)
     }

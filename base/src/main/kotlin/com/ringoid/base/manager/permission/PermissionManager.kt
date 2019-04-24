@@ -26,15 +26,35 @@ class PermissionManager @Inject constructor() {
         askForPermission(fragment, Manifest.permission.ACCESS_FINE_LOCATION, RC_PERMISSION_LOCATION)
 
     // ------------------------------------------
-    internal fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    fun onRequestPermissionsResult(activity: Activity, requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             callers[requestCode]?.forEach { it?.onGranted() }
         } else {
-            callers[requestCode]?.forEach { it?.onDenied() }
+            callers[requestCode]?.forEach {
+                if (it?.onDenied() == false &&
+                    targetVersion(Build.VERSION_CODES.M) &&
+                    activity.shouldShowRequestPermissionRationale(permissions[0])) {
+                    it.onShowRationale()
+                }
+            }
         }
     }
 
-    internal fun registerPermissionCaller(rc: Int, caller: IPermissionCaller?) {
+    fun onRequestPermissionsResult(fragment: Fragment, requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            callers[requestCode]?.forEach { it?.onGranted() }
+        } else {
+            callers[requestCode]?.forEach {
+                if (it?.onDenied() == false &&
+                    targetVersion(Build.VERSION_CODES.M) &&
+                    fragment.shouldShowRequestPermissionRationale(permissions[0])) {
+                    it.onShowRationale()
+                }
+            }
+        }
+    }
+
+    fun registerPermissionCaller(rc: Int, caller: IPermissionCaller?) {
         if (!callers.containsKey(rc)) {
             callers[rc] = mutableListOf()
         }
@@ -42,7 +62,7 @@ class PermissionManager @Inject constructor() {
         callers[rc]?.add(caller)
     }
 
-    internal fun unregisterPermissionCaller(rc: Int, caller: IPermissionCaller?) {
+    fun unregisterPermissionCaller(rc: Int, caller: IPermissionCaller?) {
         callers[rc]?.remove(caller)
     }
 

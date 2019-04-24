@@ -1,11 +1,11 @@
-package com.ringoid.base.view
+package com.ringoid.origin.view.base
 
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.ringoid.base.view.advanced.BasePermissionFragment
-import com.ringoid.base.viewmodel.advanced.BasePermissionViewModel
+import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.domain.DomainUtil
+import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.linearLayoutManager
 
 abstract class BaseListFragment<T : BasePermissionViewModel> : BasePermissionFragment<T>() {
