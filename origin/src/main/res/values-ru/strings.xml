@@ -9,6 +9,7 @@
     <string name="button_done">Готово</string>
     <string name="button_later">Не сейчас</string>
     <string name="button_ok">ОК</string>
+    <string name="button_settings">Настройки</string>
 
     <string name="common_choose_image">Выбери фото</string>
     <string name="common_clipboard">Скопировано в буфер</string>
@@ -21,6 +22,9 @@
     <string name="error_common">Ой! Что-то пошло не так&#8230;</string>
     <string name="error_crop_image">Не удалось загрузить фото</string>
     <string name="error_invalid_referral_code">Код неверен</string>
+
+    <!-- Permissions -->
+    <string name="permission_location_rationale">Пожалуйста, разрешите доступ к геолокации</string>
 
     <!-- Debug screen -->
     <string name="debug_email_support_button_label">Написать в support@ringoid.com</string>

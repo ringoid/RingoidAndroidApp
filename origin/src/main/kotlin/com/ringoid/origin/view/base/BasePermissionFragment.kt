@@ -8,6 +8,9 @@ import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.origin.R
+import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import javax.inject.Inject
 
@@ -60,6 +63,10 @@ abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragmen
         }
 
         override fun onShowRationale() {
+            Dialogs.showTextDialog(activity, titleResId = R.string.permission_location_rationale, descriptionResId = 0,
+                positiveBtnLabelResId = R.string.button_settings,
+                negativeBtnLabelResId = R.string.button_later,
+                positiveListener = { _, _ -> ExternalNavigator.openLocationSettings(activity!!) })
         }
     }
 }

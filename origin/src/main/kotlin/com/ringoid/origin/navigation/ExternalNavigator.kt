@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import android.text.TextUtils
 import android.webkit.URLUtil
 import androidx.fragment.app.Fragment
@@ -128,5 +129,13 @@ object ExternalNavigator {
         } catch (e: ActivityNotFoundException) {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + context.packageName)))
         }
+    }
+
+    /* Location */
+    // --------------------------------------------------------------------------------------------
+    fun openLocationSettings(context: Context) {
+        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            .takeIf { it.resolveActivity(context.packageManager) != null }
+            ?.let { context.startActivity(it) }
     }
 }
