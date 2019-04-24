@@ -18,7 +18,6 @@ import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.debugToast
-import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
@@ -81,10 +80,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
         payload?.let {
             when (it) {
-                Payload.PAYLOAD_FEED_NEED_REFRESH -> {
-                    swipe_refresh_layout.isRefreshing = true
-                    vm.onRefresh()
-                }
+                Payload.PAYLOAD_FEED_NEED_REFRESH -> vm.onRefresh(withLoading = true)
             }
         }
     }

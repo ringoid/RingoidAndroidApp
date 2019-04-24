@@ -150,8 +150,8 @@ abstract class BaseLmmFeedViewModel(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun onRefresh() {
-        super.onRefresh()
+    override fun onRefresh(withLoading: Boolean) {
+        super.onRefresh(withLoading)
         Bus.post(event = BusEvent.RefreshOnLmm)
     }
 

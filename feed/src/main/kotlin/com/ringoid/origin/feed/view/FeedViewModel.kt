@@ -143,7 +143,7 @@ abstract class FeedViewModel(
 //        actionObjectPool.trigger()
     }
 
-    open fun onRefresh() {
+    open fun onRefresh(withLoading: Boolean = false) {
         advanceAndPushViewObjects()
 //        actionObjectPool.trigger()
 
@@ -153,6 +153,9 @@ abstract class FeedViewModel(
                     .doOnSuccess {
                         if (checkImagesCount(it)) {
                             clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge feed on refresh, before fetching a new one
+                            if (withLoading) {
+                                viewState.value = ViewState.PROGRESS
+                            }
                             getFeed()
                         } else {
                             viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)

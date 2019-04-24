@@ -124,8 +124,8 @@ class ExploreViewModel @Inject constructor(
                 .put("failPage", failPage)
 
     // --------------------------------------------------------------------------------------------
-    override fun onRefresh() {
-        super.onRefresh()
+    override fun onRefresh(withLoading: Boolean) {
+        super.onRefresh(withLoading)
         Bus.post(event = BusEvent.RefreshOnExplore)
         nextPage = 0
         debugGetNewFacesDropFlagsUseCase.source()
