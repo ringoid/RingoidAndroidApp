@@ -139,12 +139,12 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     } else if (count > 0) {  // inserted single item
                         scrollToPosition(0)  // for append: imagesAdapter.itemCount - 1
                     }
-                    showDotTabs()
+//                    showDotTabs()
                 }
                 onRemoveListener = {
                     val empty = imagesAdapter.isEmpty()
                     showEmptyStub(needShow = empty)
-                    showDotTabs()
+//                    showDotTabs()
                     vm.onDeleteImage(empty = empty)
                 }
             }
