@@ -80,7 +80,8 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
         payload?.let {
             when (it) {
-                Payload.PAYLOAD_FEED_NEED_REFRESH -> vm.onRefresh(withLoading = true)
+                Payload.PAYLOAD_FEED_NEED_REFRESH -> permissionManager.askForLocationPermission(this)  //vm.onRefresh(withLoading = true)
+                else -> { /* no-op */ }
             }
         }
     }
