@@ -51,6 +51,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     private var imageOnViewPortId: String = DomainUtil.BAD_ID
     private var cropImageAfterLogin: Boolean = false
+    private var handleRequestToAddImage: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
     private lateinit var imagePreloadListener: RecyclerViewPreloader<UserImage>
@@ -108,7 +109,13 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         payload?.let {
             when (it) {
                 Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }
-                Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> onAddImage()  // redirect from other screen
+                Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> {
+                    if (isAdded) {
+                        onAddImage()
+                    } else {
+                        handleRequestToAddImage = true
+                    }
+                }
             }
         }
     }
@@ -203,6 +210,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             globalImagePreviewReceiver()?.subscribe()  // get last prepared image, if any
         } else {
             vm.onRefresh()  // refresh Profile screen for already logged in user on a fresh app's start
+        }
+
+        if (handleRequestToAddImage) {  // postponed handling to ensure initialization
+            handleRequestToAddImage = false
+            onAddImage()  // redirect from other screen
         }
     }
 

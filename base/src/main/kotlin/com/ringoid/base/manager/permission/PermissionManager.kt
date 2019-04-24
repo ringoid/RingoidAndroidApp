@@ -25,6 +25,12 @@ class PermissionManager @Inject constructor() {
     fun askForLocationPermission(fragment: Fragment): Boolean =
         askForPermission(fragment, Manifest.permission.ACCESS_FINE_LOCATION, RC_PERMISSION_LOCATION)
 
+    fun hasLocationPermission(activity: Activity): Boolean =
+        hasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+
+    fun hasLocationPermission(fragment: Fragment): Boolean =
+        hasPermission(fragment.activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
+
     // ------------------------------------------
     fun onRequestPermissionsResult(activity: Activity, requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

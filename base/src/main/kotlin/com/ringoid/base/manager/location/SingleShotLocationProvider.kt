@@ -3,6 +3,7 @@ package com.ringoid.base.manager.location
 import android.content.Context
 import android.location.*
 import android.os.Bundle
+import com.ringoid.domain.debug.DebugLogUtil
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -54,11 +55,12 @@ class SingleShotLocationProvider @Inject constructor(private val context: Contex
                             }
 
                             override fun onProviderDisabled(provider: String) {
+                                DebugLogUtil.v("Location service has been disabled by user")
                                 emitter.onError(LocationServiceUnavailableException(provider))
                             }
 
                             override fun onProviderEnabled(provider: String) {
-                                emitter.onError(LocationServiceUnavailableException(provider))
+                                DebugLogUtil.v("Location service has been enabled by user")
                             }
                         }
                         emitter.setCancellable { locationManager.removeUpdates(listener) }

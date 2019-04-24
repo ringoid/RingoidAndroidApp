@@ -24,6 +24,7 @@
     <string name="error_invalid_referral_code">Код неверен</string>
 
     <!-- Permissions -->
+    <string name="permission_location_dialog_enable_location_service">Пожалуйста, включите геолокацию.</string>
     <string name="permission_location_rationale">Пожалуйста, разрешите доступ к геолокации</string>
 
     <!-- Debug screen -->

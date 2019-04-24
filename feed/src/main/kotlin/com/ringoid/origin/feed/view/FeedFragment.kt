@@ -21,6 +21,7 @@ import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.navigation.*
+import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
@@ -57,6 +58,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             is ViewState.CLEAR -> onClearState(mode = newState.mode)
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is ASK_TO_ENABLE_LOCATION_SERVICE -> swipe_refresh_layout?.isRefreshing = false
                     is BLOCK_PROFILE -> {
                         val count = feedAdapter.getModelsCount()
                         if (count <= 1) {  // remove last feed item - show empty stub
