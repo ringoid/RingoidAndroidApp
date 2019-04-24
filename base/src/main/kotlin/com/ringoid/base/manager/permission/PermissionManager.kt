@@ -39,7 +39,7 @@ class PermissionManager @Inject constructor() {
             callers[requestCode]?.forEach {
                 if (it?.onDenied() == false &&
                     targetVersion(Build.VERSION_CODES.M) &&
-                    activity.shouldShowRequestPermissionRationale(permissions[0])) {
+                    !activity.shouldShowRequestPermissionRationale(permissions[0])) {
                     it.onShowRationale()
                 }
             }
@@ -53,7 +53,7 @@ class PermissionManager @Inject constructor() {
             callers[requestCode]?.forEach {
                 if (it?.onDenied() == false &&
                     targetVersion(Build.VERSION_CODES.M) &&
-                    fragment.shouldShowRequestPermissionRationale(permissions[0])) {
+                    !fragment.shouldShowRequestPermissionRationale(permissions[0])) {
                     it.onShowRationale()
                 }
             }
