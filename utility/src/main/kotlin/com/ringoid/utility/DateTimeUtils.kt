@@ -5,6 +5,7 @@ import java.util.*
 fun isAdultAge(yearOfBirth: Int, calendar: Calendar, adultThreshold: Int = 0): Boolean =
     yearOfBirth in 1919..(calendar.get(Calendar.YEAR) - adultThreshold)
 
+fun Date.date(): String = "${1900 + year}.${wrapTimeUnit(month + 1)}.${wrapTimeUnit(date)}"
 fun Date.time(): String = "${wrapTimeUnit(hours)}:${wrapTimeUnit(minutes)}:${wrapTimeUnit(seconds)}"
 
 fun wrapTimeUnit(unit: Int): String = if (unit < 10) "0$unit" else "$unit"

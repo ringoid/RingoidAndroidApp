@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.ContextUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogLevel
@@ -25,6 +26,7 @@ import com.uber.autodispose.android.scope
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.widget_debug.view.*
 import timber.log.Timber
+import java.util.*
 
 @DebugOnly
 class DebugView : ConstraintLayout {
@@ -96,6 +98,7 @@ class DebugView : ConstraintLayout {
         super.onAttachedToWindow()
         DebugLogUtil.logger
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { DebugLogUtil.d("${Date().date()} :: ${com.ringoid.domain.BuildConfig.VERSION_NAME}\n\n${ContextUtil.deviceInfo()}\n\n") }
             .`as`(autoDisposable(scope()))
             .subscribe({
                 if (it == EmptyDebugLogItem) {
