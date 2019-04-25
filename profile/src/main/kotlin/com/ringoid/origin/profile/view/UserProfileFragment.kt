@@ -390,7 +390,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ibtn_delete_image.changeVisibility(isVisible = isVisible)
         ibtn_settings.changeVisibility(isVisible = isVisible)
         ll_profile_header.changeVisibility(isVisible = isVisible)
-        tabs.changeVisibility(isVisible = isVisible)
+//        tabs.changeVisibility(isVisible = isVisible)
     }
 
     // ------------------------------------------
