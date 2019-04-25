@@ -389,7 +389,7 @@ open class FeedRepository @Inject constructor(
         .zipWith(messengerLocal.countPeerMessages(),  // old total messages count from any peer
             BiFunction { lmm: Lmm, count: Int ->
                 val peerMessagesCount = lmm.peerMessagesCount()
-                if (peerMessagesCount != 0 && count != peerMessagesCount) {
+                if (peerMessagesCount != 0 && count < peerMessagesCount) {
                     badgeMessenger.onNext(true)
                     lmmChanged.onNext(true)  // have new messages from any peer
                     newMessagesCount.onNext(peerMessagesCount - count)
