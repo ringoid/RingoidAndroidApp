@@ -77,10 +77,6 @@ abstract class BasePermissionActivity<T : BasePermissionViewModel> : BaseActivit
     }
 
     private fun askToEnableLocationService() {
-        if (spm.getLocation() != null) {
-            return  // already has location, no need ask to enable gps
-        }
-
         Dialogs.showTextDialog(this, titleResId = R.string.permission_location_dialog_enable_location_service, descriptionResId = 0,
             positiveBtnLabelResId = R.string.button_settings,
             negativeBtnLabelResId = R.string.button_later,

@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.*
 import android.os.Bundle
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.misc.GpsLocation
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -12,12 +13,12 @@ import javax.inject.Singleton
 class SingleShotLocationProvider @Inject constructor(private val context: Context) : ILocationProvider {
 
     @SuppressWarnings("MissingPermission")
-    override fun getLocation(precision: LocationPrecision): Single<Location> =
+    override fun getLocation(precision: LocationPrecision): Single<GpsLocation> =
         (context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
             ?.let { locationManager ->
                 getLocationProviderForPrecision(precision)
                     .let { locationManager.getLastKnownLocation(it) }
-                    ?.let { Single.just(it) }
+                    ?.let { Single.just(GpsLocation.from(it)) }
                     ?: requestLocation(precision)  // no last location found in cache - request for location
             } ?: Single.error(NullPointerException("No location service available"))
 
@@ -26,7 +27,7 @@ class SingleShotLocationProvider @Inject constructor(private val context: Contex
      * services are enabled, depending on [precision].
      */
     @SuppressWarnings("MissingPermission")
-    override fun requestLocation(precision: LocationPrecision): Single<Location> =
+    override fun requestLocation(precision: LocationPrecision): Single<GpsLocation> =
         (context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
             ?.let { locationManager ->
                 when (precision) {
@@ -42,10 +43,10 @@ class SingleShotLocationProvider @Inject constructor(private val context: Contex
                     }
                 }
                 ?.let { criteria ->
-                    Single.create<Location> { emitter ->
+                    Single.create<GpsLocation> { emitter ->
                         val listener = object : LocationListener {
                             override fun onLocationChanged(location: Location) {
-                                emitter.onSuccess(location)
+                                emitter.onSuccess(GpsLocation.from(location))
                             }
 
                             override fun onStatusChanged(provider: String, status: Int, extras: Bundle?) {
@@ -66,7 +67,7 @@ class SingleShotLocationProvider @Inject constructor(private val context: Contex
                         emitter.setCancellable { locationManager.removeUpdates(listener) }
                         locationManager.requestSingleUpdate(criteria, listener, null)
                     }
-                } ?: run { Single.error<Location>(LocationServiceUnavailableException(getLocationProviderForPrecision(precision))) }
+                } ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(getLocationProviderForPrecision(precision))) }
             } ?: Single.error(NullPointerException("No location service available"))
 
     // --------------------------------------------------------------------------------------------

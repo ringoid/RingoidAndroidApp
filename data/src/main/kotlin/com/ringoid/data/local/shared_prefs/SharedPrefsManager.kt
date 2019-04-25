@@ -2,12 +2,12 @@ package com.ringoid.data.local.shared_prefs
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.location.Location
 import androidx.annotation.StyleRes
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
@@ -140,15 +140,15 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
 
     /* Location */
     // --------------------------------------------------------------------------------------------
-    override fun getLocation(): Pair<Double, Double>? {
+    override fun getLocation(): GpsLocation? {
         val latitude = sharedPreferences.getString(SP_KEY_LOCATION_LATITUDE, null)
         val longitude = sharedPreferences.getString(SP_KEY_LOCATION_LONGITUDE, null)
         return if (latitude.isNullOrBlank() || longitude.isNullOrBlank()) {
             null
-        } else latitude!!.toDouble() to longitude!!.toDouble()
+        } else GpsLocation(latitude!!.toDouble(), longitude!!.toDouble())
     }
 
-    override fun saveLocation(location: Location) {
+    override fun saveLocation(location: GpsLocation) {
         if (Math.abs(location.latitude) < LOCATION_EPS && Math.abs(location.longitude) < LOCATION_EPS) {
             deleteLocation()  // location is near (0, 0) point, so delete it
         } else {
