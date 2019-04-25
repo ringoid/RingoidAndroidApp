@@ -1,7 +1,9 @@
 package com.ringoid.domain.memory
 
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
+import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -100,34 +102,40 @@ object ChatInMemoryCache {
     fun restore(spm: ISharedPrefsManager) {
         spm.getByKey(SP_KEY_CHAT_CACHE)?.let {
             Timber.v("Restored cached chat data: $it")
-            val json = JSONObject(it)
-            json.optJSONArray("chatInputMessage")?.let {
-                val length = it.length()
-                for (i in 0 until length) {
-                    it.optJSONObject(i)?.let { json ->
-                        json.keys().forEach { key -> chatInputMessage[key] = json.optString(key) ?: "" }
+            try {
+                val json = JSONObject(it.replace('"', '\"'))
+                json.optJSONArray("chatInputMessage")?.let {
+                    val length = it.length()
+                    for (i in 0 until length) {
+                        it.optJSONObject(i)?.let { json ->
+                            json.keys().forEach { key -> chatInputMessage[key] = json.optString(key) ?: "" }
+                        }
                     }
                 }
-            }
-            json.optJSONArray("chatPeerMessagesCount")?.let {
-                val length = it.length()
-                for (i in 0 until length) {
-                    it.optJSONObject(i)?.let { json ->
-                        json.keys().forEach { key -> chatPeerMessagesCount[key] = json.optInt(key) }
+                json.optJSONArray("chatPeerMessagesCount")?.let {
+                    val length = it.length()
+                    for (i in 0 until length) {
+                        it.optJSONObject(i)?.let { json ->
+                            json.keys().forEach { key -> chatPeerMessagesCount[key] = json.optInt(key) }
+                        }
                     }
                 }
-            }
-            json.optJSONArray("chatScrollPosition")?.let {
-                val length = it.length()
-                for (i in 0 until length) {
-                    it.optJSONObject(i)?.let { json ->
-                        json.keys().forEach { key -> json.optJSONArray(key)?.let { chatScrollPosition[key] = it.optInt(0) to it.optInt(1) } }
+                json.optJSONArray("chatScrollPosition")?.let {
+                    val length = it.length()
+                    for (i in 0 until length) {
+                        it.optJSONObject(i)?.let { json ->
+                            json.keys().forEach { key ->
+                                json.optJSONArray(key)?.let { chatScrollPosition[key] = it.optInt(0) to it.optInt(1) }
+                            }
+                        }
                     }
                 }
-            }
-            if (BuildConfig.DEBUG) {
-                Timber.v("Parsed restored cached chat dara: ${toJson()}")
-                if (toJson() != it) Timber.e("Parsing was incorrect!")
+                if (BuildConfig.DEBUG) {
+                    Timber.v("Parsed restored cached chat dara: ${toJson()}")
+                    if (toJson() != it) Timber.e("Parsing was incorrect!")
+                }
+            } catch (e: JSONException) {
+                DebugLogUtil.e(e, "Failed to parse json: $it")
             }
         }
     }
