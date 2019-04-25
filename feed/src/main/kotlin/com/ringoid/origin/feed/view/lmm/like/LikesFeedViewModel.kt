@@ -69,4 +69,9 @@ class LikesFeedViewModel @Inject constructor(
         super.onViewFeedItem(feedItemId)
         markFeedItemAsSeen(feedItemId = feedItemId)
     }
+
+    override fun onSettingsClick(profileId: String) {
+        super.onSettingsClick(profileId)
+        markFeedItemAsSeen(profileId)
+    }
 }

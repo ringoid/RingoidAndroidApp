@@ -158,9 +158,4 @@ abstract class BaseLmmFeedViewModel(
         super.onRefresh(withLoading)
         Bus.post(event = BusEvent.RefreshOnLmm)
     }
-
-    override fun onSettingsClick(profileId: String) {
-        super.onSettingsClick(profileId)
-        markFeedItemAsSeen(profileId)
-    }
 }
