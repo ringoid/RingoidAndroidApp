@@ -42,7 +42,7 @@ class ExploreViewModel @Inject constructor(
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
 
-    override fun getFeedName(): String = "new_faces"
+    override fun getFeedName(): String = DomainUtil.SOURCE_FEED_EXPLORE
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)

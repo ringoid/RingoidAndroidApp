@@ -47,6 +47,8 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
             else -> null
         }
 
+    override fun getAddPhotoDialogDescriptionResId(): Int = OriginR_string.feed_explore_dialog_no_user_photo_description
+
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         when (newState) {

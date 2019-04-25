@@ -17,6 +17,7 @@ object DomainUtil {
     const val CLIPBOARD_KEY_CUSTOMER_ID = "customerId"
     const val CLIPBOARD_KEY_DEBUG = "debug"
 
+    const val SOURCE_FEED_EXPLORE = "new_faces"
     const val SOURCE_FEED_LIKES = "who_liked_me"
     const val SOURCE_FEED_MATCHES = "matches"
     const val SOURCE_FEED_MESSAGES = "messages"

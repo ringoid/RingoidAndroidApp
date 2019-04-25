@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
@@ -44,6 +45,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     override fun getRecyclerView(): RecyclerView = rv_items
 
     protected abstract fun createFeedAdapter(): BaseFeedAdapter
+    @StringRes protected abstract fun getAddPhotoDialogDescriptionResId(): Int
 
     protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
 
@@ -69,7 +71,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     }
                     is NO_IMAGES_IN_PROFILE -> {
                         Dialogs.showTextDialog(activity,
-                            descriptionResId = OriginR_string.feed_explore_dialog_no_user_photo_description,
+                            descriptionResId = getAddPhotoDialogDescriptionResId(),
                             positiveBtnLabelResId = OriginR_string.button_add_photo,
                             negativeBtnLabelResId = OriginR_string.button_later,
                             positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })

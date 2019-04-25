@@ -9,12 +9,11 @@ import androidx.lifecycle.ViewModel
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
-import com.ringoid.domain.model.messenger.EmptyMessage
 import com.ringoid.domain.model.messenger.userMessage
 import com.ringoid.origin.AppRes
+import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
@@ -32,7 +31,6 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.communicator
-import com.ringoid.utility.debugToast
 import timber.log.Timber
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>(), IChatHost, IDialogCallback  {
@@ -48,6 +46,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         }
 
     protected abstract fun getSourceFeed(): String
+
+    override fun getAddPhotoDialogDescriptionResId(): Int = OriginR_string.feed_lmm_dialog_no_user_photo_description
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
