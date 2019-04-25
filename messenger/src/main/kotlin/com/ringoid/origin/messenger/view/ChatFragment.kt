@@ -95,7 +95,18 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         payload = arguments?.getParcelable(BUNDLE_KEY_PAYLOAD)
         ChatInMemoryCache.addProfileIfNotExists(profileId = peerId)
 
-        chatAdapter = ChatAdapter().apply { itemClickListener = { _, _ -> closeChat() } }
+        chatAdapter = ChatAdapter().apply {
+            itemClickListener = { _, _ -> closeChat() }
+            onMessageInsertListener = { _ ->
+                /**
+                 * If vertical position is near the last message in Chat - scroll to the bottom of
+                 * each newly inserted message, otherwise - remain on the current vertical position.
+                 */
+                rv_chat_messages.linearLayoutManager()
+                    ?.takeIf { it.findFirstVisibleItemPosition() <= 1 }
+                    ?.let { scrollToTopOfItemAtPosition(0) }  // scroll to last message
+            }
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
@@ -202,6 +213,10 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         }
         et_message.hideKeyboard()
         dismiss()
+    }
+
+    private fun scrollListToPosition(position: Int) {
+        rv_chat_messages?.post { rv_chat_messages?.scrollToPosition(position) }
     }
 
     private fun scrollToTopOfItemAtPosition(position: Int) {
