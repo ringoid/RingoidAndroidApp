@@ -111,7 +111,7 @@ class LoginViewModel @Inject constructor(
             .doOnSubscribe {
                 ChatInMemoryCache.clear()
                 DebugLogUtil.clear()
-                spm.deleteLocation()
+                spm.deleteLocation()  // forget saved location on logout
                 actionObjectPool.finalizePool()  // clear state of pool, if any
                 app.userScopeProvider.onLogout()  // prevent pool from receiving new state, if subscribed
             }

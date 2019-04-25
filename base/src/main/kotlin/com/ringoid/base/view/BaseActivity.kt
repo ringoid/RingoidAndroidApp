@@ -157,6 +157,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         isDestroying = true
         super.onDestroy()
         vm.unsubscribeFromBusEvents()
+        vm.onDestroy()
     }
 
     // --------------------------------------------------------------------------------------------

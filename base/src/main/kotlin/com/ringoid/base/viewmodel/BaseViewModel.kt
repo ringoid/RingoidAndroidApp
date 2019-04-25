@@ -78,6 +78,10 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
         // override in subclasses
     }
 
+    open fun onDestroy() {
+        // override in subclasses
+    }
+
     override fun onCleared() {
         super.onCleared()
         unsubscribeFromBusEvents()

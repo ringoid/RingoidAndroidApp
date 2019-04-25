@@ -33,7 +33,11 @@ class PermissionManager @Inject constructor() {
 
     // ------------------------------------------
     fun onRequestPermissionsResult(activity: Activity, requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.isEmpty()) {
+            return
+        }
+
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             callers[requestCode]?.forEach { it?.onGranted() }
         } else {
             callers[requestCode]?.forEach {
@@ -47,7 +51,11 @@ class PermissionManager @Inject constructor() {
     }
 
     fun onRequestPermissionsResult(fragment: Fragment, requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.isEmpty()) {
+            return
+        }
+
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             callers[requestCode]?.forEach { it?.onGranted() }
         } else {
             callers[requestCode]?.forEach {
