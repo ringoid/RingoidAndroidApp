@@ -38,8 +38,6 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         AppUtils.checkForGooglePlayServices(this)
         initializeFirebase()
         initializeParticleAnimation()
-
-        permissionManager.askForLocationPermission(this)
     }
 
     override fun onStart() {

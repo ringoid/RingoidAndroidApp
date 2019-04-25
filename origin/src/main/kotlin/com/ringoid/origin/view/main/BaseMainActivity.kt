@@ -102,6 +102,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     private fun processExtras(intent: Intent) {
         fun openInitialTab() {
+            permissionManager.askForLocationPermission(this)
             openTabByName(tabName = NavigateFrom.MAIN_TAB_PROFILE)
         }
 
