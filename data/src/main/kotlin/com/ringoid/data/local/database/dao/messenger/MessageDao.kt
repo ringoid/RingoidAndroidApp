@@ -51,4 +51,7 @@ interface MessageDao {
 
     @Query("DELETE FROM ${MessageDbo.TABLE_NAME}")
     fun deleteMessages()
+
+    @Query("DELETE FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
+    fun deleteMessages(chatId: String)
 }

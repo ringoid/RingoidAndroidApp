@@ -12,6 +12,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
+import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -27,6 +28,7 @@ import timber.log.Timber
 
 abstract class FeedViewModel(
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
+    private val clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
@@ -249,6 +251,12 @@ abstract class FeedViewModel(
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
                 viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
             }, Timber::e)
+
+        // remove all messages for blocked profile, to exclude them from messages counting
+        clearMessagesForChatUseCase.source(params = Params().put("chatId", profileId))
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .autoDisposable(this)
+            .subscribe({ ChatInMemoryCache.deleteProfile(profileId) }, Timber::e)
 
         // remove VIEW aobj associated with blocked profile from backup to prevent it from restoring
         viewActionObjectBackup.remove(imageId to profileId)

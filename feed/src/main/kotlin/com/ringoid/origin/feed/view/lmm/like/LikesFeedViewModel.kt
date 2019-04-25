@@ -8,6 +8,7 @@ import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCas
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.feed.property.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
+import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
@@ -24,6 +25,7 @@ class LikesFeedViewModel @Inject constructor(
     addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
+    clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
@@ -35,6 +37,7 @@ class LikesFeedViewModel @Inject constructor(
         addUserMessagedFeedItemIdUseCase,
         updateFeedItemAsSeenUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
+        clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
         userInMemoryCache, app) {

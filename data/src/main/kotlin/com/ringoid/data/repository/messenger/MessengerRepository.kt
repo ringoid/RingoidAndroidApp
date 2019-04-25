@@ -32,6 +32,12 @@ class MessengerRepository @Inject constructor(
             sentMessagesLocal.deleteMessages()
         }
 
+    override fun clearMessages(chatId: String): Completable =
+        Completable.fromCallable {
+            local.deleteMessages(chatId)
+            sentMessagesLocal.deleteMessages(chatId)
+        }
+
     // messages cached since last network request + sent user messages (cache locally)
     override fun getMessages(chatId: String, sourceFeed: String): Single<List<Message>> =
         Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId, sourceFeed = sourceFeed) }

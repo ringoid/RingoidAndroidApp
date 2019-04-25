@@ -72,6 +72,12 @@ object ChatInMemoryCache {
         return result
     }
 
+    fun deleteProfile(profileId: String) {
+        chatInputMessage.remove(profileId)
+        chatPeerMessagesCount.remove(profileId)
+        chatScrollPosition.remove(profileId)
+    }
+
     fun dropPositionForProfile(profileId: String) {
         if (hasProfile(profileId)) {
             chatScrollPosition[profileId] = BOTTOM_CHAT_POSITION

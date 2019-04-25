@@ -13,6 +13,7 @@ import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
+import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
@@ -33,10 +34,15 @@ class ExploreViewModel @Inject constructor(
     @DebugOnly private val debugGetNewFacesThresholdExceed: DebugGetNewFacesThresholdExceed,
     private val cacheAlreadySeenProfileIdsUseCase: CacheAlreadySeenProfileIdsUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
+    clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase, userInMemoryCache: IUserInMemoryCache, app: Application)
-    : FeedViewModel(clearCachedAlreadySeenProfileIdsUseCase, cacheBlockedProfileIdUseCase, countUserImagesUseCase,
-                    userInMemoryCache, app), IListScrollCallback {
+    : FeedViewModel(
+        clearCachedAlreadySeenProfileIdsUseCase,
+        clearMessagesForChatUseCase,
+        cacheBlockedProfileIdUseCase,
+        countUserImagesUseCase,
+        userInMemoryCache, app), IListScrollCallback {
 
     val feed by lazy { MutableLiveData<Feed>() }
     private var isLoadingMore: Boolean = false
