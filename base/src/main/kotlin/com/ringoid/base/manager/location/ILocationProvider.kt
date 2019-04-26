@@ -5,6 +5,7 @@ import io.reactivex.Single
 
 interface ILocationProvider {
 
+    fun getLocation(): Single<GpsLocation>
     fun getLocation(precision: LocationPrecision): Single<GpsLocation>
     fun requestLocation(precision: LocationPrecision): Single<GpsLocation>
 }

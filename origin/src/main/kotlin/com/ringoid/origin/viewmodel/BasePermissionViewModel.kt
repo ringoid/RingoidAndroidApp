@@ -2,11 +2,11 @@ package com.ringoid.origin.viewmodel
 
 import android.app.Application
 import com.ringoid.base.manager.location.ILocationProvider
-import com.ringoid.base.manager.location.LocationPrecision
 import com.ringoid.base.manager.location.LocationServiceUnavailableException
 import com.ringoid.base.manager.location.LocationUtils
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.model.actions.LocationActionObject
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
@@ -36,10 +36,10 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
         onLocationPermissionGrantedAction(handleCode)
 
         locationProvider
-            .getLocation(LocationPrecision.COARSE)
+            .getLocation()
             .filter { it.latitude != 0.0 && it.longitude != 0.0 }
             .subscribe(::onLocationChanged) {
-                Timber.e(it)
+                DebugLogUtil.e(it)
                 when (it) {
                     is LocationServiceUnavailableException -> viewState.value = ViewState.DONE(ASK_TO_ENABLE_LOCATION_SERVICE(handleCode))
                 }

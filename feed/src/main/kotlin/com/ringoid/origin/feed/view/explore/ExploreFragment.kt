@@ -90,11 +90,6 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        permissionManager.askForLocationPermission(this)
-//    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.observe(vm.feed) { feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() } }
