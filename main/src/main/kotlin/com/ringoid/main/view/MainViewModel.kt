@@ -88,11 +88,6 @@ class MainViewModel @Inject constructor(
         actionObjectPool.trigger()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        spm.deleteLocation()  // forget saved location and re-request it on next fresh start
-    }
-
     // --------------------------------------------------------------------------------------------
     private fun onEachAppStart() {
         applyReferralCodeIfAny()
