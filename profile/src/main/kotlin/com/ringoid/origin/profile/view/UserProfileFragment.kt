@@ -29,6 +29,7 @@ import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderHideControls
 import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderShowControls
+import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.Dialogs
@@ -88,6 +89,12 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 onIdleState()
                 updateReferralLabel()
                 when (newState.residual) {
+                    is ASK_TO_ENABLE_LOCATION_SERVICE -> {
+                        val handleCode = (newState.residual as ASK_TO_ENABLE_LOCATION_SERVICE).handleCode
+                        when (handleCode) {
+                            HC_REFRESH -> vm.onRefresh()  // TODO: use cached
+                        }
+                    }
                     is REFERRAL_CODE_ACCEPTED -> Dialogs.showTextDialog(activity, title = String.format(resources.getString(OriginR_string.referral_dialog_reward_message), "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
                     is REFERRAL_CODE_DECLINED -> Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_invalid_referral_code, description = null)
                     is REQUEST_TO_ADD_IMAGE -> onAddImageNoPermission()
@@ -212,7 +219,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
             globalImagePreviewReceiver()?.subscribe()  // get last prepared image, if any
         } else {
-            vm.onRefresh()  // refresh Profile screen for already logged in user on a fresh app's start
+            // refresh Profile screen for already logged in user on a fresh app's start
+            permissionManager.askForLocationPermission(this, handleCode = HC_REFRESH)
         }
 
         if (handleRequestToAddImage) {  // postponed handling to ensure initialization
@@ -306,7 +314,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
          * Asks for location permission, and if granted - callback will then handle
          * opening Gallery to pick image.
          */
-        permissionManager.askForLocationPermission(this)
+        permissionManager.askForLocationPermission(this, handleCode = HC_ADD_IMAGE)
     }
 
     private fun onAddImageNoPermission() {

@@ -61,17 +61,18 @@ abstract class BasePermissionActivity<T : BasePermissionViewModel> : BaseActivit
     private inner class LocationPermissionCaller : IPermissionCaller {
 
         @SuppressWarnings("MissingPermission")
-        override fun onGranted() {
+        override fun onGranted(handleCode: Int) {
             DebugLogUtil.i("Location permission has been granted")
-            vm.onLocationPermissionGranted()
+            vm.onLocationPermissionGranted(handleCode)
         }
 
-        override fun onDenied(): Boolean {
+        override fun onDenied(handleCode: Int): Boolean {
             DebugLogUtil.w("Location permission has been denied")
+            vm.onLocationPermissionDenied(handleCode)
             return false
         }
 
-        override fun onShowRationale() {
+        override fun onShowRationale(handleCode: Int) {
             Dialogs.showTextDialog(this@BasePermissionActivity, titleResId = R.string.permission_location_rationale, descriptionResId = 0)
         }
     }

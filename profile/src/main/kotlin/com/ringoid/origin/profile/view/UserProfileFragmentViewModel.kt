@@ -163,9 +163,19 @@ class UserProfileFragmentViewModel @Inject constructor(
         }
     }
 
-    override fun onLocationReceived() {
-        super.onLocationReceived()
-        viewState.value = ViewState.DONE(REQUEST_TO_ADD_IMAGE)
+    override fun onLocationReceived(handleCode: Int) {
+        super.onLocationReceived(handleCode)
+        when (handleCode) {
+            HC_ADD_IMAGE -> viewState.value = ViewState.DONE(REQUEST_TO_ADD_IMAGE)
+            HC_REFRESH -> onRefresh()
+        }
+    }
+
+    override fun onLocationPermissionDeniedAction(handleCode: Int) {
+        super.onLocationPermissionDeniedAction(handleCode)
+        when (handleCode) {
+            HC_REFRESH -> onRefresh()  // TODO: use cached
+        }
     }
 
     fun onStartRefresh() {

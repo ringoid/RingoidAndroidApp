@@ -135,8 +135,8 @@ abstract class FeedViewModel(
         verticalPrevRange = null
     }
 
-    override fun onLocationReceived() {
-        super.onLocationReceived()
+    override fun onLocationReceived(handleCode: Int) {
+        super.onLocationReceived(handleCode)
         viewState.value = ViewState.PROGRESS
         onRefresh()  // request for feed data with potentially updated location data
     }

@@ -18,33 +18,43 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
 
     @Inject lateinit var locationProvider: ILocationProvider
 
-    protected open fun onLocationReceived() {}
+    protected open fun onLocationPermissionGrantedAction(handleCode: Int) {}
+    protected open fun onLocationPermissionDeniedAction(handleCode: Int) {}
+    protected open fun onLocationReceived(handleCode: Int) {}
 
     /* Permission */
     // --------------------------------------------------------------------------------------------
-    fun onLocationPermissionGranted() {
+    fun onLocationPermissionGranted(handleCode: Int) {
         fun onLocationChanged(location: GpsLocation) {
             LocationUtils.onLocationChanged(location, spm) {
                 val aobj = LocationActionObject(location.latitude, location.longitude)
                 actionObjectPool.put(aobj)
             }
-            onLocationReceived()
+            onLocationReceived(handleCode)
         }
+
+        Timber.v("onLocationPermissionGranted($handleCode)")
+        onLocationPermissionGrantedAction(handleCode)
 
         locationProvider
             .getLocation(LocationPrecision.COARSE)
             .filter { it.latitude != 0.0 && it.longitude != 0.0 }
-            .onErrorResumeNext { e: Throwable ->
-                when (e) {
-                    is LocationServiceUnavailableException -> spm.getLocation()?.let { Maybe.just(it) } ?: Maybe.error(e)
-                    else -> Maybe.error(e)
-                }
-            }
+//            .onErrorResumeNext { e: Throwable ->
+//                when (e) {
+//                    is LocationServiceUnavailableException -> spm.getLocation()?.let { Maybe.just(it) } ?: Maybe.error(e)
+//                    else -> Maybe.error(e)
+//                }
+//            }
             .subscribe(::onLocationChanged) {
                 Timber.e(it)
                 when (it) {
-                    is LocationServiceUnavailableException -> viewState.value = ViewState.DONE(ASK_TO_ENABLE_LOCATION_SERVICE)
+                    is LocationServiceUnavailableException -> viewState.value = ViewState.DONE(ASK_TO_ENABLE_LOCATION_SERVICE(handleCode))
                 }
             }
+    }
+
+    fun onLocationPermissionDenied(handleCode: Int) {
+        Timber.v("onLocationPermissionDenied($handleCode)")
+        onLocationPermissionDeniedAction(handleCode)
     }
 }

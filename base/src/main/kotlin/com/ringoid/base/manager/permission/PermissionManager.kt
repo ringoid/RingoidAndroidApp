@@ -14,16 +14,17 @@ import javax.inject.Inject
 class PermissionManager @Inject constructor() {
 
     companion object {
-        const val RC_PERMISSION_LOCATION = 801
+        const val HC_NONE = 0
+        const val RC_PERMISSION_LOCATION = 810
     }
 
     private val callers = mutableMapOf<Int, MutableList<IPermissionCaller?>>()
 
-    fun askForLocationPermission(activity: Activity): Boolean =
-        askForPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION, RC_PERMISSION_LOCATION)
+    fun askForLocationPermission(activity: Activity, handleCode: Int = HC_NONE): Boolean =
+        askForPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION, RC_PERMISSION_LOCATION, handleCode)
 
-    fun askForLocationPermission(fragment: Fragment): Boolean =
-        askForPermission(fragment, Manifest.permission.ACCESS_FINE_LOCATION, RC_PERMISSION_LOCATION)
+    fun askForLocationPermission(fragment: Fragment, handleCode: Int = HC_NONE): Boolean =
+        askForPermission(fragment, Manifest.permission.ACCESS_FINE_LOCATION, RC_PERMISSION_LOCATION, handleCode)
 
     fun hasLocationPermission(activity: Activity): Boolean =
         hasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -32,37 +33,43 @@ class PermissionManager @Inject constructor() {
         hasPermission(fragment.activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
 
     // ------------------------------------------
-    fun onRequestPermissionsResult(activity: Activity, requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    fun onRequestPermissionsResult(activity: Activity, mergedCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (grantResults.isEmpty()) {
             return
         }
 
+        val handleCode = mergedCode % 10
+        val requestCode = mergedCode - handleCode
+
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            callers[requestCode]?.forEach { it?.onGranted() }
+            callers[requestCode]?.forEach { it?.onGranted(handleCode) }
         } else {
             callers[requestCode]?.forEach {
-                if (it?.onDenied() == false &&
+                if (it?.onDenied(handleCode) == false &&
                     targetVersion(Build.VERSION_CODES.M) &&
                     !activity.shouldShowRequestPermissionRationale(permissions[0])) {
-                    it.onShowRationale()
+                    it.onShowRationale(handleCode)
                 }
             }
         }
     }
 
-    fun onRequestPermissionsResult(fragment: Fragment, requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    fun onRequestPermissionsResult(fragment: Fragment, mergedCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (grantResults.isEmpty()) {
             return
         }
 
+        val handleCode = mergedCode % 10
+        val requestCode = mergedCode - handleCode
+
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            callers[requestCode]?.forEach { it?.onGranted() }
+            callers[requestCode]?.forEach { it?.onGranted(handleCode) }
         } else {
             callers[requestCode]?.forEach {
-                if (it?.onDenied() == false &&
+                if (it?.onDenied(handleCode) == false &&
                     targetVersion(Build.VERSION_CODES.M) &&
                     !fragment.shouldShowRequestPermissionRationale(permissions[0])) {
-                    it.onShowRationale()
+                    it.onShowRationale(handleCode)
                 }
             }
         }
@@ -85,26 +92,26 @@ class PermissionManager @Inject constructor() {
         priorVersion(Build.VERSION_CODES.M) ||
         ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 
-    private fun askForPermission(activity: Activity, permission: String, rc: Int): Boolean {
+    private fun askForPermission(activity: Activity, permission: String, rc: Int, handleCode: Int = HC_NONE): Boolean {
         if (hasPermission(activity, permission)) {
-            callers[rc]?.forEach { it?.onGranted() }
+            callers[rc]?.forEach { it?.onGranted(handleCode) }
             return true
         }
 
         if (targetVersion(Build.VERSION_CODES.M)) {
-            activity.requestPermissions(arrayOf(permission), rc)
+            activity.requestPermissions(arrayOf(permission), rc + handleCode)
         }
         return false
     }
 
-    private fun askForPermission(fragment: Fragment, permission: String, rc: Int): Boolean {
+    private fun askForPermission(fragment: Fragment, permission: String, rc: Int, handleCode: Int = HC_NONE): Boolean {
         if (hasPermission(fragment.activity!!, permission)) {
-            callers[rc]?.forEach { it?.onGranted() }
+            callers[rc]?.forEach { it?.onGranted(handleCode) }
             return true
         }
 
         if (targetVersion(Build.VERSION_CODES.M)) {
-            fragment.requestPermissions(arrayOf(permission), rc)
+            fragment.requestPermissions(arrayOf(permission), rc + handleCode)
         }
         return false
     }
