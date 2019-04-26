@@ -14,6 +14,7 @@ import java.util.*
  * @see https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude
  */
 const val LOCATION_110m = 0.001
+const val LOCATION_550m = 0.005
 const val LOCATION_EPS = 0.000001
 
 /* Misc */
