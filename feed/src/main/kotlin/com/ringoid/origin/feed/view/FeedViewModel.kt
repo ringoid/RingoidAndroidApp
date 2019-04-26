@@ -231,11 +231,11 @@ abstract class FeedViewModel(
             .also { actionObjectPool.put(it) }
     }
 
-    fun onBlock(profileId: String, imageId: String, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
+    open fun onBlock(profileId: String, imageId: String, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
         onReport(profileId = profileId, imageId = imageId, reasonNumber = 0, sourceFeed = sourceFeed, fromChat = fromChat)
     }
 
-    fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
+    open fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
         advanceAndPushViewObject(imageId to profileId)
         BlockActionObject(numberOfBlockReason = reasonNumber,
             sourceFeed = sourceFeed, targetImageId = imageId, targetUserId = profileId)

@@ -147,6 +147,16 @@ abstract class BaseLmmFeedViewModel(
             .subscribe({}, Timber::e)
     }
 
+    override fun onBlock(profileId: String, imageId: String, sourceFeed: String, fromChat: Boolean) {
+        super.onBlock(profileId, imageId, sourceFeed, fromChat)
+        markFeedItemAsSeen(feedItemId = profileId)
+    }
+
+    override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
+        super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
+        markFeedItemAsSeen(feedItemId = profileId)
+    }
+
     fun onFirstUserMessageSent(profileId: String) {
         addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
             .autoDisposable(this)
