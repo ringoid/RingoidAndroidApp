@@ -46,6 +46,10 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     @LayoutRes protected abstract fun getLayoutId(): Int
 
+    fun setLastTabTransactionPayload(payload: String?) {
+        lastTabTransactionPayload = payload
+    }
+
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")

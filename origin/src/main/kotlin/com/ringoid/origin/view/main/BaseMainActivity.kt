@@ -66,7 +66,10 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
         bottom_bar.apply {
             setOnNavigationItemSelectedListener {
-                (fragNav.currentFrag as? BaseFragment<*>)?.onBeforeTabSelect()
+                (fragNav.currentFrag as? BaseFragment<*>)?.let {
+                    it.onBeforeTabSelect()
+                    it.setLastTabTransactionPayload(tabPayload)
+                }
                 fragNav.switchTab(it.ordinal)
             }
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
