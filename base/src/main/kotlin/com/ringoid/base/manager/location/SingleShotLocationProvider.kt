@@ -91,8 +91,8 @@ class SingleShotLocationProvider @Inject constructor(private val context: Contex
         }
 
     private fun getLocationProvider(locationManager: LocationManager): String? =
-        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) LocationManager.NETWORK_PROVIDER
-        else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) LocationManager.GPS_PROVIDER
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) LocationManager.GPS_PROVIDER
+        else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) LocationManager.NETWORK_PROVIDER
         else if (locationManager.isProviderEnabled("fused")) "fused"
         else null
 
