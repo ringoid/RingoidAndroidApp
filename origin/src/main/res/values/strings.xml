@@ -24,7 +24,7 @@
     <string name="error_invalid_referral_code">Referral code is invalid</string>
 
     <!-- Permissions -->
-    <string name="permission_location_dialog_enable_location_service">Please enable geo location in settings.</string>
+    <string name="permission_location_dialog_enable_location_service">Please enable location</string>
     <string name="permission_location_rationale">Please allow access to Location</string>
 
     <!-- Debug screen -->
