@@ -10,7 +10,6 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.model.actions.LocationActionObject
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
-import io.reactivex.Maybe
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,12 +38,6 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
         locationProvider
             .getLocation(LocationPrecision.COARSE)
             .filter { it.latitude != 0.0 && it.longitude != 0.0 }
-//            .onErrorResumeNext { e: Throwable ->
-//                when (e) {
-//                    is LocationServiceUnavailableException -> spm.getLocation()?.let { Maybe.just(it) } ?: Maybe.error(e)
-//                    else -> Maybe.error(e)
-//                }
-//            }
             .subscribe(::onLocationChanged) {
                 Timber.e(it)
                 when (it) {
