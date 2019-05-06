@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
@@ -64,6 +65,20 @@ abstract class BaseLmmFeedViewModel(
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
+            .doAfterNext {
+                if (!analyticsManager.hasFiredOnce(Analytics.AHA_FIRST_REPLY_RECEIVED)) {
+                    // analyze for the first reply in messages only once per user session
+                    for (i in 0 until it.size) {
+                        if (it[i].countOfUserMessages() > 0) {
+                            val userMessageIndex = it[i].messages.indexOfFirst { it.isUserMessage() }
+                            val peerMessageIndex = it[i].messages.indexOfLast { it.isPeerMessage() }
+                            if (peerMessageIndex > userMessageIndex) {
+                                analyticsManager.fireOnce(Analytics.AHA_FIRST_REPLY_RECEIVED, "sourceFeed" to getFeedName())
+                            }
+                        }
+                    }
+                }
+            }
             .flatMap {
                 // get cached feed items that were liked, to restore likes on cached feed
                 val params = Params().put("feedItemIds", it.map { it.id })

@@ -37,11 +37,14 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+    fun hasFiredOnce(id: String): Boolean = consumedEventIds.contains(id)
+
     /**
      * Fire analytics event once per user session.
      */
     fun fireOnce(id: String, vararg payload: Pair<String, String>) {
-        if (!consumedEventIds.contains(id)) {
+        if (!hasFiredOnce(id)) {
             consumedEventIds.add(id)
             fire(id, *payload)
         }
