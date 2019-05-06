@@ -46,6 +46,8 @@ buildscript {
         firebaseMessagingVersion = '17.3.3'
         firebasePerformanceVersion = '16.2.5'
         firebasePerformancePluginVersion = '1.2.0'
+        flurryVersion = '11.4.0@aar'
+        googlePlayServicesVersion = '15.0.1'
 
         circularProgressVersion = '2.0.0'
         dotsIndicatorVersion = '2.1.0'

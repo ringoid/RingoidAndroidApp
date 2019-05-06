@@ -52,6 +52,11 @@ ext {
             daggerCompiler:         "com.google.dagger:dagger-compiler:${daggerVersion}",
     ]
 
+    d_google = [
+            googlePlayServices:         "com.google.android.gms:play-services-base:${googlePlayServicesVersion}",
+            googlePlayServicesAds:      "com.google.android.gms:play-services-ads:${googlePlayServicesVersion}",
+    ]
+
     d_libs = [
             confetti:       "com.github.jinatonic.confetti:confetti:${confettiVersion}",
             cropiwa:        "com.steelkiwi:cropiwa:${cropiwaVersion}",
@@ -67,6 +72,7 @@ ext {
             firebase:          "com.google.firebase:firebase-core:${firebaseVersion}",
             firebaseMessaging: "com.google.firebase:firebase-messaging:$firebaseMessagingVersion",
             firebasePerformance: "com.google.firebase:firebase-perf:${firebasePerformanceVersion}",
+            flurry:            "com.flurry.android:analytics:${flurryVersion}",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
             fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
@@ -233,6 +239,11 @@ ext {
     def glide = [
             [configuration: "kapt", dependency: d_libs.glideCompiler],
             [configuration: "implementation", dependency: d_libs.glide],
+    ]
+
+    def google = [
+            [configuration: "implementation", dependency: d_google.googlePlayServices],
+            [configuration: "implementation", dependency: d_google.googlePlayServicesAds],
     ]
 
     def kotlin = [
@@ -475,10 +486,11 @@ ext {
     // ------------------------------------------
     baseDependencies = [
         [configuration: "api", dependency: d_libs.eventBus],
-        [configuration: "api", dependency: d_libs.firebase]
+        [configuration: "api", dependency: d_libs.firebase],
+        [configuration: "api", dependency: d_libs.flurry],
     ]
     baseDependencies += module_domain + module_utility + module_widget + android + arch + dagger + deeplink + kotlin +
-                        log + autoDispose + rx + rxBind
+                        google + log + autoDispose + rx + rxBind
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test

@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
+import com.flurry.android.FlurryAgent
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.domain.debug.DebugLogUtil
@@ -94,6 +95,12 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     // --------------------------------------------------------------------------------------------
     private fun initializeProgrammingTools() {
         Branch.getAutoInstance(this)
+        FlurryAgent.Builder()
+            .withLogEnabled(true)
+            .withCaptureUncaughtExceptions(true)
+            .withContinueSessionMillis(10000)
+            .withLogLevel(Log.VERBOSE)
+            .build(this, com.ringoid.domain.BuildConfig.FLURRY_API_KEY)
         Sentry.init(com.ringoid.domain.BuildConfig.SENTRY_DSN)
     }
 

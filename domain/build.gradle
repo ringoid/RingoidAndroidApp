@@ -22,6 +22,7 @@ android {
         buildConfigField 'String', 'HOST', rootProject.ext.host
         buildConfigField 'long', 'REQUEST_TIME_THRESHOLD', rootProject.ext.requestTimeThreshold
         buildConfigField 'long', "RESPONSE_TIME_THRESHOLD", rootProject.ext.responseTimeThreshold
+        buildConfigField 'String', 'FLURRY_API_KEY', rootProject.ext.flurryApiKey
         buildConfigField 'String', 'SENTRY_DSN', rootProject.ext.sentryDSN
     }
     buildTypes {

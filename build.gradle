@@ -20,6 +20,20 @@ enum Onboarding { ADD_IMAGE, DIRECT }
 static String getAppId(Environment env) { return env.appId }
 static String getAppName(Environment env) { return env.appName }
 static String getApiUrl(Environment env) { return env.apiUrl }
+static String getFlurryApiKey(Environment env) {
+    String apiKey = ""
+    switch (env) {
+        case Environment.PRODUCTION:
+            apiKey = '"YCX7BXH7R9QWH6DB42J7"'
+            break
+        case Environment.DEVELOP:
+        case Environment.STAGING:
+        default:
+            apiKey = '"KQ4JMH9TGM89SJD2XR5C"'
+            break
+    }
+    return apiKey
+}
 static String getSentryDsn(Environment env) {
     String dsn = ""
     switch (env) {
@@ -50,6 +64,7 @@ ext {
     host = '"ringoid.com"'
     authority = '"https://ringoid.com"'
     appnav = '"appnav://ringoid.com"'
+    flurryApiKey = getFlurryApiKey(env)
     sentryDSN = getSentryDsn(env)
 
     debounceClickMs = "500L"

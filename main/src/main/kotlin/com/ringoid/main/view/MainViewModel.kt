@@ -67,6 +67,7 @@ class MainViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun onCreate() {
         super.onCreate()
+        analyticsManager.setUser(spm)
         SentryUtil.setUser(spm)
     }
 
