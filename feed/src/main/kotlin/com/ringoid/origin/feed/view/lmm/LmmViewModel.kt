@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lmm
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
@@ -37,17 +38,26 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         getLmmUseCase.repository.badgeLikes
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ badgeLikes.value = it }, Timber::e)
+            .subscribe({
+                badgeLikes.value = it
+                analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to DomainUtil.SOURCE_FEED_LIKES)
+            }, Timber::e)
 
         getLmmUseCase.repository.badgeMatches
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ badgeMatches.value = it }, Timber::e)
+            .subscribe({
+                badgeMatches.value = it
+                analyticsManager.fireOnce(Analytics.AHA_FIRST_MATCH, "sourceFeed" to DomainUtil.SOURCE_FEED_MATCHES)
+            }, Timber::e)
 
         getLmmUseCase.repository.badgeMessenger
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ badgeMessenger.value = it }, Timber::e)
+            .subscribe({
+                badgeMessenger.value = it
+                analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to DomainUtil.SOURCE_FEED_MESSAGES)
+            }, Timber::e)
     }
 
     /* Lifecycle */
