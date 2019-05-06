@@ -7,6 +7,7 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
@@ -179,7 +180,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     fun onStartRefresh() {
-//        actionObjectPool.trigger()
+        analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to DomainUtil.SOURCE_FEED_PROFILE)
     }
 
     fun onRefresh() {

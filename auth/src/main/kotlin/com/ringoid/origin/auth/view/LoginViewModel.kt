@@ -82,6 +82,7 @@ class LoginViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully signed up, current user: $it")
+                analyticsManager.enterUserScope()
                 analyticsManager.fire(Analytics.AUTH_USER_PROFILE_CREATED, "yearOfBirth" to "${essence.yearOfBirth}", "sex" to essence.sex)
                 app.userScopeProvider.onLogin()
             }, Timber::e)

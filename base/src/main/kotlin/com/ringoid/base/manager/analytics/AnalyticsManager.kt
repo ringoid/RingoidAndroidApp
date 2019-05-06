@@ -12,7 +12,15 @@ import javax.inject.Singleton
 @Singleton
 class AnalyticsManager @Inject constructor(context: Context, private val spm: ISharedPrefsManager) {
 
+    companion object {
+        private val consumedEventIds = mutableSetOf<String>()
+    }
+
     private val firebase = FirebaseAnalytics.getInstance(context)
+
+    fun enterUserScope() {
+        consumedEventIds.clear()
+    }
 
     fun setCurrentScreenName(activity: Activity, screenName: String = "none") {
         firebase.setCurrentScreen(activity, screenName, null)
@@ -26,6 +34,16 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
         userId?.let {
             firebase.setUserId(it)
             FlurryAgent.setUserId(it)
+        }
+    }
+
+    /**
+     * Fire analytics event once per user session.
+     */
+    fun fireOnce(id: String, vararg payload: Pair<String, String>) {
+        if (!consumedEventIds.contains(id)) {
+            consumedEventIds.add(id)
+            fire(id, *payload)
         }
     }
 

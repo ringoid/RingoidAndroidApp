@@ -142,12 +142,11 @@ abstract class FeedViewModel(
     }
 
     fun onStartRefresh() {
-//        actionObjectPool.trigger()
+        analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to getFeedName())
     }
 
     open fun onRefresh(withLoading: Boolean = false) {
         advanceAndPushViewObjects()
-//        actionObjectPool.trigger()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
             .andThen(
@@ -181,6 +180,10 @@ abstract class FeedViewModel(
             viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
             false
         }
+
+    fun onSwipe() {
+        analyticsManager.fireOnce(Analytics.AHA_FIRST_SWIPE, "sourceFeed" to getFeedName())
+    }
 
     open fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         advanceAndPushViewObject(imageId to profileId, recreate = true)
