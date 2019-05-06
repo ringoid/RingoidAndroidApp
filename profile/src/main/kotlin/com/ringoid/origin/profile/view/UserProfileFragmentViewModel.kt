@@ -131,6 +131,7 @@ class UserProfileFragmentViewModel @Inject constructor(
             .subscribe({
                 Timber.d("Successfully uploaded image: $it")
                 analyticsManager.fire(Analytics.IMAGE_USER_UPLOAD_PHOTO)
+                analyticsManager.fireOnce(Analytics.AHA_PHOTO_ADDED_MANUALLY)
             }, Timber::e)
     }
 
