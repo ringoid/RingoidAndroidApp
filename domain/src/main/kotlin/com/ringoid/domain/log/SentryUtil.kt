@@ -59,7 +59,7 @@ object SentryUtil {
                 add(e.javaClass.simpleName to e.stackTraceString())
                 extras?.let { addAll(it) }
             }
-        capture(e, message = message, level = level, `object` = null, tag = tag, extras = fullExtras)
+        capture(e, message = message ?: e.message ?: "empty message", level = level, `object` = null, tag = tag, extras = fullExtras)
     }
 
     fun setUser(spm: ISharedPrefsManager) {

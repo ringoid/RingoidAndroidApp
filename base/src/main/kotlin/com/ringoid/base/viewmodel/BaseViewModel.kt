@@ -55,6 +55,10 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    open fun onCreate() {
+        // override in subclasses
+    }
+
     /**
      * Called on fresh start of the [Activity] or [Fragment], not after recreate with state restore.
      */

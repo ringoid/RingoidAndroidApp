@@ -65,11 +65,14 @@ class MainViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onCreate() {
+        super.onCreate()
+        SentryUtil.setUser(spm)
+    }
+
     override fun onFreshStart() {
         super.onFreshStart()
         ChatInMemoryCache.restore(spm)
-        SentryUtil.setUser(spm)
-
         onEachAppStart()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
