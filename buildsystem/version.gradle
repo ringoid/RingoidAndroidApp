@@ -44,6 +44,8 @@ buildscript {
         branchVersion = '3.+'
         firebaseVersion = '16.0.8'
         firebaseMessagingVersion = '17.3.3'
+        firebasePerformanceVersion = '16.2.5'
+        firebasePerformancePluginVersion = '1.2.0'
 
         circularProgressVersion = '2.0.0'
         dotsIndicatorVersion = '2.1.0'

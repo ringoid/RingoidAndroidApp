@@ -66,6 +66,7 @@ ext {
             deeplinkProcessor: "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch-processor:eb7e520d87",
             firebase:          "com.google.firebase:firebase-core:${firebaseVersion}",
             firebaseMessaging: "com.google.firebase:firebase-messaging:$firebaseMessagingVersion",
+            firebasePerformance: "com.google.firebase:firebase-perf:${firebasePerformanceVersion}",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
             fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
@@ -180,6 +181,7 @@ ext {
             androidInstantApp: "com.android.instantapp",
             androidLib:        "com.android.library",
             fabric:            "io.fabric",
+            firebasePerf:      "com.google.firebase.firebase-perf",
             google:            "com.google.gms.google-services",
             kotlinAndroid:     "kotlin-android",
             kotlinAndroidExt:  "kotlin-android-extensions",
@@ -326,6 +328,7 @@ ext {
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAnnotation,
         xPlugins.fabric,
+        xPlugins.firebasePerf,
     ]
 
     appPluginsAtBottom = [
@@ -490,6 +493,7 @@ ext {
     /* Data */
     // ------------------------------------------
     dataDependencies = [
+        [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
     dataDependencies += module_domain + module_utility + kotlin + dagger + log + autoDispose + net + room + rx
