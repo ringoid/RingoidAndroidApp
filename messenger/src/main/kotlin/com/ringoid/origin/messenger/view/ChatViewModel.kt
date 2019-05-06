@@ -61,6 +61,7 @@ class ChatViewModel @Inject constructor(
                 // analytics
                 with (analyticsManager) {
                     fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed)
+                    fireOnce(Analytics.AHA_FIRST_MESSAGE_SENT, "sourceFeed" to sourceFeed)
                     when (sourceFeed) {
                         DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_LIKES)
                         DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MATCHES)
