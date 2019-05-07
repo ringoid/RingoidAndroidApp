@@ -45,7 +45,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
                             SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = Event.Level.WARNING, tag = tag, extras = extras)
-                            exception = ThresholdExceededException()
+                            exception = ThresholdExceededException()  // abort retry and fallback
                         }
                         elapsedTimes.add(error.delay)
                         error.delay  // delay in ms
@@ -56,7 +56,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                     is NetworkUnexpected,
                     is WrongRequestParamsClientApiException -> {
                         SentryUtil.capture(error, message = error.message, tag = tag, extras = extras)
-                        exception = error
+                        exception = error  // abort retry and fallback
                         0  // delay in ms
                     }
                     else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
