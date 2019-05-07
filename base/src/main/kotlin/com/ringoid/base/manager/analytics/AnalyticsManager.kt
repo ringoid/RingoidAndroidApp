@@ -71,6 +71,7 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
         }
         firebase.logEvent(id, xpayload)
         FlurryAgent.logEvent(id, mpayload)
+        DebugLogUtil.b("Analytics: $id${payload.joinToString(", ", " (", ")", transform = { "${it.first}:${it.second}" }).trim()}")
     }
 
     // ------------------------------------------
