@@ -57,7 +57,7 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
         aobj.javaClass.let { key ->
             numbers.takeIf { !it.containsKey(key) }
                 ?.let { it[key] = 1 }  // first object of that type
-                ?: run { numbers[key] = numbers[key]!! + 1 }
+                ?: run { numbers[key] = (numbers[key] ?: 0) + 1 }
 
             /**
              * Check previous [CountFromLast] strategy for [aobj], if any. That strategy relies on
