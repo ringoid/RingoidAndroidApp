@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
 import android.app.Application
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -55,9 +56,26 @@ class MessengerViewModel @Inject constructor(
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.messages
 
+    override fun sourceBadge(): Observable<Boolean> =
+        getLmmUseCase.repository.badgeMessenger
+            .doAfterNext {
+                if (it && getUserVisibleHint()) {
+                    analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
+                }
+            }
+
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMessages
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun handleUserVisibleHint(isVisibleToUser: Boolean) {
+        super.handleUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser /** switched to this Lmm tab */ && badgeIsOn /** has new feed items */) {
+            analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     override fun onChatClose(profileId: String, imageId: String) {

@@ -59,15 +59,22 @@ abstract class BaseLmmFeedViewModel(
         userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItem>>() }
+    protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
+        private set
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
     init {
+        sourceBadge()
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ badgeIsOn = it }, Timber::e)
+
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .doAfterNext {
+                // analyze for the first reply in messages only once per user session
                 if (!analyticsManager.hasFiredOnce(Analytics.AHA_FIRST_REPLY_RECEIVED)) {
-                    // analyze for the first reply in messages only once per user session
                     for (i in 0 until it.size) {
                         if (it[i].countOfUserMessages() > 0) {
                             val userMessageIndex = it[i].messages.indexOfFirst { it.isUserMessage() }
@@ -99,6 +106,7 @@ abstract class BaseLmmFeedViewModel(
 
     protected abstract fun getFeedFlag(): Int
     protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
+    protected abstract fun sourceBadge(): Observable<Boolean>
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
 
     override fun getFeed() {

@@ -65,7 +65,7 @@ abstract class FeedViewModel(
         return changed
     }
 
-    private fun handleUserVisibleHint(isVisibleToUser: Boolean) {
+    protected open fun handleUserVisibleHint(isVisibleToUser: Boolean) {
         if (isVisibleToUser) {
             DebugLogUtil.v("Show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
             viewActionObjectBackup.values.forEach {

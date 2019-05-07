@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.match
 
 import android.app.Application
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -45,9 +46,26 @@ class MatchesFeedViewModel @Inject constructor(
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.matches
 
+    override fun sourceBadge(): Observable<Boolean> =
+        getLmmUseCase.repository.badgeMatches
+            .doAfterNext {
+                if (it && getUserVisibleHint()) {
+                    analyticsManager.fireOnce(Analytics.AHA_FIRST_MATCH, "sourceFeed" to getFeedName())
+                }
+            }
+
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMatches
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MATCHES
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun handleUserVisibleHint(isVisibleToUser: Boolean) {
+        super.handleUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser /** switched to this Lmm tab */ && badgeIsOn /** has new feed items */) {
+            analyticsManager.fireOnce(Analytics.AHA_FIRST_MATCH, "sourceFeed" to getFeedName())
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     override fun onViewFeedItem(feedItemId: String) {

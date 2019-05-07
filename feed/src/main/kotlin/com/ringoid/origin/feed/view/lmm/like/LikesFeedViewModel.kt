@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import android.app.Application
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
@@ -48,9 +49,26 @@ class LikesFeedViewModel @Inject constructor(
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
 
+    override fun sourceBadge(): Observable<Boolean> =
+        getLmmUseCase.repository.badgeLikes
+            .doAfterNext {
+                if (it && getUserVisibleHint()) {
+                    analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to getFeedName())
+                }
+            }
+
     override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedLikes
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun handleUserVisibleHint(isVisibleToUser: Boolean) {
+        super.handleUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser /** switched to this Lmm tab */ && badgeIsOn /** has new feed items */) {
+            analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to getFeedName())
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
