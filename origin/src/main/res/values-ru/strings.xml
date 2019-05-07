@@ -63,7 +63,7 @@
     <!-- Lmm screen -->
     <string name="lmm_tab_likes">Ты нравишься</string>
     <string name="lmm_tab_matches">Взаимно</string>
-    <string name="lmm_tab_messenger">Чаты</string>
+    <string name="lmm_tab_messenger">Сообщения</string>
 
     <!-- Login screen -->
     <string name="login_button">Продолжить и Загрузить фото</string>
