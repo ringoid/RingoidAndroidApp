@@ -79,7 +79,7 @@ class PersistActionObjectPool @Inject constructor(
                     }
                 }
             }
-            .handleError(tag = "commitActions")
+            .handleError(tag = "commitActions", traceTag = "actions/actions")
             .doOnSubscribe { dropStrategyData() }
             .doOnSuccess { updateLastActionTime(it.lastActionTime) }
             .doOnDispose { finalizePool() }

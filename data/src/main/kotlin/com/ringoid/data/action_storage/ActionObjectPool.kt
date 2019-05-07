@@ -87,7 +87,7 @@ class ActionObjectPool @Inject constructor(
                 cloud.commitActions(essence)
             }
         }
-        .handleError(tag = "commitActions")
+        .handleError(tag = "commitActions", traceTag = "actions/actions")
         .doOnSubscribe {
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: ${lastActionTime()}, queue: ${printQueue()}")
             backupQueue.addAll(queue)

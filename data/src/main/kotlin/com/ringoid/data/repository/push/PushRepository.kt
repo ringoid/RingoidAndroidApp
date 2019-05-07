@@ -20,6 +20,6 @@ class PushRepository @Inject constructor(
 
     override fun updatePushToken(essence: PushTokenEssenceUnauthorized): Completable =
         spm.accessSingle { cloud.updatePushToken(PushTokenEssence.from(essence, it.accessToken)) }
-            .handleError(tag = "updatePushToken")
+            .handleError(tag = "updatePushToken", traceTag = "push/update_token")
             .ignoreElement()  // convert to Completable
 }

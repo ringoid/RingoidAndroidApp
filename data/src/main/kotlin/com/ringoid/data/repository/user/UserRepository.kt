@@ -29,12 +29,12 @@ class UserRepository @Inject constructor(
 
     override fun applyReferralCode(essence: ReferralCodeEssenceUnauthorized): Completable =
         spm.accessSingle { cloud.applyReferralCode(ReferralCodeEssence.from(essence, it.accessToken)) }
-            .handleError(tag = "applyReferralCode")
+            .handleError(tag = "applyReferralCode", traceTag = "auth/claim")
             .ignoreElement()  // convert to Completable
 
     override fun createUserProfile(essence: AuthCreateProfileEssence): Single<CurrentUser> =
         cloud.createUserProfile(essence)
-             .handleError(tag = "createUserProfile")
+             .handleError(tag = "createUserProfile", traceTag = "auth/create_profile")
              .doOnSuccess {
                  spm.saveUserProfile(userId = it.userId, accessToken = it.accessToken)
                  local.addUserProfile(ProfileDbo(id = it.userId))
@@ -44,7 +44,7 @@ class UserRepository @Inject constructor(
 
     override fun deleteUserProfile(): Completable =
         spm.accessSingle { cloud.deleteUserProfile(accessToken = it.accessToken) }
-            .handleError(tag = "deleteUserProfile")
+            .handleError(tag = "deleteUserProfile", traceTag = "auth/delete")
             .doOnSuccess { clearUserLocalData() }
             .ignoreElement()  // convert to Completable
 
@@ -52,7 +52,7 @@ class UserRepository @Inject constructor(
 
     override fun updateUserSettings(essence: UpdateUserSettingsEssenceUnauthorized): Completable =
         spm.accessSingle { cloud.updateUserSettings(UpdateUserSettingsEssence.from(essence, it.accessToken)) }
-            .handleError(tag = "updateUserSettings")
+            .handleError(tag = "updateUserSettings", traceTag = "auth/update_settings")
             .ignoreElement()  // convert to Completable
 
     // ------------------------------------------

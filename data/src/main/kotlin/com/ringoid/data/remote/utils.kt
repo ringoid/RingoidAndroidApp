@@ -1,6 +1,5 @@
 package com.ringoid.data.remote
 
-import com.google.firebase.perf.FirebasePerformance
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogLevel
@@ -55,60 +54,55 @@ inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "", s
 }
 
 // ------------------------------------------------------------------------------------------------
-fun Completable.logResponse(tag: String = DEFAULT_TAG, traceTag: String = tag, vararg data: Pair<String, String>): Completable = compose(logResponseCompletable(tag, traceTag, *data))
-inline fun <reified T : BaseResponse> Maybe<T>.logResponse(tag: String = DEFAULT_TAG, traceTag: String = tag, vararg data: Pair<String, String>): Maybe<T> = compose(logResponseMaybe(tag, traceTag, *data))
-inline fun <reified T : BaseResponse> Single<T>.logResponse(tag: String = DEFAULT_TAG, traceTag: String = tag, vararg data: Pair<String, String>): Single<T> = compose(logResponseSingle(tag, traceTag, *data))
-inline fun <reified T : BaseResponse> Flowable<T>.logResponse(tag: String = DEFAULT_TAG, traceTag: String = tag, vararg data: Pair<String, String>): Flowable<T> = compose(logResponseFlowable(tag, traceTag, *data))
-inline fun <reified T : BaseResponse> Observable<T>.logResponse(tag: String = DEFAULT_TAG, traceTag: String = tag, vararg data: Pair<String, String>): Observable<T> = compose(logResponseObservable(tag, traceTag, *data))
+fun Completable.logResponse(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): Completable = compose(logResponseCompletable(tag, *data))
+inline fun <reified T : BaseResponse> Maybe<T>.logResponse(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): Maybe<T> = compose(logResponseMaybe(tag, *data))
+inline fun <reified T : BaseResponse> Single<T>.logResponse(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): Single<T> = compose(logResponseSingle(tag, *data))
+inline fun <reified T : BaseResponse> Flowable<T>.logResponse(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): Flowable<T> = compose(logResponseFlowable(tag, *data))
+inline fun <reified T : BaseResponse> Observable<T>.logResponse(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): Observable<T> = compose(logResponseObservable(tag, *data))
 
-fun logResponseCompletable(tag: String = DEFAULT_TAG, traceTag: String, vararg data: Pair<String, String>): CompletableTransformer =
+fun logResponseCompletable(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): CompletableTransformer =
     CompletableTransformer {
         var startTime = 0L
-        val trace = FirebasePerformance.getInstance().newTrace(traceTag).also { it.start() }
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
             .doOnComplete { logBaseResponse(tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag); trace.stop() }
+            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-inline fun <reified T : BaseResponse> logResponseMaybe(tag: String = DEFAULT_TAG, traceTag: String, vararg data: Pair<String, String>): MaybeTransformer<T, T> =
+inline fun <reified T : BaseResponse> logResponseMaybe(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): MaybeTransformer<T, T> =
     MaybeTransformer {
         var startTime = 0L
-        val trace = FirebasePerformance.getInstance().newTrace(traceTag).also { it.start() }
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
             .doOnSuccess { logBaseResponse(it, tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag); trace.stop() }
+            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-inline fun <reified T : BaseResponse> logResponseSingle(tag: String = DEFAULT_TAG, traceTag: String, vararg data: Pair<String, String>): SingleTransformer<T, T> =
+inline fun <reified T : BaseResponse> logResponseSingle(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): SingleTransformer<T, T> =
     SingleTransformer {
         var startTime = 0L
-        val trace = FirebasePerformance.getInstance().newTrace(traceTag).also { it.start() }
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
             .doOnSuccess { logBaseResponse(it, tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag); trace.stop() }
+            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-inline fun <reified T : BaseResponse> logResponseFlowable(tag: String = DEFAULT_TAG, traceTag: String, vararg data: Pair<String, String>): FlowableTransformer<T, T> =
+inline fun <reified T : BaseResponse> logResponseFlowable(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): FlowableTransformer<T, T> =
     FlowableTransformer {
         var startTime = 0L
-        val trace = FirebasePerformance.getInstance().newTrace(traceTag).also { it.start() }
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
             .doOnNext { logBaseResponse(it, tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag); trace.stop() }
+            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
-inline fun <reified T : BaseResponse> logResponseObservable(tag: String = DEFAULT_TAG, traceTag: String, vararg data: Pair<String, String>): ObservableTransformer<T, T> =
+inline fun <reified T : BaseResponse> logResponseObservable(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): ObservableTransformer<T, T> =
     ObservableTransformer {
         var startTime = 0L
-        val trace = FirebasePerformance.getInstance().newTrace(traceTag).also { it.start() }
         it
             .doOnSubscribe { startTime = System.currentTimeMillis() }
             .doOnNext { logBaseResponse(it, tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag); trace.stop() }
+            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
 // ----------------------------------------------

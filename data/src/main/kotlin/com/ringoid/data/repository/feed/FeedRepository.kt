@@ -152,7 +152,7 @@ open class FeedRepository @Inject constructor(
     private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long): Single<Feed> =
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
-                 .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime()})")
+                 .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime()})", traceTag = "feeds/get_new_faces")
                  .doOnSuccess {
                      DebugLogUtil.v("# NewFaces: [${it.toLogString()}] as received from Server, before filter out duplicates")
                      if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for NewFaces")
@@ -185,7 +185,7 @@ open class FeedRepository @Inject constructor(
     private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long): Single<Lmm> =
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
-                .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})")
+                .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})", traceTag = "feeds/get_lmm")
                 .dropLmmResponseStatsOnSubscribe()
                 .filterOutDuplicateProfilesLmm()
                 .detectCollisionProfilesLmm()

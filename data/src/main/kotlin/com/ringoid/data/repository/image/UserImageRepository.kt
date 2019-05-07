@@ -61,7 +61,7 @@ class UserImageRepository @Inject constructor(
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> {
         fun fetchUserImages(): Single<List<UserImage>> =
             spm.accessSingle { cloud.getUserImages(it.accessToken, resolution) }
-                .handleError(tag = "getUserImages($resolution)")
+                .handleError(tag = "getUserImages($resolution)", traceTag = "image/get_own_photos")
                 .flatMap {
                     Observable.fromIterable(it.images)  // images fetched from the Server
                         .zipWith(Observable.range(0, it.images.size), BiFunction { image: UserImageEntity, index: Int -> image to index })
@@ -161,7 +161,7 @@ class UserImageRepository @Inject constructor(
             Completable.complete()
         } else {
             spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                .handleError(count = retryCount, tag = "deleteUserImage")
+                .handleError(count = retryCount, tag = "deleteUserImage", traceTag = "image/delete_photo")
                 .doOnDispose {
                     DebugLogUtil.i("Cancelled image delete")
                     addPendingDeleteImageRequest()
@@ -187,7 +187,7 @@ class UserImageRepository @Inject constructor(
                     Single.just(0L)
                 } else {
                     spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
-                        .handleError(count = minOf(3, retryCount) /* less retries */, tag = "deleteUserImage")
+                        .handleError(count = minOf(3, retryCount) /* less retries */, tag = "deleteUserImage", traceTag = "image/delete_photo")
                 }
             }
             .flatMap {
@@ -253,7 +253,7 @@ class UserImageRepository @Inject constructor(
                 cloud.uploadImage(url = it.imageUri!!, image = imageFile)
                     .andThen(Single.just(it))
             }
-            .handleError(count = retryCount, tag = "createImage")
+            .handleError(count = retryCount, tag = "createImage", traceTag = "image/get_presigned")
             .doOnDispose {
                 DebugLogUtil.i("Cancelled image create and upload")
                 addPendingCreateImageRequest(imageFilePath)
