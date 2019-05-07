@@ -10,7 +10,7 @@ import timber.log.Timber
 object ChatInMemoryCache {
 
     private val BOTTOM_CHAT_POSITION: Pair<Int, Int> = 0 to 0
-    private val SP_KEY_CHAT_CACHE = "sp_key_chat_cache"
+    private const val SP_KEY_CHAT_CACHE = "sp_key_chat_cache"
 
     private val chatInputMessage = mutableMapOf<String, CharSequence>()
     private val chatPeerMessagesCount = mutableMapOf<String, Int>()
@@ -137,8 +137,9 @@ object ChatInMemoryCache {
                     }
                 }
                 if (BuildConfig.DEBUG) {
-                    Timber.v("Parsed restored cached chat dara: ${toJson()}")
-                    if (toJson() != it) Timber.e("Parsing was incorrect!")
+                    val xJson = toJson()
+                    Timber.v("Parsed restored cached chat dara: $xJson")
+                    if (xJson != it) Timber.e("Parsing was incorrect!")
                 }
             } catch (e: JSONException) {
                 DebugLogUtil.e(e, "Failed to parse json: $it")

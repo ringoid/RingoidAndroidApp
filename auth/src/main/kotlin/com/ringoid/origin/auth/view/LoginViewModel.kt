@@ -82,7 +82,7 @@ class LoginViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully signed up, current user: $it")
-                analyticsManager.enterUserScope()
+                analyticsManager.enterUserScope(spm)  // prepare analytics manager data for the new logged in user
                 analyticsManager.fire(Analytics.AUTH_USER_PROFILE_CREATED, "yearOfBirth" to "${essence.yearOfBirth}", "sex" to essence.sex)
                 app.userScopeProvider.onLogin()
             }, Timber::e)
@@ -114,6 +114,7 @@ class LoginViewModel @Inject constructor(
                 DebugLogUtil.clear()
                 spm.deleteLocation()  // forget saved location on logout
                 actionObjectPool.finalizePool()  // clear state of pool, if any
+                analyticsManager.exitUserScope(spm)  // clear analytics manager data for the current user
                 app.userScopeProvider.onLogout()  // prevent pool from receiving new state, if subscribed
             }
             .andThen(clearCachedAlreadySeenProfileIdsUseCase.source())

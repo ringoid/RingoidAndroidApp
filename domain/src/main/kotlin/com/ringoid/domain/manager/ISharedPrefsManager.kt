@@ -14,6 +14,8 @@ interface ISharedPrefsManager {
 
     fun saveByKey(key: String, json: String)
 
+    fun deleteByKey(key: String)
+
     // ------------------------------------------
     fun getThemeResId(@StyleRes defaultThemeResId: Int = 0): Int
 

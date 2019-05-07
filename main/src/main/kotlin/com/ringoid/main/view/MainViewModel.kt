@@ -67,6 +67,7 @@ class MainViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun onCreate() {
         super.onCreate()
+        analyticsManager.restore(spm)
         analyticsManager.setUser(spm)
         SentryUtil.setUser(spm)
     }
@@ -88,6 +89,7 @@ class MainViewModel @Inject constructor(
 
     override fun onStop() {
         super.onStop()
+        analyticsManager.persist(spm)
         ChatInMemoryCache.persist(spm)
         actionObjectPool.trigger()
     }

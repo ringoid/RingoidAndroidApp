@@ -81,6 +81,10 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         sharedPreferences.edit().putString(key, json).apply()
     }
 
+    override fun deleteByKey(key: String) {
+        sharedPreferences.edit().remove(key).apply()
+    }
+
     // ------------------------------------------
     @StyleRes
     override fun getThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_THEME, defaultThemeResId)
