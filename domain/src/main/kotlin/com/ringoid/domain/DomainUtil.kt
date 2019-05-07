@@ -10,7 +10,7 @@ object DomainUtil {
     const val BAD_RESOURCE: Int = 0
     const val CURRENT_USER_ID: String = "currentUserId"
     const val DEBOUNCE_NET = 400L
-    const val LIMIT_PER_PAGE = 50
+    const val LIMIT_PER_PAGE = 100
     const val LOAD_MORE_THRESHOLD = 10  // items left to end
 
     const val CLIPBOARD_KEY_CHAT_MESSAGE = "chatMessage"
