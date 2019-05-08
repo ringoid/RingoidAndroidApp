@@ -17,7 +17,7 @@ abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileIm
 class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = true) : BaseProfileImageViewHolder(view) {
 
     init {
-        itemView.ibtn_like.changeVisibility(isVisible = isLikeEnabled)
+//        itemView.ibtn_like.changeVisibility(isVisible = isLikeEnabled)
         itemView.tv_image_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
@@ -43,11 +43,11 @@ class ProfileImageViewHolder(view: View, private val isLikeEnabled: Boolean = tr
     }
 
     private fun hideControls() {
-        itemView.ibtn_like.changeVisibility(isVisible = false)
+//        itemView.ibtn_like.changeVisibility(isVisible = false)
     }
 
     private fun showControls() {
-        itemView.ibtn_like.changeVisibility(isVisible = isLikeEnabled)
+//        itemView.ibtn_like.changeVisibility(isVisible = isLikeEnabled)
     }
 
     internal fun setLiked(isLiked: Boolean) {

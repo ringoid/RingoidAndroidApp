@@ -80,7 +80,7 @@ class ProfileImageItemAnimator : DefaultItemAnimator() {
                     }
                 })
             }
-            .also { holder.itemView.ibtn_like.startAnimation(it) }
+//            .also { holder.itemView.ibtn_like.startAnimation(it) }
 
         animationsMapLikeButton[holder] = animationSet
     }
