@@ -18,7 +18,6 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
 
     var onBeforeLikeListener: (() -> Boolean)? = null
     var onFeedItemRemoveListener: ((position: Int) -> Unit)? = null
-    var onSwipeListener: (() -> Unit)? = null
     var settingsClickListener: ((model: FeedItemVO, position: Int, positionOfImage: Int) -> Unit)? = null
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
@@ -34,7 +33,6 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
                     vh.adapterPosition
                         .takeIf { it != RecyclerView.NO_POSITION }
                         ?.let { getModel(it).positionOfImage = positionOfImage }
-                    onSwipeListener?.invoke()
                 }
                 vh.trackingBus = this@BaseFeedAdapter.trackingBus
                 val wrapSettingsClickListener: ((model: FeedItemVO, position: Int) -> Unit)? =

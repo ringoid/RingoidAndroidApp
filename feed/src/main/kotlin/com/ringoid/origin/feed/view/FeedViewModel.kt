@@ -181,10 +181,6 @@ abstract class FeedViewModel(
             false
         }
 
-    fun onSwipe() {
-        analyticsManager.fireOnce(Analytics.AHA_FIRST_SWIPE, "sourceFeed" to getFeedName())
-    }
-
     open fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         advanceAndPushViewObject(imageId to profileId, recreate = true)
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
@@ -275,6 +271,7 @@ abstract class FeedViewModel(
                     Timber.v("Excluded items in [horizontal] range ${it.range()}, consume VIEW action objects")
                     logViewObjectsBufferState(tag = "before [horiz]")  // show view aobjs buffer contents in debug logs
                     advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
+                    analyticsManager.fireOnce(Analytics.AHA_FIRST_SWIPE, "sourceFeed" to getFeedName())
                     logViewObjectsBufferState(tag = "after [horiz]")
                 }
         }
