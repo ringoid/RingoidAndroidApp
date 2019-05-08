@@ -132,7 +132,6 @@ class ExploreViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun onRefresh(withLoading: Boolean) {
         super.onRefresh(withLoading)
-        Bus.post(event = BusEvent.RefreshOnExplore)
         nextPage = 0
         debugGetNewFacesDropFlagsUseCase.source()
             .autoDisposable(this)

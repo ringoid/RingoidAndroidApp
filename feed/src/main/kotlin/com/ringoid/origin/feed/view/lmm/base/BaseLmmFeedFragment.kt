@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -171,6 +173,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     // ------------------------------------------
     internal fun clearScreen(mode: Int) {
         vm.clearScreen(mode)
+    }
+
+    override fun onRefresh() {
+        super.onRefresh()
+        Bus.post(event = BusEvent.RefreshOnLmm)
     }
 
     /* Lifecycle */

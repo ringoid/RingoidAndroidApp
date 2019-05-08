@@ -2,8 +2,6 @@ package com.ringoid.origin.feed.view.lmm.base
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.Bus
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
@@ -184,11 +182,5 @@ abstract class BaseLmmFeedViewModel(
         addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
             .autoDisposable(this)
             .subscribe({}, Timber::e)  // keep those peers that user has sent the first message to
-    }
-
-    // --------------------------------------------------------------------------------------------
-    override fun onRefresh(withLoading: Boolean) {
-        super.onRefresh(withLoading)
-        Bus.post(event = BusEvent.RefreshOnLmm)
     }
 }

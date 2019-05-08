@@ -187,21 +187,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
-            refreshes().compose(clickDebounce()).subscribe {
-                if (!connectionManager.isNetworkAvailable()) {
-                    swipe_refresh_layout.isRefreshing = false
-                    noConnection(this@FeedFragment)
-                } else {
-                    offsetScrollStrats = getOffsetScrollStrategies()
-                    /**
-                     * Asks for location permission, and if granted - callback will then handle
-                     * to call refreshing procedure.
-                     */
-                    if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
-                        onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
-                    }
-                }
-            }
+            refreshes().compose(clickDebounce()).subscribe { onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
@@ -232,6 +218,23 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     // --------------------------------------------------------------------------------------------
+    protected open fun onRefresh() {
+        if (!connectionManager.isNetworkAvailable()) {
+            swipe_refresh_layout.isRefreshing = false
+            noConnection(this@FeedFragment)
+        } else {
+            offsetScrollStrats = getOffsetScrollStrategies()
+            /**
+             * Asks for location permission, and if granted - callback will then handle
+             * to call refreshing procedure.
+             */
+            if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
+                onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+            }
+        }
+    }
+
+    // ------------------------------------------
     private var wasFabVisible: Boolean = false
 
     protected fun showScrollFab(isVisible: Boolean, restoreVisibility: Boolean = false) {

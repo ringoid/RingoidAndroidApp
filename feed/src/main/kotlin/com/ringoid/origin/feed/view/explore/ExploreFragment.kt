@@ -1,6 +1,8 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.exception.ThresholdExceededException
@@ -68,6 +70,11 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     override fun onHiddenChanged(hidden: Boolean) {
         // don't call 'super', completely overridden method
+    }
+
+    override fun onRefresh() {
+        super.onRefresh()
+        Bus.post(event = BusEvent.RefreshOnExplore)
     }
 
     // ------------------------------------------
