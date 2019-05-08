@@ -14,6 +14,8 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
@@ -267,15 +269,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
-            refreshes().compose(clickDebounce()).subscribe {
-                if (!connectionManager.isNetworkAvailable()) {
-                    swipe_refresh_layout.isRefreshing = false
-                    noConnection(this@UserProfileFragment)
-                } else {
-                    imageOnViewPortId = imageOnViewPort()?.id ?: DomainUtil.BAD_ID
-                    vm.onRefresh()
-                }
-            }
+            refreshes().compose(clickDebounce()).subscribe { onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         val snapHelper = EnhancedPagerSnapHelper(duration = 30)
@@ -309,6 +303,18 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     // --------------------------------------------------------------------------------------------
+    private fun onRefresh() {
+        Bus.post(event = BusEvent.RefreshOnProfile)
+        if (!connectionManager.isNetworkAvailable()) {
+            swipe_refresh_layout.isRefreshing = false
+            noConnection(this@UserProfileFragment)
+        } else {
+            imageOnViewPortId = imageOnViewPort()?.id ?: DomainUtil.BAD_ID
+            vm.onRefresh()
+        }
+    }
+
+    // ------------------------------------------
     private fun onAddImage() {
         /**
          * Asks for location permission, and if granted - callback will then handle

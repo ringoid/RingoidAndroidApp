@@ -187,6 +187,5 @@ class UserProfileFragmentViewModel @Inject constructor(
     fun onRefresh() {
         actionObjectPool.trigger()
         getUserImages()
-        Bus.post(event = BusEvent.RefreshOnProfile)
     }
 }
