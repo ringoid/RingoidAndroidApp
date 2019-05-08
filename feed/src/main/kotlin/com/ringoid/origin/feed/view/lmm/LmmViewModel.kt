@@ -6,6 +6,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
@@ -89,6 +90,16 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // refresh on Profile screen leads Lmm screen to refresh as well
         getLmm()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        if (event.minutesElapsed >= 5L) {
+            DebugLogUtil.b("App last open was more than 5 minutes ago, refresh Lmm...")
+            getLmm()  // app reopen leads Lmm screen to refresh as well
+        }
     }
 
     // ------------------------------------------

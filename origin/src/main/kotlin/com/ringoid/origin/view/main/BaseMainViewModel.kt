@@ -7,9 +7,17 @@ import com.ringoid.origin.viewmodel.BasePermissionViewModel
 
 abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app) {
 
+    private var stopAppTs: Long = 0L
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     open fun onAppReOpen() {
-        Bus.post(event = BusEvent.ReOpenApp)
+        val elapsed = (System.currentTimeMillis() - stopAppTs) / 60_1000L
+        Bus.post(event = BusEvent.ReOpenApp(minutesElapsed = elapsed))
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopAppTs = System.currentTimeMillis()
     }
 }
