@@ -187,6 +187,9 @@ abstract class FeedViewModel(
                    else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
 
+        // discard profile from feed after like / unlike (unlike is not possible, left for symmetry)
+        viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
+
         // analytics
         with (analyticsManager) {
             val sourceFeed = getFeedName()
