@@ -33,6 +33,7 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.communicator
+import com.ringoid.utility.runOnUiThread
 import timber.log.Timber
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>(), IChatHost, IDialogCallback  {
@@ -185,7 +186,10 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.feed) { feedAdapter.submitList(it.map { FeedItemVO(it) }) }
+            observe(vm.feed) {
+                feedAdapter.submitList(it.map { FeedItemVO(it) })
+                runOnUiThread { scrollListToPosition(0) }
+            }
         }
         /**
          * Parent's [Fragment.onActivityCreated] is called before this method on any child [Fragment],

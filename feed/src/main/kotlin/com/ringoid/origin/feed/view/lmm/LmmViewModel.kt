@@ -77,14 +77,6 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // scroll all Lmm feeds to top position
-        listScrolls.value = 0  // scroll to top position
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
