@@ -145,15 +145,20 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     /* Location */
     // --------------------------------------------------------------------------------------------
     override fun getLocation(): GpsLocation? {
-        val latitude = sharedPreferences.getString(SP_KEY_LOCATION_LATITUDE, null)
-        val longitude = sharedPreferences.getString(SP_KEY_LOCATION_LONGITUDE, null)
-        return if (latitude.isNullOrBlank() || longitude.isNullOrBlank()) {
-            null
-        } else GpsLocation(latitude!!.toDouble(), longitude!!.toDouble())
+        val latitudeStr = sharedPreferences.getString(SP_KEY_LOCATION_LATITUDE, null)
+        val longitudeStr = sharedPreferences.getString(SP_KEY_LOCATION_LONGITUDE, null)
+        if (latitudeStr.isNullOrBlank() || longitudeStr.isNullOrBlank()) {
+            return null
+        }
+
+        val latitude = latitudeStr!!.toDouble()
+        val longitude = longitudeStr!!.toDouble()
+        return if (Math.abs(latitude) <= LOCATION_EPS && Math.abs(longitude) <= LOCATION_EPS) null
+               else GpsLocation(latitude, longitude)
     }
 
     override fun saveLocation(location: GpsLocation) {
-        if (Math.abs(location.latitude) < LOCATION_EPS && Math.abs(location.longitude) < LOCATION_EPS) {
+        if (Math.abs(location.latitude) <= LOCATION_EPS && Math.abs(location.longitude) <= LOCATION_EPS) {
             deleteLocation()  // location is near (0, 0) point, so delete it
         } else {
             sharedPreferences.edit()
