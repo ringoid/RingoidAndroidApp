@@ -61,12 +61,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is ASK_TO_ENABLE_LOCATION_SERVICE -> swipe_refresh_layout?.isRefreshing = false
-                    is BLOCK_PROFILE -> {
+                    is DISCARD_PROFILE -> {
                         val count = feedAdapter.getModelsCount()
                         if (count <= 1) {  // remove last feed item - show empty stub
                             onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
                         } else {  // remove not last feed item
-                            feedAdapter.remove { it.id == (newState.residual as BLOCK_PROFILE).profileId }
+                            feedAdapter.remove { it.id == (newState.residual as DISCARD_PROFILE).profileId }
                         }
                     }
                     is NO_IMAGES_IN_PROFILE -> {

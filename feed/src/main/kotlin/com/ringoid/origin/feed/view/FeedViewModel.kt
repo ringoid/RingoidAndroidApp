@@ -248,7 +248,7 @@ abstract class FeedViewModel(
             .autoDisposable(this)
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
-                viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
+                viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
             }, Timber::e)
 
         // remove all messages for blocked profile, to exclude them from messages counting
