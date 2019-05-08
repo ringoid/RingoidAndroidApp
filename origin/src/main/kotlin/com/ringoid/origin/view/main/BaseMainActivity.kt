@@ -27,6 +27,10 @@ import javax.inject.Inject
 abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity<VM>(), IBaseMainActivity,
     FragNavController.TransactionListener {
 
+    companion object {
+        private const val BUNDLE_KEY_CURRENT_TAB = "bundle_key_current_tab"
+    }
+
     @Inject lateinit var particleAnimator: ParticleAnimator
 
     private lateinit var fragNav: FragNavController
@@ -76,7 +80,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
         }
 
-        processExtras(intent)
+        processExtras(intent, savedInstanceState)
     }
 
     /**
@@ -88,7 +92,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
      */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        processExtras(intent)
+        processExtras(intent, null)
         if (isStopped) {
             vm.onAppReOpen()
         }
@@ -102,12 +106,33 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         fragNav.onSaveInstanceState(outState)
+        outState.putSerializable(BUNDLE_KEY_CURRENT_TAB, bottom_bar.selectedItem)
     }
 
-    private fun processExtras(intent: Intent) {
-        fun openInitialTab() {
+    private fun processExtras(intent: Intent, savedInstanceState: Bundle?) {
+        fun openExploreTab() {
             tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
             openTabByName(tabName = NavigateFrom.MAIN_TAB_EXPLORE)
+        }
+
+        fun openLmmTab() {
+            openTabByName(tabName = NavigateFrom.MAIN_TAB_LMM)
+        }
+
+        fun openProfileTab() {
+            openTabByName(tabName = NavigateFrom.MAIN_TAB_PROFILE)
+        }
+
+        fun openInitialTab() {
+            savedInstanceState?.getSerializable(BUNDLE_KEY_CURRENT_TAB)
+                ?.let {
+                    when (it) {
+                        NavTab.EXPLORE -> openExploreTab()
+                        NavTab.LMM -> openLmmTab()
+                        NavTab.PROFILE -> openProfileTab()
+                    }
+                }
+                ?: run { openExploreTab() }
         }
 
         intent.extras?.apply {
