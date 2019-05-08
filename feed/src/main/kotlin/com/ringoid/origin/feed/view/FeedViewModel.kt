@@ -182,7 +182,7 @@ abstract class FeedViewModel(
         }
 
     open fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        advanceAndPushViewObject(imageId to profileId, recreate = true)
+        advanceAndPushViewObject(imageId to profileId, recreate = false)
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
                    else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
