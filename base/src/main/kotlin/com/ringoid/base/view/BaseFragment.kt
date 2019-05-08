@@ -206,6 +206,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onSaveInstanceState")
         DebugLogUtil.lifecycle(this, "onSaveInstanceState")
+        vm.onSaveInstanceState(outState)
     }
 
     override fun onStop() {

@@ -3,6 +3,7 @@ package com.ringoid.base.viewmodel
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.IBaseRingoidApplication
@@ -75,6 +76,10 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     }
 
     open fun onPause() {
+        // override in subclasses
+    }
+
+    open fun onSaveInstanceState(outState: Bundle) {
         // override in subclasses
     }
 

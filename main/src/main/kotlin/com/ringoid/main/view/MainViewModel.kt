@@ -1,6 +1,7 @@
 package com.ringoid.main.view
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
@@ -85,6 +86,11 @@ class MainViewModel @Inject constructor(
     override fun onAppReOpen() {
         super.onAppReOpen()
         onEachAppStart()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        ChatInMemoryCache.persist(spm)
     }
 
     override fun onStop() {

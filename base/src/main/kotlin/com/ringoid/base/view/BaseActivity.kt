@@ -140,6 +140,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onSaveInstanceState")
         DebugLogUtil.lifecycle(this, "onSaveInstanceState")
+        vm.onSaveInstanceState(outState)
     }
 
     override fun onStop() {
