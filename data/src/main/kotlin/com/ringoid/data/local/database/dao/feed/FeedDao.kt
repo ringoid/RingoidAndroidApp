@@ -22,6 +22,9 @@ interface FeedDao {
     @Query("UPDATE ${FeedItemDbo.TABLE_NAME} SET ${FeedItemDbo.COLUMN_FLAG_NOT_SEEN} = :isNotSeen WHERE ${FeedItemDbo.COLUMN_ID} = :feedItemId")
     fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Int
 
+    @Query("UPDATE ${FeedItemDbo.TABLE_NAME} SET ${FeedItemDbo.COLUMN_SOURCE_FEED} = :sourceFeed WHERE ${FeedItemDbo.COLUMN_ID} = :feedItemId")
+    fun updateSourceFeed(feedItemId: String, sourceFeed: String): Int
+
     @Query("DELETE FROM ${FeedItemDbo.TABLE_NAME}")
     fun deleteFeedItems(): Int
 }

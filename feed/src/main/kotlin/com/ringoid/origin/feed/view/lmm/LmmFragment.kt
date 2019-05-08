@@ -78,6 +78,15 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         tab_delim2.changeVisibility(isVisible)
     }
 
+    // ------------------------------------------
+    override fun transferProfile(profileId: String, destinationFeed: String) {
+        vm.transferProfile(profileId = profileId, destinationFeed = destinationFeed)
+        lmmPagesAdapter.accessItemByName(destinationFeed)
+            ?.let { it as? BaseLmmFeedFragment<*> }
+            ?.transferProfile(profileId)
+    }
+
+    // ------------------------------------------
     private fun clearAllFeeds(mode: Int) {
         lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.clearScreen(mode) }
     }

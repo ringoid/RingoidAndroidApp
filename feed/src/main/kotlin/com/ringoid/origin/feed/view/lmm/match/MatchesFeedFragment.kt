@@ -6,8 +6,11 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MatchFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.lmm.ILmmFragment
+import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.utility.communicator
 
 class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
 
@@ -32,4 +35,19 @@ class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
         }
 
     override fun getSourceFeed(): String = DomainUtil.SOURCE_FEED_MATCHES
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is TRANSFER_PROFILE -> {
+                        val profileId = (newState.residual as TRANSFER_PROFILE).profileId
+                        communicator(ILmmFragment::class.java)?.transferProfile(profileId, DomainUtil.SOURCE_FEED_MESSAGES)
+                    }
+                }
+            }
+        }
+    }
 }

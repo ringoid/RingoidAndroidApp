@@ -12,3 +12,5 @@ data class SEEN_ALL_FEED(val sourceFeed: Int) : Residual() {
         const val FEED_MESSENGER = 2
     }
 }
+
+data class TRANSFER_PROFILE(val profileId: String) : Residual()

@@ -14,6 +14,7 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -72,6 +73,7 @@ class LikesFeedViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
+        // TODO: when profile is discarded on like - dont show message icon
         if (!numberOfLikes.containsKey(profileId)) {
             numberOfLikes[profileId] = mutableSetOf()
         }
@@ -81,6 +83,9 @@ class LikesFeedViewModel @Inject constructor(
                               else ViewState.DONE(HAS_LIKES_ON_PROFILE(feedItemPosition))
         }
         onLike(profileId, imageId, isLiked)
+
+        // transfer liked profile from Likes Feed to Matches Feed, by Product
+        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId))
     }
 
     override fun onViewFeedItem(feedItemId: String) {

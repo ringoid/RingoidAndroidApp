@@ -9,9 +9,12 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.lmm.ILmmFragment
+import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.utility.communicator
 import timber.log.Timber
 
 class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
@@ -60,6 +63,10 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                         feedAdapter.notifyItemChanged(position, LikeFeedViewHolderHideChatControls)
                         getStrategyByTag(tag = "chatBottom")?.disableForPosition(position)
                         getStrategyByTag(tag = "chatTop")?.disableForPosition(position)
+                    }
+                    is TRANSFER_PROFILE -> {
+                        val profileId = (newState.residual as TRANSFER_PROFILE).profileId
+                        communicator(ILmmFragment::class.java)?.transferProfile(profileId, DomainUtil.SOURCE_FEED_MATCHES)
                     }
                 }
             }

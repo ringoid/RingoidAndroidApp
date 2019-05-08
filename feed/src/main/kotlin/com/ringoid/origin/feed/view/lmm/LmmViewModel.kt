@@ -10,6 +10,7 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.feed.Lmm
@@ -23,7 +24,8 @@ import javax.inject.Inject
 
 class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
-    private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
+    private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
+    private val transferFeedItemUseCase: TransferFeedItemUseCase, app: Application)
     : BaseViewModel(app) {
 
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
@@ -56,6 +58,14 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     override fun onFreshStart() {
         super.onFreshStart()
         getLmm()
+    }
+
+    // --------------------------------------------------------------------------------------------
+    fun transferProfile(profileId: String, destinationFeed: String) {
+        // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
+        transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed))
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
     }
 
     // --------------------------------------------------------------------------------------------

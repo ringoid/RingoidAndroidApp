@@ -132,6 +132,9 @@ open class FeedRepository @Inject constructor(
     override fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable =
         Completable.fromCallable { local.markFeedItemAsSeen(feedItemId, isNotSeen) }
 
+    override fun transferFeedItem(feedItemId: String, destinationFeed: String): Completable =
+        Completable.fromCallable { local.updateSourceFeed(feedItemId, destinationFeed) }
+
     // --------------------------------------------------------------------------------------------
     override val badgeLikes = PublishSubject.create<Boolean>()
     override val badgeMatches = PublishSubject.create<Boolean>()

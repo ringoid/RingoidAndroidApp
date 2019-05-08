@@ -39,6 +39,8 @@ interface IFeedRepository {
 
     fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable
 
+    fun transferFeedItem(feedItemId: String, destinationFeed: String): Completable
+
     // --------------------------------------------------------------------------------------------
     val badgeLikes: PublishSubject<Boolean>
     val badgeMatches: PublishSubject<Boolean>

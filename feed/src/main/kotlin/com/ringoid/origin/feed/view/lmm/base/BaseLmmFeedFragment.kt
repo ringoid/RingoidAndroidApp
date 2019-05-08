@@ -201,6 +201,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         Bus.post(event = BusEvent.RefreshOnLmm)
     }
 
+    internal fun transferProfile(profileId: String) {
+        // TODO: prepend profile to the top of destination feed
+        // TODO: scroll destination feed to top
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
