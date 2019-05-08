@@ -84,10 +84,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        if (event.minutesElapsed >= 5L) {
-            DebugLogUtil.b("App last open was more than 5 minutes ago, refresh Profile...")
-            onRefresh()  // app reopen leads Profile screen to refresh cascade
-        }
+        onRefresh()  // app reopen leads Profile screen to refresh cascade
     }
 
     // --------------------------------------------------------------------------------------------
