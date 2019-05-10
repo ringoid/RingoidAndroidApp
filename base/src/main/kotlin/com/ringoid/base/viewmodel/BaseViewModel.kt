@@ -56,7 +56,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    open fun onCreate() {
+    open fun onCreate(savedInstanceState: Bundle?) {
         // override in subclasses
     }
 

@@ -66,16 +66,24 @@ class MainViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreate() {
-        super.onCreate()
-        analyticsManager.restore(spm)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState
+            ?.let {
+                analyticsManager.restore(it)
+                ChatInMemoryCache.restore(it)
+            }
+            ?: run {
+                analyticsManager.restore(spm)
+                ChatInMemoryCache.restore(spm)
+            }
+
         analyticsManager.setUser(spm)
         SentryUtil.setUser(spm)
     }
 
     override fun onFreshStart() {
         super.onFreshStart()
-        ChatInMemoryCache.restore(spm)
         onEachAppStart()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
@@ -90,7 +98,8 @@ class MainViewModel @Inject constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        ChatInMemoryCache.persist(spm)
+        analyticsManager.persist(outState)
+        ChatInMemoryCache.persist(outState)
     }
 
     override fun onStop() {

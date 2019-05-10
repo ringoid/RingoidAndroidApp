@@ -95,7 +95,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         savedInstanceState?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }
         isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
-        vm.onCreate()
+        vm.onCreate(savedInstanceState)
     }
 
     override fun onNewIntent(intent: Intent) {

@@ -75,30 +75,42 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
     }
 
     // ------------------------------------------
+    fun persist(outState: Bundle) {
+        outState.putString(SP_KEY_ANALYTICS_CACHE, toJson())
+    }
+
     fun persist(spm: ISharedPrefsManager) {
         Timber.v("Saving analytics manager data... ${if (BuildConfig.DEBUG) toJson() else ""}")
         spm.saveByKey(SP_KEY_ANALYTICS_CACHE, toJson())
     }
 
+    fun restore(savedInstanceState: Bundle?) {
+        savedInstanceState
+            ?.let { it.getString(SP_KEY_ANALYTICS_CACHE) }
+            ?.let { restore(it) }
+    }
+
     fun restore(spm: ISharedPrefsManager) {
-        spm.getByKey(SP_KEY_ANALYTICS_CACHE)?.let {
-            Timber.v("Restored analytics manager data: $it")
-            try {
-                val json = JSONObject(it)
-                json.optJSONArray("consumedEventIds")?.let {
-                    val length = it.length()
-                    for (i in 0 until length) {
-                        it.optString(i).takeIf { it.isNotBlank() }?.let { id -> consumedEventIds.add(id) }
-                    }
+        spm.getByKey(SP_KEY_ANALYTICS_CACHE)?.let { restore(it) }
+    }
+
+    private fun restore(it: String) {
+        Timber.v("Restored analytics manager data: $it")
+        try {
+            val json = JSONObject(it)
+            json.optJSONArray("consumedEventIds")?.let {
+                val length = it.length()
+                for (i in 0 until length) {
+                    it.optString(i).takeIf { it.isNotBlank() }?.let { id -> consumedEventIds.add(id) }
                 }
-                if (BuildConfig.DEBUG) {
-                    val xJson = toJson()
-                    Timber.v("Parsed restored analytics manager data: $xJson}")
-                    if (xJson != it) Timber.e("Parsing was incorrect!")
-                }
-            } catch (e: JSONException) {
-                DebugLogUtil.e(e, "Failed to parse json: $it")
             }
+            if (BuildConfig.DEBUG) {
+                val xJson = toJson()
+                Timber.v("Parsed restored analytics manager data: $xJson}")
+                if (xJson != it) Timber.e("Parsing was incorrect!")
+            }
+        } catch (e: JSONException) {
+            DebugLogUtil.e(e, "Failed to parse json: $it")
         }
     }
 
