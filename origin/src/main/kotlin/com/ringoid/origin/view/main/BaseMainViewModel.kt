@@ -12,8 +12,14 @@ abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     open fun onAppReOpen() {
+        Bus.post(event = BusEvent.ReOpenApp)
+        stopAppTs = System.currentTimeMillis()  // avoid posting both ReOpenApp and ReStartWithTime events at the same time
+    }
+
+    override fun onStart() {
+        super.onStart()
         val elapsed = (System.currentTimeMillis() - stopAppTs) / 60_1000L
-        Bus.post(event = BusEvent.ReOpenApp(minutesElapsed = elapsed))
+        Bus.post(event = BusEvent.ReStartWithTime(elapsed))
     }
 
     override fun onStop() {

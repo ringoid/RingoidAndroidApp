@@ -88,6 +88,13 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        getLmm()  // app reopen leads Lmm screen to refresh as well
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         if (event.minutesElapsed >= 5L) {
             DebugLogUtil.b("App last open was more than 5 minutes ago, refresh Lmm...")
             getLmm()  // app reopen leads Lmm screen to refresh as well
