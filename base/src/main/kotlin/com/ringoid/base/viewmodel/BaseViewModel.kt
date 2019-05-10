@@ -40,10 +40,15 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     private var userVisibilityHint: Boolean = false
 
     // --------------------------------------------------------------------------------------------
+    fun getAccessToken() {
+        accessToken.value = LiveEvent(spm.accessToken())
+    }
+
     fun obtainAccessToken() {
         getUserAccessTokenUseCase.source(Params.EMPTY)
             .autoDisposable(this)
-            .subscribe({ accessToken.value = LiveEvent(it) }, { accessToken.value = LiveEvent(null) })
+            .subscribe({ accessToken.value = LiveEvent(it) },
+                       { accessToken.value = LiveEvent(null) })
     }
 
     // ------------------------------------------

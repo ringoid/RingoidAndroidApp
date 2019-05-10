@@ -34,7 +34,7 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
         vm.accessToken.observe(this, Observer {
             splash(this, path = it.getContentIfNotHandled()?.let { "/main" } ?: run { "/login" })
         })
-        vm.obtainAccessToken()
+        vm.getAccessToken()
     }
 
     override fun onNewIntent(intent: Intent) {
