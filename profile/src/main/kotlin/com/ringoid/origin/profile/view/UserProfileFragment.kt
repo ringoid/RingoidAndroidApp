@@ -274,11 +274,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
         val snapHelper = EnhancedPagerSnapHelper(duration = 30)
         rv_items.apply {
-            adapter = imagesAdapter.also { it.tabsObserver = tabs.adapterDataObserver }
+            adapter = imagesAdapter.also { it.tabsObserver = tabs2.adapterDataObserver }
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             snapHelper.attachToRecyclerView(this)
-            tabs.attachToRecyclerView(this, snapHelper)
+            tabs2.attachToRecyclerView(this, snapHelper)
             setHasFixedSize(true)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
@@ -404,7 +404,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ibtn_delete_image.changeVisibility(isVisible = isVisible)
         ibtn_settings.changeVisibility(isVisible = isVisible)
         ll_profile_header.changeVisibility(isVisible = isVisible)
-        tabs.changeVisibility(isVisible = isVisible)
+        tabs2.changeVisibility(isVisible = isVisible)
     }
 
     // ------------------------------------------
@@ -428,7 +428,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     private fun showDotTabs() {
-        tabs?.post { tabs?.changeVisibility(isVisible = imagesAdapter.itemCount > 1, soft = true) }
+        tabs2?.post { tabs2?.changeVisibility(isVisible = imagesAdapter.itemCount > 1, soft = true) }
     }
 
     @DebugOnly
