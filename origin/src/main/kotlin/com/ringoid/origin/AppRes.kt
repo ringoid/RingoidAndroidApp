@@ -36,7 +36,11 @@ object AppRes {
         private set
     var FEED_ITEM_TABS_INDICATOR_BOTTOM: Int = -1
         private set
+    var FEED_ITEM_TABS_INDICATOR_BOTTOM2: Int = -1
+        private set
     var FEED_ITEM_TABS_INDICATOR_TOP: Int = -1
+        private set
+    var FEED_ITEM_TABS_INDICATOR_TOP2: Int = -1
         private set
     var LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT: Int = -1
         private set
@@ -47,6 +51,8 @@ object AppRes {
     var STD_MARGIN_8: Int = -1
         private set
     var STD_MARGIN_16: Int = -1
+        private set
+    var STD_MARGIN_24: Int = -1
         private set
 
     // ------------------------------------------
@@ -69,6 +75,7 @@ object AppRes {
         context.resources.apply {
             STD_MARGIN_8 = getDimensionPixelSize(R.dimen.std_margin_8)
             STD_MARGIN_16 = getDimensionPixelSize(R.dimen.std_margin_16)
+            STD_MARGIN_24 = getDimensionPixelSize(R.dimen.std_margin_24)
             BUTTON_HEIGHT = getDimensionPixelSize(R.dimen.std_btn_height)
             BUTTON_FLAT_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_18)
             BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
@@ -81,8 +88,10 @@ object AppRes {
             FEED_ITEM_BIAS_BTN_TOP = (FEED_ITEM_BIAS_BTN_BOTTOM - ICON_SIZE_36 * 0.6f).toInt()
             FEED_ITEM_MID_BTN_BOTTOM = (FEED_IMAGE_HALF_HEIGHT + ICON_SIZE_36 * 0.5f).toInt()
             FEED_ITEM_MID_BTN_TOP = (FEED_IMAGE_HALF_HEIGHT - ICON_SIZE_36 * 0.5f).toInt()
-            FEED_ITEM_TABS_INDICATOR_TOP = getDimensionPixelSize(R.dimen.std_margin_16)
+            FEED_ITEM_TABS_INDICATOR_TOP = STD_MARGIN_16
+            FEED_ITEM_TABS_INDICATOR_TOP2 = FEED_IMAGE_HEIGHT - STD_MARGIN_24
             FEED_ITEM_TABS_INDICATOR_BOTTOM = (FEED_ITEM_TABS_INDICATOR_TOP * 1.5f).toInt()
+            FEED_ITEM_TABS_INDICATOR_BOTTOM2 = FEED_IMAGE_HEIGHT - STD_MARGIN_16
             FEED_ITEM_SETTINGS_BTN_TOP = FEED_ITEM_TABS_INDICATOR_TOP  // getDimensionPixelSize(R.dimen.std_margin_24)
             FEED_ITEM_SETTINGS_BTN_BOTTOM = (FEED_ITEM_SETTINGS_BTN_TOP * 1.5f).toInt()
             LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT = (BUTTON_HEIGHT * 0.67f).toInt()

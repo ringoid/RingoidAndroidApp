@@ -283,6 +283,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
         listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabs2IndicatorOnScroll, show = FeedViewHolderShowTabs2IndicatorOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_FOOTER_LABEL_BOTTOM, hide = FeedFooterViewHolderHideControls, show = FeedFooterViewHolderShowControls))
 
@@ -304,6 +305,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                                             if (!it.isShownAtAndSync(position)) {
                                                 feedAdapter.notifyItemChanged(position, it.show)
                                             }
+                                        }
+                                    }
+                                }
+                                OffsetScrollStrategy.Type.DOWN -> {
+                                    if (bottom - view.top < it.deltaOffset) {
+                                        if (!it.isHiddenAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.hide)
+                                        }
+                                    } else {
+                                        if (!it.isShownAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.show)
                                         }
                                     }
                                 }
