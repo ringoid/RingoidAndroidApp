@@ -96,6 +96,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
             itemView.rv_items.post { itemView.rv_items.linearLayoutManager()?.scrollToPosition(model.positionOfImage) }
+            itemView.tabs2.alpha = if (model.images.size < 2) 0.0f else 1.0f
         }
 
         if (BuildConfig.IS_STAGING) {
