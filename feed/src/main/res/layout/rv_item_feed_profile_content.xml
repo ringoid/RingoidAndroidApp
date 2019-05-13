@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/feed_tab_layout_height"
         android:layout_marginBottom="@dimen/std_margin_16"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:ci_gravity="center"/>
 

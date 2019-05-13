@@ -332,6 +332,19 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                                         }
                                     }
                                 }
+                                OffsetScrollStrategy.Type.UP -> {
+                                    if (view.top - top <= 0) {
+                                        if (top - view.top >= it.deltaOffset) {
+                                            if (!it.isHiddenAtAndSync(position)) {
+                                                feedAdapter.notifyItemChanged(position, it.hide)
+                                            }
+                                        } else {
+                                            if (!it.isShownAtAndSync(position)) {
+                                                feedAdapter.notifyItemChanged(position, it.show)
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
