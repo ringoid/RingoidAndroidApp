@@ -67,6 +67,8 @@ object AppRes {
 
     fun init(context: Context) {
         context.resources.apply {
+            STD_MARGIN_8 = getDimensionPixelSize(R.dimen.std_margin_8)
+            STD_MARGIN_16 = getDimensionPixelSize(R.dimen.std_margin_16)
             BUTTON_HEIGHT = getDimensionPixelSize(R.dimen.std_btn_height)
             BUTTON_FLAT_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_18)
             BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
@@ -86,8 +88,6 @@ object AppRes {
             LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT = (BUTTON_HEIGHT * 0.67f).toInt()
             MAIN_BOTTOM_BAR_HEIGHT = getDimensionPixelSize(R.dimen.main_bottom_bar_height)
             MAIN_BOTTOM_BAR_HEIGHT_HALF = getDimensionPixelSize(R.dimen.main_bottom_bar_height_half)
-            STD_MARGIN_8 = getDimensionPixelSize(R.dimen.std_margin_8)
-            STD_MARGIN_16 = getDimensionPixelSize(R.dimen.std_margin_16)
 
             // ----------------------------------
             UNDERSCORE_DRAWABLE = ContextCompat.getDrawable(context, WidgetR_drawable.underscore)!!
