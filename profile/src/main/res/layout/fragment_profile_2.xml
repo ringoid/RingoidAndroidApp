@@ -77,11 +77,10 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="@dimen/profile_tab_layout_height"
-        android:layout_marginBottom="@dimen/std_margin_16"
+        android:layout_marginTop="@dimen/std_margin_16"
         android:layout_marginStart="@dimen/std_margin_8"
-        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+        app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:ci_gravity="center_vertical|start"/>
 
     <com.ringoid.widget.view.ExtendImageButton
