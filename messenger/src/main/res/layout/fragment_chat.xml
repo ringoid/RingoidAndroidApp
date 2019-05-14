@@ -24,8 +24,8 @@
             android:inputType="textMultiLine"
             android:maxLength="1000"
             android:maxLines="4"
-            android:paddingTop="@dimen/std_margin_16"
-            android:paddingBottom="@dimen/std_margin_16"
+            android:paddingTop="@dimen/std_margin_8"
+            android:paddingBottom="@dimen/std_margin_8"
             android:paddingStart="@dimen/std_margin_16"
             android:paddingEnd="@dimen/chat_footer_et_padding_end"
             android:shadowColor="@color/text_shadow"
@@ -35,10 +35,6 @@
             <requestFocus/>
         </com.ringoid.widget.view.KeyEditText>
     </LinearLayout>
-
-    <View
-        app:layout_constraintBottom_toTopOf="@id/ll_text_input"
-        style="@style/Underscore"/>
 
     <ProgressBar
         android:id="@+id/pb_chat"

@@ -14,6 +14,7 @@
     <dimen name="std_margin_32">32dp</dimen>
     <dimen name="std_margin_40">40dp</dimen>
     <dimen name="std_margin_48">48dp</dimen>
+    <dimen name="std_screen_20">80dp</dimen>
     <dimen name="std_text_10">10sp</dimen>
     <dimen name="std_text_14">14sp</dimen>
     <dimen name="std_text_16">16sp</dimen>

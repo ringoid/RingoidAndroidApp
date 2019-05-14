@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/chat_blob_divider_height"
     android:paddingBottom="@dimen/chat_blob_divider_height"
-    android:paddingStart="@dimen/std_margin_16"
+    android:paddingStart="@dimen/std_screen_20"
     android:paddingEnd="@dimen/std_margin_16">
 
     <TextView
