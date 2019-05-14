@@ -151,13 +151,13 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                             if (feedAdapter.hasModel(it.position)) {
                                 // supply first message, as mentioned above
                                 feedAdapter.getModel(it.position).messages.add(message)
-                                getRecyclerView().post {  // alter chat icon on feed item after supplying first user message to it
-                                    feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
-                                }
                             } else {
                                 // result from Chat screen has just been delivered, but adapter hasn't been filled yet
                             }
                             vm.onFirstUserMessageSent(profileId = it.peerId)
+                        }
+                        getRecyclerView().post {  // alter chat icon on feed item after supplying first user message to it
+                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
                         }
                     }
                 }
