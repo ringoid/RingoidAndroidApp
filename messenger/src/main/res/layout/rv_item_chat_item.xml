@@ -5,7 +5,7 @@
     android:paddingTop="@dimen/chat_blob_divider_height"
     android:paddingBottom="@dimen/chat_blob_divider_height"
     android:paddingStart="@dimen/std_margin_20"
-    android:paddingEnd="@dimen/std_screen_20">
+    android:paddingEnd="@dimen/std_screen_10">
 
     <TextView
         android:id="@id/tv_chat_message"
