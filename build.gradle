@@ -49,8 +49,8 @@ static String getSentryDsn(Environment env) {
     return dsn
 }
 
-static String getVersionName(Environment env, int major, int middle, int minor, int build) {
-    String version = "$major.$middle.$minor.$build"
+static String getVersionName(Environment env, int major, int minor, int build) {
+    String version = "$major.$minor.$build"
     return "$version${env.versionNameSuffix}"
 }
 
@@ -105,13 +105,12 @@ allprojects {
 
     ext {
         majorVersion = 1
-        middleVersion = 0
         minorVersion = 0
-        buildVersion = 155
+        buildVersion = 156
 
         androidApplicationId = getAppId(env)
         androidVersionCode = buildVersion
-        androidVersionName = getVersionName(env, majorVersion, middleVersion, minorVersion, buildVersion)
+        androidVersionName = getVersionName(env, majorVersion, minorVersion, buildVersion)
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         testApplicationId = 'com.ringoid.app.test'
 
