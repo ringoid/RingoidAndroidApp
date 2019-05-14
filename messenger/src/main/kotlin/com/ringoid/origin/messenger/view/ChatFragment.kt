@@ -102,7 +102,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                  * If vertical position is near the last message in Chat - scroll to the bottom of
                  * each newly inserted message, otherwise - remain on the current vertical position.
                  */
-                rv_chat_messages.linearLayoutManager()
+                rv_chat_messages?.linearLayoutManager()
                     ?.takeIf { it.findFirstVisibleItemPosition() <= 1 }
                     ?.let { scrollToTopOfItemAtPosition(0) }  // scroll to last message
             }
