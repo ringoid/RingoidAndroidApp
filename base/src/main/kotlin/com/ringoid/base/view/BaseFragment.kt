@@ -1,6 +1,7 @@
 package com.ringoid.base.view
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -169,6 +170,13 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         }
         isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onActivityResult(rc=$requestCode,result=$resultCode,data=$data)")
+        DebugLogUtil.lifecycle(this, "onActivityResult")
     }
 
     override fun onStart() {
