@@ -18,7 +18,7 @@ abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app
 
     override fun onStart() {
         super.onStart()
-        val elapsed = (System.currentTimeMillis() - stopAppTs) / 60_1000L
+        val elapsed = System.currentTimeMillis() - stopAppTs
         Bus.post(event = BusEvent.ReStartWithTime(elapsed))
     }
 
