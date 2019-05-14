@@ -132,12 +132,32 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
-                        it.firstUserMessage?.let {
-                            message -> feedAdapter.getModel(it.position).messages.add(message)
+                        it.firstUserMessage?.let { message ->
+                            /**
+                             * When Chat closed, underlying Feed screen and hosting MainActivity
+                             * will get this place, and list of feed items will be looked for the item
+                             * Chat was opened for, and the first message from the user will be supplied
+                             * to it, if any. This is done in order to rebind that feed item and alter
+                             * it's chat icon depending on count of peer's and user's messages for that item.
+                             *
+                             * But on Android, underlying Feed screen and hosting MainActivity could be
+                             * destroyed by the Framework (for example, if DNKA mode is enabled in settings).
+                             * In that case, Feed screen will still get this place, but [feedAdapter] will
+                             * have not be filled with items yet, so it's not possible to look for specific
+                             * feed item and supply first user message to it. To prevent crash, check must be
+                             * performed, and supplying first user message will be postponed until [feedAdapter]
+                             * will be filled with items.
+                             */
+                            if (feedAdapter.hasModel(it.position)) {
+                                // supply first message, as mentioned above
+                                feedAdapter.getModel(it.position).messages.add(message)
+                                getRecyclerView().post {  // alter chat icon on feed item after supplying first user message to it
+                                    feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                                }
+                            } else {
+                                // result from Chat screen has just been delivered, but adapter hasn't been filled yet
+                            }
                             vm.onFirstUserMessageSent(profileId = it.peerId)
-                        }
-                        getRecyclerView().post {
-                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
                         }
                     }
                 }

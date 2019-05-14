@@ -156,7 +156,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.v("onActivityCreated")
+        Timber.v("onActivityCreated($savedInstanceState)")
         DebugLogUtil.lifecycle(this, "onActivityCreated")
         isActivityCreated = true
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {

@@ -148,6 +148,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             else /* VIEW_TYPE_NORMAL */ -> getModel(position)
         }
 
+    fun hasModel(position: Int): Boolean = helper.currentList.size > position
     fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]
     protected fun getModels(): List<T> = helper.currentList
 
