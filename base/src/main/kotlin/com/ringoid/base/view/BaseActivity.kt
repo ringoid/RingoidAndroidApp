@@ -50,6 +50,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         private set
     protected var currentResult: Int = Activity.RESULT_CANCELED
         private set
+    protected var savedInstanceState: Bundle? = null
+        private set
 
     // ------------------------------------------
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
@@ -92,6 +94,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
             subscribeOnBusEvents()
             observe(viewState, ::onViewStateChange)
         }
+        this.savedInstanceState = savedInstanceState
         savedInstanceState?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }
         isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
