@@ -21,7 +21,7 @@
     <TextView
         android:id="@+id/tv_image_id"
         android:layout_marginEnd="@dimen/std_margin_16"
-        android:layout_marginBottom="@dimen/std_margin_16"
+        android:layout_marginBottom="@dimen/std_margin_32"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"
