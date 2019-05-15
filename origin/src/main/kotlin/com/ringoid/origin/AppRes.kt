@@ -16,6 +16,10 @@ object AppRes {
         private set
     var ICON_SIZE_36: Int = -1
         private set
+    var ICON_SIZE_96: Int = -1
+        private set
+    var ICON_SIZE_HALF_96: Int = -1
+        private set
     var FEED_ITEM_FOOTER_LABEL_BOTTOM: Int = -1
         private set
     var FEED_IMAGE_HEIGHT: Int = -1
@@ -81,6 +85,8 @@ object AppRes {
             BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
             BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT = getDimensionPixelSize(R.dimen.dialog_bottom_sheet_block_height)
             ICON_SIZE_36 = getDimensionPixelSize(R.dimen.std_icon_36)
+            ICON_SIZE_96 = getDimensionPixelSize(R.dimen.std_icon_96)
+            ICON_SIZE_HALF_96 = ICON_SIZE_96 / 2
             FEED_ITEM_FOOTER_LABEL_BOTTOM = getDimensionPixelSize(R.dimen.std_margin_16)
             FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
             FEED_IMAGE_HALF_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height_half)

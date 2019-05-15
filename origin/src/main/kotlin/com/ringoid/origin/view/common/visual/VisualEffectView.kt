@@ -2,10 +2,13 @@ package com.ringoid.origin.view.common.visual
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.animation.*
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
+import com.ringoid.origin.AppRes
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.android.scope
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,8 +43,10 @@ class VisualEffectView : FrameLayout {
             .apply {
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                 setImageResource(effect.resId)
-                x = effect.x
-                y = effect.y
+//                left = (effect.x - AppRes.ICON_SIZE_HALF_96).toInt()
+//                top = (effect.y - AppRes.ICON_SIZE_HALF_96).toInt()
+//                translationX = effect.x - AppRes.ICON_SIZE_HALF_96
+//                translationY = effect.y - AppRes.ICON_SIZE_HALF_96
                 addView(this)
             }
         val animationSet = AnimationSet(false)
@@ -49,7 +54,7 @@ class VisualEffectView : FrameLayout {
                 addAnimation(alphaIn(0.5f, 0.9f, dur = 300L))
 //                addAnimation(translateUp(effect.x, effect.y, 350f, 300L))
                 addAnimation(scaleUp(interp = AccelerateInterpolator()))
-//                addAnimation(alphaOut(0.9f, 0f, offset = 300L, interp = DecelerateInterpolator()))
+                addAnimation(alphaOut(0.9f, 0f, offset = 300L, interp = DecelerateInterpolator()))
                 setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(animation: Animation) { /* no-op */ }
                     override fun onAnimationRepeat(animation: Animation) { /* no-op */ }
@@ -58,6 +63,6 @@ class VisualEffectView : FrameLayout {
                     }
                 })
             }
-        image.startAnimation(animationSet)
+        image.post { image.startAnimation(animationSet) }
     }
 }
