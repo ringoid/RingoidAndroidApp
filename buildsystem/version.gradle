@@ -54,6 +54,7 @@ buildscript {
         dotsIndicatorFixVersion = '1.0.0'
         overscrollVersion = '1.0.4'
         rvAnimVersion = '3.0.0'
+        rvItemAnimVersion = '1.1.0'
 
         logInterceptorVersion = '3.0.0'
         okHttpVersion = '3.10.0'
