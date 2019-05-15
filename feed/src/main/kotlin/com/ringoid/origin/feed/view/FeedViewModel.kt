@@ -181,6 +181,10 @@ abstract class FeedViewModel(
             false
         }
 
+    open fun onImageTouch(x: Float, y: Float) {
+        // override in subclasses
+    }
+
     open fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         advanceAndPushViewObject(imageId to profileId, recreate = false)
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)

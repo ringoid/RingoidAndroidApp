@@ -16,6 +16,8 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
+import com.ringoid.origin.view.common.visual.MatchVisualEffect
+import com.ringoid.origin.view.common.visual.VisualEffectManager
 import io.reactivex.Observable
 import javax.inject.Inject
 
@@ -88,6 +90,11 @@ class LikesFeedViewModel @Inject constructor(
 
         // transfer liked profile from Likes Feed to Matches Feed, by Product
         viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
+    }
+
+    override fun onImageTouch(x: Float, y: Float) {
+        super.onImageTouch(x, y)
+        VisualEffectManager.call(MatchVisualEffect(x, y))
     }
 
     override fun onViewFeedItem(feedItemId: String) {

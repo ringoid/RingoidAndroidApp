@@ -23,6 +23,7 @@ class ProfileImageAdapter(private val context: Context)
     ListPreloader.PreloadModelProvider<ProfileImageVO> {
 
     var onBeforeLikeListener: (() -> Boolean)? = null
+    var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
     var tabsObserver: RecyclerView.AdapterDataObserver? = null
     var isLikeEnabled = true
 
@@ -106,9 +107,7 @@ class ProfileImageAdapter(private val context: Context)
                     itemClickListener?.invoke(model, position)
                     vh.itemView.tag
                         ?.let { it as MotionEvent }
-                        ?.let {
-                            VisualEffectManager.call(LikeVisualEffect(it.x, it.y))
-                        }
+                        ?.let { onImageTouchListener?.invoke(it.x, it.y) }
                 }
             }
 }

@@ -18,6 +18,8 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
+import com.ringoid.origin.view.common.visual.LikeVisualEffect
+import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -134,6 +136,11 @@ class ExploreViewModel @Inject constructor(
 //            actionObjectPool.trigger()
             getMoreFeed()
         }
+    }
+
+    override fun onImageTouch(x: Float, y: Float) {
+        super.onImageTouch(x, y)
+        VisualEffectManager.call(LikeVisualEffect(x, y))
     }
 
     // --------------------------------------------------------------------------------------------

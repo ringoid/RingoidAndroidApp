@@ -23,6 +23,7 @@ import timber.log.Timber
 interface IFeedViewHolder {
 
     var onBeforeLikeListener: (() -> Boolean)?
+    var onImageTouchListener: ((x: Float, y: Float) -> Unit)?
     var snapPositionListener: ((snapPosition: Int) -> Unit)?
     var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>?
 
@@ -33,6 +34,7 @@ abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledV
     : BaseViewHolder<FeedItemVO>(view), IFeedViewHolder {
 
     override var onBeforeLikeListener: (() -> Boolean)? = null
+    override var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
     override var snapPositionListener: ((snapPosition: Int) -> Unit)? = null
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
@@ -47,6 +49,13 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             field = value
             profileImageAdapter.onBeforeLikeListener = value
         }
+
+    override var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
+        set(value) {
+            field = value
+            profileImageAdapter.onImageTouchListener = value
+        }
+
     internal val profileImageAdapter = ProfileImageAdapter(view.context)
 
     private val imagePreloadListener: RecyclerViewPreloader<ProfileImageVO>
@@ -57,6 +66,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             adapter = profileImageAdapter
                 .also {
                     it.onBeforeLikeListener = onBeforeLikeListener
+                    it.onImageTouchListener = onImageTouchListener
                     it.tabsObserver = itemView.tabs2.adapterDataObserver
                 }
             isNestedScrollingEnabled = false
