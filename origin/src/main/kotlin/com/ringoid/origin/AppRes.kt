@@ -20,6 +20,8 @@ object AppRes {
         private set
     var ICON_SIZE_HALF_96: Int = -1
         private set
+    var ICON_SIZE_HALF2_96: Int = -1
+        private set
     var FEED_ITEM_FOOTER_LABEL_BOTTOM: Int = -1
         private set
     var FEED_IMAGE_HEIGHT: Int = -1
@@ -87,6 +89,7 @@ object AppRes {
             ICON_SIZE_36 = getDimensionPixelSize(R.dimen.std_icon_36)
             ICON_SIZE_96 = getDimensionPixelSize(R.dimen.std_icon_96)
             ICON_SIZE_HALF_96 = ICON_SIZE_96 / 2
+            ICON_SIZE_HALF2_96 = ICON_SIZE_HALF_96 / 2
             FEED_ITEM_FOOTER_LABEL_BOTTOM = getDimensionPixelSize(R.dimen.std_margin_16)
             FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
             FEED_IMAGE_HALF_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height_half)

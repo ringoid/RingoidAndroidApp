@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.common.visual
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.AccelerateInterpolator
@@ -43,26 +44,25 @@ class VisualEffectView : FrameLayout {
             .apply {
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                 setImageResource(effect.resId)
-//                left = (effect.x - AppRes.ICON_SIZE_HALF_96).toInt()
-//                top = (effect.y - AppRes.ICON_SIZE_HALF_96).toInt()
-                translationX = effect.x - AppRes.ICON_SIZE_HALF_96
-                translationY = effect.y - AppRes.ICON_SIZE_96
+                translationX = effect.x - AppRes.ICON_SIZE_HALF2_96
+                translationY = effect.y - AppRes.ICON_SIZE_HALF_96
                 addView(this)
             }
-        val animationSet = AnimationSet(false)
-            .apply {
-                addAnimation(alphaIn(0.5f, 0.9f, dur = 300L))
-//                addAnimation(translateUp(effect.x, effect.y, 350f, 300L))
-                addAnimation(scaleUp(interp = AccelerateInterpolator()))
-                addAnimation(alphaOut(0.9f, 0f, offset = 300L, interp = DecelerateInterpolator()))
-                setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(animation: Animation) { /* no-op */ }
-                    override fun onAnimationRepeat(animation: Animation) { /* no-op */ }
-                    override fun onAnimationEnd(animation: Animation) {
-                        removeView(image)
-                    }
-                })
-            }
-//        image.post { image.startAnimation(animationSet) }
+
+        image.animate()
+            .translationYBy(-900f)
+            .scaleXBy(2f)
+            .scaleYBy(2f)
+            .alpha(0f)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
+                override fun onAnimationEnd(animation: Animator) {
+                    removeView(image)
+                }
+            })
+            .setDuration(800L)
+            .start()
     }
 }

@@ -1,6 +1,8 @@
 package com.ringoid.origin.view.common.visual
 
 import android.view.animation.*
+import com.flurry.sdk.x
+import com.flurry.sdk.y
 
 fun alphaIn(fromAlpha: Float, toAlpha: Float, dur: Long = 250L, offset: Long = 0L, interp: Interpolator? = null): Animation =
     AlphaAnimation(fromAlpha, toAlpha)
@@ -27,8 +29,8 @@ fun scaleUp(from: Float = 0.5f, dur: Long = 250L, interp: Interpolator? = null):
             interp?.let { interpolator = it }
         }
 
-fun translateUp(x: Float, y: Float, dist: Float, dur: Long = 250L, interp: Interpolator? = null): Animation =
-    TranslateAnimation(x, x, y, y - dist)
+fun translateUp(dist: Float, dur: Long = 250L, interp: Interpolator? = null): Animation =
+    TranslateAnimation(0f, 0f, 0f, dist)
         .apply {
             duration = dur
             interp?.let { interpolator = it }

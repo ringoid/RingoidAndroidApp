@@ -7,5 +7,5 @@ sealed class VisualEffect(val x: Float, val y: Float, @DrawableRes val resId: In
 
     override fun toString(): String = "${javaClass.simpleName}($x, $y)"
 }
-class LikeVisualEffect(x: Float, y: Float) : VisualEffect(x, y, R.drawable.ic_visual_like)
-class MatchVisualEffect(x: Float, y: Float) : VisualEffect(x, y, R.drawable.ic_visual_match)
+class LikeVisualEffect(x: Float, y: Float) : VisualEffect(x, y, R.drawable.ic_visual_like_48)
+class MatchVisualEffect(x: Float, y: Float) : VisualEffect(x, y, R.drawable.ic_visual_match_48)
