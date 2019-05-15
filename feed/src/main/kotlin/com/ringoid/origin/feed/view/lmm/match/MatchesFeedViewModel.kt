@@ -90,5 +90,7 @@ class MatchesFeedViewModel @Inject constructor(
 
         // transfer firstly messaged profile from Matches Feed to Messages Feed, by Product
         viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
+
+        advanceAndPushViewObject(profileId = profileId)  // push VIEW as profile was discarded
     }
 }
