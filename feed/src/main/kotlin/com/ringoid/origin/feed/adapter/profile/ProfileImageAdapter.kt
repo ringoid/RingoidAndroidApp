@@ -72,11 +72,10 @@ class ProfileImageAdapter(private val context: Context)
         } else {
             wrapOnItemClickListener(vh, getLikeClickListener(vh, alwaysLiked = true))
         }
-        // TODO: only click should be recorded
         // detect touch on image item and call visual effect at touch point
-        vh.itemView.setOnTouchListener { _, event ->
+        vh.itemView.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                VisualEffectManager.call(LikeVisualEffect(event.x, event.y))
+                view.tag =  event
             }
             false
         }
@@ -105,6 +104,11 @@ class ProfileImageAdapter(private val context: Context)
                         notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
                     }
                     itemClickListener?.invoke(model, position)
+                    vh.itemView.tag
+                        ?.let { it as MotionEvent }
+                        ?.let {
+                            VisualEffectManager.call(LikeVisualEffect(it.x, it.y))
+                        }
                 }
             }
 }

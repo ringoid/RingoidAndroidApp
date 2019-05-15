@@ -45,8 +45,8 @@ class VisualEffectView : FrameLayout {
                 setImageResource(effect.resId)
 //                left = (effect.x - AppRes.ICON_SIZE_HALF_96).toInt()
 //                top = (effect.y - AppRes.ICON_SIZE_HALF_96).toInt()
-//                translationX = effect.x - AppRes.ICON_SIZE_HALF_96
-//                translationY = effect.y - AppRes.ICON_SIZE_HALF_96
+                translationX = effect.x - AppRes.ICON_SIZE_HALF_96
+                translationY = effect.y - AppRes.ICON_SIZE_96
                 addView(this)
             }
         val animationSet = AnimationSet(false)
@@ -63,6 +63,6 @@ class VisualEffectView : FrameLayout {
                     }
                 })
             }
-        image.post { image.startAnimation(animationSet) }
+//        image.post { image.startAnimation(animationSet) }
     }
 }
