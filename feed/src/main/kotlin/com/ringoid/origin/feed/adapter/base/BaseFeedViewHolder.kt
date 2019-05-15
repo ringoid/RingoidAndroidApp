@@ -9,7 +9,6 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
-import com.ringoid.origin.feed.adapter.profile.ProfileImageItemAnimator
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
@@ -61,7 +60,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     it.tabsObserver = itemView.tabs2.adapterDataObserver
                 }
             isNestedScrollingEnabled = false
-            itemAnimator = ProfileImageItemAnimator()
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 .also { it.initialPrefetchItemCount = 4 }
             snapHelper.attachToRecyclerView(this)
