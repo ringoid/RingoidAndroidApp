@@ -202,7 +202,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     }
 
     internal fun transferProfile(profileId: String) {
-        vm.prependProfile(profileId) { scrollListToPosition(0) }
+        vm.prependProfileOnTransfer(profileId) { scrollListToPosition(0) }
     }
 
     /* Lifecycle */

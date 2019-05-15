@@ -17,10 +17,12 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.messenger.userMessage
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.messenger.MessengerViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -124,12 +126,21 @@ abstract class BaseLmmFeedViewModel(
         lmm?.let { setLmmItems(getFeedFromLmm(it)) } ?: run { setLmmItems(emptyList()) }
     }
 
-    fun prependProfile(profileId: String, action: () -> Unit) {
+    fun prependProfileOnTransfer(profileId: String, action: () -> Unit) {
         getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId))
             .doOnSuccess {
                 val list = mutableListOf<FeedItem>()
                     .apply {
-                        add(it)  // TODO: alter chat blob icon
+                        /**
+                         * When prepend feed item on transferring it is important what is destination
+                         * Feed. If it is Messages Feed, then feed item has been transferred from Matches
+                         * Feed by applying first user message to it, that will alter chat blob icon on it.
+                         * This should be taken into account and such icon should also be altered here.
+                         */
+                        val item = it.takeIf { this@BaseLmmFeedViewModel is MessengerViewModel }
+                            ?.apply { it.messages.add(userMessage(it.id)) }
+                            ?: it
+                        add(item)
                         feed.value?.let { addAll(it) }
                     }
                 feed.value = list  // prepended list
