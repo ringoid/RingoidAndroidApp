@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.adapter.profile
 
 import android.content.Context
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.ListPreloader
@@ -11,6 +12,8 @@ import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.view.common.visual.LikeVisualEffect
+import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
@@ -63,12 +66,21 @@ class ProfileImageAdapter(private val context: Context)
             .subscribe { getOnLikeButtonClickListener(vh).onClick(vh.itemView.ibtn_like) }
     }
 
-    override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
-        if (!isLikeEnabled) {
+    override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
+        val clickListener = if (!isLikeEnabled) {
             super.getOnItemClickListener(vh)
         } else {
             wrapOnItemClickListener(vh, getLikeClickListener(vh, alwaysLiked = true))
         }
+        // detect touch on image item and call visual effect at touch point
+        vh.itemView.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                VisualEffectManager.call(LikeVisualEffect(event.x, event.y))
+            }
+            false
+        }
+        return clickListener
+    }
 
     private fun getOnLikeButtonClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
         wrapOnItemClickListener(vh) { model: ProfileImageVO, position: Int ->

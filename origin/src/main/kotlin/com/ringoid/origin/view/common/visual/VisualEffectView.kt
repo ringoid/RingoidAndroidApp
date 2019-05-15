@@ -2,6 +2,7 @@ package com.ringoid.origin.view.common.visual
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.animation.*
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -38,12 +39,13 @@ class VisualEffectView : FrameLayout {
         val image = ImageView(context)
             .apply {
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+                    .apply { gravity = Gravity.CENTER }
                 setImageResource(effect.resId)
             }
         val animationSet = AnimationSet(false)
             .apply {
                 addAnimation(alphaIn(0.5f, 0.9f))
-                addAnimation(translateUp(effect.x.toFloat(), effect.y.toFloat(), 350f, 300L))
+                addAnimation(translateUp(effect.x, effect.y, 350f, 300L))
                 addAnimation(scaleUp(interp = AccelerateInterpolator()))
                 addAnimation(alphaOut(0.9f, 0f, offset = 300L, interp = DecelerateInterpolator()))
                 setAnimationListener(object : Animation.AnimationListener {
