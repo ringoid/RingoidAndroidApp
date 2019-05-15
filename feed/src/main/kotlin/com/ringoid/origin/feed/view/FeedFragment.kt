@@ -100,7 +100,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     protected fun onDiscardProfileState(profileId: String) {
         val count = feedAdapter.getModelsCount()
-        if (count <= 1) {  // remove last feed item - show empty stub
+        val fixUp = if (feedAdapter.withHeader()) 1 else 0
+        if (count <= 1 + fixUp) {  // remove last feed item - show empty stub
             onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
         } else {  // remove not last feed item
             feedAdapter.remove { it.id == profileId }
