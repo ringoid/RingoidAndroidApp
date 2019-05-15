@@ -87,7 +87,7 @@ class LikesFeedViewModel @Inject constructor(
         onLike(profileId, imageId, isLiked)
 
         // transfer liked profile from Likes Feed to Matches Feed, by Product
-        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId))
+        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }
 
     override fun onViewFeedItem(feedItemId: String) {

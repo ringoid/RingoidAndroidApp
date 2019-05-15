@@ -193,7 +193,7 @@ abstract class BaseLmmFeedViewModel(
         markFeedItemAsSeen(feedItemId = profileId)
     }
 
-    fun onFirstUserMessageSent(profileId: String) {
+    open fun onFirstUserMessageSent(profileId: String) {
         addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
             .autoDisposable(this)
             .subscribe({}, Timber::e)  // keep those peers that user has sent the first message to

@@ -61,14 +61,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is ASK_TO_ENABLE_LOCATION_SERVICE -> swipe_refresh_layout?.isRefreshing = false
-                    is DISCARD_PROFILE -> {
-                        val count = feedAdapter.getModelsCount()
-                        if (count <= 1) {  // remove last feed item - show empty stub
-                            onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
-                        } else {  // remove not last feed item
-                            feedAdapter.remove { it.id == (newState.residual as DISCARD_PROFILE).profileId }
-                        }
-                    }
+                    is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
                     is NO_IMAGES_IN_PROFILE -> {
                         Dialogs.showTextDialog(activity,
                             descriptionResId = getAddPhotoDialogDescriptionResId(),
@@ -102,6 +95,15 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         getEmptyStateInput(mode)?.let {
             onIdleState()
             showEmptyStub(input = it)
+        }
+    }
+
+    protected fun onDiscardProfileState(profileId: String) {
+        val count = feedAdapter.getModelsCount()
+        if (count <= 1) {  // remove last feed item - show empty stub
+            onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
+        } else {  // remove not last feed item
+            feedAdapter.remove { it.id == profileId }
         }
     }
 
