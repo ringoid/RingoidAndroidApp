@@ -129,7 +129,7 @@ abstract class BaseLmmFeedViewModel(
             .doOnSuccess {
                 val list = mutableListOf<FeedItem>()
                     .apply {
-                        add(it)
+                        add(it)  // TODO: alter chat blob icon
                         feed.value?.let { addAll(it) }
                     }
                 feed.value = list  // prepended list
