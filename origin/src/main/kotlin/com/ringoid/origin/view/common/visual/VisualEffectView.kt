@@ -39,19 +39,23 @@ class VisualEffectView : FrameLayout {
         val image = ImageView(context)
             .apply {
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-                    .apply { gravity = Gravity.CENTER }
                 setImageResource(effect.resId)
+                x = effect.x
+                y = effect.y
+                addView(this)
             }
         val animationSet = AnimationSet(false)
             .apply {
-                addAnimation(alphaIn(0.5f, 0.9f))
-                addAnimation(translateUp(effect.x, effect.y, 350f, 300L))
+                addAnimation(alphaIn(0.5f, 0.9f, dur = 300L))
+//                addAnimation(translateUp(effect.x, effect.y, 350f, 300L))
                 addAnimation(scaleUp(interp = AccelerateInterpolator()))
-                addAnimation(alphaOut(0.9f, 0f, offset = 300L, interp = DecelerateInterpolator()))
+//                addAnimation(alphaOut(0.9f, 0f, offset = 300L, interp = DecelerateInterpolator()))
                 setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(animation: Animation) { addView(image) }
+                    override fun onAnimationStart(animation: Animation) { /* no-op */ }
                     override fun onAnimationRepeat(animation: Animation) { /* no-op */ }
-                    override fun onAnimationEnd(animation: Animation) { removeView(image) }
+                    override fun onAnimationEnd(animation: Animation) {
+                        removeView(image)
+                    }
                 })
             }
         image.startAnimation(animationSet)
