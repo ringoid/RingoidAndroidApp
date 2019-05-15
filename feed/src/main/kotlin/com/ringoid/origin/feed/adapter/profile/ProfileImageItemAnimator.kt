@@ -86,9 +86,9 @@ class ProfileImageItemAnimator : DefaultItemAnimator() {
     private fun animateImageLike(holder: ProfileImageViewHolder) {
         val animationSet = AnimationSet(false)
             .apply {
-                addAnimation(alphaIn())
+                addAnimation(alphaIn(0.5f, 0.9f))
                 addAnimation(scaleUp(interp = OvershootInterpolator()))
-                addAnimation(alphaOut(offset = 300L, interp = DecelerateInterpolator()))
+                addAnimation(alphaOut(0.9f, 0f, offset = 300L, interp = DecelerateInterpolator()))
                 fillAfter = true
                 setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(animation: Animation) { /* no-op */ }
