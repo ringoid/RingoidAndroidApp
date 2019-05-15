@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 class MessengerViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase,
+    getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
     getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
@@ -32,6 +33,7 @@ class MessengerViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
+        getCachedFeedItemByIdUseCase,
         getLikedFeedItemIdsUseCase,
         getUserMessagedFeedItemIdsUseCase,
         addLikedImageForFeedItemIdUseCase,

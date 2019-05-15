@@ -202,8 +202,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     }
 
     internal fun transferProfile(profileId: String) {
-        // TODO: prepend profile to the top of destination feed
-        // TODO: scroll destination feed to top
+        vm.prependProfile(profileId) { scrollListToPosition(0) }
     }
 
     /* Lifecycle */

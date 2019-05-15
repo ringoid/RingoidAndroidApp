@@ -29,6 +29,7 @@ interface IFeedRepository {
     fun cacheLikedFeedItemIds(ids: LikedFeedItemIds): Completable
     fun cacheUserMessagedFeedItemId(feedItemId: String): Completable
 
+    fun getCachedFeedItemById(id: String): Single<FeedItem>
     fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds>
     fun getUserMessagedFeedItemIds(): Single<List<String>>
 

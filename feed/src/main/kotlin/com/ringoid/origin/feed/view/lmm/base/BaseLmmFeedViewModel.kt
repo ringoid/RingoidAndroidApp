@@ -39,6 +39,7 @@ import timber.log.Timber
  */
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
+    private val getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     private val getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
     private val getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
@@ -99,6 +100,7 @@ abstract class BaseLmmFeedViewModel(
             .subscribe({}, Timber::e)
     }
 
+    // ------------------------------------------
     protected open fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.filter { it.isNotSeen }.map { it.id }
 
@@ -120,6 +122,19 @@ abstract class BaseLmmFeedViewModel(
 
     fun applyCachedFeed(lmm: Lmm?) {
         lmm?.let { setLmmItems(getFeedFromLmm(it)) } ?: run { setLmmItems(emptyList()) }
+    }
+
+    fun prependProfile(profileId: String, action: () -> Unit) {
+        getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId))
+            .doOnSuccess {
+                val list = mutableListOf<FeedItem>()
+                    .apply {
+                        add(it)
+                        feed.value?.let { addAll(it) }
+                    }
+                feed.value = list  // prepended list
+            }
+            .subscribe({ action.invoke() }, Timber::e)
     }
 
     private fun setLmmItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {

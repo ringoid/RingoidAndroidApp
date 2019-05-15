@@ -9,6 +9,10 @@ import io.reactivex.Single
 interface FeedDao {
 
     @Transaction
+    @Query("SELECT * FROM ${FeedItemDbo.TABLE_NAME} WHERE ${FeedItemDbo.COLUMN_ID} = :profileId")
+    fun feedItem(profileId: String): Single<FullFeedItemDbo>
+
+    @Transaction
     @Query("SELECT * FROM ${FeedItemDbo.TABLE_NAME}")
     fun feedItems(): Single<List<FullFeedItemDbo>>
 

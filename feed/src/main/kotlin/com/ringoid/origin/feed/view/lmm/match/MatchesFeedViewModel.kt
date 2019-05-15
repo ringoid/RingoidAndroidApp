@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 class MatchesFeedViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase,
+    getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
     getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
@@ -31,6 +32,7 @@ class MatchesFeedViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
+        getCachedFeedItemByIdUseCase,
         getLikedFeedItemIdsUseCase,
         getUserMessagedFeedItemIdsUseCase,
         addLikedImageForFeedItemIdUseCase,

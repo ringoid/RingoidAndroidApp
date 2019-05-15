@@ -95,6 +95,10 @@ open class FeedRepository @Inject constructor(
     override fun cacheUserMessagedFeedItemId(feedItemId: String): Completable =
         Completable.fromCallable { feedPropertiesLocal.addUserMessagedFeedItemId(UserMessagedFeedItemIdDbo(feedItemId = feedItemId)) }
 
+    // ------------------------------------------
+    override fun getCachedFeedItemById(id: String): Single<FeedItem> =
+        local.feedItem(profileId = id).map { it.map() }
+
     override fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds> =
         feedPropertiesLocal.likedImagesForFeedItemIds(ids)
             .map {
