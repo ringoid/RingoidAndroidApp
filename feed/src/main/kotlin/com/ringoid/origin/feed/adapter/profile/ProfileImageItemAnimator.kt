@@ -2,6 +2,8 @@ package com.ringoid.origin.feed.adapter.profile
 
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.origin.view.common.visual.alphaIn
@@ -66,7 +68,7 @@ class ProfileImageItemAnimator : DefaultItemAnimator() {
     private fun animateButtonLike(holder: ProfileImageViewHolder, isLiked: Boolean) {
         val animationSet = AnimationSet(false)
             .apply {
-                addAnimation(scaleUp(from = 0.7f))
+                addAnimation(scaleUp(from = 0.7f, interp = OvershootInterpolator()))
                 setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(animation: Animation) { holder.setLiked(isLiked) }
                     override fun onAnimationRepeat(animation: Animation) { /* no-op */ }
@@ -85,8 +87,8 @@ class ProfileImageItemAnimator : DefaultItemAnimator() {
         val animationSet = AnimationSet(false)
             .apply {
                 addAnimation(alphaIn())
-                addAnimation(scaleUp())
-                addAnimation(alphaOut())
+                addAnimation(scaleUp(interp = OvershootInterpolator()))
+                addAnimation(alphaOut(offset = 300L, interp = DecelerateInterpolator()))
                 fillAfter = true
                 setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(animation: Animation) { /* no-op */ }
