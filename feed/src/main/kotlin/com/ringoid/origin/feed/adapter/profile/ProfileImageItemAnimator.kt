@@ -1,8 +1,12 @@
 package com.ringoid.origin.feed.adapter.profile
 
-import android.view.animation.*
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import com.ringoid.origin.view.common.visual.alphaIn
+import com.ringoid.origin.view.common.visual.alphaOut
+import com.ringoid.origin.view.common.visual.scaleUp
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
@@ -60,17 +64,9 @@ class ProfileImageItemAnimator : DefaultItemAnimator() {
     }
 
     private fun animateButtonLike(holder: ProfileImageViewHolder, isLiked: Boolean) {
-        val animation = ScaleAnimation(0.7f, 1f, 0.7f, 1f,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f)
-            .apply {
-                duration = 250
-                interpolator = OvershootInterpolator()
-            }
-
         val animationSet = AnimationSet(false)
             .apply {
-                addAnimation(animation)
+                addAnimation(scaleUp(from = 0.7f))
                 setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(animation: Animation) { holder.setLiked(isLiked) }
                     override fun onAnimationRepeat(animation: Animation) { /* no-op */ }
@@ -86,27 +82,11 @@ class ProfileImageItemAnimator : DefaultItemAnimator() {
     }
 
     private fun animateImageLike(holder: ProfileImageViewHolder) {
-        val animationAlphaIn = AlphaAnimation(0.5f, 0.9f).apply { duration = 250 }
-
-        val animationResize = ScaleAnimation(0.5f, 1f, 0.5f, 1f,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f)
-            .apply {
-                duration = 250
-                interpolator = OvershootInterpolator()
-            }
-
-        val animationAlphaOut = AlphaAnimation(0.9f, 0f).apply {
-            duration = 80
-            startOffset = 300
-            interpolator = DecelerateInterpolator()
-        }
-
         val animationSet = AnimationSet(false)
             .apply {
-                addAnimation(animationAlphaIn)
-                addAnimation(animationResize)
-                addAnimation(animationAlphaOut)
+                addAnimation(alphaIn())
+                addAnimation(scaleUp())
+                addAnimation(alphaOut())
                 fillAfter = true
                 setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(animation: Animation) { /* no-op */ }
