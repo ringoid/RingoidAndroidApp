@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.widget_extend_image_button.view.*
 
 class ExtendImageButton : FrameLayout {
 
+    private var btnClickable: Boolean = true
     private val detector = GestureDetector(context, HorizontalSwipeGestureRecognizer())
     private var flingListener: ((direction: Direction) -> Unit)? = null
 
@@ -80,6 +82,8 @@ class ExtendImageButton : FrameLayout {
     }
 
     private fun setClickability(btnClickable: Boolean) {
+        this.btnClickable = btnClickable
+
         isClickable = btnClickable
         isFocusable = btnClickable
         setOnTouchListener { _, event ->
@@ -98,4 +102,8 @@ class ExtendImageButton : FrameLayout {
             }
         }
     }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean =
+        if (!btnClickable) true
+        else super.onInterceptTouchEvent(ev)
 }

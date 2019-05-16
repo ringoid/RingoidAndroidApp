@@ -23,6 +23,17 @@
         app:xbtnClickable="false"
         app:xbtnSrc="@drawable/ic_chat_bubble_outline_white_36dp"/>
 
+    <ImageView
+        android:id="@+id/iv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_messenger_fill_lgreen_36dp"/>
+
     <TextView
         android:id="@+id/tv_seen_status"
         android:layout_marginBottom="@dimen/std_margin_32"
