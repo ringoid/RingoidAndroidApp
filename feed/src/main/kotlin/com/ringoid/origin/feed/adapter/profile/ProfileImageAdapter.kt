@@ -12,8 +12,6 @@ import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.view.common.visual.LikeVisualEffect
-import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
