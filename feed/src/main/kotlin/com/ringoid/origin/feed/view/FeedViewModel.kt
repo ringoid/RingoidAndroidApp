@@ -186,14 +186,13 @@ abstract class FeedViewModel(
     }
 
     open fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        advanceAndPushViewObject(imageId to profileId, recreate = true)
+        advanceAndPushViewObject(imageId to profileId)
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
                    else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
 
         // discard profile from feed after like / unlike (unlike is not possible, left for symmetry)
         viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
-        advanceAndPushViewObject(profileId = profileId)  // push VIEW as profile was discarded
 
         // analytics
         with (analyticsManager) {
