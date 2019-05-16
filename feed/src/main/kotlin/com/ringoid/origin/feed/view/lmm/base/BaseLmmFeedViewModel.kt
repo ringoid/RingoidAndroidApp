@@ -131,16 +131,7 @@ abstract class BaseLmmFeedViewModel(
             .doOnSuccess {
                 val list = mutableListOf<FeedItem>()
                     .apply {
-                        /**
-                         * When prepend feed item on transferring it is important what is destination
-                         * Feed. If it is Messages Feed, then feed item has been transferred from Matches
-                         * Feed by applying first user message to it, that will alter chat blob icon on it.
-                         * This should be taken into account and such icon should also be altered here.
-                         */
-                        val item = it.takeIf { this@BaseLmmFeedViewModel is MessengerViewModel }
-                            ?.apply { it.messages.add(userMessage(it.id)) }
-                            ?: it
-                        add(item)
+                        add(it)
                         feed.value?.let { addAll(it) }
                     }
                 feed.value = list  // prepended list
