@@ -50,6 +50,7 @@ interface IFeedRepository {
     val feedMatches: PublishSubject<List<FeedItem>>
     val feedMessages: PublishSubject<List<FeedItem>>
     val lmmChanged: PublishSubject<Boolean>
+    val lmmLoaded: PublishSubject<Long>
     val newLikesCount: PublishSubject<Int>
     val newMatchesCount: PublishSubject<Int>
     val newMessagesCount: PublishSubject<Int>
@@ -57,6 +58,8 @@ interface IFeedRepository {
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
 
     fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm>
+
+    fun getLmmProfileIds(): Single<List<String>>
 
     fun dropLmmChangedStatus(): Completable
 }

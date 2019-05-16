@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.common.util.ArrayUtils.removeAll
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
@@ -11,6 +12,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
+import com.ringoid.domain.interactor.feed.property.GetCachedLmmFeedItemIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -21,6 +23,7 @@ import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
@@ -28,6 +31,7 @@ import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
     private val getNewFacesUseCase: GetNewFacesUseCase,
+    private val getCachedLmmFeedItemIdsUseCase: GetCachedLmmFeedItemIdsUseCase,
     @DebugOnly private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
     @DebugOnly private val debugGetNewFacesDropFlagsUseCase: DebugGetNewFacesDropFlagsUseCase,
     @DebugOnly private val debugGetNewFacesRepeatAfterDelayForPageUseCase: DebugGetNewFacesRepeatAfterDelayForPageUseCase,
@@ -50,6 +54,24 @@ class ExploreViewModel @Inject constructor(
     private var nextPage: Int = 0
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_EXPLORE
+
+    init {
+        getNewFacesUseCase.repository.lmmLoaded
+            .flatMap { getCachedLmmFeedItemIdsUseCase.source().toObservable() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ ids ->
+                feed.value?.profiles?.toMutableList()
+                    ?.let { profiles ->
+                        val size = profiles.size
+                        profiles.removeAll { it.id in ids }
+                        if (profiles.removeAll { it.id in ids }) {
+                            feed.value = Feed(profiles)
+                            DebugLogUtil.d("Removed ${size - profiles.size} profiles from NewFaces that already present in LMM [${ids.size}]")
+                        }
+                    }
+            }, Timber::e)
+    }
 
     // --------------------------------------------------------------------------------------------
     override fun getFeed() {

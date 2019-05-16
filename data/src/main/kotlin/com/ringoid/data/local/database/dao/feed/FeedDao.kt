@@ -20,6 +20,9 @@ interface FeedDao {
     @Query("SELECT * FROM ${FeedItemDbo.TABLE_NAME} WHERE ${FeedItemDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun feedItems(sourceFeed: String): Single<List<FullFeedItemDbo>>
 
+    @Query("SELECT ${FeedItemDbo.COLUMN_ID} FROM ${FeedItemDbo.TABLE_NAME}")
+    fun feedItemIds(): Single<List<String>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addFeedItems(feedItems: Collection<FeedItemDbo>)
 
