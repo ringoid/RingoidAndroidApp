@@ -30,44 +30,46 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
         // scroll affected
         if (payloads.contains(FeedViewHolderHideChatBtnOnScroll)) {
-            itemView.ibtn_message.changeVisibility(isVisible = false)
+//            itemView.ibtn_message.changeVisibility(isVisible = false)
         }
         if (payloads.contains(FeedViewHolderShowChatBtnOnScroll)) {
-            itemView.ibtn_message.changeVisibility(isVisible = true)
+//            itemView.ibtn_message.changeVisibility(isVisible = true)
         }
     }
 
     // ------------------------------------------------------------------------
-    override fun hideControls() {
-        super.hideControls()
-        itemView.ibtn_message.changeVisibility(isVisible = false)
-    }
-
-    override fun showControls() {
-        super.showControls()
-        itemView.ibtn_message.changeVisibility(isVisible = true)
-    }
+//    override fun hideControls() {
+//        super.hideControls()
+//        itemView.ibtn_message.changeVisibility(isVisible = false)
+//    }
+//
+//    override fun showControls() {
+//        super.showControls()
+//        itemView.ibtn_message.changeVisibility(isVisible = true)
+//    }
 
     // ------------------------------------------
     private fun setMessengerIcon(model: FeedItemVO) {
+        var isVisible = false
         val iconResId = if (model.messages.isEmpty()) {
-            itemView.ibtn_message.alpha = 0f
+            isVisible = false
             R.drawable.ic_chat_bubble_outline_white
         } else {
             val peerMessagesCount = model.countOfPeerMessages()
             if (peerMessagesCount > 0) {
                 if (peerMessagesCount == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
-                    itemView.ibtn_message.alpha = 0f
+                    isVisible = false
                     R.drawable.ic_messenger_outline_white
                 } else {  // has unread messages from peer
-                    itemView.ibtn_message.alpha = 1f
+                    isVisible = true
                     R.drawable.ic_messenger_fill_lgreen
                 }
             } else {  // contains only current user's messages
-                itemView.ibtn_message.alpha = 0f
+                isVisible = false
                 R.drawable.ic_chat_bubble_white
             }
         }
+        itemView.ibtn_message.changeVisibility(isVisible = isVisible)
         itemView.ibtn_message.setImageSrcResource(resId = iconResId)
     }
 }

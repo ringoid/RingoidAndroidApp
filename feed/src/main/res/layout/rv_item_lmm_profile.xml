@@ -16,9 +16,11 @@
         android:paddingBottom="@dimen/std_margin_32"
         android:paddingStart="@dimen/std_margin_32"
         android:paddingEnd="@dimen/std_margin_16"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:xbtnClickable="false"
         app:xbtnSrc="@drawable/ic_chat_bubble_outline_white_36dp"/>
 
     <TextView

@@ -19,6 +19,7 @@
         <attr name="xbtnInnerSize" format="reference"/>
         <attr name="xbtnBg" format="reference"/>
         <attr name="xbtnSrc" format="reference"/>
+        <attr name="xbtnClickable" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="ForegroundImageView">
