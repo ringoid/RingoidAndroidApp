@@ -286,7 +286,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     protected fun getStrategyByTag(tag: String): OffsetScrollStrategy? = offsetScrollStrats.find { it.tag == tag }
 
     protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
-        listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabs2IndicatorOnScroll, show = FeedViewHolderShowTabs2IndicatorOnScroll),
+        listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_FOOTER_LABEL_BOTTOM, hide = FeedFooterViewHolderHideControls, show = FeedFooterViewHolderShowControls))
 

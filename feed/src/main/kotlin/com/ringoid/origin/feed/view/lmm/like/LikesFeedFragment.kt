@@ -68,7 +68,7 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
         mutableListOf<OffsetScrollStrategy>()
             .apply {
                 addAll(super.getOffsetScrollStrategies())
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabs2IndicatorOnScroll, show = FeedViewHolderShowTabs2IndicatorOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
             }
 }

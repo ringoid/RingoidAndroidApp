@@ -12,7 +12,7 @@
         android:clipToPadding="false"/>
 
     <me.relex.circleindicator.CircleIndicator2
-        android:id="@+id/tabs2"
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="@dimen/feed_tab_layout_height"
         android:layout_marginBottom="@dimen/std_margin_16"
