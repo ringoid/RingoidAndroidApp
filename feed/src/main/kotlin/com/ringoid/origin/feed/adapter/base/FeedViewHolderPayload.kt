@@ -17,6 +17,3 @@ object FeedViewHolderShowTabsIndicatorOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideTabsIndicatorOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowTabs2IndicatorOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideTabs2IndicatorOnScroll : FeedViewHolderPayload()
-
-object LikeFeedViewHolderHideChatControls : FeedViewHolderPayload()
-object LikeFeedViewHolderShowChatControls : FeedViewHolderPayload()

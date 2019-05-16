@@ -295,24 +295,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
                 offsetScrollStrats.forEach {
-                    if (it.isEnabledForPosition(position)) {
-                        view.post {
-                            // avoid change rv during layout, leading to crash
-                            when (it.type) {
-                                OffsetScrollStrategy.Type.BOTTOM -> {
-                                    if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
-                                        if (bottom - view.top < it.deltaOffset) {
-                                            if (!it.isHiddenAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.hide)
-                                            }
-                                        } else {
-                                            if (!it.isShownAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.show)
-                                            }
-                                        }
-                                    }
-                                }
-                                OffsetScrollStrategy.Type.DOWN -> {
+                    view.post {
+                        // avoid change rv during layout, leading to crash
+                        when (it.type) {
+                            OffsetScrollStrategy.Type.BOTTOM -> {
+                                if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
                                     if (bottom - view.top < it.deltaOffset) {
                                         if (!it.isHiddenAtAndSync(position)) {
                                             feedAdapter.notifyItemChanged(position, it.hide)
@@ -323,29 +310,40 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                                         }
                                     }
                                 }
-                                OffsetScrollStrategy.Type.TOP -> {
-                                    if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
-                                        if (top - view.top >= it.deltaOffset) {
-                                            if (!it.isHiddenAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.hide)
-                                            }
-                                        } else {
-                                            if (!it.isShownAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.show)
-                                            }
+                            }
+                            OffsetScrollStrategy.Type.DOWN -> {
+                                if (bottom - view.top < it.deltaOffset) {
+                                    if (!it.isHiddenAtAndSync(position)) {
+                                        feedAdapter.notifyItemChanged(position, it.hide)
+                                    }
+                                } else {
+                                    if (!it.isShownAtAndSync(position)) {
+                                        feedAdapter.notifyItemChanged(position, it.show)
+                                    }
+                                }
+                            }
+                            OffsetScrollStrategy.Type.TOP -> {
+                                if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
+                                    if (top - view.top >= it.deltaOffset) {
+                                        if (!it.isHiddenAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.hide)
+                                        }
+                                    } else {
+                                        if (!it.isShownAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.show)
                                         }
                                     }
                                 }
-                                OffsetScrollStrategy.Type.UP -> {
-                                    if (view.top - top <= 0) {
-                                        if (top - view.top >= it.deltaOffset) {
-                                            if (!it.isHiddenAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.hide)
-                                            }
-                                        } else {
-                                            if (!it.isShownAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.show)
-                                            }
+                            }
+                            OffsetScrollStrategy.Type.UP -> {
+                                if (view.top - top <= 0) {
+                                    if (top - view.top >= it.deltaOffset) {
+                                        if (!it.isHiddenAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.hide)
+                                        }
+                                    } else {
+                                        if (!it.isShownAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.show)
                                         }
                                     }
                                 }

@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.memory.ChatInMemoryCache
-import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.utility.changeVisibility
@@ -19,7 +18,6 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
     override fun bind(model: FeedItemVO) {
         super.bind(model)
-//        setMessengerIcon(model)
         showUnreadIcon(model)
 
         itemView.tv_seen_status.text = if (model.isNotSeen) "Not Seen" else "Seen"
@@ -27,16 +25,13 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
         super.bind(model, payloads)
-//        setMessengerIcon(model)
         showUnreadIcon(model)
 
         // scroll affected
         if (payloads.contains(FeedViewHolderHideChatBtnOnScroll)) {
-//            itemView.ibtn_message.changeVisibility(isVisible = false)
             itemView.iv_message.changeVisibility(isVisible = false)
         }
         if (payloads.contains(FeedViewHolderShowChatBtnOnScroll)) {
-//            itemView.ibtn_message.changeVisibility(isVisible = true)
             itemView.iv_message.changeVisibility(isVisible = true)
         }
     }
@@ -44,35 +39,15 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     // ------------------------------------------------------------------------
     override fun hideControls() {
         super.hideControls()
-//        itemView.ibtn_message.changeVisibility(isVisible = false)
         itemView.iv_message.changeVisibility(isVisible = false)
     }
 
     override fun showControls() {
         super.showControls()
-//        itemView.ibtn_message.changeVisibility(isVisible = true)
         itemView.iv_message.changeVisibility(isVisible = true)
     }
 
     // ------------------------------------------
-    private fun setMessengerIcon(model: FeedItemVO) {
-        val iconResId = if (model.messages.isEmpty()) {
-            R.drawable.ic_chat_bubble_outline_white
-        } else {
-            val peerMessagesCount = model.countOfPeerMessages()
-            if (peerMessagesCount > 0) {
-                if (peerMessagesCount == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
-                    R.drawable.ic_messenger_outline_white
-                } else {  // has unread messages from peer
-                    R.drawable.ic_messenger_fill_lgreen
-                }
-            } else {  // contains only current user's messages
-                R.drawable.ic_chat_bubble_white
-            }
-        }
-        itemView.ibtn_message.setImageSrcResource(resId = iconResId)
-    }
-
     private fun showUnreadIcon(model: FeedItemVO) {
         val isVisible = if (!model.messages.isEmpty()) {
             val peerMessagesCount = model.countOfPeerMessages()

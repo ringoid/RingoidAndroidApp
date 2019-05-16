@@ -52,18 +52,6 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is HAS_LIKES_ON_PROFILE -> {
-                        val position = (newState.residual as HAS_LIKES_ON_PROFILE).feedItemPosition
-                        feedAdapter.notifyItemChanged(position, LikeFeedViewHolderShowChatControls)
-                        getStrategyByTag(tag = "chatBottom")?.enableForPosition(position)
-                        getStrategyByTag(tag = "chatTop")?.enableForPosition(position)
-                    }
-                    is NO_LIKES_ON_PROFILE -> {
-                        val position = (newState.residual as NO_LIKES_ON_PROFILE).feedItemPosition
-                        feedAdapter.notifyItemChanged(position, LikeFeedViewHolderHideChatControls)
-                        getStrategyByTag(tag = "chatBottom")?.disableForPosition(position)
-                        getStrategyByTag(tag = "chatTop")?.disableForPosition(position)
-                    }
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         onDiscardProfileState(profileId)  // discard profile on transfer
@@ -81,11 +69,9 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
             .apply {
                 addAll(super.getOffsetScrollStrategies())
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_BOTTOM, hide = FeedViewHolderHideLikeBtnOnScroll, show = FeedViewHolderShowLikeBtnOnScroll))
-                add(OffsetScrollStrategy(tag = "chatBottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_MID_BTN_BOTTOM, hide = FeedViewHolderHideChatBtnOnScroll, show = FeedViewHolderShowChatBtnOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabs2IndicatorOnScroll, show = FeedViewHolderShowTabs2IndicatorOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_TOP, hide = FeedViewHolderHideLikeBtnOnScroll, show = FeedViewHolderShowLikeBtnOnScroll))
-                add(OffsetScrollStrategy(tag = "chatTop", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_MID_BTN_TOP, hide = FeedViewHolderHideChatBtnOnScroll, show = FeedViewHolderShowChatBtnOnScroll))
             }
 }

@@ -48,8 +48,6 @@ class LikesFeedViewModel @Inject constructor(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
-    private val numberOfLikes = mutableMapOf<String, MutableSet<String>>()
-
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
@@ -77,14 +75,6 @@ class LikesFeedViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
-        if (!numberOfLikes.containsKey(profileId)) {
-            numberOfLikes[profileId] = mutableSetOf()
-        }
-        numberOfLikes[profileId]?.let {
-            if (isLiked) it.add(imageId) else it.remove(imageId)
-            viewState.value = if (it.isEmpty()) ViewState.DONE(NO_LIKES_ON_PROFILE(feedItemPosition))
-                              else ViewState.DONE(HAS_LIKES_ON_PROFILE(feedItemPosition))
-        }
         onLike(profileId, imageId, isLiked)
 
         // transfer liked profile from Likes Feed to Matches Feed, by Product
