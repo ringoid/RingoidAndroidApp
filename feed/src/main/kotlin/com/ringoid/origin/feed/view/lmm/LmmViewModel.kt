@@ -57,6 +57,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     // --------------------------------------------------------------------------------------------
     override fun onFreshStart() {
         super.onFreshStart()
+        DebugLogUtil.i("Get LMM on fresh start")
         getLmm()
     }
 
@@ -83,6 +84,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // refresh on Explore Feed screen leads Lmm screen to refresh as well
+        DebugLogUtil.i("Get LMM on refresh Explore Feed")
         getLmm()
     }
 
@@ -91,6 +93,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // refresh on Profile screen leads Lmm screen to refresh as well
+        DebugLogUtil.i("Get LMM on refresh Profile")
         getLmm()
     }
 
@@ -98,6 +101,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        DebugLogUtil.i("Get LMM on Application reopen")
         getLmm()  // app reopen leads Lmm screen to refresh as well
     }
 
@@ -105,8 +109,8 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        if (event.msElapsed >= 300000L) {
-            DebugLogUtil.b("App last open was more than 5 minutes ago, refresh Lmm...")
+        if (event.msElapsed in 300000L..1557989300340L) {
+            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Lmm...")
             getLmm()  // app reopen leads Lmm screen to refresh as well
         }
     }
