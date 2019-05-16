@@ -66,7 +66,7 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
             savedInstanceState ?: run {
                 ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(supportFragmentManager, tag)
             }
-            ImageLoader.load(uri = payload.peerImageUri, imageView = iv_chat_image)
+            ImageLoader.load(uri = payload.peerImageUri, thumbnailUri = payload.peerThumbnailUri, imageView = iv_chat_image)
         }
     }
 }

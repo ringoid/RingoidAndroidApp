@@ -49,8 +49,8 @@ class ProfileImageAdapter(private val context: Context)
         getModels().subList(position, position + 1).toMutableList()
 
     override fun getPreloadRequestBuilder(item: ProfileImageVO): RequestBuilder<*>? =
-        ImageLoader.loadRequest(uri = item.image.uri, context = context,
-            options = RequestOptions().centerCrop())
+        ImageLoader.loadRequest(uri = item.image.uri, thumbnailUri = item.image.thumbnailUri,
+            context = context, options = RequestOptions().centerCrop())
 
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
         val clickListener = if (!isLikeEnabled) {
