@@ -2,6 +2,7 @@ package com.ringoid.domain.manager
 
 import androidx.annotation.StyleRes
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.model.user.AccessToken
 
@@ -37,7 +38,9 @@ interface ISharedPrefsManager {
 
     fun currentUserId(): String?
 
-    fun saveUserProfile(userId: String, accessToken: String)
+    fun currentUserGender(): Gender
+
+    fun saveUserProfile(userId: String, userGender: Gender, accessToken: String)
 
     fun deleteUserProfile(userId: String)
 

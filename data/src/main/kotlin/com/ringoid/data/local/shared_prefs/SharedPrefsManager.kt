@@ -7,6 +7,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
@@ -45,6 +46,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         /* Auth */
         // --------------------------------------
         const val SP_KEY_AUTH_USER_ID = "sp_key_auth_user_id"
+        const val SP_KEY_AUTH_USER_GENDER = "sp_key_auth_user_gender"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
 
         /* Location */
@@ -128,9 +130,13 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
             .takeIf { it.contains(SP_KEY_AUTH_USER_ID) }
             ?.let { it.getString(SP_KEY_AUTH_USER_ID, null) }
 
-    override fun saveUserProfile(userId: String, accessToken: String) {
+    override fun currentUserGender(): Gender =
+        Gender.from(sharedPreferences.getString(SP_KEY_AUTH_USER_GENDER, "") ?: "")
+
+    override fun saveUserProfile(userId: String, userGender: Gender, accessToken: String) {
         sharedPreferences.edit()
             .putString(SP_KEY_AUTH_USER_ID, userId)
+            .putString(SP_KEY_AUTH_USER_GENDER, userGender.string)
             .putString(SP_KEY_AUTH_ACCESS_TOKEN, accessToken)
             .apply()
     }
@@ -138,6 +144,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     override fun deleteUserProfile(userId: String) {
         sharedPreferences.edit()
             .remove(SP_KEY_AUTH_USER_ID)
+            .remove(SP_KEY_AUTH_USER_GENDER)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
             .apply()
     }

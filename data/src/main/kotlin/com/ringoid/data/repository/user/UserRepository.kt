@@ -10,6 +10,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.*
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
@@ -36,7 +37,7 @@ class UserRepository @Inject constructor(
         cloud.createUserProfile(essence)
              .handleError(tag = "createUserProfile", traceTag = "auth/create_profile")
              .doOnSuccess {
-                 spm.saveUserProfile(userId = it.userId, accessToken = it.accessToken)
+                 spm.saveUserProfile(userId = it.userId, userGender = Gender.from(essence.sex), accessToken = it.accessToken)
                  local.addUserProfile(ProfileDbo(id = it.userId))
                  SentryUtil.setUser(spm)
              }
