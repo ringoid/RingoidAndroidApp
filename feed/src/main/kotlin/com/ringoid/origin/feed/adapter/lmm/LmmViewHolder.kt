@@ -51,16 +51,20 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     // ------------------------------------------
     private fun setMessengerIcon(model: FeedItemVO) {
         val iconResId = if (model.messages.isEmpty()) {
+            itemView.ibtn_message.alpha = 0f
             R.drawable.ic_chat_bubble_outline_white
         } else {
             val peerMessagesCount = model.countOfPeerMessages()
             if (peerMessagesCount > 0) {
                 if (peerMessagesCount == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
+                    itemView.ibtn_message.alpha = 0f
                     R.drawable.ic_messenger_outline_white
                 } else {  // has unread messages from peer
+                    itemView.ibtn_message.alpha = 1f
                     R.drawable.ic_messenger_fill_lgreen
                 }
             } else {  // contains only current user's messages
+                itemView.ibtn_message.alpha = 0f
                 R.drawable.ic_chat_bubble_white
             }
         }

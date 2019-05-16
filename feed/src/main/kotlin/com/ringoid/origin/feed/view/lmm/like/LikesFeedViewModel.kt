@@ -77,7 +77,6 @@ class LikesFeedViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
-        // TODO: when profile is discarded on like - dont show message icon
         if (!numberOfLikes.containsKey(profileId)) {
             numberOfLikes[profileId] = mutableSetOf()
         }
