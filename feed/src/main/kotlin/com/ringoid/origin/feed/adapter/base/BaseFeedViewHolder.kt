@@ -139,12 +139,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowTabs2IndicatorOnScroll)) {
             itemView.tabs2.changeVisibility(isVisible = true)
         }
-        if (payloads.contains(FeedViewHolderHideLikeBtnOnScroll)) {
-            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
-        }
-        if (payloads.contains(FeedViewHolderShowLikeBtnOnScroll)) {
-            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
-        }
     }
 
     // ------------------------------------------------------------------------
