@@ -7,6 +7,7 @@ import com.ringoid.domain.model.IModel
 interface IImage : IModel, Parcelable {
 
     val uri: String?
+    val thumbnailUri: String?
 
     fun copyWithId(id: String): IImage
 
