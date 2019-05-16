@@ -6,11 +6,13 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.utility.randomString
 
 data class Image(override val id: String, override val uri: String? = null,
+                 override val thumbnailUri: String? = null,
                  override val isRealModel: Boolean = true) : IImage {
 
-    private constructor(source: Parcel): this(id = source.readString() ?: DomainUtil.BAD_ID, uri = source.readString())
+    private constructor(source: Parcel): this(id = source.readString() ?: DomainUtil.BAD_ID,
+        uri = source.readString(), thumbnailUri = source.readString())
 
-    override fun copyWithId(id: String): IImage = Image(id = id, uri = uri)
+    override fun copyWithId(id: String): IImage = Image(id = id, uri = uri, thumbnailUri = thumbnailUri)
 
     override fun describeContents(): Int = 0
 
@@ -18,6 +20,7 @@ data class Image(override val id: String, override val uri: String? = null,
         dest.apply {
             writeString(id)
             writeString(uri)
+            writeString(thumbnailUri)
         }
     }
 
@@ -30,4 +33,4 @@ data class Image(override val id: String, override val uri: String? = null,
     }
 }
 
-val EmptyImage = Image(id = randomString(), uri = null, isRealModel = false)
+val EmptyImage = Image(id = randomString(), uri = null, thumbnailUri = null, isRealModel = false)

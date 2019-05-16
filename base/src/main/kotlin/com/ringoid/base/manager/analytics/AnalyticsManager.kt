@@ -3,11 +3,14 @@ package com.ringoid.base.manager.analytics
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import com.flurry.android.Constants
 import com.flurry.android.FlurryAgent
+import com.flurry.android.FlurryAgent.setUserId
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.domain.misc.Gender
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -39,14 +42,27 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
     }
 
     fun setUser(spm: ISharedPrefsManager) {
-        spm.currentUserId()?.let { setUserId(it) }
+        with (spm) {
+            currentUserId()?.let { setUserId(it) }
+            currentUserGender().let { setUserGender(it) }
+        }
     }
 
-    fun setUserId(userId: String?) {
+    private fun setUserId(userId: String?) {
         userId?.let {
             firebase.setUserId(it)
             FlurryAgent.setUserId(it)
         }
+    }
+
+    private fun setUserGender(gender: Gender) {
+        val g = when (gender) {
+            Gender.FEMALE -> Constants.FEMALE
+            Gender.MALE -> Constants.MALE
+            Gender.UNKNOWN -> Constants.UNKNOWN
+        }
+        firebase.setUserProperty("gender", gender.string)
+        FlurryAgent.setGender(g)
     }
 
     // --------------------------------------------------------------------------------------------

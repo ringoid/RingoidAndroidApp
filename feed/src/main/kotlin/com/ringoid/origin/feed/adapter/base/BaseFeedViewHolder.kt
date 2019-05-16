@@ -67,13 +67,13 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                 .also {
                     it.onBeforeLikeListener = onBeforeLikeListener
                     it.onImageTouchListener = onImageTouchListener
-                    it.tabsObserver = itemView.tabs2.adapterDataObserver
+                    it.tabsObserver = itemView.tabs.adapterDataObserver
                 }
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 .also { it.initialPrefetchItemCount = 4 }
             snapHelper.attachToRecyclerView(this)
-            itemView.tabs2.attachToRecyclerView(this, snapHelper)
+            itemView.tabs.attachToRecyclerView(this, snapHelper)
             setHasFixedSize(true)
             setRecycledViewPool(viewPool)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
@@ -104,7 +104,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
             itemView.rv_items.post { itemView.rv_items.linearLayoutManager()?.scrollToPosition(model.positionOfImage) }
-            itemView.tabs2.alpha = if (model.images.size < 2) 0.0f else 1.0f
+            itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f
         }
 
         if (BuildConfig.IS_STAGING) {
@@ -127,30 +127,18 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowSettingsBtnOnScroll)) {
             itemView.ibtn_settings.changeVisibility(isVisible = true)
         }
-//        if (payloads.contains(FeedViewHolderHideTabsIndicatorOnScroll)) {
-//            itemView.tabs.changeVisibility(isVisible = false)
-//        }
-//        if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
-//            itemView.tabs.changeVisibility(isVisible = true)
-//        }
-        if (payloads.contains(FeedViewHolderHideTabs2IndicatorOnScroll)) {
-            itemView.tabs2.changeVisibility(isVisible = false)
+        if (payloads.contains(FeedViewHolderHideTabsIndicatorOnScroll)) {
+            itemView.tabs.changeVisibility(isVisible = false)
         }
-        if (payloads.contains(FeedViewHolderShowTabs2IndicatorOnScroll)) {
-            itemView.tabs2.changeVisibility(isVisible = true)
-        }
-        if (payloads.contains(FeedViewHolderHideLikeBtnOnScroll)) {
-            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
-        }
-        if (payloads.contains(FeedViewHolderShowLikeBtnOnScroll)) {
-            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
+        if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
+            itemView.tabs.changeVisibility(isVisible = true)
         }
     }
 
     // ------------------------------------------------------------------------
     protected open fun hideControls() {
         itemView.apply {
-            tabs2.changeVisibility(isVisible = false)
+            tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
@@ -158,7 +146,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     protected open fun showControls() {
         itemView.apply {
-            tabs2.changeVisibility(isVisible = true)
+            tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)

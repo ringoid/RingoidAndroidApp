@@ -21,8 +21,6 @@ open class MatchFeedAdapter : BaseLmmAdapter() {
                     adapter.isLikeEnabled = false  // hide like button on matches feed items
                     adapter.itemClickListener = wrapOnImageClickListenerByFeedItem(vh, onImageToOpenChatClickListener)
                 }
-                (vh.itemView.ibtn_message.layoutParams as? ConstraintLayout.LayoutParams)
-                    ?.apply { verticalBias = 0.28f }?.let { vh.itemView.ibtn_message.layoutParams = it }
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 }

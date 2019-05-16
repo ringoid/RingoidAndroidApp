@@ -180,6 +180,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         peerId = peerId,
                         peerImageId = image?.id ?: DomainUtil.BAD_ID,
                         peerImageUri = image?.uri,
+                        peerThumbnailUri = image?.thumbnailUri,
                         sourceFeed = getSourceFeed())
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     scrollToTopOfItemAtPositionAndPost(position).post {

@@ -11,7 +11,6 @@ class LikeFeedAdapter : BaseLmmAdapter() {
 
     override fun instantiateViewHolder(view: View): LmmViewHolder =
         LikeFeedViewHolder(view, viewPool = imagesViewPool).also { vh ->
-            vh.itemView.ibtn_message.changeVisibility(isVisible = false)  // hide message button initially
             vh.profileImageAdapter.itemClickListener = { model, position ->
                 getModel(vh.adapterPosition).likedImages[model.image.id] = model.isLiked
                 wrapOnImageClickListenerByFeedItem(vh, onLikeImageListener)?.invoke(model, position)

@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getSelectableItemBgBorderless
@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.widget_extend_image_button.view.*
 
 class ExtendImageButton : FrameLayout {
 
+    private var btnClickable: Boolean = true
     private val detector = GestureDetector(context, HorizontalSwipeGestureRecognizer())
     private var flingListener: ((direction: Direction) -> Unit)? = null
 
@@ -31,20 +32,17 @@ class ExtendImageButton : FrameLayout {
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
         background = context.getSelectableItemBgBorderless()  // ContextCompat.getDrawable(context, R.drawable.rect_debug_area)
         foreground = context.getSelectableItemBgBorderless()
-        isClickable = true
-        isFocusable = true
 
         LayoutInflater.from(context).inflate(R.layout.widget_extend_image_button, this, true)
 
         context.obtainStyledAttributes(attributes, R.styleable.ExtendImageButton, defStyleAttr, 0)
             .apply {
+                setClickability(getBoolean(R.styleable.ExtendImageButton_xbtnClickable, true))
                 setImageSize(resId = getResourceId(R.styleable.ExtendImageButton_xbtnInnerSize, 0))
                 setImageBgResource(resId = getResourceId(R.styleable.ExtendImageButton_xbtnBg, 0))
                 setImageSrcResource(resId = getResourceId(R.styleable.ExtendImageButton_xbtnSrc, 0))
                 recycle()
             }
-
-        setOnTouchListener { _, event -> detector.onTouchEvent(event) }
     }
 
     /* API */
@@ -82,4 +80,30 @@ class ExtendImageButton : FrameLayout {
             return super.onSwipe(direction)
         }
     }
+
+    private fun setClickability(btnClickable: Boolean) {
+        this.btnClickable = btnClickable
+
+        isClickable = btnClickable
+        isFocusable = btnClickable
+        setOnTouchListener { _, event ->
+            if (btnClickable) {
+                detector.onTouchEvent(event)
+            } else {
+                false
+            }
+        }
+        with (ibtn) {
+            isClickable = btnClickable
+            isFocusable = btnClickable
+            if (!btnClickable) {
+                background = null
+                setOnTouchListener { _, _ -> false }
+            }
+        }
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean =
+        if (!btnClickable) true
+        else super.onInterceptTouchEvent(ev)
 }

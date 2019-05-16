@@ -5,6 +5,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import timber.log.Timber
 
@@ -35,6 +36,7 @@ class PushNotificationService : FirebaseMessagingService() {
         val params = Params().put(PushTokenEssenceUnauthorized(token))
         (application as? IBaseRingoidApplication)?.updatePushTokenUseCase
             ?.source(params = params)
+            ?.breadcrumb("Update push token from bg Service", "token" to token)
             ?.subscribe({ DebugLogUtil.i("Successfully uploaded Firebase push token: $token") }, Timber::e)
     }
 }
