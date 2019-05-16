@@ -193,6 +193,7 @@ abstract class FeedViewModel(
 
         // discard profile from feed after like / unlike (unlike is not possible, left for symmetry)
         viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
+        // TODO: on discard - need to start VIEW for incoming feed item, that becomes visible in list
 
         // analytics
         with (analyticsManager) {
@@ -256,6 +257,7 @@ abstract class FeedViewModel(
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
                 viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
+                // TODO: on discard - need to start VIEW for incoming feed item, that becomes visible in list
             }, Timber::e)
 
         // remove all messages for blocked profile, to exclude them from messages counting

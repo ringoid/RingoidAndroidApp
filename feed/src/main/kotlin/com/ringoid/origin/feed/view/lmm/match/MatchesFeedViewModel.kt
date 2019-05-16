@@ -92,5 +92,6 @@ class MatchesFeedViewModel @Inject constructor(
         viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
 
         advanceAndPushViewObject(profileId = profileId)  // push VIEW as profile was discarded
+        // TODO: on discard - need to start VIEW for incoming feed item, that becomes visible in list
     }
 }
