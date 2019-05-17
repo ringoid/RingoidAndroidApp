@@ -3,10 +3,6 @@ package com.ringoid.origin.view.common.visual
 import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.AnimationSet
-import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.ringoid.origin.AppRes
@@ -45,12 +41,12 @@ class VisualEffectView : FrameLayout {
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                 setImageResource(effect.resId)
                 translationX = effect.x - AppRes.ICON_SIZE_HALF2_96
-                translationY = effect.y - AppRes.ICON_SIZE_HALF_96
+                translationY = effect.y - AppRes.ICON_SIZE_96
                 addView(this)
             }
 
         image.animate()
-            .translationYBy(-900f)
+            .translationYBy(-1100f)
             .scaleXBy(2f)
             .scaleYBy(2f)
             .alpha(0f)
@@ -62,7 +58,7 @@ class VisualEffectView : FrameLayout {
                     removeView(image)
                 }
             })
-            .setDuration(800L)
+            .setDuration(900L)
             .start()
     }
 }
