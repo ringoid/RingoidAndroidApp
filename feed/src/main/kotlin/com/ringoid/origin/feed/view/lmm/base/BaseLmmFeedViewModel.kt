@@ -47,6 +47,7 @@ abstract class BaseLmmFeedViewModel(
     private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     private val addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
+    private val transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -126,8 +127,10 @@ abstract class BaseLmmFeedViewModel(
         lmm?.let { setLmmItems(getFeedFromLmm(it)) } ?: run { setLmmItems(emptyList()) }
     }
 
-    fun prependProfileOnTransfer(profileId: String, action: () -> Unit) {
-        getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId))
+    fun prependProfileOnTransfer(profileId: String, destinationFeed: String, action: () -> Unit) {
+        // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
+        transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed))
+            .andThen(getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId)))
             .doOnSuccess {
                 val list = mutableListOf<FeedItem>()
                     .apply {

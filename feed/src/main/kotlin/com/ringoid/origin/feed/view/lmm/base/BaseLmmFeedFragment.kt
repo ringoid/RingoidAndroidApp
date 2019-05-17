@@ -179,8 +179,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         Bus.post(event = BusEvent.RefreshOnLmm)
     }
 
-    internal fun transferProfile(profileId: String) {
-        vm.prependProfileOnTransfer(profileId) { scrollListToPosition(0) }
+    internal fun transferProfile(profileId: String, destinationFeed: String) {
+        vm.prependProfileOnTransfer(profileId, destinationFeed) { scrollListToPosition(0) }
     }
 
     /* Lifecycle */

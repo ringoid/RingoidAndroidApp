@@ -80,10 +80,9 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     // ------------------------------------------
     override fun transferProfile(profileId: String, destinationFeed: String) {
-        vm.transferProfile(profileId = profileId, destinationFeed = destinationFeed)
         lmmPagesAdapter.accessItemByName(destinationFeed)
             ?.let { it as? BaseLmmFeedFragment<*> }
-            ?.transferProfile(profileId)
+            ?.transferProfile(profileId, destinationFeed)
     }
 
     // ------------------------------------------
