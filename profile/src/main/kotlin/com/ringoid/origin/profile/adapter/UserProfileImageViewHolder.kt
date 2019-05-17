@@ -20,7 +20,7 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
 
     override fun bind(model: UserImage) {
         showControls()  // cancel any effect caused by applied payloads
-        ImageLoader.load(uri = model.uri, thumbnailUri = model.thumbnailUri,
+        ImageLoader.load(uri = model.uri, thumbnailUri = model.uriLocal ?: model.thumbnailUri,
             imageView = itemView.iv_image, options = RequestOptions().centerCrop())
 
         itemView.tv_likes_count.text = "${model.numberOfLikes}"
