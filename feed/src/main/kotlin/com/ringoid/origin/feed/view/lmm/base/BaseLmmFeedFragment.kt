@@ -19,7 +19,6 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
-import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
@@ -179,8 +178,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         Bus.post(event = BusEvent.RefreshOnLmm)
     }
 
-    internal fun transferProfile(profileId: String, destinationFeed: String) {
-        vm.prependProfileOnTransfer(profileId, destinationFeed) { scrollListToPosition(0) }
+    internal fun transferProfile(profileId: String, destinationFeed: String, payload: Bundle? = null) {
+        vm.prependProfileOnTransfer(profileId, destinationFeed, payload)
     }
 
     /* Lifecycle */
@@ -189,7 +188,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.feed) {
-                feedAdapter.submitList(it.map { FeedItemVO(it) })
+                feedAdapter.submitList(it)
                 runOnUiThread { scrollListToPosition(0) }
             }
         }

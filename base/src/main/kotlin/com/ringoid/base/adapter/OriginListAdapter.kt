@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IListModel
+import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 
 abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     protected val diffCb: BaseDiffCallback<T>, private val headerRows: Int = 0)
@@ -33,8 +35,8 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     protected fun getAdapterListUpdateCallback(): ListUpdateCallback =
         ExposedAdapterListUpdateCallback(
             this, headerRows = headerRows, exposedCb = { getExposedCb()?.invoke() },
-            onInsertedCb = getOnInsertedCb(), onRemovedCb = getOnRemovedCb(),
-            onMovedCb = getOnMovedCb(), onChangedCb = getOnChangedCb())
+            insertSubject = insertSubject, removeSubject = removeSubject,
+            moveSubject = moveSubject, changeSubject = changeSubject)
 
     // --------------------------------------------------------------------------------------------
     override fun onBindViewHolder(holder: VH, position: Int) {
@@ -64,6 +66,18 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     protected open fun getOnRemovedCb(): ((position: Int, count: Int) -> Unit)? = null
     protected open fun getOnMovedCb(): ((fromPosition: Int, toPosition: Int) -> Unit)? = null
     protected open fun getOnChangedCb(): ((position: Int, count: Int) -> Unit)? = null
+
+    val insertSubject = PublishSubject.create<Pair<Int, Int>>()
+    val removeSubject = PublishSubject.create<Pair<Int, Int>>()
+    val moveSubject = PublishSubject.create<Pair<Int, Int>>()
+    val changeSubject = PublishSubject.create<Pair<Int, Int>>()
+
+    init {
+        insertSubject.subscribe({ getOnInsertedCb()?.invoke(it.first, it.second) }, Timber::e)
+        removeSubject.subscribe({ getOnRemovedCb()?.invoke(it.first, it.second) }, Timber::e)
+        moveSubject.subscribe({ getOnMovedCb()?.invoke(it.first, it.second) }, Timber::e)
+        changeSubject.subscribe({ getOnChangedCb()?.invoke(it.first, it.second) }, Timber::e)
+    }
 
     // --------------------------------------------------------------------------------------------
     var itemClickListener: ((model: T, position: Int) -> Unit)? = null
@@ -147,6 +161,14 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             VIEW_TYPE_HEADER, VIEW_TYPE_FOOTER, VIEW_TYPE_ERROR, VIEW_TYPE_LOADING -> getStubItem()
             else /* VIEW_TYPE_NORMAL */ -> getModel(position)
         }
+
+    fun applyOnModel(predicate: (item: T) -> Boolean, action: (item: T) -> Unit) {
+        findModelAndPosition(predicate)
+            ?.let {
+                action.invoke(it.second)
+                notifyItemChanged(it.first)
+            }
+    }
 
     fun hasModel(position: Int): Boolean = helper.currentList.size > position - fixUpForHeader()
     fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]

@@ -1,10 +1,12 @@
 package com.ringoid.origin.feed.view.lmm.base
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
@@ -17,6 +19,7 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
@@ -58,7 +61,7 @@ abstract class BaseLmmFeedViewModel(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
-    val feed by lazy { MutableLiveData<List<FeedItem>>() }
+    val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
     private var notSeenFeedItemIds = mutableSetOf<String>()
@@ -125,19 +128,23 @@ abstract class BaseLmmFeedViewModel(
         lmm?.let { setLmmItems(getFeedFromLmm(it)) } ?: run { setLmmItems(emptyList()) }
     }
 
-    fun prependProfileOnTransfer(profileId: String, destinationFeed: String, action: () -> Unit) {
+    fun prependProfileOnTransfer(profileId: String, destinationFeed: String, payload: Bundle? = null, action: (() -> Unit)? = null) {
         // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
         transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed))
             .andThen(getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId)))
             .doOnSuccess {
-                val list = mutableListOf<FeedItem>()
-                    .apply {
-                        add(it)
-                        feed.value?.let { addAll(it) }
+                val list = mutableListOf<FeedItemVO>().apply {
+                    val item = FeedItemVO(it).apply {
+                        payload?.getInt("positionOfImage", DomainUtil.BAD_POSITION)
+                            ?.takeIf { it != DomainUtil.BAD_POSITION }
+                            ?.let { this.positionOfImage = it }
                     }
+                    add(item)
+                    feed.value?.let { addAll(it) }
+                }
                 feed.value = list  // prepended list
             }
-            .subscribe({ action.invoke() }, Timber::e)
+            .subscribe({ action?.invoke() }, Timber::e)
     }
 
     private fun setLmmItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
@@ -148,7 +155,7 @@ abstract class BaseLmmFeedViewModel(
             if (BuildConfig.DEBUG) {
                 Timber.v(items.joinToString("\n\t\t", "\t*** LMM ***\n\t\t", "\n\t***\n", transform = { "LMM: ${it.toShortString()} :: ${getFeedName()}" }))
             }
-            feed.value = items
+            feed.value = items.map { FeedItemVO(it) }
             viewState.value = ViewState.IDLE
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")

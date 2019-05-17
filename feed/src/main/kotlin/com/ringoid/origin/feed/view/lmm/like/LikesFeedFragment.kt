@@ -54,8 +54,8 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                 when (newState.residual) {
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
-                        onDiscardProfileState(profileId)  // discard profile on transfer
-                        communicator(ILmmFragment::class.java)?.transferProfile(profileId, DomainUtil.SOURCE_FEED_MATCHES)
+                        val discarded = onDiscardProfileState(profileId)  // discard profile on transfer
+                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, DomainUtil.SOURCE_FEED_MATCHES)
                     }
                 }
             }

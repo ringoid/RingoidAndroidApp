@@ -8,6 +8,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeTypeface
@@ -82,7 +83,18 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun transferProfile(profileId: String, destinationFeed: String) {
         lmmPagesAdapter.accessItemByName(destinationFeed)
             ?.let { it as? BaseLmmFeedFragment<*> }
-            ?.transferProfile(profileId, destinationFeed)
+            ?.transferProfile(profileId, destinationFeed, payload = null)
+    }
+
+    override fun transferProfile(discarded: FeedItemVO?, destinationFeed: String) {
+        if (discarded == null) {
+            return
+        }
+
+        val payload = Bundle().apply { putInt("positionOfImage", discarded.positionOfImage) }
+        lmmPagesAdapter.accessItemByName(destinationFeed)
+            ?.let { it as? BaseLmmFeedFragment<*> }
+            ?.transferProfile(discarded.id, destinationFeed, payload = payload)
     }
 
     // ------------------------------------------

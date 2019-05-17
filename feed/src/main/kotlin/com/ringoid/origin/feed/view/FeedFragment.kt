@@ -98,14 +98,16 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
     }
 
-    protected fun onDiscardProfileState(profileId: String) {
-        val count = feedAdapter.getModelsCount()
-        if (count <= 1) {  // remove last feed item - show empty stub
-            onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
-        } else {  // remove not last feed item
-            feedAdapter.remove { it.id == profileId }
-        }
-    }
+    protected fun onDiscardProfileState(profileId: String): FeedItemVO? =
+        feedAdapter.findModel { it.id == profileId }
+            ?.also { _ ->
+                val count = feedAdapter.getModelsCount()
+                if (count <= 1) {  // remove last feed item - show empty stub
+                    onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
+                } else {  // remove not last feed item
+                    feedAdapter.remove { it.id == profileId }
+                }
+            }
 
     private fun onIdleState() {
         fl_empty_container?.changeVisibility(isVisible = false, soft = true)
