@@ -2,8 +2,6 @@ package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.common.util.ArrayUtils.removeAll
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -15,7 +13,6 @@ import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.feed.property.GetCachedLmmFeedItemIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.view.FeedViewModel
@@ -24,8 +21,6 @@ import com.ringoid.origin.view.common.visual.LikeVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -163,22 +158,5 @@ class ExploreViewModel @Inject constructor(
     override fun onImageTouch(x: Float, y: Float) {
         super.onImageTouch(x, y)
         VisualEffectManager.call(LikeVisualEffect(x, y))
-    }
-
-    // --------------------------------------------------------------------------------------------
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Lmm screen leads Feed screen to purge
-        clearScreen(ViewState.CLEAR.MODE_NEED_REFRESH)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Profile screen leads Feed screen to purge
-        clearScreen(ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 }
