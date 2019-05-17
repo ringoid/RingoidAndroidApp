@@ -132,7 +132,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
-                        it.firstUserMessage?.let { vm.onFirstUserMessageSent(profileId = it.peerId) }
+                        it.firstUserMessage?.let { _ -> vm.onFirstUserMessageSent(profileId = it.peerId) }
                         getRecyclerView().post {  // alter chat icon on feed item after supplying first user message to it
                             feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
                         }
