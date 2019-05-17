@@ -60,6 +60,7 @@ object AppRes {
         private set
     var STD_MARGIN_24: Int = -1
         private set
+    var SCREEN_WIDTH: Int = -1  // set by Activity
 
     // ------------------------------------------
     lateinit var UNDERSCORE_DRAWABLE: Drawable

@@ -8,6 +8,7 @@ import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseListAdapter
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -49,8 +50,8 @@ class ProfileImageAdapter(private val context: Context)
         getModels().subList(position, position + 1).toMutableList()
 
     override fun getPreloadRequestBuilder(item: ProfileImageVO): RequestBuilder<*>? =
-        ImageLoader.loadRequest(uri = item.image.uri, thumbnailUri = item.image.thumbnailUri,
-            context = context, options = RequestOptions().centerCrop())
+        ImageLoader.loadRequest(uri = item.image.thumbnailUri,
+            context = context, options = RequestOptions().centerCrop().override(AppRes.SCREEN_WIDTH, AppRes.FEED_IMAGE_HEIGHT))
 
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
         val clickListener = if (!isLikeEnabled) {

@@ -5,9 +5,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.util.FixedPreloadSizeProvider
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -93,7 +95,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     }
                 }
             })
-            imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, ViewPreloadSizeProvider<ProfileImageVO>(), 10)
+            imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, FixedPreloadSizeProvider<ProfileImageVO>(AppRes.SCREEN_WIDTH, AppRes.FEED_IMAGE_HEIGHT), 10)
             addOnScrollListener(imagePreloadListener)
         }
         itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)

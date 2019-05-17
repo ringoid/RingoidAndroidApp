@@ -25,7 +25,7 @@ object ImageLoader {
      */
     fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
         loadRequest(uri, thumbnailUri, imageView.context, options)
-            ?.listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = optimalOptions(imageView.context, uri, options)))
+            ?.listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))//optimalOptions(imageView.context, uri, options)))
             ?.into(imageView)
     }
 
@@ -38,14 +38,22 @@ object ImageLoader {
             thumbnailUri?.let {
                 Glide.with(context)
                     .load(it)
-                    .apply(optimalOptions(context, thumbnailUri, options))
+//                    .apply(optimalOptions(context, thumbnailUri, options))
             }
 
         return Glide.with(context)
             .load(uri)
-            .apply(optimalOptions(context, uri, options))
+//            .apply(optimalOptions(context, uri, options))
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
     }
+
+    fun loadRequest(uri: String?, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? =
+        uri?.let {
+            Glide.with(context)
+                .load(it)
+                .apply(wrapOptions(options))
+//                .apply(optimalOptions(context, it, options))
+        }
 
     @Suppress("CheckResult")
     internal fun load(uri: String?, imageView: ImageView, withThumbnail: Boolean = false,options: RequestOptions? = null) {
@@ -74,7 +82,10 @@ object ImageLoader {
 
     // ------------------------------------------
     private fun getDrawableFuture(uri: String?, imageView: ImageView, options: RequestOptions? = null): Future<Drawable> =
-        Glide.with(imageView).load(uri).apply(wrapOptions(options)).submit()
+        Glide.with(imageView)
+            .load(uri)
+//            .apply(wrapOptions(options))
+            .submit()
 
     // ------------------------------------------
     private fun optimalOptions(context: Context, uri: String?, options: RequestOptions?): RequestOptions {
