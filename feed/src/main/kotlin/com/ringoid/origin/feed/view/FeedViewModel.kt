@@ -18,6 +18,7 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.collection.EqualRange
@@ -193,7 +194,6 @@ abstract class FeedViewModel(
 
         // discard profile from feed after like / unlike (unlike is not possible, left for symmetry)
         viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
-        // TODO: on discard - need to start VIEW for incoming feed item, that becomes visible in list
 
         // analytics
         with (analyticsManager) {
@@ -257,7 +257,6 @@ abstract class FeedViewModel(
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
                 viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
-                // TODO: on discard - need to start VIEW for incoming feed item, that becomes visible in list
             }, Timber::e)
 
         // remove all messages for blocked profile, to exclude them from messages counting
@@ -324,6 +323,13 @@ abstract class FeedViewModel(
     protected open fun onViewFeedItem(feedItemId: String) {
         DebugLogUtil.v("On View profile [${getFeedName()}]: ${feedItemId.substring(0..3)}")
         // do something when feed item with id specified has been viewed
+    }
+
+    fun onItemBecomeVisible(profileId: String, imageId: String) {
+        DebugLogUtil.v("Item become visible [${getFeedName()}]: i=${imageId.substring(0..3)}, p=${profileId.substring(0..3)}")
+        val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
+            targetImageId = imageId, targetUserId = profileId)
+        addViewObjectToBuffer(aobj)
     }
 
     // --------------------------------------------------------------------------------------------

@@ -170,6 +170,10 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             }
     }
 
+    /**
+     * Here in all methods that obtain model by position, position is always treated as
+     * adapter position, so it must be fixed up against header / footer, if present.
+     */
     fun hasModel(position: Int): Boolean = helper.currentList.size > position - fixUpForHeader()
     fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]
     protected fun getModels(): List<T> = helper.currentList
@@ -186,6 +190,19 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             .takeIf { it != DomainUtil.BAD_POSITION }
             ?.let { it + fixUpForHeader() }
             ?: DomainUtil.BAD_POSITION
+
+    fun getModelsInRange(from: Int, to: Int): MutableList<T> {
+        if (to < from || from < 0 || to < 0 || to >= itemCount) {
+            throw IllegalArgumentException("Invalid input range: ($from, $to)")
+        }
+
+        val xfrom = if (withHeader()) from + 1 else from
+        val xto = if (getItemViewType(to) != VIEW_TYPE_NORMAL) to - 1 else to
+
+        val list = mutableListOf<T>()
+        for (i in xfrom..xto) list.add(getModel(i))
+        return list
+    }
 
     /**
      * The following two methods are just stubs to make [getItem] work properly,
