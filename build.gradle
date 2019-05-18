@@ -72,8 +72,8 @@ ext {
     postDelayMs = "1000L"
     requestTimeThreshold = "6000L"  // repeat request up to this threshold
     responseTimeThreshold = "2000L"  // alert if network responded later
-    retryCount = "5"
-    retryDelayMs = "55L"
+    retryCount = "12"
+    retryDelayMs = "54L"
 }
 
 buildscript {

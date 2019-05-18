@@ -61,7 +61,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                         exception = error  // abort retry and fallback
                         0  // delay in ms
                     }
-                    else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
+                    else -> delay * pow(1.8, attemptNumber.toDouble()).toLong()
                 }
                 exception?.let { Flowable.error<Long>(it) }
                     ?: Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
