@@ -18,7 +18,6 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.collection.EqualRange
