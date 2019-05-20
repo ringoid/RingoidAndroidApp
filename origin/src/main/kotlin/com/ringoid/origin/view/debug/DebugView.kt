@@ -37,7 +37,7 @@ class DebugView : ConstraintLayout {
             field = value
             background = if (value) BG_TRANS else BG_SOLID
         }
-    private var lifecycleToggle = BuildConfig.IS_STAGING
+    private var lifecycleToggle = BuildConfig.IS_STAGING  // lifecycle logs turned ON on Staging by default
         set(value) {
             field = value
             DebugLogUtil.w("Lifecycle logs has been turned ${if (value) "ON" else "OFF"}")

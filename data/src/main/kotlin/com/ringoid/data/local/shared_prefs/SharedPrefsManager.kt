@@ -3,7 +3,9 @@ package com.ringoid.data.local.shared_prefs
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StyleRes
+import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.manager.ISharedPrefsManager
@@ -18,7 +20,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsManager {
+class SharedPrefsManager @Inject constructor(context: Context, private val config: RuntimeConfig)
+    : ISharedPrefsManager {
 
     private val sharedPreferences: SharedPreferences
     private val backupSharedPreferences: SharedPreferences
@@ -32,6 +35,8 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
             sharedPreferences.edit().putInt(SP_KEY_BUILD_CODE, BuildConfig.BUILD_NUMBER).apply()
             deleteLastActionTime()
         }
+
+        DebugLogUtil.setConfig(config)
     }
 
     companion object {
@@ -42,6 +47,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         private const val SP_KEY_APP_UID = "sp_key_app_uid"
         private const val SP_KEY_THEME = "sp_key_theme"
         @DebugOnly private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
+        @DebugOnly private const val SP_KEY_DEVELOPER_MODE = "sp_key_developer_mode"
 
         /* Auth */
         // --------------------------------------
@@ -98,7 +104,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     // ------------------------------------------
     @DebugOnly
     override fun isDebugLogEnabled(): Boolean =
-        BuildConfig.IS_STAGING && sharedPreferences.getBoolean(SP_KEY_DEBUG_LOG_ENABLED, BuildConfig.IS_STAGING)
+        sharedPreferences.getBoolean(SP_KEY_DEBUG_LOG_ENABLED, BuildConfig.IS_STAGING)
 
     @DebugOnly
     override fun switchDebugLogEnabled() {
@@ -111,6 +117,16 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         Timber.d("Test Backup: accessToken=${accessToken()}, userId=${currentUserId()}, %s backup[%s]",
             "lastActionTime=${getLastActionTime()}, themeId=${getThemeResId()}, debugLog=${isDebugLogEnabled()}",
                 "privateKey=${getPrivateKey()}, referralId=${getReferralCode()}")
+    }
+
+    override fun isDeveloperModeEnabled(): Boolean =
+        sharedPreferences.getBoolean(SP_KEY_DEVELOPER_MODE, BuildConfig.IS_STAGING)
+            .also { config.setDeveloperMode(it) }
+
+    override fun enableDeveloperMode() {
+        sharedPreferences.edit().putBoolean(SP_KEY_DEVELOPER_MODE, true)
+            .also { config.setDeveloperMode(true) }
+            .apply()
     }
 
     /* Auth */

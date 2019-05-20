@@ -32,6 +32,10 @@ interface ISharedPrefsManager {
     @DebugOnly
     fun testBackup()
 
+    fun isDeveloperModeEnabled(): Boolean
+
+    fun enableDeveloperMode()
+
     /* Auth */
     // ------------------------------------------
     fun accessToken(): AccessToken?

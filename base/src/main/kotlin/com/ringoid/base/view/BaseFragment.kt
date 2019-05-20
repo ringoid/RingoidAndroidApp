@@ -17,6 +17,7 @@ import com.ringoid.base.viewmodel.DaggerViewModelFactory
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
+import com.ringoid.domain.manager.IRuntimeConfig
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.scope.LocalScopeProvider
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
@@ -35,6 +36,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug
+    @Inject protected lateinit var config: IRuntimeConfig
 
     var isActivityCreated = false
         private set
