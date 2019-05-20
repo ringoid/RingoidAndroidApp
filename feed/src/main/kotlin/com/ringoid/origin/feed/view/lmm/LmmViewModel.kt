@@ -114,7 +114,9 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
                                      .put("source", DomainUtil.SOURCE_FEED_PROFILE)
                 getLmmUseCase.source(params = params)
             }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { listScrolls.value = 0 }  // scroll to top position
+            .doFinally { viewState.value = ViewState.IDLE }
             .autoDisposable(this)
             .subscribe({ cachedLmm = it },
                         /**

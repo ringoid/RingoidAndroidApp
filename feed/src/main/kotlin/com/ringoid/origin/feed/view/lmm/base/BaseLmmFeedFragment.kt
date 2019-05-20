@@ -198,8 +198,16 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
          */
         communicator(ILmmFragment::class.java)?.accessViewModel()
             ?.let {
+                it.viewState.value?.let { state ->
+                    when (state) {
+                        ViewState.LOADING -> showLoading(isVisible = true)
+                        else -> {
+                            showLoading(isVisible = false)
+                            vm.applyCachedFeed(it.cachedLmm)
+                        }
+                    }
+                }
                 viewLifecycleOwner.observe(it.listScrolls, ::scrollListToPosition)
-                vm.applyCachedFeed(it.cachedLmm)
             }
     }
 

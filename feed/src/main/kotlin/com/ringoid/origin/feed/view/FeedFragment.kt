@@ -64,7 +64,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             is ViewState.CLEAR -> onClearState(mode = newState.mode)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> swipe_refresh_layout?.isRefreshing = false
+                    is ASK_TO_ENABLE_LOCATION_SERVICE -> showLoading(isVisible = false)
                     is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
                     is NO_IMAGES_IN_PROFILE -> {
                         Dialogs.showTextDialog(activity,
@@ -72,12 +72,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                             positiveBtnLabelResId = OriginR_string.button_add_photo,
                             negativeBtnLabelResId = OriginR_string.button_later,
                             positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })
-                        swipe_refresh_layout.isRefreshing = false
+                        showLoading(isVisible = false)
                     }
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.PROGRESS -> swipe_refresh_layout?.isRefreshing = true
+            is ViewState.PROGRESS -> showLoading(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
@@ -161,7 +161,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     private fun onIdleState() {
         fl_empty_container?.changeVisibility(isVisible = false, soft = true)
-        swipe_refresh_layout?.isRefreshing = false
+        showLoading(isVisible = false)
+    }
+
+    internal fun showLoading(isVisible: Boolean) {
+        swipe_refresh_layout?.isRefreshing = isVisible
     }
 
     /* Lifecycle */
@@ -279,7 +283,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     // --------------------------------------------------------------------------------------------
     protected open fun onRefresh() {
         if (!connectionManager.isNetworkAvailable()) {
-            swipe_refresh_layout.isRefreshing = false
+            showLoading(isVisible = false)
             noConnection(this@FeedFragment)
         } else {
             offsetScrollStrats = getOffsetScrollStrategies()

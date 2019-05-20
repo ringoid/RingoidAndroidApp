@@ -6,6 +6,7 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -30,6 +31,19 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun getVmClass(): Class<LmmViewModel> = LmmViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_lmm
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        fun showLoading(isVisible: Boolean) {
+            lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.showLoading(isVisible) }
+        }
+
+        super.onViewStateChange(newState)
+        when (newState) {
+            ViewState.IDLE -> showLoading(isVisible = false)
+            ViewState.LOADING -> showLoading(isVisible = true)
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     // TODO: save that fields onSaveInstanceState() for later restore
