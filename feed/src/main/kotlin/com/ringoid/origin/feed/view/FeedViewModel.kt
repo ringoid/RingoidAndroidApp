@@ -325,7 +325,7 @@ abstract class FeedViewModel(
     }
 
     fun onItemBecomeVisible(profileId: String, imageId: String) {
-        DebugLogUtil.v("Item become visible [${getFeedName()}]: i=${imageId.substring(0..3)}, p=${profileId.substring(0..3)}")
+        DebugLogUtil.v("Item become visible [${getFeedName()}]: p=${profileId.substring(0..3)}")
         val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
             targetImageId = imageId, targetUserId = profileId)
         addViewObjectToBuffer(aobj)

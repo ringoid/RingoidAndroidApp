@@ -124,9 +124,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
                     with(feedAdapter) {
                         removeSubject
+                            .take(1)  // single-shot subscription
                             .doOnSubscribe { localScopeProvider.start() }
                             .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription, subs ${debugSubs.size()}") }
-                            .doFinally { localScopeProvider.stop() }
+                            .doFinally { localScopeProvider.stop(); DebugLogUtil.v("Discard item ${profileId.substring(0..3)} has completed") }
                             .autoDisposable(localScopeProvider)
                             .subscribe({
                                 val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
