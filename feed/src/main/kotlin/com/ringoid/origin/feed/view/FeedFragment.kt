@@ -112,6 +112,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     .map { it.id }
             } ?: emptyList()
 
+        vm.onDiscardProfile(profileId)
         return feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
                 val count = feedAdapter.getModelsCount()
@@ -120,37 +121,40 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 } else {  // remove not last feed item
                     val prevIds = getVisibleItemIds(profileId)  // record ids of visible items before remove
                     Timber.v("Discard item ($profileId), visible BEFORE: ${prevIds.joinToString()}")
-                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE: ${prevIds.size}, subs: ${debugSubs.size()}")
+                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
 
-                    with(feedAdapter) {
-                        removeSubject
-                            .take(1)  // single-shot subscription
-                            .doOnSubscribe { localScopeProvider.start() }
-                            .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription, subs ${debugSubs.size()}") }
-                            .doFinally { localScopeProvider.stop(); DebugLogUtil.v("Discard item ${profileId.substring(0..3)} has completed") }
-                            .autoDisposable(localScopeProvider)
-                            .subscribe({
-                                val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
-                                Timber.v("Discard item ($profileId), visible AFTER: ${newIds.joinToString()}")
-                                DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER: ${newIds.size}, subs: ${debugSubs.size()}")
+                    rv_items.itemAnimator
+                        .let { it as FeedItemAnimator }
+                        .removeAnimationSubject
+                        .take(1)  // single-shot subscription
+                        .doOnSubscribe { localScopeProvider.start() }
+                        .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription, subs ${debugSubs.size()}") }
+                        .doFinally {
+                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)} has completed")
+                            localScopeProvider.stop()
+                        }
+                        .autoDisposable(localScopeProvider)
+                        .subscribe({ _ ->
+                            val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
+                            Timber.v("Discard item ($profileId), visible AFTER: ${newIds.joinToString()}")
+                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
 
-                                newIds.toMutableList()
-                                    .also { it.removeAll(prevIds) }
-                                    .also { DebugLogUtil.d("Discarded ${profileId.substring(0..3)}, became visible[${it.size}]: ${it.joinToString { it.substring(0..3) }}") }
-                                    .takeIf { it.isNotEmpty() }
-                                    ?.forEach { id ->
-                                        findModel { it.id == id }
-                                            ?.let {
-                                                val imageId = it.images[it.positionOfImage].id
-                                                vm.onItemBecomeVisible(profileId = it.id, imageId = imageId)
-                                            }
-                                    }
-                            }, Timber::e)
-                            .takeIf { !it.isDisposed }
-                            ?.let { debugSubs.add(it) }
+                            newIds.toMutableList()
+                                .also { it.removeAll(prevIds) }
+                                .also { DebugLogUtil.d("Discarded ${profileId.substring(0..3)}, became visible[${it.size}]: ${it.joinToString { it.substring(0..3) }}") }
+                                .takeIf { it.isNotEmpty() }
+                                ?.forEach { id ->
+                                    feedAdapter.findModel { it.id == id }
+                                        ?.let {
+                                            val imageId = it.images[it.positionOfImage].id
+                                            vm.onItemBecomeVisible(profileId = it.id, imageId = imageId)
+                                        }
+                                }
+                        }, Timber::e)
+                        .takeIf { !it.isDisposed }
+                        ?.let { debugSubs.add(it) }
 
-                        remove { it.id == profileId }
-                    }
+                        feedAdapter.remove { it.id == profileId }
                 }
             }
     }

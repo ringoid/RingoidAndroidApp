@@ -331,6 +331,12 @@ abstract class FeedViewModel(
         addViewObjectToBuffer(aobj)
     }
 
+    fun onDiscardProfile(profileId: String) {
+        viewActionObjectBackup.keys
+            .find { it.second == profileId }
+            ?.let { viewActionObjectBackup.remove(it) }
+    }
+
     // --------------------------------------------------------------------------------------------
     /**
      * Advance and push whatever VIEW object corresponds to [FeedItem] with [FeedItem.id] == [profileId], if any.

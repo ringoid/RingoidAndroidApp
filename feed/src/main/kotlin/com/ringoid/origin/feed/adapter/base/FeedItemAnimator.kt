@@ -2,12 +2,18 @@ package com.ringoid.origin.feed.adapter.base
 
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 
 class FeedItemAnimator(l: ((position: Int) -> Unit)? = null) : DefaultItemAnimator() {
 
     private var removed = false
 
-    var onItemRemoved: ((position: Int) -> Unit)? = l
+    internal val removeAnimationSubject = PublishSubject.create<Int>()
+
+    init {
+        removeAnimationSubject.subscribe({ l?.invoke(it) }, Timber::e)
+    }
 
     override fun onRemoveFinished(item: RecyclerView.ViewHolder) {
         super.onRemoveFinished(item)
@@ -18,7 +24,7 @@ class FeedItemAnimator(l: ((position: Int) -> Unit)? = null) : DefaultItemAnimat
         super.onMoveFinished(item)
         if (removed) {
             removed = false
-            onItemRemoved?.invoke(item.adapterPosition)
+            removeAnimationSubject.onNext(item.adapterPosition)
         }
     }
 }
