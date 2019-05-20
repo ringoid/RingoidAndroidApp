@@ -105,11 +105,14 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     @DebugOnly
     override fun isDebugLogEnabled(): Boolean =
         sharedPreferences.getBoolean(SP_KEY_DEBUG_LOG_ENABLED, BuildConfig.IS_STAGING)
+            .also { config.setCollectDebugLogs(it) }
 
     @DebugOnly
     override fun switchDebugLogEnabled() {
         val currentFlag = isDebugLogEnabled()
-        sharedPreferences.edit().putBoolean(SP_KEY_DEBUG_LOG_ENABLED, !currentFlag).apply()
+        sharedPreferences.edit().putBoolean(SP_KEY_DEBUG_LOG_ENABLED, !currentFlag)
+            .also { config.setCollectDebugLogs(!currentFlag) }
+            .apply()
     }
 
     @DebugOnly
