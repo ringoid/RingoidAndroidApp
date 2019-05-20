@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
@@ -151,7 +152,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                                         }
                                 }
                         }, Timber::e)
-                        .takeIf { !it.isDisposed }
+                        .takeIf { BuildConfig.IS_STAGING && !it.isDisposed }
                         ?.let { debugSubs.add(it) }
 
                         feedAdapter.remove { it.id == profileId }
