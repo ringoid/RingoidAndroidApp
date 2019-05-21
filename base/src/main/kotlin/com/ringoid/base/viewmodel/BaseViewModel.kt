@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.livedata.ActiveMutableLiveData
 import com.ringoid.base.manager.analytics.AnalyticsManager
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
@@ -34,7 +35,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     @Inject protected lateinit var spm: ISharedPrefsManager
 
     val accessToken: MutableLiveData<LiveEvent<AccessToken?>> by lazy { MutableLiveData<LiveEvent<AccessToken?>>() }
-    val viewState: MutableLiveData<ViewState> by lazy { MutableLiveData<ViewState>() }
+    val viewState: MutableLiveData<ViewState> by lazy { ActiveMutableLiveData<ViewState>() }
     val oneShot: MutableLiveData<LiveEvent<Any?>> by lazy { MutableLiveData<LiveEvent<Any?>>() }
 
     private var userVisibilityHint: Boolean = false
