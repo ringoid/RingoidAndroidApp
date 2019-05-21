@@ -59,6 +59,7 @@ class CloudModule(private val appVersion: Int) {
             .readTimeout(12, TimeUnit.SECONDS)
             .connectTimeout(12, TimeUnit.SECONDS)
             .writeTimeout(12, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(false)
             .build()
 
     @Provides @Singleton
