@@ -117,13 +117,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         return feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
                 val count = feedAdapter.getModelsCount()
-                if (count <= 1) {  // remove last feed item - show empty stub
+                if (count <= 1) {  // remove last feed item - show empty stub directly
                     onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
                 } else {  // remove not last feed item
                     val prevIds = getVisibleItemIds(profileId)  // record ids of visible items before remove
                     Timber.v("Discard item ($profileId), visible BEFORE: ${prevIds.joinToString()}")
                     DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
 
+                    /**
+                     * After finishing item remove animation, detect what items come into viewport
+                     * and call [FeedViewModel.onItemBecomeVisible] on each of them.
+                     */
                     rv_items.itemAnimator
                         .let { it as FeedItemAnimator }
                         .removeAnimationSubject
