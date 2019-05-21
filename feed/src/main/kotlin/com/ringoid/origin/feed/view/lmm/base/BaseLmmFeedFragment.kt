@@ -14,10 +14,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.userMessage
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
@@ -124,7 +121,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 if (it.position == DomainUtil.BAD_POSITION) {
                     return
                 }
-                scrollToTopOfItemAtPosition(it.position, offset = AppRes.BUTTON_HEIGHT)
 
                 when (tag) {
                     ChatFragment.TAG -> {
@@ -132,9 +128,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
                         it.firstUserMessage?.let { _ -> vm.onFirstUserMessageSent(profileId = it.peerId) }
-                        getRecyclerView().post {  // alter chat icon on feed item after supplying first user message to it
-                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
-                        }
                     }
                 }
                 true  // no-op value
@@ -159,10 +152,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         peerThumbnailUri = image?.thumbnailUri,
                         sourceFeed = getSourceFeed())
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
-                    scrollToTopOfItemAtPositionAndPost(position).post {
-                        feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
-                    }
-//                    ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(it, tag)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
         }
