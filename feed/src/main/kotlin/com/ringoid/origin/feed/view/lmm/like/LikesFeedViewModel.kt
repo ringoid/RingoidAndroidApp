@@ -86,14 +86,4 @@ class LikesFeedViewModel @Inject constructor(
         super.onImageTouch(x, y)
         VisualEffectManager.call(MatchVisualEffect(x, y))
     }
-
-    override fun onViewFeedItem(feedItemId: String) {
-        super.onViewFeedItem(feedItemId)
-        markFeedItemAsSeen(feedItemId = feedItemId)
-    }
-
-    override fun onSettingsClick(profileId: String) {
-        super.onSettingsClick(profileId)
-        markFeedItemAsSeen(profileId)
-    }
 }

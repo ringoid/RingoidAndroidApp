@@ -80,10 +80,4 @@ class MessengerViewModel @Inject constructor(
             analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
         }
     }
-
-    // --------------------------------------------------------------------------------------------
-    override fun onChatClose(profileId: String, imageId: String) {
-        super.onChatClose(profileId, imageId)
-        markFeedItemAsSeen(feedItemId = profileId)
-    }
 }

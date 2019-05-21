@@ -163,7 +163,7 @@ abstract class BaseLmmFeedViewModel(
     }
 
     // ------------------------------------------
-    protected fun markFeedItemAsSeen(feedItemId: String) {
+    private fun markFeedItemAsSeen(feedItemId: String) {
         if (notSeenFeedItemIds.isEmpty()) {
             return
         }
@@ -191,6 +191,13 @@ abstract class BaseLmmFeedViewModel(
         addLikedImageForFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId).put("imageId", imageId))
             .autoDisposable(this)
             .subscribe({}, Timber::e)
+
+        markFeedItemAsSeen(feedItemId = profileId)
+    }
+
+    override fun onChatClose(profileId: String, imageId: String) {
+        super.onChatClose(profileId, imageId)
+        markFeedItemAsSeen(feedItemId = profileId)
     }
 
     override fun onBlock(profileId: String, imageId: String, sourceFeed: String, fromChat: Boolean) {
@@ -207,5 +214,15 @@ abstract class BaseLmmFeedViewModel(
         addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
             .autoDisposable(this)
             .subscribe({}, Timber::e)  // keep those peers that user has sent the first message to
+    }
+
+    override fun onViewFeedItem(feedItemId: String) {
+        super.onViewFeedItem(feedItemId)
+        markFeedItemAsSeen(feedItemId = feedItemId)
+    }
+
+    override fun onSettingsClick(profileId: String) {
+        super.onSettingsClick(profileId)
+        markFeedItemAsSeen(profileId)
     }
 }
