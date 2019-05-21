@@ -15,6 +15,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.userMessage
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
@@ -128,6 +129,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
                         it.firstUserMessage?.let { _ -> vm.onFirstUserMessageSent(profileId = it.peerId) }
+                        getRecyclerView().post { feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls) }
                     }
                 }
                 true  // no-op value
