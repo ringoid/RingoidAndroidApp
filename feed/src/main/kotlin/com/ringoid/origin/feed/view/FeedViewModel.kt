@@ -131,6 +131,7 @@ abstract class FeedViewModel(
     }
 
     internal fun onClearScreen() {
+        DebugLogUtil.v("On clear ${getFeedName()} feed")
         horizontalPrevRanges.clear()
         verticalPrevRange = null
     }
