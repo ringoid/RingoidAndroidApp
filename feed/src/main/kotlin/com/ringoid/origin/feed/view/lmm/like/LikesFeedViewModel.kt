@@ -76,9 +76,8 @@ class LikesFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
-        onLike(profileId, imageId, isLiked)
-
+    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
+        super.onLike(profileId, imageId, isLiked)
         // transfer liked profile from Likes Feed to Matches Feed, by Product
         viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }

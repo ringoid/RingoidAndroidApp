@@ -15,6 +15,7 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
+import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
@@ -131,6 +132,13 @@ class ExploreViewModel @Inject constructor(
                 .put("failPage", failPage)
 
     // --------------------------------------------------------------------------------------------
+    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
+        super.onLike(profileId, imageId, isLiked)
+        // discard profile from feed after like / unlike (unlike is not possible, left for symmetry)
+        viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
+    }
+
+    // ------------------------------------------
     override fun onRefresh(withLoading: Boolean) {
         super.onRefresh(withLoading)
         nextPage = 0
