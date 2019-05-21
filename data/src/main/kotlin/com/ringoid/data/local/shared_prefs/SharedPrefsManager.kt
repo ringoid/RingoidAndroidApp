@@ -132,6 +132,13 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .apply()
     }
 
+    override fun switchDeveloperMode() {
+        val currentFlag = sharedPreferences.getBoolean(SP_KEY_DEVELOPER_MODE, BuildConfig.IS_STAGING)
+        sharedPreferences.edit().putBoolean(SP_KEY_DEVELOPER_MODE, !currentFlag)
+            .also { config.setDeveloperMode(!currentFlag) }
+            .apply()
+    }
+
     /* Auth */
     // --------------------------------------------------------------------------------------------
     override fun accessToken(): AccessToken? =

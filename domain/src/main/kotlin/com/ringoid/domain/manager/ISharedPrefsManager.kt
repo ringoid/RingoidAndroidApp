@@ -36,6 +36,8 @@ interface ISharedPrefsManager {
 
     fun enableDeveloperMode()
 
+    fun switchDeveloperMode()
+
     /* Auth */
     // ------------------------------------------
     fun accessToken(): AccessToken?

@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -73,6 +74,11 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         item_debug_log.apply {
             setChecked(spm.isDebugLogEnabled())
             clicks().compose(clickDebounce()).subscribe { spm.switchDebugLogEnabled() }
+        }
+        item_developer_mode.apply {
+            changeVisibility(isVisible = !BuildConfig.IS_STAGING)  // only visible in Production builds
+            setChecked(spm.isDeveloperModeEnabled())
+            clicks().compose(clickDebounce()).subscribe { spm.switchDeveloperMode() }
         }
         item_screen_info.apply {
             clicks().compose(clickDebounce()).subscribe {

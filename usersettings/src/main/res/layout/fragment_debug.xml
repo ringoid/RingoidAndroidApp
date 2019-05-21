@@ -65,6 +65,13 @@
 
         <View style="@style/Underscore"/>
 
+        <com.ringoid.widget.view.item_view.SwitchIconItemView
+            android:id="@+id/item_developer_mode"
+            app:icon_item_text="@string/debug_item_switch_developer_mode"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
         <com.ringoid.widget.view.item_view.LabelIconItemView
             android:id="@+id/item_error_http"
             app:icon_item_text="@string/debug_item_response_error_http"
