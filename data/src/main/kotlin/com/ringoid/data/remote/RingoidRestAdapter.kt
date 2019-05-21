@@ -69,7 +69,7 @@ interface RingoidRestAdapter {
 
     /* Push */
     // --------------------------------------------------------------------------------------------
-    @POST("push/update_token")
+    @POST("push/update_fcm_token")
     fun updatePushToken(@Body body: RequestBody): Single<BaseResponse>
 
     /* Test */
