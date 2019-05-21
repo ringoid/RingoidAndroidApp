@@ -46,7 +46,7 @@ class VisualEffectView : FrameLayout {
             }
 
         image.animate()
-            .translationYBy(-1100f)
+            .translationYBy(-1500f)
             .scaleXBy(2f)
             .scaleYBy(2f)
             .alpha(0f)
@@ -58,7 +58,7 @@ class VisualEffectView : FrameLayout {
                     removeView(image)
                 }
             })
-            .setDuration(900L)
+            .setDuration(1227L)
             .start()
     }
 }
