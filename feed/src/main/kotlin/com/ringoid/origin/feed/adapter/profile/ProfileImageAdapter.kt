@@ -15,7 +15,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.image.ImageLoader
 
 class ProfileImageAdapter(private val context: Context)
-    : BaseListAdapter<ProfileImageVO, BaseProfileImageViewHolder>(ProfileImageDiffCallback()),
+    : BaseListAdapter<ProfileImageVO, BaseProfileImageViewHolder>(ProfileImageDiffCallback(), withListeners = false),
     ListPreloader.PreloadModelProvider<ProfileImageVO> {
 
     var onBeforeLikeListener: (() -> Boolean)? = null

@@ -10,8 +10,8 @@ import com.ringoid.domain.model.IListModel
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_loading.view.*
 
-abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>, headerRows: Int = 0)
-    : OriginListAdapter<T, VH>(diffCb, headerRows = headerRows) {
+abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: BaseDiffCallback<T>, headerRows: Int = 0, withListeners: Boolean = true)
+    : OriginListAdapter<T, VH>(diffCb, headerRows = headerRows, withListeners = withListeners) {
 
     @LayoutRes protected abstract fun getLayoutId(): Int
 

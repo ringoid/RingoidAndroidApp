@@ -16,6 +16,7 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
@@ -34,18 +35,22 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     var cachedLmm: Lmm? = null
         private set
 
+    private val badgeLikesDisposable: Disposable
+    private val badgeMatchesDisposable: Disposable
+    private val badgeMessengerDisposable: Disposable
+
     init {
-        getLmmUseCase.repository.badgeLikes
+        badgeLikesDisposable = getLmmUseCase.repository.badgeLikes
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeLikes.value = it }, Timber::e)
 
-        getLmmUseCase.repository.badgeMatches
+        badgeMatchesDisposable = getLmmUseCase.repository.badgeMatches
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeMatches.value = it }, Timber::e)
 
-        getLmmUseCase.repository.badgeMessenger
+        badgeMessengerDisposable = getLmmUseCase.repository.badgeMessenger
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeMessenger.value = it }, Timber::e)
@@ -57,6 +62,13 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         super.onFreshStart()
         DebugLogUtil.i("Get LMM on fresh start")
         getLmm()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        badgeLikesDisposable.dispose()
+        badgeMatchesDisposable.dispose()
+        badgeMessengerDisposable.dispose()
     }
 
     // --------------------------------------------------------------------------------------------

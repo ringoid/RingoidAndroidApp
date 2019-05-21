@@ -284,6 +284,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     override fun onDestroy() {
         super.onDestroy()
         debugSubs.clear()
+        feedAdapter.dispose()
     }
 
     // --------------------------------------------------------------------------------------------

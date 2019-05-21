@@ -29,6 +29,7 @@ import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import timber.log.Timber
 
 /**
@@ -66,13 +67,16 @@ abstract class BaseLmmFeedViewModel(
         private set
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
+    private val badgeIsOnDisposable: Disposable
+    private val sourceFeedDisposable: Disposable
+
     init {
-        sourceBadge()
+        badgeIsOnDisposable = sourceBadge()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeIsOn = it }, Timber::e)
 
-        sourceFeed()
+        sourceFeedDisposable = sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .doAfterNext {
@@ -182,6 +186,14 @@ abstract class BaseLmmFeedViewModel(
                 }
             }
         }
+    }
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onCleared() {
+        super.onCleared()
+        badgeIsOnDisposable.dispose()
+        sourceFeedDisposable.dispose()
     }
 
     /* Action Objects */

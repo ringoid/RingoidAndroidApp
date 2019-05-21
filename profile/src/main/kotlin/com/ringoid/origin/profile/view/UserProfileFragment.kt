@@ -300,6 +300,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     override fun onDestroy() {
         super.onDestroy()
         globalImagePreviewReceiver()?.dispose()
+        imagesAdapter.dispose()
     }
 
     // --------------------------------------------------------------------------------------------
