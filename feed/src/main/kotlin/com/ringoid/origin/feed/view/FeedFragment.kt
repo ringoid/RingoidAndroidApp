@@ -137,6 +137,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         .doFinally {
                             DebugLogUtil.v("Discard item ${profileId.substring(0..3)} has completed")
                             localScopeProvider.stop()
+                            debugSubs.clear()
                         }
                         .autoDisposable(localScopeProvider)
                         .subscribe({ _ ->
