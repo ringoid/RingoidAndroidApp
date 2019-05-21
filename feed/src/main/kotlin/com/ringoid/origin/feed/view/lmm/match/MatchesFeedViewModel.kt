@@ -87,12 +87,7 @@ class MatchesFeedViewModel @Inject constructor(
 
     override fun onFirstUserMessageSent(profileId: String) {
         super.onFirstUserMessageSent(profileId)
-        // discard profile from feed after sent first user message to it
-        viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
-
         // transfer firstly messaged profile from Matches Feed to Messages Feed, by Product
         viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
-
-        advanceAndPushViewObject(profileId = profileId)  // push VIEW as profile was discarded
     }
 }
