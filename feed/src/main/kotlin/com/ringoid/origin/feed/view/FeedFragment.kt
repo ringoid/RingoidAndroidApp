@@ -97,10 +97,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
         vm.onClearScreen()
-        getEmptyStateInput(mode)?.let {
-            onIdleState()
-            showEmptyStub(input = it)
-        }
+        getEmptyStateInput(mode)?.let { showEmptyStub(input = it) }
+        showLoading(isVisible = false)
     }
 
     protected fun onDiscardProfileState(profileId: String): FeedItemVO? {
