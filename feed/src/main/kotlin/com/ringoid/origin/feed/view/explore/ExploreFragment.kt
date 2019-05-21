@@ -26,7 +26,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     override fun createFeedAdapter(): BaseFeedAdapter =
         FeedAdapter().apply {
-            onLikeImageListener = { model: ProfileImageVO, _ ->
+            onLikeImageListener = { model: ProfileImageVO, _ /** image position */ ->
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@ExploreFragment)
                 } else {

@@ -27,12 +27,12 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
 
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
         LikeFeedAdapter().apply {
-            onLikeImageListener = { model: ProfileImageVO, feedItemPosition: Int ->
+            onLikeImageListener = { model: ProfileImageVO, _ /** feed item position */: Int ->
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@LikesFeedFragment)
                 } else {
                     Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
-                    vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked, feedItemPosition = feedItemPosition)
+                    vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
                 }
             }
         }
