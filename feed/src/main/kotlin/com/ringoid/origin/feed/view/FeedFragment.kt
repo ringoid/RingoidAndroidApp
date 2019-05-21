@@ -100,7 +100,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         getEmptyStateInput(mode)?.let {
             showEmptyStub(input = it)
             showLoading(isVisible = false)
-        }
+        } ?: run { fl_empty_container?.changeVisibility(isVisible = false) }
     }
 
     protected fun onDiscardProfileState(profileId: String): FeedItemVO? {
@@ -166,12 +166,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     private fun onIdleState() {
-        if (feedAdapter.getModelsCount() <= 0) {
-            onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
-        } else {
-            fl_empty_container?.changeVisibility(isVisible = false, soft = true)
-            showLoading(isVisible = false)
-        }
+        showLoading(isVisible = false)
     }
 
     internal fun showLoading(isVisible: Boolean) {
