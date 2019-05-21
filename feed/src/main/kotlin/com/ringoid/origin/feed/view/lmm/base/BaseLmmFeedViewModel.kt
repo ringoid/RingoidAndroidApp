@@ -1,10 +1,12 @@
 package com.ringoid.origin.feed.view.lmm.base
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
@@ -17,6 +19,7 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
@@ -26,6 +29,7 @@ import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import timber.log.Timber
 
 /**
@@ -39,11 +43,13 @@ import timber.log.Timber
  */
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
+    private val getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     private val getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
     private val getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     private val addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
+    private val transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -56,18 +62,21 @@ abstract class BaseLmmFeedViewModel(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
-    val feed by lazy { MutableLiveData<List<FeedItem>>() }
+    val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
+    private val badgeIsOnDisposable: Disposable
+    private val sourceFeedDisposable: Disposable
+
     init {
-        sourceBadge()
+        badgeIsOnDisposable = sourceBadge()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeIsOn = it }, Timber::e)
 
-        sourceFeed()
+        sourceFeedDisposable = sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .doAfterNext {
@@ -99,6 +108,7 @@ abstract class BaseLmmFeedViewModel(
             .subscribe({}, Timber::e)
     }
 
+    // ------------------------------------------
     protected open fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.filter { it.isNotSeen }.map { it.id }
 
@@ -122,6 +132,25 @@ abstract class BaseLmmFeedViewModel(
         lmm?.let { setLmmItems(getFeedFromLmm(it)) } ?: run { setLmmItems(emptyList()) }
     }
 
+    fun prependProfileOnTransfer(profileId: String, destinationFeed: String, payload: Bundle? = null, action: (() -> Unit)? = null) {
+        // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
+        transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed))
+            .andThen(getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId)))
+            .doOnSuccess {
+                val list = mutableListOf<FeedItemVO>().apply {
+                    val item = FeedItemVO(it).apply {
+                        payload?.getInt("positionOfImage", DomainUtil.BAD_POSITION)
+                            ?.takeIf { it != DomainUtil.BAD_POSITION }
+                            ?.let { this.positionOfImage = it }
+                    }
+                    add(item)
+                    feed.value?.let { addAll(it) }
+                }
+                feed.value = list  // prepended list
+            }
+            .subscribe({ action?.invoke() }, Timber::e)
+    }
+
     private fun setLmmItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
         if (items.isEmpty()) {
@@ -130,7 +159,7 @@ abstract class BaseLmmFeedViewModel(
             if (BuildConfig.DEBUG) {
                 Timber.v(items.joinToString("\n\t\t", "\t*** LMM ***\n\t\t", "\n\t***\n", transform = { "LMM: ${it.toShortString()} :: ${getFeedName()}" }))
             }
-            feed.value = items
+            feed.value = items.map { FeedItemVO(it) }
             viewState.value = ViewState.IDLE
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
@@ -138,7 +167,7 @@ abstract class BaseLmmFeedViewModel(
     }
 
     // ------------------------------------------
-    protected fun markFeedItemAsSeen(feedItemId: String) {
+    private fun markFeedItemAsSeen(feedItemId: String) {
         if (notSeenFeedItemIds.isEmpty()) {
             return
         }
@@ -159,6 +188,14 @@ abstract class BaseLmmFeedViewModel(
         }
     }
 
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onCleared() {
+        super.onCleared()
+        badgeIsOnDisposable.dispose()
+        sourceFeedDisposable.dispose()
+    }
+
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
@@ -166,6 +203,13 @@ abstract class BaseLmmFeedViewModel(
         addLikedImageForFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId).put("imageId", imageId))
             .autoDisposable(this)
             .subscribe({}, Timber::e)
+
+        markFeedItemAsSeen(feedItemId = profileId)
+    }
+
+    override fun onChatClose(profileId: String, imageId: String) {
+        super.onChatClose(profileId, imageId)
+        markFeedItemAsSeen(feedItemId = profileId)
     }
 
     override fun onBlock(profileId: String, imageId: String, sourceFeed: String, fromChat: Boolean) {
@@ -178,9 +222,19 @@ abstract class BaseLmmFeedViewModel(
         markFeedItemAsSeen(feedItemId = profileId)
     }
 
-    fun onFirstUserMessageSent(profileId: String) {
+    open fun onFirstUserMessageSent(profileId: String) {
         addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
             .autoDisposable(this)
             .subscribe({}, Timber::e)  // keep those peers that user has sent the first message to
+    }
+
+    override fun onViewFeedItem(feedItemId: String) {
+        super.onViewFeedItem(feedItemId)
+        markFeedItemAsSeen(feedItemId = feedItemId)
+    }
+
+    override fun onSettingsClick(profileId: String) {
+        super.onSettingsClick(profileId)
+        markFeedItemAsSeen(profileId)
     }
 }

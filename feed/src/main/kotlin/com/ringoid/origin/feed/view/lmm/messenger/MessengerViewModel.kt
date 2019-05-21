@@ -20,11 +20,13 @@ import javax.inject.Inject
 
 class MessengerViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase,
+    getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
     getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
+    transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -32,11 +34,13 @@ class MessengerViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
+        getCachedFeedItemByIdUseCase,
         getLikedFeedItemIdsUseCase,
         getUserMessagedFeedItemIdsUseCase,
         addLikedImageForFeedItemIdUseCase,
         addUserMessagedFeedItemIdUseCase,
         updateFeedItemAsSeenUseCase,
+        transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
@@ -75,11 +79,5 @@ class MessengerViewModel @Inject constructor(
         if (isVisibleToUser /** switched to this Lmm tab */ && badgeIsOn /** has new feed items */) {
             analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
         }
-    }
-
-    // --------------------------------------------------------------------------------------------
-    override fun onChatClose(profileId: String, imageId: String) {
-        super.onChatClose(profileId, imageId)
-        markFeedItemAsSeen(feedItemId = profileId)
     }
 }

@@ -125,12 +125,13 @@ abstract class FeedViewModel(
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
-    fun clearScreen(mode: Int) {
+    internal fun clearScreen(mode: Int) {
         viewActionObjectBackup.clear()
         viewState.value = ViewState.CLEAR(mode)
     }
 
-    fun onClearScreen() {
+    internal fun onClearScreen() {
+        DebugLogUtil.v("On clear ${getFeedName()} feed")
         horizontalPrevRanges.clear()
         verticalPrevRange = null
     }
@@ -141,11 +142,11 @@ abstract class FeedViewModel(
         onRefresh()  // request for feed data with potentially updated location data
     }
 
-    fun onStartRefresh() {
+    internal fun onStartRefresh() {
         analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to getFeedName())
     }
 
-    open fun onRefresh(withLoading: Boolean = false) {
+    internal open fun onRefresh(withLoading: Boolean = false) {
         advanceAndPushViewObjects()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
@@ -166,7 +167,7 @@ abstract class FeedViewModel(
             .subscribe({}, Timber::e)
     }
 
-    open fun onSettingsClick(profileId: String) {
+    internal open fun onSettingsClick(profileId: String) {
         // override in subclasses
     }
 
@@ -174,15 +175,19 @@ abstract class FeedViewModel(
 
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
-    fun onBeforeLike(): Boolean =
+    internal fun onBeforeLike(): Boolean =
         if (userInMemoryCache.userImagesCount() > 0) true
         else {
             viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
             false
         }
 
-    open fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        advanceAndPushViewObject(imageId to profileId, recreate = true)
+    internal open fun onImageTouch(x: Float, y: Float) {
+        // override in subclasses
+    }
+
+    internal open fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
+        advanceAndPushViewObject(imageId to profileId)
         val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
                    else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
@@ -208,7 +213,7 @@ abstract class FeedViewModel(
         }
     }
 
-    fun onChatOpen(profileId: String, imageId: String) {
+    internal fun onChatOpen(profileId: String, imageId: String) {
         /**
          * Need to mark profile as seen before opening chat, because it then malfunctions when
          * feed screen goes background while chat is opening: basically transition to [ViewState.DONE]
@@ -219,7 +224,7 @@ abstract class FeedViewModel(
         openChatTimers[profileId to imageId] = System.currentTimeMillis()  // record open chat time
     }
 
-    open fun onChatClose(profileId: String, imageId: String) {
+    internal open fun onChatClose(profileId: String, imageId: String) {
         val chatTime = openChatTimers
             .takeIf { it.containsKey(profileId to imageId) }
             ?.let { it[profileId to imageId] }
@@ -230,11 +235,11 @@ abstract class FeedViewModel(
             .also { actionObjectPool.put(it) }
     }
 
-    open fun onBlock(profileId: String, imageId: String, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
+    internal open fun onBlock(profileId: String, imageId: String, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
         onReport(profileId = profileId, imageId = imageId, reasonNumber = 0, sourceFeed = sourceFeed, fromChat = fromChat)
     }
 
-    open fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
+    internal open fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String = getFeedName(), fromChat: Boolean = false) {
         advanceAndPushViewObject(imageId to profileId)
         BlockActionObject(numberOfBlockReason = reasonNumber,
             sourceFeed = sourceFeed, targetImageId = imageId, targetUserId = profileId)
@@ -248,7 +253,7 @@ abstract class FeedViewModel(
             .autoDisposable(this)
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
-                viewState.value = ViewState.DONE(BLOCK_PROFILE(profileId = profileId))
+                viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
             }, Timber::e)
 
         // remove all messages for blocked profile, to exclude them from messages counting
@@ -261,7 +266,7 @@ abstract class FeedViewModel(
         viewActionObjectBackup.remove(imageId to profileId)
     }
 
-    fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
+    internal fun onViewHorizontal(items: EqualRange<ProfileImageVO>) {
         Timber.v("Incoming visible items [horizontal, ${getFeedName()}]: ${items.payloadToString()}")
         items.pickOne()?.let {
             horizontalPrevRanges[it.profileId]
@@ -280,7 +285,7 @@ abstract class FeedViewModel(
         items.pickOne()?.let { horizontalPrevRanges[it.profileId] = items }
     }
 
-    fun onViewVertical(items: EqualRange<ProfileImageVO>) {
+    internal fun onViewVertical(items: EqualRange<ProfileImageVO>) {
         Timber.v("Incoming visible items [vertical, ${getFeedName()}]: ${items.payloadToString()}")
         verticalPrevRange
             ?.delta(items)
@@ -317,7 +322,31 @@ abstract class FeedViewModel(
         // do something when feed item with id specified has been viewed
     }
 
+    internal fun onItemBecomeVisible(profileId: String, imageId: String) {
+        DebugLogUtil.v("Item become visible [${getFeedName()}]: p=${profileId.substring(0..3)}")
+        val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
+            targetImageId = imageId, targetUserId = profileId)
+        addViewObjectToBuffer(aobj)
+    }
+
+    internal fun onDiscardProfile(profileId: String) {
+        advanceAndPushViewObject(profileId = profileId)  // push VIEW as profile was discarded
+
+        viewActionObjectBackup.keys
+            .find { it.second == profileId }
+            ?.let { viewActionObjectBackup.remove(it) }
+    }
+
     // --------------------------------------------------------------------------------------------
+    /**
+     * Advance and push whatever VIEW object corresponds to [FeedItem] with [FeedItem.id] == [profileId], if any.
+     */
+    private fun advanceAndPushViewObject(profileId: String) {
+        viewActionObjectBuffer.keys
+            .find { it.second == profileId }
+            ?.let { advanceAndPushViewObject(it) }
+    }
+
     private fun advanceAndPushViewObject(key: Pair<String, String>): ViewActionObject? =
         viewActionObjectBuffer.let {
             val aobj = it[key]?.advance()

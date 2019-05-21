@@ -5,9 +5,12 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IListModel
+import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 
 abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
-    protected val diffCb: BaseDiffCallback<T>, private val headerRows: Int = 0)
+    protected val diffCb: BaseDiffCallback<T>, private val headerRows: Int = 0, withListeners: Boolean = true)
     : RecyclerView.Adapter<VH>() {
 
     init {
@@ -33,8 +36,8 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     protected fun getAdapterListUpdateCallback(): ListUpdateCallback =
         ExposedAdapterListUpdateCallback(
             this, headerRows = headerRows, exposedCb = { getExposedCb()?.invoke() },
-            onInsertedCb = getOnInsertedCb(), onRemovedCb = getOnRemovedCb(),
-            onMovedCb = getOnMovedCb(), onChangedCb = getOnChangedCb())
+            insertSubject = insertSubject, removeSubject = removeSubject,
+            moveSubject = moveSubject, changeSubject = changeSubject)
 
     // --------------------------------------------------------------------------------------------
     override fun onBindViewHolder(holder: VH, position: Int) {
@@ -64,6 +67,32 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     protected open fun getOnRemovedCb(): ((position: Int, count: Int) -> Unit)? = null
     protected open fun getOnMovedCb(): ((fromPosition: Int, toPosition: Int) -> Unit)? = null
     protected open fun getOnChangedCb(): ((position: Int, count: Int) -> Unit)? = null
+
+    val insertSubject = PublishSubject.create<Pair<Int, Int>>()
+    val removeSubject = PublishSubject.create<Pair<Int, Int>>()
+    val moveSubject = PublishSubject.create<Pair<Int, Int>>()
+    val changeSubject = PublishSubject.create<Pair<Int, Int>>()
+
+    private var insertDisposable: Disposable? = null
+    private var removeDisposable: Disposable? = null
+    private var moveDisposable: Disposable? = null
+    private var changeDisposable: Disposable? = null
+
+    init {
+        if (withListeners) {
+            insertDisposable = insertSubject.subscribe({ getOnInsertedCb()?.invoke(it.first, it.second) }, Timber::e)
+            removeDisposable = removeSubject.subscribe({ getOnRemovedCb()?.invoke(it.first, it.second) }, Timber::e)
+            moveDisposable = moveSubject.subscribe({ getOnMovedCb()?.invoke(it.first, it.second) }, Timber::e)
+            changeDisposable = changeSubject.subscribe({ getOnChangedCb()?.invoke(it.first, it.second) }, Timber::e)
+        }
+    }
+
+    fun dispose() {
+        insertDisposable?.dispose()
+        removeDisposable?.dispose()
+        moveDisposable?.dispose()
+        changeDisposable?.dispose()
+    }
 
     // --------------------------------------------------------------------------------------------
     var itemClickListener: ((model: T, position: Int) -> Unit)? = null
@@ -148,6 +177,18 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             else /* VIEW_TYPE_NORMAL */ -> getModel(position)
         }
 
+    fun applyOnModel(predicate: (item: T) -> Boolean, action: (item: T) -> Unit) {
+        findModelAndPosition(predicate)
+            ?.let {
+                action.invoke(it.second)
+                notifyItemChanged(it.first)
+            }
+    }
+
+    /**
+     * Here in all methods that obtain model by position, position is always treated as
+     * adapter position, so it must be fixed up against header / footer, if present.
+     */
     fun hasModel(position: Int): Boolean = helper.currentList.size > position - fixUpForHeader()
     fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]
     protected fun getModels(): List<T> = helper.currentList
@@ -164,6 +205,19 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             .takeIf { it != DomainUtil.BAD_POSITION }
             ?.let { it + fixUpForHeader() }
             ?: DomainUtil.BAD_POSITION
+
+    fun getModelsInRange(from: Int, to: Int): MutableList<T> {
+        if (to < from || from < 0 || to < 0 || to >= itemCount) {
+            throw IllegalArgumentException("Invalid input range: ($from, $to)")
+        }
+
+        val xfrom = if (withHeader()) from + 1 else from
+        val xto = if (getItemViewType(to) != VIEW_TYPE_NORMAL) to - 1 else to
+
+        val list = mutableListOf<T>()
+        for (i in xfrom..xto) list.add(getModel(i))
+        return list
+    }
 
     /**
      * The following two methods are just stubs to make [getItem] work properly,

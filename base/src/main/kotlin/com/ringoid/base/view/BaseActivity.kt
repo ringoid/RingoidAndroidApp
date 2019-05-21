@@ -14,6 +14,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
+import com.ringoid.domain.manager.IRuntimeConfig
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.manager.KeyboardManager
 import com.ringoid.utility.manager.KeyboardStatus
@@ -40,6 +41,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug
+    @Inject protected lateinit var config: IRuntimeConfig
 
     private var isOnFreshStart = true
     protected var isStopped = false

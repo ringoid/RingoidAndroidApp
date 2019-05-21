@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
-import com.bumptech.glide.util.ViewPreloadSizeProvider
+import com.bumptech.glide.util.FixedPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
-import com.ringoid.origin.feed.adapter.profile.ProfileImageItemAnimator
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
@@ -17,6 +17,7 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -24,6 +25,7 @@ import timber.log.Timber
 interface IFeedViewHolder {
 
     var onBeforeLikeListener: (() -> Boolean)?
+    var onImageTouchListener: ((x: Float, y: Float) -> Unit)?
     var snapPositionListener: ((snapPosition: Int) -> Unit)?
     var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>?
 
@@ -34,6 +36,7 @@ abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledV
     : BaseViewHolder<FeedItemVO>(view), IFeedViewHolder {
 
     override var onBeforeLikeListener: (() -> Boolean)? = null
+    override var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
     override var snapPositionListener: ((snapPosition: Int) -> Unit)? = null
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
@@ -48,6 +51,13 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             field = value
             profileImageAdapter.onBeforeLikeListener = value
         }
+
+    override var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
+        set(value) {
+            field = value
+            profileImageAdapter.onImageTouchListener = value
+        }
+
     internal val profileImageAdapter = ProfileImageAdapter(view.context)
 
     private val imagePreloadListener: RecyclerViewPreloader<ProfileImageVO>
@@ -58,14 +68,14 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             adapter = profileImageAdapter
                 .also {
                     it.onBeforeLikeListener = onBeforeLikeListener
-                    it.tabsObserver = itemView.tabs2.adapterDataObserver
+                    it.onImageTouchListener = onImageTouchListener
+                    it.tabsObserver = itemView.tabs.adapterDataObserver
                 }
             isNestedScrollingEnabled = false
-            itemAnimator = ProfileImageItemAnimator()
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 .also { it.initialPrefetchItemCount = 4 }
             snapHelper.attachToRecyclerView(this)
-            itemView.tabs2.attachToRecyclerView(this, snapHelper)
+            itemView.tabs.attachToRecyclerView(this, snapHelper)
             setHasFixedSize(true)
             setRecycledViewPool(viewPool)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
@@ -84,7 +94,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     }
                 }
             })
-            imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, ViewPreloadSizeProvider<ProfileImageVO>(), 10)
+            imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, FixedPreloadSizeProvider<ProfileImageVO>(AppRes.SCREEN_WIDTH, AppRes.FEED_IMAGE_HEIGHT), 10)
             addOnScrollListener(imagePreloadListener)
         }
         itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
@@ -92,11 +102,16 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     override fun bind(model: FeedItemVO) {
         showControls()  // cancel any effect caused by applied payloads
+        val positionOfImage = model.positionOfImage
         profileImageAdapter.apply {
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
+            insertSubject
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    itemView.rv_items.linearLayoutManager()?.scrollToPosition(positionOfImage)
+                    itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f
+                }, Timber::e)
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
-            itemView.rv_items.post { itemView.rv_items.linearLayoutManager()?.scrollToPosition(model.positionOfImage) }
-            itemView.tabs2.alpha = if (model.images.size < 2) 0.0f else 1.0f
         }
 
         if (BuildConfig.IS_STAGING) {
@@ -119,30 +134,18 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowSettingsBtnOnScroll)) {
             itemView.ibtn_settings.changeVisibility(isVisible = true)
         }
-//        if (payloads.contains(FeedViewHolderHideTabsIndicatorOnScroll)) {
-//            itemView.tabs.changeVisibility(isVisible = false)
-//        }
-//        if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
-//            itemView.tabs.changeVisibility(isVisible = true)
-//        }
-        if (payloads.contains(FeedViewHolderHideTabs2IndicatorOnScroll)) {
-            itemView.tabs2.changeVisibility(isVisible = false)
+        if (payloads.contains(FeedViewHolderHideTabsIndicatorOnScroll)) {
+            itemView.tabs.changeVisibility(isVisible = false)
         }
-        if (payloads.contains(FeedViewHolderShowTabs2IndicatorOnScroll)) {
-            itemView.tabs2.changeVisibility(isVisible = true)
-        }
-        if (payloads.contains(FeedViewHolderHideLikeBtnOnScroll)) {
-            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
-        }
-        if (payloads.contains(FeedViewHolderShowLikeBtnOnScroll)) {
-            profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
+        if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
+            itemView.tabs.changeVisibility(isVisible = true)
         }
     }
 
     // ------------------------------------------------------------------------
     protected open fun hideControls() {
         itemView.apply {
-            tabs2.changeVisibility(isVisible = false)
+            tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
@@ -150,7 +153,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     protected open fun showControls() {
         itemView.apply {
-            tabs2.changeVisibility(isVisible = true)
+            tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)

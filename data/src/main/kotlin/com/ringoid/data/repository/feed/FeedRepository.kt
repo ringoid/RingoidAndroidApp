@@ -95,6 +95,10 @@ open class FeedRepository @Inject constructor(
     override fun cacheUserMessagedFeedItemId(feedItemId: String): Completable =
         Completable.fromCallable { feedPropertiesLocal.addUserMessagedFeedItemId(UserMessagedFeedItemIdDbo(feedItemId = feedItemId)) }
 
+    // ------------------------------------------
+    override fun getCachedFeedItemById(id: String): Single<FeedItem> =
+        local.feedItem(profileId = id).map { it.map() }
+
     override fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds> =
         feedPropertiesLocal.likedImagesForFeedItemIds(ids)
             .map {
@@ -132,6 +136,9 @@ open class FeedRepository @Inject constructor(
     override fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable =
         Completable.fromCallable { local.markFeedItemAsSeen(feedItemId, isNotSeen) }
 
+    override fun transferFeedItem(feedItemId: String, destinationFeed: String): Completable =
+        Completable.fromCallable { local.updateSourceFeed(feedItemId, destinationFeed) }
+
     // --------------------------------------------------------------------------------------------
     override val badgeLikes = PublishSubject.create<Boolean>()
     override val badgeMatches = PublishSubject.create<Boolean>()
@@ -140,6 +147,7 @@ open class FeedRepository @Inject constructor(
     override val feedMatches = PublishSubject.create<List<FeedItem>>()
     override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
+    override val lmmLoaded = PublishSubject.create<Long>()
     override val newLikesCount = PublishSubject.create<Int>()
     override val newMatchesCount = PublishSubject.create<Int>()
     override val newMessagesCount = PublishSubject.create<Int>()
@@ -161,7 +169,9 @@ open class FeedRepository @Inject constructor(
                  .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] before filter out cached/blocked profiles") }
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
-                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] after filtering, final") }
+                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] after filtering out cached/blocked profiles") }
+                 .filterOutLMMProfilesFeed()
+                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] after filtering out LMM profiles, final") }
                  .cacheNewFacesAsAlreadySeen()
                  .map { it.map() }
         }
@@ -191,7 +201,7 @@ open class FeedRepository @Inject constructor(
                 .detectCollisionProfilesLmm()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
                 .filterOutBlockedProfilesLmm()
-                .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering, final") }
+                .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
                 .map { it.map() }
                 .doOnSuccess { sentMessagesLocal.deleteMessages() }  // clear sent user messages because they will be restored with new Lmm
                 .clearCachedPropertyFeedItemIds()  // drop any previous user data (properties) applicable on cached Lmm
@@ -201,7 +211,10 @@ open class FeedRepository @Inject constructor(
                 .checkForNewMessages()
                 .cacheLmm()  // cache new Lmm data fetched from the Server
                 .cacheMessagesFromLmm()
+                .doOnSuccess { lmmLoaded.onNext(0L) }
         }
+
+    override fun getLmmProfileIds(): Single<List<String>> = local.feedItemIds()
 
     private fun getCachedLmm(): Single<Lmm> =
         getCachedLmmOnly()
@@ -232,6 +245,9 @@ open class FeedRepository @Inject constructor(
 
     protected fun Single<FeedResponse>.filterOutBlockedProfilesFeed(): Single<FeedResponse> =
         filterOutProfilesFeed(idsSource = getBlockedProfileIds().toObservable())
+
+    private fun Single<FeedResponse>.filterOutLMMProfilesFeed(): Single<FeedResponse> =
+        filterOutProfilesFeed(idsSource = getLmmProfileIds().toObservable())
 
     private fun Single<FeedResponse>.filterOutProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
         toObservable()

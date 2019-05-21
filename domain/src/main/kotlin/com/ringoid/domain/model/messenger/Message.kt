@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IEssence
 import com.ringoid.domain.model.IListModel
-import com.ringoid.domain.model.essence.messenger.MessageEssence.Companion.COLUMN_PEER_ID
 import com.ringoid.utility.randomString
 
 data class Message(

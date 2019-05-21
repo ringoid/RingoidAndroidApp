@@ -61,8 +61,14 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                         exception = error  // abort retry and fallback
                         0  // delay in ms
                     }
-                    else -> delay * pow(5.0, attemptNumber.toDouble()).toLong()
+                    else -> delay * pow(1.8, attemptNumber.toDouble()).toLong()
                 }
+                if (tag?.equals("commitActions") != true && delay > BuildConfig.REQUEST_TIME_THRESHOLD) {
+                    // exponential delay exceeds threshold, and this is not 'RepeatRequestAfterSecException' (because Server-side value for delay is just 800 ms, which is less than threshold).
+                    SentryUtil.capture(error, message = "Common retry after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms")
+                    exception = ThresholdExceededException()  // abort retry and fallback, in common case
+                }
+
                 exception?.let { Flowable.error<Long>(it) }
                     ?: Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
                                 .doOnSubscribe { DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}") }

@@ -7,6 +7,7 @@
     <dimen name="std_element_height">47dp</dimen>
     <dimen name="std_icon_24">19dp</dimen>
     <dimen name="std_icon_36">28dp</dimen>
+    <dimen name="std_icon_96">75dp</dimen>
     <dimen name="std_margin_8">6dp</dimen>
     <dimen name="std_margin_12">9dp</dimen>
     <dimen name="std_margin_16">12dp</dimen>

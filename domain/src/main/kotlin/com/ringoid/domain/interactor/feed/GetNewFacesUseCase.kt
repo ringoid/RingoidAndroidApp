@@ -11,7 +11,7 @@ import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
-class GetNewFacesUseCase @Inject constructor(private val repository: IFeedRepository,
+class GetNewFacesUseCase @Inject constructor(val repository: IFeedRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<Feed>(threadExecutor, postExecutor) {
 

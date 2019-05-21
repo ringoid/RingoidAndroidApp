@@ -17,7 +17,7 @@ import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import javax.inject.Inject
 
-@Database(version = 100,
+@Database(version = 101,
           entities = [ImageRequestDbo::class, MessageDbo::class,
                       ProfileDbo::class, ProfileIdDbo::class, UserImageDbo::class])
 abstract class UserRingoidDatabase : RoomDatabase() {
@@ -31,11 +31,4 @@ abstract class UserRingoidDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun userFeedDao(): UserFeedDao
     abstract fun userImageDao(): UserImageDao
-}
-
-class MajorMigration_10_100 @Inject constructor() : Migration(10, 100) {
-
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("DROP TABLE IF EXISTS ${ImageDbo.TABLE_NAME}")
-    }
 }

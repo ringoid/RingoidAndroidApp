@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.lmm.match
 
 import android.app.Application
 import com.ringoid.base.manager.analytics.Analytics
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -13,17 +14,20 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class MatchesFeedViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase,
+    getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
     getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
+    transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -31,11 +35,13 @@ class MatchesFeedViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
+        getCachedFeedItemByIdUseCase,
         getLikedFeedItemIdsUseCase,
         getUserMessagedFeedItemIdsUseCase,
         addLikedImageForFeedItemIdUseCase,
         addUserMessagedFeedItemIdUseCase,
         updateFeedItemAsSeenUseCase,
+        transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
@@ -68,13 +74,9 @@ class MatchesFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun onViewFeedItem(feedItemId: String) {
-        super.onViewFeedItem(feedItemId)
-        markFeedItemAsSeen(feedItemId = feedItemId)
-    }
-
-    override fun onSettingsClick(profileId: String) {
-        super.onSettingsClick(profileId)
-        markFeedItemAsSeen(profileId)
+    override fun onFirstUserMessageSent(profileId: String) {
+        super.onFirstUserMessageSent(profileId)
+        // transfer firstly messaged profile from Matches Feed to Messages Feed, by Product
+        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }
 }

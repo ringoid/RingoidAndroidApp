@@ -7,7 +7,7 @@ import com.ringoid.origin.viewmodel.BasePermissionViewModel
 
 abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app) {
 
-    private var stopAppTs: Long = 0L
+    private var stopAppTs: Long = System.currentTimeMillis()
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

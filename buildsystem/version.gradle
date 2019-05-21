@@ -54,10 +54,11 @@ buildscript {
         dotsIndicatorFixVersion = '1.0.0'
         overscrollVersion = '1.0.4'
         rvAnimVersion = '3.0.0'
+        rvItemAnimVersion = '1.1.0'
 
         logInterceptorVersion = '3.0.0'
-        okHttpVersion = '3.10.0'
-        retrofitVersion = '2.4.0'
+        okHttpVersion = '3.14.2'
+        retrofitVersion = '2.5.0'
 
         rxJavaVersion = '2.2.2'
         rxAndroidVersion = '2.1.0'

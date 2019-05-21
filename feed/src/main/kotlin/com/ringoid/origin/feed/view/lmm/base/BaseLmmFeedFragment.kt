@@ -14,12 +14,9 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.userMessage
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideControls
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
-import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
@@ -125,40 +122,14 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 if (it.position == DomainUtil.BAD_POSITION) {
                     return
                 }
-                scrollToTopOfItemAtPosition(it.position, offset = AppRes.BUTTON_HEIGHT)
 
                 when (tag) {
                     ChatFragment.TAG -> {
                         communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
-                        it.firstUserMessage?.let { message ->
-                            /**
-                             * When Chat closed, underlying Feed screen and hosting MainActivity
-                             * will get this place, and list of feed items will be looked for the item
-                             * Chat was opened for, and the first message from the user will be supplied
-                             * to it, if any. This is done in order to rebind that feed item and alter
-                             * it's chat icon depending on count of peer's and user's messages for that item.
-                             *
-                             * But on Android, underlying Feed screen and hosting MainActivity could be
-                             * destroyed by the Framework (for example, if DNKA mode is enabled in settings).
-                             * In that case, Feed screen will still get this place, but [feedAdapter] will
-                             * have not be filled with items yet, so it's not possible to look for specific
-                             * feed item and supply first user message to it. To prevent crash, check must be
-                             * performed, and supplying first user message will be postponed until [feedAdapter]
-                             * will be filled with items.
-                             */
-                            if (feedAdapter.hasModel(it.position)) {
-                                // supply first message, as mentioned above
-                                feedAdapter.getModel(it.position).messages.add(message)
-                            } else {
-                                // result from Chat screen has just been delivered, but adapter hasn't been filled yet
-                            }
-                            vm.onFirstUserMessageSent(profileId = it.peerId)
-                        }
-                        getRecyclerView().post {  // alter chat icon on feed item after supplying first user message to it
-                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
-                        }
+                        it.firstUserMessage?.let { _ -> vm.onFirstUserMessageSent(profileId = it.peerId) }
+                        getRecyclerView().post { feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls) }
                     }
                 }
                 true  // no-op value
@@ -180,12 +151,9 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         peerId = peerId,
                         peerImageId = image?.id ?: DomainUtil.BAD_ID,
                         peerImageUri = image?.uri,
+                        peerThumbnailUri = image?.thumbnailUri,
                         sourceFeed = getSourceFeed())
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
-                    scrollToTopOfItemAtPositionAndPost(position).post {
-                        feedAdapter.notifyItemChanged(position, FeedViewHolderHideControls)
-                    }
-//                    ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(it, tag)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
         }
@@ -201,13 +169,17 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         Bus.post(event = BusEvent.RefreshOnLmm)
     }
 
+    internal fun transferProfile(profileId: String, destinationFeed: String, payload: Bundle? = null) {
+        vm.prependProfileOnTransfer(profileId, destinationFeed, payload)
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.feed) {
-                feedAdapter.submitList(it.map { FeedItemVO(it) })
+                feedAdapter.submitList(it)
                 runOnUiThread { scrollListToPosition(0) }
             }
         }
@@ -217,8 +189,16 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
          */
         communicator(ILmmFragment::class.java)?.accessViewModel()
             ?.let {
+                it.viewState.value?.let { state ->
+                    when (state) {
+                        ViewState.LOADING -> showLoading(isVisible = true)
+                        else -> {
+                            showLoading(isVisible = false)
+                            vm.applyCachedFeed(it.cachedLmm)
+                        }
+                    }
+                }
                 viewLifecycleOwner.observe(it.listScrolls, ::scrollListToPosition)
-                vm.applyCachedFeed(it.cachedLmm)
             }
     }
 

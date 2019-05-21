@@ -6,8 +6,10 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeTypeface
@@ -29,6 +31,19 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun getVmClass(): Class<LmmViewModel> = LmmViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_lmm
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        fun showLoading(isVisible: Boolean) {
+            lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.showLoading(isVisible) }
+        }
+
+        super.onViewStateChange(newState)
+        when (newState) {
+            ViewState.IDLE -> showLoading(isVisible = false)
+            ViewState.LOADING -> showLoading(isVisible = true)
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     // TODO: save that fields onSaveInstanceState() for later restore
@@ -78,6 +93,25 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         tab_delim2.changeVisibility(isVisible)
     }
 
+    // ------------------------------------------
+    override fun transferProfile(profileId: String, destinationFeed: String) {
+        lmmPagesAdapter.accessItemByName(destinationFeed)
+            ?.let { it as? BaseLmmFeedFragment<*> }
+            ?.transferProfile(profileId, destinationFeed, payload = null)
+    }
+
+    override fun transferProfile(discarded: FeedItemVO?, destinationFeed: String) {
+        if (discarded == null) {
+            return
+        }
+
+        val payload = Bundle().apply { putInt("positionOfImage", discarded.positionOfImage) }
+        lmmPagesAdapter.accessItemByName(destinationFeed)
+            ?.let { it as? BaseLmmFeedFragment<*> }
+            ?.transferProfile(discarded.id, destinationFeed, payload = payload)
+    }
+
+    // ------------------------------------------
     private fun clearAllFeeds(mode: Int) {
         lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.clearScreen(mode) }
     }

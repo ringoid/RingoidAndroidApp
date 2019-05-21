@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 101,
-    "identityHash": "64e7ef0badb06756819bc84ba116316f",
+    "identityHash": "8bfb58a5032a26048a66c096454d38f6",
     "entities": [
       {
         "tableName": "ActionObjects",
@@ -104,7 +104,7 @@
       },
       {
         "tableName": "Images",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`profileId` TEXT NOT NULL, `id` TEXT NOT NULL, `uri` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`profileId`) REFERENCES `FeedItems`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`profileId` TEXT NOT NULL, `id` TEXT NOT NULL, `uri` TEXT, `thumbnailPhotoUri` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`profileId`) REFERENCES `FeedItems`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "profileId",
@@ -121,6 +121,12 @@
           {
             "fieldPath": "uri",
             "columnName": "uri",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "thumbnailUri",
+            "columnName": "thumbnailPhotoUri",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -245,11 +251,69 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "LikedFeedItemIds",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feedItemId` TEXT NOT NULL, `imageId` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feedItemId",
+            "columnName": "feedItemId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageId",
+            "columnName": "imageId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "UserMessagedFeedItemIds",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feedItemId` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feedItemId",
+            "columnName": "feedItemId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"64e7ef0badb06756819bc84ba116316f\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8bfb58a5032a26048a66c096454d38f6\")"
     ]
   }
 }

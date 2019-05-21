@@ -29,6 +29,7 @@ interface IFeedRepository {
     fun cacheLikedFeedItemIds(ids: LikedFeedItemIds): Completable
     fun cacheUserMessagedFeedItemId(feedItemId: String): Completable
 
+    fun getCachedFeedItemById(id: String): Single<FeedItem>
     fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds>
     fun getUserMessagedFeedItemIds(): Single<List<String>>
 
@@ -39,6 +40,8 @@ interface IFeedRepository {
 
     fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable
 
+    fun transferFeedItem(feedItemId: String, destinationFeed: String): Completable
+
     // --------------------------------------------------------------------------------------------
     val badgeLikes: PublishSubject<Boolean>
     val badgeMatches: PublishSubject<Boolean>
@@ -47,6 +50,7 @@ interface IFeedRepository {
     val feedMatches: PublishSubject<List<FeedItem>>
     val feedMessages: PublishSubject<List<FeedItem>>
     val lmmChanged: PublishSubject<Boolean>
+    val lmmLoaded: PublishSubject<Long>
     val newLikesCount: PublishSubject<Int>
     val newMatchesCount: PublishSubject<Int>
     val newMessagesCount: PublishSubject<Int>
@@ -54,6 +58,8 @@ interface IFeedRepository {
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
 
     fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm>
+
+    fun getLmmProfileIds(): Single<List<String>>
 
     fun dropLmmChangedStatus(): Completable
 }

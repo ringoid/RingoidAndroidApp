@@ -1,6 +1,6 @@
 package com.ringoid.domain.debug
 
-import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.manager.IRuntimeConfig
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -13,7 +13,12 @@ import java.util.concurrent.TimeUnit
 object DebugLogUtil {
 
     val logger = ReplaySubject.createWithTimeAndSize<DebugLogItem>(15, TimeUnit.SECONDS, Schedulers.newThread(), 10)
+    private lateinit var config: IRuntimeConfig
     private var dao: IDebugLogDaoHelper? = null
+
+    fun setConfig(config: IRuntimeConfig) {
+        this.config = config
+    }
 
     fun lifecycle(`object`: Any, log: String) = log("${`object`.javaClass.simpleName}: $log", DebugLogLevel.LIFECYCLE)
     fun b(log: String) = log(log, DebugLogLevel.BUS)
@@ -37,7 +42,7 @@ object DebugLogUtil {
     @Synchronized
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
         Timber.log(level.priority, log)
-        if (BuildConfig.IS_STAGING) {
+        if (config.isDeveloper() && config.collectDebugLogs()) {
             val logItem = DebugLogItem(log = log, level = level)
             logger.onNext(logItem)
             dao?.addDebugLog(logItem)
@@ -46,7 +51,7 @@ object DebugLogUtil {
 
     @Synchronized
     fun clear() {
-        if (BuildConfig.IS_STAGING) {
+        if (config.isDeveloper()) {
             logger.onNext(EmptyDebugLogItem)
             logger.cleanupBuffer()
             dao?.deleteDebugLog()

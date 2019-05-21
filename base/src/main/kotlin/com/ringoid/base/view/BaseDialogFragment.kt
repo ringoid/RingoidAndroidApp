@@ -17,6 +17,7 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
+import com.ringoid.domain.manager.IRuntimeConfig
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.view.StateBottomSheetDialog
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
@@ -34,6 +35,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
     @Inject protected lateinit var permissionManager: PermissionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
     @Inject protected lateinit var cloudDebug: ICloudDebug
+    @Inject protected lateinit var config: IRuntimeConfig
 
     protected var asBottomSheet: Boolean = false
         private set

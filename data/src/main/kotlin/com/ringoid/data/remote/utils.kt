@@ -10,6 +10,7 @@ import io.reactivex.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 fun IEssence.toBody(): RequestBody = RequestBody.create(MediaType.parse("application/json"), this.toJson())
 
@@ -114,3 +115,7 @@ fun checkElapsedTimeAndWarn(startTime: Long, tag: String = DEFAULT_TAG) {
         DebugLogUtil.w("$message [$tag], duration=$elapsedTime")
     }
 }
+
+inline fun <reified T : BaseResponse> Single<T>.withTimeout(timeout: Long = BuildConfig.REQUEST_TIME_THRESHOLD): Single<T> =
+    timeout(timeout, TimeUnit.MILLISECONDS)
+

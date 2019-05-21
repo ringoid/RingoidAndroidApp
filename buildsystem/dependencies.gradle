@@ -127,6 +127,7 @@ ext {
             dotsIndicatorFix: "com.afollestad:viewpagerdots:${dotsIndicatorFixVersion}",
             overscroll:       "me.everything:overscroll-decor-android:${overscrollVersion}",
             rvAnim:           "jp.wasabeef:recyclerview-animators:${rvAnimVersion}",
+            rvItemAnim:       "com.mikepenz:itemanimators:${rvItemAnimVersion}",
     ]
 
     d_support = [
@@ -258,7 +259,7 @@ ext {
 
     def net = [
             [configuration: "implementation", dependency: d_network.logInterceptor, options: { exclude group: 'org.json', module: 'json' }],
-            [configuration: "implementation", dependency: d_network.okhttp],
+//            [configuration: "implementation", dependency: d_network.okhttp],
             [configuration: "implementation", dependency: d_network.okhttpLog],
             [configuration: "implementation", dependency: d_network.retrofit],
             [configuration: "implementation", dependency: d_network.retrofitGson],
@@ -392,7 +393,9 @@ ext {
 
     /* Feature Feed */
     // ------------------------------------------
-    feedDependencies = []
+    feedDependencies = [
+        [configuration: "implementation", dependency: d_view.rvItemAnim]
+    ]
     feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink + kotlin +
                         glide + log + rx + rxBind
 
@@ -505,6 +508,7 @@ ext {
     /* Data */
     // ------------------------------------------
     dataDependencies = [
+        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]

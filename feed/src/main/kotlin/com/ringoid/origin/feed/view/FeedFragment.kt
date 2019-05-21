@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
@@ -30,6 +32,8 @@ import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.widget.view.swipes
+import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -40,6 +44,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         private set
     private lateinit var feedTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
+    private val debugSubs = CompositeDisposable()
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
@@ -60,27 +65,20 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             is ViewState.CLEAR -> onClearState(mode = newState.mode)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> swipe_refresh_layout?.isRefreshing = false
-                    is BLOCK_PROFILE -> {
-                        val count = feedAdapter.getModelsCount()
-                        if (count <= 1) {  // remove last feed item - show empty stub
-                            onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
-                        } else {  // remove not last feed item
-                            feedAdapter.remove { it.id == (newState.residual as BLOCK_PROFILE).profileId }
-                        }
-                    }
+                    is ASK_TO_ENABLE_LOCATION_SERVICE -> showLoading(isVisible = false)
+                    is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
                     is NO_IMAGES_IN_PROFILE -> {
                         Dialogs.showTextDialog(activity,
                             descriptionResId = getAddPhotoDialogDescriptionResId(),
                             positiveBtnLabelResId = OriginR_string.button_add_photo,
                             negativeBtnLabelResId = OriginR_string.button_later,
                             positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })
-                        swipe_refresh_layout.isRefreshing = false
+                        showLoading(isVisible = false)
                     }
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.PROGRESS -> swipe_refresh_layout?.isRefreshing = true
+            is ViewState.PROGRESS -> showLoading(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
@@ -100,14 +98,79 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
         vm.onClearScreen()
         getEmptyStateInput(mode)?.let {
-            onIdleState()
             showEmptyStub(input = it)
-        }
+            showLoading(isVisible = false)
+        } ?: run { fl_empty_container?.changeVisibility(isVisible = false) }
+    }
+
+    protected fun onDiscardProfileState(profileId: String): FeedItemVO? {
+        fun getVisibleItemIds(excludedId: String? = null): List<String> =
+            rv_items.linearLayoutManager()?.let { lm ->
+                val from = lm.findFirstVisibleItemPosition()
+                val to = lm.findLastVisibleItemPosition()
+                feedAdapter.getModelsInRange(from, to)
+                    .apply { excludedId?.let { exId -> removeAll { it.id == exId } } }
+                    .map { it.id }
+            } ?: emptyList()
+
+        vm.onDiscardProfile(profileId)
+        return feedAdapter.findModel { it.id == profileId }
+            ?.also { _ ->
+                val count = feedAdapter.getModelsCount()
+                if (count <= 1) {  // remove last feed item - show empty stub directly
+                    onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
+                } else {  // remove not last feed item
+                    val prevIds = getVisibleItemIds(profileId)  // record ids of visible items before remove
+                    Timber.v("Discard item ($profileId), visible BEFORE: ${prevIds.joinToString()}")
+                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
+
+                    /**
+                     * After finishing item remove animation, detect what items come into viewport
+                     * and call [FeedViewModel.onItemBecomeVisible] on each of them.
+                     */
+                    rv_items.itemAnimator
+                        .let { it as FeedItemAnimator }
+                        .removeAnimationSubject
+                        .take(1)  // single-shot subscription
+                        .doOnSubscribe { localScopeProvider.start() }
+                        .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription, subs ${debugSubs.size()}") }
+                        .doFinally {
+                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)} has completed")
+                            localScopeProvider.stop()
+                            debugSubs.clear()
+                        }
+                        .autoDisposable(localScopeProvider)
+                        .subscribe({ _ ->
+                            val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
+                            Timber.v("Discard item ($profileId), visible AFTER: ${newIds.joinToString()}")
+                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
+
+                            newIds.toMutableList()
+                                .also { it.removeAll(prevIds) }
+                                .also { DebugLogUtil.d("Discarded ${profileId.substring(0..3)}, became visible[${it.size}]: ${it.joinToString { it.substring(0..3) }}") }
+                                .takeIf { it.isNotEmpty() }
+                                ?.forEach { id ->
+                                    feedAdapter.findModel { it.id == id }
+                                        ?.let {
+                                            val imageId = it.images[it.positionOfImage].id
+                                            vm.onItemBecomeVisible(profileId = it.id, imageId = imageId)
+                                        }
+                                }
+                        }, Timber::e)
+                        .takeIf { BuildConfig.IS_STAGING && !it.isDisposed }
+                        ?.let { debugSubs.add(it) }
+
+                        feedAdapter.remove { it.id == profileId }
+                }
+            }
     }
 
     private fun onIdleState() {
-        fl_empty_container?.changeVisibility(isVisible = false, soft = true)
-        swipe_refresh_layout?.isRefreshing = false
+        showLoading(isVisible = false)
+    }
+
+    internal fun showLoading(isVisible: Boolean) {
+        swipe_refresh_layout?.isRefreshing = isVisible
     }
 
     /* Lifecycle */
@@ -116,6 +179,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter().apply {
             onBeforeLikeListener = { vm.onBeforeLike() }
+            onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {
@@ -216,10 +280,16 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        debugSubs.clear()
+        feedAdapter.dispose()
+    }
+
     // --------------------------------------------------------------------------------------------
     protected open fun onRefresh() {
         if (!connectionManager.isNetworkAvailable()) {
-            swipe_refresh_layout.isRefreshing = false
+            showLoading(isVisible = false)
             noConnection(this@FeedFragment)
         } else {
             offsetScrollStrats = getOffsetScrollStrategies()
@@ -282,8 +352,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     protected fun getStrategyByTag(tag: String): OffsetScrollStrategy? = offsetScrollStrats.find { it.tag == tag }
 
     protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
-        listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
-               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabs2IndicatorOnScroll, show = FeedViewHolderShowTabs2IndicatorOnScroll),
+        listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_FOOTER_LABEL_BOTTOM, hide = FeedFooterViewHolderHideControls, show = FeedFooterViewHolderShowControls))
 
@@ -291,24 +360,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
                 offsetScrollStrats.forEach {
-                    if (it.isEnabledForPosition(position)) {
-                        view.post {
-                            // avoid change rv during layout, leading to crash
-                            when (it.type) {
-                                OffsetScrollStrategy.Type.BOTTOM -> {
-                                    if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
-                                        if (bottom - view.top < it.deltaOffset) {
-                                            if (!it.isHiddenAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.hide)
-                                            }
-                                        } else {
-                                            if (!it.isShownAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.show)
-                                            }
-                                        }
-                                    }
-                                }
-                                OffsetScrollStrategy.Type.DOWN -> {
+                    view.post {
+                        // avoid change rv during layout, leading to crash
+                        when (it.type) {
+                            OffsetScrollStrategy.Type.BOTTOM -> {
+                                if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
                                     if (bottom - view.top < it.deltaOffset) {
                                         if (!it.isHiddenAtAndSync(position)) {
                                             feedAdapter.notifyItemChanged(position, it.hide)
@@ -319,29 +375,40 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                                         }
                                     }
                                 }
-                                OffsetScrollStrategy.Type.TOP -> {
-                                    if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
-                                        if (top - view.top >= it.deltaOffset) {
-                                            if (!it.isHiddenAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.hide)
-                                            }
-                                        } else {
-                                            if (!it.isShownAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.show)
-                                            }
+                            }
+                            OffsetScrollStrategy.Type.DOWN -> {
+                                if (bottom - view.top < it.deltaOffset) {
+                                    if (!it.isHiddenAtAndSync(position)) {
+                                        feedAdapter.notifyItemChanged(position, it.hide)
+                                    }
+                                } else {
+                                    if (!it.isShownAtAndSync(position)) {
+                                        feedAdapter.notifyItemChanged(position, it.show)
+                                    }
+                                }
+                            }
+                            OffsetScrollStrategy.Type.TOP -> {
+                                if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
+                                    if (top - view.top >= it.deltaOffset) {
+                                        if (!it.isHiddenAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.hide)
+                                        }
+                                    } else {
+                                        if (!it.isShownAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.show)
                                         }
                                     }
                                 }
-                                OffsetScrollStrategy.Type.UP -> {
-                                    if (view.top - top <= 0) {
-                                        if (top - view.top >= it.deltaOffset) {
-                                            if (!it.isHiddenAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.hide)
-                                            }
-                                        } else {
-                                            if (!it.isShownAtAndSync(position)) {
-                                                feedAdapter.notifyItemChanged(position, it.show)
-                                            }
+                            }
+                            OffsetScrollStrategy.Type.UP -> {
+                                if (view.top - top <= 0) {
+                                    if (top - view.top >= it.deltaOffset) {
+                                        if (!it.isHiddenAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.hide)
+                                        }
+                                    } else {
+                                        if (!it.isShownAtAndSync(position)) {
+                                            feedAdapter.notifyItemChanged(position, it.show)
                                         }
                                     }
                                 }

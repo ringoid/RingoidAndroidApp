@@ -14,17 +14,22 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
+import com.ringoid.origin.view.common.visual.MatchVisualEffect
+import com.ringoid.origin.view.common.visual.VisualEffectManager
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase,
+    getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
     getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
+    transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -32,18 +37,18 @@ class LikesFeedViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
+        getCachedFeedItemByIdUseCase,
         getLikedFeedItemIdsUseCase,
         getUserMessagedFeedItemIdsUseCase,
         addLikedImageForFeedItemIdUseCase,
         addUserMessagedFeedItemIdUseCase,
         updateFeedItemAsSeenUseCase,
+        transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
         userInMemoryCache, app) {
-
-    private val numberOfLikes = mutableMapOf<String, MutableSet<String>>()
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
@@ -71,25 +76,14 @@ class LikesFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun onLike(profileId: String, imageId: String, isLiked: Boolean, feedItemPosition: Int) {
-        if (!numberOfLikes.containsKey(profileId)) {
-            numberOfLikes[profileId] = mutableSetOf()
-        }
-        numberOfLikes[profileId]?.let {
-            if (isLiked) it.add(imageId) else it.remove(imageId)
-            viewState.value = if (it.isEmpty()) ViewState.DONE(NO_LIKES_ON_PROFILE(feedItemPosition))
-                              else ViewState.DONE(HAS_LIKES_ON_PROFILE(feedItemPosition))
-        }
-        onLike(profileId, imageId, isLiked)
+    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
+        super.onLike(profileId, imageId, isLiked)
+        // transfer liked profile from Likes Feed to Matches Feed, by Product
+        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }
 
-    override fun onViewFeedItem(feedItemId: String) {
-        super.onViewFeedItem(feedItemId)
-        markFeedItemAsSeen(feedItemId = feedItemId)
-    }
-
-    override fun onSettingsClick(profileId: String) {
-        super.onSettingsClick(profileId)
-        markFeedItemAsSeen(profileId)
+    override fun onImageTouch(x: Float, y: Float) {
+        super.onImageTouch(x, y)
+        VisualEffectManager.call(MatchVisualEffect(x, y))
     }
 }

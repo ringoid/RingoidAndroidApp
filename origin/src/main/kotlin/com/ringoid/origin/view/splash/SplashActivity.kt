@@ -5,8 +5,10 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.domain.BuildConfig
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.splash
+import com.ringoid.utility.getScreenWidth
 import io.branch.referral.Branch
 import io.branch.referral.BranchError
 import org.json.JSONObject
@@ -28,6 +30,7 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppRes.SCREEN_WIDTH = getScreenWidth()
         initializeBranch()
 
         vm.analyzeIntent(intent)

@@ -14,6 +14,7 @@
     <string name="debug_item_response_error_timeout" translatable="false">Response timed out</string>
     <string name="debug_item_screen_info" translatable="false">Screed Info</string>
     <string name="debug_item_switch_debug_log" translatable="false">Show debug log</string>
+    <string name="debug_item_switch_developer_mode" translatable="false">Developer mode</string>
     <string name="debug_item_clear_debug_log_button_label" translatable="false">Clear Log</string>
     <string name="debug_item_copy_debug_log_button_label" translatable="false">Copy Log</string>
     <string name="debug_title" translatable="false">Debug Menu</string>

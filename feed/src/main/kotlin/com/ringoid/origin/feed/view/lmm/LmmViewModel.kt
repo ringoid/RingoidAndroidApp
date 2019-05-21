@@ -16,6 +16,7 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
@@ -34,18 +35,22 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     var cachedLmm: Lmm? = null
         private set
 
+    private val badgeLikesDisposable: Disposable
+    private val badgeMatchesDisposable: Disposable
+    private val badgeMessengerDisposable: Disposable
+
     init {
-        getLmmUseCase.repository.badgeLikes
+        badgeLikesDisposable = getLmmUseCase.repository.badgeLikes
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeLikes.value = it }, Timber::e)
 
-        getLmmUseCase.repository.badgeMatches
+        badgeMatchesDisposable = getLmmUseCase.repository.badgeMatches
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeMatches.value = it }, Timber::e)
 
-        getLmmUseCase.repository.badgeMessenger
+        badgeMessengerDisposable = getLmmUseCase.repository.badgeMessenger
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeMessenger.value = it }, Timber::e)
@@ -55,7 +60,15 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     // --------------------------------------------------------------------------------------------
     override fun onFreshStart() {
         super.onFreshStart()
+        DebugLogUtil.i("Get LMM on fresh start")
         getLmm()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        badgeLikesDisposable.dispose()
+        badgeMatchesDisposable.dispose()
+        badgeMessengerDisposable.dispose()
     }
 
     // --------------------------------------------------------------------------------------------
@@ -73,6 +86,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // refresh on Explore Feed screen leads Lmm screen to refresh as well
+        DebugLogUtil.i("Get LMM on refresh Explore Feed")
         getLmm()
     }
 
@@ -81,6 +95,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // refresh on Profile screen leads Lmm screen to refresh as well
+        DebugLogUtil.i("Get LMM on refresh Profile")
         getLmm()
     }
 
@@ -88,6 +103,7 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        DebugLogUtil.i("Get LMM on Application reopen")
         getLmm()  // app reopen leads Lmm screen to refresh as well
     }
 
@@ -95,8 +111,8 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        if (event.msElapsed >= 300000L) {
-            DebugLogUtil.b("App last open was more than 5 minutes ago, refresh Lmm...")
+        if (event.msElapsed in 300000L..1557989300340L) {
+            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Lmm...")
             getLmm()  // app reopen leads Lmm screen to refresh as well
         }
     }
@@ -110,7 +126,9 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
                                      .put("source", DomainUtil.SOURCE_FEED_PROFILE)
                 getLmmUseCase.source(params = params)
             }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { listScrolls.value = 0 }  // scroll to top position
+            .doFinally { viewState.value = ViewState.IDLE }
             .autoDisposable(this)
             .subscribe({ cachedLmm = it },
                         /**

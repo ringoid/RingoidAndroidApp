@@ -3,10 +3,13 @@ package com.ringoid.data.local.shared_prefs
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StyleRes
+import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
@@ -17,7 +20,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsManager {
+class SharedPrefsManager @Inject constructor(context: Context, private val config: RuntimeConfig)
+    : ISharedPrefsManager {
 
     private val sharedPreferences: SharedPreferences
     private val backupSharedPreferences: SharedPreferences
@@ -31,6 +35,8 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
             sharedPreferences.edit().putInt(SP_KEY_BUILD_CODE, BuildConfig.BUILD_NUMBER).apply()
             deleteLastActionTime()
         }
+
+        DebugLogUtil.setConfig(config)
     }
 
     companion object {
@@ -41,10 +47,12 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         private const val SP_KEY_APP_UID = "sp_key_app_uid"
         private const val SP_KEY_THEME = "sp_key_theme"
         @DebugOnly private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
+        @DebugOnly private const val SP_KEY_DEVELOPER_MODE = "sp_key_developer_mode"
 
         /* Auth */
         // --------------------------------------
         const val SP_KEY_AUTH_USER_ID = "sp_key_auth_user_id"
+        const val SP_KEY_AUTH_USER_GENDER = "sp_key_auth_user_gender"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
 
         /* Location */
@@ -96,12 +104,15 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     // ------------------------------------------
     @DebugOnly
     override fun isDebugLogEnabled(): Boolean =
-        BuildConfig.IS_STAGING && sharedPreferences.getBoolean(SP_KEY_DEBUG_LOG_ENABLED, BuildConfig.IS_STAGING)
+        sharedPreferences.getBoolean(SP_KEY_DEBUG_LOG_ENABLED, BuildConfig.IS_STAGING)
+            .also { config.setCollectDebugLogs(it) }
 
     @DebugOnly
     override fun switchDebugLogEnabled() {
         val currentFlag = isDebugLogEnabled()
-        sharedPreferences.edit().putBoolean(SP_KEY_DEBUG_LOG_ENABLED, !currentFlag).apply()
+        sharedPreferences.edit().putBoolean(SP_KEY_DEBUG_LOG_ENABLED, !currentFlag)
+            .also { config.setCollectDebugLogs(!currentFlag) }
+            .apply()
     }
 
     @DebugOnly
@@ -109,6 +120,23 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
         Timber.d("Test Backup: accessToken=${accessToken()}, userId=${currentUserId()}, %s backup[%s]",
             "lastActionTime=${getLastActionTime()}, themeId=${getThemeResId()}, debugLog=${isDebugLogEnabled()}",
                 "privateKey=${getPrivateKey()}, referralId=${getReferralCode()}")
+    }
+
+    override fun isDeveloperModeEnabled(): Boolean =
+        sharedPreferences.getBoolean(SP_KEY_DEVELOPER_MODE, BuildConfig.IS_STAGING)
+            .also { config.setDeveloperMode(it) }
+
+    override fun enableDeveloperMode() {
+        sharedPreferences.edit().putBoolean(SP_KEY_DEVELOPER_MODE, true)
+            .also { config.setDeveloperMode(true) }
+            .apply()
+    }
+
+    override fun switchDeveloperMode() {
+        val currentFlag = sharedPreferences.getBoolean(SP_KEY_DEVELOPER_MODE, BuildConfig.IS_STAGING)
+        sharedPreferences.edit().putBoolean(SP_KEY_DEVELOPER_MODE, !currentFlag)
+            .also { config.setDeveloperMode(!currentFlag) }
+            .apply()
     }
 
     /* Auth */
@@ -128,9 +156,13 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
             .takeIf { it.contains(SP_KEY_AUTH_USER_ID) }
             ?.let { it.getString(SP_KEY_AUTH_USER_ID, null) }
 
-    override fun saveUserProfile(userId: String, accessToken: String) {
+    override fun currentUserGender(): Gender =
+        Gender.from(sharedPreferences.getString(SP_KEY_AUTH_USER_GENDER, "") ?: "")
+
+    override fun saveUserProfile(userId: String, userGender: Gender, accessToken: String) {
         sharedPreferences.edit()
             .putString(SP_KEY_AUTH_USER_ID, userId)
+            .putString(SP_KEY_AUTH_USER_GENDER, userGender.string)
             .putString(SP_KEY_AUTH_ACCESS_TOKEN, accessToken)
             .apply()
     }
@@ -138,6 +170,7 @@ class SharedPrefsManager @Inject constructor(context: Context) : ISharedPrefsMan
     override fun deleteUserProfile(userId: String) {
         sharedPreferences.edit()
             .remove(SP_KEY_AUTH_USER_ID)
+            .remove(SP_KEY_AUTH_USER_GENDER)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
             .apply()
     }

@@ -24,6 +24,11 @@
 
     </com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout>
 
+    <com.ringoid.origin.view.common.visual.VisualEffectView
+        android:id="@+id/visual_effect_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/scroll_fab"
         android:layout_width="wrap_content"

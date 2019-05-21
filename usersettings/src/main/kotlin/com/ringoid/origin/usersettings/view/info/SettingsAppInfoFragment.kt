@@ -26,6 +26,8 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
         fun newInstance(): SettingsAppInfoFragment = SettingsAppInfoFragment()
     }
 
+    private var developerCounter: Int = 0  // to enable developer mode
+
     override fun getVmClass(): Class<SettingsAppInfoViewModel> = SettingsAppInfoViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings_app_info
@@ -39,12 +41,27 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        fun showDebugOptions() {
+            item_debug.apply {
+                changeVisibility(isVisible = config.isDeveloper())
+                clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsAppInfoFragment, path="/debug") }
+            }
+            debug_underscore.changeVisibility(isVisible = config.isDeveloper())
+        }
+
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
             setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(OriginR_string.settings_info_title)
         }
 
+        btn_developer.clicks().compose(clickDebounce()).subscribe {
+            ++developerCounter
+            if (developerCounter == 7 && !config.isDeveloper()) {
+                spm.enableDeveloperMode()
+                showDebugOptions()
+            }
+        }
         item_about.apply {
             clicks().compose(clickDebounce()).subscribe {
                 AboutDialog.newInstance().showNow(childFragmentManager, AboutDialog.TAG)
@@ -57,16 +74,12 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
                 it.toast(OriginR_string.common_clipboard)
             }
         }
-        item_debug.apply {
-            changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
-            clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsAppInfoFragment, path="/debug") }
-        }
-        debug_underscore.changeVisibility(isVisible = com.ringoid.domain.BuildConfig.IS_STAGING)
         item_email_officer.clicks().compose(clickDebounce()).subscribe {
             ExternalNavigator.emailDataProtectionOfficer(this, bodyContent = item_customer_id.getLabel())
         }
         item_licenses.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_LICENSES}") }
         item_privacy.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_PRIVACY}") }
         item_terms.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_TERMS}") }
+        showDebugOptions()
     }
 }

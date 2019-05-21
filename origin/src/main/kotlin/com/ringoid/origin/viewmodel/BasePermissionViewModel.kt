@@ -25,7 +25,13 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
         Timber.v("onLocationPermissionGranted($handleCode)")
         onLocationPermissionGrantedAction(handleCode)
 
+        var start = 0L
         locationProvider.location()
+            .doOnSubscribe { start = System.currentTimeMillis() }
+            .doFinally {
+                val elapsed = System.currentTimeMillis() - start
+                DebugLogUtil.v("Obtain location has taken $elapsed ms")
+            }
             .subscribe({ onLocationReceived(handleCode) }) {
                 DebugLogUtil.e(it)
                 when (it) {
