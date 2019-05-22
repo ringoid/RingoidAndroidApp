@@ -15,7 +15,7 @@ class UserSettingsManager @Inject constructor(
 
     override fun getUserSettings(): UserSettings {
         val locale = localeManager.getLang()
-        val pushEnabled = spm.getUserSettingPushEnabled()
+        val pushEnabled = spm.getUserSettingDailyPushEnabled()
         val timeZone = timezoneManager.getTimeZone()
         return UserSettings(locale = locale, push = pushEnabled, timeZone = timeZone)
     }

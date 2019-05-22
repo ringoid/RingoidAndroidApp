@@ -101,7 +101,6 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email support@ringoid.com</string>
     <string name="settings_push">Push Notifications</string>
-    <string name="settings_push_explanatory">Once per day if you have new like, match, message, or new users</string>
     <string name="settings_support">Email support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Settings</string>
@@ -118,6 +117,13 @@
     <string name="settings_info_privacy">Privacy Policy</string>
     <string name="settings_info_terms">Terms of Service</string>
     <string name="settings_info_title">Legal</string>
+
+    <!-- Settings Push screen -->
+    <string name="settings_push_item_like">New Like</string>
+    <string name="settings_push_item_match">New Match</string>
+    <string name="settings_push_item_message">New Message</string>
+    <string name="settings_push_item_daily">Evening Notification</string>
+    <string name="settings_push_item_daily_description">Once per day if you have new like, match, message, or new users</string>
 
     <!-- Settings Lang screen -->
     <string name="settings_lang_en">English</string>

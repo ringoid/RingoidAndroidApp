@@ -96,7 +96,6 @@
     <string name="settings_language">Язык</string>
     <string name="settings_language_help">Если вы хотите помочь и перевести Ringoid на родной язык, пожалуйста, напишите в support@ringoid.com</string>
     <string name="settings_push">Push&#45;уведомления</string>
-    <string name="settings_push_explanatory">Один раз в день, если есть лайк, взаимная симпатия, сообщение, или новые люди</string>
     <string name="settings_support">Написать support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Настройки</string>
@@ -113,6 +112,13 @@
     <string name="settings_info_privacy">Политика конфиденциальности</string>
     <string name="settings_info_terms">Условия использования</string>
     <string name="settings_info_title">Информация</string>
+
+    <!-- Settings Push screen -->
+    <string name="settings_push_item_like">Новый лайк</string>
+    <string name="settings_push_item_match">Новая взаимность</string>
+    <string name="settings_push_item_message">Новое сообщение</string>
+    <string name="settings_push_item_daily">Вечернее уведомление</string>
+    <string name="settings_push_item_daily_description">Один раз в день, если есть лайк, взаимная симпатия, сообщение, или новые люди</string>
 
     <!-- Settings Lang screen -->
     <string name="settings_lang_en">English</string>

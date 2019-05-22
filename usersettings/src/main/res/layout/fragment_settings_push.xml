@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar" android:id="@id/toolbar"/>
+
+        <ProgressBar
+            android:id="@+id/pb_debug"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/ProgressBar.Horizontal"/>
+
+        <com.ringoid.widget.view.item_view.SwitchIconItemView
+            android:id="@+id/item_push_message"
+            app:icon_item_text="@string/settings_push_item_message"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SwitchIconItemView
+            android:id="@+id/item_push_match"
+            app:icon_item_text="@string/settings_push_item_match"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SwitchIconItemView
+            android:id="@+id/item_push_like"
+            app:icon_item_text="@string/settings_push_item_like"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SwitchLabelIconItemView
+            android:id="@+id/item_push_daily"
+            android:layout_height="wrap_content"
+            app:icon_item_text="@string/settings_push_item_daily"
+            app:icon_item_text_label="@string/settings_push_item_daily_description"
+            style="?attr/iconItemView"/>
+
+    </LinearLayout>
+</ScrollView>

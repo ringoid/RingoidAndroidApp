@@ -76,7 +76,13 @@ interface ISharedPrefsManager {
 
     /* User Settings */
     // ------------------------------------------
-    fun getUserSettingPushEnabled(): Boolean
+    fun getUserSettingDailyPushEnabled(): Boolean
+    fun getUserSettingLikesPushEnabled(): Boolean
+    fun getUserSettingMatchesPushEnabled(): Boolean
+    fun getUserSettingMessagesPushEnabled(): Boolean
 
-    fun setUserSettingPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingDailyPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingLikesPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean)
 }

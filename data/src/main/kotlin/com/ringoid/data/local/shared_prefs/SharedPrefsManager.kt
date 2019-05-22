@@ -71,7 +71,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
         /* User Settings */
         // --------------------------------------
-        const val SP_KEY_USER_SETTINGS_PUSH_ENABLED = "sp_key_user_settings_push_enabled"
+        const val SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED = "sp_key_user_settings_daily_push_enabled"
+        const val SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED = "sp_key_user_settings_likes_push_enabled"
+        const val SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED = "sp_key_user_settings_matches_push_enabled"
+        const val SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED = "sp_key_user_settings_messages_push_enabled"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -245,10 +248,25 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     /* User Settings */
     // --------------------------------------------------------------------------------------------
-    override fun getUserSettingPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_PUSH_ENABLED, true)
+    override fun getUserSettingDailyPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, true)
+    override fun getUserSettingLikesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, true)
+    override fun getUserSettingMatchesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, true)
+    override fun getUserSettingMessagesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, true)
 
-    override fun setUserSettingPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_PUSH_ENABLED, pushEnabled).apply()
+    override fun setUserSettingDailyPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, pushEnabled).apply()
+    }
+
+    override fun setUserSettingLikesPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, pushEnabled).apply()
+    }
+
+    override fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, pushEnabled).apply()
+    }
+
+    override fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, pushEnabled).apply()
     }
 }
 
