@@ -29,8 +29,6 @@ import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
-import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderHideControls
-import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderShowControls
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
@@ -66,7 +64,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onIdleState() {
-            imagesAdapter.notifyItemRangeChanged(0, imagesAdapter.itemCount, UserProfileImageViewHolderShowControls)
             pb_profile.changeVisibility(isVisible = false)
             swipe_refresh_layout.isRefreshing = false
         }
@@ -104,10 +101,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> onLoadingState()
-            is ViewState.PROGRESS -> {  // show animating progress and also hide some controls
-                imagesAdapter.notifyItemRangeChanged(0, imagesAdapter.itemCount, UserProfileImageViewHolderHideControls)
-                onLoadingState()
-            }
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }

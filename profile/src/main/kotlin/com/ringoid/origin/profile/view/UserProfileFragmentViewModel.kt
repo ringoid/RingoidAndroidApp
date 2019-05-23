@@ -92,7 +92,7 @@ class UserProfileFragmentViewModel @Inject constructor(
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
         getUserImagesAsyncUseCase.source(params = params)
-            .doOnSubscribe { viewState.value = ViewState.PROGRESS }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .flatMap {
                 Observable.fromIterable(it)

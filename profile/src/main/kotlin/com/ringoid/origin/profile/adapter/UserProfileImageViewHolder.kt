@@ -19,7 +19,6 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
     }
 
     override fun bind(model: UserImage) {
-        showControls()  // cancel any effect caused by applied payloads
         ImageLoader.load(uri = model.uri, thumbnailUri = model.uriLocal ?: model.thumbnailUri,
             imageView = itemView.iv_image, options = RequestOptions().centerCrop())
 
@@ -28,20 +27,6 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
         if (BuildConfig.IS_STAGING) {
             itemView.tv_image_id.text = "Image: ${model.idWithFirstN()}"
         }
-    }
-
-    override fun bind(model: UserImage, payloads: List<Any>) {
-        if (payloads.contains(UserProfileImageViewHolderHideControls)) {
-            showControls(isVisible = false)
-        }
-        if (payloads.contains(UserProfileImageViewHolderShowControls)) {
-            showControls()
-        }
-    }
-
-    private fun showControls(isVisible: Boolean = true) {
-//        itemView.iv_likes.changeVisibility(isVisible = isVisible)
-//        itemView.tv_likes_count.changeVisibility(isVisible = isVisible)
     }
 }
 
