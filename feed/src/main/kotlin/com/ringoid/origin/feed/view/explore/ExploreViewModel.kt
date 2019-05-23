@@ -142,8 +142,8 @@ class ExploreViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    override fun onRefresh(withLoading: Boolean) {
-        super.onRefresh(withLoading)
+    override fun onRefresh() {
+        super.onRefresh()
         nextPage = 0
         debugGetNewFacesDropFlagsUseCase.source()
             .autoDisposable(this)

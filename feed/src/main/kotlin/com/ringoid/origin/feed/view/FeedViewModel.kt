@@ -138,7 +138,6 @@ abstract class FeedViewModel(
 
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
-        viewState.value = ViewState.PROGRESS
         onRefresh()  // request for feed data with potentially updated location data
     }
 
@@ -146,7 +145,7 @@ abstract class FeedViewModel(
         analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to getFeedName())
     }
 
-    internal open fun onRefresh(withLoading: Boolean = false) {
+    internal open fun onRefresh() {
         advanceAndPushViewObjects()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
@@ -155,9 +154,6 @@ abstract class FeedViewModel(
                     .doOnSuccess {
                         if (checkImagesCount(it)) {
                             clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge feed on refresh, before fetching a new one
-                            if (withLoading) {
-                                viewState.value = ViewState.PROGRESS
-                            }
                             getFeed()
                         } else {
                             viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)

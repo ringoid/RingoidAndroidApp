@@ -104,7 +104,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> onLoadingState()
-            is ViewState.PROGRESS -> {
+            is ViewState.PROGRESS -> {  // show animating progress and also hide some controls
                 imagesAdapter.notifyItemRangeChanged(0, imagesAdapter.itemCount, UserProfileImageViewHolderHideControls)
                 onLoadingState()
             }

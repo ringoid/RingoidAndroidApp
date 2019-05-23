@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
@@ -33,7 +32,6 @@ import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.widget.view.swipes
 import com.uber.autodispose.lifecycle.autoDisposable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -77,7 +75,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.PROGRESS -> showLoading(isVisible = true)
+            is ViewState.LOADING -> showLoading(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
@@ -189,7 +187,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     internal fun showLoading(isVisible: Boolean) {
-        swipe_refresh_layout?.isRefreshing = isVisible
+        swipe_refresh_layout
+            ?.takeIf { isVisible != it.isRefreshing }  // change visibility w/o interruption of animation, if any
+            ?.let { it.isRefreshing = isVisible }
     }
 
     /* Lifecycle */
