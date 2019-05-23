@@ -106,9 +106,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         rv_items.linearLayoutManager()?.let { lm ->
             val from = lm.findFirstVisibleItemPosition()
             val to = lm.findLastVisibleItemPosition()
-            feedAdapter.getModelsInRange(from, to)
-                .apply { excludedId?.let { exId -> removeAll { it.id == exId } } }
-                .map { it.id }
+            if (from != RecyclerView.NO_POSITION && to != RecyclerView.NO_POSITION) {
+                feedAdapter.getModelsInRange(from, to)
+                    .apply { excludedId?.let { exId -> removeAll { it.id == exId } } }
+                    .map { it.id }
+            } else emptyList()
         } ?: emptyList()
 
     private fun checkForNewlyVisibleItems(prevIds: Collection<String>, newIds: Collection<String>, excludedId: String? = null) {
