@@ -44,7 +44,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         private set
     private lateinit var feedTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
-    private val debugSubs = CompositeDisposable()
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
@@ -136,7 +135,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
                 } else {  // remove not last feed item
                     val prevIds = getVisibleItemIds(profileId)  // record ids of visible items before remove
-                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
+                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}")
 
                     /**
                      * After finishing item remove animation, detect what items come into viewport
@@ -147,20 +146,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         .removeAnimationSubject
                         .take(1)  // single-shot subscription
                         .doOnSubscribe { localScopeProvider.start() }
-                        .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription, subs ${debugSubs.size()}") }
+                        .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription") }
                         .doFinally {
                             DebugLogUtil.v("Discard item ${profileId.substring(0..3)} has completed")
                             localScopeProvider.stop()
-                            debugSubs.clear()
                         }
                         .autoDisposable(localScopeProvider)
                         .subscribe({ _ ->
                             val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
-                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
+                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}")
                             checkForNewlyVisibleItems(prevIds, newIds, excludedId = profileId)
                         }, Timber::e)
-                        .takeIf { BuildConfig.IS_STAGING && !it.isDisposed }
-                        ?.let { debugSubs.add(it) }
 
                     feedAdapter.remove { it.id == profileId }
                 }
@@ -177,7 +173,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 .doOnSubscribe { localScopeProvider.start() }
                 .doFinally { localScopeProvider.stop() }
                 .autoDisposable(localScopeProvider)
-                .subscribe({
+                .subscribe({ _ ->
                     val newIds = getVisibleItemIds()  // record ids of whatever items are visible after remove
                     checkForNewlyVisibleItems(prevIds, newIds)
                 }, Timber::e)
@@ -303,7 +299,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        debugSubs.clear()
         feedAdapter.dispose()
     }
 
