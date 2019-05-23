@@ -22,7 +22,6 @@ import com.ringoid.origin.view.common.visual.LikeVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -49,12 +48,11 @@ class ExploreViewModel @Inject constructor(
     val feed by lazy { MutableLiveData<Feed>() }
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
-    private val lmmLoadedDisposable: Disposable
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_EXPLORE
 
     init {
-        lmmLoadedDisposable = getNewFacesUseCase.repository.lmmLoaded
+        getNewFacesUseCase.repository.lmmLoaded
             .flatMap { getCachedLmmFeedItemIdsUseCase.source().toObservable() }
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
@@ -69,13 +67,6 @@ class ExploreViewModel @Inject constructor(
                         }
                     }
             }, Timber::e)
-    }
-
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
-    override fun onCleared() {
-        super.onCleared()
-        lmmLoadedDisposable.dispose()
     }
 
     // --------------------------------------------------------------------------------------------
