@@ -11,6 +11,7 @@ import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
@@ -50,6 +51,11 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         when (newState) {
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is DISCARD_PROFILES -> onDiscardMultipleProfilesState(profileIds = (newState.residual as DISCARD_PROFILES).profileIds)
+                }
+            }
             is ViewState.ERROR -> {
                 when (newState.e) {
                     is ThresholdExceededException -> {

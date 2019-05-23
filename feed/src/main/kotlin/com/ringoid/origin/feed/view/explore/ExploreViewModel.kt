@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -16,6 +17,7 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
+import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
@@ -57,15 +59,16 @@ class ExploreViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ ids ->
-                feed.value?.profiles?.toMutableList()
-                    ?.let { profiles ->
-                        val size = profiles.size
-                        profiles.removeAll { it.id in ids }
-                        if (profiles.removeAll { it.id in ids }) {
-                            feed.value = Feed(profiles)
-                            DebugLogUtil.d("Removed ${size - profiles.size} profiles from NewFaces that already present in LMM [${ids.size}]")
+                viewState.value = ViewState.DONE(DISCARD_PROFILES(ids))
+                if (BuildConfig.IS_STAGING) {
+                    feed.value?.profiles?.toMutableList()
+                        ?.let { profiles ->
+                            val size = profiles.size
+                            if (profiles.removeAll { it.id in ids }) {
+                                DebugLogUtil.d("Removed ${size - profiles.size} profiles from NewFaces that already present in LMM [${ids.size}]")
+                            }
                         }
-                    }
+                }
             }, Timber::e)
     }
 
