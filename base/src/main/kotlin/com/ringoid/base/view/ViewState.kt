@@ -1,7 +1,10 @@
 package com.ringoid.base.view
 
 sealed class IResidual
-open class Residual : IResidual()
+open class Residual : IResidual() {
+
+    override fun toString(): String = javaClass.simpleName
+}
 
 sealed class ViewState {
 
