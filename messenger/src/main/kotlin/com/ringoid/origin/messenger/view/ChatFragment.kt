@@ -102,9 +102,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                  * If vertical position is near the last message in Chat - scroll to the bottom of
                  * each newly inserted message, otherwise - remain on the current vertical position.
                  */
-                rv_chat_messages?.linearLayoutManager()
-                    ?.takeIf { it.findFirstVisibleItemPosition() <= 1 }
-                    ?.let { scrollToTopOfItemAtPosition(0) }  // scroll to last message
+                scrollToLastItemIfNearBottom()
             }
         }
     }
@@ -155,7 +153,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 }
                 false
             }
-            textChanges().compose(inputDebounce()).subscribe { ChatInMemoryCache.setInputMessage(profileId = peerId, text = it) }
+            textChanges().compose(inputDebounce()).subscribe {
+                if (it.last() == '\n') {  // user has typed newline character
+                    scrollToLastItemIfNearBottom()  // avoid input box overlapping list
+                }
+                ChatInMemoryCache.setInputMessage(profileId = peerId, text = it)
+            }
         }
         ibtn_message_send.clicks().compose(clickDebounce()).subscribe {
             if (!connectionManager.isNetworkAvailable()) {
@@ -223,6 +226,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         rv_chat_messages?.post {
             rv_chat_messages?.linearLayoutManager()?.scrollToPositionWithOffset(position, 0)
         }
+    }
+
+    private fun scrollToLastItemIfNearBottom() {
+        rv_chat_messages?.linearLayoutManager()
+            ?.takeIf { it.findFirstVisibleItemPosition() <= 1 }
+            ?.let { scrollToTopOfItemAtPosition(0) }  // scroll to last message
     }
 
     private fun scrollToItemAtCachedPosition() {
