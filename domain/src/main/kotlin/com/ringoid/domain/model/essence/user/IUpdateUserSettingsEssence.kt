@@ -7,5 +7,7 @@ interface IUpdateUserSettingsEssence : IEssence {
 
     val userSettings: UserSettings
 
-    override fun toSentryPayload(): String = "[locale=${userSettings.locale},push=${userSettings.push},timeZone=${userSettings.timeZone}]"
+    override fun toSentryPayload(): String = "[locale=${userSettings.locale},push=${userSettings.push}," +
+            "pushLikes=${userSettings.pushLikes},pushMatches=${userSettings.pushMatches}" +
+            "pushMessages=${userSettings.pushMessages},timeZone=${userSettings.timeZone}]"
 }

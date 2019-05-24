@@ -4,12 +4,7 @@ import android.app.Application
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.DeleteUserProfileUseCase
-import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
-import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
-import com.ringoid.domain.model.user.UserSettings
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.uber.autodispose.lifecycle.autoDisposable
