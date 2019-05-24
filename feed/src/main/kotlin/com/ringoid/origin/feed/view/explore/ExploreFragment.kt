@@ -51,11 +51,11 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is DISCARD_PROFILES -> onDiscardMultipleProfilesState(profileIds = (newState.residual as DISCARD_PROFILES).profileIds)
-                }
-            }
+//            is ViewState.DONE -> {
+//                when (newState.residual) {
+//                    is DISCARD_PROFILES -> onDiscardMultipleProfilesState(profileIds = (newState.residual as DISCARD_PROFILES).profileIds)
+//                }
+//            }
             is ViewState.ERROR -> {
                 when (newState.e) {
                     is ThresholdExceededException -> {
