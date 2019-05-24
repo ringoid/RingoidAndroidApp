@@ -203,6 +203,8 @@ abstract class BaseLmmFeedViewModel(
         addLikedImageForFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId).put("imageId", imageId))
             .autoDisposable(this)
             .subscribe({}, Timber::e)
+
+        markFeedItemAsSeen(feedItemId = profileId)
     }
 
     override fun onBlock(profileId: String, imageId: String, sourceFeed: String, fromChat: Boolean) {
