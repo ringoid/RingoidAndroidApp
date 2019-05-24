@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.usersettings.OriginR_string
+import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings_push.*
 
@@ -19,7 +20,7 @@ class SettingsPushFragment : BaseFragment<SettingsPushViewModel>() {
 
     override fun getVmClass(): Class<SettingsPushViewModel> = SettingsPushViewModel::class.java
 
-    override fun getLayoutId(): Int = 0
+    override fun getLayoutId(): Int = R.layout.fragment_settings_push
 
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult", "AutoDispose")
