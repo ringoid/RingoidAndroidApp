@@ -206,7 +206,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     override fun showParticleAnimation(id: String, count: Int) {
-//        particleAnimator.animate(id, count)
+        particleAnimator.animate(id, count)
     }
 
     // --------------------------------------------------------------------------------------------
