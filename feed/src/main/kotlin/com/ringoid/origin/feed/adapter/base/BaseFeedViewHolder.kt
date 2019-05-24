@@ -106,7 +106,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         val positionOfImage = model.positionOfImage
         profileImageAdapter.apply {
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
-            insertSubject
+            insertSubject  // TODO: dispose obsolete subs
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     itemView.rv_items.linearLayoutManager()?.scrollToPosition(positionOfImage)
