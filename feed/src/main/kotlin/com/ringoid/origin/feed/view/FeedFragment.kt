@@ -310,6 +310,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             showLoading(isVisible = false)
             noConnection(this@FeedFragment)
         } else {
+            feedTrackingBus.allowSingleUnchanged()
             offsetScrollStrats = getOffsetScrollStrategies()
             /**
              * Asks for location permission, and if granted - callback will then handle

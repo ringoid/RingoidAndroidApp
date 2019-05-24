@@ -2,6 +2,7 @@ package com.ringoid.origin.view.common.visibility_tracker
 
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import io.reactivex.internal.functions.ObjectHelper
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -15,6 +16,7 @@ class TrackingBus<T>(
     }
 
     private var subs: Disposable? = null
+    private var compareFlag: Boolean = true
     private val visibilityState = PublishSubject.create<T>()
 
     fun postViewEvent(state: T) {
@@ -24,7 +26,7 @@ class TrackingBus<T>(
     fun subscribe() {
         subs = visibilityState
             .subscribeOn(Schedulers.computation())
-            .distinctUntilChanged()
+            .distinctUntilChanged { prev, cur -> checkFlagAndDrop() && ObjectHelper.equals(prev, cur) }
             .debounce(timeout, TimeUnit.MILLISECONDS)
             .subscribe(this::onCallback, onError::accept)
     }
@@ -34,8 +36,18 @@ class TrackingBus<T>(
         subs = null
     }
 
+    fun allowSingleUnchanged() {
+        compareFlag = false
+    }
+
     private fun onCallback(item: T) {
         onSuccess.accept(item)
+    }
+
+    private fun checkFlagAndDrop(): Boolean {
+        val flag = compareFlag
+        compareFlag = true
+        return flag
     }
 }
 
