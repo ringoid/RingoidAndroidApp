@@ -122,6 +122,8 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     }
 
     // ------------------------------------------
+    private var postponedTabTransaction = false
+
     override fun onBeforeTabSelect() {
         super.onBeforeTabSelect()
         setCurrentPageVisibleHint(false)
@@ -129,6 +131,13 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
+        if (!isViewModelInitialized) {
+            postponedTabTransaction = true
+            return
+        }
+
+        payload?.let { selectPage(LmmPagerAdapter.getItemPositionByName(it)) }
+
         setCurrentPageVisibleHint(true)
         showTabs(isVisible = true)
     }
@@ -151,6 +160,11 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
         val page = savedInstanceState?.getInt(BUNDLE_KEY_CURRENT_PAGE) ?: 0
         selectPage(position = page)  // open LikesYou at beginning
+
+        if (postponedTabTransaction) {
+            doPostponedTabTransaction()
+            postponedTabTransaction = false
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")

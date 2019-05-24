@@ -39,5 +39,11 @@ data class PushNotificationData(@Expose @SerializedName(COLUMN_TYPE) val type: S
 
     companion object {
         const val COLUMN_TYPE = "type"
+
+        const val TYPE_LIKE = "NEW_LIKE_PUSH_TYPE"
+        const val TYPE_MATCH = "NEW_MATCH_PUSH_TYPE"
+        const val TYPE_MESSAGE = "NEW_MESSAGE_PUSH_TYPE"
+
+        fun fromJson(json: String): PushNotificationData = Gson().fromJson(json, PushNotificationData::class.java)
     }
 }

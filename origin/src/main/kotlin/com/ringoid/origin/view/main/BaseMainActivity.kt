@@ -13,7 +13,9 @@ import com.ncapdevi.fragnav.FragNavSwitchController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.memory.ILoginInMemoryCache
+import com.ringoid.domain.model.push.PushNotificationData
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.Payload
@@ -115,7 +117,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             openTabByName(tabName = NavigateFrom.MAIN_TAB_EXPLORE)
         }
 
-        fun openLmmTab() {
+        fun openLmmTab(tabName: String? = null) {
+            tabPayload = tabName
             openTabByName(tabName = NavigateFrom.MAIN_TAB_LMM)
         }
 
@@ -136,11 +139,30 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         }
 
         intent.extras?.apply {
-            getString("tab")
-                ?.let {
-                    tabPayload = getString("tabPayload")
-                    openTabByName(it)
-                } ?: run { openInitialTab() }
+            Timber.v("Process extras[$savedInstanceState]: $this")
+            getString("tab")?.let { tabName ->
+                Timber.v("In-App extras: $tabName")
+                tabPayload = getString("tabPayload")
+                openTabByName(tabName)
+            }
+            ?: getString("data")?.let { data ->
+                Timber.v("Push extras: $data")
+                try {
+                    val type = PushNotificationData.fromJson(data).type
+                    when (type) {
+                        PushNotificationData.TYPE_LIKE -> DomainUtil.SOURCE_FEED_LIKES
+                        PushNotificationData.TYPE_MATCH -> DomainUtil.SOURCE_FEED_MATCHES
+                        PushNotificationData.TYPE_MESSAGE -> DomainUtil.SOURCE_FEED_MESSAGES
+                        else -> null
+                    }
+                    ?.let { openLmmTab(it) }
+                    ?: run { openInitialTab() }
+                } catch (e: Throwable) {  // JsonSyntaxException
+                    Timber.e("Push extras not a JSON")
+                    openInitialTab()
+                }
+            }
+            ?: run { openInitialTab() }
         } ?: run { openInitialTab() }
     }
 
@@ -159,7 +181,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         tabPayload = null  // consume tab payload on the opened tab
     }
 
-    protected fun openTabByName(tabName: String) {
+    private fun openTabByName(tabName: String) {
         bottom_bar.selectedItem = tabNameToIndex(tabName)
     }
 
