@@ -5,7 +5,10 @@ import com.ringoid.domain.model.image.IImage
 
 interface IProfile : IModel {
 
+    val distanceText: String?
     val images: List<IImage>
+    val lastOnlineStatus: String?
+    val lastOnlineText: String?
 
     fun sameContent(other: IProfile): Boolean {
         if (images == other.images) {

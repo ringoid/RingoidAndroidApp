@@ -8,15 +8,26 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
 
 data class FeedItemVO(
-    override val id: String, override val images: List<IImage>,
+    override val id: String, override val distanceText: String? = null,
+    override val images: List<IImage>,
     override val messages: MutableList<Message> = mutableListOf(),
+    override val lastOnlineStatus: String? = null,
+    override val lastOnlineText: String? = null,
     val isNotSeen: Boolean = false, override val isRealModel: Boolean = true,
     val likedImages: MutableMap<String, Boolean> = mutableMapOf(),
     var positionOfImage: Int = 0) : IFeedItem {
 
-    constructor(feedItem: FeedItem): this(id = feedItem.id, images = feedItem.images, messages = feedItem.messages, isNotSeen = feedItem.isNotSeen)
+    constructor(feedItem: FeedItem): this(
+        id = feedItem.id, distanceText = feedItem.distanceText,
+        images = feedItem.images, messages = feedItem.messages,
+        lastOnlineStatus = feedItem.lastOnlineStatus,
+        lastOnlineText = feedItem.lastOnlineText,
+        isNotSeen = feedItem.isNotSeen)
 
-    constructor(profile: Profile): this(id = profile.id, images = profile.images)
+    constructor(profile: Profile): this(
+        id = profile.id, distanceText = profile.distanceText, images = profile.images,
+        lastOnlineStatus = profile.lastOnlineStatus,
+        lastOnlineText = profile.lastOnlineText)
 
     fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
     fun hasLiked(): Boolean = likedImages.count { it.value } > 0
