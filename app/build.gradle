@@ -70,6 +70,8 @@ task generateGmsJson(type: Copy) {
     def filename = ""
     if (rootProject.ext.isStaging) {
         filename = 'google-services_staging.json'
+    } else if (rootProject.ext.isDevelop) {
+        filename = 'google-services_develop.json'
     } else {
         filename = 'google-services_production.json'
     }

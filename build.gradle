@@ -55,11 +55,12 @@ static String getVersionName(Environment env, int major, int minor, int build) {
 }
 
 ext {
-    env = Environment.STAGING  // change it when need to switch environment
+    env = Environment.DEVELOP  // change it when need to switch environment
     onboarding = Onboarding.DIRECT  // change it to alter onboarding process
 
     appName = getAppName(env)
     apiUrl = getApiUrl(env)
+    isDevelop = env == Environment.DEVELOP
     isStaging = env == Environment.STAGING
     host = '"ringoid.com"'
     authority = '"https://ringoid.com"'
