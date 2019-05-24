@@ -122,6 +122,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
         with (itemView.label_distance) {
             alpha = if (model.distanceText.isNullOrBlank()) 0.0f else 1.0f
+            setText(model.distanceText)
         }
 
         if (BuildConfig.IS_STAGING) {
