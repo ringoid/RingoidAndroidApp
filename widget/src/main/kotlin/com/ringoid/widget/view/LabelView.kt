@@ -39,9 +39,7 @@ class LabelView : LinearLayout {
     /* API */
     // --------------------------------------------------------------------------------------------
     fun setIcon(@DrawableRes resId: Int) {
-        resId.takeIf { it != 0 }
-            ?.let { iv_icon.setImageResource(it) }
-            ?: run { iv_icon.changeVisibility(isVisible = false) }
+        resId.takeIf { it != 0 }?.let { iv_icon.setImageResource(it) }
     }
 
     fun setText(@StringRes resId: Int) {
