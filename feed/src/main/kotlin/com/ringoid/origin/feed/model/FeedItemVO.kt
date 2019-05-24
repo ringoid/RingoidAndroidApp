@@ -11,6 +11,7 @@ data class FeedItemVO(
     override val id: String, override val distanceText: String? = null,
     override val images: List<IImage>,
     override val messages: MutableList<Message> = mutableListOf(),
+    val lastOnlineStatusX: OnlineStatus = OnlineStatus.UNKNOWN,
     override val lastOnlineStatus: String? = null,
     override val lastOnlineText: String? = null,
     val isNotSeen: Boolean = false, override val isRealModel: Boolean = true,
@@ -20,12 +21,14 @@ data class FeedItemVO(
     constructor(feedItem: FeedItem): this(
         id = feedItem.id, distanceText = feedItem.distanceText,
         images = feedItem.images, messages = feedItem.messages,
+        lastOnlineStatusX = OnlineStatus.from(feedItem.lastOnlineStatus),
         lastOnlineStatus = feedItem.lastOnlineStatus,
         lastOnlineText = feedItem.lastOnlineText,
         isNotSeen = feedItem.isNotSeen)
 
     constructor(profile: Profile): this(
         id = profile.id, distanceText = profile.distanceText, images = profile.images,
+        lastOnlineStatusX = OnlineStatus.from(profile.lastOnlineStatus),
         lastOnlineStatus = profile.lastOnlineStatus,
         lastOnlineText = profile.lastOnlineText)
 

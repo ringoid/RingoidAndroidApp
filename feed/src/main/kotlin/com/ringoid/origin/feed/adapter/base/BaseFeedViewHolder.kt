@@ -11,6 +11,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
+import com.ringoid.origin.feed.model.OnlineStatus
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
@@ -112,6 +113,15 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f
                 }, Timber::e)
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
+        }
+
+        with (itemView.label_online_status) {
+            alpha = if (model.lastOnlineStatusX == OnlineStatus.UNKNOWN) 0.0f else 1.0f
+            setIcon(model.lastOnlineStatusX.resId)
+            setText(model.lastOnlineText)
+        }
+        with (itemView.label_distance) {
+            alpha = if (model.distanceText.isNullOrBlank()) 0.0f else 1.0f
         }
 
         if (BuildConfig.IS_STAGING) {

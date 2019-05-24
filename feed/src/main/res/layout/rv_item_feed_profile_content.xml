@@ -11,6 +11,25 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"/>
 
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_online_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:label_icon="@drawable/ic_location_white_24dp"/>
+
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
         android:layout_width="match_parent"

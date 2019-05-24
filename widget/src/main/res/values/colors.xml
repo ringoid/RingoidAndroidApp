@@ -28,6 +28,7 @@
     <color name="green_check">#71da6a</color>
     <color name="grey">#1f262c</color>
     <color name="grey_middle">#bdc1c6</color>
+    <color name="grey_semi">#aabdc1c6</color>
     <color name="happy">#0de3fe</color>
     <color name="inactive">#cacaca</color>
     <color name="light_grey">#f0f2f5</color>
