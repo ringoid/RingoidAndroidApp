@@ -14,7 +14,7 @@ class PushNotificationService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage?) {
         super.onMessageReceived(message)
-        Timber.d("PUSH: Received push notification [id: ${message?.messageId}] from: ${message?.from}")
+        Timber.d("PUSH: Received push notification [id: ${message?.messageId}] from: ${message?.from}, notification: [${message?.notification?.title}:${message?.notification?.body}]")
         message?.data
             ?.also { DebugLogUtil.i("PUSH: $it") }
             ?.let { it[PushNotification.COLUMN_MAIN] }
