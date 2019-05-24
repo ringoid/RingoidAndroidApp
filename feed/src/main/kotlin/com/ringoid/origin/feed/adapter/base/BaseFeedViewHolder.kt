@@ -139,6 +139,18 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // scroll affected
+        if (payloads.contains(FeedViewHolderHideDistanceOnScroll))  {
+            itemView.label_distance.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(FeedViewHolderShowDistanceOnScroll)) {
+            itemView.label_distance.changeVisibility(isVisible = true)
+        }
+        if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
+            itemView.label_online_status.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(FeedViewHolderShowOnlineStatusOnScroll)) {
+            itemView.label_online_status.changeVisibility(isVisible = true)
+        }
         if (payloads.contains(FeedViewHolderHideSettingsBtnOnScroll)) {
             itemView.ibtn_settings.changeVisibility(isVisible = false)
         }
@@ -158,6 +170,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.apply {
             tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
+            label_distance.changeVisibility(isVisible = false)
+            label_online_status.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
     }
@@ -166,6 +180,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.apply {
             tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
+            label_distance.changeVisibility(isVisible = true)
+            label_online_status.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
     }

@@ -32,9 +32,15 @@ object AppRes {
         private set
     var FEED_ITEM_BIAS_BTN_TOP: Int = -1
         private set
+    var FEED_ITEM_DISTANCE_BOTTOM: Int = -1
+        private set
+    var FEED_ITEM_DISTANCE_TOP: Int = -1
+        private set
     var FEED_ITEM_MID_BTN_BOTTOM: Int = -1
         private set
     var FEED_ITEM_MID_BTN_TOP: Int = -1
+        private set
+    var FEED_ITEM_ONLINE_STATUS_TOP: Int = -1
         private set
     var FEED_ITEM_SETTINGS_BTN_BOTTOM: Int = -1
         private set
@@ -60,6 +66,12 @@ object AppRes {
         private set
     var STD_MARGIN_24: Int = -1
         private set
+    var STD_MARGIN_32: Int = -1
+        private set
+    var STD_MARGIN_40: Int = -1
+        private set
+    var STD_MARGIN_48: Int = -1
+        private set
     var SCREEN_WIDTH: Int = -1  // set by Activity
 
     // ------------------------------------------
@@ -83,6 +95,9 @@ object AppRes {
             STD_MARGIN_8 = getDimensionPixelSize(R.dimen.std_margin_8)
             STD_MARGIN_16 = getDimensionPixelSize(R.dimen.std_margin_16)
             STD_MARGIN_24 = getDimensionPixelSize(R.dimen.std_margin_24)
+            STD_MARGIN_32 = getDimensionPixelSize(R.dimen.std_margin_32)
+            STD_MARGIN_40 = getDimensionPixelSize(R.dimen.std_margin_40)
+            STD_MARGIN_48 = getDimensionPixelSize(R.dimen.std_margin_48)
             BUTTON_HEIGHT = getDimensionPixelSize(R.dimen.std_btn_height)
             BUTTON_FLAT_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_18)
             BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
@@ -96,8 +111,11 @@ object AppRes {
             FEED_IMAGE_HALF_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height_half)
             FEED_ITEM_BIAS_BTN_BOTTOM = (FEED_IMAGE_HEIGHT * 0.34f).toInt()
             FEED_ITEM_BIAS_BTN_TOP = (FEED_ITEM_BIAS_BTN_BOTTOM - ICON_SIZE_36 * 0.6f).toInt()
+            FEED_ITEM_DISTANCE_BOTTOM = FEED_IMAGE_HEIGHT - STD_MARGIN_24
+            FEED_ITEM_DISTANCE_TOP = FEED_IMAGE_HEIGHT - STD_MARGIN_40
             FEED_ITEM_MID_BTN_BOTTOM = (FEED_IMAGE_HALF_HEIGHT + ICON_SIZE_36 * 0.5f).toInt()
             FEED_ITEM_MID_BTN_TOP = (FEED_IMAGE_HALF_HEIGHT - ICON_SIZE_36 * 0.5f).toInt()
+            FEED_ITEM_ONLINE_STATUS_TOP = STD_MARGIN_8 + ICON_SIZE_36
             FEED_ITEM_TABS_INDICATOR_TOP = STD_MARGIN_16
             FEED_ITEM_TABS_INDICATOR_TOP2 = FEED_IMAGE_HEIGHT - STD_MARGIN_24
             FEED_ITEM_TABS_INDICATOR_BOTTOM = (FEED_ITEM_TABS_INDICATOR_TOP * 1.5f).toInt()
