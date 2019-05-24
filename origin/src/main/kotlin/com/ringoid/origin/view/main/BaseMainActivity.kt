@@ -66,7 +66,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
                 createEager = true
                 transactionListener = this@BaseMainActivity
-                initialize(index = FragNavController.TAB1, savedInstanceState = savedInstanceState)
+                initialize(index = FragNavController.TAB1, savedInstanceState = null)
             }
 
         registerReceiver(powerSafeModeReceiver, IntentFilter().apply { addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED) })
