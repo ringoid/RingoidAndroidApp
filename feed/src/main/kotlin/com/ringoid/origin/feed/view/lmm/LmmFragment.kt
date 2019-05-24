@@ -11,6 +11,7 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
+import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
@@ -164,6 +165,13 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         if (postponedTabTransaction) {
             doPostponedTabTransaction()
             postponedTabTransaction = false
+        }
+    }
+
+    override fun onActivitySaveInstanceState(outState: Bundle) {
+        super.onActivitySaveInstanceState(outState)
+        vp_pages?.currentItem?.let { position ->
+            outState.putString(BaseMainActivity.BUNDLE_KEY_CURRENT_LMM_TAB, LmmPagerAdapter.getItemNameByPosition(position))
         }
     }
 

@@ -31,6 +31,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     companion object {
         private const val BUNDLE_KEY_CURRENT_TAB = "bundle_key_current_tab"
+        const val BUNDLE_KEY_CURRENT_LMM_TAB = "bundle_key_current_lmm_tab"
     }
 
     @Inject lateinit var particleAnimator: ParticleAnimator
@@ -109,6 +110,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         super.onSaveInstanceState(outState)
         fragNav.onSaveInstanceState(outState)
         outState.putSerializable(BUNDLE_KEY_CURRENT_TAB, bottom_bar.selectedItem)
+        (fragNav.currentFrag as? BaseFragment<*>)?.onActivitySaveInstanceState(outState)
     }
 
     private fun processExtras(intent: Intent, savedInstanceState: Bundle?) {
@@ -131,7 +133,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 ?.let {
                     when (it) {
                         NavTab.EXPLORE -> openExploreTab()
-                        NavTab.LMM -> openLmmTab()
+                        NavTab.LMM -> openLmmTab(tabName = savedInstanceState.getString(BUNDLE_KEY_CURRENT_LMM_TAB))
                         NavTab.PROFILE -> openProfileTab()
                     }
                 }
@@ -155,7 +157,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                         PushNotificationData.TYPE_MESSAGE -> DomainUtil.SOURCE_FEED_MESSAGES
                         else -> null
                     }
-                    ?.let { openLmmTab(it) }
+                    ?.let { openLmmTab(tabName = it) }
                     ?: run { openInitialTab() }
                 } catch (e: Throwable) {  // JsonSyntaxException
                     Timber.e("Push extras not a JSON")

@@ -59,5 +59,13 @@ class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
                 DomainUtil.SOURCE_FEED_MESSAGES -> 2
                 else -> DomainUtil.BAD_POSITION
             }
+
+        fun getItemNameByPosition(position: Int): String? =
+            when (position) {
+                0 -> DomainUtil.SOURCE_FEED_LIKES
+                1 -> DomainUtil.SOURCE_FEED_MATCHES
+                2 -> DomainUtil.SOURCE_FEED_MESSAGES
+                else -> null
+            }
     }
 }
