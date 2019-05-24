@@ -21,6 +21,7 @@ class LabelView : LinearLayout {
     }
 
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
+        minimumHeight = context.resources.getDimensionPixelSize(R.dimen.std_icon_36)
         orientation = LinearLayout.HORIZONTAL
 
         LayoutInflater.from(context).inflate(R.layout.widget_label_view_layout, this, true)

@@ -36,11 +36,14 @@ class FeedItemEntity(
     }
 
     override fun map(): FeedItem =
-        FeedItem(id = id, isNotSeen = isNotSeen, images = images.mapList(),
+        FeedItem(id = id, distanceText = distanceText, isNotSeen = isNotSeen,
+                 images = images.mapList(),
                  messages = messages.mapIndexed { index, message ->
                      val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
                      Message(id = "${id}_$index", chatId = id, peerId = peerId, text = message.text)
-                 }.toMutableList())
+                 }.toMutableList(),
+                 lastOnlineStatus = lastOnlineStatus,
+                 lastOnlineText = lastOnlineText)
 
     override fun toString(): String =
         "FeedItemEntity(isNotSeen=$isNotSeen, messages=${messages.joinToString(", ", "[", "]")}, ${super.toString()})"

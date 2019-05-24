@@ -19,5 +19,6 @@ import com.ringoid.domain.model.feed.Profile
 class ProfileEntity(id: String, sortPosition: Int, images: List<ImageEntity> = emptyList())
     : BaseProfileEntity<Profile>(id = id, sortPosition = sortPosition, images = images) {
 
-    override fun map(): Profile = Profile(id = id, images = images.map { it.map() })
+    override fun map(): Profile = Profile(id = id, distanceText = distanceText, images = images.map { it.map() },
+                                          lastOnlineStatus = lastOnlineStatus, lastOnlineText = lastOnlineText)
 }
