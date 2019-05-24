@@ -222,6 +222,12 @@ abstract class BaseLmmFeedViewModel(
         markFeedItemAsSeen(feedItemId = profileId)
     }
 
+    override fun onDiscardProfile(profileId: String) {
+        super.onDiscardProfile(profileId)
+        feed.value?.toMutableList()?.apply { removeAll { it.id == profileId } }
+            ?.let { feed.value = it }  // get rid of discarded profiles from feed value
+    }
+
     open fun onFirstUserMessageSent(profileId: String) {
         addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
             .autoDisposable(this)

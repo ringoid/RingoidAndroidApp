@@ -325,7 +325,7 @@ abstract class FeedViewModel(
         addViewObjectToBuffer(aobj)
     }
 
-    internal fun onDiscardProfile(profileId: String) {
+    open fun onDiscardProfile(profileId: String) {
         advanceAndPushViewObject(profileId = profileId)  // push VIEW as profile was discarded
 
         viewActionObjectBackup.keys
