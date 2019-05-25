@@ -19,6 +19,7 @@ import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -63,6 +64,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     private val imagePreloadListener: RecyclerViewPreloader<ProfileImageVO>
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
+    private var subscription: Disposable? = null
 
     init {
         itemView.rv_items.apply {
@@ -106,12 +108,15 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         val positionOfImage = model.positionOfImage
         profileImageAdapter.apply {
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
-            insertSubject  // TODO: dispose obsolete subs
+
+            subscription?.dispose()
+            subscription = insertSubject
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     itemView.rv_items.linearLayoutManager()?.scrollToPosition(positionOfImage)
                     itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f
                 }, Timber::e)
+
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
         }
 
