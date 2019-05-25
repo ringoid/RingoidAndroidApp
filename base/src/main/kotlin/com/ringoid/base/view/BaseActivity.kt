@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.observe
+import com.ringoid.base.print
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
@@ -85,7 +86,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.d("onCreate($savedInstanceState)")
+        Timber.d("onCreate($savedInstanceState), intent: ${intent.print()}")
         DebugLogUtil.lifecycle(this, "onCreate")
         isDestroying = false
         AndroidInjection.inject(this)
@@ -106,7 +107,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.d("onNewIntent(${intent.action} [${intent.dataString}]: ${intent.extras})")
+        Timber.d("onNewIntent(${intent.print()})")
         DebugLogUtil.lifecycle(this, "onNewIntent")
     }
 

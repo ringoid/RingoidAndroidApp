@@ -17,6 +17,8 @@ fun Activity.isInPowerSafeMode(): Boolean =
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && it.isPowerSaveMode
     } ?: false
 
+fun Intent.print(): String = "$action [$dataString]: $extras"
+
 object ContextUtil {
 
     fun appInfo(): String =
