@@ -3,11 +3,17 @@ package com.ringoid.origin.view.main
 import android.app.Application
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 
 abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app) {
 
     private var stopAppTs: Long = System.currentTimeMillis()
+
+    // --------------------------------------------------------------------------------------------
+    internal fun onPushOpen() {
+        analyticsManager.fire(Analytics.PUSH_OPEN)
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

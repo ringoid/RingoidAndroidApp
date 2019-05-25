@@ -151,6 +151,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             }
             ?: getString("type")?.let { type ->
                 Timber.v("Push extras: $type")
+                vm.onPushOpen()
                 when (type) {
                     PushNotificationData.TYPE_LIKE -> DomainUtil.SOURCE_FEED_LIKES
                     PushNotificationData.TYPE_MATCH -> DomainUtil.SOURCE_FEED_MATCHES
