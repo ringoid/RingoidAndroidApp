@@ -22,6 +22,7 @@ import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.view.base.BasePermissionActivity
 import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.collection.toJsonObject
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -140,6 +141,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 ?: run { openExploreTab() }
         }
 
+        Timber.d("Intent data: ${intent.extras?.toJsonObject()}")
         intent.extras?.apply {
             Timber.v("Process extras[$savedInstanceState]: $this")
             getString("tab")?.let { tabName ->
@@ -147,22 +149,16 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 tabPayload = getString("tabPayload")
                 openTabByName(tabName)
             }
-            ?: getString("data")?.let { data ->
-                Timber.v("Push extras: $data")
-                try {
-                    val type = PushNotificationData.fromJson(data).type
-                    when (type) {
-                        PushNotificationData.TYPE_LIKE -> DomainUtil.SOURCE_FEED_LIKES
-                        PushNotificationData.TYPE_MATCH -> DomainUtil.SOURCE_FEED_MATCHES
-                        PushNotificationData.TYPE_MESSAGE -> DomainUtil.SOURCE_FEED_MESSAGES
-                        else -> null
-                    }
-                    ?.let { openLmmTab(tabName = it) }
-                    ?: run { openInitialTab() }
-                } catch (e: Throwable) {  // JsonSyntaxException
-                    Timber.e("Push extras not a JSON")
-                    openInitialTab()
+            ?: getString("type")?.let { type ->
+                Timber.v("Push extras: $type")
+                when (type) {
+                    PushNotificationData.TYPE_LIKE -> DomainUtil.SOURCE_FEED_LIKES
+                    PushNotificationData.TYPE_MATCH -> DomainUtil.SOURCE_FEED_MATCHES
+                    PushNotificationData.TYPE_MESSAGE -> DomainUtil.SOURCE_FEED_MESSAGES
+                    else -> null
                 }
+                ?.let { openLmmTab(tabName = it) }
+                ?: run { openInitialTab() }
             }
             ?: run { openInitialTab() }
         } ?: run { openInitialTab() }
