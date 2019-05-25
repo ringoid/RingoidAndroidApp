@@ -125,10 +125,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             }
     }
 
-    protected fun onDiscardProfileState(profileId: String): FeedItemVO? {
-        vm.onDiscardProfile(profileId)
-
-        return feedAdapter.findModel { it.id == profileId }
+    protected fun onDiscardProfileState(profileId: String): FeedItemVO? =
+        feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
                 val count = feedAdapter.getModelsCount()
                 if (count <= 1) {  // remove last feed item - show empty stub directly
@@ -160,8 +158,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
                     feedAdapter.remove { it.id == profileId }
                 }
+                vm.onDiscardProfile(profileId)
             }
-    }
 
     protected fun onDiscardMultipleProfilesState(profileIds: Collection<String>) {
         val prevIds = getVisibleItemIds()  // record ids of visible items before remove
