@@ -5,6 +5,7 @@ import com.ringoid.domain.model.image.IImage
 
 interface IProfile : IModel {
 
+    val age: Int
     val distanceText: String?
     val images: List<IImage>
     val lastOnlineStatus: String?

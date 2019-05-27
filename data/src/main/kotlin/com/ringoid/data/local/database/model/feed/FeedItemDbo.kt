@@ -12,6 +12,7 @@ import com.ringoid.domain.model.feed.FeedItem
 @Entity(tableName = FeedItemDbo.TABLE_NAME)
 data class FeedItemDbo(
     @PrimaryKey @ColumnInfo(name = COLUMN_ID, index = true) val id: String,
+    @ColumnInfo(name = COLUMN_AGE) val age: Int,
     @ColumnInfo(name = COLUMN_DISTANCE_TEXT) val distanceText: String?,
     @ColumnInfo(name = COLUMN_FLAG_NOT_SEEN) val isNotSeen: Boolean,
     @ColumnInfo(name = COLUMN_LAST_ONLINE_STATUS) val lastOnlineStatus: String?,
@@ -20,6 +21,7 @@ data class FeedItemDbo(
 
     companion object {
         const val COLUMN_ID = "id"
+        const val COLUMN_AGE = "age"
         const val COLUMN_DISTANCE_TEXT = "distanceText"
         const val COLUMN_FLAG_NOT_SEEN = "notSeen"
         const val COLUMN_LAST_ONLINE_STATUS = "lastOnlineFlag"
@@ -29,7 +31,7 @@ data class FeedItemDbo(
         const val TABLE_NAME = "FeedItems"
 
         fun from(feedItem: FeedItem, sourceFeed: String): FeedItemDbo =
-            FeedItemDbo(id = feedItem.id, distanceText = feedItem.distanceText, isNotSeen = feedItem.isNotSeen,
+            FeedItemDbo(id = feedItem.id, age = feedItem.age, distanceText = feedItem.distanceText, isNotSeen = feedItem.isNotSeen,
                 lastOnlineStatus = feedItem.lastOnlineStatus, lastOnlineText = feedItem.lastOnlineText, sourceFeed = sourceFeed)
     }
 }

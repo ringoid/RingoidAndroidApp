@@ -7,6 +7,8 @@ object FeedViewHolderShowControls : FeedViewHolderPayload()
 object FeedFooterViewHolderHideControls : FeedViewHolderPayload()
 object FeedFooterViewHolderShowControls : FeedViewHolderPayload()
 
+object FeedViewHolderHideAgeOnScroll : FeedViewHolderPayload()
+object FeedViewHolderShowAgeOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideChatBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowChatBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideDistanceOnScroll : FeedViewHolderPayload()

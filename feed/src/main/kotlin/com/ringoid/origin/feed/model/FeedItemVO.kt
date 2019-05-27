@@ -8,7 +8,8 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
 
 data class FeedItemVO(
-    override val id: String, override val distanceText: String? = null,
+    override val id: String, override val age: Int,
+    override val distanceText: String? = null,
     override val images: List<IImage>,
     override val messages: MutableList<Message> = mutableListOf(),
     val lastOnlineStatusX: OnlineStatus = OnlineStatus.UNKNOWN,
@@ -19,7 +20,8 @@ data class FeedItemVO(
     var positionOfImage: Int = 0) : IFeedItem {
 
     constructor(feedItem: FeedItem): this(
-        id = feedItem.id, distanceText = feedItem.distanceText,
+        id = feedItem.id, age = feedItem.age,
+        distanceText = feedItem.distanceText,
         images = feedItem.images, messages = feedItem.messages,
         lastOnlineStatusX = OnlineStatus.from(feedItem.lastOnlineStatus),
         lastOnlineStatus = feedItem.lastOnlineStatus,
@@ -27,7 +29,8 @@ data class FeedItemVO(
         isNotSeen = feedItem.isNotSeen)
 
     constructor(profile: Profile): this(
-        id = profile.id, distanceText = profile.distanceText, images = profile.images,
+        id = profile.id, age = profile.age,
+        distanceText = profile.distanceText, images = profile.images,
         lastOnlineStatusX = OnlineStatus.from(profile.lastOnlineStatus),
         lastOnlineStatus = profile.lastOnlineStatus,
         lastOnlineText = profile.lastOnlineText)

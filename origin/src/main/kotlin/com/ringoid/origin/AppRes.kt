@@ -32,6 +32,10 @@ object AppRes {
         private set
     var FEED_ITEM_BIAS_BTN_TOP: Int = -1
         private set
+    var FEED_ITEM_AGE_BOTTOM: Int = -1
+        private set
+    var FEED_ITEM_AGE_TOP: Int = -1
+        private set
     var FEED_ITEM_DISTANCE_BOTTOM: Int = -1
         private set
     var FEED_ITEM_DISTANCE_TOP: Int = -1
@@ -111,6 +115,8 @@ object AppRes {
             FEED_IMAGE_HALF_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height_half)
             FEED_ITEM_BIAS_BTN_BOTTOM = (FEED_IMAGE_HEIGHT * 0.34f).toInt()
             FEED_ITEM_BIAS_BTN_TOP = (FEED_ITEM_BIAS_BTN_BOTTOM - ICON_SIZE_36 * 0.6f).toInt()
+            FEED_ITEM_AGE_BOTTOM = FEED_IMAGE_HEIGHT - STD_MARGIN_24
+            FEED_ITEM_AGE_TOP = FEED_IMAGE_HEIGHT - STD_MARGIN_40
             FEED_ITEM_DISTANCE_BOTTOM = FEED_IMAGE_HEIGHT - STD_MARGIN_24
             FEED_ITEM_DISTANCE_TOP = FEED_IMAGE_HEIGHT - STD_MARGIN_40
             FEED_ITEM_MID_BTN_BOTTOM = (FEED_IMAGE_HALF_HEIGHT + ICON_SIZE_36 * 0.5f).toInt()

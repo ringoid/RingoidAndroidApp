@@ -4,9 +4,9 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.utility.randomString
 
-data class FeedItem(
-    val isNotSeen: Boolean,
-    override val id: String, override val distanceText: String? = null,
+data class FeedItem(val isNotSeen: Boolean,
+    override val id: String, override val age: Int,
+    override val distanceText: String? = null,
     override val images: List<IImage>,
     override val messages: MutableList<Message>,
     override val lastOnlineStatus: String? = null,
@@ -17,4 +17,4 @@ data class FeedItem(
 }
 
 val EmptyFeedItem = FeedItem(isNotSeen = false, messages = mutableListOf(),
-    id = randomString(), images = emptyList(), isRealModel = false)
+    id = randomString(), age = 0, images = emptyList(), isRealModel = false)

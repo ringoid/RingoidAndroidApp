@@ -110,7 +110,10 @@ class DebugFeedRepository @Inject constructor(
 
     // ------------------------------------------
     private fun Feed.convertToFeedResponse(errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L): FeedResponse =
-        FeedResponse(profiles = this.profiles.map { ProfileEntity(id = it.id, sortPosition = 0, images = it.images.map { ImageEntity(id = it.id, uri = it.uri ?: "") }) }, errorCode = errorCode, errorMessage = errorMessage, repeatAfterSec = repeatAfterSec)
+        FeedResponse(profiles = this.profiles.map { ProfileEntity(id = it.id, age = it.age, sortPosition = 0,
+                                                                  images = it.images.map { ImageEntity(id = it.id, uri = it.uri ?: "") }) },
+                                                                  errorCode = errorCode, errorMessage = errorMessage,
+                                                                  repeatAfterSec = repeatAfterSec)
 }
 
 fun getDebugChat(): List<Message> = listOf(

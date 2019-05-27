@@ -17,7 +17,7 @@ import com.ringoid.domain.model.mapList
  * @see https://androidkt.com/database-relationships/
  */
 data class FullFeedItemDbo(
-    @Embedded var feedItem: FeedItemDbo = FeedItemDbo(id = DomainUtil.BAD_ID, distanceText = null, isNotSeen = false,
+    @Embedded var feedItem: FeedItemDbo = FeedItemDbo(id = DomainUtil.BAD_ID, age = 0, distanceText = null, isNotSeen = false,
                                                       lastOnlineStatus = null, lastOnlineText = null, sourceFeed = ""),
     @Relation(parentColumn = FeedItemDbo.COLUMN_ID,
               entityColumn = ImageDbo.COLUMN_PROFILE_ID,
@@ -29,5 +29,6 @@ data class FullFeedItemDbo(
     var messages: List<MessageDbo> = emptyList()) : Mappable<FeedItem> {
 
     override fun map(): FeedItem =
-        FeedItem(id = feedItem.id, isNotSeen = feedItem.isNotSeen, images = images.mapList(), messages = messages.mapList().toMutableList())
+        FeedItem(id = feedItem.id, age = feedItem.age, isNotSeen = feedItem.isNotSeen,
+                 images = images.mapList(), messages = messages.mapList().toMutableList())
 }
