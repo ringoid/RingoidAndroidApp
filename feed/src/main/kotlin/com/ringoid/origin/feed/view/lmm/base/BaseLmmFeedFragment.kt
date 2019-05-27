@@ -31,6 +31,7 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
+import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.communicator
 import com.ringoid.utility.runOnUiThread
 import timber.log.Timber
@@ -47,7 +48,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
             }
         }
 
-    protected abstract fun getSourceFeed(): String
+    protected abstract fun getSourceFeed(): LmmNavTab
 
     override fun getAddPhotoDialogDescriptionResId(): Int = OriginR_string.feed_lmm_dialog_no_user_photo_description
 
@@ -111,11 +112,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(tag: String, payload: ChatPayload) {
-        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeed, fromChat = true)
+        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
     }
 
     override fun onReportFromChat(tag: String, payload: ChatPayload, reasonNumber: Int) {
-        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeed, fromChat = true)
+        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
     }
 
     override fun onDialogDismiss(tag: String, payload: Parcelable?) {

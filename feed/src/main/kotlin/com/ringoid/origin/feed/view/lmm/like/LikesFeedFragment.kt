@@ -11,6 +11,7 @@ import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.communicator
 import timber.log.Timber
 
@@ -41,7 +42,7 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
             else -> null
         }
 
-    override fun getSourceFeed(): String = DomainUtil.SOURCE_FEED_LIKES
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.LIKES
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {

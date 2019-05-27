@@ -13,9 +13,7 @@ import com.ncapdevi.fragnav.FragNavSwitchController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.memory.ILoginInMemoryCache
-import com.ringoid.domain.model.push.PushNotificationData
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.Payload
@@ -120,8 +118,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             openTabByName(tabName = NavigateFrom.MAIN_TAB_EXPLORE)
         }
 
-        fun openLmmTab(tabName: String? = null) {
-            tabPayload = tabName
+        fun openLmmTab(lmmTab: LmmNavTab? = null) {
+            tabPayload = lmmTab?.feedName
             openTabByName(tabName = NavigateFrom.MAIN_TAB_LMM)
         }
 
@@ -134,7 +132,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 ?.let {
                     when (it) {
                         NavTab.EXPLORE -> openExploreTab()
-                        NavTab.LMM -> openLmmTab(tabName = savedInstanceState.getString(BUNDLE_KEY_CURRENT_LMM_TAB))
+                        NavTab.LMM -> openLmmTab(lmmTab = LmmNavTab.from(savedInstanceState.getString(BUNDLE_KEY_CURRENT_LMM_TAB)))
                         NavTab.PROFILE -> openProfileTab()
                     }
                 }
@@ -152,14 +150,9 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             ?: getString("type")?.let { type ->
                 Timber.v("Push extras: $type")
                 vm.onPushOpen()
-                when (type) {
-                    PushNotificationData.TYPE_LIKE -> DomainUtil.SOURCE_FEED_LIKES
-                    PushNotificationData.TYPE_MATCH -> DomainUtil.SOURCE_FEED_MATCHES
-                    PushNotificationData.TYPE_MESSAGE -> DomainUtil.SOURCE_FEED_MESSAGES
-                    else -> null
-                }
-                ?.let { openLmmTab(tabName = it) }
-                ?: run { openInitialTab() }
+                LmmNavTab.fromPushType(pushType = type)
+                    ?.let { openLmmTab(lmmTab = it) }
+                    ?: run { openInitialTab() }
             }
             ?: run { openInitialTab() }
         } ?: run { openInitialTab() }

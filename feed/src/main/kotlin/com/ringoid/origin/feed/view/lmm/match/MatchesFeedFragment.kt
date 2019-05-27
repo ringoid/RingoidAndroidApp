@@ -10,6 +10,7 @@ import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.communicator
 
 class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
@@ -34,7 +35,7 @@ class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
             else -> null
         }
 
-    override fun getSourceFeed(): String = DomainUtil.SOURCE_FEED_MATCHES
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.MATCHES
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
