@@ -185,6 +185,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     stackFromEnd = true
                 }
         }
+        fl_chat.setOnClickListener { closeChat() }
         vg_chat.setOnClickListener { closeChat() }
     }
 
