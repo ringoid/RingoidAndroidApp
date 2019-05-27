@@ -29,6 +29,7 @@ data class FullFeedItemDbo(
     var messages: List<MessageDbo> = emptyList()) : Mappable<FeedItem> {
 
     override fun map(): FeedItem =
-        FeedItem(id = feedItem.id, age = feedItem.age, isNotSeen = feedItem.isNotSeen,
-                 images = images.mapList(), messages = messages.mapList().toMutableList())
+        FeedItem(id = feedItem.id, age = feedItem.age, distanceText = feedItem.distanceText, isNotSeen = feedItem.isNotSeen,
+                 images = images.mapList(), messages = messages.mapList().toMutableList(),
+                 lastOnlineStatus = feedItem.lastOnlineStatus, lastOnlineText = feedItem.lastOnlineText)
 }
