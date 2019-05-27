@@ -181,17 +181,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     private fun openTabByName(tabName: String) {
-        bottom_bar.selectedItem = tabNameToIndex(tabName)
+        bottom_bar.selectedItem = NavTab.from(tabName)
     }
-
-    // --------------------------------------------------------------------------------------------
-    private fun tabNameToIndex(tabName: String): NavTab =
-        when (tabName) {
-            NavigateFrom.MAIN_TAB_EXPLORE -> NavTab.EXPLORE
-            NavigateFrom.MAIN_TAB_LMM -> NavTab.LMM
-            NavigateFrom.MAIN_TAB_PROFILE -> NavTab.PROFILE
-            else -> throw IllegalArgumentException("Unknown tab name: $tabName")
-        }
 
     // --------------------------------------------------------------------------------------------
     override fun showBadgeOnLmm(isVisible: Boolean) {
