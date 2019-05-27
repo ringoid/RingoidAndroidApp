@@ -13,7 +13,7 @@
 
     <TextView
         android:id="@+id/tv_text"
-        android:layout_marginStart="@dimen/std_margin_8"
+        android:layout_marginStart="5dp"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical|start"
         android:shadowColor="@color/text_shadow"
