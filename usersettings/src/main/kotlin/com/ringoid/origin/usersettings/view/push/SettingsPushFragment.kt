@@ -33,11 +33,7 @@ class SettingsPushFragment : BaseFragment<SettingsPushViewModel>() {
 
         item_push_daily.apply {
             setChecked(spm.getUserSettingDailyPushEnabled())
-            showLabel(isVisible = isChecked())
-            clicks().compose(clickDebounce()).subscribe {
-                showLabel(isVisible = isChecked())
-                vm.updateUserSettingPushDaily(isChecked())
-            }
+            clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushDaily(isChecked()) }
         }
         item_push_like.apply {
             setChecked(spm.getUserSettingLikesPushEnabled())
