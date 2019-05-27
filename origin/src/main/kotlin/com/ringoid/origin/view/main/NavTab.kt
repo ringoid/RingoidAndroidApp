@@ -24,12 +24,18 @@ enum class NavTab(val tabName: String) {
     }
 }
 
-enum class LmmNavTab(val feedName: String, val page: Int) {
-    LIKES(DomainUtil.SOURCE_FEED_LIKES, 0),
-    MATCHES(DomainUtil.SOURCE_FEED_MATCHES, 1),
-    MESSAGES(DomainUtil.SOURCE_FEED_MESSAGES, 2);
+enum class LmmNavTab(val feedName: String) {
+    LIKES(DomainUtil.SOURCE_FEED_LIKES),
+    MATCHES(DomainUtil.SOURCE_FEED_MATCHES),
+    MESSAGES(DomainUtil.SOURCE_FEED_MESSAGES);  // order matters
+
+    fun page(): Int = ordinal
 
     companion object {
+        val values: Array<LmmNavTab> = LmmNavTab.values()
+
+        fun get(index: Int): LmmNavTab? = values[index]  // here order matters
+
         fun from(sourceFeed: String?): LmmNavTab? =
             when (sourceFeed) {
                 DomainUtil.SOURCE_FEED_LIKES -> LmmNavTab.LIKES

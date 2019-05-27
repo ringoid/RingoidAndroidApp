@@ -132,7 +132,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 ?.let {
                     when (it) {
                         NavTab.EXPLORE -> openExploreTab()
-                        NavTab.LMM -> openLmmTab(lmmTab = LmmNavTab.from(savedInstanceState.getString(BUNDLE_KEY_CURRENT_LMM_TAB)))
+                        NavTab.LMM -> openLmmTab(lmmTab = savedInstanceState.getSerializable(BUNDLE_KEY_CURRENT_LMM_TAB) as? LmmNavTab)
                         NavTab.PROFILE -> openProfileTab()
                     }
                 }

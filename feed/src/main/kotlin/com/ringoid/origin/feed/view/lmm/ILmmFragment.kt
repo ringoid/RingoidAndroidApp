@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm
 
 import com.ringoid.origin.feed.model.FeedItemVO
+import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.ICommunicator
 
 interface ILmmFragment : ICommunicator {
@@ -12,6 +13,6 @@ interface ILmmFragment : ICommunicator {
     fun showBadgeOnMessenger(isVisible: Boolean)
     fun showTabs(isVisible: Boolean)
 
-    fun transferProfile(profileId: String, destinationFeed: String)
-    fun transferProfile(discarded: FeedItemVO?, destinationFeed: String)
+    fun transferProfile(profileId: String, destinationFeed: LmmNavTab)
+    fun transferProfile(discarded: FeedItemVO?, destinationFeed: LmmNavTab)
 }

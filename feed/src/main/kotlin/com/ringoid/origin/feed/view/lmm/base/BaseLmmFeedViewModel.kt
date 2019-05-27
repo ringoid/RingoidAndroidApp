@@ -25,6 +25,7 @@ import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
+import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -132,9 +133,9 @@ abstract class BaseLmmFeedViewModel(
         lmm?.let { setLmmItems(getFeedFromLmm(it)) } ?: run { setLmmItems(emptyList()) }
     }
 
-    fun prependProfileOnTransfer(profileId: String, destinationFeed: String, payload: Bundle? = null, action: (() -> Unit)? = null) {
+    fun prependProfileOnTransfer(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {
         // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
-        transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed))
+        transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed.feedName))
             .andThen(getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId)))
             .doOnSuccess {
                 val list = mutableListOf<FeedItemVO>().apply {

@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
@@ -53,7 +52,7 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         val discarded = onDiscardProfileState(profileId)  // discard profile on transfer
-                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, DomainUtil.SOURCE_FEED_MATCHES)
+                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, LmmNavTab.MATCHES)
                     }
                 }
             }

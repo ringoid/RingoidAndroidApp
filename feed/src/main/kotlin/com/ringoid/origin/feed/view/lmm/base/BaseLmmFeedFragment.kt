@@ -172,7 +172,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         Bus.post(event = BusEvent.RefreshOnLmm)
     }
 
-    internal fun transferProfile(profileId: String, destinationFeed: String, payload: Bundle? = null) {
+    internal fun transferProfile(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null) {
         vm.prependProfileOnTransfer(profileId, destinationFeed, payload)
     }
 
