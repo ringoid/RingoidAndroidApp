@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
@@ -14,6 +15,7 @@ import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.feed.property.GetCachedLmmFeedItemIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
@@ -24,6 +26,8 @@ import com.ringoid.origin.view.common.visual.LikeVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -169,5 +173,16 @@ class ExploreViewModel @Inject constructor(
     override fun onImageTouch(x: Float, y: Float) {
         super.onImageTouch(x, y)
         VisualEffectManager.call(LikeVisualEffect(x, y))
+    }
+
+    // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        if (event.msElapsed in 300000L..1557989300340L) {
+            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Lmm...")
+            onRefresh()  // app reopen leads Explore screen to refresh as well
+        }
     }
 }
