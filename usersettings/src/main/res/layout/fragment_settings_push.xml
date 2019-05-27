@@ -40,6 +40,10 @@
 
         <View style="@style/Underscore"/>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/std_margin_16"/>
+
         <com.ringoid.widget.view.item_view.SwitchLabelIconItemView
             android:id="@+id/item_push_daily"
             android:layout_height="wrap_content"
