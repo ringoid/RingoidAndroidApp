@@ -53,7 +53,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         fun newInstance(): UserProfileFragment = UserProfileFragment()
     }
 
-    private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
+    private val calendar: Calendar by lazy { app!!.calendar }
 
     private var imageOnViewPortId: String = DomainUtil.BAD_ID
     private var cropImageAfterLogin: Boolean = false
