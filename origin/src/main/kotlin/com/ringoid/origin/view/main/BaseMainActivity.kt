@@ -13,6 +13,7 @@ import com.ncapdevi.fragnav.FragNavSwitchController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
@@ -83,6 +84,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         }
 
         processExtras(intent, savedInstanceState)
+        DebugLogUtil.clear()  // clear debug logs when recreate Main screen
     }
 
     /**
