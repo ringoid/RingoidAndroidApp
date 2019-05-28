@@ -16,6 +16,7 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import io.reactivex.Observable
@@ -100,6 +101,7 @@ class MessengerViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        HandledPushDataInMemory.incrementCountOfHandledPushMessages()
         pushNewMessage.value = 0L
         refreshOnPush.value = true
     }

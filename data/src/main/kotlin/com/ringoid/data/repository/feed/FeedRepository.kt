@@ -147,7 +147,7 @@ open class FeedRepository @Inject constructor(
     override val feedMatches = PublishSubject.create<List<FeedItem>>()
     override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
-    override val lmmLoaded = PublishSubject.create<Long>()
+    override val lmmLoadFinish = PublishSubject.create<Long>()
     override val newLikesCount = PublishSubject.create<Int>()
     override val newMatchesCount = PublishSubject.create<Int>()
     override val newMessagesCount = PublishSubject.create<Int>()
@@ -211,7 +211,7 @@ open class FeedRepository @Inject constructor(
                 .checkForNewMessages()
                 .cacheLmm()  // cache new Lmm data fetched from the Server
                 .cacheMessagesFromLmm()
-                .doOnSuccess { lmmLoaded.onNext(0L) }
+                .doOnSuccess { lmmLoadFinish.onNext(0L) }
         }
 
     override fun getLmmProfileIds(): Single<List<String>> = local.feedItemIds()

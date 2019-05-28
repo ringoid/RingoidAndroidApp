@@ -17,6 +17,7 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
+import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.view.main.BaseMainViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,18 +44,29 @@ class MainViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({ badgeLmm.value = it }, Timber::e)
 
+        getLmmUseCase.repository.lmmLoadFinish
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ HandledPushDataInMemory.dropCountsOfHandledPush() }, Timber::e)
+
         getLmmUseCase.repository.newLikesCount
             .observeOn(AndroidSchedulers.mainThread())
+            .map { it - HandledPushDataInMemory.getCountOfHandledPushLikes() }
+            .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newLikesCount.value = it }, Timber::e)
 
         getLmmUseCase.repository.newMatchesCount
             .observeOn(AndroidSchedulers.mainThread())
+            .map { it - HandledPushDataInMemory.getCountOfHandledPushMatches() }
+            .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newMatchesCount.value = it }, Timber::e)
 
         getLmmUseCase.repository.newMessagesCount
             .observeOn(AndroidSchedulers.mainThread())
+            .map { it - HandledPushDataInMemory.getCountOfHandledPushMessages() }
+            .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newMessagesCount.value = it }, Timber::e)
 

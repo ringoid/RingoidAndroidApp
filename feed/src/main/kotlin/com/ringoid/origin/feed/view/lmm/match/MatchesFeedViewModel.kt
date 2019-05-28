@@ -16,6 +16,7 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
@@ -103,6 +104,7 @@ class MatchesFeedViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewMatch) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        HandledPushDataInMemory.incrementCountOfHandledPushMatches()
         pushNewMatch.value = 0L
         refreshOnPush.value = true
     }

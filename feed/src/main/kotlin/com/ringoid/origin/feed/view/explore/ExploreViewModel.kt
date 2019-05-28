@@ -58,7 +58,7 @@ class ExploreViewModel @Inject constructor(
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_EXPLORE
 
     init {
-        getNewFacesUseCase.repository.lmmLoaded
+        getNewFacesUseCase.repository.lmmLoadFinish
             .flatMap { getCachedLmmFeedItemIdsUseCase.source().toObservable() }
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
