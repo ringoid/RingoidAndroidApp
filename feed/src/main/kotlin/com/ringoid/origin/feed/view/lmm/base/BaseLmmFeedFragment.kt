@@ -47,7 +47,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     override fun createFeedAdapter(): BaseLmmAdapter =
         instantiateFeedAdapter().apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
-                communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
                 openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
             }
         }
@@ -132,7 +131,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
                 when (tag) {
                     ChatFragment.TAG -> {
-                        communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
                         it.firstUserMessage?.let { _ -> vm.onFirstUserMessageSent(profileId = it.peerId) }
@@ -149,7 +147,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
             return
         }
 
-        communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
         childFragmentManager.let {
             it.findFragmentByTag(tag)
                 ?: run {
