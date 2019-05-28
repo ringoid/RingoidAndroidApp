@@ -53,6 +53,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         /* Auth */
         // --------------------------------------
         const val SP_KEY_AUTH_USER_ID = "sp_key_auth_user_id"
+        const val SP_KEY_AUTH_USER_CREATE_TS = "sp_key_auth_user_create_ts"
         const val SP_KEY_AUTH_USER_GENDER = "sp_key_auth_user_gender"
         const val SP_KEY_AUTH_USER_YEAR_OF_BIRTH = "sp_key_auth_user_year_of_birth"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
@@ -161,6 +162,9 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .takeIf { it.contains(SP_KEY_AUTH_USER_ID) }
             ?.let { it.getString(SP_KEY_AUTH_USER_ID, null) }
 
+    override fun currentUserCreateTs(): Long =
+        sharedPreferences.getLong(SP_KEY_AUTH_USER_CREATE_TS, 0L)
+
     override fun currentUserGender(): Gender =
         Gender.from(sharedPreferences.getString(SP_KEY_AUTH_USER_GENDER, "") ?: "")
 
@@ -170,6 +174,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String) {
         sharedPreferences.edit()
             .putString(SP_KEY_AUTH_USER_ID, userId)
+            .putLong(SP_KEY_AUTH_USER_CREATE_TS, System.currentTimeMillis())
             .putString(SP_KEY_AUTH_USER_GENDER, userGender.string)
             .putInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, userYearOfBirth)
             .putString(SP_KEY_AUTH_ACCESS_TOKEN, accessToken)
@@ -179,6 +184,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun deleteUserProfile(userId: String) {
         sharedPreferences.edit()
             .remove(SP_KEY_AUTH_USER_ID)
+            .remove(SP_KEY_AUTH_USER_CREATE_TS)
             .remove(SP_KEY_AUTH_USER_GENDER)
             .remove(SP_KEY_AUTH_USER_YEAR_OF_BIRTH)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)

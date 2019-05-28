@@ -44,6 +44,8 @@ interface ISharedPrefsManager {
 
     fun currentUserId(): String?
 
+    fun currentUserCreateTs(): Long
+
     fun currentUserGender(): Gender
 
     fun currentUserYearOfBirth(): Int
