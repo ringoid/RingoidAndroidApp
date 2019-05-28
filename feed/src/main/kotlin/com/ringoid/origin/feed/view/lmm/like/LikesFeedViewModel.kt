@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import android.app.Application
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -10,6 +11,7 @@ import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.feed.property.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
@@ -19,6 +21,9 @@ import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import io.reactivex.Observable
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import timber.log.Timber
 import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(
@@ -95,5 +100,13 @@ class LikesFeedViewModel @Inject constructor(
     override fun onSettingsClick(profileId: String) {
         super.onSettingsClick(profileId)
         markFeedItemAsSeen(profileId)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewLike(event: BusEvent.PushNewLike) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        refreshOnPush.value = true
     }
 }

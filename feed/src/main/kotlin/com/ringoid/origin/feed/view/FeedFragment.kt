@@ -200,6 +200,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {
+                    showRefreshPopup(isVisible = false)
                     showScrollFab(isVisible = false)
                     notifyItemChanged(position, FeedViewHolderHideControls)
                 }
@@ -223,6 +224,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 val position = data.extras!!.getString("position", "0").toInt()
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                 scrollToTopOfItemAtPosition(position, offset = AppRes.BUTTON_HEIGHT)
+                showRefreshPopup(isVisible = true)
                 showScrollFab(isVisible = true, restoreVisibility = true)
 
                 if (resultCode == Activity.RESULT_OK) {
@@ -323,6 +325,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     // ------------------------------------------
     private var wasFabVisible: Boolean = false
 
+    protected fun showRefreshPopup(isVisible: Boolean) {
+        btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.refreshOnPush.value == true)
+    }
+
     protected fun showScrollFab(isVisible: Boolean, restoreVisibility: Boolean = false) {
         val xIsVisible = if (restoreVisibility) {
             wasFabVisible = scroll_fab.isVisible()
@@ -344,11 +350,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             super.onScrolled(rv, dx, dy)
             rv.linearLayoutManager()?.let {
                 if (dy > 0) {  // scroll list down - to see new items
+                    if (btn_refresh_popup.isVisible()) {
+                        showRefreshPopup(isVisible = false)
+                    }
                     if (scroll_fab.isVisible()) {
                         showScrollFab(isVisible = false)
                     }
                 } else {  // scroll list up - to see previous items
                     val offset = rv.computeVerticalScrollOffset()
+                    if (!btn_refresh_popup.isVisible()) {
+                        showRefreshPopup(isVisible = true)
+                    }
                     if (scroll_fab.isVisible()) {
                         if (offset <= 0) {
                             showScrollFab(isVisible = false)

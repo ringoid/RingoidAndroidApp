@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
@@ -32,8 +34,10 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import com.ringoid.utility.runOnUiThread
+import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>(), IChatHost, IDialogCallback  {
@@ -185,6 +189,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 feedAdapter.submitList(it)
                 runOnUiThread { scrollListToPosition(0) }
             }
+            observe(vm.refreshOnPush) { showRefreshPopup(isVisible = it) }
         }
         /**
          * Parent's [Fragment.onActivityCreated] is called before this method on any child [Fragment],
@@ -227,6 +232,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 onDialogDismiss(tag = tag, payload = payload)
             }
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe { onRefresh() }
     }
 
     /* Scroll listeners */

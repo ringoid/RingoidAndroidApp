@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/green">
+    <item>
+        <selector>
+            <item android:drawable="@drawable/refresh_popup_oval_disabled" android:state_enabled="false"/>
+            <item android:drawable="@drawable/refresh_popup_oval"/>
+        </selector>
+    </item>
+</ripple>

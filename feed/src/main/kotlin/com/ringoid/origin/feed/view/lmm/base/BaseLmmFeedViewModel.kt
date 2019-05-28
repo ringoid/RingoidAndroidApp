@@ -64,6 +64,7 @@ abstract class BaseLmmFeedViewModel(
         userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
     private var notSeenFeedItemIds = mutableSetOf<String>()
@@ -165,6 +166,12 @@ abstract class BaseLmmFeedViewModel(
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
         }
+    }
+
+    // ------------------------------------------
+    override fun onRefresh() {
+        super.onRefresh()
+        refreshOnPush.value = false
     }
 
     // ------------------------------------------

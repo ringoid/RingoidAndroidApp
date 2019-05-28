@@ -7,7 +7,6 @@ import timber.log.Timber
 object Bus {
 
     fun post(event: Any) {
-        Timber.d("Post bus event: $event")
         DebugLogUtil.b("Bus: $event")
         EventBus.getDefault().post(event)
     }
@@ -38,4 +37,8 @@ sealed class BusEvent {
     object RefreshOnProfile : BusEvent()
     object ReOpenApp: BusEvent()
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
+
+    object PushNewLike : BusEvent()
+    object PushNewMatch : BusEvent()
+    object PushNewMessage : BusEvent()
 }

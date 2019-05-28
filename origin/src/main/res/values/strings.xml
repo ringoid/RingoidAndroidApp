@@ -66,6 +66,7 @@
     <!-- Image Preview screen -->
 
     <!-- Lmm screen -->
+    <string name="lmm_popup_refresh">Tap to refresh</string>
     <string name="lmm_tab_likes">Likes You</string>
     <string name="lmm_tab_matches">Matches</string>
     <string name="lmm_tab_messenger">Inbox</string>

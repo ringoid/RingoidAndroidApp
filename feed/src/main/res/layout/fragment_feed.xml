@@ -45,4 +45,20 @@
         app:xbtnInnerSize="@dimen/feed_fab_size"
         app:xbtnBg="?attr/refDrawableFabScrollBg"
         app:xbtnSrc="?attr/refDrawableFabScrollIcon"/>
+
+    <Button
+        android:id="@+id/btn_refresh_popup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/main_bottom_bar_height_plus_margin"
+        android:background="@drawable/refresh_popup_selector"
+        android:elevation="6dp"
+        android:gravity="center"
+        android:padding="@dimen/std_margin_16"
+        android:text="@string/lmm_popup_refresh"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/std_text_16"
+        android:visibility="invisible"/>
 </FrameLayout>
