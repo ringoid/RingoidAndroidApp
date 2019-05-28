@@ -1,5 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.like
 
+import android.os.Bundle
+import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
@@ -10,7 +12,9 @@ import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
 import timber.log.Timber
 
@@ -56,6 +60,15 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                     }
                 }
             }
+        }
+    }
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with (viewLifecycleOwner) {
+            observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
         }
     }
 }

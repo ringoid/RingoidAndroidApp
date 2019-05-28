@@ -33,7 +33,7 @@ class ParticleAnimator @Inject constructor() {
         generators[generator.id] = generator
     }
 
-    fun animate(id: String, count: Int) {
+    fun animate(id: String, count: Int = 1) {
         animateN(id, count)
     }
 

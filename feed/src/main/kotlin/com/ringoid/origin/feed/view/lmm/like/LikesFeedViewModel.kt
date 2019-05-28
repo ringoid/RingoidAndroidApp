@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -55,6 +56,8 @@ class LikesFeedViewModel @Inject constructor(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
+    internal val pushNewLike by lazy { MutableLiveData<Long>() }
+
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
@@ -107,6 +110,7 @@ class LikesFeedViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        pushNewLike.value = 0L
         refreshOnPush.value = true
     }
 }

@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.match
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -53,6 +54,8 @@ class MatchesFeedViewModel @Inject constructor(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
+    internal val pushNewMatch by lazy { MutableLiveData<Long>() }
+
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MATCHES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.matches
@@ -100,6 +103,7 @@ class MatchesFeedViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewMatch) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        pushNewMatch.value = 0L
         refreshOnPush.value = true
     }
 }

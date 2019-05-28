@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.domain.DomainUtil
@@ -52,6 +53,8 @@ class MessengerViewModel @Inject constructor(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
+    internal val pushNewMessage by lazy { MutableLiveData<Long>() }
+
     override fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.takeIf { it.isNotEmpty() }
             ?.let {
@@ -97,6 +100,7 @@ class MessengerViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        pushNewMessage.value = 0L
         refreshOnPush.value = true
     }
 }

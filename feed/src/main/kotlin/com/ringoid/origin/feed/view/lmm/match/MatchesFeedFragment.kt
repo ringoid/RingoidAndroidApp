@@ -1,5 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.match
 
+import android.os.Bundle
+import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
@@ -9,7 +11,9 @@ import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.utility.communicator
 
 class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
@@ -49,6 +53,15 @@ class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
                     }
                 }
             }
+        }
+    }
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with (viewLifecycleOwner) {
+            observe(vm.pushNewMatch) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
         }
     }
 }
