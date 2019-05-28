@@ -155,7 +155,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 false
             }
             textChanges().compose(inputDebounce()).subscribe {
-                if (it.last() == '\n') {  // user has typed newline character
+                if (it.isNotEmpty() && it.last() == '\n') {  // user has typed newline character
                     scrollToLastItemIfNearBottom()  // avoid input box overlapping list
                 }
                 ChatInMemoryCache.setInputMessage(profileId = peerId, text = it)
