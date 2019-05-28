@@ -258,10 +258,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 return@subscribe
             }
 
-            imageOnViewPort()?.let {
+            imageOnViewPort()?.let { image ->
                 showControls(isVisible = false)
-                val needWarn = ((it as? UserImage)?.numberOfLikes ?: 0) > 0
-                navigate(this@UserProfileFragment, path = "/delete_image?imageId=${it.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
+                val needWarn = ((image as? UserImage)?.numberOfLikes ?: 0) > 0
+                navigate(this@UserProfileFragment, path = "/delete_image?imageId=${image.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
             }
         }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
