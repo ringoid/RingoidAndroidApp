@@ -85,7 +85,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         // override in subclasses
     }
 
-    open fun onTabReselect() {
+    open fun onTabReselect(payload: String?) {
         DebugLogUtil.lifecycle(this, "onTabReselect")
         // override in subclasses
     }

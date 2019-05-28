@@ -131,6 +131,15 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         setCurrentPageVisibleHint(false)
     }
 
+    override fun onTabReselect(payload: String?) {
+        super.onTabReselect(payload)
+        if (!isViewModelInitialized) {
+            return
+        }
+
+        payload?.let { lmmFeedName -> selectPage(LmmNavTab.from(lmmFeedName)?.page() ?: 0) }
+    }
+
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
         if (!isViewModelInitialized) {

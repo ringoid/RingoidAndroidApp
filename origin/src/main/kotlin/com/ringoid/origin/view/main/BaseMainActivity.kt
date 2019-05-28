@@ -80,7 +80,9 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 }
                 fragNav.switchTab(it.ordinal)
             }
-            setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
+            setOnNavigationItemReselectedListener {
+                (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect(tabPayload)
+            }
         }
 
         processExtras(intent, savedInstanceState)
