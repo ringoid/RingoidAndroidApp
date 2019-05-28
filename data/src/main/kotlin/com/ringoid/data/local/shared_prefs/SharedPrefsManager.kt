@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.annotation.StyleRes
 import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
@@ -53,6 +54,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         // --------------------------------------
         const val SP_KEY_AUTH_USER_ID = "sp_key_auth_user_id"
         const val SP_KEY_AUTH_USER_GENDER = "sp_key_auth_user_gender"
+        const val SP_KEY_AUTH_USER_YEAR_OF_BIRTH = "sp_key_auth_user_year_of_birth"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
 
         /* Location */
@@ -162,10 +164,14 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun currentUserGender(): Gender =
         Gender.from(sharedPreferences.getString(SP_KEY_AUTH_USER_GENDER, "") ?: "")
 
-    override fun saveUserProfile(userId: String, userGender: Gender, accessToken: String) {
+    override fun currentUserYearOfBirth(): Int =
+        sharedPreferences.getInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, DomainUtil.BAD_VALUE)
+
+    override fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String) {
         sharedPreferences.edit()
             .putString(SP_KEY_AUTH_USER_ID, userId)
             .putString(SP_KEY_AUTH_USER_GENDER, userGender.string)
+            .putInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, userYearOfBirth)
             .putString(SP_KEY_AUTH_ACCESS_TOKEN, accessToken)
             .apply()
     }
@@ -174,6 +180,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         sharedPreferences.edit()
             .remove(SP_KEY_AUTH_USER_ID)
             .remove(SP_KEY_AUTH_USER_GENDER)
+            .remove(SP_KEY_AUTH_USER_YEAR_OF_BIRTH)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
             .apply()
     }

@@ -14,6 +14,7 @@
     <string name="common_choose_image">Choose Photo</string>
     <string name="common_clipboard">Copied to clipboard</string>
     <string name="common_compose_email">Send Email</string>
+    <string name="common_online">Online</string>
     <string name="common_pull_to_refresh">Pull to refresh</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>

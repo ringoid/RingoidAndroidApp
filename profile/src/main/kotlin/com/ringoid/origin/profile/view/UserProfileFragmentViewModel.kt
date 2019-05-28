@@ -18,6 +18,7 @@ import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.extension
@@ -27,6 +28,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

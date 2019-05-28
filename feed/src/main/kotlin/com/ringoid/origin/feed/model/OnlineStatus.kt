@@ -1,7 +1,7 @@
 package com.ringoid.origin.feed.model
 
 import androidx.annotation.DrawableRes
-import com.ringoid.origin.feed.R
+import com.ringoid.widget.R
 
 enum class OnlineStatus(private val str: String, @DrawableRes val resId: Int) {
     ONLINE("online", R.drawable.online_status_oval),

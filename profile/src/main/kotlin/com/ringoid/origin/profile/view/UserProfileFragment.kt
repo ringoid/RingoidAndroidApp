@@ -23,7 +23,9 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
+import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
@@ -43,12 +45,15 @@ import com.ringoid.widget.view.swipes
 import kotlinx.android.synthetic.main.fragment_profile_2.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
+import java.util.*
 
 class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>() {
 
     companion object {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
     }
+
+    private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
     private var imageOnViewPortId: String = DomainUtil.BAD_ID
     private var cropImageAfterLogin: Boolean = false
@@ -260,6 +265,17 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
         }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
+        with (label_age_sex) {
+            val yearOfBirth = spm.currentUserYearOfBirth()
+            if (yearOfBirth != DomainUtil.BAD_VALUE) {
+                alpha = 1.0f
+                val age = calendar.get(Calendar.YEAR) - yearOfBirth
+                setIcon(AppInMemory.userGender().resId)
+                setText("$age")
+            } else {
+                alpha = 0.0f
+            }
+        }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe { onRefresh() }

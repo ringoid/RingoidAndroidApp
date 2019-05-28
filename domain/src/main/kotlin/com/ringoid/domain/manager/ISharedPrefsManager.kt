@@ -46,7 +46,9 @@ interface ISharedPrefsManager {
 
     fun currentUserGender(): Gender
 
-    fun saveUserProfile(userId: String, userGender: Gender, accessToken: String)
+    fun currentUserYearOfBirth(): Int
+
+    fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String)
 
     fun deleteUserProfile(userId: String)
 
