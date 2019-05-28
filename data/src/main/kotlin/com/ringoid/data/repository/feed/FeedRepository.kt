@@ -364,15 +364,15 @@ open class FeedRepository @Inject constructor(
             feedLikes.onNext(it.likes)
         }
         .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
-        .flatMap {
-            val profiles = it.first.notSeenLikesProfileIds().map { ProfileIdDbo(it) }
-            Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }.toSingleDefault(it)
+        .flatMap { (lmm, count) ->
+            val profiles = lmm.notSeenLikesProfileIds().map { ProfileIdDbo(it) }
+            Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }.toSingleDefault(lmm to count)
         }
         .zipWith(newLikesProfilesCache.countProfileIds(),
-            BiFunction { lmm_oldCount, newCount ->
-                val diff = newCount - lmm_oldCount.second
+            BiFunction { (lmm, oldCount), newCount ->
+                val diff = newCount - oldCount
                 if (diff > 0) { newLikesCount.onNext(diff) }
-                lmm_oldCount.first
+                lmm
             })
 
     private fun Single<Lmm>.checkForNewMatches(): Single<Lmm> =
@@ -381,15 +381,15 @@ open class FeedRepository @Inject constructor(
             feedMatches.onNext(it.matches)
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
-        .flatMap {
-            val profiles = it.first.notSeenMatchesProfileIds().map { ProfileIdDbo(it) }
-            Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }.toSingleDefault(it)
+        .flatMap { (lmm, count) ->
+            val profiles = lmm.notSeenMatchesProfileIds().map { ProfileIdDbo(it) }
+            Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }.toSingleDefault(lmm to count)
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(),
-            BiFunction { lmm_oldCount, newCount ->
-                val diff = newCount - lmm_oldCount.second
+            BiFunction { (lmm, oldCount), newCount ->
+                val diff = newCount - oldCount
                 if (diff > 0) { newMatchesCount.onNext(diff) }
-                lmm_oldCount.first
+                lmm
             })
 
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
