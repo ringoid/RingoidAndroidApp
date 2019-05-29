@@ -25,7 +25,6 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
-import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
@@ -374,6 +373,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     private fun showEmptyStub(needShow: Boolean) {
         showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
         ibtn_delete_image.changeVisibility(isVisible = !needShow)
+        label_online_status.changeVisibility(isVisible = !needShow)
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
