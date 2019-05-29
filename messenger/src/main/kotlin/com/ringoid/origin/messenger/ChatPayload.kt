@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IEssence
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.origin.view.main.LmmNavTab
 
 data class ChatPayload(
     @Expose @SerializedName(COLUMN_POSITION) val position: Int = DomainUtil.BAD_POSITION,
@@ -15,13 +16,13 @@ data class ChatPayload(
     @Expose @SerializedName(COLUMN_PEER_IMAGE_URI) val peerImageUri: String? = null,
     @Expose @SerializedName(COLUMN_PEER_THUMB_URI) val peerThumbnailUri: String? = null,
     @Expose @SerializedName(COLUMN_FIRST_USER_MESSAGE) var firstUserMessage: Message? = null,
-    @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES)
+    @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LmmNavTab = LmmNavTab.MESSAGES)
     : IEssence, Parcelable {
 
     private constructor(source: Parcel): this(position = source.readInt(), peerId = source.readString() ?: DomainUtil.BAD_ID,
         peerImageId = source.readString() ?: DomainUtil.BAD_ID,
         peerImageUri = source.readString(), peerThumbnailUri = source.readString(),
-        sourceFeed = source.readString() ?: DomainUtil.SOURCE_FEED_MESSAGES,
+        sourceFeed = source.readSerializable() as? LmmNavTab ?: LmmNavTab.MESSAGES,
         firstUserMessage = source.readParcelable(Message::class.java.classLoader))
 
     override fun describeContents(): Int = 0
@@ -33,7 +34,7 @@ data class ChatPayload(
             writeString(peerImageId)
             writeString(peerImageUri)
             writeString(peerThumbnailUri)
-            writeString(sourceFeed)
+            writeSerializable(sourceFeed)
             writeParcelable(firstUserMessage, flags)
         }
     }

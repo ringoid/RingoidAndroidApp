@@ -64,9 +64,16 @@ object SentryUtil {
 
     fun setUser(spm: ISharedPrefsManager) {
         spm.currentUserId()?.let {
+            userId = it
             val data = mutableMapOf<String, Any>()//.apply { put("accessToken", spm.accessToken()?.accessToken ?: "null") }
             Sentry.getContext().user = UserBuilder().setId(it).setData(data).build()
         }
+    }
+
+    private var userId: String? = null
+
+    fun clear() {
+        userId = null
     }
 
     /* Internal */
@@ -97,7 +104,7 @@ object SentryUtil {
             .withPlatform("Android: ${Build.VERSION.SDK_INT}")
             .withRelease(BuildConfig.VERSION_NAME)
             .withTimestamp(Date())
-            .withExtra("userId", user?.id ?: "null")
+            .withExtra("userId", user?.id ?: userId)
         if (`object` != null) {
             builder.withTag(`object`.javaClass.simpleName, `object`.hashCode().toString())
         }

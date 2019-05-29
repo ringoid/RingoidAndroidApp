@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.PowerManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -16,6 +17,9 @@ fun Activity.isInPowerSafeMode(): Boolean =
     (getSystemService(Context.POWER_SERVICE) as? PowerManager)?.let {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && it.isPowerSaveMode
     } ?: false
+
+fun Bundle.print(): String = keySet().joinToString(", ", "{", "}", transform = { "$it:${get(it)}" })
+fun Intent.print(): String = "$action [$dataString]: ${extras?.print()}"
 
 object ContextUtil {
 

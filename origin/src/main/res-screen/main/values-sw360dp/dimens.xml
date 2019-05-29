@@ -2,5 +2,6 @@
 <resources>
     <dimen name="main_bottom_bar_height">55dp</dimen>
     <dimen name="main_bottom_bar_height_half">28dp</dimen>
+    <dimen name="main_bottom_bar_height_plus_margin">84dp</dimen>
     <dimen name="main_bottom_bar_space_width">70dp</dimen>
 </resources>

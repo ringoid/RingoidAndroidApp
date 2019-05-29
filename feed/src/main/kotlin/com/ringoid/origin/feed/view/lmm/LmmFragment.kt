@@ -11,7 +11,9 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
+import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.main.IBaseMainActivity
+import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -94,19 +96,19 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     }
 
     // ------------------------------------------
-    override fun transferProfile(profileId: String, destinationFeed: String) {
-        lmmPagesAdapter.accessItemByName(destinationFeed)
+    override fun transferProfile(profileId: String, destinationFeed: LmmNavTab) {
+        lmmPagesAdapter.accessItem(destinationFeed)
             ?.let { it as? BaseLmmFeedFragment<*> }
             ?.transferProfile(profileId, destinationFeed, payload = null)
     }
 
-    override fun transferProfile(discarded: FeedItemVO?, destinationFeed: String) {
+    override fun transferProfile(discarded: FeedItemVO?, destinationFeed: LmmNavTab) {
         if (discarded == null) {
             return
         }
 
         val payload = Bundle().apply { putInt("positionOfImage", discarded.positionOfImage) }
-        lmmPagesAdapter.accessItemByName(destinationFeed)
+        lmmPagesAdapter.accessItem(destinationFeed)
             ?.let { it as? BaseLmmFeedFragment<*> }
             ?.transferProfile(discarded.id, destinationFeed, payload = payload)
     }
@@ -122,13 +124,31 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     }
 
     // ------------------------------------------
+    private var postponedTabTransaction = false
+
     override fun onBeforeTabSelect() {
         super.onBeforeTabSelect()
         setCurrentPageVisibleHint(false)
     }
 
+    override fun onTabReselect(payload: String?) {
+        super.onTabReselect(payload)
+        if (!isViewModelInitialized) {
+            return
+        }
+
+        payload?.let { lmmFeedName -> selectPage(LmmNavTab.from(lmmFeedName)?.page() ?: 0) }
+    }
+
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
+        if (!isViewModelInitialized) {
+            postponedTabTransaction = true
+            return
+        }
+
+        payload?.let { lmmFeedName -> selectPage(LmmNavTab.from(lmmFeedName)?.page() ?: 0) }
+
         setCurrentPageVisibleHint(true)
         showTabs(isVisible = true)
     }
@@ -151,6 +171,18 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
         val page = savedInstanceState?.getInt(BUNDLE_KEY_CURRENT_PAGE) ?: 0
         selectPage(position = page)  // open LikesYou at beginning
+
+        if (postponedTabTransaction) {
+            doPostponedTabTransaction()
+            postponedTabTransaction = false
+        }
+    }
+
+    override fun onActivitySaveInstanceState(outState: Bundle) {
+        super.onActivitySaveInstanceState(outState)
+        vp_pages?.currentItem?.let { position ->
+            outState.putSerializable(BaseMainActivity.BUNDLE_KEY_CURRENT_LMM_TAB, LmmNavTab.get(position))
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")

@@ -5,8 +5,11 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -28,6 +31,7 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
+import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.*
 import com.uber.autodispose.lifecycle.autoDisposable
 import kotlinx.android.synthetic.main.fragment_chat.*
@@ -102,9 +106,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                  * If vertical position is near the last message in Chat - scroll to the bottom of
                  * each newly inserted message, otherwise - remain on the current vertical position.
                  */
-                rv_chat_messages?.linearLayoutManager()
-                    ?.takeIf { it.findFirstVisibleItemPosition() <= 1 }
-                    ?.let { scrollToTopOfItemAtPosition(0) }  // scroll to last message
+                scrollToLastItemIfNearBottom()
             }
         }
     }
@@ -155,7 +157,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 }
                 false
             }
-            textChanges().compose(inputDebounce()).subscribe { ChatInMemoryCache.setInputMessage(profileId = peerId, text = it) }
+            textChanges().compose(inputDebounce()).subscribe {
+                if (it.isNotEmpty() && it.last() == '\n') {  // user has typed newline character
+                    scrollToLastItemIfNearBottom()  // avoid input box overlapping list
+                }
+                ChatInMemoryCache.setInputMessage(profileId = peerId, text = it)
+            }
         }
         ibtn_message_send.clicks().compose(clickDebounce()).subscribe {
             if (!connectionManager.isNetworkAvailable()) {
@@ -165,7 +172,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
             val imageId = payload?.peerImageId ?: BAD_ID
             vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString(),
-                           sourceFeed = payload?.sourceFeed ?: DomainUtil.SOURCE_FEED_MESSAGES)
+                           sourceFeed = payload?.sourceFeed ?: LmmNavTab.MESSAGES)
             clearEditText()
         }
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }
@@ -181,13 +188,13 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     reverseLayout = true
                     stackFromEnd = true
                 }
+            setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
         }
-        vg_chat.setOnClickListener { closeChat() }
     }
 
     override fun onStart() {
         super.onStart()
-        vm.getMessages(profileId = peerId, sourceFeed = payload?.sourceFeed ?: DomainUtil.SOURCE_FEED_MESSAGES)
+        vm.getMessages(profileId = peerId, sourceFeed = payload?.sourceFeed ?: LmmNavTab.MESSAGES)
         et_message.apply {
             val text = ChatInMemoryCache.getInputMessage(profileId = peerId)
             setText(text)
@@ -225,6 +232,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         }
     }
 
+    private fun scrollToLastItemIfNearBottom() {
+        rv_chat_messages?.linearLayoutManager()
+            ?.takeIf { it.findFirstVisibleItemPosition() <= 1 }
+            ?.let { scrollToTopOfItemAtPosition(0) }  // scroll to last message
+    }
+
     private fun scrollToItemAtCachedPosition() {
         val position = ChatInMemoryCache.getProfilePosition(profileId = peerId)
         rv_chat_messages?.post {
@@ -247,5 +260,16 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     private fun clearEditText() {
         ChatInMemoryCache.setInputMessage(profileId = peerId, text = "")
         et_message.setText("")  // clear text input
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private val gestureDetector = GestureDetectorCompat(context, ListTouchCallback())
+
+    private inner class ListTouchCallback :  GestureDetector.SimpleOnGestureListener() {
+
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            closeChat()
+            return true
+        }
     }
 }

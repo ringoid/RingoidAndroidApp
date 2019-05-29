@@ -8,9 +8,11 @@ import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.FixedPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
+import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
+import com.ringoid.origin.feed.model.OnlineStatus
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
@@ -18,6 +20,7 @@ import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -62,6 +65,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     private val imagePreloadListener: RecyclerViewPreloader<ProfileImageVO>
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
+    private var subscription: Disposable? = null
 
     init {
         itemView.rv_items.apply {
@@ -105,13 +109,31 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         val positionOfImage = model.positionOfImage
         profileImageAdapter.apply {
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
-            insertSubject
+
+            subscription?.dispose()
+            subscription = insertSubject
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     itemView.rv_items.linearLayoutManager()?.scrollToPosition(positionOfImage)
                     itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f
                 }, Timber::e)
+
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
+        }
+
+        with (itemView.label_age_sex) {
+            alpha = if (model.age < 18) 0.0f else 1.0f
+            setIcon(AppInMemory.oppositeUserGender().resId)
+            setText("${model.age}")
+        }
+        with (itemView.label_distance) {
+            alpha = if (model.distanceText.isNullOrBlank() || model.distanceText == "unknown") 0.0f else 1.0f
+            setText(model.distanceText)
+        }
+        with (itemView.label_online_status) {
+            alpha = if (model.lastOnlineStatusX == OnlineStatus.UNKNOWN) 0.0f else 1.0f
+            setIcon(model.lastOnlineStatusX.resId)
+            setText(model.lastOnlineText)
         }
 
         if (BuildConfig.IS_STAGING) {
@@ -128,6 +150,24 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // scroll affected
+        if (payloads.contains(FeedViewHolderHideAgeOnScroll)) {
+            itemView.label_age_sex.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(FeedViewHolderShowAgeOnScroll)) {
+            itemView.label_age_sex.changeVisibility(isVisible = true)
+        }
+        if (payloads.contains(FeedViewHolderHideDistanceOnScroll))  {
+            itemView.label_distance.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(FeedViewHolderShowDistanceOnScroll)) {
+            itemView.label_distance.changeVisibility(isVisible = true)
+        }
+        if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
+            itemView.label_online_status.changeVisibility(isVisible = false)
+        }
+        if (payloads.contains(FeedViewHolderShowOnlineStatusOnScroll)) {
+            itemView.label_online_status.changeVisibility(isVisible = true)
+        }
         if (payloads.contains(FeedViewHolderHideSettingsBtnOnScroll)) {
             itemView.ibtn_settings.changeVisibility(isVisible = false)
         }
@@ -147,6 +187,9 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.apply {
             tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
+            label_age_sex.changeVisibility(isVisible = false)
+            label_distance.changeVisibility(isVisible = false)
+            label_online_status.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
     }
@@ -155,6 +198,9 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.apply {
             tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
+            label_age_sex.changeVisibility(isVisible = true)
+            label_distance.changeVisibility(isVisible = true)
+            label_online_status.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
     }

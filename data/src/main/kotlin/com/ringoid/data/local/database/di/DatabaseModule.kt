@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.ringoid.data.local.database.*
 import com.ringoid.data.local.database.dao.messenger.MessageMigration_9_10
-import com.ringoid.data.local.database.migration.MajorMigration_10_100
-import com.ringoid.data.local.database.migration.Migration_100_101
-import com.ringoid.data.local.database.migration.UserMigration_100_101
+import com.ringoid.data.local.database.migration.*
 import com.ringoid.domain.debug.DebugOnly
 import dagger.Module
 import dagger.Provides
@@ -17,9 +15,11 @@ class DatabaseModule {
 
     @Provides @Singleton
     fun provideDatabase(applicationContext: Context,
-                        migration_100_101: Migration_100_101): RingoidDatabase =
+                        migration_100_101: Migration_100_101,
+                        migration_101_102: Migration_101_102,
+                        migration_102_103: Migration_102_103): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-            .addMigrations(migration_100_101)
+            .addMigrations(migration_100_101, migration_101_102, migration_102_103)
             .fallbackToDestructiveMigrationFrom(8, 9, 10)
             .build()
 

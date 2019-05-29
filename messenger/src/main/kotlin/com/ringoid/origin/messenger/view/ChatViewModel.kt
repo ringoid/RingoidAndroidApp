@@ -13,6 +13,7 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,9 +26,9 @@ class ChatViewModel @Inject constructor(
     val messages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
 
-    fun getMessages(profileId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES) {
+    fun getMessages(profileId: String, sourceFeed: LmmNavTab = LmmNavTab.MESSAGES) {
         val params = Params().put("chatId", profileId)
-                             .put("sourceFeed", sourceFeed)
+                             .put("sourceFeed", sourceFeed.feedName)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
         getMessagesForPeerUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
@@ -43,12 +44,12 @@ class ChatViewModel @Inject constructor(
 
     @Suppress("CheckResult")
     fun sendMessage(peerId: String, imageId: String = DomainUtil.BAD_ID, text: String?,
-                    sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES) {
+                    sourceFeed: LmmNavTab = LmmNavTab.MESSAGES) {
         if (text.isNullOrBlank()) {
             return  // don't send empty text
         }
 
-        val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = sourceFeed, targetImageId = imageId, targetUserId = peerId)
+        val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = sourceFeed.feedName, targetImageId = imageId, targetUserId = peerId)
         val message = MessageEssence(peerId = peerId, text = text?.trim() ?: "", aObjEssence = essence)
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
@@ -60,12 +61,12 @@ class ChatViewModel @Inject constructor(
 
                 // analytics
                 with (analyticsManager) {
-                    fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed)
-                    fireOnce(Analytics.AHA_FIRST_MESSAGE_SENT, "sourceFeed" to sourceFeed)
+                    fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed.feedName)
+                    fireOnce(Analytics.AHA_FIRST_MESSAGE_SENT, "sourceFeed" to sourceFeed.feedName)
                     when (sourceFeed) {
-                        DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_LIKES)
-                        DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MATCHES)
-                        DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MESSAGES)
+                        LmmNavTab.LIKES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_LIKES)
+                        LmmNavTab.MATCHES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MATCHES)
+                        LmmNavTab.MESSAGES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MESSAGES)
                     }
                 }
             }, Timber::e)

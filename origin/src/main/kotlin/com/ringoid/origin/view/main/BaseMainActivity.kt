@@ -13,6 +13,8 @@ import com.ncapdevi.fragnav.FragNavSwitchController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
@@ -20,6 +22,7 @@ import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.view.base.BasePermissionActivity
 import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.collection.toJsonObject
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -29,6 +32,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     companion object {
         private const val BUNDLE_KEY_CURRENT_TAB = "bundle_key_current_tab"
+        const val BUNDLE_KEY_CURRENT_LMM_TAB = "bundle_key_current_lmm_tab"
     }
 
     @Inject lateinit var particleAnimator: ParticleAnimator
@@ -64,7 +68,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
                 createEager = true
                 transactionListener = this@BaseMainActivity
-                initialize(index = FragNavController.TAB1, savedInstanceState = savedInstanceState)
+                initialize(index = FragNavController.TAB1, savedInstanceState = null)
             }
 
         registerReceiver(powerSafeModeReceiver, IntentFilter().apply { addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED) })
@@ -77,10 +81,13 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 }
                 fragNav.switchTab(it.ordinal)
             }
-            setOnNavigationItemReselectedListener { (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect() }
+            setOnNavigationItemReselectedListener {
+                (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect(tabPayload)
+            }
         }
 
         processExtras(intent, savedInstanceState)
+        DebugLogUtil.clear()  // clear debug logs when recreate Main screen
     }
 
     /**
@@ -100,13 +107,14 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     override fun onStart() {
         super.onStart()
-        debug_view.changeVisibility(isVisible = spm.isDebugLogEnabled())
+        showDebugView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         fragNav.onSaveInstanceState(outState)
         outState.putSerializable(BUNDLE_KEY_CURRENT_TAB, bottom_bar.selectedItem)
+        (fragNav.currentFrag as? BaseFragment<*>)?.onActivitySaveInstanceState(outState)
     }
 
     private fun processExtras(intent: Intent, savedInstanceState: Bundle?) {
@@ -115,7 +123,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             openTabByName(tabName = NavigateFrom.MAIN_TAB_EXPLORE)
         }
 
-        fun openLmmTab() {
+        fun openLmmTab(lmmTab: LmmNavTab? = null) {
+            tabPayload = lmmTab?.feedName
             openTabByName(tabName = NavigateFrom.MAIN_TAB_LMM)
         }
 
@@ -128,19 +137,29 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 ?.let {
                     when (it) {
                         NavTab.EXPLORE -> openExploreTab()
-                        NavTab.LMM -> openLmmTab()
+                        NavTab.LMM -> openLmmTab(lmmTab = savedInstanceState.getSerializable(BUNDLE_KEY_CURRENT_LMM_TAB) as? LmmNavTab)
                         NavTab.PROFILE -> openProfileTab()
                     }
                 }
                 ?: run { openExploreTab() }
         }
 
+        Timber.d("Intent data: ${intent.extras?.toJsonObject()}")
         intent.extras?.apply {
-            getString("tab")
-                ?.let {
-                    tabPayload = getString("tabPayload")
-                    openTabByName(it)
-                } ?: run { openInitialTab() }
+            Timber.v("Process extras[$savedInstanceState]: $this")
+            getString("tab")?.let { tabName ->
+                Timber.v("In-App extras: $tabName")
+                tabPayload = getString("tabPayload")
+                openTabByName(tabName)
+            }
+            ?: getString("type")?.let { type ->
+                Timber.v("Push extras: $type")
+                vm.onPushOpen()
+                LmmNavTab.fromPushType(pushType = type)
+                    ?.let { openLmmTab(lmmTab = it) }
+                    ?: run { openInitialTab() }
+            }
+            ?: run { openInitialTab() }
         } ?: run { openInitialTab() }
     }
 
@@ -159,18 +178,9 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         tabPayload = null  // consume tab payload on the opened tab
     }
 
-    protected fun openTabByName(tabName: String) {
-        bottom_bar.selectedItem = tabNameToIndex(tabName)
+    private fun openTabByName(tabName: String) {
+        bottom_bar.selectedItem = NavTab.from(tabName)
     }
-
-    // --------------------------------------------------------------------------------------------
-    private fun tabNameToIndex(tabName: String): NavTab =
-        when (tabName) {
-            NavigateFrom.MAIN_TAB_EXPLORE -> NavTab.EXPLORE
-            NavigateFrom.MAIN_TAB_LMM -> NavTab.LMM
-            NavigateFrom.MAIN_TAB_PROFILE -> NavTab.PROFILE
-            else -> throw IllegalArgumentException("Unknown tab name: $tabName")
-        }
 
     // --------------------------------------------------------------------------------------------
     override fun showBadgeOnLmm(isVisible: Boolean) {
@@ -182,7 +192,12 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     override fun showParticleAnimation(id: String, count: Int) {
-//        particleAnimator.animate(id, count)
+        particleAnimator.animate(id, count)
+    }
+
+    @DebugOnly
+    protected fun showDebugView() {
+        debug_view.changeVisibility(isVisible = spm.isDebugLogEnabled())
     }
 
     // --------------------------------------------------------------------------------------------

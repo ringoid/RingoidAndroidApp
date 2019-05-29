@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="@dimen/std_icon_18"
+        android:layout_height="@dimen/std_icon_18"
+        android:layout_gravity="center_vertical|start"
+        android:contentDescription="@null"/>
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_marginStart="5dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical|start"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        android:textSize="@dimen/std_text_20"
+        tools:text="Online"
+        style="@style/StdText.White"/>
+</merge>

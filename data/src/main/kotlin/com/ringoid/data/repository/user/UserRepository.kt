@@ -37,7 +37,8 @@ class UserRepository @Inject constructor(
         cloud.createUserProfile(essence)
              .handleError(tag = "createUserProfile", traceTag = "auth/create_profile")
              .doOnSuccess {
-                 spm.saveUserProfile(userId = it.userId, userGender = Gender.from(essence.sex), accessToken = it.accessToken)
+                 spm.saveUserProfile(userId = it.userId, userGender = Gender.from(essence.sex),
+                                     userYearOfBirth = essence.yearOfBirth, accessToken = it.accessToken)
                  local.addUserProfile(ProfileDbo(id = it.userId))
                  SentryUtil.setUser(spm)
              }

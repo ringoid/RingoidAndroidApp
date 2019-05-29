@@ -1,7 +1,8 @@
 package com.ringoid.origin.feed.view.lmm.match
 
+import android.os.Bundle
+import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MatchFeedAdapter
@@ -10,6 +11,9 @@ import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.main.IBaseMainActivity
+import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.utility.communicator
 
 class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
@@ -34,7 +38,7 @@ class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
             else -> null
         }
 
-    override fun getSourceFeed(): String = DomainUtil.SOURCE_FEED_MATCHES
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.MATCHES
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
@@ -45,10 +49,19 @@ class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         val discarded = onDiscardProfileState(profileId)  // discard profile on transfer
-                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, DomainUtil.SOURCE_FEED_MESSAGES)
+                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, LmmNavTab.MESSAGES)
                     }
                 }
             }
+        }
+    }
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with (viewLifecycleOwner) {
+            observe(vm.pushNewMatch) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
         }
     }
 }

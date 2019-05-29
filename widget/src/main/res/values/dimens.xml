@@ -5,6 +5,8 @@
     <dimen name="std_dialog_height">160dp</dimen>
     <dimen name="std_dialog_width">303dp</dimen>
     <dimen name="std_element_height">47dp</dimen>
+    <dimen name="std_icon_12">9dp</dimen>
+    <dimen name="std_icon_18">14dp</dimen>
     <dimen name="std_icon_24">19dp</dimen>
     <dimen name="std_icon_36">28dp</dimen>
     <dimen name="std_icon_96">75dp</dimen>
@@ -16,6 +18,7 @@
     <dimen name="std_margin_32">24dp</dimen>
     <dimen name="std_margin_40">32dp</dimen>
     <dimen name="std_margin_48">37dp</dimen>
+    <dimen name="std_margin_64">38dp</dimen>
     <dimen name="std_screen_10">31dp</dimen>
     <dimen name="std_screen_20">62dp</dimen>
     <dimen name="std_text_10">8sp</dimen>

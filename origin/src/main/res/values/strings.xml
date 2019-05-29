@@ -14,6 +14,7 @@
     <string name="common_choose_image">Choose Photo</string>
     <string name="common_clipboard">Copied to clipboard</string>
     <string name="common_compose_email">Send Email</string>
+    <string name="common_online">Online</string>
     <string name="common_pull_to_refresh">Pull to refresh</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
@@ -66,9 +67,10 @@
     <!-- Image Preview screen -->
 
     <!-- Lmm screen -->
+    <string name="lmm_popup_refresh">Tap to refresh</string>
     <string name="lmm_tab_likes">Likes You</string>
     <string name="lmm_tab_matches">Matches</string>
-    <string name="lmm_tab_messenger">Inbox</string>
+    <string name="lmm_tab_messenger">Chats</string>
 
     <!-- Login screen -->
     <string name="login_button">Continue to Upload Photo</string>
@@ -101,7 +103,6 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email support@ringoid.com</string>
     <string name="settings_push">Push Notifications</string>
-    <string name="settings_push_explanatory">Once per day if you have new like, match, message, or new users</string>
     <string name="settings_support">Email support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Settings</string>
@@ -119,6 +120,13 @@
     <string name="settings_info_terms">Terms of Service</string>
     <string name="settings_info_title">Legal</string>
 
+    <!-- Settings Push screen -->
+    <string name="settings_push_item_like">New Like</string>
+    <string name="settings_push_item_match">New Match</string>
+    <string name="settings_push_item_message">New Message</string>
+    <string name="settings_push_item_daily">Evening Notification</string>
+    <string name="settings_push_item_daily_description">Once per day if you have new like, match, message, or new users</string>
+
     <!-- Settings Lang screen -->
     <string name="settings_lang_en">English</string>
     <string name="settings_lang_ru">Русский</string>
@@ -128,4 +136,9 @@
     <string name="web_page_privacy">Privacy Policy</string>
     <string name="web_page_terms">Terms of Service</string>
     <string name="web_url_error_status">https://ringoid.com/status.html</string>
+
+    <!-- Debug -->
+
+    <string name="dialog_debug_view_close_description" translatable="false">Are you sure you want to close Debug window?</string>
+    <string name="dialog_debug_view_close_title" translatable="false">Close Debug</string>
 </resources>

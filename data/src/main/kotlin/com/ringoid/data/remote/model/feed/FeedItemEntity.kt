@@ -27,8 +27,8 @@ import com.ringoid.domain.model.messenger.Message
 class FeedItemEntity(
     @Expose @SerializedName(COLUMN_FLAG_NOT_SEEN) val isNotSeen: Boolean,
     @Expose @SerializedName(COLUMN_MESSAGES) val messages: List<MessageEntity> = emptyList(),
-    id: String, sortPosition: Int, images: List<ImageEntity> = emptyList())
-    : BaseProfileEntity<FeedItem>(id = id, sortPosition = sortPosition, images = images) {
+    id: String, age: Int, sortPosition: Int, images: List<ImageEntity> = emptyList())
+    : BaseProfileEntity<FeedItem>(id = id, age = age, sortPosition = sortPosition, images = images) {
 
     companion object {
         const val COLUMN_FLAG_NOT_SEEN = "notSeen"
@@ -36,11 +36,14 @@ class FeedItemEntity(
     }
 
     override fun map(): FeedItem =
-        FeedItem(id = id, isNotSeen = isNotSeen, images = images.mapList(),
+        FeedItem(id = id, age = age, distanceText = distanceText, isNotSeen = isNotSeen,
+                 images = images.mapList(),
                  messages = messages.mapIndexed { index, message ->
                      val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
                      Message(id = "${id}_$index", chatId = id, peerId = peerId, text = message.text)
-                 }.toMutableList())
+                 }.toMutableList(),
+                 lastOnlineStatus = lastOnlineStatus,
+                 lastOnlineText = lastOnlineText)
 
     override fun toString(): String =
         "FeedItemEntity(isNotSeen=$isNotSeen, messages=${messages.joinToString(", ", "[", "]")}, ${super.toString()})"

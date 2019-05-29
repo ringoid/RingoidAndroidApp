@@ -14,7 +14,7 @@ import com.ringoid.data.local.database.model.feed.property.UserMessagedFeedItemI
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 
-@Database(version = 101,
+@Database(version = 103,
           entities = [ActionObjectDbo::class, ImageDbo::class, MessageDbo::class,
                       FeedItemDbo::class, LikedFeedItemIdDbo::class,
                       UserMessagedFeedItemIdDbo::class])

@@ -14,6 +14,7 @@
     <string name="common_choose_image">Выбери фото</string>
     <string name="common_clipboard">Скопировано в буфер</string>
     <string name="common_compose_email">Отправить Email</string>
+    <string name="common_online">Онлайн</string>
     <string name="common_pull_to_refresh">Потяни, чтобы обновить</string>
     <string name="common_sex_male">Мужчина</string>
     <string name="common_sex_female">Женщина</string>
@@ -61,9 +62,10 @@
     <!-- Image Preview screen -->
 
     <!-- Lmm screen -->
+    <string name="lmm_popup_refresh">Нажми, чтобы обновить</string>
     <string name="lmm_tab_likes">Ты нравишься</string>
     <string name="lmm_tab_matches">Взаимно</string>
-    <string name="lmm_tab_messenger">Сообщения</string>
+    <string name="lmm_tab_messenger">Чаты</string>
 
     <!-- Login screen -->
     <string name="login_button">Продолжить и Загрузить фото</string>
@@ -96,7 +98,6 @@
     <string name="settings_language">Язык</string>
     <string name="settings_language_help">Если вы хотите помочь и перевести Ringoid на родной язык, пожалуйста, напишите в support@ringoid.com</string>
     <string name="settings_push">Push&#45;уведомления</string>
-    <string name="settings_push_explanatory">Один раз в день, если есть лайк, взаимная симпатия, сообщение, или новые люди</string>
     <string name="settings_support">Написать support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_title">Настройки</string>
@@ -113,6 +114,13 @@
     <string name="settings_info_privacy">Политика конфиденциальности</string>
     <string name="settings_info_terms">Условия использования</string>
     <string name="settings_info_title">Информация</string>
+
+    <!-- Settings Push screen -->
+    <string name="settings_push_item_like">Новый лайк</string>
+    <string name="settings_push_item_match">Новая взаимность</string>
+    <string name="settings_push_item_message">Новое сообщение</string>
+    <string name="settings_push_item_daily">Вечернее уведомление</string>
+    <string name="settings_push_item_daily_description">Один раз в день, если есть лайк, взаимная симпатия, сообщение, или новые люди</string>
 
     <!-- Settings Lang screen -->
     <string name="settings_lang_en">English</string>

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.annotation.StyleRes
 import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
@@ -52,7 +53,9 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         /* Auth */
         // --------------------------------------
         const val SP_KEY_AUTH_USER_ID = "sp_key_auth_user_id"
+        const val SP_KEY_AUTH_USER_CREATE_TS = "sp_key_auth_user_create_ts"
         const val SP_KEY_AUTH_USER_GENDER = "sp_key_auth_user_gender"
+        const val SP_KEY_AUTH_USER_YEAR_OF_BIRTH = "sp_key_auth_user_year_of_birth"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
 
         /* Location */
@@ -71,7 +74,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
         /* User Settings */
         // --------------------------------------
-        const val SP_KEY_USER_SETTINGS_PUSH_ENABLED = "sp_key_user_settings_push_enabled"
+        const val SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED = "sp_key_user_settings_daily_push_enabled"
+        const val SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED = "sp_key_user_settings_likes_push_enabled"
+        const val SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED = "sp_key_user_settings_matches_push_enabled"
+        const val SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED = "sp_key_user_settings_messages_push_enabled"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -108,11 +114,16 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .also { config.setCollectDebugLogs(it) }
 
     @DebugOnly
+    override fun enableDebugLog(isEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_DEBUG_LOG_ENABLED, isEnabled)
+            .also { config.setCollectDebugLogs(isEnabled) }
+            .apply()
+    }
+
+    @DebugOnly
     override fun switchDebugLogEnabled() {
         val currentFlag = isDebugLogEnabled()
-        sharedPreferences.edit().putBoolean(SP_KEY_DEBUG_LOG_ENABLED, !currentFlag)
-            .also { config.setCollectDebugLogs(!currentFlag) }
-            .apply()
+        enableDebugLog(isEnabled = !currentFlag)
     }
 
     @DebugOnly
@@ -156,13 +167,21 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .takeIf { it.contains(SP_KEY_AUTH_USER_ID) }
             ?.let { it.getString(SP_KEY_AUTH_USER_ID, null) }
 
+    override fun currentUserCreateTs(): Long =
+        sharedPreferences.getLong(SP_KEY_AUTH_USER_CREATE_TS, 0L)
+
     override fun currentUserGender(): Gender =
         Gender.from(sharedPreferences.getString(SP_KEY_AUTH_USER_GENDER, "") ?: "")
 
-    override fun saveUserProfile(userId: String, userGender: Gender, accessToken: String) {
+    override fun currentUserYearOfBirth(): Int =
+        sharedPreferences.getInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, DomainUtil.BAD_VALUE)
+
+    override fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String) {
         sharedPreferences.edit()
             .putString(SP_KEY_AUTH_USER_ID, userId)
+            .putLong(SP_KEY_AUTH_USER_CREATE_TS, System.currentTimeMillis())
             .putString(SP_KEY_AUTH_USER_GENDER, userGender.string)
+            .putInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, userYearOfBirth)
             .putString(SP_KEY_AUTH_ACCESS_TOKEN, accessToken)
             .apply()
     }
@@ -170,7 +189,9 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun deleteUserProfile(userId: String) {
         sharedPreferences.edit()
             .remove(SP_KEY_AUTH_USER_ID)
+            .remove(SP_KEY_AUTH_USER_CREATE_TS)
             .remove(SP_KEY_AUTH_USER_GENDER)
+            .remove(SP_KEY_AUTH_USER_YEAR_OF_BIRTH)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
             .apply()
     }
@@ -245,10 +266,25 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     /* User Settings */
     // --------------------------------------------------------------------------------------------
-    override fun getUserSettingPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_PUSH_ENABLED, true)
+    override fun getUserSettingDailyPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, true)
+    override fun getUserSettingLikesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, true)
+    override fun getUserSettingMatchesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, true)
+    override fun getUserSettingMessagesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, true)
 
-    override fun setUserSettingPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_PUSH_ENABLED, pushEnabled).apply()
+    override fun setUserSettingDailyPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, pushEnabled).apply()
+    }
+
+    override fun setUserSettingLikesPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, pushEnabled).apply()
+    }
+
+    override fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, pushEnabled).apply()
+    }
+
+    override fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, pushEnabled).apply()
     }
 }
 

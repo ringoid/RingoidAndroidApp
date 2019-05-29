@@ -147,7 +147,7 @@ open class FeedRepository @Inject constructor(
     override val feedMatches = PublishSubject.create<List<FeedItem>>()
     override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
-    override val lmmLoaded = PublishSubject.create<Long>()
+    override val lmmLoadFinish = PublishSubject.create<Long>()
     override val newLikesCount = PublishSubject.create<Int>()
     override val newMatchesCount = PublishSubject.create<Int>()
     override val newMessagesCount = PublishSubject.create<Int>()
@@ -180,13 +180,7 @@ open class FeedRepository @Inject constructor(
     // ------------------------------------------
     override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
         aObjPool.triggerSource()
-                .flatMap {
-                    if (DomainUtil.withSimulatedError()) {
-                        Single.error<Lmm>(SimulatedException())
-                    } else {
-                        getLmmOnly(resolution, source = source, lastActionTime = it)
-                    }
-                }
+                .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
                 .onErrorResumeNext {
                     SentryUtil.capture(it, message = "Fallback to get cached Lmm")
                     getCachedLmm()
@@ -211,7 +205,7 @@ open class FeedRepository @Inject constructor(
                 .checkForNewMessages()
                 .cacheLmm()  // cache new Lmm data fetched from the Server
                 .cacheMessagesFromLmm()
-                .doOnSuccess { lmmLoaded.onNext(0L) }
+                .doOnSuccess { lmmLoadFinish.onNext(0L) }
         }
 
     override fun getLmmProfileIds(): Single<List<String>> = local.feedItemIds()
@@ -364,15 +358,15 @@ open class FeedRepository @Inject constructor(
             feedLikes.onNext(it.likes)
         }
         .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
-        .flatMap {
-            val profiles = it.first.notSeenLikesProfileIds().map { ProfileIdDbo(it) }
-            Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }.toSingleDefault(it)
+        .flatMap { (lmm, count) ->
+            val profiles = lmm.notSeenLikesProfileIds().map { ProfileIdDbo(it) }
+            Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }.toSingleDefault(lmm to count)
         }
         .zipWith(newLikesProfilesCache.countProfileIds(),
-            BiFunction { lmm_oldCount, newCount ->
-                val diff = newCount - lmm_oldCount.second
+            BiFunction { (lmm, oldCount), newCount ->
+                val diff = newCount - oldCount
                 if (diff > 0) { newLikesCount.onNext(diff) }
-                lmm_oldCount.first
+                lmm
             })
 
     private fun Single<Lmm>.checkForNewMatches(): Single<Lmm> =
@@ -381,15 +375,15 @@ open class FeedRepository @Inject constructor(
             feedMatches.onNext(it.matches)
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
-        .flatMap {
-            val profiles = it.first.notSeenMatchesProfileIds().map { ProfileIdDbo(it) }
-            Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }.toSingleDefault(it)
+        .flatMap { (lmm, count) ->
+            val profiles = lmm.notSeenMatchesProfileIds().map { ProfileIdDbo(it) }
+            Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }.toSingleDefault(lmm to count)
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(),
-            BiFunction { lmm_oldCount, newCount ->
-                val diff = newCount - lmm_oldCount.second
+            BiFunction { (lmm, oldCount), newCount ->
+                val diff = newCount - oldCount
                 if (diff > 0) { newMatchesCount.onNext(diff) }
-                lmm_oldCount.first
+                lmm
             })
 
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =

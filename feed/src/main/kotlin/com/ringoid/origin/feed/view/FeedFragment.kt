@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
@@ -33,7 +32,6 @@ import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.widget.view.swipes
 import com.uber.autodispose.lifecycle.autoDisposable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -44,7 +42,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         private set
     private lateinit var feedTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
-    private val debugSubs = CompositeDisposable()
 
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
@@ -78,7 +75,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 }
             }
             is ViewState.IDLE -> onIdleState()
-            is ViewState.PROGRESS -> showLoading(isVisible = true)
+            is ViewState.LOADING -> showLoading(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
@@ -103,26 +100,40 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         } ?: run { fl_empty_container?.changeVisibility(isVisible = false) }
     }
 
-    protected fun onDiscardProfileState(profileId: String): FeedItemVO? {
-        fun getVisibleItemIds(excludedId: String? = null): List<String> =
-            rv_items.linearLayoutManager()?.let { lm ->
-                val from = lm.findFirstVisibleItemPosition()
-                val to = lm.findLastVisibleItemPosition()
+    private fun getVisibleItemIds(excludedId: String? = null): List<String> =
+        rv_items.linearLayoutManager()?.let { lm ->
+            val from = lm.findFirstVisibleItemPosition()
+            val to = lm.findLastVisibleItemPosition()
+            if (from != RecyclerView.NO_POSITION && to != RecyclerView.NO_POSITION) {
                 feedAdapter.getModelsInRange(from, to)
                     .apply { excludedId?.let { exId -> removeAll { it.id == exId } } }
                     .map { it.id }
-            } ?: emptyList()
+            } else emptyList()
+        } ?: emptyList()
 
-        vm.onDiscardProfile(profileId)
-        return feedAdapter.findModel { it.id == profileId }
+    private fun checkForNewlyVisibleItems(prevIds: Collection<String>, newIds: Collection<String>, excludedId: String? = null) {
+        newIds.toMutableList()
+            .also { it.removeAll(prevIds) }
+            .also { DebugLogUtil.d("Discarded ${excludedId?.substring(0..3)}, became visible[${it.size}]: ${it.joinToString { it.substring(0..3) }}") }
+            .takeIf { it.isNotEmpty() }
+            ?.forEach { id ->
+                feedAdapter.findModel { it.id == id }
+                    ?.let {
+                        val imageId = it.images[it.positionOfImage].id
+                        vm.onItemBecomeVisible(profileId = it.id, imageId = imageId)
+                    }
+            }
+    }
+
+    protected fun onDiscardProfileState(profileId: String): FeedItemVO? =
+        feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
                 val count = feedAdapter.getModelsCount()
                 if (count <= 1) {  // remove last feed item - show empty stub directly
                     onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
                 } else {  // remove not last feed item
                     val prevIds = getVisibleItemIds(profileId)  // record ids of visible items before remove
-                    Timber.v("Discard item ($profileId), visible BEFORE: ${prevIds.joinToString()}")
-                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
+                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}")
 
                     /**
                      * After finishing item remove animation, detect what items come into viewport
@@ -133,36 +144,40 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         .removeAnimationSubject
                         .take(1)  // single-shot subscription
                         .doOnSubscribe { localScopeProvider.start() }
-                        .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription, subs ${debugSubs.size()}") }
+                        .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription") }
                         .doFinally {
                             DebugLogUtil.v("Discard item ${profileId.substring(0..3)} has completed")
                             localScopeProvider.stop()
-                            debugSubs.clear()
                         }
                         .autoDisposable(localScopeProvider)
                         .subscribe({ _ ->
                             val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
-                            Timber.v("Discard item ($profileId), visible AFTER: ${newIds.joinToString()}")
-                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}, subs: ${debugSubs.size()}")
-
-                            newIds.toMutableList()
-                                .also { it.removeAll(prevIds) }
-                                .also { DebugLogUtil.d("Discarded ${profileId.substring(0..3)}, became visible[${it.size}]: ${it.joinToString { it.substring(0..3) }}") }
-                                .takeIf { it.isNotEmpty() }
-                                ?.forEach { id ->
-                                    feedAdapter.findModel { it.id == id }
-                                        ?.let {
-                                            val imageId = it.images[it.positionOfImage].id
-                                            vm.onItemBecomeVisible(profileId = it.id, imageId = imageId)
-                                        }
-                                }
+                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}")
+                            checkForNewlyVisibleItems(prevIds, newIds, excludedId = profileId)
                         }, Timber::e)
-                        .takeIf { BuildConfig.IS_STAGING && !it.isDisposed }
-                        ?.let { debugSubs.add(it) }
 
-                        feedAdapter.remove { it.id == profileId }
+                    feedAdapter.remove { it.id == profileId }
                 }
+                vm.onDiscardProfile(profileId)
             }
+
+    protected fun onDiscardMultipleProfilesState(profileIds: Collection<String>) {
+        val prevIds = getVisibleItemIds()  // record ids of visible items before remove
+        with (feedAdapter) {
+            val obs = if (profileIds.intersect(prevIds).isEmpty()) removeSubject
+                      else rv_items.itemAnimator.let { it as FeedItemAnimator }.removeAnimationSubject
+
+            obs.take(1)
+                .doOnSubscribe { localScopeProvider.start() }
+                .doFinally { localScopeProvider.stop() }
+                .autoDisposable(localScopeProvider)
+                .subscribe({ _ ->
+                    val newIds = getVisibleItemIds()  // record ids of whatever items are visible after remove
+                    checkForNewlyVisibleItems(prevIds, newIds)
+                }, Timber::e)
+
+            remove { it.id in profileIds }
+        }
     }
 
     private fun onIdleState() {
@@ -170,7 +185,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     internal fun showLoading(isVisible: Boolean) {
-        swipe_refresh_layout?.isRefreshing = isVisible
+        swipe_refresh_layout
+            ?.takeIf { isVisible != it.isRefreshing }  // change visibility w/o interruption of animation, if any
+            ?.let { it.isRefreshing = isVisible }
     }
 
     /* Lifecycle */
@@ -183,6 +200,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 val image = model.images[positionOfImage]
                 scrollToTopOfItemAtPositionAndPost(position).post {
+                    showRefreshPopup(isVisible = false)
                     showScrollFab(isVisible = false)
                     notifyItemChanged(position, FeedViewHolderHideControls)
                 }
@@ -206,6 +224,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 val position = data.extras!!.getString("position", "0").toInt()
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
                 scrollToTopOfItemAtPosition(position, offset = AppRes.BUTTON_HEIGHT)
+                showRefreshPopup(isVisible = true)
                 showScrollFab(isVisible = true, restoreVisibility = true)
 
                 if (resultCode == Activity.RESULT_OK) {
@@ -282,7 +301,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        debugSubs.clear()
         feedAdapter.dispose()
     }
 
@@ -292,6 +310,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             showLoading(isVisible = false)
             noConnection(this@FeedFragment)
         } else {
+            feedTrackingBus.allowSingleUnchanged()
             offsetScrollStrats = getOffsetScrollStrategies()
             /**
              * Asks for location permission, and if granted - callback will then handle
@@ -305,6 +324,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     // ------------------------------------------
     private var wasFabVisible: Boolean = false
+
+    protected fun showRefreshPopup(isVisible: Boolean) {
+        btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.refreshOnPush.value == true)
+    }
 
     protected fun showScrollFab(isVisible: Boolean, restoreVisibility: Boolean = false) {
         val xIsVisible = if (restoreVisibility) {
@@ -327,11 +350,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             super.onScrolled(rv, dx, dy)
             rv.linearLayoutManager()?.let {
                 if (dy > 0) {  // scroll list down - to see new items
+                    if (btn_refresh_popup.isVisible()) {
+                        showRefreshPopup(isVisible = false)
+                    }
                     if (scroll_fab.isVisible()) {
                         showScrollFab(isVisible = false)
                     }
                 } else {  // scroll list up - to see previous items
                     val offset = rv.computeVerticalScrollOffset()
+                    if (!btn_refresh_popup.isVisible()) {
+                        showRefreshPopup(isVisible = true)
+                    }
                     if (scroll_fab.isVisible()) {
                         if (offset <= 0) {
                             showScrollFab(isVisible = false)
@@ -353,6 +382,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
         listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_AGE_BOTTOM, hide = FeedViewHolderHideAgeOnScroll, show = FeedViewHolderShowAgeOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_DISTANCE_BOTTOM, hide = FeedViewHolderHideDistanceOnScroll, show = FeedViewHolderShowDistanceOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_TOP, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_FOOTER_LABEL_BOTTOM, hide = FeedFooterViewHolderHideControls, show = FeedFooterViewHolderShowControls))
 

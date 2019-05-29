@@ -1,19 +1,20 @@
 package com.ringoid.origin.feed.view.lmm.like
 
+import android.os.Bundle
+import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
-import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.main.IBaseMainActivity
+import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
 import timber.log.Timber
 
@@ -44,7 +45,7 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
             else -> null
         }
 
-    override fun getSourceFeed(): String = DomainUtil.SOURCE_FEED_LIKES
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.LIKES
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
@@ -55,20 +56,19 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         val discarded = onDiscardProfileState(profileId)  // discard profile on transfer
-                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, DomainUtil.SOURCE_FEED_MATCHES)
+                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, LmmNavTab.MATCHES)
                     }
                 }
             }
         }
     }
 
-    /* Scroll listeners */
+    /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
-        mutableListOf<OffsetScrollStrategy>()
-            .apply {
-                addAll(super.getOffsetScrollStrategies())
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
-            }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with (viewLifecycleOwner) {
+            observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
+        }
+    }
 }

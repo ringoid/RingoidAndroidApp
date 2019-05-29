@@ -14,7 +14,6 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.style.APP_THEME
-import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.view.dialog.Dialogs
@@ -84,14 +83,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
 //            setLabel(LocaleUtils.getLangById(context, app?.localeManager?.getLang() ?: LocaleManager.LANG_RU))
         }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
-        item_push.apply {
-            setChecked(spm.getUserSettingPushEnabled())
-            showLabel(isVisible = isChecked())
-            clicks().subscribe {
-                showLabel(isVisible = isChecked())
-                vm.updateUserSettingPush(isChecked())
-            }
-        }
+        item_push.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_push") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
 //        item_theme.apply {
 //            setChecked(!ThemeUtils.isDefaultTheme(spm))

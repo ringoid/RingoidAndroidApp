@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view
 
 import android.app.Application
 import android.os.Build
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -33,6 +34,8 @@ abstract class FeedViewModel(
     private val countUserImagesUseCase: CountUserImagesUseCase,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
+
+    val refreshOnPush by lazy { MutableLiveData<Boolean>() }
 
     private var verticalPrevRange: EqualRange<ProfileImageVO>? = null
     private val horizontalPrevRanges = mutableMapOf<String, EqualRange<ProfileImageVO>>()  // profileId : range
@@ -138,7 +141,6 @@ abstract class FeedViewModel(
 
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
-        viewState.value = ViewState.PROGRESS
         onRefresh()  // request for feed data with potentially updated location data
     }
 
@@ -146,7 +148,7 @@ abstract class FeedViewModel(
         analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to getFeedName())
     }
 
-    internal open fun onRefresh(withLoading: Boolean = false) {
+    protected open fun onRefresh() {
         advanceAndPushViewObjects()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
@@ -155,9 +157,6 @@ abstract class FeedViewModel(
                     .doOnSuccess {
                         if (checkImagesCount(it)) {
                             clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge feed on refresh, before fetching a new one
-                            if (withLoading) {
-                                viewState.value = ViewState.PROGRESS
-                            }
                             getFeed()
                         } else {
                             viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
@@ -329,7 +328,7 @@ abstract class FeedViewModel(
         addViewObjectToBuffer(aobj)
     }
 
-    internal fun onDiscardProfile(profileId: String) {
+    open fun onDiscardProfile(profileId: String) {
         advanceAndPushViewObject(profileId = profileId)  // push VIEW as profile was discarded
 
         viewActionObjectBackup.keys

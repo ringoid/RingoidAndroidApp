@@ -60,6 +60,7 @@ ext {
 
     appName = getAppName(env)
     apiUrl = getApiUrl(env)
+    isDevelop = env == Environment.DEVELOP
     isStaging = env == Environment.STAGING
     host = '"ringoid.com"'
     authority = '"https://ringoid.com"'
@@ -106,7 +107,7 @@ allprojects {
     ext {
         majorVersion = 2
         minorVersion = 0
-        buildVersion = 161
+        buildVersion = 165
 
         androidApplicationId = getAppId(env)
         androidVersionCode = buildVersion

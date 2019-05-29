@@ -27,6 +27,9 @@ interface ISharedPrefsManager {
     fun isDebugLogEnabled(): Boolean
 
     @DebugOnly
+    fun enableDebugLog(isEnabled: Boolean)
+
+    @DebugOnly
     fun switchDebugLogEnabled()
 
     @DebugOnly
@@ -44,9 +47,13 @@ interface ISharedPrefsManager {
 
     fun currentUserId(): String?
 
+    fun currentUserCreateTs(): Long
+
     fun currentUserGender(): Gender
 
-    fun saveUserProfile(userId: String, userGender: Gender, accessToken: String)
+    fun currentUserYearOfBirth(): Int
+
+    fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String)
 
     fun deleteUserProfile(userId: String)
 
@@ -76,7 +83,13 @@ interface ISharedPrefsManager {
 
     /* User Settings */
     // ------------------------------------------
-    fun getUserSettingPushEnabled(): Boolean
+    fun getUserSettingDailyPushEnabled(): Boolean
+    fun getUserSettingLikesPushEnabled(): Boolean
+    fun getUserSettingMatchesPushEnabled(): Boolean
+    fun getUserSettingMessagesPushEnabled(): Boolean
 
-    fun setUserSettingPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingDailyPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingLikesPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean)
 }

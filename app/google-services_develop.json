@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1011961826349",
+    "firebase_url": "https://ringoid-develop.firebaseio.com",
+    "project_id": "ringoid-develop",
+    "storage_bucket": "ringoid-develop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011961826349:android:1b4cda7e996bac4d",
+        "android_client_info": {
+          "package_name": "com.ringoid.dating.develop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011961826349-0emvrulp5eiakdhj0bqeib4pq91lie15.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6_lWPzDZ2v3Yu-Re3rusafv9DK64c554"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011961826349-0emvrulp5eiakdhj0bqeib4pq91lie15.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

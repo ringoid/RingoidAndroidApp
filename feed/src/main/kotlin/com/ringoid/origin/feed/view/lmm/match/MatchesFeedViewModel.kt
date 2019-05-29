@@ -1,6 +1,8 @@
 package com.ringoid.origin.feed.view.lmm.match
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -10,13 +12,18 @@ import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.feed.property.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import io.reactivex.Observable
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import timber.log.Timber
 import javax.inject.Inject
 
 class MatchesFeedViewModel @Inject constructor(
@@ -48,6 +55,8 @@ class MatchesFeedViewModel @Inject constructor(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
+    internal val pushNewMatch by lazy { MutableLiveData<Long>() }
+
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MATCHES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.matches
@@ -74,9 +83,29 @@ class MatchesFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun onViewFeedItem(feedItemId: String) {
+        super.onViewFeedItem(feedItemId)
+        markFeedItemAsSeen(feedItemId = feedItemId)
+    }
+
+    override fun onSettingsClick(profileId: String) {
+        super.onSettingsClick(profileId)
+        markFeedItemAsSeen(profileId)
+    }
+
     override fun onFirstUserMessageSent(profileId: String) {
         super.onFirstUserMessageSent(profileId)
         // transfer firstly messaged profile from Matches Feed to Messages Feed, by Product
         viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
+    }
+
+    // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewLike(event: BusEvent.PushNewMatch) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        HandledPushDataInMemory.incrementCountOfHandledPushMatches()
+        pushNewMatch.value = 0L  // for particle animation
+        refreshOnPush.value = true
     }
 }

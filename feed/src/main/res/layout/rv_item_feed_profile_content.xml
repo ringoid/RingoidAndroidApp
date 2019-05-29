@@ -11,6 +11,36 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"/>
 
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_online_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:label_icon_size="@dimen/std_icon_12"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:label_icon="@drawable/ic_location_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_age_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
         android:layout_width="match_parent"
@@ -35,7 +65,7 @@
     <TextView
         android:id="@+id/tv_profile_id"
         android:layout_marginStart="@dimen/std_margin_16"
-        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginBottom="@dimen/std_margin_64"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"

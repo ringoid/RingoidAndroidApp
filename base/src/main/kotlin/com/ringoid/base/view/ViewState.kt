@@ -1,7 +1,10 @@
 package com.ringoid.base.view
 
 sealed class IResidual
-open class Residual : IResidual()
+open class Residual : IResidual() {
+
+    override fun toString(): String = javaClass.simpleName
+}
 
 sealed class ViewState {
 
@@ -9,7 +12,6 @@ sealed class ViewState {
 
     object IDLE : ViewState()
     object LOADING : ViewState()
-    object PROGRESS : ViewState()  // extends LOADING in some cases
     object CLOSE : ViewState()
     object PAGING : ViewState()
 

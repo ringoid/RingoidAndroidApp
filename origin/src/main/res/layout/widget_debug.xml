@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageButton
-        android:id="@+id/ibtn_clear_debug"
+        android:id="@+id/ibtn_close_debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/std_margin_8"
@@ -29,19 +29,19 @@
         android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_clear_black_18dp"/>
+        app:srcCompat="@drawable/ic_close_black_18dp"/>
 
     <ImageButton
-        android:id="@+id/ibtn_share_debug"
+        android:id="@+id/ibtn_clear_debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/std_margin_8"
         android:layout_marginEnd="@dimen/std_margin_8"
         android:background="?selectableItemBackground"
         android:contentDescription="@null"
-        app:layout_constraintTop_toBottomOf="@id/ibtn_clear_debug"
+        app:layout_constraintTop_toBottomOf="@id/ibtn_close_debug"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_share_black_18dp"/>
+        app:srcCompat="@drawable/ic_delete_black_18dp"/>
 
     <ImageButton
         android:id="@+id/ibtn_resize_debug"
@@ -51,7 +51,7 @@
         android:layout_marginEnd="@dimen/std_margin_8"
         android:background="?selectableItemBackground"
         android:contentDescription="@null"
-        app:layout_constraintTop_toBottomOf="@id/ibtn_share_debug"
+        app:layout_constraintTop_toBottomOf="@id/ibtn_clear_debug"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_aspect_ratio_18dp"/>
 

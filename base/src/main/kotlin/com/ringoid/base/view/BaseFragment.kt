@@ -85,7 +85,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         // override in subclasses
     }
 
-    open fun onTabReselect() {
+    open fun onTabReselect(payload: String?) {
         DebugLogUtil.lifecycle(this, "onTabReselect")
         // override in subclasses
     }
@@ -100,6 +100,11 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         lastTabTransactionPayload = payload
         if (!userVisibleHint) userVisibleHint = true
         // override in subclasses
+    }
+
+    open fun onActivitySaveInstanceState(outState: Bundle) {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onActivitySaveInstanceState: $outState")
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

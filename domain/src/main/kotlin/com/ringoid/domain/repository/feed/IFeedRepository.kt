@@ -50,7 +50,7 @@ interface IFeedRepository {
     val feedMatches: PublishSubject<List<FeedItem>>
     val feedMessages: PublishSubject<List<FeedItem>>
     val lmmChanged: PublishSubject<Boolean>
-    val lmmLoaded: PublishSubject<Long>
+    val lmmLoadFinish: PublishSubject<Long>
     val newLikesCount: PublishSubject<Int>
     val newMatchesCount: PublishSubject<Int>
     val newMessagesCount: PublishSubject<Int>

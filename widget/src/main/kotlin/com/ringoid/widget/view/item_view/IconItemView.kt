@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.widget_icon_item_view_layout.view.*
 
 open class IconItemView : LinearLayout {
 
-    protected var hideIcon: Boolean = true
+    private var hideIcon: Boolean = true
 
     constructor(context: Context): this(context, null)
 

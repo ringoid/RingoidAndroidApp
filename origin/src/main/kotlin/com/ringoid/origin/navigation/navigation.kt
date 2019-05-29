@@ -83,7 +83,7 @@ fun noConnection(fragment: Fragment) {
     noConnectionIntent().let { fragment.startActivity(it) }
 }
 
-fun splash(activity: Activity, path: String) {
-    navigate(path = path, uri = "splash://ringoid.com").let(activity::startActivity)
+fun splash(activity: Activity, path: String, payload: Intent? = null) {
+    navigate(path = path, payload = payload, uri = "splash://ringoid.com").let(activity::startActivity)
     activity.finish()
 }

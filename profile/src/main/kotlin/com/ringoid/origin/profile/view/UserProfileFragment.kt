@@ -23,14 +23,13 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
-import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderHideControls
-import com.ringoid.origin.profile.adapter.UserProfileImageViewHolderShowControls
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
@@ -45,12 +44,15 @@ import com.ringoid.widget.view.swipes
 import kotlinx.android.synthetic.main.fragment_profile_2.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
+import java.util.*
 
 class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>() {
 
     companion object {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
     }
+
+    private val calendar: Calendar by lazy { app!!.calendar }
 
     private var imageOnViewPortId: String = DomainUtil.BAD_ID
     private var cropImageAfterLogin: Boolean = false
@@ -66,7 +68,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onIdleState() {
-            imagesAdapter.notifyItemRangeChanged(0, imagesAdapter.itemCount, UserProfileImageViewHolderShowControls)
             pb_profile.changeVisibility(isVisible = false)
             swipe_refresh_layout.isRefreshing = false
         }
@@ -104,10 +105,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> onLoadingState()
-            is ViewState.PROGRESS -> {
-                imagesAdapter.notifyItemRangeChanged(0, imagesAdapter.itemCount, UserProfileImageViewHolderHideControls)
-                onLoadingState()
-            }
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
@@ -260,13 +257,24 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 return@subscribe
             }
 
-            imageOnViewPort()?.let {
+            imageOnViewPort()?.let { image ->
                 showControls(isVisible = false)
-                val needWarn = ((it as? UserImage)?.numberOfLikes ?: 0) > 0
-                navigate(this@UserProfileFragment, path = "/delete_image?imageId=${it.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
+                val needWarn = ((image as? UserImage)?.numberOfLikes ?: 0) > 0
+                navigate(this@UserProfileFragment, path = "/delete_image?imageId=${image.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
             }
         }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
+        with (label_age_sex) {
+            val yearOfBirth = spm.currentUserYearOfBirth()
+            if (yearOfBirth != DomainUtil.BAD_VALUE) {
+                alpha = 1.0f
+                val age = calendar.get(Calendar.YEAR) - yearOfBirth
+                setIcon(AppInMemory.userGender().resId)
+                setText("$age")
+            } else {
+                alpha = 0.0f
+            }
+        }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe { onRefresh() }
@@ -365,6 +373,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     private fun showEmptyStub(needShow: Boolean) {
         showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
         ibtn_delete_image.changeVisibility(isVisible = !needShow)
+        label_online_status.changeVisibility(isVisible = !needShow)
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 

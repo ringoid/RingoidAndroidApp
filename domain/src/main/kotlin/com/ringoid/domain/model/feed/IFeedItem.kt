@@ -7,8 +7,8 @@ interface IFeedItem : IProfile {
 
     val messages: MutableList<Message>
 
-    fun profile(): Profile = Profile(id = id, images = images)
-    fun feedItem(): FeedItem = FeedItem(id = id, images = images, messages = messages, isNotSeen = false)
+    fun profile(): Profile = Profile(id = id, age = age, images = images)
+    fun feedItem(): FeedItem = FeedItem(id = id, age = age, images = images, messages = messages, isNotSeen = false)
 
     fun countOfPeerMessages(): Int = messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
     fun countOfUserMessages(): Int = messages.count { it.peerId == DomainUtil.CURRENT_USER_ID }
