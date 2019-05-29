@@ -5,8 +5,11 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -185,9 +188,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     reverseLayout = true
                     stackFromEnd = true
                 }
+            setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
         }
-        fl_chat.setOnClickListener { closeChat() }
-        vg_chat.setOnClickListener { closeChat() }
     }
 
     override fun onStart() {
@@ -258,5 +260,16 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     private fun clearEditText() {
         ChatInMemoryCache.setInputMessage(profileId = peerId, text = "")
         et_message.setText("")  // clear text input
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private val gestureDetector = GestureDetectorCompat(context, ListTouchCallback())
+
+    private inner class ListTouchCallback :  GestureDetector.SimpleOnGestureListener() {
+
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            closeChat()
+            return true
+        }
     }
 }
