@@ -228,7 +228,6 @@ abstract class BaseLmmFeedViewModel(
     override fun onDiscardProfile(profileId: String) {
         super.onDiscardProfile(profileId)
         feed.value?.toMutableList()?.apply { removeAll { it.id == profileId } }
-            ?.let { feed.value = it }  // get rid of discarded profiles from feed value
     }
 
     open fun onFirstUserMessageSent(profileId: String) {
