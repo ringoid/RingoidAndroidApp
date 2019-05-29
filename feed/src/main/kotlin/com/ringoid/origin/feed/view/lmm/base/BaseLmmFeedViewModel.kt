@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lmm.base
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.common.util.ArrayUtils.removeAll
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -67,10 +68,11 @@ abstract class BaseLmmFeedViewModel(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
-    val feed by lazy { MutableLiveData<MutableList<FeedItemVO>>() }
+    val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
+    private val discardedFeedItemIds = mutableSetOf<String>()
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
     private val badgeIsOnDisposable: Disposable
@@ -142,15 +144,22 @@ abstract class BaseLmmFeedViewModel(
         // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
         transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed.feedName))
             .andThen(getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId)))
-            .doOnSuccess {
+            .doOnSuccess { feedItem ->
                 val list = mutableListOf<FeedItemVO>().apply {
-                    val item = FeedItemVO(it).apply {
+                    val item = FeedItemVO(feedItem).apply {
                         payload?.getInt("positionOfImage", DomainUtil.BAD_POSITION)
                             ?.takeIf { it != DomainUtil.BAD_POSITION }
                             ?.let { this.positionOfImage = it }
                     }
-                    add(item)
-                    feed.value?.let { addAll(it) }
+                    add(item)  // prepend transitioned item
+                    /**
+                     * Add the rest items, but remove previously discarded items, if any.
+                     */
+                    feed.value  // current list prior to prepending transitioned item
+                        ?.toMutableList()
+                        ?.let { list -> list.removeAll { it.id in discardedFeedItemIds }; list }
+                        ?.let { list -> addAll(list) }
+                        ?.also { discardedFeedItemIds.clear() }
                 }
                 feed.value = list  // prepended list
             }
@@ -158,14 +167,16 @@ abstract class BaseLmmFeedViewModel(
     }
 
     private fun setLmmItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
+        discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
+
         if (items.isEmpty()) {
             viewState.value = ViewState.CLEAR(mode = clearMode)
         } else {
             if (BuildConfig.DEBUG) {
                 Timber.v(items.joinToString("\n\t\t", "\t*** LMM ***\n\t\t", "\n\t***\n", transform = { "LMM: ${it.toShortString()} :: ${getFeedName()}" }))
             }
-            feed.value = items.map { FeedItemVO(it) }.toMutableList()
+            feed.value = items.map { FeedItemVO(it) }
             viewState.value = ViewState.IDLE
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
@@ -239,7 +250,7 @@ abstract class BaseLmmFeedViewModel(
 
     override fun onDiscardProfile(profileId: String) {
         super.onDiscardProfile(profileId)
-        feed.value?.apply { removeAll { it.id == profileId } }
+        discardedFeedItemIds.add(profileId)
     }
 
     open fun onFirstUserMessageSent(profileId: String) {
