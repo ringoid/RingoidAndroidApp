@@ -148,7 +148,7 @@ abstract class FeedViewModel(
         analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to getFeedName())
     }
 
-    internal open fun onRefresh() {
+    protected open fun onRefresh() {
         advanceAndPushViewObjects()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
