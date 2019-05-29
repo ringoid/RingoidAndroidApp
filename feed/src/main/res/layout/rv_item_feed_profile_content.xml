@@ -38,7 +38,8 @@
         android:layout_marginBottom="@dimen/std_margin_32"
         android:layout_marginStart="@dimen/std_margin_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
