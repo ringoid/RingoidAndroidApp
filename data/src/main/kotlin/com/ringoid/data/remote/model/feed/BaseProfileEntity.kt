@@ -7,7 +7,7 @@ import com.ringoid.domain.model.Mappable
 
 abstract class BaseProfileEntity<T>(
     @Expose @SerializedName(COLUMN_ID) val id: String,
-    @Expose @SerializedName(COLUMN_AGE) val age: Int,
+    @Expose @SerializedName(COLUMN_AGE) val age: Int = 0,
     @Expose @SerializedName(COLUMN_DEFAULT_SORT_POSITION) val sortPosition: Int,
     @Expose @SerializedName(COLUMN_DISTANCE_TEXT) val distanceText: String? = null,
     @Expose @SerializedName(COLUMN_IMAGES) val images: List<ImageEntity> = emptyList(),

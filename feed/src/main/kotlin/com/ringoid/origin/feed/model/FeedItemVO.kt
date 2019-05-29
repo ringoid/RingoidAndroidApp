@@ -8,7 +8,7 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
 
 data class FeedItemVO(
-    override val id: String, override val age: Int,
+    override val id: String, override val age: Int = 0,
     override val distanceText: String? = null,
     override val images: List<IImage>,
     override val messages: MutableList<Message> = mutableListOf(),

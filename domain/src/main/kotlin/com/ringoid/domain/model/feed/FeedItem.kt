@@ -5,7 +5,7 @@ import com.ringoid.domain.model.messenger.Message
 import com.ringoid.utility.randomString
 
 data class FeedItem(val isNotSeen: Boolean,
-    override val id: String, override val age: Int,
+    override val id: String, override val age: Int = 0,
     override val distanceText: String? = null,
     override val images: List<IImage>,
     override val messages: MutableList<Message>,
