@@ -90,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/std_margin_32"
         android:layout_marginStart="@dimen/std_margin_16"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintStart_toStartOf="parent"/>
 
