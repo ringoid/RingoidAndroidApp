@@ -233,7 +233,10 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe { onRefresh() }
+        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe {
+            Bus.post(BusEvent.RefreshOnPush)
+            onRefresh()  // refresh by click on 'tap to refresh' popup
+        }
     }
 
     /* Scroll listeners */

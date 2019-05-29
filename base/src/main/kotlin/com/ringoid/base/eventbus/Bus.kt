@@ -38,6 +38,7 @@ sealed class BusEvent {
     object RefreshOnExplore : BusEvent()
     object RefreshOnLmm : BusEvent()
     object RefreshOnProfile : BusEvent()
+    object RefreshOnPush : BusEvent()
     object ReOpenApp: BusEvent()
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
 
