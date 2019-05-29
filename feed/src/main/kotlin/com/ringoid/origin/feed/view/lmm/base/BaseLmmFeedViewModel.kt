@@ -67,7 +67,7 @@ abstract class BaseLmmFeedViewModel(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
-    val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+    val feed by lazy { MutableLiveData<MutableList<FeedItemVO>>() }
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
@@ -165,7 +165,7 @@ abstract class BaseLmmFeedViewModel(
             if (BuildConfig.DEBUG) {
                 Timber.v(items.joinToString("\n\t\t", "\t*** LMM ***\n\t\t", "\n\t***\n", transform = { "LMM: ${it.toShortString()} :: ${getFeedName()}" }))
             }
-            feed.value = items.map { FeedItemVO(it) }
+            feed.value = items.map { FeedItemVO(it) }.toMutableList()
             viewState.value = ViewState.IDLE
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
@@ -239,7 +239,7 @@ abstract class BaseLmmFeedViewModel(
 
     override fun onDiscardProfile(profileId: String) {
         super.onDiscardProfile(profileId)
-        feed.value?.toMutableList()?.apply { removeAll { it.id == profileId } }
+        feed.value?.apply { removeAll { it.id == profileId } }
     }
 
     open fun onFirstUserMessageSent(profileId: String) {
