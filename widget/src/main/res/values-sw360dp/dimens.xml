@@ -4,6 +4,7 @@
     <dimen name="std_dialog_height">180dp</dimen>
     <dimen name="std_dialog_width">341dp</dimen>
     <dimen name="std_element_height">53dp</dimen>
+    <dimen name="std_icon_12">11dp</dimen>
     <dimen name="std_icon_18">16dp</dimen>
     <dimen name="std_icon_24">21dp</dimen>
     <dimen name="std_icon_36">32dp</dimen>

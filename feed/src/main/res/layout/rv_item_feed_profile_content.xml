@@ -18,7 +18,8 @@
         android:layout_marginTop="@dimen/std_margin_16"
         android:layout_marginStart="@dimen/std_margin_16"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:label_icon_size="@dimen/std_icon_12"/>
 
     <com.ringoid.widget.view.LabelView
         android:id="@+id/label_distance"
