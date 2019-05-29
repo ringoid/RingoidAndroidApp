@@ -127,7 +127,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             setText("${model.age}")
         }
         with (itemView.label_distance) {
-            alpha = if (model.distanceText.isNullOrBlank()) 0.0f else 1.0f
+            alpha = if (model.distanceText.isNullOrBlank() || model.distanceText == "unknown") 0.0f else 1.0f
             setText(model.distanceText)
         }
         with (itemView.label_online_status) {
