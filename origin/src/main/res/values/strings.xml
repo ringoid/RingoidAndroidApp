@@ -70,7 +70,7 @@
     <string name="lmm_popup_refresh">Tap to refresh</string>
     <string name="lmm_tab_likes">Likes You</string>
     <string name="lmm_tab_matches">Matches</string>
-    <string name="lmm_tab_messenger">Inbox</string>
+    <string name="lmm_tab_messenger">Chats</string>
 
     <!-- Login screen -->
     <string name="login_button">Continue to Upload Photo</string>
