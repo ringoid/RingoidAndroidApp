@@ -82,6 +82,7 @@
         app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
         app:layout_constraintStart_toStartOf="parent"
         app:label_icon="@drawable/online_status_oval"
+        app:label_icon_size="@dimen/std_icon_12"
         app:label_text="@string/common_online"/>
 
     <com.ringoid.widget.view.LabelView
