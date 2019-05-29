@@ -105,7 +105,7 @@ class MatchesFeedViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMatches()
-        pushNewMatch.value = 0L
+        pushNewMatch.value = 0L  // for particle animation
         refreshOnPush.value = true
     }
 }
