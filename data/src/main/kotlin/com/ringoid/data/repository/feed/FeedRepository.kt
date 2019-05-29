@@ -180,13 +180,7 @@ open class FeedRepository @Inject constructor(
     // ------------------------------------------
     override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
         aObjPool.triggerSource()
-                .flatMap {
-                    if (DomainUtil.withSimulatedError()) {
-                        Single.error<Lmm>(SimulatedException())
-                    } else {
-                        getLmmOnly(resolution, source = source, lastActionTime = it)
-                    }
-                }
+                .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
                 .onErrorResumeNext {
                     SentryUtil.capture(it, message = "Fallback to get cached Lmm")
                     getCachedLmm()

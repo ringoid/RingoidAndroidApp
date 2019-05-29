@@ -6,10 +6,14 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.observe
+import com.ringoid.base.view.ViewState
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.main.OriginR_id
+import com.ringoid.main.OriginR_string
 import com.ringoid.main.OriginR_style
 import com.ringoid.main.listOfMainScreens
 import com.ringoid.origin.utils.AppUtils
+import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.particles.*
 
@@ -22,6 +26,17 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     override fun getVmClass() = MainViewModel::class.java
 
     override fun getListOfRootFragments(): List<Fragment> = listOfMainScreens()
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE ->
+                when (newState.residual) {
+                    is CLOSE_DEBUG_VIEW -> askToCloseDebugView()
+                }
+        }
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -71,5 +86,18 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
             addGenerator(MatchesParticleGenerator(this@MainActivity))
             addGenerator(MessagesParticleGenerator(this@MainActivity))
         }
+    }
+
+    // ------------------------------------------
+    @DebugOnly
+    private fun askToCloseDebugView() {
+        Dialogs.showTextDialog(this, titleResId = OriginR_string.dialog_debug_view_close_title,
+                               descriptionResId = OriginR_string.dialog_debug_view_close_description,
+                               positiveBtnLabelResId = OriginR_string.button_ok,
+                               negativeBtnLabelResId = OriginR_string.button_cancel,
+                               positiveListener = { _, _ ->
+                                   spm.enableDebugLog(isEnabled = false)
+                                   showDebugView()
+                               })
     }
 }

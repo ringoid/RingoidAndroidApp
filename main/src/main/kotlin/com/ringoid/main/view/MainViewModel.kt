@@ -3,7 +3,10 @@ package com.ringoid.main.view
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -21,6 +24,8 @@ import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.view.main.BaseMainViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -119,6 +124,15 @@ class MainViewModel @Inject constructor(
         analyticsManager.persist(spm)
         ChatInMemoryCache.persist(spm)
         actionObjectPool.trigger()
+    }
+
+    // --------------------------------------------------------------------------------------------
+    @DebugOnly
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventCloseDebugView(event: BusEvent.CloseDebugView) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        viewState.value = ViewState.DONE(CLOSE_DEBUG_VIEW)
     }
 
     // --------------------------------------------------------------------------------------------

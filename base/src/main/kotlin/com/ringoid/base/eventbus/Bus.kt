@@ -1,8 +1,8 @@
 package com.ringoid.base.eventbus
 
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
 import org.greenrobot.eventbus.EventBus
-import timber.log.Timber
 
 object Bus {
 
@@ -29,6 +29,9 @@ object Bus {
 sealed class BusEvent {
 
     override fun toString(): String = javaClass.simpleName
+
+    @DebugOnly
+    object CloseDebugView : BusEvent()
 
     object Stub : BusEvent()
     object NoImagesOnProfile : BusEvent()

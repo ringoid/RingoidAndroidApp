@@ -136,4 +136,9 @@
     <string name="web_page_privacy">Privacy Policy</string>
     <string name="web_page_terms">Terms of Service</string>
     <string name="web_url_error_status">https://ringoid.com/status.html</string>
+
+    <!-- Debug -->
+
+    <string name="dialog_debug_view_close_description" translatable="false">Are you sure you want to close Debug window?</string>
+    <string name="dialog_debug_view_close_title" translatable="false">Close Debug</string>
 </resources>

@@ -14,6 +14,7 @@ import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
@@ -106,7 +107,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     override fun onStart() {
         super.onStart()
-        debug_view.changeVisibility(isVisible = spm.isDebugLogEnabled())
+        showDebugView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -192,6 +193,11 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     override fun showParticleAnimation(id: String, count: Int) {
         particleAnimator.animate(id, count)
+    }
+
+    @DebugOnly
+    protected fun showDebugView() {
+        debug_view.changeVisibility(isVisible = spm.isDebugLogEnabled())
     }
 
     // --------------------------------------------------------------------------------------------

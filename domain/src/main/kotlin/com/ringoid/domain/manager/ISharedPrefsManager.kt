@@ -27,6 +27,9 @@ interface ISharedPrefsManager {
     fun isDebugLogEnabled(): Boolean
 
     @DebugOnly
+    fun enableDebugLog(isEnabled: Boolean)
+
+    @DebugOnly
     fun switchDebugLogEnabled()
 
     @DebugOnly
