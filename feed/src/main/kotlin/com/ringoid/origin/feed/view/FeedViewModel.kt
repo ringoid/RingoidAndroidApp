@@ -182,6 +182,7 @@ abstract class FeedViewModel(
         }
 
     internal open fun onImageTouch(x: Float, y: Float) {
+        Timber.v("On touch feed item at ($x, $y)")
         // override in subclasses
     }
 

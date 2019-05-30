@@ -17,20 +17,21 @@ class VisualEffectView : FrameLayout {
 
     constructor(context: Context, attributes: AttributeSet?): this(context, attributes, 0)
 
-    constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int): super(context, attributes, defStyleAttr) {
-        init(context)
-    }
-
-    private fun init(context: Context) {
-        // no-op
-    }
+    constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int): super(context, attributes, defStyleAttr)
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        Timber.v("VisualEffect: view attached")
         VisualEffectManager.effect
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnDispose { Timber.v("VisualEffect: disposed") }
             .`as`(AutoDispose.autoDisposable(scope()))
             .subscribe({ playAnimation(it) }, Timber::e)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        Timber.v("VisualEffect: view detached")
     }
 
     // ------------------------------------------
@@ -38,7 +39,7 @@ class VisualEffectView : FrameLayout {
         Timber.v("VisualEffect: $effect")
         val image = ImageView(context)
             .apply {
-                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+                layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                 setImageResource(effect.resId)
                 translationX = effect.x - AppRes.ICON_SIZE_HALF2_96
                 translationY = effect.y - AppRes.ICON_SIZE_96
