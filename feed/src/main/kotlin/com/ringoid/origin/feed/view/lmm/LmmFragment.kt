@@ -143,6 +143,8 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         }
 
         payload?.let { lmmFeedName -> selectPage(LmmNavTab.from(lmmFeedName)?.page() ?: 0) }
+
+        showTabs(isVisible = true)
     }
 
     override fun onTabTransaction(payload: String?) {
