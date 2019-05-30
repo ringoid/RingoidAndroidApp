@@ -19,6 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
@@ -106,7 +107,14 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     }
 
     // ------------------------------------------
+    private var getLmmLock = AtomicBoolean(false)
+
     private fun getLmm() {
+        if (getLmmLock.get()) {
+            DebugLogUtil.w("Lmm is already refreshing, skip this request to avoid duplicate Lmm calls")
+            return
+        }
+
         countUserImagesUseCase.source()
             .filter { it > 0 }  // user has images in profile
             .flatMapSingle {
@@ -115,11 +123,15 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
                 getLmmUseCase.source(params = params)
             }
             .doOnSubscribe {
+                getLmmLock.set(true)
                 viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_DEFAULT)
                 viewState.value = ViewState.LOADING
             }
             .doOnSuccess { listScrolls.value = 0 }  // scroll to top position
-            .doFinally { viewState.value = ViewState.IDLE }
+            .doFinally {
+                viewState.value = ViewState.IDLE
+                getLmmLock.set(false)
+            }
             .autoDisposable(this)
             .subscribe({ cachedLmm = it },
                         /**
