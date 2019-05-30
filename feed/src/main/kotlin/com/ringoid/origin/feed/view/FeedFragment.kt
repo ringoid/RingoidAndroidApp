@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
@@ -261,6 +262,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             layoutManager = LinearLayoutManager(context)
             itemAnimator = FeedItemAnimator { rv_items.post { feedAdapter.notifyItemRangeChanged(it - 1, 2, FeedViewHolderShowControls) } }
             setHasFixedSize(true)
+            setItemViewCacheSize(6)
+            recycledViewPool.setMaxRecycledViews(OriginListAdapter.VIEW_TYPE_NORMAL, 10)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(itemOffsetScrollListener)
             addOnScrollListener(topScrollListener)

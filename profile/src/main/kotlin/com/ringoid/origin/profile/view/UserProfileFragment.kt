@@ -288,6 +288,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             snapHelper.attachToRecyclerView(this)
             tabs2.attachToRecyclerView(this, snapHelper)
             setHasFixedSize(true)
+            setItemViewCacheSize(4)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
 //            addOnScrollListener(imagePreloadListener)
