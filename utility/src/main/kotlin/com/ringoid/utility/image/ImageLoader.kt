@@ -34,12 +34,12 @@ object ImageLoader {
             return null
         }
 
-        val thumbnailRequest =
-            thumbnailUri?.let {
-                Glide.with(context)
-                    .load(it)
-//                    .apply(optimalOptions(context, thumbnailUri, options))
-            }
+        val thumbnailRequest: RequestBuilder<Drawable>? = null
+//            thumbnailUri?.let {
+//                Glide.with(context)
+//                    .load(it)
+////                    .apply(optimalOptions(context, thumbnailUri, options))
+//            }
 
         return Glide.with(context)
             .load(uri)

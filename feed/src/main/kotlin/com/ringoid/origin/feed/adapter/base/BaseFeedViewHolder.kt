@@ -99,7 +99,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                 }
             })
             imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, FixedPreloadSizeProvider<ProfileImageVO>(AppRes.SCREEN_WIDTH, AppRes.FEED_IMAGE_HEIGHT), 10)
-            addOnScrollListener(imagePreloadListener)
+//            addOnScrollListener(imagePreloadListener)
         }
         itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }

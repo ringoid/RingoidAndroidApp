@@ -290,7 +290,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             setHasFixedSize(true)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-            addOnScrollListener(imagePreloadListener)
+//            addOnScrollListener(imagePreloadListener)
         }
         with (tv_app_title) {
             if (BuildConfig.IS_STAGING) {
