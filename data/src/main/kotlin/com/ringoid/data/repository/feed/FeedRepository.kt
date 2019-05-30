@@ -365,6 +365,7 @@ open class FeedRepository @Inject constructor(
             BiFunction { (lmm, oldCount), newCount ->
                 val diff = newCount - oldCount
                 if (diff > 0) { newLikesCount.onNext(diff) }
+                DebugLogUtil.v("# Lmm: count of new likes: $diff")
                 lmm
             })
 
@@ -382,6 +383,7 @@ open class FeedRepository @Inject constructor(
             BiFunction { (lmm, oldCount), newCount ->
                 val diff = newCount - oldCount
                 if (diff > 0) { newMatchesCount.onNext(diff) }
+                DebugLogUtil.v("# Lmm: count of new matches: $diff")
                 lmm
             })
 
@@ -399,9 +401,11 @@ open class FeedRepository @Inject constructor(
             BiFunction { lmm: Lmm, count: Int ->
                 val peerMessagesCount = lmm.peerMessagesCount()
                 if (peerMessagesCount != 0 && count < peerMessagesCount) {
+                    val diff = peerMessagesCount - count
                     badgeMessenger.onNext(true)
                     lmmChanged.onNext(true)  // have new messages from any peer
-                    newMessagesCount.onNext(peerMessagesCount - count)
+                    newMessagesCount.onNext(diff)
+                    DebugLogUtil.v("# Lmm: count of new messages: $diff")
                 }
                 lmm
             })
