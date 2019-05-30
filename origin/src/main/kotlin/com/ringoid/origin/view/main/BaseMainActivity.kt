@@ -163,6 +163,11 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         } ?: run { openInitialTab() }
     }
 
+    override fun onStop() {
+        super.onStop()
+        particleAnimator.terminate()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(powerSafeModeReceiver)
