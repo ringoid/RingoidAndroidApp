@@ -291,7 +291,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             setItemViewCacheSize(4)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-//            addOnScrollListener(imagePreloadListener)
+            addOnScrollListener(imagePreloadListener)
         }
         with (tv_app_title) {
             if (BuildConfig.IS_STAGING) {
@@ -304,6 +304,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rv_items.removeOnScrollListener(imagePreloadListener)
     }
 
     override fun onDestroy() {
