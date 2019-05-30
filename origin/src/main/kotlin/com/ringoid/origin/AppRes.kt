@@ -76,6 +76,8 @@ object AppRes {
         private set
     var STD_MARGIN_48: Int = -1
         private set
+    var STD_MARGIN_64: Int = -1
+        private set
     var SCREEN_WIDTH: Int = -1  // set by Activity
 
     // ------------------------------------------
@@ -102,6 +104,7 @@ object AppRes {
             STD_MARGIN_32 = getDimensionPixelSize(R.dimen.std_margin_32)
             STD_MARGIN_40 = getDimensionPixelSize(R.dimen.std_margin_40)
             STD_MARGIN_48 = getDimensionPixelSize(R.dimen.std_margin_48)
+            STD_MARGIN_64 = getDimensionPixelSize(R.dimen.std_margin_64)
             BUTTON_HEIGHT = getDimensionPixelSize(R.dimen.std_btn_height)
             BUTTON_FLAT_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_18)
             BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
