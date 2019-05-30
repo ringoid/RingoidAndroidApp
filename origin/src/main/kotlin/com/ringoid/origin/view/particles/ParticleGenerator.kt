@@ -44,9 +44,9 @@ class LikesParticleGenerator(activity: Activity)
 
     override val accelerationX = w / 10f
     override val accelerationDevX = accelerationX * 0.1f
-    override val velocityX = -50f
+    override val velocityX = 0f
     override val velocityDevX = -velocityX * 3f
-    override val targetVelocityX = 50f
+    override val targetVelocityX = 0f
     override val targetVelocityDevX = targetVelocityX * 3f
 
     override val accelerationY = -h / 1500f
