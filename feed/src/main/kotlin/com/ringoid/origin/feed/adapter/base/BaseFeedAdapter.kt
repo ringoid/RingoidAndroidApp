@@ -45,6 +45,23 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 
+    override fun onViewRecycled(holder: OriginFeedViewHolder) {
+        super.onViewRecycled(holder)
+        with (holder.itemView.rv_items) {
+            holder.scrollListener?.let { removeOnScrollListener(it) }
+            holder.imagePreloadListener?.let { removeOnScrollListener(it) }
+        }
+        with (holder) {
+            scrollListener = null
+            imagePreloadListener = null
+            onBeforeLikeListener = null
+            onImageTouchListener = null
+            snapPositionListener = null
+            trackingBus = null
+            subscription?.dispose(); subscription = null
+        }
+    }
+
     override fun getOnRemovedCb(): ((position: Int, count: Int) -> Unit)? =
         { position, _ -> onFeedItemRemoveListener?.invoke(position) }
 

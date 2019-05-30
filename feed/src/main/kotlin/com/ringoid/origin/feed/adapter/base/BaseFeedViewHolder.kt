@@ -43,6 +43,10 @@ abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledV
     override var snapPositionListener: ((snapPosition: Int) -> Unit)? = null
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
+    internal var scrollListener: RecyclerView.OnScrollListener? = null
+    internal var imagePreloadListener: RecyclerView.OnScrollListener? = null
+    internal var subscription: Disposable? = null
+
     override fun getCurrentImagePosition(): Int = 0
 }
 
@@ -63,9 +67,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     internal val profileImageAdapter = ProfileImageAdapter(view.context)
 
-    private val imagePreloadListener: RecyclerViewPreloader<ProfileImageVO>
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
-    private var subscription: Disposable? = null
 
     init {
         itemView.rv_items.apply {
@@ -85,7 +87,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
 
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            // horizontal scroll listener
+            scrollListener = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(rv, dx, dy)
                     rv.linearLayoutManager()?.let {
@@ -97,9 +100,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                         snapPositionListener?.invoke(from)
                     }
                 }
-            })
+            }
+            .also { listener -> addOnScrollListener(listener) }
+
+            // image prefetch listener
             imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter, FixedPreloadSizeProvider<ProfileImageVO>(AppRes.SCREEN_WIDTH, AppRes.FEED_IMAGE_HEIGHT), 10)
-//            addOnScrollListener(imagePreloadListener)
+//                .also { listener -> addOnScrollListener(listener) }
         }
         itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
