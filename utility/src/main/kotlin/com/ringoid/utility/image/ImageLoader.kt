@@ -51,7 +51,7 @@ object ImageLoader {
         uri?.let {
             Glide.with(context)
                 .load(it)
-                .apply(wrapOptions(options))
+//                .apply(wrapOptions(options))
 //                .apply(optimalOptions(context, it, options))
         }
 
