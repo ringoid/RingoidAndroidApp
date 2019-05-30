@@ -87,6 +87,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
 
             // horizontal scroll listener
+            scrollListener?.let { removeOnScrollListener(it) }
             scrollListener = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(rv, dx, dy)
@@ -103,6 +104,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             .also { listener -> addOnScrollListener(listener) }
 
             // image prefetch listener
+            imagePreloadListener?.let { removeOnScrollListener(it) }
             imagePreloadListener = RecyclerViewPreloader(Glide.with(this), profileImageAdapter,
                 ViewPreloadSizeProvider<ProfileImageVO>(),
 //                FixedPreloadSizeProvider<ProfileImageVO>(AppRes.SCREEN_WIDTH, AppRes.FEED_IMAGE_HEIGHT),
