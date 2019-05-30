@@ -23,7 +23,9 @@ import com.google.android.material.snackbar.Snackbar
 
 // ------------------------------------------------------------------------------------------------
 fun View.changeVisibility(isVisible: Boolean, soft: Boolean = false) {
-    visibility = if (isVisible) View.VISIBLE else if (soft) View.INVISIBLE else View.GONE
+    if (isVisible != this.isVisible()) {
+        visibility = if (isVisible) View.VISIBLE else if (soft) View.INVISIBLE else View.GONE
+    }
 }
 
 fun View.isVisible(): Boolean = visibility == View.VISIBLE
