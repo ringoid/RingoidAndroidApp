@@ -49,8 +49,8 @@ class UserProfileImageAdapter(private val context: Context)
     }
 
     // ------------------------------------------
-    override fun getPreloadItems(position: Int): MutableList<UserImage> =
-        getModels().subList(position, position + 1).toMutableList()
+    override fun getPreloadItems(position: Int): List<UserImage> =
+        getModels().subList(position, position + 1)
 
     override fun getPreloadRequestBuilder(item: UserImage): RequestBuilder<*>? =
         ImageLoader.loadRequest(uri = item.uri, thumbnailUri = item.uriLocal ?: item.thumbnailUri,
