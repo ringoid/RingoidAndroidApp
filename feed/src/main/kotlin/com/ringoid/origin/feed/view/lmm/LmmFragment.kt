@@ -36,14 +36,19 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
+        fun clearScreen(mode: Int) {
+            lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.clearScreen(mode) }
+        }
+
         fun showLoading(isVisible: Boolean) {
             lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.showLoading(isVisible) }
         }
 
         super.onViewStateChange(newState)
         when (newState) {
-            ViewState.IDLE -> showLoading(isVisible = false)
-            ViewState.LOADING -> showLoading(isVisible = true)
+            is ViewState.CLEAR -> clearScreen(mode = newState.mode)
+            is ViewState.IDLE -> showLoading(isVisible = false)
+            is ViewState.LOADING -> showLoading(isVisible = true)
         }
     }
 
