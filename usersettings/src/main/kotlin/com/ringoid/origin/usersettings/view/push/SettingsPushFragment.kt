@@ -28,7 +28,7 @@ class SettingsPushFragment : BaseFragment<SettingsPushViewModel>() {
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.IDLE -> pb_loading.changeVisibility(isVisible = false)
+            is ViewState.IDLE -> pb_loading.changeVisibility(isVisible = false, soft = true)
             is ViewState.LOADING -> pb_loading.changeVisibility(isVisible = true)
         }
     }

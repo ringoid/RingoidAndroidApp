@@ -18,6 +18,5 @@ class Migration_103_104 @Inject constructor() : Migration(103, 104) {
         database.execSQL("ALTER TABLE ${FeedItemDbo.TABLE_NAME} ADD COLUMN ${BaseProfileEntity.COLUMN_PROPERTY_INCOME} INTEGER NOT NULL DEFAULT 0")
         database.execSQL("ALTER TABLE ${FeedItemDbo.TABLE_NAME} ADD COLUMN ${BaseProfileEntity.COLUMN_PROPERTY_PROPERTY} INTEGER NOT NULL DEFAULT 0")
         database.execSQL("ALTER TABLE ${FeedItemDbo.TABLE_NAME} ADD COLUMN ${BaseProfileEntity.COLUMN_PROPERTY_TRANSPORT} INTEGER NOT NULL DEFAULT 0")
-
     }
 }
