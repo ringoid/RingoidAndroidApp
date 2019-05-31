@@ -131,4 +131,51 @@
     <string name="web_page_privacy">Политика конфиденциальности</string>
     <string name="web_page_terms">Условия использования</string>
     <string name="web_url_error_status">https://ringoid.com/status-ru.html</string>
+
+    <!-- Data -->
+    <string name="profile_property_education">Образование</string>
+    <string name="profile_property_education_0">Среднее</string>
+    <string name="profile_property_education_1">Среднее проф.</string>
+    <string name="profile_property_education_2">Неполное высшее</string>
+    <string name="profile_property_education_3">Высшее</string>
+    <string name="profile_property_education_4">Несколько высших</string>
+    <string name="profile_property_education_5">Ученая степень</string>
+
+    <string name="profile_property_hair_color">Цвет волос</string>
+    <string name="profile_property_hair_color_m_0">Брюнет</string>
+    <string name="profile_property_hair_color_f_0">Брюнетка</string>
+    <string name="profile_property_hair_color_m_1">Блондин</string>
+    <string name="profile_property_hair_color_f_1">Блондинка</string>
+    <string name="profile_property_hair_color_m_2">Шатен</string>
+    <string name="profile_property_hair_color_f_2">Шатенка</string>
+    <string name="profile_property_hair_color_m_3">Ражий</string>
+    <string name="profile_property_hair_color_f_3">Ражая</string>
+    <string name="profile_property_hair_color_m_4">Пепельный</string>
+    <string name="profile_property_hair_color_f_4">Пепельная</string>
+    <string name="profile_property_hair_color_m_5">Седой</string>
+    <string name="profile_property_hair_color_f_5">Седая</string>
+
+    <string name="profile_property_income">Заработок</string>
+    <string name="profile_property_income_0">Низкий доход</string>
+    <string name="profile_property_income_1">Средний доход</string>
+    <string name="profile_property_income_2">Высокий доход</string>
+    <string name="profile_property_income_3">Сверхвысокий доход</string>
+
+    <string name="profile_property_property">Недвижимость</string>
+    <string name="profile_property_property_0">Живу с родителями</string>
+    <string name="profile_property_property_1">Живу в общежитии</string>
+    <string name="profile_property_property_2">Снимаю комнату</string>
+    <string name="profile_property_property_3">Снимаю квартиру</string>
+    <string name="profile_property_property_4">Снимаю дом</string>
+    <string name="profile_property_property_5">Своя квартира</string>
+    <string name="profile_property_property_6">Свой дом</string>
+
+    <string name="profile_property_transport">Транспорт</string>
+    <string name="profile_property_transport_0">Хожу пешком</string>
+    <string name="profile_property_transport_1">Общ. Транспорт</string>
+    <string name="profile_property_transport_2">Езжу на велосипеде</string>
+    <string name="profile_property_transport_3">Есть мотоцикл</string>
+    <string name="profile_property_transport_4">Есть автомобиль</string>
+    <string name="profile_property_transport_5">Езжу на такси / Uber</string>
+    <string name="profile_property_transport_6">Личный водитель</string>
 </resources>

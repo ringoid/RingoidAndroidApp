@@ -23,7 +23,7 @@
     <string name="error_common">Oops! Something went wrong&#8230;</string>
     <string name="error_crop_image">Failed to load and prepare photo</string>
     <string name="error_invalid_referral_code">Referral code is invalid</string>
-
+    
     <!-- Permissions -->
     <string name="permission_location_dialog_enable_location_service">Please enable location</string>
     <string name="permission_location_rationale">Please allow access to Location</string>
@@ -137,8 +137,54 @@
     <string name="web_page_terms">Terms of Service</string>
     <string name="web_url_error_status">https://ringoid.com/status.html</string>
 
-    <!-- Debug -->
+    <!-- Data -->
+    <string name="profile_property_education">Education</string>
+    <string name="profile_property_education_0">High school</string>
+    <string name="profile_property_education_1">College</string>
+    <string name="profile_property_education_2">University</string>
+    <string name="profile_property_education_3">University</string>
+    <string name="profile_property_education_4">University</string>
+    <string name="profile_property_education_5">Post&#45;grad</string>
 
+    <string name="profile_property_hair_color">Hair Color</string>
+    <string name="profile_property_hair_color_m_0">Black</string>
+    <string name="profile_property_hair_color_f_0">Black</string>
+    <string name="profile_property_hair_color_m_1">Blonde</string>
+    <string name="profile_property_hair_color_f_1">Blonde</string>
+    <string name="profile_property_hair_color_m_2">Brown</string>
+    <string name="profile_property_hair_color_f_2">Brown</string>
+    <string name="profile_property_hair_color_m_3">Red</string>
+    <string name="profile_property_hair_color_f_3">Red</string>
+    <string name="profile_property_hair_color_m_4">Gray</string>
+    <string name="profile_property_hair_color_f_4">Gray</string>
+    <string name="profile_property_hair_color_m_5">White</string>
+    <string name="profile_property_hair_color_f_5">White</string>
+
+    <string name="profile_property_income">Income</string>
+    <string name="profile_property_income_0">Low income</string>
+    <string name="profile_property_income_1">Middle income</string>
+    <string name="profile_property_income_2">High income</string>
+    <string name="profile_property_income_3">Ultra High income</string>
+
+    <string name="profile_property_property">Property</string>
+    <string name="profile_property_property_0">Live with parents</string>
+    <string name="profile_property_property_1">Live in a dormitory</string>
+    <string name="profile_property_property_2">Rent a room</string>
+    <string name="profile_property_property_3">Rent a flat</string>
+    <string name="profile_property_property_4">Rent a house</string>
+    <string name="profile_property_property_5">Own a flat</string>
+    <string name="profile_property_property_6">Own a house</string>
+
+    <string name="profile_property_transport">Transport</string>
+    <string name="profile_property_transport_0">Walk</string>
+    <string name="profile_property_transport_1">Use Public Transport</string>
+    <string name="profile_property_transport_2">Cycle</string>
+    <string name="profile_property_transport_3">Own a motorcycle</string>
+    <string name="profile_property_transport_4">Own a car</string>
+    <string name="profile_property_transport_5">Use Taxi / Uber</string>
+    <string name="profile_property_transport_6">Hire Chauffeur</string>
+    
+    <!-- Debug -->
     <string name="dialog_debug_view_close_description" translatable="false">Are you sure you want to close Debug window?</string>
     <string name="dialog_debug_view_close_title" translatable="false">Close Debug</string>
 </resources>
