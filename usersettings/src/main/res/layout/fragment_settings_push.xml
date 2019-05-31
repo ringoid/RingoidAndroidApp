@@ -14,7 +14,7 @@
         <include layout="@layout/toolbar" android:id="@id/toolbar"/>
 
         <ProgressBar
-            android:id="@+id/pb_debug"
+            android:id="@+id/pb_loading"
             android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
             style="@style/ProgressBar.Horizontal"/>

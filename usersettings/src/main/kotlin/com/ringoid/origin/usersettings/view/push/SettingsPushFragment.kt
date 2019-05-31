@@ -5,8 +5,10 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings_push.*
 
@@ -21,6 +23,15 @@ class SettingsPushFragment : BaseFragment<SettingsPushViewModel>() {
     override fun getVmClass(): Class<SettingsPushViewModel> = SettingsPushViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings_push
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.IDLE -> pb_loading.changeVisibility(isVisible = false)
+            is ViewState.LOADING -> pb_loading.changeVisibility(isVisible = true)
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult", "AutoDispose")

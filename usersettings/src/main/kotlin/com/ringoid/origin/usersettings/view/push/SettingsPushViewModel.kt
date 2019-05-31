@@ -1,12 +1,14 @@
 package com.ringoid.origin.usersettings.view.push
 
 import android.app.Application
+import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.domain.model.user.UserSettings
+import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -37,6 +39,9 @@ class SettingsPushViewModel @Inject constructor(
     private fun updateUserSettingPush(settings: UserSettings) {
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doFinally { viewState.value = ViewState.IDLE }
+            .autoDisposable(this)
             .subscribe({ DebugLogUtil.i("Successfully updated push settings: $settings") }, Timber::e)
     }
 }
