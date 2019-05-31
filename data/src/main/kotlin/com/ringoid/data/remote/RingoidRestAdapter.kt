@@ -2,6 +2,7 @@ package com.ringoid.data.remote
 
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
+import com.ringoid.data.remote.model.feed.ChatResponse
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
@@ -55,6 +56,12 @@ interface RingoidRestAdapter {
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
+    @GET("feed/chat")
+    fun getChat(@Query("accessToken") accessToken: String,
+                @Query("resolution") resolution: String?,
+                @Query("userId") peerId: String?,
+                @Query("lastActionTime") lastActionTime: Long = 0L): Single<ChatResponse>
+
     @GET("feeds/get_new_faces")
     fun getNewFaces(@Query("accessToken") accessToken: String,
                     @Query("resolution") resolution: String?,

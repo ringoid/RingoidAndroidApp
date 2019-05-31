@@ -108,6 +108,14 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
+    fun getChat(accessToken: String, resolution: ImageResolution, peerId: String, lastActionTime: Long = 0L) =
+        restAdapter.getChat(accessToken = accessToken, resolution = resolution.resolution, peerId = peerId, lastActionTime = lastActionTime)
+            .keepDataForDebug(cloudDebug, "request" to "getChat", "resolution" to "$resolution", "peerId" to peerId)
+            .breadcrumb("getChat", "accessToken" to "", "resolution" to "$resolution", "peerId" to peerId,
+                        "lastActionTime" to "$lastActionTime")
+            .logRequest("getChat", "lastActionTime" to "$lastActionTime", "peerId" to peerId)
+            .logResponse("Chat")
+
     fun getNewFaces(accessToken: String, resolution: ImageResolution, limit: Int?, lastActionTime: Long = 0L) =
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getNewFaces", "resolution" to "$resolution")
