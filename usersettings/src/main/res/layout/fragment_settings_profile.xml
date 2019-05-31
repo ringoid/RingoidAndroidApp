@@ -18,5 +18,40 @@
             android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
             style="@style/ProgressBar.Horizontal"/>
+
+        <com.ringoid.widget.view.item_view.SpinnerIconItemView
+            android:id="@+id/item_profile_property_property"
+            app:icon_item_text="@string/profile_property_property"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SpinnerIconItemView
+            android:id="@+id/item_profile_property_transport"
+            app:icon_item_text="@string/profile_property_transport"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SpinnerIconItemView
+            android:id="@+id/item_profile_property_income"
+            app:icon_item_text="@string/profile_property_income"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SpinnerIconItemView
+            android:id="@+id/item_profile_property_education"
+            app:icon_item_text="@string/profile_property_education"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SpinnerIconItemView
+            android:id="@+id/item_profile_property_hair_color"
+            app:icon_item_text="@string/profile_property_hair_color"
+            style="?attr/iconItemView"/>
+
+        <View style="@style/Underscore"/>
     </LinearLayout>
 </ScrollView>
