@@ -30,6 +30,8 @@ import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoActivityModul
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoFragmentModule
 import com.ringoid.origin.usersettings.view.language.di.SettingsLangActivityModule
 import com.ringoid.origin.usersettings.view.language.di.SettingsLangFragmentModule
+import com.ringoid.origin.usersettings.view.profile.di.SettingsProfileActivityModule
+import com.ringoid.origin.usersettings.view.profile.di.SettingsProfileFragmentModule
 import com.ringoid.origin.usersettings.view.push.di.SettingsPushActivityModule
 import com.ringoid.origin.usersettings.view.push.di.SettingsPushFragmentModule
 import com.ringoid.origin.usersettings.view.settings.di.SettingsActivityModule
@@ -62,6 +64,7 @@ import javax.inject.Singleton
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
                       SettingsLangActivityModule::class, SettingsLangFragmentModule::class,
+                      SettingsProfileActivityModule::class, SettingsProfileFragmentModule::class,
                       SettingsPushActivityModule::class, SettingsPushFragmentModule::class,
                       SplashActivityModule::class, StatusDialogModule::class,
                       WebPageActivityModule::class, WebPageFragmentModule::class])
