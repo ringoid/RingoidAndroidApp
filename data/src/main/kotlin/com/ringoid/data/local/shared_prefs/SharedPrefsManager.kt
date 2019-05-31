@@ -205,8 +205,8 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             return null
         }
 
-        val latitude = latitudeStr!!.toDouble()
-        val longitude = longitudeStr!!.toDouble()
+        val latitude = latitudeStr.toDouble()
+        val longitude = longitudeStr.toDouble()
         return if (Math.abs(latitude) <= LOCATION_EPS && Math.abs(longitude) <= LOCATION_EPS) null
                else GpsLocation(latitude, longitude)
     }
