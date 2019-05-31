@@ -2,6 +2,7 @@ package com.ringoid.data.remote.model.feed
 
 import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.feed.Profile
 
 /**
@@ -16,6 +17,7 @@ import com.ringoid.domain.model.feed.Profile
  *     ...
  *   ],
  *   "age": 37,
+ *   "sex": "male",
  *   "property": 0,
  *   "transport": 0,
  *   "education": 0,
@@ -33,6 +35,7 @@ class ProfileEntity(
     lastOnlineText: String? = null,
     age: Int = DomainUtil.UNKNOWN_VALUE,
     education: Int = DomainUtil.UNKNOWN_VALUE,
+    gender: String? = null,
     hairColor: Int = DomainUtil.UNKNOWN_VALUE,
     height: Int = DomainUtil.UNKNOWN_VALUE,
     income: Int = DomainUtil.UNKNOWN_VALUE,
@@ -47,6 +50,7 @@ class ProfileEntity(
         lastOnlineText = lastOnlineText,
         age = age,
         education = education,
+        gender = gender,
         hairColor = hairColor,
         height = height,
         income = income,
@@ -62,6 +66,7 @@ class ProfileEntity(
             lastOnlineText = lastOnlineText,
             age = age,
             education = education,
+            gender = Gender.from(gender),
             hairColor = hairColor,
             height = height,
             income = income,

@@ -9,7 +9,7 @@ enum class Gender(val string: String, @DrawableRes val resId: Int) {
     UNKNOWN("", 0);
 
     companion object {
-        fun from(str: String): Gender =
+        fun from(str: String?): Gender =
             when (str) {
                 "female" -> Gender.FEMALE
                 "male" -> Gender.MALE

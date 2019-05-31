@@ -21,6 +21,7 @@ import com.ringoid.domain.model.Mappable
  *     ...
  *   ],
  *   "age": 37,
+ *   "sex": "male",
  *   "property": 0,
  *   "transport": 0,
  *   "education": 0,
@@ -38,6 +39,7 @@ abstract class BaseProfileEntity<T>(
     @Expose @SerializedName(COLUMN_LAST_ONLINE_TEXT) val lastOnlineText: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_AGE) val age: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_EDUCATION) val education: Int = DomainUtil.UNKNOWN_VALUE,
+    @Expose @SerializedName(COLUMN_PROPERTY_GENDER) val gender: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_HAIR_COLOR) val hairColor: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_HEIGHT) val height: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_INCOME) val income: Int = DomainUtil.UNKNOWN_VALUE,
@@ -54,6 +56,7 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_LAST_ONLINE_TEXT = "lastOnlineText"
         const val COLUMN_PROPERTY_AGE = "age"
         const val COLUMN_PROPERTY_EDUCATION = "education"
+        const val COLUMN_PROPERTY_GENDER = "sex"
         const val COLUMN_PROPERTY_HAIR_COLOR = "hairColor"
         const val COLUMN_PROPERTY_HEIGHT = "height"
         const val COLUMN_PROPERTY_INCOME = "income"
@@ -61,5 +64,5 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_PROPERTY_TRANSPORT = "transport"
     }
 
-    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, education=$education, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport)"
+    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, gender='$gender', education=$education, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport)"
 }

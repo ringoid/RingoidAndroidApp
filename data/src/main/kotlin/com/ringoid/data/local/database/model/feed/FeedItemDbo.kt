@@ -15,6 +15,7 @@ data class FeedItemDbo(
     @ColumnInfo(name = COLUMN_LAST_ONLINE_TEXT) val lastOnlineText: String? = null,
     @ColumnInfo(name = COLUMN_PROPERTY_AGE) val age: Int = DomainUtil.UNKNOWN_VALUE,
     @ColumnInfo(name = COLUMN_PROPERTY_EDUCATION) val education: Int = DomainUtil.UNKNOWN_VALUE,
+    @ColumnInfo(name = COLUMN_PROPERTY_GENDER) val gender: String = "",  // empty for Gender.UNKNOWN
     @ColumnInfo(name = COLUMN_PROPERTY_HAIR_COLOR) val hairColor: Int = DomainUtil.UNKNOWN_VALUE,
     @ColumnInfo(name = COLUMN_PROPERTY_HEIGHT) val height: Int = DomainUtil.UNKNOWN_VALUE,
     @ColumnInfo(name = COLUMN_PROPERTY_INCOME) val income: Int = DomainUtil.UNKNOWN_VALUE,
@@ -30,6 +31,7 @@ data class FeedItemDbo(
         const val COLUMN_LAST_ONLINE_TEXT = "lastOnlineText"
         const val COLUMN_PROPERTY_AGE = "age"
         const val COLUMN_PROPERTY_EDUCATION = "education"
+        const val COLUMN_PROPERTY_GENDER = "sex"
         const val COLUMN_PROPERTY_HAIR_COLOR = "hairColor"
         const val COLUMN_PROPERTY_HEIGHT = "height"
         const val COLUMN_PROPERTY_INCOME = "income"
@@ -47,6 +49,7 @@ data class FeedItemDbo(
                 lastOnlineText = feedItem.lastOnlineText,
                 age = feedItem.age,
                 education = feedItem.education,
+                gender = feedItem.gender.string,
                 hairColor = feedItem.hairColor,
                 height = feedItem.height,
                 income = feedItem.income,

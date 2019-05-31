@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 104,
-    "identityHash": "67385346acb6523d40112eb3e2dfa6c1",
+    "identityHash": "5dbced58cb20d92a9292d7217db79443",
     "entities": [
       {
         "tableName": "ActionObjects",
@@ -213,7 +213,7 @@
       },
       {
         "tableName": "FeedItems",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `distanceText` TEXT, `notSeen` INTEGER NOT NULL, `lastOnlineFlag` TEXT, `lastOnlineText` TEXT, `age` INTEGER NOT NULL, `education` INTEGER NOT NULL, `hairColor` INTEGER NOT NULL, `height` INTEGER NOT NULL, `income` INTEGER NOT NULL, `property` INTEGER NOT NULL, `transport` INTEGER NOT NULL, `sourceFeed` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `distanceText` TEXT, `notSeen` INTEGER NOT NULL, `lastOnlineFlag` TEXT, `lastOnlineText` TEXT, `age` INTEGER NOT NULL, `education` INTEGER NOT NULL, `sex` TEXT NOT NULL, `hairColor` INTEGER NOT NULL, `height` INTEGER NOT NULL, `income` INTEGER NOT NULL, `property` INTEGER NOT NULL, `transport` INTEGER NOT NULL, `sourceFeed` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -255,6 +255,12 @@
             "fieldPath": "education",
             "columnName": "education",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gender",
+            "columnName": "sex",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -373,7 +379,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"67385346acb6523d40112eb3e2dfa6c1\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5dbced58cb20d92a9292d7217db79443\")"
     ]
   }
 }

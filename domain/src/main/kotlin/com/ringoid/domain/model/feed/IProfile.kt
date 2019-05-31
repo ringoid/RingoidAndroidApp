@@ -1,5 +1,6 @@
 package com.ringoid.domain.model.feed
 
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.IModel
 import com.ringoid.domain.model.image.IImage
 
@@ -13,6 +14,7 @@ interface IProfile : IModel {
     // properties
     val age: Int
     val education: Int
+    val gender: Gender
     val hairColor: Int
     val height: Int
     val income: Int

@@ -7,6 +7,7 @@ import com.ringoid.data.remote.model.feed.LmmResponse.Companion.COLUMN_MESSAGES
 import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.remote.model.messenger.MessageEntity
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
@@ -25,6 +26,7 @@ import com.ringoid.domain.model.messenger.Message
  *     ...
  *   ],
  *   "age": 37,
+ *   "sex": "male",
  *   "property": 0,
  *   "transport": 0,
  *   "education": 0,
@@ -44,6 +46,7 @@ open class FeedItemEntity(
     lastOnlineText: String? = null,
     age: Int,
     education: Int,
+    gender: String?,
     hairColor: Int,
     height: Int,
     income: Int,
@@ -58,6 +61,7 @@ open class FeedItemEntity(
         lastOnlineText = lastOnlineText,
         age = age,
         education = education,
+        gender = gender,
         hairColor = hairColor,
         height = height,
         income = income,
@@ -83,6 +87,7 @@ open class FeedItemEntity(
             isNotSeen = isNotSeen,
             age = age,
             education = education,
+            gender = Gender.from(gender),
             hairColor = hairColor,
             height = height,
             income = income,

@@ -25,6 +25,7 @@ import com.ringoid.data.remote.model.messenger.MessageEntity
  *     }
  *   ],
  *   "age": 37,
+ *   "sex": "male",
  *   "property": 0,
  *   "transport": 0,
  *   "education": 0,
@@ -44,6 +45,7 @@ class ChatEntity(
     lastOnlineText: String? = null,
     age: Int,
     education: Int,
+    gender: String?,
     hairColor: Int,
     height: Int,
     income: Int,
@@ -60,6 +62,7 @@ class ChatEntity(
         lastOnlineText = lastOnlineText,
         age = age,
         education = education,
+        gender = gender,
         hairColor = hairColor,
         height = height,
         income = income,

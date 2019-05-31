@@ -1,6 +1,7 @@
 package com.ringoid.domain.model.feed
 
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.utility.randomString
@@ -14,6 +15,7 @@ data class FeedItem(
     override val lastOnlineText: String? = null,
     override val age: Int = DomainUtil.UNKNOWN_VALUE,
     override val education: Int = DomainUtil.UNKNOWN_VALUE,
+    override val gender: Gender = Gender.UNKNOWN,
     override val hairColor: Int = DomainUtil.UNKNOWN_VALUE,
     override val height: Int = DomainUtil.UNKNOWN_VALUE,
     override val income: Int = DomainUtil.UNKNOWN_VALUE,
