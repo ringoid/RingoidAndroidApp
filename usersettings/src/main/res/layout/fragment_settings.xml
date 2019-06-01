@@ -66,9 +66,10 @@
 
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_delete_account"
-        app:icon_item_color="@color/warning"
         app:icon_item_icon="@drawable/ic_remove_white_24dp"
+        app:icon_item_icon_color="@color/warning"
         app:icon_item_text="@string/settings_account_delete"
+        app:icon_item_text_color="@color/warning"
         style="?attr/iconItemView"/>
 
     <TextView

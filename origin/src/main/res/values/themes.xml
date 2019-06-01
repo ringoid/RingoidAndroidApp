@@ -21,6 +21,7 @@
         <item name="colorPrimary">?refColorPrimary</item>
         <item name="colorPrimaryDark">?refColorPrimaryDark</item>
         <item name="iconItemView">@style/IconItemView</item>
+        <item name="spinnerIconItemView">@style/IconItemView.Secondary</item>
         <item name="flatButtonBg">@drawable/flat_button_bg_white</item>
     </style>
 

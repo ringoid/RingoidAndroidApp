@@ -42,7 +42,8 @@ open class IconItemView : LinearLayout {
         context.obtainStyledAttributes(attributes, R.styleable.IconItemView, defStyleAttr, R.style.IconItemView)
             .apply {
                 hideIcon = getBoolean(R.styleable.IconItemView_icon_item_hide_icon, true)
-                setLabelColorRes(colorResId = getResourceId(R.styleable.IconItemView_icon_item_color, R.color.secondary_text))
+                setIconColorRes(colorResId = getResourceId(R.styleable.IconItemView_icon_item_icon_color, R.color.icons))
+                setTextColorRes(colorResId = getResourceId(R.styleable.IconItemView_icon_item_text_color, R.color.secondary_text))
                 setIcon(resId = getResourceId(R.styleable.IconItemView_icon_item_icon, 0))
                 getResourceId(R.styleable.IconItemView_icon_item_text, 0)
                     .takeIf { it != 0 }?.let { setText(resId = it) }
@@ -59,9 +60,13 @@ open class IconItemView : LinearLayout {
             ?: run { iv_icon.changeVisibility(isVisible = false, soft = !hideIcon) }
     }
 
-    fun setLabelColorRes(@ColorRes colorResId: Int) {
+    fun setIconColorRes(@ColorRes colorResId: Int) {
         val color = ContextCompat.getColor(context, colorResId)
         iv_icon.setColorFilter(color)
+    }
+
+    fun setTextColorRes(@ColorRes colorResId: Int) {
+        val color = ContextCompat.getColor(context, colorResId)
         tv_text.setTextColor(color)
     }
 

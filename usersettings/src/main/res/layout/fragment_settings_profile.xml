@@ -21,36 +21,46 @@
 
         <com.ringoid.widget.view.item_view.SpinnerIconItemView
             android:id="@+id/item_profile_property_property"
+            android:layout_marginTop="@dimen/std_margin_8"
+            app:icon_item_icon="@drawable/ic_done_white_24dp"
             app:icon_item_text="@string/profile_property_property"
-            style="?attr/iconItemView"/>
+            style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
 
         <com.ringoid.widget.view.item_view.SpinnerIconItemView
             android:id="@+id/item_profile_property_transport"
+            android:layout_marginTop="@dimen/std_margin_8"
+            app:icon_item_icon="@drawable/ic_done_white_24dp"
             app:icon_item_text="@string/profile_property_transport"
-            style="?attr/iconItemView"/>
+            style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
 
         <com.ringoid.widget.view.item_view.SpinnerIconItemView
             android:id="@+id/item_profile_property_income"
+            android:layout_marginTop="@dimen/std_margin_8"
+            app:icon_item_icon="@drawable/ic_done_white_24dp"
             app:icon_item_text="@string/profile_property_income"
-            style="?attr/iconItemView"/>
+            style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
 
         <com.ringoid.widget.view.item_view.SpinnerIconItemView
             android:id="@+id/item_profile_property_education"
+            android:layout_marginTop="@dimen/std_margin_8"
+            app:icon_item_icon="@drawable/ic_done_white_24dp"
             app:icon_item_text="@string/profile_property_education"
-            style="?attr/iconItemView"/>
+            style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
 
         <com.ringoid.widget.view.item_view.SpinnerIconItemView
             android:id="@+id/item_profile_property_hair_color"
+            android:layout_marginTop="@dimen/std_margin_8"
+            app:icon_item_icon="@drawable/ic_done_white_24dp"
             app:icon_item_text="@string/profile_property_hair_color"
-            style="?attr/iconItemView"/>
+            style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
     </LinearLayout>

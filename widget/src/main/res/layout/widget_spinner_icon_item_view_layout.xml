@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-   xmlns:app="http://schemas.android.com/apk/res-auto"
-   android:layout_width="match_parent"
-   android:layout_height="match_parent">
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/iv_icon"
         android:layout_width="@dimen/std_icon_24"
         android:layout_height="@dimen/std_icon_24"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="top"
         android:layout_marginEnd="@dimen/std_margin_16"
-        android:contentDescription="@null"
-        app:srcCompat="@drawable/ic_done_white_24dp"/>
+        android:contentDescription="@null"/>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/std_margin_8"
         android:orientation="vertical">
 
         <TextView
@@ -31,6 +28,8 @@
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"/>
+            android:layout_marginTop="@dimen/std_margin_8"
+            android:background="@drawable/rect_round_secondary_stroke"
+            android:minHeight="@dimen/std_btn_height"/>
     </LinearLayout>
 </merge>
