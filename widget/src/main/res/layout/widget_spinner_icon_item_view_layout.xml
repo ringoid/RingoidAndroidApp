@@ -24,19 +24,31 @@
             android:textSize="@dimen/std_text_14"
             style="@style/StdText.Secondary"/>
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/std_margin_8"
-            android:background="@drawable/rect_round_secondary_stroke"
-            android:minHeight="@dimen/std_btn_height">
+            android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="match_parent"
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/std_margin_8"
+                android:background="@drawable/rect_round_secondary_stroke"
+                android:minHeight="@dimen/std_btn_height">
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"/>
+            </FrameLayout>
+
+            <Space
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:padding="4dp"/>
-        </FrameLayout>
+                android:layout_weight="0.7"/>
+        </LinearLayout>
     </LinearLayout>
 </merge>

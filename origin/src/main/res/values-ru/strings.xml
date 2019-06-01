@@ -19,6 +19,7 @@
     <string name="common_sex_male">Мужчина</string>
     <string name="common_sex_female">Женщина</string>
     <string name="common_uncancellable">Восстановления нет.</string>
+    <string name="common_unchosen">Не выбрано</string>
 
     <string name="error_common">Ой! Что-то пошло не так&#8230;</string>
     <string name="error_crop_image">Не удалось загрузить фото</string>

@@ -19,6 +19,7 @@
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
     <string name="common_uncancellable">There is no undo.</string>
+    <string name="common_unchosen">Not selected</string>
 
     <string name="error_common">Oops! Something went wrong&#8230;</string>
     <string name="error_crop_image">Failed to load and prepare photo</string>

@@ -7,7 +7,7 @@ import com.ringoid.origin.R
 import com.ringoid.widget.model.IListItem
 
 enum class EducationProfileProperty(override val id: Int, @StringRes val resId: Int) : IListItem {
-    Unknown(0, R.string.profile_property_education),
+    Unknown(0, R.string.common_unchosen),
     School(10, R.string.profile_property_education_0),
     College(20, R.string.profile_property_education_1),
     Bachelor(30, R.string.profile_property_education_2),
@@ -25,7 +25,7 @@ enum class EducationProfileProperty(override val id: Int, @StringRes val resId: 
 }
 
 enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResId: Int, @StringRes private val femaleResId: Int) {
-    Unknown(0, R.string.profile_property_hair_color, R.string.profile_property_hair_color),
+    Unknown(0, R.string.common_unchosen, R.string.common_unchosen),
     Black(10, R.string.profile_property_hair_color_m_0, R.string.profile_property_hair_color_f_0),
     Blonde(20, R.string.profile_property_hair_color_m_1, R.string.profile_property_hair_color_f_1),
     Brown(30, R.string.profile_property_hair_color_m_2, R.string.profile_property_hair_color_f_2),
@@ -49,7 +49,7 @@ enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResI
 }
 
 enum class IncomeProfileProperty(override val id: Int, @StringRes val resId: Int) : IListItem {
-    Unknown(0, R.string.profile_property_income),
+    Unknown(0, R.string.common_unchosen),
     Low(10, R.string.profile_property_income_0),
     Middle(20, R.string.profile_property_income_1),
     High(30, R.string.profile_property_income_2),
@@ -65,7 +65,7 @@ enum class IncomeProfileProperty(override val id: Int, @StringRes val resId: Int
 }
 
 enum class PropertyProfileProperty(override val id: Int, @StringRes val resId: Int) : IListItem {
-    Unknown(0, R.string.profile_property_property),
+    Unknown(0, R.string.common_unchosen),
     LiveWithParents(10, R.string.profile_property_property_0),
     LiveInDormitory(20, R.string.profile_property_property_1),
     RentRoom(30, R.string.profile_property_property_2),
@@ -84,7 +84,7 @@ enum class PropertyProfileProperty(override val id: Int, @StringRes val resId: I
 }
 
 enum class TransportProfileProperty(override val id: Int, @StringRes val resId: Int) : IListItem {
-    Unknown(0, R.string.profile_property_transport),
+    Unknown(0, R.string.common_unchosen),
     Walk(10, R.string.profile_property_transport_0),
     PublicTransport(20, R.string.profile_property_transport_1),
     Cycle(30, R.string.profile_property_transport_2),
