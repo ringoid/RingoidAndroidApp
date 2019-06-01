@@ -8,17 +8,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SpinnerAdapter
 import android.widget.TextView
+import com.ringoid.utility.getAttributeColor
 import com.ringoid.widget.R
 import com.ringoid.widget.model.IListItem
 import kotlinx.android.synthetic.main.widget_spinner_icon_item_view_layout.view.*
 
 class SpinnerIconItemView : IconItemView {
 
+    companion object {
+        private var textColorPrimary: Int = -1
+        private var textColorSecondary: Int = -1
+    }
+
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attributes: AttributeSet?) : this(context, attributes, 0)
 
-    constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int) : super(context, attributes, defStyleAttr)
+    constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int) : super(context, attributes, defStyleAttr) {
+        if (textColorPrimary == -1) textColorPrimary = context.getAttributeColor(R.attr.refTextColorPrimary)
+        if (textColorSecondary == -1) textColorSecondary = context.getAttributeColor(R.attr.refTextColorSecondary)
+    }
 
     override fun getLayoutId(): Int = R.layout.widget_spinner_icon_item_view_layout
 
@@ -59,7 +68,13 @@ class SpinnerIconItemView : IconItemView {
                     xconvertView!!.tag = viewHolder
                     viewHolder
                 }
-            holder.tvLabel.setText(items[position].getLabelResId())
+            items[position].let {
+                with(holder.tvLabel) {
+                    val color = if (it.isDefault) textColorSecondary else textColorPrimary
+                    setText(it.getLabelResId ())
+                    setTextColor(color)
+                }
+            }
             return xconvertView!!
         }
 
