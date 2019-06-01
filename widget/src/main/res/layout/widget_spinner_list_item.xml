@@ -5,4 +5,6 @@
     android:layout_height="@dimen/std_btn_height"
     android:background="?attr/refColorBg"
     android:gravity="center_vertical|start"
+    android:paddingStart="@dimen/std_margin_16"
+    android:paddingEnd="@dimen/std_margin_16"
     style="@style/StdText.Primary"/>
