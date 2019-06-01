@@ -22,7 +22,7 @@ fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit 
         is InvalidAccessTokenApiException -> logout(activity)
         is NetworkUnexpected -> {
             noConnection(activity)
-            delay {onErrorState() }  // handle error state on Screen  in screen-specific way
+            delay { onErrorState() }  // handle error state on Screen  in screen-specific way
         }
         else -> errorState(this)  // default error handling
     }
