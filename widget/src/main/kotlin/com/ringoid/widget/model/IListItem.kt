@@ -8,3 +8,11 @@ interface IListItem {
     val isDefault: Boolean
     @StringRes fun getLabelResId(): Int
 }
+
+data class ListItem(
+    override val id: Int,
+    override val isDefault: Boolean,
+    val l: () -> Int) : IListItem {
+
+    override fun getLabelResId(): Int = l.invoke()
+}

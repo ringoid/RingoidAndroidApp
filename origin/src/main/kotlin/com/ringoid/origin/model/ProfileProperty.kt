@@ -2,9 +2,9 @@ package com.ringoid.origin.model
 
 import androidx.annotation.StringRes
 import com.ringoid.domain.misc.Gender
-import com.ringoid.domain.model.IListModel
 import com.ringoid.origin.R
 import com.ringoid.widget.model.IListItem
+import com.ringoid.widget.model.ListItem
 
 enum class EducationProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem {
     Unknown(0, R.string.common_unchosen, isDefault = true),
@@ -25,7 +25,7 @@ enum class EducationProfileProperty(override val id: Int, @StringRes val resId: 
 }
 
 enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResId: Int, @StringRes private val femaleResId: Int, val isDefault: Boolean = false) {
-    Unknown(0, R.string.common_unchosen, R.string.common_unchosen),
+    Unknown(0, R.string.common_unchosen, R.string.common_unchosen, isDefault = true),
     Black(10, R.string.profile_property_hair_color_m_0, R.string.profile_property_hair_color_f_0),
     Blonde(20, R.string.profile_property_hair_color_m_1, R.string.profile_property_hair_color_f_1),
     Brown(30, R.string.profile_property_hair_color_m_2, R.string.profile_property_hair_color_f_2),
@@ -37,6 +37,9 @@ enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResI
         val values: Array<HairColorProfileProperty> = values()
 
         fun from(id: Int): HairColorProfileProperty = values.find { it.id == id } ?: Unknown
+
+        fun valuesForGender(gender: Gender): List<IListItem> =
+            values.map { ListItem(id = it.id, isDefault = it.isDefault, l = { it.resId(gender) }) }
     }
 
     @StringRes
