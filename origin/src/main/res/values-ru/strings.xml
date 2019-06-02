@@ -25,6 +25,8 @@
     <string name="error_crop_image">Не удалось загрузить фото</string>
     <string name="error_invalid_referral_code">Код неверен</string>
 
+    <string name="value_cm">см</string>
+
     <!-- Permissions -->
     <string name="permission_location_dialog_enable_location_service">Пожалуйста, включите геолокацию</string>
     <string name="permission_location_rationale">Пожалуйста, разрешите доступ к геолокации</string>
@@ -156,6 +158,8 @@
     <string name="profile_property_hair_color_f_4">Пепельная</string>
     <string name="profile_property_hair_color_m_5">Седой</string>
     <string name="profile_property_hair_color_f_5">Седая</string>
+
+    <string name="profile_property_height">Рост</string>
 
     <string name="profile_property_income">Заработок</string>
     <string name="profile_property_income_0">Низкий доход</string>

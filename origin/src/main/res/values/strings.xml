@@ -24,6 +24,8 @@
     <string name="error_common">Oops! Something went wrong&#8230;</string>
     <string name="error_crop_image">Failed to load and prepare photo</string>
     <string name="error_invalid_referral_code">Referral code is invalid</string>
+
+    <string name="value_cm">cm</string>
     
     <!-- Permissions -->
     <string name="permission_location_dialog_enable_location_service">Please enable location</string>
@@ -161,6 +163,8 @@
     <string name="profile_property_hair_color_f_4">Gray</string>
     <string name="profile_property_hair_color_m_5">White</string>
     <string name="profile_property_hair_color_f_5">White</string>
+
+    <string name="profile_property_height">Height</string>
 
     <string name="profile_property_income">Income</string>
     <string name="profile_property_income_0">Low income</string>

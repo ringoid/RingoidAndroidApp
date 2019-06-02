@@ -31,4 +31,5 @@
 
     <!-- Widget -->
     <dimen name="icon_item_view_height">60dp</dimen>
+    <dimen name="edit_text_icon_item_view_height">80dp</dimen>
 </resources>
