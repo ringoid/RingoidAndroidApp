@@ -47,6 +47,30 @@ object AppRes {
         private set
     var FEED_ITEM_ONLINE_STATUS_TOP: Int = -1
         private set
+    var FEED_ITEM_PROPERTY_EDUCATION_TOP: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_EDUCATION_BOTTOM: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_HAIR_COLOR_TOP: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_HAIR_COLOR_BOTTOM: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_HEIGHT_TOP: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_HEIGHT_BOTTOM: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_INCOME_TOP: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_INCOME_BOTTOM: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_PROPERTY_TOP: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_PROPERTY_BOTTOM: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_TRANSPORT_TOP: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_TRANSPORT_BOTTOM: Int = -1
+        private set
     var FEED_ITEM_SETTINGS_BTN_BOTTOM: Int = -1
         private set
     var FEED_ITEM_SETTINGS_BTN_TOP: Int = -1
@@ -68,6 +92,8 @@ object AppRes {
     var STD_MARGIN_8: Int = -1
         private set
     var STD_MARGIN_16: Int = -1
+        private set
+    var STD_MARGIN_18: Int = -1
         private set
     var STD_MARGIN_24: Int = -1
         private set
@@ -106,11 +132,13 @@ object AppRes {
         context.resources.apply {
             STD_MARGIN_8 = getDimensionPixelSize(R.dimen.std_margin_8)
             STD_MARGIN_16 = getDimensionPixelSize(R.dimen.std_margin_16)
+            STD_MARGIN_18 = getDimensionPixelSize(R.dimen.std_margin_18)
             STD_MARGIN_24 = getDimensionPixelSize(R.dimen.std_margin_24)
             STD_MARGIN_32 = getDimensionPixelSize(R.dimen.std_margin_32)
             STD_MARGIN_40 = getDimensionPixelSize(R.dimen.std_margin_40)
             STD_MARGIN_48 = getDimensionPixelSize(R.dimen.std_margin_48)
             STD_MARGIN_64 = getDimensionPixelSize(R.dimen.std_margin_64)
+
             BUTTON_HEIGHT = getDimensionPixelSize(R.dimen.std_btn_height)
             BUTTON_FLAT_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_18)
             BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
@@ -119,6 +147,7 @@ object AppRes {
             ICON_SIZE_96 = getDimensionPixelSize(R.dimen.std_icon_96)
             ICON_SIZE_HALF_96 = ICON_SIZE_96 / 2
             ICON_SIZE_HALF2_96 = ICON_SIZE_HALF_96 / 2
+
             FEED_ITEM_FOOTER_LABEL_BOTTOM = getDimensionPixelSize(R.dimen.std_margin_16)
             FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
             FEED_IMAGE_HALF_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height_half)
@@ -131,8 +160,23 @@ object AppRes {
             FEED_ITEM_MID_BTN_BOTTOM = (FEED_IMAGE_HALF_HEIGHT + ICON_SIZE_36 * 0.5f).toInt()
             FEED_ITEM_MID_BTN_TOP = (FEED_IMAGE_HALF_HEIGHT - ICON_SIZE_36 * 0.5f).toInt()
             FEED_ITEM_ONLINE_STATUS_TOP = STD_MARGIN_8 + ICON_SIZE_36
+
+            val pivot = (0.3 * (FEED_IMAGE_HEIGHT + STD_MARGIN_32)).toInt()
+            FEED_ITEM_PROPERTY_EDUCATION_TOP = pivot + STD_MARGIN_18 * 3
+            FEED_ITEM_PROPERTY_EDUCATION_BOTTOM = FEED_ITEM_PROPERTY_EDUCATION_TOP + STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_HAIR_COLOR_BOTTOM = FEED_ITEM_DISTANCE_TOP - STD_MARGIN_18
+            FEED_ITEM_PROPERTY_HAIR_COLOR_TOP = FEED_ITEM_PROPERTY_HAIR_COLOR_BOTTOM - STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_HEIGHT_BOTTOM = FEED_ITEM_PROPERTY_HAIR_COLOR_TOP - STD_MARGIN_18
+            FEED_ITEM_PROPERTY_HEIGHT_TOP = FEED_ITEM_PROPERTY_HEIGHT_BOTTOM - STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_INCOME_TOP = pivot + STD_MARGIN_18 * 5 + STD_MARGIN_16
+            FEED_ITEM_PROPERTY_INCOME_BOTTOM = FEED_ITEM_PROPERTY_INCOME_TOP + STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_PROPERTY_TOP = pivot - STD_MARGIN_18
+            FEED_ITEM_PROPERTY_PROPERTY_BOTTOM = pivot + STD_MARGIN_18
+            FEED_ITEM_PROPERTY_TRANSPORT_TOP = pivot + STD_MARGIN_18
+            FEED_ITEM_PROPERTY_TRANSPORT_BOTTOM = FEED_ITEM_PROPERTY_TRANSPORT_TOP + STD_MARGIN_18 * 2
+
             FEED_ITEM_TABS_INDICATOR_TOP = STD_MARGIN_16
-            FEED_ITEM_TABS_INDICATOR_TOP2 = FEED_IMAGE_HEIGHT - STD_MARGIN_24
+            FEED_ITEM_TABS_INDICATOR_TOP2 = FEED_IMAGE_HEIGHT - STD_MARGIN_32
             FEED_ITEM_TABS_INDICATOR_BOTTOM = (FEED_ITEM_TABS_INDICATOR_TOP * 1.5f).toInt()
             FEED_ITEM_TABS_INDICATOR_BOTTOM2 = FEED_IMAGE_HEIGHT - STD_MARGIN_16
             FEED_ITEM_SETTINGS_BTN_TOP = FEED_ITEM_TABS_INDICATOR_TOP  // getDimensionPixelSize(R.dimen.std_margin_24)

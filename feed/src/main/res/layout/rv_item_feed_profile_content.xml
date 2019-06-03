@@ -95,31 +95,29 @@
         android:id="@+id/label_transport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_8"
         android:layout_marginStart="@dimen/std_margin_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/label_property"
         app:label_icon="@drawable/ic_transport_white_18dp"/>
 
     <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_income"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_8"
-        android:layout_marginStart="@dimen/std_margin_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/label_transport"
-        app:label_icon="@drawable/ic_income_white_18dp"/>
-
-    <com.ringoid.widget.view.LabelView
         android:id="@+id/label_education"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_8"
         android:layout_marginStart="@dimen/std_margin_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/label_income"
+        app:layout_constraintTop_toBottomOf="@id/label_transport"
         app:label_icon="@drawable/ic_education_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_income"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_education"
+        app:label_icon="@drawable/ic_income_white_18dp"/>
 
     <TextView
         android:id="@+id/tv_profile_id"

@@ -391,8 +391,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_AGE_BOTTOM, hide = FeedViewHolderHideAgeOnScroll, show = FeedViewHolderShowAgeOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_DISTANCE_BOTTOM, hide = FeedViewHolderHideDistanceOnScroll, show = FeedViewHolderShowDistanceOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_PROPERTY_HAIR_COLOR_BOTTOM, hide = FeedViewHolderHideHairColorOnScroll, show = FeedViewHolderShowHairColorOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_PROPERTY_HEIGHT_BOTTOM, hide = FeedViewHolderHideHeightOnScroll, show = FeedViewHolderShowHeightOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_TOP, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_EDUCATION_BOTTOM, hide = FeedViewHolderHideEducationOnScroll, show = FeedViewHolderShowEducationOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_PROPERTY_INCOME_BOTTOM, hide = FeedViewHolderHideIncomeOnScroll, show = FeedViewHolderShowIncomeOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_PROPERTY_BOTTOM, hide = FeedViewHolderHidePropertyOnScroll, show = FeedViewHolderShowPropertyOnScroll),
+               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TRANSPORT_BOTTOM, hide = FeedViewHolderHideTransportOnScroll, show = FeedViewHolderShowTransportOnScroll),
                OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_FOOTER_LABEL_BOTTOM, hide = FeedFooterViewHolderHideControls, show = FeedFooterViewHolderShowControls))
 
     private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {

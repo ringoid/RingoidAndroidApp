@@ -13,6 +13,7 @@
     <dimen name="std_margin_8">6dp</dimen>
     <dimen name="std_margin_12">9dp</dimen>
     <dimen name="std_margin_16">12dp</dimen>
+    <dimen name="std_margin_18">14dp</dimen>
     <dimen name="std_margin_20">16dp</dimen>
     <dimen name="std_margin_24">19dp</dimen>
     <dimen name="std_margin_32">24dp</dimen>

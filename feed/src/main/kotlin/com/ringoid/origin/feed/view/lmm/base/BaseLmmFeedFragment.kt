@@ -231,6 +231,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         }
     }
 
+    @Suppress("AutoDispose", "CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_refresh_popup.clicks().compose(clickDebounce()).subscribe {
@@ -248,6 +249,12 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.STD_MARGIN_16, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_AGE_TOP, hide = FeedViewHolderHideAgeOnScroll, show = FeedViewHolderShowAgeOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_DISTANCE_TOP, hide = FeedViewHolderHideDistanceOnScroll, show = FeedViewHolderShowDistanceOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_HAIR_COLOR_TOP, hide = FeedViewHolderHideHairColorOnScroll, show = FeedViewHolderShowHairColorOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_HEIGHT_TOP, hide = FeedViewHolderHideHeightOnScroll, show = FeedViewHolderShowHeightOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_EDUCATION_TOP, hide = FeedViewHolderHideEducationOnScroll, show = FeedViewHolderShowEducationOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_INCOME_TOP, hide = FeedViewHolderHideIncomeOnScroll, show = FeedViewHolderShowIncomeOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_PROPERTY_TOP, hide = FeedViewHolderHidePropertyOnScroll, show = FeedViewHolderShowPropertyOnScroll))
+                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TRANSPORT_TOP, hide = FeedViewHolderHideTransportOnScroll, show = FeedViewHolderShowTransportOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
             }
