@@ -7,7 +7,7 @@ import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_edit_text_icon_item_view_layout.view.*
 
-class EditTextIconItemView : IconItemView {
+class EditTextIconItemView : TextIconItemView {
 
     constructor(context: Context) : this(context, null)
 
@@ -19,7 +19,9 @@ class EditTextIconItemView : IconItemView {
 
     /* API */
     // --------------------------------------------------------------------------------------------
-    fun setInputText(text: String?) {
+    override fun getText(): String = et_input.text.toString()
+
+    override fun setInputText(text: String?) {
         with (et_input) {
             setText(text)
             setSelection(text?.length ?: 0)

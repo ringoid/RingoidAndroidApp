@@ -1,8 +1,10 @@
 package com.ringoid.origin.usersettings.view.profile
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
@@ -10,7 +12,9 @@ import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.*
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
+import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.inputDebounce
 import com.ringoid.widget.model.ListItem
 import com.ringoid.widget.view.item_view.textChanges
@@ -88,10 +92,27 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
             setOnItemSelectedListener<TransportProfileProperty> { vm.onPropertyChanged_transport(it) }
         }
         with (item_profile_property_height) {
-            textChanges().compose(inputDebounce()).subscribe {
-                val height = if (it.isNotBlank()) it.toString().toInt() else 0
-                vm.onPropertyChanged_height(height = height)
+            clicks().compose(clickDebounce()).subscribe {
+                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.profile_property_height,
+                    positiveBtnLabelResId = OriginR_string.button_done,
+                    negativeBtnLabelResId = OriginR_string.button_cancel,
+                    positiveListener = { dialog, _, text ->
+                        val heightStr = handleInputHeight(text).takeIf { it > 0 }?.toString() ?: ""
+                        this.setInputText(heightStr)
+                        onHeightTextChange(heightStr)
+                        dialog.dismiss()
+                    },
+                    initText = getText(), inputType = InputType.TYPE_CLASS_NUMBER, maxLength = 3)
             }
+            textChanges().compose(inputDebounce()).subscribe(::onHeightTextChange)
         }
+    }
+
+    // ------------------------------------------
+    private fun handleInputHeight(it: String?): Int =
+        if (it.isNullOrBlank()) 0 else it.toInt().takeIf { int -> int in 92..214 } ?: 0
+
+    private fun onHeightTextChange(heightStr: CharSequence) {
+        vm.onPropertyChanged_height(height = if (heightStr.isNotBlank()) heightStr.toString().toInt() else 0)
     }
 }
