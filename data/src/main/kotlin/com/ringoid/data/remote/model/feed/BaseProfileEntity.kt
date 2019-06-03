@@ -24,7 +24,7 @@ import com.ringoid.domain.model.Mappable
  *   "sex": "male",
  *   "property": 0,
  *   "transport": 0,
- *   "education": 0,
+ *   "educationLevel": 0,
  *   "income": 0,
  *   "height": 0,
  *   "hairColor": 0
@@ -55,7 +55,7 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_LAST_ONLINE_STATUS = "lastOnlineFlag"
         const val COLUMN_LAST_ONLINE_TEXT = "lastOnlineText"
         const val COLUMN_PROPERTY_AGE = "age"
-        const val COLUMN_PROPERTY_EDUCATION = "education"
+        const val COLUMN_PROPERTY_EDUCATION = "educationLevel"
         const val COLUMN_PROPERTY_GENDER = "sex"
         const val COLUMN_PROPERTY_HAIR_COLOR = "hairColor"
         const val COLUMN_PROPERTY_HEIGHT = "height"
