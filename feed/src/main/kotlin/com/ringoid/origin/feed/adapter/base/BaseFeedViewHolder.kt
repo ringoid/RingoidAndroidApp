@@ -135,7 +135,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         with (itemView.label_age_sex) {
             alpha = if (model.age < 18) 0.0f else 1.0f
-            setIcon(AppInMemory.oppositeUserGender().resId)
+            setIcon(model.gender.resId)
             setText("${model.age}")
         }
         with (itemView.label_distance) {
@@ -150,7 +150,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         with (itemView.label_hair_color) {
             val hairColor = model.hairColor()
 //            alpha = if (hairColor == HairColorProfileProperty.Unknown) 0.0f else 1.0f
-            setText(hairColor.resId(AppInMemory.oppositeUserGender()))
+            setText(hairColor.resId(model.gender))
         }
         with (itemView.label_height) {
 //            alpha = if (model.height <= 0) 0.0f else 1.0f
