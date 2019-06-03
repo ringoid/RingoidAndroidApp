@@ -120,7 +120,7 @@
     <TextView
         android:id="@+id/tv_profile_id"
         android:layout_marginStart="@dimen/std_margin_16"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="350dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"
