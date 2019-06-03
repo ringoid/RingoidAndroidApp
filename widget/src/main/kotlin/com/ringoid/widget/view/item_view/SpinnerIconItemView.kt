@@ -2,6 +2,7 @@ package com.ringoid.widget.view.item_view
 
 import android.content.Context
 import android.database.DataSetObserver
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SpinnerAdapter
 import android.widget.TextView
+import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.widget.R
 import com.ringoid.widget.model.IListItem
@@ -20,6 +22,8 @@ class SpinnerIconItemView : IconItemView {
         private var textColorPrimary: Int = -1
         private var textColorSecondary: Int = -1
     }
+
+    private var selectedItemId: Int = -1
 
     constructor(context: Context) : this(context, null)
 
@@ -48,6 +52,7 @@ class SpinnerIconItemView : IconItemView {
                 spinner.setSelection(position)  // set selected item w/o calling listener
                 spinner.onItemSelectedListener = listener
             }
+        selectedItemId = item.id
     }
 
     /* Listener */
@@ -63,6 +68,7 @@ class SpinnerIconItemView : IconItemView {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 (spinner.adapter as ItemAdapter<T>).getItemById(id)
                     ?.let { it as? T }
+                    ?.also { selectedItemId = it.id }
                     ?.let { item -> l.invoke(item) }
             }
 
@@ -108,8 +114,10 @@ class SpinnerIconItemView : IconItemView {
             items[position].let {
                 with(holder.tvLabel) {
                     val color = if (it.isDefault) textColorSecondary else textColorPrimary
+                    val isItemSelected = !it.isDefault && it.id == selectedItemId
                     setText(it.getLabelResId ())
                     setTextColor(color)
+                    changeTypeface(style = if (isItemSelected) Typeface.BOLD else Typeface.NORMAL, isSelected = isItemSelected)
                 }
             }
             return xconvertView!!
