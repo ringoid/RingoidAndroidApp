@@ -12,6 +12,7 @@ import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
+import com.ringoid.domain.misc.UserProfilePropertiesRaw
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
@@ -78,6 +79,13 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED = "sp_key_user_settings_likes_push_enabled"
         const val SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED = "sp_key_user_settings_matches_push_enabled"
         const val SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED = "sp_key_user_settings_messages_push_enabled"
+
+        const val SP_KEY_USER_PROFILE_PROPERTY_EDUCATION  = "sp_key_user_profile_property_education"
+        const val SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR = "sp_key_user_profile_property_hair_color"
+        const val SP_KEY_USER_PROFILE_PROPERTY_HEIGHT = "sp_key_user_profile_property_height"
+        const val SP_KEY_USER_PROFILE_PROPERTY_INCOME = "sp_key_user_profile_property_income"
+        const val SP_KEY_USER_PROFILE_PROPERTY_PROPERTY = "sp_key_user_profile_property_property"
+        const val SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT = "sp_key_user_profile_property_transport"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -285,6 +293,31 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean) {
         sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, pushEnabled).apply()
+    }
+
+    // ------------------------------------------
+    override fun getUserProfileProperties(): UserProfilePropertiesRaw =
+        UserProfilePropertiesRaw(
+            education = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_EDUCATION, DomainUtil.UNKNOWN_VALUE),
+            hairColor = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR, DomainUtil.UNKNOWN_VALUE),
+            height = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_HEIGHT, DomainUtil.UNKNOWN_VALUE),
+            income = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_INCOME, DomainUtil.UNKNOWN_VALUE),
+            property = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_PROPERTY, DomainUtil.UNKNOWN_VALUE),
+            transport = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT, DomainUtil.UNKNOWN_VALUE))
+
+    override fun setUserProfileProperties(propertiesRaw: UserProfilePropertiesRaw) {
+        sharedPreferences.edit()
+            .putInt(SP_KEY_USER_PROFILE_PROPERTY_EDUCATION, propertiesRaw.education)
+            .putInt(SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR, propertiesRaw.hairColor)
+            .putInt(SP_KEY_USER_PROFILE_PROPERTY_HEIGHT, propertiesRaw.height)
+            .putInt(SP_KEY_USER_PROFILE_PROPERTY_INCOME, propertiesRaw.income)
+            .putInt(SP_KEY_USER_PROFILE_PROPERTY_PROPERTY, propertiesRaw.property)
+            .putInt(SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT, propertiesRaw.transport)
+            .apply()
+    }
+
+    override fun dropUserProfileProperties() {
+        setUserProfileProperties(propertiesRaw = UserProfilePropertiesRaw())
     }
 }
 

@@ -31,9 +31,13 @@ data class UpdateUserSettingsEssence(
         const val COLUMN_TIMEZONE = "timeZone"
 
         fun from(essence: UpdateUserSettingsEssenceUnauthorized, accessToken: String): UpdateUserSettingsEssence =
-            UpdateUserSettingsEssence(accessToken = accessToken, locale = essence.userSettings.locale,
-                push = essence.userSettings.push, pushLikes = essence.userSettings.pushLikes,
-                pushMatches = essence.userSettings.pushMatches, pushMessages = essence.userSettings.pushMessages,
+            UpdateUserSettingsEssence(
+                accessToken = accessToken,
+                locale = essence.userSettings.locale,
+                push = essence.userSettings.push,
+                pushLikes = essence.userSettings.pushLikes,
+                pushMatches = essence.userSettings.pushMatches,
+                pushMessages = essence.userSettings.pushMessages,
                 timeZone = essence.userSettings.timeZone)
     }
 

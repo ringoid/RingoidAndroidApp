@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.changeVisibility
@@ -26,10 +27,15 @@ class SettingsPushFragment : BaseFragment<SettingsPushViewModel>() {
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
+        fun onIdleState() {
+            pb_loading.changeVisibility(isVisible = false, soft = true)
+        }
+
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.IDLE -> pb_loading.changeVisibility(isVisible = false, soft = true)
+            is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_loading.changeVisibility(isVisible = true)
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
         }
     }
 

@@ -52,6 +52,11 @@ class UserRepository @Inject constructor(
 
     override fun deleteUserLocalData(): Completable = Completable.fromCallable { clearUserLocalData() }
 
+    override fun updateUserProfile(essence: UpdateUserProfileEssenceUnauthorized): Completable =
+        spm.accessSingle { cloud.updateUserProfile(UpdateUserProfileEssence.from(essence, it.accessToken)) }
+            .handleError(tag = "updateUserProfile", traceTag = "auth/update_profile")
+            .ignoreElement()  // convert to Completable
+
     override fun updateUserSettings(essence: UpdateUserSettingsEssenceUnauthorized): Completable =
         spm.accessSingle { cloud.updateUserSettings(UpdateUserSettingsEssence.from(essence, it.accessToken)) }
             .handleError(tag = "updateUserSettings", traceTag = "auth/update_settings")

@@ -37,6 +37,7 @@ enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResI
         val values: Array<HairColorProfileProperty> = values()
 
         fun from(id: Int): HairColorProfileProperty = values.find { it.id == id } ?: Unknown
+        fun from(item: ListItem): HairColorProfileProperty = from(id = item.id)
 
         fun valuesForGender(gender: Gender): List<IListItem> =
             values.map { ListItem(id = it.id, isDefault = it.isDefault, l = { it.resId(gender) }) }
@@ -49,6 +50,9 @@ enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResI
             Gender.FEMALE -> femaleResId
             else -> maleResId
         }
+
+    fun valueForGender(gender: Gender): IListItem =
+        ListItem(id = id, isDefault = isDefault, l = { resId(gender) })
 }
 
 enum class IncomeProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem {

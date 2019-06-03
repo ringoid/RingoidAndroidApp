@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.SpinnerAdapter
 import android.widget.TextView
 import com.ringoid.utility.getAttributeColor
@@ -37,6 +38,38 @@ class SpinnerIconItemView : IconItemView {
         spinner.adapter = ItemAdapter(items)
     }
 
+    @Suppress("unchecked_cast")
+    fun <T : IListItem> setSelectedItem(item: T) {
+        (spinner.adapter as ItemAdapter<T>).getItemPosition { it.id == item.id }
+            .takeIf { it != -1 }
+            ?.let { position ->
+                val listener = spinner.onItemSelectedListener
+                spinner.onItemSelectedListener = null
+                spinner.setSelection(position)  // set selected item w/o calling listener
+                spinner.onItemSelectedListener = listener
+            }
+    }
+
+    /* Listener */
+    // ------------------------------------------
+    @Suppress("unchecked_cast")
+    fun <T : IListItem> setOnItemSelectedListener(l: ((item: T) -> Unit)?) {
+        if (l == null) {
+            spinner.onItemSelectedListener = null
+            return
+        }
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                (spinner.adapter as ItemAdapter<T>).getItemById(id)
+                    ?.let { it as? T }
+                    ?.let { item -> l.invoke(item) }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
     // --------------------------------------------------------------------------------------------
     private inner class ItemViewHolder {
         lateinit var tvLabel: TextView
@@ -53,6 +86,10 @@ class SpinnerIconItemView : IconItemView {
         override fun getItem(position: Int): Any = items[position]
 
         override fun getItemId(position: Int): Long = items[position].id.toLong()
+
+        internal fun getItemById(id: Long): Any? = items.find { it.id == id.toInt() }
+
+        internal fun getItemPosition(predicate: (item: T) -> Boolean): Int = items.indexOfFirst(predicate)
 
         override fun getItemViewType(position: Int): Int = 0
 

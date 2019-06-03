@@ -42,8 +42,14 @@
         <item name="refDrawableMenuCheck">@drawable/ic_done_black_24dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_open_in_browser_black_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
-        <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_white</item>
-        <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_white</item>
+        <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_black_36dp</item>
+        <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_black_36dp</item>
+        <item name="refDrawableProfilePropertyEducation">@drawable/ic_education_black_24dp</item>
+        <item name="refDrawableProfilePropertyHairColor">@drawable/ic_hair_color_black_24dp</item>
+        <item name="refDrawableProfilePropertyHeight">@drawable/ic_height_property_black_24dp</item>
+        <item name="refDrawableProfilePropertyIncome">@drawable/ic_income_black_24dp</item>
+        <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_black_24dp</item>
+        <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_black_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_24dp</item>
     </style>
@@ -65,8 +71,14 @@
         <item name="refDrawableMenuCheck">@drawable/ic_done_white_24dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_open_in_browser_white_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
-        <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_white</item>
-        <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_white</item>
+        <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_white_36dp</item>
+        <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_white_36dp</item>
+        <item name="refDrawableProfilePropertyEducation">@drawable/ic_education_white_24dp</item>
+        <item name="refDrawableProfilePropertyHairColor">@drawable/ic_hair_color_white_24dp</item>
+        <item name="refDrawableProfilePropertyHeight">@drawable/ic_height_property_white_24dp</item>
+        <item name="refDrawableProfilePropertyIncome">@drawable/ic_income_white_24dp</item>
+        <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_white_24dp</item>
+        <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_white_24dp</item>
         <item name="refColorBg">@color/brown</item>
