@@ -73,6 +73,14 @@
         app:layout_constraintStart_toStartOf="parent"
         style="@style/FlatButton"/>
 
+    <me.relex.circleindicator.CircleIndicator2
+        android:id="@+id/tabs2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/profile_tab_layout_height"
+        android:layout_marginBottom="@dimen/std_margin_16"
+        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+        app:ci_gravity="center"/>
+
     <com.ringoid.widget.view.LabelView
         android:id="@+id/label_online_status"
         android:layout_width="wrap_content"
@@ -86,22 +94,72 @@
         app:label_text="@string/common_online"/>
 
     <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_hair_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:label_icon="@drawable/ic_hair_color_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        app:layout_constraintBottom_toTopOf="@id/label_hair_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:label_icon="@drawable/ic_height_property_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
         android:id="@+id/label_age_sex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/std_margin_32"
         android:layout_marginStart="@dimen/std_margin_16"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@id/label_height"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <me.relex.circleindicator.CircleIndicator2
-        android:id="@+id/tabs2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/profile_tab_layout_height"
-        android:layout_marginBottom="@dimen/std_margin_16"
-        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
-        app:ci_gravity="center"/>
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_property"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_online_status"
+        app:layout_constraintBottom_toTopOf="@id/tabs2"
+        app:layout_constraintVertical_bias="0.3"
+        app:label_icon="@drawable/ic_home_property_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_transport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_property"
+        app:label_icon="@drawable/ic_transport_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_education"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_transport"
+        app:label_icon="@drawable/ic_education_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_income"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_education"
+        app:label_icon="@drawable/ic_income_white_18dp"/>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_delete_image"

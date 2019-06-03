@@ -6,9 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseListAdapter
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO

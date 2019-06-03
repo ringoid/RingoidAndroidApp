@@ -24,6 +24,14 @@ data class UserProfileProperties(
                 transport = TransportProfileProperty.from(raw.transport))
     }
 
+    fun isAllUnknown(): Boolean =
+        education == EducationProfileProperty.Unknown &&
+        hairColor == HairColorProfileProperty.Unknown &&
+        height == DomainUtil.UNKNOWN_VALUE &&
+        income == IncomeProfileProperty.Unknown &&
+        property == PropertyProfileProperty.Unknown &&
+        transport == TransportProfileProperty.Unknown
+
     override fun map(): UserProfilePropertiesRaw =
         UserProfilePropertiesRaw(
             education = education.id,

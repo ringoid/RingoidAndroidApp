@@ -19,6 +19,7 @@ import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.BaseRingoidApplication
+import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.extension
@@ -44,6 +45,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     val imageCreated by lazy { MutableLiveData<UserImage>() }
     val imageDeleted by lazy { MutableLiveData<String>() }
     val images by lazy { MutableLiveData<List<UserImage>>() }
+    val profile by lazy { MutableLiveData<UserProfileProperties>() }
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
@@ -63,6 +65,13 @@ class UserProfileFragmentViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
             .subscribe({ imageDeleted.value = it }, Timber::e)
+    }
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onStart() {
+        super.onStart()
+        profile.value = UserProfileProperties.from(spm.getUserProfileProperties())
     }
 
     // --------------------------------------------------------------------------------------------

@@ -21,11 +21,13 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
+import com.ringoid.origin.model.*
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
@@ -153,6 +155,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     showDotTabs()
                     vm.onDeleteImage(empty = empty)
                 }
+                itemClickListener = { _, _ -> navigate(this@UserProfileFragment, path = "/settings_profile") }
             }
 
         imagePreloadListener = RecyclerViewPreloader(Glide.with(this), imagesAdapter, ViewPreloadSizeProvider<UserImage>(), 10)
@@ -199,6 +202,62 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             observe(vm.imageCreated, imagesAdapter::prepend)
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.images, imagesAdapter::submitList)
+            observe(vm.profile) {
+                val gender = spm.currentUserGender()
+                val showDefault = gender == Gender.MALE && it.isAllUnknown()
+
+                if (showDefault) {
+                    with (label_education) {
+                        alpha = 1.0f
+                        setText(OriginR_string.profile_property_education)
+                    }
+                    with(label_hair_color) {
+                        alpha = 1.0f
+                        setText(OriginR_string.profile_property_hair_color)
+                    }
+                    with(label_height) {
+                        alpha = 1.0f
+                        setText(OriginR_string.profile_property_height)
+                    }
+                    with(label_income) {
+                        alpha = 1.0f
+                        setText(OriginR_string.profile_property_income)
+                    }
+                    with(label_property) {
+                        alpha = 1.0f
+                        setText(OriginR_string.profile_property_property)
+                    }
+                    with(label_transport) {
+                        alpha = 1.0f
+                        setText(OriginR_string.profile_property_transport)
+                    }
+                } else {
+                    with(label_education) {
+                        alpha = if (it.education == EducationProfileProperty.Unknown) 0.0f else 1.0f
+                        setText(it.education.resId)
+                    }
+                    with(label_hair_color) {
+                        alpha = if (it.hairColor == HairColorProfileProperty.Unknown) 0.0f else 1.0f
+                        setText(it.hairColor.resId(gender))
+                    }
+                    with(label_height) {
+                        alpha = if (it.height <= 0) 0.0f else 1.0f
+                        setText("${it.height} ${AppRes.LENGTH_CM}")
+                    }
+                    with(label_income) {
+                        alpha = if (it.income == IncomeProfileProperty.Unknown) 0.0f else 1.0f
+                        setText(it.income.resId)
+                    }
+                    with(label_property) {
+                        alpha = if (it.property == PropertyProfileProperty.Unknown) 0.0f else 1.0f
+                        setText(it.property.resId)
+                    }
+                    with(label_transport) {
+                        alpha = if (it.transport == TransportProfileProperty.Unknown) 0.0f else 1.0f
+                        setText(it.transport.resId)
+                    }
+                }
+            }
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
