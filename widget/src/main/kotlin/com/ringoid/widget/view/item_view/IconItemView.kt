@@ -34,7 +34,7 @@ open class IconItemView : LinearLayout {
         background = context.getSelectableItemBg()
         isClickable = true
         isFocusable = true
-        orientation = LinearLayout.HORIZONTAL
+        orientation = HORIZONTAL
         setPadding(sidePadding, paddingTop, sidePadding, paddingBottom)
 
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
