@@ -12,6 +12,7 @@ import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_string
 import com.ringoid.main.OriginR_style
 import com.ringoid.main.listOfMainScreens
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.utils.AppUtils
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.BaseMainActivity
@@ -59,6 +60,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         super.onStart()
         if (currentLocale != app.localeManager.getLang() ||
             currentThemeResId != spm.getThemeResId(defaultThemeResId = currentThemeResId)) {
+            AppRes.initTranslatableStrings(resources)  // translate strings if locale has changed
             recreate()  // locale or theme has changed outside, in some another Activity
         }
     }

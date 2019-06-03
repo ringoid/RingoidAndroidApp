@@ -1,6 +1,7 @@
 package com.ringoid.origin
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 
@@ -83,6 +84,11 @@ object AppRes {
     // ------------------------------------------
     lateinit var UNDERSCORE_DRAWABLE: Drawable
 
+    /* Translatable */
+    // ------------------------------------------
+    var LENGTH_CM = ""
+        private set
+
     // ------------------------------------------
     var EMAIL_OFFICER_MAIL_SUBJECT = ""
         private set
@@ -139,12 +145,21 @@ object AppRes {
             UNDERSCORE_DRAWABLE = ContextCompat.getDrawable(context, WidgetR_drawable.underscore)!!
 
             // ----------------------------------
+            initTranslatableStrings(this)
+
+            // ----------------------------------
             EMAIL_OFFICER_MAIL_SUBJECT = getString(R.string.settings_info_email_officer_mail_subject)
             EMAIL_SUPPORT_MAIL_SUBJECT = getString(R.string.settings_support_mail_subject)
 
             WEB_URL_LICENSES = getString(R.string.web_url_licenses)
             WEB_URL_PRIVACY = getString(R.string.web_url_privacy)
             WEB_URL_TERMS = getString(R.string.web_url_terms)
+        }
+    }
+
+    fun initTranslatableStrings(resources: Resources) {
+        with (resources) {
+            LENGTH_CM = getString(R.string.value_cm)
         }
     }
 }

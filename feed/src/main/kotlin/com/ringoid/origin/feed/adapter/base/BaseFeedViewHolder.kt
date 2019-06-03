@@ -9,10 +9,12 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.AppInMemory
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.OnlineStatus
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.model.*
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
@@ -140,10 +142,39 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             alpha = if (model.distanceText.isNullOrBlank() || model.distanceText == "unknown") 0.0f else 1.0f
             setText(model.distanceText)
         }
+        with (itemView.label_education) {
+            val education = model.education()
+//            alpha = if (education == EducationProfileProperty.Unknown) 0.0f else 1.0f
+            setText(education.resId)
+        }
+        with (itemView.label_hair_color) {
+            val hairColor = model.hairColor()
+//            alpha = if (hairColor == HairColorProfileProperty.Unknown) 0.0f else 1.0f
+            setText(hairColor.resId(AppInMemory.oppositeUserGender()))
+        }
+        with (itemView.label_height) {
+//            alpha = if (model.height <= 0) 0.0f else 1.0f
+            setText("${model.height} ${AppRes.LENGTH_CM}")
+        }
+        with (itemView.label_income) {
+            val income = model.income()
+//            alpha = if (income == IncomeProfileProperty.Unknown) 0.0f else 1.0f
+            setText(income.resId)
+        }
         with (itemView.label_online_status) {
             alpha = if (model.lastOnlineStatusX == OnlineStatus.UNKNOWN) 0.0f else 1.0f
             setIcon(model.lastOnlineStatusX.resId)
             setText(model.lastOnlineText)
+        }
+        with (itemView.label_property) {
+            val property = model.property()
+//            if (property == PropertyProfileProperty.Unknown) 0.0f else 1.0f
+            setText(property.resId)
+        }
+        with (itemView.label_transport) {
+            val transport = model.transport()
+//            if (transport == TransportProfileProperty.Unknown) 0.0f else 1.0f
+            setText(transport.resId)
         }
 
         if (BuildConfig.IS_STAGING) {
@@ -167,7 +198,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             itemView.label_age_sex.changeVisibility(isVisible = true)
         }
         if (payloads.contains(FeedViewHolderHideDistanceOnScroll))  {
-            itemView.label_distance.changeVisibility(isVisible = false)
+            itemView.label_distance.changeVisibility(isVisible = false, soft = true)
         }
         if (payloads.contains(FeedViewHolderShowDistanceOnScroll)) {
             itemView.label_distance.changeVisibility(isVisible = true)
@@ -185,7 +216,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             itemView.ibtn_settings.changeVisibility(isVisible = true)
         }
         if (payloads.contains(FeedViewHolderHideTabsIndicatorOnScroll)) {
-            itemView.tabs.changeVisibility(isVisible = false)
+            itemView.tabs.changeVisibility(isVisible = false, soft = true)
         }
         if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
             itemView.tabs.changeVisibility(isVisible = true)

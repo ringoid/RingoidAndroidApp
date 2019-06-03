@@ -11,36 +11,6 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"/>
 
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_online_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginStart="@dimen/std_margin_16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:label_icon_size="@dimen/std_icon_12"/>
-
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/std_margin_32"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:label_icon="@drawable/ic_location_white_18dp"/>
-
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_age_sex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/std_margin_32"
-        android:layout_marginStart="@dimen/std_margin_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
         android:layout_width="match_parent"
@@ -62,10 +32,99 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:xbtnSrc="@drawable/ic_more_white"/>
 
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_online_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:label_icon_size="@dimen/std_icon_12"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:label_icon="@drawable/ic_location_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_hair_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        app:layout_constraintBottom_toTopOf="@id/label_distance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:label_icon="@drawable/ic_hair_color_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        app:layout_constraintBottom_toTopOf="@id/label_hair_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:label_icon="@drawable/ic_height_property_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_age_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_property"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_online_status"
+        app:layout_constraintBottom_toTopOf="@id/tabs"
+        app:layout_constraintVertical_bias="0.3"
+        app:label_icon="@drawable/ic_home_property_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_transport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_property"
+        app:label_icon="@drawable/ic_transport_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_income"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_transport"
+        app:label_icon="@drawable/ic_income_white_18dp"/>
+
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_education"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_income"
+        app:label_icon="@drawable/ic_education_white_18dp"/>
+
     <TextView
         android:id="@+id/tv_profile_id"
         android:layout_marginStart="@dimen/std_margin_16"
-        android:layout_marginBottom="@dimen/std_margin_64"
+        android:layout_marginBottom="150dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"

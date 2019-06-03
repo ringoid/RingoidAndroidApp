@@ -163,6 +163,7 @@ class MainViewModel @Inject constructor(
     fun updatePushToken(token: String) {
         val params = Params().put(PushTokenEssenceUnauthorized(token))
         updatePushTokenUseCase.source(params = params)
+            .autoDisposable(this)
             .subscribe({ DebugLogUtil.i("Successfully uploaded Firebase push token: $token") }, Timber::e)
     }
 
@@ -170,6 +171,7 @@ class MainViewModel @Inject constructor(
         val settings = app.userSettingsManager.getUserSettings()
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)
+            .autoDisposable(this)
             .subscribe({ DebugLogUtil.i("Successfully updated user settings") }, Timber::e)
     }
 }

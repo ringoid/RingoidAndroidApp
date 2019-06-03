@@ -8,6 +8,7 @@ import com.ringoid.domain.model.feed.IFeedItem
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.origin.model.*
 
 data class FeedItemVO(
     override val id: String,
@@ -66,6 +67,12 @@ data class FeedItemVO(
 
     fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
     fun hasLiked(): Boolean = likedImages.count { it.value } > 0
+
+    fun education(): EducationProfileProperty = EducationProfileProperty.from(education)
+    fun hairColor(): HairColorProfileProperty = HairColorProfileProperty.from(hairColor)
+    fun income(): IncomeProfileProperty = IncomeProfileProperty.from(income)
+    fun property(): PropertyProfileProperty = PropertyProfileProperty.from(property)
+    fun transport(): TransportProfileProperty = TransportProfileProperty.from(transport)
 
     fun hashIdWithFirst4(): String = "${idWithFirstN()}_${getModelId()}"
 }
