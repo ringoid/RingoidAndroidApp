@@ -26,6 +26,17 @@ enum class EducationProfileProperty(override val id: Int, @StringRes val resId: 
     override fun getNameId(): Int = EDUCATION_PROPERTY_ID
     override fun getName(): String = EDUCATION_PROPERTY
 
+    fun reduceForLocale(locale: String?): EducationProfileProperty =
+        when (locale) {
+            LocaleManager.LANG_EN -> {
+                when (this) {
+                    Bachelor, Master, Multi -> Master
+                    else -> this
+                }
+            }
+            else -> this
+        }
+
     companion object {
         const val EDUCATION_PROPERTY = "edu"
         const val EDUCATION_PROPERTY_ID = 101

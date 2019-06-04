@@ -53,7 +53,7 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
         super.onActivityCreated(savedInstanceState)
         with (viewLifecycleOwner) {
             observe(vm.profile) {
-                item_profile_property_education.setSelectedItem(it.education)
+                item_profile_property_education.setSelectedItem(it.education.reduceForLocale(app?.localeManager?.getLang()))
                 item_profile_property_hair_color.setSelectedItem(it.hairColor.valueForGender(spm.currentUserGender()))
                 item_profile_property_income.setSelectedItem(it.income)
                 item_profile_property_property.setSelectedItem(it.property)
