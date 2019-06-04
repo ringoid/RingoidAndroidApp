@@ -9,6 +9,7 @@ interface IActionObjectPool {
 
     fun trigger()
     fun triggerSource(): Single<Long>
+    fun errorTriggerSource(): Single<Long>
 
     fun lastActionTime(): Long
     fun finalizePool()
