@@ -8,6 +8,7 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
@@ -79,6 +80,7 @@ class PersistActionObjectPool @Inject constructor(
                     }
                 }
             }
+            .doOnError { DebugLogUtil.e("Commit actions error: $it") }
             .handleError(tag = "commitActions", traceTag = "actions/actions")
             .doOnSubscribe { dropStrategyData() }
             .doOnSuccess { updateLastActionTime(it.lastActionTime) }
