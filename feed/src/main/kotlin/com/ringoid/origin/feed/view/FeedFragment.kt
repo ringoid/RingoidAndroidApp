@@ -302,6 +302,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             removeOnScrollListener(itemOffsetScrollListener)
             removeOnScrollListener(topScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
+            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {}
+
+                override fun onViewDetachedFromWindow(v: View) {
+                    this@with.adapter = null
+                }
+            })
             adapter = null
         }
     }

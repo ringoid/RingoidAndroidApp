@@ -372,6 +372,13 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         super.onDestroyView()
         with (rv_items) {
             removeOnScrollListener(imagePreloadListener)
+            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {}
+
+                override fun onViewDetachedFromWindow(v: View) {
+                    this@with.adapter = null
+                }
+            })
             adapter = null
         }
     }
