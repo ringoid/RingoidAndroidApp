@@ -137,7 +137,7 @@
     <string name="web_url_error_status">https://ringoid.com/status-ru.html</string>
 
     <!-- Data -->
-    <string name="profile_property_education">Образование</string>
+    <string name="profile_property_education">Уровень образования</string>
     <string name="profile_property_education_0">Среднее</string>
     <string name="profile_property_education_1">Среднее проф.</string>
     <string name="profile_property_education_2">Неполное высшее</string>

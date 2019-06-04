@@ -142,7 +142,7 @@
     <string name="web_url_error_status">https://ringoid.com/status.html</string>
 
     <!-- Data -->
-    <string name="profile_property_education">Education</string>
+    <string name="profile_property_education">Education level</string>
     <string name="profile_property_education_0">High school</string>
     <string name="profile_property_education_1">College</string>
     <string name="profile_property_education_2">University</string>
