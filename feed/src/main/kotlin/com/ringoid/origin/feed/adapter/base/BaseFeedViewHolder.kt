@@ -85,7 +85,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                 }
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-                .also { it.initialPrefetchItemCount = 4 }
+                .also { it.initialPrefetchItemCount = 2 }
             snapHelper.attachToRecyclerView(this)
             itemView.tabs.attachToRecyclerView(this, snapHelper)
             setHasFixedSize(true)
