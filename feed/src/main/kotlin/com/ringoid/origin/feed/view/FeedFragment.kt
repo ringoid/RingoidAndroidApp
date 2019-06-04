@@ -298,10 +298,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_items.apply {
+        with (rv_items) {
             removeOnScrollListener(itemOffsetScrollListener)
             removeOnScrollListener(topScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
+            adapter = null
         }
     }
 

@@ -370,7 +370,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_items.removeOnScrollListener(imagePreloadListener)
+        with (rv_items) {
+            removeOnScrollListener(imagePreloadListener)
+            adapter = null
+        }
     }
 
     override fun onDestroy() {
