@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
@@ -167,6 +168,31 @@
         app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:xbtnSrc="@drawable/ic_more_white"/>
+
+    <ImageView
+        android:id="@+id/iv_total_lmm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:contentDescription="@null"
+        app:layout_constraintVertical_bias="0.27"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_like_white"/>
+
+    <TextView
+        android:id="@+id/tv_total_lmm_count"
+        android:layout_marginTop="4dp"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/std_text_22"
+        app:layout_constraintTop_toBottomOf="@id/iv_total_lmm"
+        app:layout_constraintStart_toStartOf="@id/iv_total_lmm"
+        app:layout_constraintEnd_toEndOf="@id/iv_total_lmm"
+        tools:text="0"
+        style="@style/StdText.Primary"/>
 
     <ProgressBar
         android:id="@+id/pb_profile"

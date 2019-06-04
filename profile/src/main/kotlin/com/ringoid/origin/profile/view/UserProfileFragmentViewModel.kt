@@ -11,6 +11,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.*
 import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -18,7 +19,6 @@ import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
-import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
@@ -29,12 +29,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class UserProfileFragmentViewModel @Inject constructor(
     private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
+    private val getLmmUseCase: GetLmmUseCase,  // only to access subject
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
@@ -46,6 +46,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     val imageDeleted by lazy { MutableLiveData<String>() }
     val images by lazy { MutableLiveData<List<UserImage>>() }
     val profile by lazy { MutableLiveData<UserProfileProperties>() }
+    val totalLmmCount by lazy { MutableLiveData<Int>() }
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
@@ -65,6 +66,11 @@ class UserProfileFragmentViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
             .subscribe({ imageDeleted.value = it }, Timber::e)
+
+        getLmmUseCase.repository.lmmLoadFinish
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ totalLmmCount.value = it }, Timber::e)
     }
 
     /* Lifecycle */

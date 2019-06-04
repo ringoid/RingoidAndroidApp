@@ -21,6 +21,8 @@ data class Lmm(val likes: List<FeedItem>, val matches: List<FeedItem>, val messa
                 }
                 ?: 0
 
+    fun totalCount(): Int = likes.size + matches.size + messages.size
+
     fun notSeenLikesProfileIds() = likes.filter { it.isNotSeen }.map { it.id }
     fun notSeenMatchesProfileIds() = matches.filter { it.isNotSeen }.map { it.id }
 

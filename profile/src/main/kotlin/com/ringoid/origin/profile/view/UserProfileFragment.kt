@@ -257,6 +257,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     }
                 }
             }
+            observe(vm.totalLmmCount) { tv_total_lmm_count.text = "$it" }
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
@@ -440,6 +441,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         label_online_status.changeVisibility(isVisible = !needShow)
         ll_left_section.changeVisibility(isVisible = !needShow)
         ll_right_section.changeVisibility(isVisible = !needShow)
+        iv_total_lmm.changeVisibility(isVisible = !needShow)
+        tv_total_lmm_count.changeVisibility(isVisible = !needShow)
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
