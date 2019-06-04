@@ -153,12 +153,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         // left section
         with (itemView.ll_left_section) {
-            // income property
-            model.income().let { income ->
-                findViewById<LabelView>(IncomeProfileProperty.INCOME_PROPERTY_ID)?.let { removeView(it) }
-                if (income != IncomeProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = income.resId, iconResId = OriginR_drawable.ic_income_white_18dp)
-                        .apply { id = IncomeProfileProperty.INCOME_PROPERTY_ID }
+            // transport property
+            model.transport().let { transport ->
+                findViewById<LabelView>(TransportProfileProperty.TRANSPORT_PROPERTY_ID)?.let { removeView(it) }
+                if (transport != TransportProfileProperty.Unknown) {
+                    val view = createLabelView(textResId = transport.resId, iconResId = OriginR_drawable.ic_transport_white_18dp)
+                        .apply { id = TransportProfileProperty.TRANSPORT_PROPERTY_ID }
                     addView(view, 0)  // prepend
                 }
             }
@@ -173,22 +173,22 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                 }
             }
 
-            // transport property
-            model.transport().let { transport ->
-                findViewById<LabelView>(TransportProfileProperty.TRANSPORT_PROPERTY_ID)?.let { removeView(it) }
-                if (transport != TransportProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = transport.resId, iconResId = OriginR_drawable.ic_transport_white_18dp)
-                        .apply { id = TransportProfileProperty.TRANSPORT_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
             // property property
             model.property().let { property ->
                 findViewById<LabelView>(PropertyProfileProperty.PROPERTY_PROPERTY_ID)?.let { removeView(it) }
                 if (property != PropertyProfileProperty.Unknown) {
                     val view = createLabelView(textResId = property.resId, iconResId = OriginR_drawable.ic_home_property_white_18dp)
                         .apply { id = PropertyProfileProperty.PROPERTY_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
+
+            // income property
+            model.income().let { income ->
+                findViewById<LabelView>(IncomeProfileProperty.INCOME_PROPERTY_ID)?.let { removeView(it) }
+                if (income != IncomeProfileProperty.Unknown) {
+                    val view = createLabelView(textResId = income.resId, iconResId = OriginR_drawable.ic_income_white_18dp)
+                        .apply { id = IncomeProfileProperty.INCOME_PROPERTY_ID }
                     addView(view, 0)  // prepend
                 }
             }
