@@ -247,10 +247,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
             .apply {
                 addAll(super.getOffsetScrollStrategies())
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.STD_MARGIN_16, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_AGE_TOP, hide = FeedViewHolderHideAgeOnScroll, show = FeedViewHolderShowAgeOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_DISTANCE_TOP, hide = FeedViewHolderHideDistanceOnScroll, show = FeedViewHolderShowDistanceOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_HAIR_COLOR_TOP, hide = FeedViewHolderHideHairColorOnScroll, show = FeedViewHolderShowHairColorOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_HEIGHT_TOP, hide = FeedViewHolderHideHeightOnScroll, show = FeedViewHolderShowHeightOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
                 add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
             }

@@ -13,6 +13,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_array
 import com.ringoid.origin.feed.OriginR_drawable
+import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.OnlineStatus
@@ -193,24 +194,47 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             }
         }
 
-        with (itemView.label_age_sex) {
-            alpha = if (model.age < 18) 0.0f else 1.0f
-            setIcon(model.gender.resId)
-            setText("${model.age}")
+        // right section
+        with (itemView.ll_right_section) {
+            // distance
+            findViewById<LabelView>(DISTANCE_PROPERTY_ID)?.let { removeView(it) }
+            if (!model.distanceText.isNullOrBlank() && model.distanceText != "unknown") {
+                val view = createLabelView(text = model.distanceText, iconResId = R.drawable.ic_location_white_18dp)
+                    .apply { id = DISTANCE_PROPERTY_ID }
+                addView(view, 0)  // prepend
+            }
+
+            // hair color property
+            model.hairColor().let { hairColor ->
+                findViewById<LabelView>(HairColorProfileProperty.HAIR_COLOR_PROPERTY_ID)?.let { removeView(it) }
+                if (hairColor != HairColorProfileProperty.Unknown) {
+                    val view = createLabelView(textResId = hairColor.resId(model.gender), iconResId = OriginR_drawable.ic_hair_color_white_18dp)
+                        .apply { id = HairColorProfileProperty.HAIR_COLOR_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
+
+            // height property
+            model.height.let { height ->
+                findViewById<LabelView>(HEIGHT_PROPERTY_ID)?.let { removeView(it) }
+                if (height > 0) {
+                    val view = createLabelView(text = "${model.height} ${AppRes.LENGTH_CM}", iconResId = OriginR_drawable.ic_height_property_white_18dp)
+                        .apply { id = HEIGHT_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
+
+            // age, sex
+            model.age.let { age ->
+                findViewById<LabelView>(AGE_PROPERTY_ID)?.let { removeView(it) }
+                if (age >= 18) {
+                    val view = createLabelView(text = "$age", iconResId = model.gender.resId)
+                        .apply { id = AGE_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
         }
-        with (itemView.label_distance) {
-            alpha = if (model.distanceText.isNullOrBlank() || model.distanceText == "unknown") 0.0f else 1.0f
-            setText(model.distanceText)
-        }
-        with (itemView.label_hair_color) {
-            val hairColor = model.hairColor()
-            alpha = if (hairColor == HairColorProfileProperty.Unknown) 0.0f else 1.0f
-            setText(hairColor.resId(model.gender))
-        }
-        with (itemView.label_height) {
-            alpha = if (model.height <= 0) 0.0f else 1.0f
-            setText("${model.height} ${AppRes.LENGTH_CM}")
-        }
+
         with (itemView.label_online_status) {
             alpha = if (model.lastOnlineStatusX == OnlineStatus.UNKNOWN) 0.0f else 1.0f
             setIcon(model.lastOnlineStatusX.resId)
@@ -231,30 +255,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // scroll affected
-        if (payloads.contains(FeedViewHolderHideAgeOnScroll)) {
-            itemView.label_age_sex.changeVisibility(isVisible = false)
-        }
-        if (payloads.contains(FeedViewHolderShowAgeOnScroll)) {
-            itemView.label_age_sex.changeVisibility(isVisible = true)
-        }
-        if (payloads.contains(FeedViewHolderHideDistanceOnScroll))  {
-            itemView.label_distance.changeVisibility(isVisible = false, soft = true)
-        }
-        if (payloads.contains(FeedViewHolderShowDistanceOnScroll)) {
-            itemView.label_distance.changeVisibility(isVisible = true)
-        }
-        if (payloads.contains(FeedViewHolderHideHairColorOnScroll)) {
-            itemView.label_hair_color.changeVisibility(isVisible = false, soft = true)
-        }
-        if (payloads.contains(FeedViewHolderShowHairColorOnScroll)) {
-            itemView.label_hair_color.changeVisibility(isVisible = true)
-        }
-        if (payloads.contains(FeedViewHolderHideHeightOnScroll)) {
-            itemView.label_height.changeVisibility(isVisible = false, soft = true)
-        }
-        if (payloads.contains(FeedViewHolderShowHeightOnScroll)) {
-            itemView.label_height.changeVisibility(isVisible = true)
-        }
         if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
             itemView.label_online_status.changeVisibility(isVisible = false, soft = true)
         }
@@ -280,8 +280,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.apply {
             tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
-            label_age_sex.changeVisibility(isVisible = false)
-            label_distance.changeVisibility(isVisible = false)
             label_online_status.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
@@ -291,8 +289,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.apply {
             tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
-            label_age_sex.changeVisibility(isVisible = true)
-            label_distance.changeVisibility(isVisible = true)
             label_online_status.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)

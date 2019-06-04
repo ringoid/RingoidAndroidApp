@@ -42,42 +42,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:label_icon_size="@dimen/std_icon_12"/>
 
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/std_margin_32"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:label_icon="@drawable/ic_location_white_18dp"/>
-
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_hair_color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        app:layout_constraintBottom_toTopOf="@id/label_distance"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:label_icon="@drawable/ic_hair_color_white_18dp"/>
-
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_height"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        app:layout_constraintBottom_toTopOf="@id/label_hair_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:label_icon="@drawable/ic_height_property_white_18dp"/>
-
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_age_sex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        app:layout_constraintBottom_toTopOf="@id/label_height"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <LinearLayout
         android:id="@+id/ll_left_section"
         android:layout_width="wrap_content"

@@ -7,6 +7,10 @@ import com.ringoid.utility.model.INamedEnum
 import com.ringoid.widget.model.IListItem
 import com.ringoid.widget.model.ListItem
 
+const val AGE_PROPERTY_ID = 97
+const val DISTANCE_PROPERTY_ID = 98
+const val HEIGHT_PROPERTY_ID = 99
+
 enum class EducationProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem, INamedEnum {
     Unknown(0, R.string.common_unchosen, isDefault = true),
     School(10, R.string.profile_property_education_0),
