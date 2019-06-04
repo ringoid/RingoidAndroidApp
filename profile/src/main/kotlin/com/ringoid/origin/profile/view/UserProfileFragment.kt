@@ -203,7 +203,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             observe(vm.images, imagesAdapter::submitList)
             observe(vm.profile) {
                 val gender = spm.currentUserGender()
-                val showDefault = gender == Gender.MALE && it.isAllUnknown()
+                val showDefault = it.isAllUnknown()
 
                 if (showDefault) {
                     with (label_education) {
