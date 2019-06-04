@@ -72,7 +72,7 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
         }
 
         with (item_profile_property_education) {
-            setItems(EducationProfileProperty.values.toList())
+            setItems(EducationProfileProperty.valuesForLocale(app?.localeManager?.getLang()))
             setOnItemSelectedListener<EducationProfileProperty> { vm.onPropertyChanged_education(it) }
         }
         with (item_profile_property_hair_color) {

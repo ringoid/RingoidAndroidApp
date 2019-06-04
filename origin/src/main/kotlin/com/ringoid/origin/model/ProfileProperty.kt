@@ -3,6 +3,7 @@ package com.ringoid.origin.model
 import androidx.annotation.StringRes
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.R
+import com.ringoid.utility.manager.LocaleManager
 import com.ringoid.utility.model.INamedEnum
 import com.ringoid.widget.model.IListItem
 import com.ringoid.widget.model.ListItem
@@ -32,6 +33,11 @@ enum class EducationProfileProperty(override val id: Int, @StringRes val resId: 
         val values: Array<EducationProfileProperty> = values()
 
         fun from(id: Int): EducationProfileProperty = values.find { it.id == id } ?: Unknown
+        fun valuesForLocale(locale: String?): List<EducationProfileProperty> =
+            when (locale) {
+                LocaleManager.LANG_EN -> listOf(Unknown, School, College, Master, PhD)
+                else -> values.toList()
+            }
     }
 }
 
