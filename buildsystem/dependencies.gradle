@@ -133,6 +133,7 @@ ext {
     d_support = [
             crashlytics: "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
             leakCanary:  "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
+            leakSentry:  "com.squareup.leakcanary:leaksentry:${leakCanaryVersion}",
             multidex:    "com.android.support:multidex:${multidexVersion}",
             sentry:      "io.sentry:sentry-android:${sentryVersion}",
             timber:      "com.jakewharton.timber:timber:${timberVersion}",
@@ -300,10 +301,13 @@ ext {
             [configuration: "api", dependency: d_view.rvAnim],
     ]
 
+    def leaks = [
+            [configuration: "debugImplementation", dependency: d_support.leakCanary],
+            [configuration: "implementation", dependency: d_support.leakSentry],
+    ]
+
     def support = [
             [configuration: "implementation", dependency: d_support.crashlytics, options: { transitive = true }],
-            [configuration: "debugImplementation", dependency: d_support.leakCanary],
-            [configuration: "releaseImplementation", dependency: d_support.leakCanary],
 //            [configuration: "implementation", dependency: d_support.multidex],
     ]
 
@@ -330,7 +334,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.branch],
     ]
     appDependencies += all_features + module_main + module_data + develop + android + dagger + deeplink + kotlin + log +
-                       fragnav + net + room + support
+                       fragnav + net + room + support + leaks
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -467,7 +471,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
-                          support + view
+                          support + leaks + view
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
@@ -493,7 +497,7 @@ ext {
         [configuration: "api", dependency: d_libs.flurry],
     ]
     baseDependencies += module_domain + module_utility + module_widget + android + arch + dagger + deeplink + kotlin +
-                        google + log + autoDispose + rx + rxBind
+                        google + log + autoDispose + rx + rxBind + leaks
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test
