@@ -105,6 +105,7 @@ object SentryUtil {
             .withRelease(BuildConfig.VERSION_NAME)
             .withTimestamp(Date())
             .withExtra("userId", user?.id ?: userId)
+            .withExtra("appVersion", BuildConfig.BUILD_NUMBER)
         if (`object` != null) {
             builder.withTag(`object`.javaClass.simpleName, `object`.hashCode().toString())
         }
