@@ -439,6 +439,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
         ibtn_delete_image.changeVisibility(isVisible = !needShow)
         label_online_status.changeVisibility(isVisible = !needShow)
+        ll_left_section.changeVisibility(isVisible = !needShow)
+        ll_right_section.changeVisibility(isVisible = !needShow)
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
