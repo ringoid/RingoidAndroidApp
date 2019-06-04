@@ -172,7 +172,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 .doOnSubscribe { localScopeProvider.start() }
                 .doFinally { localScopeProvider.stop() }
                 .autoDisposable(localScopeProvider)
-                .subscribe({ _ ->
+                .subscribe({
                     val newIds = getVisibleItemIds()  // record ids of whatever items are visible after remove
                     checkForNewlyVisibleItems(prevIds, newIds)
                 }, Timber::e)
