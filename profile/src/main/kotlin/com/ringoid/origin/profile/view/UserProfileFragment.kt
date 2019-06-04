@@ -258,10 +258,9 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
             }
             observe(vm.totalLmmCount) {
-                with (tv_total_lmm_count) {
-                    text = "$it"
-                    changeVisibility(isVisible = it > 0, soft = true)
-                }
+                iv_total_lmm.changeVisibility(isVisible = it > 0, soft = true)
+                tv_total_lmm_count.changeVisibility(isVisible = it > 0, soft = true)
+                tv_total_lmm_count.text = "$it"
             }
         }
 
@@ -492,6 +491,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ll_right_section.changeVisibility(isVisible = isVisible)
         ll_profile_header.changeVisibility(isVisible = isVisible)
         tabs2.changeVisibility(isVisible = isVisible)
+        iv_total_lmm.changeVisibility(isVisible = isVisible && (vm.totalLmmCount.value ?: 0) > 0)
         tv_total_lmm_count.changeVisibility(isVisible = isVisible && (vm.totalLmmCount.value ?: 0) > 0)
     }
 
