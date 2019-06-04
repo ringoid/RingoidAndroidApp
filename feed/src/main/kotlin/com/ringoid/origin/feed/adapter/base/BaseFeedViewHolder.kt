@@ -289,17 +289,20 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
             itemView.tabs.changeVisibility(isVisible = true)
         }
-        payloads.find { it is FeedViewHolderHideOnScroll }
-            ?.let { it as FeedViewHolderHideOnScroll }
-            ?.let { it.index }
-            ?.also { zone -> hideLabelInZone(itemView.ll_left_section, zone) }
-            ?.also { zone -> hideLabelInZone(itemView.ll_right_section, zone) }
-
-        payloads.find { it is FeedViewHolderShowOnScroll }
-            ?.let { it as FeedViewHolderShowOnScroll }
-            ?.let { it.index }
-            ?.also { zone -> showLabelInZone(itemView.ll_left_section, zone) }
-            ?.also { zone -> showLabelInZone(itemView.ll_right_section, zone) }
+        payloads.filter { it is FeedViewHolderHideOnScroll }
+            .forEach {
+                (it as FeedViewHolderHideOnScroll)
+                    .let { it.index }
+                    .also { zone -> hideLabelInZone(itemView.ll_left_section, zone) }
+                    .also { zone -> hideLabelInZone(itemView.ll_right_section, zone) }
+            }
+        payloads.filter { it is FeedViewHolderShowOnScroll }
+            .forEach {
+                (it as FeedViewHolderShowOnScroll)
+                    .let { it.index }
+                    .also { zone -> showLabelInZone(itemView.ll_left_section, zone) }
+                    .also { zone -> showLabelInZone(itemView.ll_right_section, zone) }
+            }
     }
 
     // ------------------------------------------------------------------------
