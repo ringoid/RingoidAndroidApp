@@ -24,7 +24,6 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
-import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.*
@@ -208,52 +207,52 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
                 if (showDefault) {
                     with (label_education) {
-                        alpha = 1.0f
+                        changeVisibility(isVisible = true)
                         setText(OriginR_string.profile_property_education)
                     }
                     with(label_hair_color) {
-                        alpha = 1.0f
+                        changeVisibility(isVisible = true)
                         setText(OriginR_string.profile_property_hair_color)
                     }
                     with(label_height) {
-                        alpha = 1.0f
+                        changeVisibility(isVisible = true)
                         setText(OriginR_string.profile_property_height)
                     }
                     with(label_income) {
-                        alpha = 1.0f
+                        changeVisibility(isVisible = true)
                         setText(OriginR_string.profile_property_income)
                     }
                     with(label_property) {
-                        alpha = 1.0f
+                        changeVisibility(isVisible = true)
                         setText(OriginR_string.profile_property_property)
                     }
                     with(label_transport) {
-                        alpha = 1.0f
+                        changeVisibility(isVisible = true)
                         setText(OriginR_string.profile_property_transport)
                     }
                 } else {
                     with(label_education) {
-                        alpha = if (it.education == EducationProfileProperty.Unknown) 0.0f else 1.0f
+                        changeVisibility(isVisible = it.education != EducationProfileProperty.Unknown)
                         setText(it.education.resId)
                     }
                     with(label_hair_color) {
-                        alpha = if (it.hairColor == HairColorProfileProperty.Unknown) 0.0f else 1.0f
+                        changeVisibility(isVisible = it.hairColor != HairColorProfileProperty.Unknown)
                         setText(it.hairColor.resId(gender))
                     }
                     with(label_height) {
-                        alpha = if (it.height <= 0) 0.0f else 1.0f
+                        changeVisibility(isVisible = it.height > 0)
                         setText("${it.height} ${AppRes.LENGTH_CM}")
                     }
                     with(label_income) {
-                        alpha = if (it.income == IncomeProfileProperty.Unknown) 0.0f else 1.0f
+                        changeVisibility(isVisible = it.income != IncomeProfileProperty.Unknown)
                         setText(it.income.resId)
                     }
                     with(label_property) {
-                        alpha = if (it.property == PropertyProfileProperty.Unknown) 0.0f else 1.0f
+                        changeVisibility(isVisible = it.property != PropertyProfileProperty.Unknown)
                         setText(it.property.resId)
                     }
                     with(label_transport) {
-                        alpha = if (it.transport == TransportProfileProperty.Unknown) 0.0f else 1.0f
+                        changeVisibility(isVisible = it.transport != TransportProfileProperty.Unknown)
                         setText(it.transport.resId)
                     }
                 }
