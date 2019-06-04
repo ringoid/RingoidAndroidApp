@@ -487,8 +487,12 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ibtn_add_image.changeVisibility(isVisible = isVisible)
         ibtn_delete_image.changeVisibility(isVisible = isVisible)
         ibtn_settings.changeVisibility(isVisible = isVisible)
+        label_online_status.changeVisibility(isVisible = isVisible)
+        ll_left_section.changeVisibility(isVisible = isVisible)
+        ll_right_section.changeVisibility(isVisible = isVisible)
         ll_profile_header.changeVisibility(isVisible = isVisible)
         tabs2.changeVisibility(isVisible = isVisible)
+        tv_total_lmm_count.changeVisibility(isVisible = isVisible && (vm.totalLmmCount.value ?: 0) > 0)
     }
 
     // ------------------------------------------
