@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.adapter.base
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -246,6 +247,22 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
+        fun hideLabelInZone(container: ViewGroup, zone: Int) {
+            with (container) {
+                (zone - (4 - childCount))
+                    .takeIf { it >= 0 }
+                    ?.let { getChildAt(it)?.changeVisibility(isVisible = false, soft = true) }
+            }
+        }
+
+        fun showLabelInZone(container: ViewGroup, zone: Int) {
+            with (container) {
+                (zone - (4 - childCount))
+                    .takeIf { it >= 0 }
+                    ?.let { getChildAt(it)?.changeVisibility(isVisible = true) }
+            }
+        }
+
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
         }
@@ -275,17 +292,14 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         payloads.find { it is FeedViewHolderHideOnScroll }
             ?.let { it as FeedViewHolderHideOnScroll }
             ?.let { it.index }
-            ?.let {
-                itemView.ll_left_section.getChildAt(it)?.changeVisibility(isVisible = false, soft = true)
-                itemView.ll_right_section.getChildAt(it)?.changeVisibility(isVisible = false, soft = true)
-            }
+            ?.also { zone -> hideLabelInZone(itemView.ll_left_section, zone) }
+            ?.also { zone -> hideLabelInZone(itemView.ll_right_section, zone) }
+
         payloads.find { it is FeedViewHolderShowOnScroll }
             ?.let { it as FeedViewHolderShowOnScroll }
             ?.let { it.index }
-            ?.let {
-                itemView.ll_left_section.getChildAt(it)?.changeVisibility(isVisible = true)
-                itemView.ll_right_section.getChildAt(it)?.changeVisibility(isVisible = true)
-            }
+            ?.also { zone -> showLabelInZone(itemView.ll_left_section, zone) }
+            ?.also { zone -> showLabelInZone(itemView.ll_right_section, zone) }
     }
 
     // ------------------------------------------------------------------------
