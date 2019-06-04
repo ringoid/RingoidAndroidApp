@@ -74,5 +74,15 @@
             style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
+
+        <TextView
+            android:id="@+id/tv_support"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/std_margin_32"
+            android:layout_marginStart="@dimen/std_margin_16"
+            android:layout_marginEnd="@dimen/std_margin_16"
+            android:gravity="start|center_vertical"
+            android:text="@string/settings_support_rationale"
+            style="@style/StdText.Secondary"/>
     </LinearLayout>
 </ScrollView>

@@ -104,6 +104,7 @@
     <string name="settings_push">Push&#45;уведомления</string>
     <string name="settings_support">Написать support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
+    <string name="settings_support_rationale">Если у вас есть предложения, как улучшить Ringoid, пожалуйста, напишите на support@ringoid.com</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_theme_dark">Ночной режим</string>
 
