@@ -12,10 +12,9 @@ import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.*
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
+import com.ringoid.origin.usersettings.WidgetR_attrs
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.inputDebounce
+import com.ringoid.utility.*
 import com.ringoid.widget.model.ListItem
 import com.ringoid.widget.view.item_view.textChanges
 import kotlinx.android.synthetic.main.fragment_settings_profile.*
@@ -105,6 +104,9 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
                     initText = getText(), inputType = InputType.TYPE_CLASS_NUMBER, maxLength = 3)
             }
             textChanges().compose(inputDebounce()).subscribe(::onHeightTextChange)
+        }
+        with (tv_support) {
+            highlightFrom(start = text.lastIndexOf(' '), textColor = context.getAttributeColor(WidgetR_attrs.refTextColorPrimary))
         }
     }
 

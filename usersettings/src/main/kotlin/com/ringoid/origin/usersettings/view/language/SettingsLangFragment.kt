@@ -18,6 +18,7 @@ import com.ringoid.origin.usersettings.view.language.adapter.LanguageItemVO
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangAdapter
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangViewHolderIsChecked
 import com.ringoid.utility.getAttributeColor
+import com.ringoid.utility.highlightFrom
 import com.ringoid.utility.manager.LocaleManager
 import kotlinx.android.synthetic.main.fragment_settings_language.*
 
@@ -56,16 +57,8 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
             adapter = langAdapter
             layoutManager = LinearLayoutManager(context)
         }
-
-        tv_lang_help.also {
-            val start = it.text.lastIndexOf(' ')
-            if (start != DomainUtil.BAD_POSITION) {
-                SpannableString(it.text).apply {
-                    val textColor = it.context.getAttributeColor(WidgetR_attrs.refTextColorPrimary)
-                    setSpan(ForegroundColorSpan(textColor), start, it.text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-                    it.text = this
-                }
-            }
+        with (tv_lang_help) {
+            highlightFrom(start = text.lastIndexOf(' '), textColor = context.getAttributeColor(WidgetR_attrs.refTextColorPrimary))
         }
     }
 
