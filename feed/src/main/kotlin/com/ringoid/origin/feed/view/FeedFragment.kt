@@ -266,7 +266,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             layoutManager = LinearLayoutManager(context)
             itemAnimator = FeedItemAnimator { rv_items.post { feedAdapter.notifyItemRangeChanged(it - 1, 2, FeedViewHolderShowControls) } }
             setHasFixedSize(true)
-            setItemViewCacheSize(6)
             recycledViewPool.setMaxRecycledViews(OriginListAdapter.VIEW_TYPE_NORMAL, 10)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(itemOffsetScrollListener)
