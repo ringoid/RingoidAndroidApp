@@ -257,7 +257,12 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     }
                 }
             }
-            observe(vm.totalLmmCount) { tv_total_lmm_count.text = "$it" }
+            observe(vm.totalLmmCount) {
+                with (tv_total_lmm_count) {
+                    text = "$it"
+                    changeVisibility(isVisible = it > 0, soft = true)
+                }
+            }
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
