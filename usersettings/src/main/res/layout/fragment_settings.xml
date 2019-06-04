@@ -25,6 +25,7 @@
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_profile"
         android:layout_height="wrap_content"
+        app:icon_item_icon="?attr/refDrawableSettingsProfile"
         app:icon_item_hide_icon="false"
         app:icon_item_text="@string/settings_profile"
         style="?attr/iconItemView"/>

@@ -23,6 +23,7 @@
         <attr name="refDrawableProfilePropertyIncome" format="reference"/>
         <attr name="refDrawableProfilePropertyProperty" format="reference"/>
         <attr name="refDrawableProfilePropertyTransport" format="reference"/>
+        <attr name="refDrawableSettingsProfile" format="reference"/>
         <attr name="refDrawableThemeSwitch" format="reference"/>
     </declare-styleable>
 </resources>
