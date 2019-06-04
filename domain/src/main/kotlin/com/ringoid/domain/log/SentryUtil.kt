@@ -3,6 +3,7 @@ package com.ringoid.domain.log
 import android.os.Build
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.ApiException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
@@ -87,7 +88,12 @@ object SentryUtil {
                         `object`: Any? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
         message?.let { breadcrumb(it) }
         if (!message.isNullOrBlank()) {
-            Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
+            val xExtras = (e as? ApiException)?.code
+                ?.let { errorCode -> "apiErrorCode" to errorCode }
+                ?.let { mutableListOf<Pair<String, String>>().apply { add(it) } }
+                ?.let { list -> extras?.let { list.addAll(it) }; list }
+                ?: extras
+            Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = xExtras))
         } else {
             Sentry.capture(e)
         }

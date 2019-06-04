@@ -3,7 +3,7 @@ package com.ringoid.domain.exception
 import timber.log.Timber
 
 open class ApiException(val code: String, message: String? = null, val tag: String? = null, val isFatal: Boolean = false)
-    : RuntimeException("code=$code${if (isFatal) " [FATAL]" else ""}: $message") {
+    : RuntimeException(message) {
 
     init {
         Timber.e(this, "ApiException[tag=$tag]: code=$code: $message")
