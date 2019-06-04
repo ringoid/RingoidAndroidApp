@@ -75,7 +75,7 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
             }
         }
         item_email_officer.clicks().compose(clickDebounce()).subscribe {
-            ExternalNavigator.emailDataProtectionOfficer(this, bodyContent = item_customer_id.getLabel())
+            ExternalNavigator.emailDataProtectionOfficer(this, bodyContent = "${item_customer_id.getLabel()}...")
         }
         item_licenses.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_LICENSES}") }
         item_privacy.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/webpage?url=${AppRes.WEB_URL_PRIVACY}") }
