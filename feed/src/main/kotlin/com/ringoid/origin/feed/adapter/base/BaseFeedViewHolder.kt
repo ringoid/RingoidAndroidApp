@@ -11,7 +11,6 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.AppRes
-import com.ringoid.origin.feed.OriginR_array
 import com.ringoid.origin.feed.OriginR_drawable
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
