@@ -1,6 +1,8 @@
 package com.ringoid.origin.feed.adapter.base
 
 import android.view.View
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -9,6 +11,8 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.AppRes
+import com.ringoid.origin.feed.OriginR_array
+import com.ringoid.origin.feed.OriginR_drawable
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.OnlineStatus
@@ -18,6 +22,7 @@ import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
+import com.ringoid.widget.view.LabelView
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -116,6 +121,19 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     override fun bind(model: FeedItemVO) {
+        fun createLabelView(@StringRes textResId: Int, @DrawableRes iconResId: Int): LabelView =
+            LabelView(itemView.context).apply {
+                setText(textResId)
+                setIcon(iconResId)
+            }
+
+        fun createLabelView(text: String?, @DrawableRes iconResId: Int): LabelView =
+            LabelView(itemView.context).apply {
+                setText(text)
+                setIcon(iconResId)
+            }
+
+        // --------------------------------------
         showControls()  // cancel any effect caused by applied payloads
         val positionOfImage = model.positionOfImage
         profileImageAdapter.apply {
@@ -132,6 +150,49 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
         }
 
+        // left section
+        with (itemView.ll_left_section) {
+            // income property
+            model.income().let { income ->
+                findViewById<LabelView>(IncomeProfileProperty.INCOME_PROPERTY_ID)?.let { removeView(it) }
+                if (income != IncomeProfileProperty.Unknown) {
+                    val view = createLabelView(textResId = income.resId, iconResId = OriginR_drawable.ic_income_white_18dp)
+                        .apply { id = IncomeProfileProperty.INCOME_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
+
+            // education property
+            model.education().let { education ->
+                findViewById<LabelView>(EducationProfileProperty.EDUCATION_PROPERTY_ID)?.let { removeView(it) }
+                if (education != EducationProfileProperty.Unknown) {
+                    val view = createLabelView(textResId = education.resId, iconResId = OriginR_drawable.ic_education_white_18dp)
+                        .apply { id = EducationProfileProperty.EDUCATION_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
+
+            // transport property
+            model.transport().let { transport ->
+                findViewById<LabelView>(TransportProfileProperty.TRANSPORT_PROPERTY_ID)?.let { removeView(it) }
+                if (transport != TransportProfileProperty.Unknown) {
+                    val view = createLabelView(textResId = transport.resId, iconResId = OriginR_drawable.ic_transport_white_18dp)
+                        .apply { id = TransportProfileProperty.TRANSPORT_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
+
+            // property property
+            model.property().let { property ->
+                findViewById<LabelView>(PropertyProfileProperty.PROPERTY_PROPERTY_ID)?.let { removeView(it) }
+                if (property != PropertyProfileProperty.Unknown) {
+                    val view = createLabelView(textResId = property.resId, iconResId = OriginR_drawable.ic_home_property_white_18dp)
+                        .apply { id = PropertyProfileProperty.PROPERTY_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
+        }
+
         with (itemView.label_age_sex) {
             alpha = if (model.age < 18) 0.0f else 1.0f
             setIcon(model.gender.resId)
@@ -140,11 +201,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         with (itemView.label_distance) {
             alpha = if (model.distanceText.isNullOrBlank() || model.distanceText == "unknown") 0.0f else 1.0f
             setText(model.distanceText)
-        }
-        with (itemView.label_education) {
-            val education = model.education()
-            alpha = if (education == EducationProfileProperty.Unknown) 0.0f else 1.0f
-            setText(education.resId)
         }
         with (itemView.label_hair_color) {
             val hairColor = model.hairColor()
@@ -155,25 +211,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             alpha = if (model.height <= 0) 0.0f else 1.0f
             setText("${model.height} ${AppRes.LENGTH_CM}")
         }
-        with (itemView.label_income) {
-            val income = model.income()
-            alpha = if (income == IncomeProfileProperty.Unknown) 0.0f else 1.0f
-            setText(income.resId)
-        }
         with (itemView.label_online_status) {
             alpha = if (model.lastOnlineStatusX == OnlineStatus.UNKNOWN) 0.0f else 1.0f
             setIcon(model.lastOnlineStatusX.resId)
             setText(model.lastOnlineText)
-        }
-        with (itemView.label_property) {
-            val property = model.property()
-            alpha = if (property == PropertyProfileProperty.Unknown) 0.0f else 1.0f
-            setText(property.resId)
-        }
-        with (itemView.label_transport) {
-            val transport = model.transport()
-            alpha = if (transport == TransportProfileProperty.Unknown) 0.0f else 1.0f
-            setText(transport.resId)
         }
 
         if (BuildConfig.IS_STAGING) {
@@ -202,12 +243,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowDistanceOnScroll)) {
             itemView.label_distance.changeVisibility(isVisible = true)
         }
-        if (payloads.contains(FeedViewHolderHideEducationOnScroll)) {
-            itemView.label_education.changeVisibility(isVisible = false, soft = true)
-        }
-        if (payloads.contains(FeedViewHolderShowEducationOnScroll)) {
-            itemView.label_education.changeVisibility(isVisible = true)
-        }
         if (payloads.contains(FeedViewHolderHideHairColorOnScroll)) {
             itemView.label_hair_color.changeVisibility(isVisible = false, soft = true)
         }
@@ -220,23 +255,11 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowHeightOnScroll)) {
             itemView.label_height.changeVisibility(isVisible = true)
         }
-        if (payloads.contains(FeedViewHolderHideIncomeOnScroll)) {
-            itemView.label_income.changeVisibility(isVisible = false, soft = true)
-        }
-        if (payloads.contains(FeedViewHolderShowIncomeOnScroll)) {
-            itemView.label_income.changeVisibility(isVisible = true)
-        }
         if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
             itemView.label_online_status.changeVisibility(isVisible = false, soft = true)
         }
         if (payloads.contains(FeedViewHolderShowOnlineStatusOnScroll)) {
             itemView.label_online_status.changeVisibility(isVisible = true)
-        }
-        if (payloads.contains(FeedViewHolderHidePropertyOnScroll)) {
-            itemView.label_property.changeVisibility(isVisible = false, soft = true)
-        }
-        if (payloads.contains(FeedViewHolderShowPropertyOnScroll)) {
-            itemView.label_property.changeVisibility(isVisible = true)
         }
         if (payloads.contains(FeedViewHolderHideSettingsBtnOnScroll)) {
             itemView.ibtn_settings.changeVisibility(isVisible = false)
@@ -249,12 +272,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
         if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
             itemView.tabs.changeVisibility(isVisible = true)
-        }
-        if (payloads.contains(FeedViewHolderHideTransportOnScroll)) {
-            itemView.label_transport.changeVisibility(isVisible = false, soft = true)
-        }
-        if (payloads.contains(FeedViewHolderShowTransportOnScroll)) {
-            itemView.label_transport.changeVisibility(isVisible = true)
         }
     }
 

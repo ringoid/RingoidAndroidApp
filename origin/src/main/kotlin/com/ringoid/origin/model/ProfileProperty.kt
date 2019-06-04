@@ -3,10 +3,11 @@ package com.ringoid.origin.model
 import androidx.annotation.StringRes
 import com.ringoid.domain.misc.Gender
 import com.ringoid.origin.R
+import com.ringoid.utility.model.INamedEnum
 import com.ringoid.widget.model.IListItem
 import com.ringoid.widget.model.ListItem
 
-enum class EducationProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem {
+enum class EducationProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem, INamedEnum {
     Unknown(0, R.string.common_unchosen, isDefault = true),
     School(10, R.string.profile_property_education_0),
     College(20, R.string.profile_property_education_1),
@@ -17,14 +18,20 @@ enum class EducationProfileProperty(override val id: Int, @StringRes val resId: 
 
     override fun getLabelResId(): Int = resId
 
+    override fun getNameId(): Int = EDUCATION_PROPERTY_ID
+    override fun getName(): String = EDUCATION_PROPERTY
+
     companion object {
+        const val EDUCATION_PROPERTY = "edu"
+        const val EDUCATION_PROPERTY_ID = 101
+
         val values: Array<EducationProfileProperty> = values()
 
         fun from(id: Int): EducationProfileProperty = values.find { it.id == id } ?: Unknown
     }
 }
 
-enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResId: Int, @StringRes private val femaleResId: Int, val isDefault: Boolean = false) {
+enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResId: Int, @StringRes private val femaleResId: Int, val isDefault: Boolean = false) : INamedEnum {
     Unknown(0, R.string.common_unchosen, R.string.common_unchosen, isDefault = true),
     Black(10, R.string.profile_property_hair_color_m_0, R.string.profile_property_hair_color_f_0),
     Blonde(20, R.string.profile_property_hair_color_m_1, R.string.profile_property_hair_color_f_1),
@@ -33,7 +40,13 @@ enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResI
     Gray(50, R.string.profile_property_hair_color_m_4, R.string.profile_property_hair_color_f_4),
     White(60, R.string.profile_property_hair_color_m_5, R.string.profile_property_hair_color_f_5);
 
+    override fun getNameId(): Int = HAIR_COLOR_PROPERTY_ID
+    override fun getName(): String = HAIR_COLOR_PROPERTY
+
     companion object {
+        const val HAIR_COLOR_PROPERTY = "hair"
+        const val HAIR_COLOR_PROPERTY_ID = 102
+
         val values: Array<HairColorProfileProperty> = values()
 
         fun from(id: Int): HairColorProfileProperty = values.find { it.id == id } ?: Unknown
@@ -55,7 +68,7 @@ enum class HairColorProfileProperty(val id: Int, @StringRes private val maleResI
         ListItem(id = id, isDefault = isDefault, l = { resId(gender) })
 }
 
-enum class IncomeProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem {
+enum class IncomeProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem, INamedEnum {
     Unknown(0, R.string.common_unchosen, isDefault = true),
     Low(10, R.string.profile_property_income_0),
     Middle(20, R.string.profile_property_income_1),
@@ -64,14 +77,20 @@ enum class IncomeProfileProperty(override val id: Int, @StringRes val resId: Int
 
     override fun getLabelResId(): Int = resId
 
+    override fun getNameId(): Int = INCOME_PROPERTY_ID
+    override fun getName(): String = INCOME_PROPERTY
+
     companion object {
+        const val INCOME_PROPERTY = "income"
+        const val INCOME_PROPERTY_ID = 103
+
         val values: Array<IncomeProfileProperty> = values()
 
         fun from(id: Int): IncomeProfileProperty = values.find { it.id == id } ?: Unknown
     }
 }
 
-enum class PropertyProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem {
+enum class PropertyProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem, INamedEnum {
     Unknown(0, R.string.common_unchosen, isDefault = true),
     LiveWithParents(10, R.string.profile_property_property_0),
     LiveInDormitory(20, R.string.profile_property_property_1),
@@ -83,14 +102,20 @@ enum class PropertyProfileProperty(override val id: Int, @StringRes val resId: I
 
     override fun getLabelResId(): Int = resId
 
+    override fun getNameId(): Int = PROPERTY_PROPERTY_ID
+    override fun getName(): String = PROPERTY_PROPERTY
+
     companion object {
+        const val PROPERTY_PROPERTY = "prop"
+        const val PROPERTY_PROPERTY_ID = 104
+
         val values: Array<PropertyProfileProperty> = values()
 
         fun from(id: Int): PropertyProfileProperty = values.find { it.id == id } ?: Unknown
     }
 }
 
-enum class TransportProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem {
+enum class TransportProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem, INamedEnum {
     Unknown(0, R.string.common_unchosen, isDefault = true),
     Walk(10, R.string.profile_property_transport_0),
     PublicTransport(20, R.string.profile_property_transport_1),
@@ -102,7 +127,13 @@ enum class TransportProfileProperty(override val id: Int, @StringRes val resId: 
 
     override fun getLabelResId(): Int = resId
 
+    override fun getNameId(): Int = TRANSPORT_PROPERTY_ID
+    override fun getName(): String = TRANSPORT_PROPERTY
+
     companion object {
+        const val TRANSPORT_PROPERTY = "tran"
+        const val TRANSPORT_PROPERTY_ID = 105
+
         val values: Array<TransportProfileProperty> = values()
 
         fun from(id: Int): TransportProfileProperty = values.find { it.id == id } ?: Unknown
