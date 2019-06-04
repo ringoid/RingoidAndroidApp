@@ -328,7 +328,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             if (yearOfBirth != DomainUtil.BAD_VALUE) {
                 alpha = 1.0f
                 val age = calendar.get(Calendar.YEAR) - yearOfBirth
-                setIcon(AppInMemory.userGender().resId)
+                setIcon(spm.currentUserGender().resId)
                 setText("$age")
             } else {
                 alpha = 0.0f
