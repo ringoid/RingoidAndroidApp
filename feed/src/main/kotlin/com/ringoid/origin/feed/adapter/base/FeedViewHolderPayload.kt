@@ -15,3 +15,6 @@ object FeedViewHolderHideSettingsBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowSettingsBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowTabsIndicatorOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideTabsIndicatorOnScroll : FeedViewHolderPayload()
+
+data class FeedViewHolderHideOnScroll(val index: Int) : FeedViewHolderPayload()
+data class FeedViewHolderShowOnScroll(val index: Int) : FeedViewHolderPayload()

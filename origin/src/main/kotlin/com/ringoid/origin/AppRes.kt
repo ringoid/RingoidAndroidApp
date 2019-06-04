@@ -47,6 +47,22 @@ object AppRes {
         private set
     var FEED_ITEM_ONLINE_STATUS_TOP: Int = -1
         private set
+    var FEED_ITEM_PROPERTY_BOTTOM_0: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_TOP_0: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_BOTTOM_1: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_TOP_1: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_BOTTOM_2: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_TOP_2: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_BOTTOM_3: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_TOP_3: Int = -1
+        private set
     var FEED_ITEM_SETTINGS_BTN_BOTTOM: Int = -1
         private set
     var FEED_ITEM_SETTINGS_BTN_TOP: Int = -1
@@ -136,12 +152,22 @@ object AppRes {
             FEED_ITEM_MID_BTN_BOTTOM = (FEED_IMAGE_HALF_HEIGHT + ICON_SIZE_36 * 0.5f).toInt()
             FEED_ITEM_MID_BTN_TOP = (FEED_IMAGE_HALF_HEIGHT - ICON_SIZE_36 * 0.5f).toInt()
             FEED_ITEM_ONLINE_STATUS_TOP = STD_MARGIN_8 + ICON_SIZE_36
+
+            FEED_ITEM_PROPERTY_BOTTOM_0 = FEED_IMAGE_HEIGHT - STD_MARGIN_32
+            FEED_ITEM_PROPERTY_TOP_0 = FEED_ITEM_PROPERTY_BOTTOM_0 - STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_BOTTOM_1 = FEED_ITEM_PROPERTY_TOP_0
+            FEED_ITEM_PROPERTY_TOP_1 = FEED_ITEM_PROPERTY_BOTTOM_1 - STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_BOTTOM_2 = FEED_ITEM_PROPERTY_TOP_1
+            FEED_ITEM_PROPERTY_TOP_2 = FEED_ITEM_PROPERTY_BOTTOM_2 - STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_BOTTOM_3 = FEED_ITEM_PROPERTY_TOP_2
+            FEED_ITEM_PROPERTY_TOP_3 = FEED_ITEM_PROPERTY_BOTTOM_3 - STD_MARGIN_18 * 2
+
+            FEED_ITEM_SETTINGS_BTN_TOP = FEED_ITEM_TABS_INDICATOR_TOP  // getDimensionPixelSize(R.dimen.std_margin_24)
+            FEED_ITEM_SETTINGS_BTN_BOTTOM = (FEED_ITEM_SETTINGS_BTN_TOP * 1.5f).toInt()
             FEED_ITEM_TABS_INDICATOR_TOP = STD_MARGIN_16
             FEED_ITEM_TABS_INDICATOR_TOP2 = FEED_IMAGE_HEIGHT - STD_MARGIN_32
             FEED_ITEM_TABS_INDICATOR_BOTTOM = (FEED_ITEM_TABS_INDICATOR_TOP * 1.5f).toInt()
             FEED_ITEM_TABS_INDICATOR_BOTTOM2 = FEED_IMAGE_HEIGHT - STD_MARGIN_16
-            FEED_ITEM_SETTINGS_BTN_TOP = FEED_ITEM_TABS_INDICATOR_TOP  // getDimensionPixelSize(R.dimen.std_margin_24)
-            FEED_ITEM_SETTINGS_BTN_BOTTOM = (FEED_ITEM_SETTINGS_BTN_TOP * 1.5f).toInt()
             LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT = (BUTTON_HEIGHT * 0.67f).toInt()
             MAIN_BOTTOM_BAR_HEIGHT = getDimensionPixelSize(R.dimen.main_bottom_bar_height)
             MAIN_BOTTOM_BAR_HEIGHT_HALF = getDimensionPixelSize(R.dimen.main_bottom_bar_height_half)

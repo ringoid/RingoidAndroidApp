@@ -272,6 +272,20 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
             itemView.tabs.changeVisibility(isVisible = true)
         }
+        payloads.find { it is FeedViewHolderHideOnScroll }
+            ?.let { it as FeedViewHolderHideOnScroll }
+            ?.let { it.index }
+            ?.let {
+                itemView.ll_left_section.getChildAt(it)?.changeVisibility(isVisible = false, soft = true)
+                itemView.ll_right_section.getChildAt(it)?.changeVisibility(isVisible = false, soft = true)
+            }
+        payloads.find { it is FeedViewHolderShowOnScroll }
+            ?.let { it as FeedViewHolderShowOnScroll }
+            ?.let { it.index }
+            ?.let {
+                itemView.ll_left_section.getChildAt(it)?.changeVisibility(isVisible = true)
+                itemView.ll_right_section.getChildAt(it)?.changeVisibility(isVisible = true)
+            }
     }
 
     // ------------------------------------------------------------------------
@@ -280,6 +294,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
             label_online_status.changeVisibility(isVisible = false)
+            ll_left_section.changeVisibility(isVisible = false)
+            ll_right_section.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
     }
@@ -289,6 +305,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
             label_online_status.changeVisibility(isVisible = true)
+            ll_left_section.changeVisibility(isVisible = true)
+            ll_right_section.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
     }
