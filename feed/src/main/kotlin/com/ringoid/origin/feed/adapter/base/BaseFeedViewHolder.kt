@@ -263,11 +263,14 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             }
         }
 
+        // --------------------------------------
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
+            return
         }
         if (payloads.contains(FeedViewHolderShowControls)) {
             showControls()
+            return
         }
 
         // scroll affected
