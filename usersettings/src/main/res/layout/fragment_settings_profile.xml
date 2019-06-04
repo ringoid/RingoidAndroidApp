@@ -21,29 +21,21 @@
             app:layout_constraintTop_toTopOf="parent"
             style="@style/ProgressBar.Horizontal"/>
 
-        <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_property"
+        <com.ringoid.widget.view.item_view.TextIconItemView
+            android:id="@+id/item_profile_property_height"
+            android:layout_height="@dimen/edit_text_icon_item_view_height"
             android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyProperty"
-            app:icon_item_text="@string/profile_property_property"
+            app:icon_item_icon="?refDrawableProfilePropertyHeight"
+            app:icon_item_text="@string/profile_property_height"
             style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
 
         <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_transport"
+            android:id="@+id/item_profile_property_hair_color"
             android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyTransport"
-            app:icon_item_text="@string/profile_property_transport"
-            style="?attr/spinnerIconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_income"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyIncome"
-            app:icon_item_text="@string/profile_property_income"
+            app:icon_item_icon="?refDrawableProfilePropertyHairColor"
+            app:icon_item_text="@string/profile_property_hair_color"
             style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
@@ -58,20 +50,28 @@
         <View style="@style/Underscore"/>
 
         <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_hair_color"
+            android:id="@+id/item_profile_property_income"
             android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyHairColor"
-            app:icon_item_text="@string/profile_property_hair_color"
+            app:icon_item_icon="?refDrawableProfilePropertyIncome"
+            app:icon_item_text="@string/profile_property_income"
             style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
 
-        <com.ringoid.widget.view.item_view.TextIconItemView
-            android:id="@+id/item_profile_property_height"
-            android:layout_height="@dimen/edit_text_icon_item_view_height"
+        <com.ringoid.widget.view.item_view.SpinnerIconItemView
+            android:id="@+id/item_profile_property_property"
             android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyHeight"
-            app:icon_item_text="@string/profile_property_height"
+            app:icon_item_icon="?refDrawableProfilePropertyProperty"
+            app:icon_item_text="@string/profile_property_property"
+            style="?attr/spinnerIconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SpinnerIconItemView
+            android:id="@+id/item_profile_property_transport"
+            android:layout_marginTop="@dimen/std_margin_16"
+            app:icon_item_icon="?refDrawableProfilePropertyTransport"
+            app:icon_item_text="@string/profile_property_transport"
             style="?attr/spinnerIconItemView"/>
 
         <View style="@style/Underscore"/>
