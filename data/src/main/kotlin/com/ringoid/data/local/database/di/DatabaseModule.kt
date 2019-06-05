@@ -18,9 +18,10 @@ class DatabaseModule {
                         migration_100_101: Migration_100_101,
                         migration_101_102: Migration_101_102,
                         migration_102_103: Migration_102_103,
-                        migration_103_104: Migration_103_104): RingoidDatabase =
+                        migration_103_104: Migration_103_104,
+                        migration_104_105: Migration_104_105): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-            .addMigrations(migration_100_101, migration_101_102, migration_102_103, migration_103_104)
+            .addMigrations(migration_100_101, migration_101_102, migration_102_103, migration_103_104, migration_104_105)
             .fallbackToDestructiveMigrationFrom(8, 9, 10)
             .build()
 
