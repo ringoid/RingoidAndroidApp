@@ -115,11 +115,10 @@ enum class PropertyProfileProperty(override val id: Int, @StringRes val resId: I
     Unknown(0, R.string.common_unchosen, isDefault = true),
     LiveWithParents(10, R.string.profile_property_property_0),
     LiveInDormitory(20, R.string.profile_property_property_1),
-    RentRoom(30, R.string.profile_property_property_2),
-    RentFlat(40, R.string.profile_property_property_3),
-    RentHouse(50, R.string.profile_property_property_4),
-    OwnFlat(60, R.string.profile_property_property_5),
-    OwnHouse(70, R.string.profile_property_property_6);
+    LiveWithFriend(30, R.string.profile_property_property_2),
+    RentRoom(40, R.string.profile_property_property_3),
+    Flat(50, R.string.profile_property_property_4),
+    House(60, R.string.profile_property_property_5);
 
     override fun getLabelResId(): Int = resId
 

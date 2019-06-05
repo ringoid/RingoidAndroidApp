@@ -176,11 +176,10 @@
     <string name="profile_property_property">Property</string>
     <string name="profile_property_property_0">Live with parents</string>
     <string name="profile_property_property_1">Live in a dormitory</string>
-    <string name="profile_property_property_2">Rent a room</string>
-    <string name="profile_property_property_3">Rent a flat</string>
-    <string name="profile_property_property_4">Rent a house</string>
-    <string name="profile_property_property_5">Own a flat</string>
-    <string name="profile_property_property_6">Own a house</string>
+    <string name="profile_property_property_2">Live with a friend</string>
+    <string name="profile_property_property_3">Rent a room</string>
+    <string name="profile_property_property_4">Flat (rent or own)</string>
+    <string name="profile_property_property_5">House (rent or own)</string>
 
     <string name="profile_property_transport">Transport</string>
     <string name="profile_property_transport_0">Walk</string>

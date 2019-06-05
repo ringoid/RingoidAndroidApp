@@ -171,11 +171,10 @@
     <string name="profile_property_property">Недвижимость</string>
     <string name="profile_property_property_0">Живу с родителями</string>
     <string name="profile_property_property_1">Живу в общежитии</string>
-    <string name="profile_property_property_2">Снимаю комнату</string>
-    <string name="profile_property_property_3">Снимаю квартиру</string>
-    <string name="profile_property_property_4">Снимаю дом</string>
-    <string name="profile_property_property_5">Своя квартира</string>
-    <string name="profile_property_property_6">Свой дом</string>
+    <string name="profile_property_property_2">Живу с другом/подругой</string>
+    <string name="profile_property_property_3">Снимаю комнату</string>
+    <string name="profile_property_property_4">Квартира (снимаю или своя)</string>
+    <string name="profile_property_property_5">Дом (снимаю или свой)</string>
 
     <string name="profile_property_transport">Транспорт</string>
     <string name="profile_property_transport_0">Хожу пешком</string>
