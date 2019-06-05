@@ -105,6 +105,12 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.ringoid.widget.view.LabelView
+            android:id="@+id/label_children"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:label_icon="@drawable/ic_children_white_18dp"/>
+
+        <com.ringoid.widget.view.LabelView
             android:id="@+id/label_income"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

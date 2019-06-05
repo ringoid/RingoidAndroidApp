@@ -143,6 +143,12 @@
     <string name="web_url_error_status">https://ringoid.com/status.html</string>
 
     <!-- Data -->
+    <string name="profile_property_children">Children</string>
+    <string name="profile_property_children_0">Want someday</string>
+    <string name="profile_property_children_1">Don\&#39;t want</string>
+    <string name="profile_property_children_2">Have &#38; want more</string>
+    <string name="profile_property_children_3">Have &#38; don\&#39;t want more</string>
+
     <string name="profile_property_education">Education level</string>
     <string name="profile_property_education_0">High school</string>
     <string name="profile_property_education_1">College</string>

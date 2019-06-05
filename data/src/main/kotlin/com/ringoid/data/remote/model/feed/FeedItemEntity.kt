@@ -32,7 +32,8 @@ import com.ringoid.domain.model.messenger.Message
  *   "education": 0,
  *   "income": 0,
  *   "height": 0,
- *   "hairColor": 0
+ *   "hairColor": 0,
+ *   "children":0
  * }
  */
 open class FeedItemEntity(
@@ -44,14 +45,15 @@ open class FeedItemEntity(
     @Expose @SerializedName(COLUMN_FLAG_NOT_SEEN) val isNotSeen: Boolean,
     lastOnlineStatus: String? = null,
     lastOnlineText: String? = null,
-    age: Int,
-    education: Int,
-    gender: String?,
-    hairColor: Int,
-    height: Int,
-    income: Int,
-    property: Int,
-    transport: Int)
+    age: Int = DomainUtil.UNKNOWN_VALUE,
+    children: Int = DomainUtil.UNKNOWN_VALUE,
+    education: Int = DomainUtil.UNKNOWN_VALUE,
+    gender: String? = null,
+    hairColor: Int = DomainUtil.UNKNOWN_VALUE,
+    height: Int = DomainUtil.UNKNOWN_VALUE,
+    income: Int = DomainUtil.UNKNOWN_VALUE,
+    property: Int = DomainUtil.UNKNOWN_VALUE,
+    transport: Int = DomainUtil.UNKNOWN_VALUE)
     : BaseProfileEntity<FeedItem>(
         id = id,
         sortPosition = sortPosition,
@@ -60,6 +62,7 @@ open class FeedItemEntity(
         lastOnlineStatus = lastOnlineStatus,
         lastOnlineText = lastOnlineText,
         age = age,
+        children = children,
         education = education,
         gender = gender,
         hairColor = hairColor,
@@ -86,6 +89,7 @@ open class FeedItemEntity(
             lastOnlineText = lastOnlineText,
             isNotSeen = isNotSeen,
             age = age,
+            children = children,
             education = education,
             gender = Gender.from(gender),
             hairColor = hairColor,

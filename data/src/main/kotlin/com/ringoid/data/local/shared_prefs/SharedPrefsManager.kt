@@ -80,6 +80,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED = "sp_key_user_settings_matches_push_enabled"
         const val SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED = "sp_key_user_settings_messages_push_enabled"
 
+        const val SP_KEY_USER_PROFILE_PROPERTY_CHILDREN = "sp_key_user_profile_property_children"
         const val SP_KEY_USER_PROFILE_PROPERTY_EDUCATION  = "sp_key_user_profile_property_education"
         const val SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR = "sp_key_user_profile_property_hair_color"
         const val SP_KEY_USER_PROFILE_PROPERTY_HEIGHT = "sp_key_user_profile_property_height"
@@ -298,6 +299,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     // ------------------------------------------
     override fun getUserProfileProperties(): UserProfilePropertiesRaw =
         UserProfilePropertiesRaw(
+            children = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_CHILDREN, DomainUtil.UNKNOWN_VALUE),
             education = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_EDUCATION, DomainUtil.UNKNOWN_VALUE),
             hairColor = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR, DomainUtil.UNKNOWN_VALUE),
             height = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_HEIGHT, DomainUtil.UNKNOWN_VALUE),
@@ -307,6 +309,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun setUserProfileProperties(propertiesRaw: UserProfilePropertiesRaw) {
         sharedPreferences.edit()
+            .putInt(SP_KEY_USER_PROFILE_PROPERTY_CHILDREN, propertiesRaw.children)
             .putInt(SP_KEY_USER_PROFILE_PROPERTY_EDUCATION, propertiesRaw.education)
             .putInt(SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR, propertiesRaw.hairColor)
             .putInt(SP_KEY_USER_PROFILE_PROPERTY_HEIGHT, propertiesRaw.height)

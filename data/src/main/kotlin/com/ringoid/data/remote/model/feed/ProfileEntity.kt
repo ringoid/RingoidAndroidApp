@@ -23,7 +23,8 @@ import com.ringoid.domain.model.feed.Profile
  *   "education": 0,
  *   "income": 0,
  *   "height": 0,
- *   "hairColor": 0
+ *   "hairColor": 0,
+ *   "children":0
  * }
  */
 class ProfileEntity(
@@ -34,6 +35,7 @@ class ProfileEntity(
     lastOnlineStatus: String? = null,
     lastOnlineText: String? = null,
     age: Int = DomainUtil.UNKNOWN_VALUE,
+    children: Int = DomainUtil.UNKNOWN_VALUE,
     education: Int = DomainUtil.UNKNOWN_VALUE,
     gender: String? = null,
     hairColor: Int = DomainUtil.UNKNOWN_VALUE,
@@ -49,6 +51,7 @@ class ProfileEntity(
         lastOnlineStatus = lastOnlineStatus,
         lastOnlineText = lastOnlineText,
         age = age,
+        children = children,
         education = education,
         gender = gender,
         hairColor = hairColor,
@@ -65,6 +68,7 @@ class ProfileEntity(
             lastOnlineStatus = lastOnlineStatus,
             lastOnlineText = lastOnlineText,
             age = age,
+            children = children,
             education = education,
             gender = Gender.from(gender),
             hairColor = hairColor,

@@ -13,6 +13,7 @@ interface IProfile : IModel {
 
     // properties
     val age: Int
+    val children: Int
     val education: Int
     val gender: Gender
     val hairColor: Int

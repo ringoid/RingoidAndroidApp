@@ -192,6 +192,16 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     addView(view, 0)  // prepend
                 }
             }
+
+            // children property
+            model.children().let { children ->
+                findViewById<LabelView>(ChildrenProfileProperty.CHILDREN_PROPERTY_ID)?.let { removeView(it) }
+                if (children != ChildrenProfileProperty.Unknown) {
+                    val view = createLabelView(textResId = children.resId, iconResId = OriginR_drawable.ic_children_white_18dp)
+                        .apply { id = ChildrenProfileProperty.CHILDREN_PROPERTY_ID }
+                    addView(view, 0)  // prepend
+                }
+            }
         }
 
         // right section
@@ -249,7 +259,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
         fun hideLabelInZone(container: ViewGroup, zone: Int) {
             with (container) {
-                (zone - (4 - childCount))
+                (zone - (5 - childCount))
                     .takeIf { it >= 0 }
                     ?.let { getChildAt(it)?.changeVisibility(isVisible = false, soft = true) }
             }
@@ -257,7 +267,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         fun showLabelInZone(container: ViewGroup, zone: Int) {
             with (container) {
-                (zone - (4 - childCount))
+                (zone - (5 - childCount))
                     .takeIf { it >= 0 }
                     ?.let { getChildAt(it)?.changeVisibility(isVisible = true) }
             }

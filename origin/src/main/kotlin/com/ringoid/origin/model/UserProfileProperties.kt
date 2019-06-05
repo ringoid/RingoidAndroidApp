@@ -5,6 +5,7 @@ import com.ringoid.domain.misc.UserProfilePropertiesRaw
 import com.ringoid.domain.model.Mappable
 
 data class UserProfileProperties(
+    var children: ChildrenProfileProperty = ChildrenProfileProperty.Unknown,
     var education: EducationProfileProperty = EducationProfileProperty.Unknown,
     var hairColor: HairColorProfileProperty = HairColorProfileProperty.Unknown,
     var height: Int = DomainUtil.UNKNOWN_VALUE,
@@ -16,6 +17,7 @@ data class UserProfileProperties(
     companion object {
         fun from(raw: UserProfilePropertiesRaw): UserProfileProperties =
             UserProfileProperties(
+                children = ChildrenProfileProperty.from(raw.children),
                 education = EducationProfileProperty.from(raw.education),
                 hairColor = HairColorProfileProperty.from(raw.hairColor),
                 height = raw.height,
@@ -25,6 +27,7 @@ data class UserProfileProperties(
     }
 
     fun isAllUnknown(): Boolean =
+        children == ChildrenProfileProperty.Unknown &&
         education == EducationProfileProperty.Unknown &&
         hairColor == HairColorProfileProperty.Unknown &&
         height == DomainUtil.UNKNOWN_VALUE &&
@@ -34,6 +37,7 @@ data class UserProfileProperties(
 
     override fun map(): UserProfilePropertiesRaw =
         UserProfilePropertiesRaw(
+            children = children.id,
             education = education.id,
             hairColor = hairColor.id,
             height = height,

@@ -28,6 +28,14 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
+    fun onPropertyChanged_children(children: ChildrenProfileProperty) {
+        if (properties.children == children) {
+            return
+        }
+        properties.children = children
+        updateProfileProperties()
+    }
+
     fun onPropertyChanged_education(education: EducationProfileProperty) {
         if (properties.education == education) {
             return

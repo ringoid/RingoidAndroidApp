@@ -19,6 +19,7 @@ data class FeedItemVO(
     override val lastOnlineStatus: String? = null,
     override val lastOnlineText: String? = null,
     override val age: Int = DomainUtil.UNKNOWN_VALUE,
+    override val children: Int = DomainUtil.UNKNOWN_VALUE,
     override val education: Int = DomainUtil.UNKNOWN_VALUE,
     override val gender: Gender = Gender.UNKNOWN,
     override val hairColor: Int = DomainUtil.UNKNOWN_VALUE,
@@ -41,6 +42,7 @@ data class FeedItemVO(
         lastOnlineText = feedItem.lastOnlineText,
         isNotSeen = feedItem.isNotSeen,
         age = feedItem.age,
+        children = feedItem.children,
         education = feedItem.education,
         gender = feedItem.gender,
         hairColor = feedItem.hairColor,
@@ -57,6 +59,7 @@ data class FeedItemVO(
         lastOnlineStatus = profile.lastOnlineStatus,
         lastOnlineText = profile.lastOnlineText,
         age = profile.age,
+        children = profile.children,
         education = profile.education,
         gender = profile.gender,
         hairColor = profile.hairColor,
@@ -68,6 +71,7 @@ data class FeedItemVO(
     fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
     fun hasLiked(): Boolean = likedImages.count { it.value } > 0
 
+    fun children(): ChildrenProfileProperty = ChildrenProfileProperty.from(children)
     fun education(): EducationProfileProperty = EducationProfileProperty.from(education)
     fun hairColor(): HairColorProfileProperty = HairColorProfileProperty.from(hairColor)
     fun income(): IncomeProfileProperty = IncomeProfileProperty.from(income)

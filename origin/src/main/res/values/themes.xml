@@ -44,6 +44,7 @@
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
         <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_black_36dp</item>
         <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_black_36dp</item>
+        <item name="refDrawableProfilePropertyChildren">@drawable/ic_children_black_24dp</item>
         <item name="refDrawableProfilePropertyEducation">@drawable/ic_education_black_24dp</item>
         <item name="refDrawableProfilePropertyHairColor">@drawable/ic_hair_color_black_24dp</item>
         <item name="refDrawableProfilePropertyHeight">@drawable/ic_height_property_black_24dp</item>
@@ -74,6 +75,7 @@
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
         <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_white_36dp</item>
         <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_white_36dp</item>
+        <item name="refDrawableProfilePropertyChildren">@drawable/ic_children_white_24dp</item>
         <item name="refDrawableProfilePropertyEducation">@drawable/ic_education_white_24dp</item>
         <item name="refDrawableProfilePropertyHairColor">@drawable/ic_hair_color_white_24dp</item>
         <item name="refDrawableProfilePropertyHeight">@drawable/ic_height_property_white_24dp</item>

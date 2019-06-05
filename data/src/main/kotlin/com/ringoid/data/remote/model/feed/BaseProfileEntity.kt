@@ -27,7 +27,8 @@ import com.ringoid.domain.model.Mappable
  *   "educationLevel": 0,
  *   "income": 0,
  *   "height": 0,
- *   "hairColor": 0
+ *   "hairColor": 0,
+ *   "children":0
  * }
  */
 abstract class BaseProfileEntity<T>(
@@ -38,6 +39,7 @@ abstract class BaseProfileEntity<T>(
     @Expose @SerializedName(COLUMN_LAST_ONLINE_STATUS) val lastOnlineStatus: String? = null,
     @Expose @SerializedName(COLUMN_LAST_ONLINE_TEXT) val lastOnlineText: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_AGE) val age: Int = DomainUtil.UNKNOWN_VALUE,
+    @Expose @SerializedName(COLUMN_PROPERTY_CHILDREN) val children: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_EDUCATION) val education: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_GENDER) val gender: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_HAIR_COLOR) val hairColor: Int = DomainUtil.UNKNOWN_VALUE,
@@ -55,6 +57,7 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_LAST_ONLINE_STATUS = "lastOnlineFlag"
         const val COLUMN_LAST_ONLINE_TEXT = "lastOnlineText"
         const val COLUMN_PROPERTY_AGE = "age"
+        const val COLUMN_PROPERTY_CHILDREN = "children"
         const val COLUMN_PROPERTY_EDUCATION = "educationLevel"
         const val COLUMN_PROPERTY_GENDER = "sex"
         const val COLUMN_PROPERTY_HAIR_COLOR = "hairColor"
@@ -64,5 +67,5 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_PROPERTY_TRANSPORT = "transport"
     }
 
-    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, gender='$gender', education=$education, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport)"
+    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, children=$children, gender='$gender', education=$education, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport)"
 }

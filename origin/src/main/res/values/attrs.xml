@@ -17,6 +17,7 @@
         <attr name="refDrawableNavigationArrow" format="reference"/>
         <attr name="refDrawableProfileMenuAddImage" format="reference"/>
         <attr name="refDrawableProfileMenuSettings" format="reference"/>
+        <attr name="refDrawableProfilePropertyChildren" format="reference"/>
         <attr name="refDrawableProfilePropertyEducation" format="reference"/>
         <attr name="refDrawableProfilePropertyHairColor" format="reference"/>
         <attr name="refDrawableProfilePropertyHeight" format="reference"/>

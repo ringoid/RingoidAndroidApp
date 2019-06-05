@@ -8,6 +8,7 @@ import com.ringoid.domain.model.IEssence
 /**
  * {
  *   "accessToken":"adasdasd-fadfs-sdffd",
+ *   "children":10,
  *   "property":0,
  *   "transport":10,
  *   "income":20,
@@ -18,6 +19,7 @@ import com.ringoid.domain.model.IEssence
  */
 data class UpdateUserProfileEssence(
     @Expose @SerializedName(COLUMN_ACCESS_TOKEN) val accessToken: String,
+    @Expose @SerializedName(COLUMN_PROPERTY_CHILDREN) val children: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_EDUCATION) val education: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_HAIR_COLOR) val hairColor: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_HEIGHT) val height: Int = DomainUtil.UNKNOWN_VALUE,
@@ -27,6 +29,7 @@ data class UpdateUserProfileEssence(
 
     companion object {
         const val COLUMN_ACCESS_TOKEN = "accessToken"
+        const val COLUMN_PROPERTY_CHILDREN = "children"
         const val COLUMN_PROPERTY_EDUCATION = "educationLevel"
         const val COLUMN_PROPERTY_HAIR_COLOR = "hairColor"
         const val COLUMN_PROPERTY_HEIGHT = "height"
@@ -37,6 +40,7 @@ data class UpdateUserProfileEssence(
         fun from(essence: UpdateUserProfileEssenceUnauthorized, accessToken: String): UpdateUserProfileEssence =
             UpdateUserProfileEssence(
                 accessToken = accessToken,
+                children = essence.children,
                 education = essence.education,
                 hairColor = essence.hairColor,
                 height = essence.height,
@@ -45,5 +49,5 @@ data class UpdateUserProfileEssence(
                 transport = essence.transport)
     }
 
-    override fun toDebugPayload(): String = "[education=$education,hairColor=$hairColor,height=$height,income=$income,property=$property,transport=$transport]"
+    override fun toDebugPayload(): String = "[children=$children,education=$education,hairColor=$hairColor,height=$height,income=$income,property=$property,transport=$transport]"
 }

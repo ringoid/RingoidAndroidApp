@@ -52,6 +52,7 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
         super.onActivityCreated(savedInstanceState)
         with (viewLifecycleOwner) {
             observe(vm.profile) {
+                item_profile_property_children.setSelectedItem(it.children)
                 item_profile_property_education.setSelectedItem(it.education.reduceForLocale(app?.localeManager?.getLang()))
                 item_profile_property_hair_color.setSelectedItem(it.hairColor.valueForGender(spm.currentUserGender()))
                 item_profile_property_income.setSelectedItem(it.income)
@@ -70,6 +71,10 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
             setTitle(OriginR_string.settings_profile)
         }
 
+        with (item_profile_property_children) {
+            setItems(ChildrenProfileProperty.values.toList())
+            setOnItemSelectedListener<ChildrenProfileProperty> { vm.onPropertyChanged_children(it) }
+        }
         with (item_profile_property_education) {
             setItems(EducationProfileProperty.valuesForLocale(app?.localeManager?.getLang()))
             setOnItemSelectedListener<EducationProfileProperty> { vm.onPropertyChanged_education(it) }

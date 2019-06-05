@@ -12,6 +12,7 @@ data class Profile(
     override val lastOnlineStatus: String? = null,
     override val lastOnlineText: String? = null,
     override val age: Int = DomainUtil.UNKNOWN_VALUE,
+    override val children: Int = DomainUtil.UNKNOWN_VALUE,
     override val education: Int = DomainUtil.UNKNOWN_VALUE,
     override val gender: Gender = Gender.UNKNOWN,
     override val hairColor: Int = DomainUtil.UNKNOWN_VALUE,

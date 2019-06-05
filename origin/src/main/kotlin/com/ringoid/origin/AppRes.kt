@@ -63,6 +63,10 @@ object AppRes {
         private set
     var FEED_ITEM_PROPERTY_TOP_3: Int = -1
         private set
+    var FEED_ITEM_PROPERTY_BOTTOM_4: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_TOP_4: Int = -1
+        private set
     var FEED_ITEM_SETTINGS_BTN_BOTTOM: Int = -1
         private set
     var FEED_ITEM_SETTINGS_BTN_TOP: Int = -1
@@ -161,6 +165,8 @@ object AppRes {
             FEED_ITEM_PROPERTY_TOP_2 = FEED_ITEM_PROPERTY_BOTTOM_2 - STD_MARGIN_18 * 2
             FEED_ITEM_PROPERTY_BOTTOM_3 = FEED_ITEM_PROPERTY_TOP_2
             FEED_ITEM_PROPERTY_TOP_3 = FEED_ITEM_PROPERTY_BOTTOM_3 - STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_BOTTOM_4 = FEED_ITEM_PROPERTY_TOP_3
+            FEED_ITEM_PROPERTY_TOP_4 = FEED_ITEM_PROPERTY_BOTTOM_4 - STD_MARGIN_18 * 2
 
             FEED_ITEM_SETTINGS_BTN_TOP = FEED_ITEM_TABS_INDICATOR_TOP  // getDimensionPixelSize(R.dimen.std_margin_24)
             FEED_ITEM_SETTINGS_BTN_BOTTOM = (FEED_ITEM_SETTINGS_BTN_TOP * 1.5f).toInt()

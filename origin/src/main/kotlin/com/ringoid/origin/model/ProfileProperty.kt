@@ -12,6 +12,28 @@ const val AGE_PROPERTY_ID = 97
 const val DISTANCE_PROPERTY_ID = 98
 const val HEIGHT_PROPERTY_ID = 99
 
+enum class ChildrenProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem, INamedEnum {
+    Unknown(0, R.string.common_unchosen, isDefault = true),
+    Want(10, R.string.profile_property_children_0),
+    DontWant(20, R.string.profile_property_children_1),
+    HaveWantMore(30, R.string.profile_property_children_2),
+    HaveDontWant(40, R.string.profile_property_children_3);
+
+    override fun getLabelResId(): Int = resId
+
+    override fun getNameId(): Int = CHILDREN_PROPERTY_ID
+    override fun getName(): String = CHILDREN_PROPERTY
+
+    companion object {
+        const val CHILDREN_PROPERTY_ID = 100
+        const val CHILDREN_PROPERTY = "child"
+
+        val values: Array<ChildrenProfileProperty> = values()
+
+        fun from(id: Int): ChildrenProfileProperty = values.find { it.id == id } ?: Unknown
+    }
+}
+
 enum class EducationProfileProperty(override val id: Int, @StringRes val resId: Int, override val isDefault: Boolean = false) : IListItem, INamedEnum {
     Unknown(0, R.string.common_unchosen, isDefault = true),
     School(10, R.string.profile_property_education_0),

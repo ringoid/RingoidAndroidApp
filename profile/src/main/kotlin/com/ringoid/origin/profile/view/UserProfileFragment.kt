@@ -206,6 +206,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 val showDefault = it.isAllUnknown()
 
                 if (showDefault) {
+                    with (label_children) {
+                        changeVisibility(isVisible = true)
+                        setText(OriginR_string.profile_property_children)
+                    }
                     with (label_education) {
                         changeVisibility(isVisible = true)
                         setText(OriginR_string.profile_property_education)
@@ -231,6 +235,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                         setText(OriginR_string.profile_property_transport)
                     }
                 } else {
+                    with (label_children) {
+                        changeVisibility(isVisible = it.children != ChildrenProfileProperty.Unknown)
+                        setText(it.children.resId)
+                    }
                     with(label_education) {
                         changeVisibility(isVisible = it.education != EducationProfileProperty.Unknown)
                         setText(it.education.resId)

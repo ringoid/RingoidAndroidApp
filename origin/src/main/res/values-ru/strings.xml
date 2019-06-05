@@ -138,6 +138,12 @@
     <string name="web_url_error_status">https://ringoid.com/status-ru.html</string>
 
     <!-- Data -->
+    <string name="profile_property_children">Дети</string>
+    <string name="profile_property_children_0">Хочу</string>
+    <string name="profile_property_children_1">Не хочу</string>
+    <string name="profile_property_children_2">Есть и хочу еще</string>
+    <string name="profile_property_children_3">Есть и не хочу больше</string>
+
     <string name="profile_property_education">Уровень образования</string>
     <string name="profile_property_education_0">Среднее</string>
     <string name="profile_property_education_1">Среднее проф.</string>

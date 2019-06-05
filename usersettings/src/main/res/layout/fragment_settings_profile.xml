@@ -49,6 +49,15 @@
         <View style="@style/Underscore"/>
 
         <com.ringoid.widget.view.item_view.SpinnerIconItemView
+            android:id="@+id/item_profile_property_children"
+            android:layout_marginTop="@dimen/std_margin_16"
+            app:icon_item_icon="?refDrawableProfilePropertyChildren"
+            app:icon_item_text="@string/profile_property_children"
+            style="?attr/spinnerIconItemView"/>
+
+        <View style="@style/Underscore"/>
+
+        <com.ringoid.widget.view.item_view.SpinnerIconItemView
             android:id="@+id/item_profile_property_income"
             android:layout_marginTop="@dimen/std_margin_16"
             app:icon_item_icon="?refDrawableProfilePropertyIncome"
