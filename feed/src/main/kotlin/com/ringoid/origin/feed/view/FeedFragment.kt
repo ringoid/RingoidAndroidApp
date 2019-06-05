@@ -117,14 +117,15 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     private fun checkForNewlyVisibleItems(prevIds: Collection<String>, newIds: Collection<String>, excludedId: String? = null) {
         newIds.toMutableList()
-            .also { it.removeAll(prevIds) }
+            .apply { removeAll(prevIds) }
             .also { DebugLogUtil.d("Discarded ${excludedId?.substring(0..3)}, became visible[${it.size}]: ${it.joinToString { it.substring(0..3) }}") }
             .takeIf { it.isNotEmpty() }
             ?.forEach { id ->
-                feedAdapter.findModel { it.id == id }
-                    ?.let {
-                        val imageId = it.images[it.positionOfImage].id
-                        vm.onItemBecomeVisible(profileId = it.id, imageId = imageId)
+                feedAdapter.findModelAndPosition { it.id == id }
+                    ?.let { (position, model) ->
+                        val imageId = model.images[model.positionOfImage].id
+                        vm.onItemBecomeVisible(profileId = model.id, imageId = imageId)
+                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowDebugBadge)
                     }
             }
     }
@@ -137,7 +138,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
                 } else {  // remove not last feed item
                     val prevIds = getVisibleItemIds(profileId)  // record ids of visible items before remove
-                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}")
+                    DebugLogUtil.d("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}")
 
                     /**
                      * After finishing item remove animation, detect what items come into viewport
@@ -156,7 +157,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         .autoDisposable(localScopeProvider)
                         .subscribe({ _ ->
                             val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
-                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}")
+                            DebugLogUtil.d("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}")
                             checkForNewlyVisibleItems(prevIds, newIds, excludedId = profileId)
                         }, Timber::e)
 
