@@ -4,6 +4,7 @@ import android.os.Build
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ApiException
+import com.ringoid.domain.log.SentryUtil.breadcrumb
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
@@ -60,7 +61,7 @@ object SentryUtil {
                 add(e.javaClass.simpleName to e.stackTraceString())
                 extras?.let { addAll(it) }
             }
-        capture(e, message = message ?: e.message ?: "empty message", level = level, `object` = null, tag = tag, extras = fullExtras)
+        capture(e, message = message ?: e.message ?: e.javaClass.simpleName, level = level, `object` = null, tag = tag, extras = fullExtras)
     }
 
     fun setUser(spm: ISharedPrefsManager) {
