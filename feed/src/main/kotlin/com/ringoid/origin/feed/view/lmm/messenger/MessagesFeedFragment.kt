@@ -9,13 +9,13 @@ import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
 
-class MessengerFragment : BaseMatchesFeedFragment<MessengerViewModel>() {
+class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
 
     companion object {
-        fun newInstance(): MessengerFragment = MessengerFragment()
+        fun newInstance(): MessagesFeedFragment = MessagesFeedFragment()
     }
 
-    override fun getVmClass(): Class<MessengerViewModel> = MessengerViewModel::class.java
+    override fun getVmClass(): Class<MessagesFeedViewModel> = MessagesFeedViewModel::class.java
 
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
         MessengerFeedAdapter().apply {

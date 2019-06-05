@@ -15,7 +15,7 @@ import com.ringoid.origin.feed.view.explore.di.ExploreFragmentModule
 import com.ringoid.origin.feed.view.lmm.di.LmmFragmentModule
 import com.ringoid.origin.feed.view.lmm.like.di.LikesFeedFragmentModule
 import com.ringoid.origin.feed.view.lmm.match.di.MatchesFeedFragmentModule
-import com.ringoid.origin.feed.view.lmm.messenger.di.MessengerFragmentModule
+import com.ringoid.origin.feed.view.lmm.messenger.di.MessagesFeedFragmentModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
 import com.ringoid.origin.messenger.di.ChatFragmentModule
@@ -59,7 +59,7 @@ import javax.inject.Singleton
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
                       LoginActivityModule::class, MainActivityModule::class,
-                      MatchesFeedFragmentModule::class, MessengerFragmentModule::class, NoNetworkConnectionActivityModule::class,
+                      MatchesFeedFragmentModule::class, MessagesFeedFragmentModule::class, NoNetworkConnectionActivityModule::class,
                       OldAppVersionActivityModule::class, UserProfileFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
