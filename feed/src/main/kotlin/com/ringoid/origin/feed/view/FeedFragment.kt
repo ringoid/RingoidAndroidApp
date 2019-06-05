@@ -20,6 +20,7 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
+import com.ringoid.origin.feed.model.BlockReportPayload
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
@@ -211,7 +212,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 }
                 vm.onSettingsClick(model.id)
                 communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
-                navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70", rc = RequestCode.RC_BLOCK_DIALOG)
+                val payload = BlockReportPayload(profileImageUri = image.uri, profileThumbnailUri = image.thumbnailUri)
+                navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
             }
         }
         offsetScrollStrats = getOffsetScrollStrategies()

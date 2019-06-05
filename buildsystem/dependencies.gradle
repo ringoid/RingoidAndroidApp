@@ -398,6 +398,7 @@ ext {
     /* Feature Feed */
     // ------------------------------------------
     feedDependencies = [
+        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_view.rvItemAnim]
     ]
     feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink + kotlin +

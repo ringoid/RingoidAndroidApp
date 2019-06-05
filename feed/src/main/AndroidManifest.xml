@@ -4,6 +4,7 @@
     <application>
         <activity
             android:name=".view.dialog.BlockBottomSheetActivity"
-            android:theme="@style/AppTheme.Dark.SemiTransparent"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dark"/>
     </application>
 </manifest>
