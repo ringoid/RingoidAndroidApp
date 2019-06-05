@@ -128,7 +128,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     ?.let { (position, model) ->
                         val image = model.images[model.positionOfImage]
                         vm.onItemBecomeVisible(profile = model, image = image)
-                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowDebugBadge)
                     }
             }
     }

@@ -1,7 +1,5 @@
 package com.ringoid.origin.feed.adapter.base
 
-import com.ringoid.domain.debug.DebugOnly
-
 sealed class FeedViewHolderPayload
 
 object FeedViewHolderHideControls : FeedViewHolderPayload()
@@ -20,5 +18,3 @@ object FeedViewHolderHideTabsIndicatorOnScroll : FeedViewHolderPayload()
 
 data class FeedViewHolderHideOnScroll(val index: Int) : FeedViewHolderPayload()
 data class FeedViewHolderShowOnScroll(val index: Int) : FeedViewHolderPayload()
-
-@DebugOnly object FeedViewHolderShowDebugBadge : FeedViewHolderPayload()
