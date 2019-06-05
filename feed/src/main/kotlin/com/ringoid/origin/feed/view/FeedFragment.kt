@@ -23,15 +23,17 @@ import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.BlockReportPayload
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.utility.*
+import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.isVisible
+import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.functions.Consumer
@@ -204,14 +206,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 showScrollFab(isVisible = false)
             }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
-                val image = model.images[positionOfImage]
-                scrollToTopOfItemAtPositionAndPost(position).post {
-                    showRefreshPopup(isVisible = false)
-                    showScrollFab(isVisible = false)
-                    notifyItemChanged(position, FeedViewHolderHideControls)
-                }
                 vm.onSettingsClick(model.id)
-                communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
+                val image = model.images[positionOfImage]
                 val payload = BlockReportPayload(profileImageUri = image.uri, profileThumbnailUri = image.thumbnailUri)
                 navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
             }
@@ -228,12 +224,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     return
                 }
 
-                val position = data.extras!!.getString("position", "0").toInt()
-                communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
-                scrollToTopOfItemAtPosition(position, offset = AppRes.BUTTON_HEIGHT)
-                showRefreshPopup(isVisible = true)
-                showScrollFab(isVisible = true, restoreVisibility = true)
-
                 if (resultCode == Activity.RESULT_OK) {
                     val imageId = data.extras!!.getString("imageId")!!
                     val profileId = data.extras!!.getString("profileId")!!
@@ -244,9 +234,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     } else {
                         vm.onBlock(profileId = profileId, imageId = imageId)
                     }
-                } else {
-                    // on dialog dismiss = show controls back
-                    getRecyclerView().post { feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls) }
                 }
             }
         }

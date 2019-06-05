@@ -53,51 +53,22 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     }
 
     // --------------------------------------------------------------------------------------------
-    // TODO: save that fields onSaveInstanceState() for later restore
-    private var badge_likes_visibilityPrev: Boolean = false
-    private var badge_matches_visibilityPrev: Boolean = false
-    private var badge_messages_visibilityPrev: Boolean = false
-
     override fun accessViewModel(): LmmViewModel = vm
 
     // ------------------------------------------
     override fun showBadgeOnLikes(isVisible: Boolean) {
-        badge_likes_visibilityPrev = isVisible
         btn_tab_likes.showBadge(isVisible)
         hasAnyBadgeShown()
     }
 
     override fun showBadgeOnMatches(isVisible: Boolean) {
-        badge_matches_visibilityPrev = isVisible
         btn_tab_matches.showBadge(isVisible)
         hasAnyBadgeShown()
     }
 
     override fun showBadgeOnMessenger(isVisible: Boolean) {
-        badge_messages_visibilityPrev = isVisible
         btn_tab_messenger.showBadge(isVisible)
         hasAnyBadgeShown()
-    }
-
-    override fun showTabs(isVisible: Boolean) {
-        if (ll_tabs_container == null) {
-            return  // view has not been initialized yet
-        }
-
-        if (isVisible) {
-            btn_tab_likes.showBadge(badge_likes_visibilityPrev)
-            btn_tab_matches.showBadge(badge_matches_visibilityPrev)
-            btn_tab_messenger.showBadge(badge_messages_visibilityPrev)
-        } else {
-            btn_tab_likes.showBadge(false)
-            btn_tab_matches.showBadge(false)
-            btn_tab_messenger.showBadge(false)
-        }
-        btn_tab_likes.changeVisibility(isVisible)
-        btn_tab_matches.changeVisibility(isVisible)
-        btn_tab_messenger.changeVisibility(isVisible)
-        tab_delim1.changeVisibility(isVisible)
-        tab_delim2.changeVisibility(isVisible)
     }
 
     // ------------------------------------------
@@ -143,8 +114,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         }
 
         payload?.let { lmmFeedName -> selectPage(LmmNavTab.from(lmmFeedName)?.page() ?: 0) }
-
-        showTabs(isVisible = true)
     }
 
     override fun onTabTransaction(payload: String?) {
@@ -157,7 +126,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         payload?.let { lmmFeedName -> selectPage(LmmNavTab.from(lmmFeedName)?.page() ?: 0) }
 
         setCurrentPageVisibleHint(true)
-        showTabs(isVisible = true)
     }
 
     /* Lifecycle */

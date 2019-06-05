@@ -11,7 +11,6 @@ interface ILmmFragment : ICommunicator {
     fun showBadgeOnLikes(isVisible: Boolean)
     fun showBadgeOnMatches(isVisible: Boolean)
     fun showBadgeOnMessenger(isVisible: Boolean)
-    fun showTabs(isVisible: Boolean)
 
     fun transferProfile(profileId: String, destinationFeed: LmmNavTab)
     fun transferProfile(discarded: FeedItemVO?, destinationFeed: LmmNavTab)
