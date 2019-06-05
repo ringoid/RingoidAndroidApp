@@ -272,6 +272,9 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             showControls()
             return
         }
+        if (BuildConfig.DEBUG) {
+            itemView.iv_debug_badge.changeVisibility(isVisible = payloads.contains(FeedViewHolderShowDebugBadge))
+        }
 
         // scroll affected
         if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
