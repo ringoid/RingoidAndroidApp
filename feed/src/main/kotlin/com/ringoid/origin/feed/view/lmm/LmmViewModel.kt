@@ -13,6 +13,7 @@ import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,6 +35,10 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
     val listScrolls by lazy { MutableLiveData<Int>() }
     var cachedLmm: Lmm? = null
         private set
+
+    internal val pushNewLike by lazy { MutableLiveData<Long>() }
+    internal val pushNewMatch by lazy { MutableLiveData<Long>() }
+    internal val pushNewMessage by lazy { MutableLiveData<Long>() }
 
     init {
         getLmmUseCase.repository.badgeLikes
@@ -68,6 +73,30 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         dropLmmChangedStatusUseCase.source()  // drop changed status (red dot badges)
             .autoDisposable(this)
             .subscribe({ Timber.d("Badges on Lmm have been dropped because no images in user's profile") }, Timber::e)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewLike(event: BusEvent.PushNewLike) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        HandledPushDataInMemory.incrementCountOfHandledPushLikes()
+        pushNewLike.value = 0L  // for particle animation
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewLike(event: BusEvent.PushNewMatch) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        HandledPushDataInMemory.incrementCountOfHandledPushMatches()
+        pushNewMatch.value = 0L  // for particle animation
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewLike(event: BusEvent.PushNewMessage) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        HandledPushDataInMemory.incrementCountOfHandledPushMessages()
+        pushNewMessage.value = 0L  // for particle animation
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)

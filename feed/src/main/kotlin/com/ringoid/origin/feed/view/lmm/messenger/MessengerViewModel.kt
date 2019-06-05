@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.domain.DomainUtil
@@ -16,7 +15,6 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
-import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import io.reactivex.Observable
@@ -53,8 +51,6 @@ class MessengerViewModel @Inject constructor(
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
         userInMemoryCache, app) {
-
-    internal val pushNewMessage by lazy { MutableLiveData<Long>() }
 
     override fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.takeIf { it.isNotEmpty() }
@@ -101,8 +97,6 @@ class MessengerViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        HandledPushDataInMemory.incrementCountOfHandledPushMessages()
-        pushNewMessage.value = 0L  // for particle animation
         refreshOnPush.value = true
     }
 }

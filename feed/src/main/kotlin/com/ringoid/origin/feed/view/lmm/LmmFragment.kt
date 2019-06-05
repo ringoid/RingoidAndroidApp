@@ -14,6 +14,9 @@ import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -142,6 +145,9 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             observe(vm.badgeMatches, ::showBadgeOnMatches)
             observe(vm.badgeMessenger, ::showBadgeOnMessenger)
             observe(vm.clearAllFeeds, ::clearAllFeeds)
+            observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
+            observe(vm.pushNewMatch) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
+            observe(vm.pushNewMessage) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
         }
 
         val page = savedInstanceState?.getInt(BUNDLE_KEY_CURRENT_PAGE) ?: 0
