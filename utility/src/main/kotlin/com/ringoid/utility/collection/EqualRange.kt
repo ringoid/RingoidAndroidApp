@@ -19,6 +19,8 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
         }
     }
 
+    fun copyWith(items: List<T>): EqualRange<T> = EqualRange(from, minOf(to, items.size), items)
+
     fun isRangeEmpty(): Boolean = from < 0 && to < 0 && isEmpty()
 
     fun pickOne(): T? = get(0)

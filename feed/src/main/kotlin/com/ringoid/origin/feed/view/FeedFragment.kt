@@ -104,16 +104,19 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         } ?: run { fl_empty_container?.changeVisibility(isVisible = false) }
     }
 
-    private fun getVisibleItemIds(excludedId: String? = null): List<String> =
+    private fun getVisibleItems(excludedId: String? = null): List<FeedItemVO> =
         rv_items.linearLayoutManager()?.let { lm ->
             val from = lm.findFirstVisibleItemPosition()
             val to = lm.findLastVisibleItemPosition()
             if (from != RecyclerView.NO_POSITION && to != RecyclerView.NO_POSITION) {
                 feedAdapter.getModelsInRange(from, to)
                     .apply { excludedId?.let { exId -> removeAll { it.id == exId } } }
-                    .map { it.id }
+                    .toList()
             } else emptyList()
         } ?: emptyList()
+
+    private fun getVisibleItemIds(excludedId: String? = null): List<String> =
+        getVisibleItems(excludedId).map { it.id }
 
     private fun checkForNewlyVisibleItems(prevIds: Collection<String>, newIds: Collection<String>, excludedId: String? = null) {
         newIds.toMutableList()
@@ -123,8 +126,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             ?.forEach { id ->
                 feedAdapter.findModelAndPosition { it.id == id }
                     ?.let { (position, model) ->
-                        val imageId = model.images[model.positionOfImage].id
-                        vm.onItemBecomeVisible(profileId = model.id, imageId = imageId)
+                        val image = model.images[model.positionOfImage]
+                        vm.onItemBecomeVisible(profile = model, image = image)
                         feedAdapter.notifyItemChanged(position, FeedViewHolderShowDebugBadge)
                     }
             }
@@ -156,9 +159,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         }
                         .autoDisposable(localScopeProvider)
                         .subscribe({ _ ->
-                            val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
+                            val newItems = getVisibleItems(profileId)  // record ids of whatever items are visible after remove
+                            val newIds = newItems.map { it.id }
                             DebugLogUtil.d("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}")
                             checkForNewlyVisibleItems(prevIds, newIds, excludedId = profileId)
+                            vm.onSettleVisibleItemsAfterDiscard(newItems)
                         }, Timber::e)
 
                     feedAdapter.remove { it.id == profileId }
