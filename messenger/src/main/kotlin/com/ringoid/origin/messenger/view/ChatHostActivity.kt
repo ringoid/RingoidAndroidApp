@@ -4,13 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import com.bumptech.glide.request.RequestOptions
 import com.google.gson.Gson
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.messenger.ChatPayload
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.view.dialog.IDialogCallback
@@ -68,8 +66,7 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
             savedInstanceState ?: run {
                 ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(supportFragmentManager, tag)
             }
-            ImageLoader.load(uri = payload.peerImageUri, thumbnailUri = payload.peerThumbnailUri, imageView = iv_chat_image,
-                options = RequestOptions().centerCrop().override(AppRes.SCREEN_WIDTH, AppRes.FEED_IMAGE_HEIGHT))
+            ImageLoader.load(uri = payload.peerImageUri, thumbnailUri = payload.peerThumbnailUri, imageView = iv_chat_image)
         }
     }
 }
