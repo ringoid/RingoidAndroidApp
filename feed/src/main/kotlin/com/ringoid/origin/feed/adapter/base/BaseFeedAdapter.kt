@@ -46,6 +46,15 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 
+    override fun dispose() {
+        super.dispose()
+        onBeforeLikeListener = null
+        onImageTouchListener = null
+        onScrollHorizontalListener = null
+        settingsClickListener = null
+        trackingBus?.unsubscribe(); trackingBus = null
+    }
+
     // ------------------------------------------
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer
 

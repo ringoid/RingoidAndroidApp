@@ -38,6 +38,18 @@ class ProfileImageAdapter(private val context: Context)
         super.onBindViewHolder(holder, position, payloads)
     }
 
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        dispose()
+    }
+
+    override fun dispose() {
+        super.dispose()
+        onBeforeLikeListener = null
+        onImageTouchListener = null
+        tabsObserver = null
+    }
+
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 
     // --------------------------------------------------------------------------------------------

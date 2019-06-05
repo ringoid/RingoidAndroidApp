@@ -37,6 +37,13 @@ class UserProfileImageAdapter(private val context: Context)
     override fun getOnRemovedCb(): ((position: Int, count: Int) -> Unit)? =
         { _, _ -> onRemoveListener?.invoke() }
 
+    override fun dispose() {
+        super.dispose()
+        onInsertListener = null
+        onRemoveListener = null
+        tabsObserver = null
+    }
+
     // ------------------------------------------
     override fun getStubItem(): UserImage = EmptyUserImage
 

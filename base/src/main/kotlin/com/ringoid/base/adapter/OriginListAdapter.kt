@@ -87,7 +87,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
         }
     }
 
-    fun dispose() {
+    open fun dispose() {
         insertDisposable?.dispose()
         removeDisposable?.dispose()
         moveDisposable?.dispose()
