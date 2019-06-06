@@ -429,12 +429,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 if (!it.isHiddenAtAndSync(position)) {
                     Timber.v("[BOTTOM-$position]$it Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.hide)
-                } else Timber.e("--- [BOTTOM-$position]$it hide by offset scroll")
+                }
             } else {
                 if (!it.isShownAtAndSync(position)) {
                     Timber.v("[BOTTOM-$position]$it Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.show)
-                } else Timber.e("--- [BOTTOM-$position]$it show by offset scroll")
+                }
             }
         }
 
@@ -443,15 +443,22 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 if (!it.isHiddenAtAndSync(position)) {
                     Timber.v("[TOP-$position]$it Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.hide)
-                } else Timber.e("--- [TOP-$position]$it hide by offset scroll")
+                }
             } else {
                 if (!it.isShownAtAndSync(position)) {
                     Timber.v("[TOP-$position]$it Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.show)
-                } else Timber.e("--- [TOP-$position]$it show by offset scroll")
+                }
             }
         }
 
+        fun handleStrategy(it: OffsetScrollStrategy) =
+            when (it.type) {
+                OffsetScrollStrategy.Type.BOTTOM -> handleBottomStrategy(it)
+                OffsetScrollStrategy.Type.TOP -> handleTopStrategy(it)
+            }
+
+        // --------------------------------------
         view.post {  // avoid change rv during layout, leading to crash
             val targets = mutableSetOf<Int>()
             if (view.top >= top && view.bottom <= bottom) {
@@ -501,9 +508,23 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             } else {
                 // view is partially clipped with both of boundaries (top, bottom)
                 offsetScrollStrats.forEach {
-                    when (it.type) {
-                        OffsetScrollStrategy.Type.BOTTOM -> handleBottomStrategy(it)
-                        OffsetScrollStrategy.Type.TOP -> handleTopStrategy(it)
+                    if (targets.add(it.target())) {  // if target hasn't been affected yet - apply strategy on it
+                        handleStrategy(it)
+                    } else {
+                        // target has been affected already by some previous strategy,
+                        // so need to decide whether that strategy should be overridden by this strategy
+                        when (it.type) {
+                            OffsetScrollStrategy.Type.BOTTOM -> {
+                                if (view.top + it.deltaOffset >= bottom) {
+                                    handleBottomStrategy(it)
+                                }
+                            }
+                            OffsetScrollStrategy.Type.TOP -> {
+                                if (view.top + it.deltaOffset <= top) {
+                                    handleTopStrategy(it)
+                                }
+                            }
+                        }
                     }
                 }
             }
