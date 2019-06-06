@@ -23,6 +23,16 @@ data class OffsetScrollStrategy(val tag: String? = null,
             false
         } else true
 
+    /**
+     * Compare these values to detect whether two different strategies operate on the same target.
+     */
+    fun target(): Int {
+        var hash = 7
+        hash = 31 * hash + hide.hashCode()
+        hash = 31 * hash + show.hashCode()
+        return hash
+    }
+
     fun hidePositions(): String = hiddenAtPositions.joinToString(", ","[", "]")
     fun showPositions(): String = shownAtPositions.joinToString(", ","[", "]")
 

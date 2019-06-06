@@ -425,7 +425,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     // helper method
     private fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
         fun handleBottomStrategy(it: OffsetScrollStrategy) {
-            if (bottom - view.top < it.deltaOffset) {
+            if (bottom - view.top <= it.deltaOffset) {
                 if (!it.isHiddenAtAndSync(position)) {
                     Timber.v("[BOTTOM-$position]$it Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.hide)
@@ -453,10 +453,58 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
 
         view.post {  // avoid change rv during layout, leading to crash
-            offsetScrollStrats.forEach {
-                when (it.type) {
-                    OffsetScrollStrategy.Type.BOTTOM -> handleBottomStrategy(it)
-                    OffsetScrollStrategy.Type.TOP -> handleTopStrategy(it)
+            val targets = mutableSetOf<Int>()
+            if (view.top >= top && view.bottom <= bottom) {
+                // view is completely fits the space between (top, bottom), so all strategies must 'show'
+                offsetScrollStrats.forEach {
+                    if (targets.add(it.target())) {  // ignore strategy with already affected target
+                        if (!it.isShownAtAndSync(position)) {
+                            feedAdapter.notifyItemChanged(position, it.show)
+                        }
+                    }
+                }
+            } else if (view.bottom <= top || view.top >= bottom) {
+                // view is completely hidden below bottom or above top boundaries, so all strategies must 'hide'
+                offsetScrollStrats.forEach {
+                    if (targets.add(it.target())) {  // ignore strategy with already affected target
+                        if (!it.isHiddenAtAndSync(position)) {
+                            feedAdapter.notifyItemChanged(position, it.hide)
+                        }
+                    }
+                }
+            } else if (view.bottom > bottom && view.top >= top) {
+                // view is completely below top border and partially below bottom border,
+                // so only bottom strategies must operate, all top ones must be ignored (or 'show')
+                offsetScrollStrats.forEach {
+                    when (it.type) {
+                        OffsetScrollStrategy.Type.BOTTOM -> {
+                            if (targets.add(it.target())) {  // ignore strategy with already affected target
+                                handleBottomStrategy(it)
+                            }
+                        }
+                        OffsetScrollStrategy.Type.TOP -> { /* ignored */ }
+                    }
+                }
+            } else if (view.top < top && view.bottom <= bottom) {
+                // view is completely above bottom border and partially above top border,
+                // so only top strategies must operate, all bottom ones must be ignored (or 'show')
+                offsetScrollStrats.forEach {
+                    when (it.type) {
+                        OffsetScrollStrategy.Type.BOTTOM -> { /* ignored */ }
+                        OffsetScrollStrategy.Type.TOP -> {
+                            if (targets.add(it.target())) {  // ignore strategy with already affected target
+                                handleTopStrategy(it)
+                            }
+                        }
+                    }
+                }
+            } else {
+                // view is partially clipped with both of boundaries (top, bottom)
+                offsetScrollStrats.forEach {
+                    when (it.type) {
+                        OffsetScrollStrategy.Type.BOTTOM -> handleBottomStrategy(it)
+                        OffsetScrollStrategy.Type.TOP -> handleTopStrategy(it)
+                    }
                 }
             }
         }
