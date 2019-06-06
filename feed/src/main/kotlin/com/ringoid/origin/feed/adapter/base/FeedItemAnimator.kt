@@ -5,15 +5,11 @@ import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 
-class FeedItemAnimator(l: ((position: Int) -> Unit)? = null) : DefaultItemAnimator() {
+class FeedItemAnimator : DefaultItemAnimator() {
 
     private var removed = false
 
     internal val removeAnimationSubject = PublishSubject.create<Int>()
-
-    init {
-        removeAnimationSubject.subscribe({ l?.invoke(it) }, Timber::e)
-    }
 
     override fun onRemoveFinished(item: RecyclerView.ViewHolder) {
         super.onRemoveFinished(item)
