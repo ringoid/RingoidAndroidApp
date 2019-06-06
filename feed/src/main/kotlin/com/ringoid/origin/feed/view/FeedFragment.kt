@@ -180,22 +180,22 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             }
 
     protected fun onDiscardMultipleProfilesState(profileIds: Collection<String>) {
-        val prevIds = getVisibleItemIds()  // record ids of visible items before remove
-        with (feedAdapter) {
-            val obs = if (profileIds.intersect(prevIds).isEmpty()) removeSubject
-                      else rv_items.itemAnimator.let { it as FeedItemAnimator }.removeAnimationSubject
-
-            obs.take(1)
-                .doOnSubscribe { localScopeProvider.start() }
-                .doFinally { localScopeProvider.stop() }
-                .autoDisposable(localScopeProvider)
-                .subscribe({
-                    val newIds = getVisibleItemIds()  // record ids of whatever items are visible after remove
-                    checkForNewlyVisibleItems(prevIds, newIds)
-                }, Timber::e)
-
-            remove { it.id in profileIds }
-        }
+//        val prevIds = getVisibleItemIds()  // record ids of visible items before remove
+//        with (feedAdapter) {
+//            val obs = if (profileIds.intersect(prevIds).isEmpty()) removeSubject
+//                      else rv_items.itemAnimator.let { it as FeedItemAnimator }.removeAnimationSubject
+//
+//            obs.take(1)
+//                .doOnSubscribe { localScopeProvider.start() }
+//                .doFinally { localScopeProvider.stop() }
+//                .autoDisposable(localScopeProvider)
+//                .subscribe({
+//                    val newIds = getVisibleItemIds()  // record ids of whatever items are visible after remove
+//                    checkForNewlyVisibleItems(prevIds, newIds)
+//                }, Timber::e)
+//
+//            remove { it.id in profileIds }
+//        }
     }
 
     private fun onIdleState() {
