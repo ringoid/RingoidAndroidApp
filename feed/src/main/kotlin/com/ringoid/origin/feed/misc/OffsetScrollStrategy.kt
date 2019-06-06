@@ -7,7 +7,7 @@ data class OffsetScrollStrategy(val tag: String? = null,
     private val hiddenAtPositions: MutableSet<Int> = mutableSetOf(),
     private val shownAtPositions: MutableSet<Int> = mutableSetOf()) {
 
-    enum class Type { TOP, BOTTOM, UP, DOWN /** extends TOP, BOTTOM */ }
+    enum class Type { TOP, BOTTOM }
 
     fun isHiddenAtAndSync(position: Int): Boolean =
         if (!hiddenAtPositions.contains(position)) {

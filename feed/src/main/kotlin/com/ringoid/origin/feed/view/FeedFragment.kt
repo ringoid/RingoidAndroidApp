@@ -398,14 +398,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     protected fun getStrategyByTag(tag: String): OffsetScrollStrategy? = offsetScrollStrats.find { it.tag == tag }
 
     protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
-        listOf(OffsetScrollStrategy(tag = "dot tabs bottom", type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
-               OffsetScrollStrategy(tag = "online bottom", type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_BOTTOM, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
-               OffsetScrollStrategy(tag = "settings bottom", type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
-               OffsetScrollStrategy(tag = "prop 0 bottom", type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_0, hide = FeedViewHolderHideOnScroll(4), show = FeedViewHolderShowOnScroll(4)),
-               OffsetScrollStrategy(tag = "prop 1 bottom", type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_1, hide = FeedViewHolderHideOnScroll(3), show = FeedViewHolderShowOnScroll(3)),
-               OffsetScrollStrategy(tag = "prop 2 bottom", type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_2, hide = FeedViewHolderHideOnScroll(2), show = FeedViewHolderShowOnScroll(2)),
-               OffsetScrollStrategy(tag = "prop 3 bottom", type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_3, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)),
-               OffsetScrollStrategy(tag = "prop 4 bottom", type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_4, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
+        listOf(OffsetScrollStrategy(tag = "dot tabs bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
+               OffsetScrollStrategy(tag = "online bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_BOTTOM, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
+               OffsetScrollStrategy(tag = "settings bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
+               OffsetScrollStrategy(tag = "prop 0 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_0, hide = FeedViewHolderHideOnScroll(4), show = FeedViewHolderShowOnScroll(4)),
+               OffsetScrollStrategy(tag = "prop 1 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_1, hide = FeedViewHolderHideOnScroll(3), show = FeedViewHolderShowOnScroll(3)),
+               OffsetScrollStrategy(tag = "prop 2 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_2, hide = FeedViewHolderHideOnScroll(2), show = FeedViewHolderShowOnScroll(2)),
+               OffsetScrollStrategy(tag = "prop 3 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_3, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)),
+               OffsetScrollStrategy(tag = "prop 4 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_4, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
 
     private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
@@ -424,71 +424,39 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     // helper method
     private fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
-        view.post {
-            // TODO: remove logs and this line
-            val id = feedAdapter.findModel(position)?.id?.substring(0..3)
+        fun handleBottomStrategy(it: OffsetScrollStrategy) {
+            if (bottom - view.top < it.deltaOffset) {
+                if (!it.isHiddenAtAndSync(position)) {
+                    Timber.v("[BOTTOM-$position]$it Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
+                    feedAdapter.notifyItemChanged(position, it.hide)
+                } else Timber.e("--- [BOTTOM-$position]$it hide by offset scroll")
+            } else {
+                if (!it.isShownAtAndSync(position)) {
+                    Timber.v("[BOTTOM-$position]$it Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
+                    feedAdapter.notifyItemChanged(position, it.show)
+                } else Timber.e("--- [BOTTOM-$position]$it show by offset scroll")
+            }
+        }
 
+        fun handleTopStrategy(it: OffsetScrollStrategy) {
+            if (top - view.top >= it.deltaOffset) {
+                if (!it.isHiddenAtAndSync(position)) {
+                    Timber.v("[TOP-$position]$it Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
+                    feedAdapter.notifyItemChanged(position, it.hide)
+                } else Timber.e("--- [TOP-$position]$it hide by offset scroll")
+            } else {
+                if (!it.isShownAtAndSync(position)) {
+                    Timber.v("[TOP-$position]$it Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
+                    feedAdapter.notifyItemChanged(position, it.show)
+                } else Timber.e("--- [TOP-$position]$it show by offset scroll")
+            }
+        }
+
+        view.post {  // avoid change rv during layout, leading to crash
             offsetScrollStrats.forEach {
-                // avoid change rv during layout, leading to crash
                 when (it.type) {
-                    OffsetScrollStrategy.Type.BOTTOM -> {
-                        if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
-                            if (bottom - view.top < it.deltaOffset) {
-                                if (!it.isHiddenAtAndSync(position)) {
-                                    Timber.v("[BOTTOM-$position]$it($id) Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
-                                    feedAdapter.notifyItemChanged(position, it.hide)
-                                } else Timber.e("--- [BOTTOM-$position]$it($id) hide by offset scroll")
-                            } else {
-                                if (!it.isShownAtAndSync(position)) {
-                                    Timber.v("[BOTTOM-$position]$it($id) Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
-                                    feedAdapter.notifyItemChanged(position, it.show)
-                                } else Timber.e("--- [BOTTOM-$position]$it($id) show by offset scroll")
-                            }
-                        }
-                    }
-                    OffsetScrollStrategy.Type.DOWN -> {
-                        if (bottom - view.top < it.deltaOffset) {
-                            if (!it.isHiddenAtAndSync(position)) {
-                                Timber.v("[DOWN-$position]$it($id) Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
-                                feedAdapter.notifyItemChanged(position, it.hide)
-                            } else Timber.e("--- [DOWN-$position]$it($id) hide by offset scroll")
-                        } else {
-                            if (!it.isShownAtAndSync(position)) {
-                                Timber.v("[DOWN-$position]$it($id) Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
-                                feedAdapter.notifyItemChanged(position, it.show)
-                            } else Timber.e("--- [DOWN-$position]$it($id) show by offset scroll")
-                        }
-                    }
-                    OffsetScrollStrategy.Type.TOP -> {
-                        if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
-                            if (top - view.top >= it.deltaOffset) {
-                                if (!it.isHiddenAtAndSync(position)) {
-                                    Timber.v("[TOP-$position]$it($id) Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
-                                    feedAdapter.notifyItemChanged(position, it.hide)
-                                } else Timber.e("--- [TOP-$position]$it($id) hide by offset scroll")
-                            } else {
-                                if (!it.isShownAtAndSync(position)) {
-                                    Timber.v("[TOP-$position]$it($id) Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
-                                    feedAdapter.notifyItemChanged(position, it.show)
-                                } else Timber.e("--- [TOP-$position]$it($id) show by offset scroll")
-                            }
-                        }
-                    }
-                    OffsetScrollStrategy.Type.UP -> {
-                        if (view.top - top <= 0) {
-                            if (top - view.top >= it.deltaOffset) {
-                                if (!it.isHiddenAtAndSync(position)) {
-                                    Timber.v("[UP-$position]$it($id) Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
-                                    feedAdapter.notifyItemChanged(position, it.hide)
-                                } else Timber.e("--- [UP-$position]$it($id) hide by offset scroll")
-                            } else {
-                                if (!it.isShownAtAndSync(position)) {
-                                    Timber.v("[UP-$position]$it($id) Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
-                                    feedAdapter.notifyItemChanged(position, it.show)
-                                } else Timber.e("--- [UP-$position]$it($id) show by offset scroll")
-                            }
-                        }
-                    }
+                    OffsetScrollStrategy.Type.BOTTOM -> handleBottomStrategy(it)
+                    OffsetScrollStrategy.Type.TOP -> handleTopStrategy(it)
                 }
             }
         }
