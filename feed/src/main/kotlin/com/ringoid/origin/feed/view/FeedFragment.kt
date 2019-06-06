@@ -425,6 +425,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     // helper method
     private fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
         view.post {
+            // TODO: remove logs and this line
+            val id = feedAdapter.findModel(position)?.id?.substring(0..3)
+
             offsetScrollStrats.forEach {
                 // avoid change rv during layout, leading to crash
                 when (it.type) {
@@ -432,36 +435,42 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
                             if (bottom - view.top < it.deltaOffset) {
                                 if (!it.isHiddenAtAndSync(position)) {
+                                    Timber.v("[BOTTOM-$position]$it($id) Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                                     feedAdapter.notifyItemChanged(position, it.hide)
-                                }
+                                } else Timber.e("--- [BOTTOM-$position]$it($id) hide by offset scroll")
                             } else {
                                 if (!it.isShownAtAndSync(position)) {
+                                    Timber.v("[BOTTOM-$position]$it($id) Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                                     feedAdapter.notifyItemChanged(position, it.show)
-                                }
+                                } else Timber.e("--- [BOTTOM-$position]$it($id) show by offset scroll")
                             }
                         }
                     }
                     OffsetScrollStrategy.Type.DOWN -> {
                         if (bottom - view.top < it.deltaOffset) {
                             if (!it.isHiddenAtAndSync(position)) {
+                                Timber.v("[DOWN-$position]$it($id) Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                                 feedAdapter.notifyItemChanged(position, it.hide)
-                            }
+                            } else Timber.e("--- [DOWN-$position]$it($id) hide by offset scroll")
                         } else {
                             if (!it.isShownAtAndSync(position)) {
+                                Timber.v("[DOWN-$position]$it($id) Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                                 feedAdapter.notifyItemChanged(position, it.show)
-                            }
+                            } else Timber.e("--- [DOWN-$position]$it($id) show by offset scroll")
                         }
                     }
                     OffsetScrollStrategy.Type.TOP -> {
                         if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
                             if (top - view.top >= it.deltaOffset) {
                                 if (!it.isHiddenAtAndSync(position)) {
+                                    Timber.v("[TOP-$position]$it($id) Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                                     feedAdapter.notifyItemChanged(position, it.hide)
-                                }
+                                } else Timber.e("--- [TOP-$position]$it($id) hide by offset scroll")
                             } else {
                                 if (!it.isShownAtAndSync(position)) {
+                                    Timber.v("[TOP-$position]$it($id) Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                                     feedAdapter.notifyItemChanged(position, it.show)
-                                }
+                                } else Timber.e("--- [TOP-$position]$it($id) show by offset scroll")
                             }
                         }
                     }
@@ -469,12 +478,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         if (view.top - top <= 0) {
                             if (top - view.top >= it.deltaOffset) {
                                 if (!it.isHiddenAtAndSync(position)) {
+                                    Timber.v("[UP-$position]$it($id) Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                                     feedAdapter.notifyItemChanged(position, it.hide)
-                                }
+                                } else Timber.e("--- [UP-$position]$it($id) hide by offset scroll")
                             } else {
                                 if (!it.isShownAtAndSync(position)) {
+                                    Timber.v("[UP-$position]$it($id) Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                                     feedAdapter.notifyItemChanged(position, it.show)
-                                }
+                                } else Timber.e("--- [UP-$position]$it($id) show by offset scroll")
                             }
                         }
                     }
