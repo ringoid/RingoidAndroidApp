@@ -358,24 +358,6 @@ class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHo
 class FooterFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
 
     override fun bind(model: FeedItemVO) {
-        showControls()
-    }
-
-    override fun bind(model: FeedItemVO, payloads: List<Any>) {
-        if (payloads.contains(FeedFooterViewHolderHideControls)) {
-            hideControls()
-        }
-        if (payloads.contains(FeedFooterViewHolderShowControls)) {
-            showControls()
-        }
-    }
-
-    // ------------------------------------------
-    private fun hideControls() {
-//        itemView.tv_end_item.changeVisibility(isVisible = false)
-    }
-
-    private fun showControls() {
-//        itemView.tv_end_item.changeVisibility(isVisible = true)
+        // no-op
     }
 }

@@ -71,24 +71,6 @@ class HeaderLmmViewHolder(view: View) : OriginFeedViewHolder(view) {
 class FooterLmmViewHolder(view: View) : OriginFeedViewHolder(view) {
 
     override fun bind(model: FeedItemVO) {
-        showControls()
-    }
-
-    override fun bind(model: FeedItemVO, payloads: List<Any>) {
-        if (payloads.contains(FeedFooterViewHolderHideControls)) {
-            hideControls()
-        }
-        if (payloads.contains(FeedFooterViewHolderShowControls)) {
-            showControls()
-        }
-    }
-
-    // ------------------------------------------
-    private fun hideControls() {
-//        itemView.iv_end_item.changeVisibility(isVisible = false)
-    }
-
-    private fun showControls() {
-//        itemView.iv_end_item.changeVisibility(isVisible = true)
+        // no-op
     }
 }
