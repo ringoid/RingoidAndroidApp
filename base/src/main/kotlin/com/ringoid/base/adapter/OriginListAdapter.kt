@@ -199,6 +199,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
         return if (position > DomainUtil.BAD_POSITION) position to helper.currentList[position]
                else null
     }
+    fun findPosition(predicate: (item: T) -> Boolean): Int = helper.currentList.indexOfFirst(predicate)
 
     fun getModelAdapterPosition(predicate: (item: T) -> Boolean): Int =
         helper.currentList.indexOfFirst(predicate)

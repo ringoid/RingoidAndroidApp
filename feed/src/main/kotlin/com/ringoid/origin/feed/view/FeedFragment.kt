@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
@@ -120,10 +121,18 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     private fun checkForNewlyVisibleItems(prevIds: Collection<String>, newIds: Collection<String>, excludedId: String? = null) {
         newIds.toMutableList()
-            .apply { removeAll(prevIds) }
+            .also { list ->  // for all items that are visible after discard - check scroll offsets and apply strategies
+                list.forEach { id ->  // this will make labels visible depending on scroll offsets for each item
+                    feedAdapter.findPosition { it.id == id }
+                               .takeIf { it > DomainUtil.BAD_POSITION }
+                               ?.also { Timber.v("Check scroll offset for item $id at position: $it") }
+                               ?.let { position -> trackScrollOffsetForPosition(position) }
+                }
+            }
+            .apply { removeAll(prevIds) }  // retain only new items compared to previous ones
             .also { DebugLogUtil.d("Discarded ${excludedId?.substring(0..3)}, became visible[${it.size}]: ${it.joinToString { it.substring(0..3) }}") }
             .takeIf { it.isNotEmpty() }
-            ?.forEach { id ->
+            ?.forEach { id ->  // retained items are the new ones that come into viewport, i.e. became visible
                 feedAdapter.findModelAndPosition { it.id == id }
                     ?.let { (position, model) ->
                         val image = model.images[model.positionOfImage]
@@ -401,73 +410,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-            fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
-                offsetScrollStrats.forEach {
-                    view.post {
-                        // avoid change rv during layout, leading to crash
-                        when (it.type) {
-                            OffsetScrollStrategy.Type.BOTTOM -> {
-                                if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
-                                    if (bottom - view.top < it.deltaOffset) {
-                                        if (!it.isHiddenAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.hide)
-                                        }
-                                    } else {
-                                        if (!it.isShownAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.show)
-                                        }
-                                    }
-                                }
-                            }
-                            OffsetScrollStrategy.Type.DOWN -> {
-                                if (bottom - view.top < it.deltaOffset) {
-                                    if (!it.isHiddenAtAndSync(position)) {
-                                        feedAdapter.notifyItemChanged(position, it.hide)
-                                    }
-                                } else {
-                                    if (!it.isShownAtAndSync(position)) {
-                                        feedAdapter.notifyItemChanged(position, it.show)
-                                    }
-                                }
-                            }
-                            OffsetScrollStrategy.Type.TOP -> {
-                                if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
-                                    if (top - view.top >= it.deltaOffset) {
-                                        if (!it.isHiddenAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.hide)
-                                        }
-                                    } else {
-                                        if (!it.isShownAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.show)
-                                        }
-                                    }
-                                }
-                            }
-                            OffsetScrollStrategy.Type.UP -> {
-                                if (view.top - top <= 0) {
-                                    if (top - view.top >= it.deltaOffset) {
-                                        if (!it.isHiddenAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.hide)
-                                        }
-                                    } else {
-                                        if (!it.isShownAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.show)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            fun processItemView(position: Int, view: View?) {
-                view?.let {
-                    val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
-                    processItemViewControlVisibility(position, view, AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT, bottom)
-                }
-            }
-
             fun trackScrollOffset(rv: RecyclerView) {
                 rv.linearLayoutManager()?.let {
                     val from = it.findFirstVisibleItemPosition()
@@ -479,6 +421,84 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             super.onScrolled(rv, dx, dy)
             trackScrollOffset(rv)
         }
+    }
+
+    // helper method
+    private fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
+        view.post {
+            offsetScrollStrats.forEach {
+                // avoid change rv during layout, leading to crash
+                when (it.type) {
+                    OffsetScrollStrategy.Type.BOTTOM -> {
+                        if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
+                            if (bottom - view.top < it.deltaOffset) {
+                                if (!it.isHiddenAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.hide)
+                                }
+                            } else {
+                                if (!it.isShownAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.show)
+                                }
+                            }
+                        }
+                    }
+                    OffsetScrollStrategy.Type.DOWN -> {
+                        if (bottom - view.top < it.deltaOffset) {
+                            if (!it.isHiddenAtAndSync(position)) {
+                                feedAdapter.notifyItemChanged(position, it.hide)
+                            }
+                        } else {
+                            if (!it.isShownAtAndSync(position)) {
+                                feedAdapter.notifyItemChanged(position, it.show)
+                            }
+                        }
+                    }
+                    OffsetScrollStrategy.Type.TOP -> {
+                        if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
+                            if (top - view.top >= it.deltaOffset) {
+                                if (!it.isHiddenAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.hide)
+                                }
+                            } else {
+                                if (!it.isShownAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.show)
+                                }
+                            }
+                        }
+                    }
+                    OffsetScrollStrategy.Type.UP -> {
+                        if (view.top - top <= 0) {
+                            if (top - view.top >= it.deltaOffset) {
+                                if (!it.isHiddenAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.hide)
+                                }
+                            } else {
+                                if (!it.isShownAtAndSync(position)) {
+                                    feedAdapter.notifyItemChanged(position, it.show)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // helper method
+    private fun processItemView(position: Int, view: View?) {
+        view?.let {
+            Timber.v("Check scroll offset for view at position $position: top=${view.top}, bottom=${view.bottom}")
+            val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
+            processItemViewControlVisibility(position, view, AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT, bottom)
+        }
+    }
+
+    /**
+     * Directly applies offset scroll strategies on item at [position], if any,
+     * depending on scroll offset of related view in [rv_items].
+     */
+    private fun trackScrollOffsetForPosition(position: Int) {
+        rv_items.linearLayoutManager()?.let { processItemView(position, it.findViewByPosition(position)) }
     }
 
     // ------------------------------------------
