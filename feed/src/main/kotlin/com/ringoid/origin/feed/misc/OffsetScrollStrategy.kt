@@ -22,4 +22,9 @@ data class OffsetScrollStrategy(val tag: String? = null,
             hiddenAtPositions.remove(position)
             false
         } else true
+
+    fun hidePositions(): String = hiddenAtPositions.joinToString(", ","[", "]")
+    fun showPositions(): String = shownAtPositions.joinToString(", ","[", "]")
+
+    override fun toString(): String = "[$tag hide=${hidePositions()} show=${showPositions()}]"
 }
