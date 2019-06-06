@@ -193,6 +193,13 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     fun getModel(position: Int): T = helper.currentList[position - fixUpForHeader()]
     protected fun getModels(): List<T> = helper.currentList
 
+    /**
+     * Safely access model at [position], or null.
+     */
+    fun findModel(position: Int): T? =
+        if (position < 0 || position >= helper.currentList.size - fixUpForHeader()) null
+        else getModel(position)
+
     fun findModel(predicate: (item: T) -> Boolean): T? = helper.currentList.find(predicate)
     fun findModelAndPosition(predicate: (item: T) -> Boolean): Pair<Int, T>? {
         val position = helper.currentList.indexOfFirst(predicate)
