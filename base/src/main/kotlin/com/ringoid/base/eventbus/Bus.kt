@@ -42,7 +42,7 @@ sealed class BusEvent {
     object ReOpenApp: BusEvent()
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
 
-    object PushNewLike : BusEvent()
-    object PushNewMatch : BusEvent()
-    object PushNewMessage : BusEvent()
+    data class PushNewLike(val peerId: String) : BusEvent()
+    data class PushNewMatch(val peerId: String) : BusEvent()
+    data class PushNewMessage(val peerId: String) : BusEvent()
 }
