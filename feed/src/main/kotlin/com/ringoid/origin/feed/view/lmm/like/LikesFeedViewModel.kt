@@ -109,6 +109,6 @@ class LikesFeedViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        refreshOnPush.value = true  // show 'tap-to-refresh' popup on Feed screen
+        refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
     }
 }
