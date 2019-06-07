@@ -48,6 +48,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeProgrammingTools()
         initializeRxErrorHandler()
+        initializeStrictMode()  // ignore StrictMode alerts for SDK's initializations
 
         imagePreviewReceiver.register()  // app-wide broadcast receiver doesn't need to unregister
     }
@@ -57,25 +58,27 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         localeManager.setLocale(this)
     }
 
-    /* Leak detection */
+    /* Debugging */
     // ------------------------------------------------------------------------
     private fun initializeLeakDetection() {
         // suitable for production
         LeakSentry.config = LeakSentry.config.copy(watchFragmentViews = false)
+    }
 
+    private fun initializeStrictMode() {
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
                     .detectAll()
                     .penaltyLog()
-                    .penaltyDeath()
+//                    .penaltyDeath()
                     .build())
 
             StrictMode.setVmPolicy(
                 StrictMode.VmPolicy.Builder()
                     .detectAll()
                     .penaltyLog()
-                    .penaltyDeath()
+//                    .penaltyDeath()
                     .build())
         }
     }
