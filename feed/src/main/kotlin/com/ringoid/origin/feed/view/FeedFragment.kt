@@ -527,11 +527,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
     }
 
+    protected open fun getBottomBorderForOffsetScroll(): Int = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
+    protected open fun getTopBorderForOffsetScroll(): Int = -2000000000  // no top border by default
+
     // helper method
     private fun processItemView(position: Int, view: View?) {
         view?.let {
-            val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
-            processItemViewControlVisibility(position, view, AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT, bottom)
+            processItemViewControlVisibility(position, view, getTopBorderForOffsetScroll(), getBottomBorderForOffsetScroll())
         }
     }
 
