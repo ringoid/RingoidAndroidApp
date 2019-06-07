@@ -70,15 +70,22 @@ class UserProfileFragmentViewModel @Inject constructor(
         getLmmPropertyUseCase.repository.profileBlocked
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({
-                val count = totalLmmCount.value ?: 1
-                totalLmmCount.value = maxOf(0, count - 1)
-            }, Timber::e)
+            .subscribe({ decrementTotalLmmCount() }, Timber::e)
 
         getLmmPropertyUseCase.repository.lmmLoadFinish
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ totalLmmCount.value = it }, Timber::e)
+    }
+
+    private fun decrementTotalLmmCount() {
+        val count = totalLmmCount.value ?: 1
+        totalLmmCount.value = maxOf(0, count - 1)
+    }
+
+    private fun incrementTotalLmmCount() {
+        val count = totalLmmCount.value ?: -1
+        totalLmmCount.value = maxOf(0, count + 1)
     }
 
     /* Lifecycle */
@@ -89,6 +96,27 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewLike(event: BusEvent.PushNewLike) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        incrementTotalLmmCount()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        incrementTotalLmmCount()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        // TODO: compare peerId with peerIds in Lmm, and if absent - increment
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
         Timber.d("Received bus event: $event")
