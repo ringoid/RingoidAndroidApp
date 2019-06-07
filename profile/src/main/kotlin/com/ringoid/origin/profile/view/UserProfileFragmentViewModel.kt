@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 class UserProfileFragmentViewModel @Inject constructor(
     private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
-    private val getLmmUseCase: GetLmmUseCase,  // only to access subject
+    getLmmUseCase: GetLmmUseCase,  // only to access subject
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
