@@ -187,7 +187,7 @@ abstract class BaseLmmFeedViewModel(
     // ------------------------------------------
     override fun onRefresh() {
         super.onRefresh()
-        refreshOnPush.value = false
+        refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
     }
 
     // ------------------------------------------
