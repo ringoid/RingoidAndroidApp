@@ -29,31 +29,32 @@ object ImageLoader {
             ?.into(imageView)
     }
 
-    fun loadRequest(uri: String?, thumbnailUri: String? = null, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? {
-        if (uri.isNullOrBlank()) {
-            return null
-        }
-
-        val thumbnailRequest: RequestBuilder<Drawable>? = null
-//            thumbnailUri?.let {
-//                Glide.with(context)
-//                    .load(it)
-////                    .apply(optimalOptions(context, thumbnailUri, options))
-//            }
-
-        return Glide.with(context)
-            .load(uri)
-//            .apply(optimalOptions(context, uri, options))
-            .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
-    }
-
-    fun loadRequest(uri: String?, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? =
+    fun simpleLoadRequest(uri: String?, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? =
         uri?.let {
             Glide.with(context)
                 .load(it)
 //                .apply(wrapOptions(options))
 //                .apply(optimalOptions(context, it, options))
         }
+
+    // ------------------------------------------
+    private fun loadRequest(uri: String?, thumbnailUri: String? = null, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? {
+        if (uri.isNullOrBlank()) {
+            return null
+        }
+
+        val thumbnailRequest: RequestBuilder<Drawable>? =
+            thumbnailUri?.let {
+                Glide.with(context)
+                    .load(it)
+//                    .apply(optimalOptions(context, thumbnailUri, options))
+            }
+
+        return Glide.with(context)
+            .load(uri)
+//            .apply(optimalOptions(context, uri, options))
+            .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
+    }
 
     @Suppress("CheckResult")
     internal fun load(uri: String?, imageView: ImageView, withThumbnail: Boolean = false,options: RequestOptions? = null) {

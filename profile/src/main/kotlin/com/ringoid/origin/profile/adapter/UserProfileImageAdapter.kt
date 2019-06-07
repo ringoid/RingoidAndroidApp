@@ -5,7 +5,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.domain.model.image.EmptyUserImage
@@ -60,8 +59,7 @@ class UserProfileImageAdapter(private val context: Context)
         getModels().subList(position, position + 1)
 
     override fun getPreloadRequestBuilder(item: UserImage): RequestBuilder<*>? =
-        ImageLoader.loadRequest(uri = item.uri, thumbnailUri = item.uriLocal ?: item.thumbnailUri,
-            context = context, options = RequestOptions().centerCrop())
+        ImageLoader.simpleLoadRequest(uri = item.uriLocal ?: item.thumbnailUri, context = context)
 }
 
 // ------------------------------------------------------------------------------------------------
