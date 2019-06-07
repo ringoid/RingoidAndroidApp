@@ -19,7 +19,6 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.sentry.Sentry
-import leakcanary.LeakCanary
 import leakcanary.LeakSentry
 import timber.log.Timber
 import java.io.IOException
@@ -60,9 +59,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     /* Leak detection */
     // ------------------------------------------------------------------------
     private fun initializeLeakDetection() {
-        if (BuildConfig.DEBUG) {  // only debug
-            LeakCanary.config = LeakCanary.config.copy(dumpHeap = false)
-        }
         // suitable for production
         LeakSentry.config = LeakSentry.config.copy(watchFragmentViews = false)
     }
