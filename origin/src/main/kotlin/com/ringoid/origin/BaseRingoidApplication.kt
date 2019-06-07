@@ -1,6 +1,7 @@
 package com.ringoid.origin
 
 import android.content.res.Configuration
+import android.os.StrictMode
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
@@ -61,6 +62,22 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     private fun initializeLeakDetection() {
         // suitable for production
         LeakSentry.config = LeakSentry.config.copy(watchFragmentViews = false)
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(
+                StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build())
+
+            StrictMode.setVmPolicy(
+                StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build())
+        }
     }
 
     /* Logger */
