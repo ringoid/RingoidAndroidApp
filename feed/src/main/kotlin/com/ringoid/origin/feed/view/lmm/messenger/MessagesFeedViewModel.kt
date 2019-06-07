@@ -36,6 +36,7 @@ class MessagesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
+    notifyProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
@@ -50,6 +51,7 @@ class MessagesFeedViewModel @Inject constructor(
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
+        notifyProfileBlockedUseCase,
         userInMemoryCache, app) {
 
     override fun countNotSeen(feed: List<FeedItem>): List<String> =

@@ -12,6 +12,7 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
+import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -34,6 +35,7 @@ abstract class FeedViewModel(
     private val clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
+    private val notifyProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 
@@ -251,6 +253,7 @@ abstract class FeedViewModel(
 
         // remove profile from feed, filter it from backend responses in future
         cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))
+            .andThen(notifyProfileBlockedUseCase.source())  // notify listeners that profile has been blocked
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({

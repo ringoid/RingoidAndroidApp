@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 class UserProfileFragmentViewModel @Inject constructor(
     private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
-    getLmmPropertyUseCase: GetLmmPropertyUseCase,  // only to access subject
+    getLmmPropertyUseCase: GetLmmPropertyUseCase,  // only to access subjects
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
@@ -66,6 +66,14 @@ class UserProfileFragmentViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
             .subscribe({ imageDeleted.value = it }, Timber::e)
+
+        getLmmPropertyUseCase.repository.profileBlocked
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({
+                val count = totalLmmCount.value ?: 1
+                totalLmmCount.value = maxOf(0, count - 1)
+            }, Timber::e)
 
         getLmmPropertyUseCase.repository.lmmLoadFinish
             .observeOn(AndroidSchedulers.mainThread())

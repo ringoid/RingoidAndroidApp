@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.view.lmm.base
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.common.util.ArrayUtils.removeAll
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -60,12 +59,14 @@ abstract class BaseLmmFeedViewModel(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
+    notifyProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
+        notifyProfileBlockedUseCase,
         userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
@@ -163,6 +164,7 @@ abstract class BaseLmmFeedViewModel(
                 }
                 feed.value = list  // prepended list
             }
+            .autoDisposable(this)
             .subscribe({ action?.invoke() }, Timber::e)
     }
 

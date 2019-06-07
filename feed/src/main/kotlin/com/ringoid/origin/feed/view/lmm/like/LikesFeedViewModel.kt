@@ -39,6 +39,7 @@ class LikesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
+    notifyProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
@@ -53,6 +54,7 @@ class LikesFeedViewModel @Inject constructor(
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
+        notifyProfileBlockedUseCase,
         userInMemoryCache, app) {
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES

@@ -43,17 +43,20 @@ interface IFeedRepository {
     fun transferFeedItem(feedItemId: String, destinationFeed: String): Completable
 
     // --------------------------------------------------------------------------------------------
-    val badgeLikes: PublishSubject<Boolean>
-    val badgeMatches: PublishSubject<Boolean>
-    val badgeMessenger: PublishSubject<Boolean>
+    val badgeLikes: PublishSubject<Boolean>  // LMM contains new likes
+    val badgeMatches: PublishSubject<Boolean>  // LMM contains new matches
+    val badgeMessenger: PublishSubject<Boolean>  // LMM contains new messages
     val feedLikes: PublishSubject<List<FeedItem>>
     val feedMatches: PublishSubject<List<FeedItem>>
     val feedMessages: PublishSubject<List<FeedItem>>
-    val lmmChanged: PublishSubject<Boolean>
-    val lmmLoadFinish: PublishSubject<Int>
-    val newLikesCount: PublishSubject<Int>
-    val newMatchesCount: PublishSubject<Int>
-    val newMessagesCount: PublishSubject<Int>
+    val lmmChanged: PublishSubject<Boolean>  // LMM contains new data
+    val lmmLoadFinish: PublishSubject<Int>  // LMM load finished, contains LMM's total count
+    val newLikesCount: PublishSubject<Int>  // for particle animation
+    val newMatchesCount: PublishSubject<Int>  // for particle animation
+    val newMessagesCount: PublishSubject<Int>  // for particle animation
+
+    // internal control properties
+    val profileBlocked: PublishSubject<Int>  // notify when profile has been blocked
 
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
 
