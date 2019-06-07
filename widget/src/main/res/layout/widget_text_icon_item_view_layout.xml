@@ -42,8 +42,8 @@
                 style="@style/StdText.Primary"/>
 
             <TextView
+                android:id="@+id/tv_suffix"
                 android:layout_marginStart="4dp"
-                android:text="@string/value_cm"
                 style="@style/StdText.Primary"/>
 
             <Space

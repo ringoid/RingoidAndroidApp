@@ -109,6 +109,7 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
                     initText = getText(), inputType = InputType.TYPE_CLASS_NUMBER, maxLength = 3)
             }
             textChanges().compose(inputDebounce()).subscribe(::onHeightTextChange)
+            setSuffix(OriginR_string.value_cm)
         }
         with (tv_support) {
             highlightFrom(start = text.lastIndexOf(' '), textColor = context.getAttributeColor(WidgetR_attrs.refTextColorPrimary))

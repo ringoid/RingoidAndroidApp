@@ -2,6 +2,7 @@ package com.ringoid.widget.view.item_view
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.StringRes
 import com.jakewharton.rxbinding3.InitialValueObservable
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.widget.R
@@ -25,6 +26,10 @@ open class TextIconItemView : IconItemView {
 
     open fun setInputText(text: String?) {
         tv_input.text = text ?: ""
+    }
+
+    fun setSuffix(@StringRes resId: Int) {
+        tv_suffix.setText(resId)
     }
 }
 
