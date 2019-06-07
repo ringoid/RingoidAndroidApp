@@ -34,6 +34,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
             errorMessage = "Connection is not secure" ; Timber.e(e)
             SentryUtil.capture(e, errorMessage)
             unexpected = ERROR_CONNECTION_INSECURE
+            DebugLogUtil.e(e)
         } catch (e: UnknownHostException) {
             errorMessage = "No network connection" ; Timber.e(e)
             unexpected = ERROR_NO_CONNECTION
