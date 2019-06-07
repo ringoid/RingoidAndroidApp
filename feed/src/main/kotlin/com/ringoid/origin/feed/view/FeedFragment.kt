@@ -427,12 +427,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         fun handleBottomStrategy(it: OffsetScrollStrategy) {
             if (bottom - view.top <= it.deltaOffset) {
                 if (!it.isHiddenAtAndSync(position)) {
-                    Timber.v("[BOTTOM-$position]$it Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.hide)
                 }
             } else {
                 if (!it.isShownAtAndSync(position)) {
-                    Timber.v("[BOTTOM-$position]$it Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.show)
                 }
             }
@@ -441,12 +439,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         fun handleTopStrategy(it: OffsetScrollStrategy) {
             if (top - view.top >= it.deltaOffset) {
                 if (!it.isHiddenAtAndSync(position)) {
-                    Timber.v("[TOP-$position]$it Apply hide by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.hide)
                 }
             } else {
                 if (!it.isShownAtAndSync(position)) {
-                    Timber.v("[TOP-$position]$it Apply show by offset scroll (t=${view.top},b=${view.bottom},d=${it.deltaOffset})")
                     feedAdapter.notifyItemChanged(position, it.show)
                 }
             }
