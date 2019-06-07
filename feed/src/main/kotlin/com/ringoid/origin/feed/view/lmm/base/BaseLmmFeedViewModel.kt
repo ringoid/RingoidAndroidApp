@@ -53,20 +53,19 @@ abstract class BaseLmmFeedViewModel(
     private val getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     private val addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
+    private val notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     private val transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    notifyProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        notifyProfileBlockedUseCase,
         userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
@@ -249,7 +248,7 @@ abstract class BaseLmmFeedViewModel(
         super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
         markFeedItemAsSeen(feedItemId = profileId)
 
-        notifyProfileBlockedUseCase.source()  // notify listeners that profile has been blocked
+        notifyLmmProfileBlockedUseCase.source()  // notify listeners that profile has been blocked
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
