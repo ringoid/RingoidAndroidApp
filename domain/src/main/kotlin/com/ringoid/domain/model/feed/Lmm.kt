@@ -4,6 +4,8 @@ import com.ringoid.domain.DomainUtil
 
 data class Lmm(val likes: List<FeedItem>, val matches: List<FeedItem>, val messages: List<FeedItem>) {
 
+    constructor(): this(emptyList(), emptyList(), emptyList())
+
     fun isLikesEmpty(): Boolean = likes.isEmpty()
     fun isMatchesEmpty(): Boolean = matches.isEmpty()
     fun isMessagesEmpty(): Boolean = messages.isEmpty()
@@ -29,4 +31,6 @@ data class Lmm(val likes: List<FeedItem>, val matches: List<FeedItem>, val messa
     fun notSeenLikesCount(): Int = likes.count { it.isNotSeen }
     fun notSeenMatchesCount(): Int = matches.count { it.isNotSeen }
     fun containsNotSeenItems(): Boolean = notSeenLikesCount() > 0 || notSeenMatchesCount() > 0
+
+    fun toLogString(): String = "likes[${likes.size}], matches[${matches.size}], messages=[${messages.size}]"
 }

@@ -59,6 +59,13 @@ interface IFeedRepository {
 
     fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm>
 
+    /**
+     * The following methods operate with cached Lmm, which could contain already blocked profiles.
+     * Blocked profiles could be filtered out from cached Lmm only on next cache update.
+     */
+    fun getLmmTotalCount(): Single<Int>
+    fun getLmmTotalCount(source: String): Single<Int>
+
     fun getLmmProfileIds(): Single<List<String>>
 
     fun dropLmmChangedStatus(): Completable

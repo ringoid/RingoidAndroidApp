@@ -11,7 +11,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.GetLmmUseCase
+import com.ringoid.domain.interactor.feed.property.GetLmmPropertyUseCase
 import com.ringoid.domain.interactor.image.*
 import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 class UserProfileFragmentViewModel @Inject constructor(
     private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
-    getLmmUseCase: GetLmmUseCase,  // only to access subject
+    getLmmPropertyUseCase: GetLmmPropertyUseCase,  // only to access subject
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
@@ -67,7 +67,7 @@ class UserProfileFragmentViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({ imageDeleted.value = it }, Timber::e)
 
-        getLmmUseCase.repository.lmmLoadFinish
+        getLmmPropertyUseCase.repository.lmmLoadFinish
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ totalLmmCount.value = it }, Timber::e)

@@ -190,10 +190,10 @@ open class FeedRepository @Inject constructor(
             cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
                 .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})", traceTag = "feeds/get_lmm")
                 .dropLmmResponseStatsOnSubscribe()
-                .filterOutDuplicateProfilesLmm()
-                .detectCollisionProfilesLmm()
+                .filterOutDuplicateProfilesLmmResponse()
+                .detectCollisionProfilesLmmResponse()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
-                .filterOutBlockedProfilesLmm()
+                .filterOutBlockedProfilesLmmResponse()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
                 .map { it.map() }
                 .doOnSuccess { sentMessagesLocal.deleteMessages() }  // clear sent user messages because they will be restored with new Lmm
@@ -207,11 +207,17 @@ open class FeedRepository @Inject constructor(
                 .doOnSuccess { lmmLoadFinish.onNext(it.totalCount()) }
         }
 
+    override fun getLmmTotalCount(): Single<Int> = local.countFeedItems()
+    override fun getLmmTotalCount(source: String): Single<Int> = local.countFeedItems(source)
+
     override fun getLmmProfileIds(): Single<List<String>> = local.feedItemIds()
 
     private fun getCachedLmm(): Single<Lmm> =
         getCachedLmmOnly()
             .dropLmmStatsOnSubscribe()
+            .doOnSuccess { DebugLogUtil.v("# Cached Lmm: [${it.toLogString()}] before filter out blocked profiles") }
+            .filterOutBlockedProfilesLmm()
+            .doOnSuccess { DebugLogUtil.v("# Cached Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
             .checkForNewFeedItems()
             .checkForNewLikes()
             .checkForNewMatches()
@@ -263,7 +269,7 @@ open class FeedRepository @Inject constructor(
         }
 
     // ------------------------------------------
-    private fun Single<LmmResponse>.detectCollisionProfilesLmm(): Single<LmmResponse> =
+    private fun Single<LmmResponse>.detectCollisionProfilesLmmResponse(): Single<LmmResponse> =
         doOnSuccess {
             val totalSize = it.likes.size + it.matches.size + it.messages.size
             val totalSizeDistinct = mutableListOf<String>()
@@ -277,12 +283,12 @@ open class FeedRepository @Inject constructor(
             }
         }
 
-    private fun Single<LmmResponse>.filterOutBlockedProfilesLmm(): Single<LmmResponse> =
+    private fun Single<LmmResponse>.filterOutBlockedProfilesLmmResponse(): Single<LmmResponse> =
         toObservable()
         .withLatestFrom(getBlockedProfileIds().toObservable(),
             BiFunction { lmm: LmmResponse, blockedIds: List<String> ->
                 blockedIds
-                    .takeIf { !it.isEmpty() }
+                    .takeIf { it.isNotEmpty() }
                     ?.let {
                         val likes = lmm.likes.toMutableList().apply { removeAll { it.id in blockedIds } }
                         val matches = lmm.matches.toMutableList().apply { removeAll { it.id in blockedIds } }
@@ -292,7 +298,22 @@ open class FeedRepository @Inject constructor(
             })
         .single(LmmResponse()  /* by default - empty lmm */)
 
-    private fun Single<LmmResponse>.filterOutDuplicateProfilesLmm(): Single<LmmResponse> =
+    private fun Single<Lmm>.filterOutBlockedProfilesLmm(): Single<Lmm> =
+        toObservable()
+        .withLatestFrom(getBlockedProfileIds().toObservable(),
+            BiFunction { lmm: Lmm, blockedIds: List<String> ->
+                blockedIds
+                    .takeIf { it.isNotEmpty() }
+                    ?.let {
+                        val likes = lmm.likes.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        val matches = lmm.matches.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        val messages = lmm.messages.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        Lmm(likes = likes, matches = matches, messages = messages)
+                    } ?: lmm
+            })
+        .single(Lmm()  /* by default - empty lmm */)
+
+    private fun Single<LmmResponse>.filterOutDuplicateProfilesLmmResponse(): Single<LmmResponse> =
         flatMap { response ->
             val message = "Duplicate profiles detected for "
             val filterLikes = response.likes.distinctBy { it.id }
