@@ -24,6 +24,15 @@ data class OffsetScrollStrategy(val tag: String? = null,
         } else true
 
     /**
+     * Forget [position] that could have been already affected before, and let this [OffsetScrollStrategy]
+     * to apply on item at that [position] again.
+     */
+    fun forgetPosition(position: Int) {
+        hiddenAtPositions.remove(position)
+        shownAtPositions.remove(position)
+    }
+
+    /**
      * Compare these values to detect whether two different strategies operate on the same target.
      */
     fun target(): Int {

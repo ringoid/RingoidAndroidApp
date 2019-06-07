@@ -544,6 +544,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
      * depending on scroll offset of related view in [rv_items].
      */
     private fun trackScrollOffsetForPosition(position: Int) {
+        /**
+         * Loop over all offset scroll strategies and remove [position] from their lists of affected
+         * positions to force strategies to be applied on item at [position] again.
+         */
+        offsetScrollStrats.forEach { it.forgetPosition(position) }
+        // apply strategies on item at position, regardless of whether that position has been affected before
         rv_items.linearLayoutManager()?.let { processItemView(position, it.findViewByPosition(position)) }
     }
 
