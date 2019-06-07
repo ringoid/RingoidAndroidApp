@@ -248,6 +248,10 @@ abstract class BaseLmmFeedViewModel(
     override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
         super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
         markFeedItemAsSeen(feedItemId = profileId)
+
+        notifyProfileBlockedUseCase.source()  // notify listeners that profile has been blocked
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
     }
 
     override fun onDiscardProfile(profileId: String) {

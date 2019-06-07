@@ -35,7 +35,7 @@ abstract class FeedViewModel(
     private val clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
-    private val notifyProfileBlockedUseCase: NotifyProfileBlockedUseCase,
+    protected val notifyProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 
@@ -253,7 +253,6 @@ abstract class FeedViewModel(
 
         // remove profile from feed, filter it from backend responses in future
         cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))
-            .andThen(notifyProfileBlockedUseCase.source())  // notify listeners that profile has been blocked
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
