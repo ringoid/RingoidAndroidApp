@@ -18,7 +18,6 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.changeTypeface
-import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_lmm.*

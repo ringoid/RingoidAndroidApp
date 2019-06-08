@@ -229,7 +229,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
             }
         }
-        offsetScrollStrats = getOffsetScrollStrategies()
+        invalidateScrollCaches()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -331,7 +331,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             noConnection(this@FeedFragment)
         } else {
             feedTrackingBus.allowSingleUnchanged()
-            offsetScrollStrats = getOffsetScrollStrategies()
+            invalidateScrollCaches()
             /**
              * Asks for location permission, and if granted - callback will then handle
              * to call refreshing procedure.
@@ -397,6 +397,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     // ------------------------------------------
     private lateinit var offsetScrollStrats: List<OffsetScrollStrategy>
+
+    protected fun invalidateScrollCaches() {
+        offsetScrollStrats = getOffsetScrollStrategies()
+    }
 
     protected fun getStrategyByTag(tag: String): OffsetScrollStrategy? = offsetScrollStrats.find { it.tag == tag }
 
