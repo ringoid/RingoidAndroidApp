@@ -17,7 +17,6 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.IBaseActivity
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.origin.AppRes
@@ -56,7 +55,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             }
     }
 
-    private var peerId: String = DomainUtil.BAD_ID
+    private var peerId: String = BAD_ID
     private var payload: ChatPayload? = null
     private lateinit var chatAdapter: ChatAdapter
 
@@ -95,7 +94,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        peerId = arguments?.getString(BUNDLE_KEY_PEER_ID, DomainUtil.BAD_ID) ?: DomainUtil.BAD_ID
+        peerId = arguments?.getString(BUNDLE_KEY_PEER_ID, BAD_ID) ?: BAD_ID
         payload = arguments?.getParcelable(BUNDLE_KEY_PAYLOAD)
         ChatInMemoryCache.addProfileIfNotExists(profileId = peerId)
 
