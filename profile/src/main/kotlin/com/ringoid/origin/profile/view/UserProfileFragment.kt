@@ -134,6 +134,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
             }
         }
+
+        if (isActivityCreated) animateTotalLmmCount()
     }
 
     /* Lifecycle */
@@ -539,7 +541,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     private var animationLock = AtomicBoolean(false)
-    private val animation = scaleUp(from = 0.7f, interp = OvershootInterpolator ())
+    private val animation = scaleUp(from = 0.4f, interp = OvershootInterpolator ())
         .apply {
             setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation) {
