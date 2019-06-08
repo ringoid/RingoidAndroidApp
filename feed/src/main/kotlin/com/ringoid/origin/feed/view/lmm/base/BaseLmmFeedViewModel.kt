@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lmm.base
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -23,6 +24,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
@@ -188,6 +190,12 @@ abstract class BaseLmmFeedViewModel(
     override fun onRefresh() {
         super.onRefresh()
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
+    }
+
+    internal fun onTapToRefreshClick() {
+        Bus.post(BusEvent.RefreshOnPush)
+        analyticsManager.fire(Analytics.TAP_TO_REFRESH)
+        viewState.value = ViewState.DONE(REFRESH)
     }
 
     // ------------------------------------------

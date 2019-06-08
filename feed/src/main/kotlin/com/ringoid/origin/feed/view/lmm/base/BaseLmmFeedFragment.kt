@@ -236,10 +236,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     @Suppress("AutoDispose", "CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe {
-            Bus.post(BusEvent.RefreshOnPush)
-            onRefresh()  // refresh by click on 'tap to refresh' popup
-        }
+        // refresh by click on 'tap to refresh' popup
+        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe { vm.onTapToRefreshClick() }
     }
 
     /* Scroll listeners */

@@ -30,5 +30,6 @@ object Analytics {
     const val AHA_PHOTO_ADDED_MANUALLY = "AHA_PHOTO_ADDED_MANUALLY"
 
     const val PULL_TO_REFRESH = "PULL_TO_REFRESH"
+    const val TAP_TO_REFRESH = "TAP_TO_REFRESH"
     const val PUSH_OPEN = "PUSH_OPEN"
 }

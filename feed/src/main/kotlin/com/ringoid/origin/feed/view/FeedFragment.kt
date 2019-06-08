@@ -77,6 +77,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                             positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })
                         showLoading(isVisible = false)
                     }
+                    is REFRESH -> onRefresh()
                 }
             }
             is ViewState.IDLE -> onIdleState()
