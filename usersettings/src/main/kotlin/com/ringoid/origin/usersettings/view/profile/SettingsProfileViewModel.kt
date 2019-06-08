@@ -2,6 +2,7 @@ package com.ringoid.origin.usersettings.view.profile
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.interactor.base.Params
@@ -33,7 +34,7 @@ class SettingsProfileViewModel @Inject constructor(
             return
         }
         properties.children = children
-        updateProfileProperties()
+        updateProfileProperties(propertyName = children.name)
     }
 
     fun onPropertyChanged_education(education: EducationProfileProperty) {
@@ -41,7 +42,7 @@ class SettingsProfileViewModel @Inject constructor(
             return
         }
         properties.education = education
-        updateProfileProperties()
+        updateProfileProperties(propertyName = education.name)
     }
 
     fun onPropertyChanged_hairColor(hairColor: HairColorProfileProperty) {
@@ -49,7 +50,7 @@ class SettingsProfileViewModel @Inject constructor(
             return
         }
         properties.hairColor = hairColor
-        updateProfileProperties()
+        updateProfileProperties(propertyName = hairColor.name)
     }
 
     fun onPropertyChanged_height(height: Int) {
@@ -57,7 +58,7 @@ class SettingsProfileViewModel @Inject constructor(
             return
         }
         properties.height = height
-        updateProfileProperties()
+        updateProfileProperties(propertyName = "height")
     }
 
     fun onPropertyChanged_income(income: IncomeProfileProperty) {
@@ -65,7 +66,7 @@ class SettingsProfileViewModel @Inject constructor(
             return
         }
         properties.income = income
-        updateProfileProperties()
+        updateProfileProperties(propertyName = income.name)
     }
 
     fun onPropertyChanged_property(property: PropertyProfileProperty) {
@@ -73,7 +74,7 @@ class SettingsProfileViewModel @Inject constructor(
             return
         }
         properties.property = property
-        updateProfileProperties()
+        updateProfileProperties(propertyName = property.name)
     }
 
     fun onPropertyChanged_transport(transport: TransportProfileProperty) {
@@ -81,11 +82,11 @@ class SettingsProfileViewModel @Inject constructor(
             return
         }
         properties.transport = transport
-        updateProfileProperties()
+        updateProfileProperties(propertyName = transport.name)
     }
 
     // ------------------------------------------
-    private fun updateProfileProperties() {
+    private fun updateProfileProperties(propertyName: String) {
         updateUserProfileSettingsUseCase.source(Params().put(properties.map()))
             .doOnSubscribe {
                 viewState.value = ViewState.LOADING
@@ -93,6 +94,7 @@ class SettingsProfileViewModel @Inject constructor(
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .doOnComplete { viewState.value = ViewState.IDLE }
+            .doFinally { analyticsManager.fireOnce(Analytics.AHA_FIRST_FIELD_SET, "fieldName" to propertyName) }
             .autoDisposable(this)
             .subscribe({ Timber.d("Successfully updated user profile properties") }, Timber::e)
     }
