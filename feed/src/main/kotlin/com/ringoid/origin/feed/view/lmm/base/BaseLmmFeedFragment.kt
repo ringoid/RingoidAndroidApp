@@ -26,7 +26,7 @@ import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
-import com.ringoid.origin.messenger.ChatPayload
+import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.navigation.RequestCode
@@ -156,7 +156,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         peerImageId = image?.id ?: DomainUtil.BAD_ID,
                         peerImageUri = image?.uri,
                         peerThumbnailUri = image?.thumbnailUri,
-                        sourceFeed = getSourceFeed())
+                        sourceFeed = getSourceFeed()
+                    )
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }

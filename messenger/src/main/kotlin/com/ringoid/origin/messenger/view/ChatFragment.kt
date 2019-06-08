@@ -21,10 +21,11 @@ import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
-import com.ringoid.origin.messenger.ChatPayload
+import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
+import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
@@ -45,7 +46,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         private const val BUNDLE_KEY_PAYLOAD = "bundle_key_payload"
         private const val BUNDLE_KEY_TAG = "bundle_key_tag"
 
-        fun newInstance(peerId: String, payload: ChatPayload = ChatPayload(peerId = peerId), tag: String = TAG): ChatFragment =
+        fun newInstance(peerId: String, payload: ChatPayload = ChatPayload(
+            peerId = peerId
+        ), tag: String = TAG): ChatFragment =
             ChatFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_PEER_ID, peerId)
@@ -177,7 +180,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe {
             showChatControls(isVisible = false)
-            navigate(this@ChatFragment, path = "/block_dialog", rc = RequestCode.RC_BLOCK_DIALOG)
+            val blockPayload = BlockReportPayload(profileImageUri = payload?.peerImageUri, profileThumbnailUri = payload?.peerThumbnailUri)
+            navigate(this@ChatFragment, path = "/block_dialog?payload=${blockPayload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
             rv_chat_messages.apply { setPadding(paddingLeft, paddingTop, paddingRight, AppRes.BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT) }
         }
         rv_chat_messages.apply {

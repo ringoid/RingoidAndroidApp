@@ -7,7 +7,7 @@ import com.google.gson.Gson
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.model.BlockReportPayload
+import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.activity_bottom_sheet_block.*

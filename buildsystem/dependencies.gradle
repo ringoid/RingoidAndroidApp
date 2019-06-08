@@ -470,6 +470,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.confetti],
         [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
+        [configuration: "implementation", dependency: d_libs.gson],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
                           support + leaks + view

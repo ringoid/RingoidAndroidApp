@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.model
+package com.ringoid.origin.model
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -28,7 +28,8 @@ data class BlockReportPayload(
 
         @JvmField
         val CREATOR = object : Parcelable.Creator<BlockReportPayload> {
-            override fun createFromParcel(source: Parcel): BlockReportPayload = BlockReportPayload(source)
+            override fun createFromParcel(source: Parcel): BlockReportPayload =
+                BlockReportPayload(source)
             override fun newArray(size: Int): Array<BlockReportPayload?> = arrayOfNulls(size)
         }
     }
