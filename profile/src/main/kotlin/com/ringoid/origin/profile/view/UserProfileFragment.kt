@@ -152,12 +152,12 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     } else if (count > 0) {  // inserted single item
                         scrollToPosition(0)  // for append: imagesAdapter.itemCount - 1
                     }
-                    showDotTabs()
+                    showDotTabs(isVisible = true)
                 }
                 onRemoveListener = {
                     val empty = imagesAdapter.isEmpty()
                     showEmptyStub(needShow = empty)
-                    showDotTabs()
+                    showDotTabs(isVisible = true)
                     vm.onDeleteImage(empty = empty)
                 }
                 itemClickListener = { _, _ -> navigate(this@UserProfileFragment, path = "/settings_profile") }
@@ -506,7 +506,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ibtn_add_image.changeVisibility(isVisible = isVisible)
         ibtn_settings.changeVisibility(isVisible = isVisible)
         ll_profile_header.changeVisibility(isVisible = isVisible)
-        tabs2.changeVisibility(isVisible = isVisible)
+        showDotTabs(isVisible = isVisible)
     }
 
     private fun showImageControls(isVisible: Boolean) {
@@ -561,8 +561,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         iv_total_lmm.startAnimation(animation)
     }
 
-    private fun showDotTabs() {
-        tabs2?.post { tabs2?.changeVisibility(isVisible = imagesAdapter.itemCount > 1, soft = true) }
+    private fun showDotTabs(isVisible: Boolean) {
+        tabs2?.post { tabs2?.changeVisibility(isVisible = isVisible && imagesAdapter.itemCount > 1, soft = true) }
     }
 
     @DebugOnly
