@@ -194,7 +194,7 @@ abstract class BaseLmmFeedViewModel(
 
     internal fun onTapToRefreshClick() {
         Bus.post(BusEvent.RefreshOnPush)
-        analyticsManager.fire(Analytics.TAP_TO_REFRESH)
+        analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
         viewState.value = ViewState.DONE(REFRESH)
     }
 
