@@ -12,7 +12,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import timber.log.Timber
-import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 object ImageLoader {
@@ -25,7 +24,7 @@ object ImageLoader {
      */
     fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
         loadRequest(uri, thumbnailUri, imageView.context, options)
-            ?.listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))//optimalOptions(imageView.context, uri, options)))
+            ?.listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))
             ?.into(imageView)
     }
 
@@ -33,9 +32,8 @@ object ImageLoader {
         uri?.let {
             Glide.with(context)
                 .load(it)
+                .diskCacheStrategy(cacheStrategy(uri))
                 .skipMemoryCache(skipMemoryCache)
-//                .apply(wrapOptions(options))
-//                .apply(optimalOptions(context, it, options))
         }
 
     // ------------------------------------------
@@ -44,23 +42,18 @@ object ImageLoader {
             return null
         }
 
-        val thumbnailRequest: RequestBuilder<Drawable>? =
-            thumbnailUri?.let {
-                Glide.with(context)
-                    .load(it)
-//                    .apply(optimalOptions(context, thumbnailUri, options))
-            }
+        val thumbnailRequest = thumbnailUri?.let { Glide.with(context).load(it) }
 
         return Glide.with(context)
             .load(uri)
+            .diskCacheStrategy(cacheStrategy(uri))
             .skipMemoryCache(true)  // don't keep original (large) image in memory cache
-//            .apply(optimalOptions(context, uri, options))
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
     }
 
     @Suppress("CheckResult")
     internal fun load(uri: String?, imageView: ImageView, withThumbnail: Boolean = false,options: RequestOptions? = null) {
-        fun getDrawableFuture() = getDrawableFuture(uri, imageView, options)
+        fun getDrawableFuture() = Glide.with(imageView).load(uri).submit()
 
         if (uri.isNullOrBlank()) {
             return
@@ -83,27 +76,8 @@ object ImageLoader {
             .subscribe({ imageView.post { imageView.setImageDrawable(it) } }, Timber::e)
     }
 
-    // ------------------------------------------
-    private fun getDrawableFuture(uri: String?, imageView: ImageView, options: RequestOptions? = null): Future<Drawable> =
-        Glide.with(imageView)
-            .load(uri)
-//            .apply(wrapOptions(options))
-            .submit()
+    private fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
 
-    // ------------------------------------------
-    private fun optimalOptions(context: Context, uri: String?, options: RequestOptions?): RequestOptions {
-        fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
-
-        if (uri.isNullOrBlank()) {
-            return wrapOptions(options)
-        }
-
-        val cacheStrategy = if (isLocalUri(uri)) DiskCacheStrategy.NONE
-                            else DiskCacheStrategy.AUTOMATIC
-
-        return wrapOptions(options).diskCacheStrategy(cacheStrategy)
-    }
-
-    private fun wrapOptions(options: RequestOptions?): RequestOptions =
-        RequestOptions().apply { options?.let { apply(it) } }
+    private fun cacheStrategy(uri: String?): DiskCacheStrategy =
+        if (isLocalUri(uri)) DiskCacheStrategy.NONE else DiskCacheStrategy.RESOURCE
 }
