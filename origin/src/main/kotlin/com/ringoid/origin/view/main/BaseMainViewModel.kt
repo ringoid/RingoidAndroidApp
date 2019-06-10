@@ -6,7 +6,6 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
-import com.ringoid.utility.image.ImageLoader
 
 abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app) {
 
@@ -25,7 +24,6 @@ abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app
     }
 
     open fun onAppReOpen() {
-        ImageLoader.clear(context)
         Bus.post(event = BusEvent.ReOpenApp)
         stopAppTs = System.currentTimeMillis()  // avoid posting both ReOpenApp and ReStartWithTime events at the same time
     }

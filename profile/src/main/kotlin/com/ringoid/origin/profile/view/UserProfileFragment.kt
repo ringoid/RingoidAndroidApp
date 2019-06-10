@@ -43,7 +43,6 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.*
-import com.ringoid.utility.image.ImageLoader
 import com.ringoid.utility.image.theme
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
@@ -409,7 +408,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     // --------------------------------------------------------------------------------------------
     private fun onRefresh() {
-        ImageLoader.clear(context)
         Bus.post(event = BusEvent.RefreshOnProfile)
         if (!connectionManager.isNetworkAvailable()) {
             swipe_refresh_layout.isRefreshing = false
