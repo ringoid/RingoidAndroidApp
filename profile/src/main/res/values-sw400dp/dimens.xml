@@ -3,6 +3,6 @@
     <dimen name="dialog_bottom_sheet_delete_image_height">60dp</dimen>
 
     <dimen name="profile_image_margin_bottom">128dp</dimen>
-    <dimen name="profile_header_height">56dp</dimen>
+    <dimen name="profile_header_height">48dp</dimen>
     <dimen name="profile_tab_layout_height">12dp</dimen>
 </resources>

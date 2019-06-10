@@ -9,6 +9,8 @@ object AppRes {
 
     var BUTTON_HEIGHT: Int = -1
         private set
+    var BUTTON_HEIGHT_NARROW: Int = -1
+        private set
     var BUTTON_FLAT_TEXT_SIZE: Int = -1
         private set
     var BUTTON_FLAT_INC_TEXT_SIZE: Int = -1
@@ -136,6 +138,7 @@ object AppRes {
             STD_MARGIN_64 = getDimensionPixelSize(R.dimen.std_margin_64)
 
             BUTTON_HEIGHT = getDimensionPixelSize(R.dimen.std_btn_height)
+            BUTTON_HEIGHT_NARROW = getDimensionPixelSize(R.dimen.std_btn_height_narrow)
             BUTTON_FLAT_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_18)
             BUTTON_FLAT_INC_TEXT_SIZE = getDimensionPixelSize(R.dimen.std_text_20)
             BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT = getDimensionPixelSize(R.dimen.dialog_bottom_sheet_block_height)
@@ -148,7 +151,7 @@ object AppRes {
             FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
             FEED_IMAGE_HALF_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height_half)
             FEED_ITEM_BIAS_BTN_BOTTOM = (FEED_IMAGE_HEIGHT * 0.34f).toInt()
-            FEED_ITEM_BIAS_BTN_TOP = (FEED_ITEM_BIAS_BTN_BOTTOM - ICON_SIZE_36 * 0.6f).toInt()
+            FEED_ITEM_BIAS_BTN_TOP = FEED_ITEM_BIAS_BTN_BOTTOM - ICON_SIZE_36
             FEED_ITEM_AGE_BOTTOM = FEED_IMAGE_HEIGHT - STD_MARGIN_24 - STD_MARGIN_18 * 7//FEED_IMAGE_HEIGHT - STD_MARGIN_40 - STD_MARGIN_16
             FEED_ITEM_AGE_TOP = FEED_ITEM_AGE_BOTTOM - STD_MARGIN_18 * 2//FEED_IMAGE_HEIGHT - STD_MARGIN_24 - STD_MARGIN_16
             FEED_ITEM_DISTANCE_BOTTOM = FEED_IMAGE_HEIGHT - STD_MARGIN_24 - STD_MARGIN_16
@@ -174,7 +177,7 @@ object AppRes {
             FEED_ITEM_TABS_INDICATOR_TOP2 = FEED_IMAGE_HEIGHT - STD_MARGIN_32
             FEED_ITEM_TABS_INDICATOR_BOTTOM = (FEED_ITEM_TABS_INDICATOR_TOP * 1.5f).toInt()
             FEED_ITEM_TABS_INDICATOR_BOTTOM2 = FEED_IMAGE_HEIGHT - STD_MARGIN_16
-            LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT = (BUTTON_HEIGHT * 0.67f).toInt()
+            LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT = (BUTTON_HEIGHT_NARROW * 0.67f).toInt()
             MAIN_BOTTOM_BAR_HEIGHT = getDimensionPixelSize(R.dimen.main_bottom_bar_height)
             MAIN_BOTTOM_BAR_HEIGHT_HALF = getDimensionPixelSize(R.dimen.main_bottom_bar_height_half)
 

@@ -2,6 +2,7 @@
 <resources>
     <dimen name="std_badge_radius">3dp</dimen>
     <dimen name="std_btn_height">47dp</dimen>
+    <dimen name="std_btn_height_narrow">37dp</dimen>
     <dimen name="std_dialog_height">160dp</dimen>
     <dimen name="std_dialog_width">303dp</dimen>
     <dimen name="std_element_height">47dp</dimen>
