@@ -29,10 +29,11 @@ object ImageLoader {
             ?.into(imageView)
     }
 
-    fun simpleLoadRequest(uri: String?, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? =
+    fun simpleLoadRequest(uri: String?, context: Context, skipMemoryCache: Boolean = false, options: RequestOptions? = null): RequestBuilder<Drawable>? =
         uri?.let {
             Glide.with(context)
                 .load(it)
+                .skipMemoryCache(skipMemoryCache)
 //                .apply(wrapOptions(options))
 //                .apply(optimalOptions(context, it, options))
         }
