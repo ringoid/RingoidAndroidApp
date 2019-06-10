@@ -68,7 +68,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             profileImageAdapter.onImageTouchListener = value
         }
 
-    internal val profileImageAdapter = ProfileImageAdapter(view.context)
+    internal val profileImageAdapter = ProfileImageAdapter(itemView.context)
 
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
 
