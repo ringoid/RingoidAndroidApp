@@ -3,12 +3,17 @@ package com.ringoid.origin.feed.view.dialog
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.google.gson.Gson
 import com.ringoid.base.deeplink.AppNav
+import com.ringoid.base.view.SimpleBaseActivity
+import com.ringoid.origin.feed.R
+import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.Extras
-import com.ringoid.origin.view.base.SimpleBaseDialogActivity
+import com.ringoid.utility.image.ImageLoader
+import kotlinx.android.synthetic.main.activity_bottom_sheet_block.*
 
 @AppNav("block_dialog", "report_dialog")
-class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetActivity {
+class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity {
 
     companion object {
         private const val BUNDLE_KEY_OUTPUT_DATA = "bundle_key_output_data"
@@ -17,6 +22,8 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
     private var blockDialog: BlockBottomSheetDialog? = null
     private var reportDialog: ReportBottomSheetDialog? = null
     private lateinit var outputData: Intent
+
+    override fun getLayoutId(): Int = R.layout.activity_bottom_sheet_block
 
     // --------------------------------------------------------------------------------------------
     override fun onClose() {
@@ -54,6 +61,12 @@ class BlockBottomSheetActivity : SimpleBaseDialogActivity(), IBlockBottomSheetAc
                 createReportDialogIfNeed()
                 reportDialog?.showNow(supportFragmentManager, ReportBottomSheetDialog.TAG)
             }
+        }
+
+        intent.extras?.let {
+            val payloadJson = it.getString("payload") ?: "{}"
+            val payload = Gson().fromJson(payloadJson, BlockReportPayload::class.java)
+            ImageLoader.load(uri = payload.profileImageUri, thumbnailUri = payload.profileThumbnailUri, imageView = iv_profile_image)
         }
     }
 

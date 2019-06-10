@@ -2,6 +2,8 @@ package com.ringoid.origin.view.dialog
 
 import android.app.Activity
 import android.content.DialogInterface
+import android.text.InputFilter
+import android.text.InputType
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -168,10 +170,18 @@ object Dialogs {
                           @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                           @StringRes negativeBtnLabelResId: Int = 0,
                           positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
-                          negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+                          negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                          initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE) =
         activity?.let { activity ->
             val hash = hashOf(activity, titleResId, hintRestId.takeIf { it != 0}?.let { activity.resources.getString(it) }, positiveBtnLabelResId, negativeBtnLabelResId)
             val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_text, null)
+                .apply {
+                    with (et_dialog_entry) {
+                        initText?.let { setText(it); setSelection(it.length) }
+                        this.inputType = inputType
+                        this.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+                    }
+                }
             val builder = AlertDialog.Builder(activity).setView(view)
             titleResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setTitle(resId) } }
             positiveBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setPositiveButton(resId) { dialog, which -> positiveListener?.invoke(dialog, which, view?.et_dialog_entry?.text?.toString()) } } }
@@ -183,12 +193,14 @@ object Dialogs {
                            @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                            @StringRes negativeBtnLabelResId: Int = 0,
                            positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
-                           negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+                           negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                           initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE) =
             activity?.takeIf { !it.isActivityDestroyed() }
                     ?.let {
                         val dialog = getEditTextDialog(it, titleResId, hintRestId,
                             positiveBtnLabelResId, negativeBtnLabelResId,
-                            positiveListener, negativeListener)
+                            positiveListener, negativeListener,
+                            initText, inputType, maxLength)
                         registry.takeIf { !it.contains(dialog.hash) }
                                 ?.add(dialog.hash)
                                 ?.let { dialog.dialog }
@@ -201,18 +213,21 @@ object Dialogs {
                           @StringRes positiveBtnLabelResId: Int = R.string.button_close,
                           @StringRes negativeBtnLabelResId: Int = 0,
                           positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
-                          negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+                          negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+                          initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE) =
             activity?.takeIf { it is BaseActivity<*> }
                 ?.let {
                     showEditTextDialog(it as BaseActivity<*>, titleResId, hintRestId,
                         positiveBtnLabelResId, negativeBtnLabelResId,
-                        positiveListener, negativeListener)
+                        positiveListener, negativeListener,
+                        initText, inputType, maxLength)
                 }
                 ?: run {
                     val dialog = getEditTextDialog(
                         activity, titleResId, hintRestId,
                         positiveBtnLabelResId, negativeBtnLabelResId,
-                        positiveListener, negativeListener)
+                        positiveListener, negativeListener,
+                        initText, inputType, maxLength)
                     registry.takeIf { !it.contains(dialog.hash) }
                             ?.add(dialog.hash)
                             ?.let { dialog.dialog }

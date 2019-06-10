@@ -10,15 +10,15 @@ enum class NavTab(val tabName: String) {
     PROFILE(NavigateFrom.MAIN_TAB_PROFILE);  // order matters for BottomBar
 
     companion object {
-        val values: Array<NavTab> = NavTab.values()
+        val values: Array<NavTab> = values()
 
         fun get(index: Int): NavTab = values[index]  // here order matters
 
         fun from(tabName: String): NavTab =
             when (tabName) {
-                NavigateFrom.MAIN_TAB_EXPLORE -> NavTab.EXPLORE
-                NavigateFrom.MAIN_TAB_LMM -> NavTab.LMM
-                NavigateFrom.MAIN_TAB_PROFILE -> NavTab.PROFILE
+                NavigateFrom.MAIN_TAB_EXPLORE -> EXPLORE
+                NavigateFrom.MAIN_TAB_LMM -> LMM
+                NavigateFrom.MAIN_TAB_PROFILE -> PROFILE
                 else -> throw IllegalArgumentException("Unknown tab name: $tabName")
             }
     }
@@ -32,23 +32,23 @@ enum class LmmNavTab(val feedName: String) {
     fun page(): Int = ordinal
 
     companion object {
-        val values: Array<LmmNavTab> = LmmNavTab.values()
+        val values: Array<LmmNavTab> = values()
 
         fun get(index: Int): LmmNavTab? = values[index]  // here order matters
 
         fun from(sourceFeed: String?): LmmNavTab? =
             when (sourceFeed) {
-                DomainUtil.SOURCE_FEED_LIKES -> LmmNavTab.LIKES
-                DomainUtil.SOURCE_FEED_MATCHES -> LmmNavTab.MATCHES
-                DomainUtil.SOURCE_FEED_MESSAGES -> LmmNavTab.MESSAGES
+                DomainUtil.SOURCE_FEED_LIKES -> LIKES
+                DomainUtil.SOURCE_FEED_MATCHES -> MATCHES
+                DomainUtil.SOURCE_FEED_MESSAGES -> MESSAGES
                 else -> null
             }
 
         fun fromPushType(pushType: String): LmmNavTab? =
             when (pushType) {
-                PushNotificationData.TYPE_LIKE -> LmmNavTab.LIKES
-                PushNotificationData.TYPE_MATCH -> LmmNavTab.MATCHES
-                PushNotificationData.TYPE_MESSAGE -> LmmNavTab.MESSAGES
+                PushNotificationData.TYPE_LIKE -> LIKES
+                PushNotificationData.TYPE_MATCH -> MATCHES
+                PushNotificationData.TYPE_MESSAGE -> MESSAGES
                 else -> null
             }
     }

@@ -22,6 +22,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.scope.LocalScopeProvider
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.support.AndroidSupportInjection
+import leakcanary.LeakSentry
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -247,6 +248,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onDestroy")
         DebugLogUtil.lifecycle(this, "onDestroy")
+        LeakSentry.refWatcher.watch(this)
     }
 
     override fun onDetach() {

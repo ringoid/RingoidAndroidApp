@@ -83,6 +83,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
 //            setLabel(LocaleUtils.getLangById(context, app?.localeManager?.getLang() ?: LocaleManager.LANG_RU))
         }
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
+        item_profile.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile") }
         item_push.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_push") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
 //        item_theme.apply {

@@ -6,9 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.request.RequestOptions
 import com.ringoid.base.adapter.BaseListAdapter
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -40,18 +38,29 @@ class ProfileImageAdapter(private val context: Context)
         super.onBindViewHolder(holder, position, payloads)
     }
 
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        dispose()
+    }
+
+    override fun dispose() {
+        super.dispose()
+        onBeforeLikeListener = null
+        onImageTouchListener = null
+        tabsObserver = null
+    }
+
     override fun getExposedCb(): (() -> Unit)? = { tabsObserver?.onChanged() }
 
     // --------------------------------------------------------------------------------------------
     override fun getStubItem(): ProfileImageVO = EmptyProfileImageVO
 
     // ------------------------------------------
-    override fun getPreloadItems(position: Int): MutableList<ProfileImageVO> =
-        getModels().subList(position, position + 1).toMutableList()
+    override fun getPreloadItems(position: Int): List<ProfileImageVO> =
+        getModels().subList(position, position + 1)
 
     override fun getPreloadRequestBuilder(item: ProfileImageVO): RequestBuilder<*>? =
-        ImageLoader.loadRequest(uri = item.image.uri,
-            context = context, options = RequestOptions().centerCrop().override(AppRes.SCREEN_WIDTH, AppRes.FEED_IMAGE_HEIGHT))
+        ImageLoader.simpleLoadRequest(uri = item.image.thumbnailUri, context = context)
 
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
         val clickListener = if (!isLikeEnabled) {

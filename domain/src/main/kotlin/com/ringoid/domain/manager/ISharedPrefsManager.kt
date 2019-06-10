@@ -4,6 +4,7 @@ import androidx.annotation.StyleRes
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
+import com.ringoid.domain.misc.UserProfilePropertiesRaw
 import com.ringoid.domain.model.user.AccessToken
 
 interface ISharedPrefsManager {
@@ -92,4 +93,8 @@ interface ISharedPrefsManager {
     fun setUserSettingLikesPushEnabled(pushEnabled: Boolean)
     fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean)
     fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean)
+
+    fun getUserProfileProperties(): UserProfilePropertiesRaw
+    fun setUserProfileProperties(propertiesRaw: UserProfilePropertiesRaw)
+    fun dropUserProfileProperties()
 }

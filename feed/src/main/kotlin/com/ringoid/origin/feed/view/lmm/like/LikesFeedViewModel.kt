@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view.lmm.like
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -16,7 +15,6 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
-import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
@@ -41,6 +39,7 @@ class LikesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
+    notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
@@ -49,6 +48,7 @@ class LikesFeedViewModel @Inject constructor(
         getUserMessagedFeedItemIdsUseCase,
         addLikedImageForFeedItemIdUseCase,
         addUserMessagedFeedItemIdUseCase,
+        notifyLmmProfileBlockedUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
@@ -56,8 +56,6 @@ class LikesFeedViewModel @Inject constructor(
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
         userInMemoryCache, app) {
-
-    internal val pushNewLike by lazy { MutableLiveData<Long>() }
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
@@ -111,8 +109,6 @@ class LikesFeedViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        HandledPushDataInMemory.incrementCountOfHandledPushLikes()
-        pushNewLike.value = 0L  // for particle animation
-        refreshOnPush.value = true
+        refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
     }
 }

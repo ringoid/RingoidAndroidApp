@@ -15,7 +15,7 @@ import com.ringoid.origin.feed.view.explore.di.ExploreFragmentModule
 import com.ringoid.origin.feed.view.lmm.di.LmmFragmentModule
 import com.ringoid.origin.feed.view.lmm.like.di.LikesFeedFragmentModule
 import com.ringoid.origin.feed.view.lmm.match.di.MatchesFeedFragmentModule
-import com.ringoid.origin.feed.view.lmm.messenger.di.MessengerFragmentModule
+import com.ringoid.origin.feed.view.lmm.messenger.di.MessagesFeedFragmentModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
 import com.ringoid.origin.messenger.di.ChatFragmentModule
@@ -30,6 +30,8 @@ import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoActivityModul
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoFragmentModule
 import com.ringoid.origin.usersettings.view.language.di.SettingsLangActivityModule
 import com.ringoid.origin.usersettings.view.language.di.SettingsLangFragmentModule
+import com.ringoid.origin.usersettings.view.profile.di.SettingsProfileActivityModule
+import com.ringoid.origin.usersettings.view.profile.di.SettingsProfileFragmentModule
 import com.ringoid.origin.usersettings.view.push.di.SettingsPushActivityModule
 import com.ringoid.origin.usersettings.view.push.di.SettingsPushFragmentModule
 import com.ringoid.origin.usersettings.view.settings.di.SettingsActivityModule
@@ -57,11 +59,12 @@ import javax.inject.Singleton
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LmmFragmentModule::class,
                       LoginActivityModule::class, MainActivityModule::class,
-                      MatchesFeedFragmentModule::class, MessengerFragmentModule::class, NoNetworkConnectionActivityModule::class,
+                      MatchesFeedFragmentModule::class, MessagesFeedFragmentModule::class, NoNetworkConnectionActivityModule::class,
                       OldAppVersionActivityModule::class, UserProfileFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
                       SettingsLangActivityModule::class, SettingsLangFragmentModule::class,
+                      SettingsProfileActivityModule::class, SettingsProfileFragmentModule::class,
                       SettingsPushActivityModule::class, SettingsPushFragmentModule::class,
                       SplashActivityModule::class, StatusDialogModule::class,
                       WebPageActivityModule::class, WebPageFragmentModule::class])

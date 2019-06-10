@@ -11,36 +11,6 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"/>
 
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_online_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginStart="@dimen/std_margin_16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:label_icon_size="@dimen/std_icon_12"/>
-
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/std_margin_32"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:label_icon="@drawable/ic_location_white_18dp"/>
-
-    <com.ringoid.widget.view.LabelView
-        android:id="@+id/label_age_sex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/std_margin_32"
-        android:layout_marginStart="@dimen/std_margin_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
         android:layout_width="match_parent"
@@ -62,10 +32,40 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:xbtnSrc="@drawable/ic_more_white"/>
 
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_online_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:label_icon_size="@dimen/std_icon_12"/>
+
+    <LinearLayout
+        android:id="@+id/ll_left_section"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/ll_right_section"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <TextView
         android:id="@+id/tv_profile_id"
         android:layout_marginStart="@dimen/std_margin_16"
-        android:layout_marginBottom="@dimen/std_margin_64"
+        android:layout_marginBottom="350dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"
@@ -76,6 +76,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Debug profile id"
         style="@style/StdText.White"/>
+
+    <View
+        android:id="@+id/iv_debug_badge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/debug_rect"
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/underscore"

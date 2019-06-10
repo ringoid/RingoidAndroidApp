@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
@@ -19,17 +21,20 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
+import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
-import com.ringoid.utility.*
+import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.isVisible
+import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.functions.Consumer
@@ -72,6 +77,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                             positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })
                         showLoading(isVisible = false)
                     }
+                    is REFRESH -> onRefresh()
                 }
             }
             is ViewState.IDLE -> onIdleState()
@@ -100,27 +106,38 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         } ?: run { fl_empty_container?.changeVisibility(isVisible = false) }
     }
 
-    private fun getVisibleItemIds(excludedId: String? = null): List<String> =
+    private fun getVisibleItems(excludedId: String? = null): List<FeedItemVO> =
         rv_items.linearLayoutManager()?.let { lm ->
             val from = lm.findFirstVisibleItemPosition()
             val to = lm.findLastVisibleItemPosition()
             if (from != RecyclerView.NO_POSITION && to != RecyclerView.NO_POSITION) {
                 feedAdapter.getModelsInRange(from, to)
                     .apply { excludedId?.let { exId -> removeAll { it.id == exId } } }
-                    .map { it.id }
+                    .toList()
             } else emptyList()
         } ?: emptyList()
 
+    private fun getVisibleItemIds(excludedId: String? = null): List<String> =
+        getVisibleItems(excludedId).map { it.id }
+
     private fun checkForNewlyVisibleItems(prevIds: Collection<String>, newIds: Collection<String>, excludedId: String? = null) {
         newIds.toMutableList()
-            .also { it.removeAll(prevIds) }
+            .also { list ->  // for all items that are visible after discard - check scroll offsets and apply strategies
+                list.forEach { id ->  // this will make labels visible depending on scroll offsets for each item
+                    feedAdapter.findPosition { it.id == id }
+                               .takeIf { it > DomainUtil.BAD_POSITION }
+                               ?.also { Timber.v("Check scroll offset for item $id at position: $it") }
+                               ?.let { position -> trackScrollOffsetForPosition(position) }
+                }
+            }
+            .apply { removeAll(prevIds) }  // retain only new items compared to previous ones
             .also { DebugLogUtil.d("Discarded ${excludedId?.substring(0..3)}, became visible[${it.size}]: ${it.joinToString { it.substring(0..3) }}") }
             .takeIf { it.isNotEmpty() }
-            ?.forEach { id ->
-                feedAdapter.findModel { it.id == id }
-                    ?.let {
-                        val imageId = it.images[it.positionOfImage].id
-                        vm.onItemBecomeVisible(profileId = it.id, imageId = imageId)
+            ?.forEach { id ->  // retained items are the new ones that come into viewport, i.e. became visible
+                feedAdapter.findModelAndPosition { it.id == id }
+                    ?.let { (position, model) ->
+                        val image = model.images[model.positionOfImage]
+                        vm.onItemBecomeVisible(profile = model, image = image)
                     }
             }
     }
@@ -133,7 +150,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
                 } else {  // remove not last feed item
                     val prevIds = getVisibleItemIds(profileId)  // record ids of visible items before remove
-                    DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}")
+                    DebugLogUtil.d("Discard item ${profileId.substring(0..3)}, visible BEFORE[${prevIds.size}]: ${prevIds.joinToString { it.substring(0..3) }}")
 
                     /**
                      * After finishing item remove animation, detect what items come into viewport
@@ -151,9 +168,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         }
                         .autoDisposable(localScopeProvider)
                         .subscribe({ _ ->
-                            val newIds = getVisibleItemIds(profileId)  // record ids of whatever items are visible after remove
-                            DebugLogUtil.v("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}")
+                            val newItems = getVisibleItems(profileId)  // record ids of whatever items are visible after remove
+                            val newIds = newItems.map { it.id }
+                            DebugLogUtil.d("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}")
                             checkForNewlyVisibleItems(prevIds, newIds, excludedId = profileId)
+                            vm.onSettleVisibleItemsAfterDiscard(newItems)
                         }, Timber::e)
 
                     feedAdapter.remove { it.id == profileId }
@@ -162,22 +181,22 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             }
 
     protected fun onDiscardMultipleProfilesState(profileIds: Collection<String>) {
-        val prevIds = getVisibleItemIds()  // record ids of visible items before remove
-        with (feedAdapter) {
-            val obs = if (profileIds.intersect(prevIds).isEmpty()) removeSubject
-                      else rv_items.itemAnimator.let { it as FeedItemAnimator }.removeAnimationSubject
-
-            obs.take(1)
-                .doOnSubscribe { localScopeProvider.start() }
-                .doFinally { localScopeProvider.stop() }
-                .autoDisposable(localScopeProvider)
-                .subscribe({ _ ->
-                    val newIds = getVisibleItemIds()  // record ids of whatever items are visible after remove
-                    checkForNewlyVisibleItems(prevIds, newIds)
-                }, Timber::e)
-
-            remove { it.id in profileIds }
-        }
+//        val prevIds = getVisibleItemIds()  // record ids of visible items before remove
+//        with (feedAdapter) {
+//            val obs = if (profileIds.intersect(prevIds).isEmpty()) removeSubject
+//                      else rv_items.itemAnimator.let { it as FeedItemAnimator }.removeAnimationSubject
+//
+//            obs.take(1)
+//                .doOnSubscribe { localScopeProvider.start() }
+//                .doFinally { localScopeProvider.stop() }
+//                .autoDisposable(localScopeProvider)
+//                .subscribe({
+//                    val newIds = getVisibleItemIds()  // record ids of whatever items are visible after remove
+//                    checkForNewlyVisibleItems(prevIds, newIds)
+//                }, Timber::e)
+//
+//            remove { it.id in profileIds }
+//        }
     }
 
     private fun onIdleState() {
@@ -197,19 +216,21 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         feedAdapter = createFeedAdapter().apply {
             onBeforeLikeListener = { vm.onBeforeLike() }
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
+            onScrollHorizontalListener = {
+                showRefreshPopup(isVisible = false)
+                showScrollFab(isVisible = false)
+            }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
-                val image = model.images[positionOfImage]
-                scrollToTopOfItemAtPositionAndPost(position).post {
-                    showRefreshPopup(isVisible = false)
-                    showScrollFab(isVisible = false)
-                    notifyItemChanged(position, FeedViewHolderHideControls)
-                }
                 vm.onSettingsClick(model.id)
-                communicator(ILmmFragment::class.java)?.showTabs(isVisible = false)
-                navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70", rc = RequestCode.RC_BLOCK_DIALOG)
+                val image = model.images[positionOfImage]
+                val payload = BlockReportPayload(
+                    profileImageUri = image.uri,
+                    profileThumbnailUri = image.thumbnailUri
+                )
+                navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
             }
         }
-        offsetScrollStrats = getOffsetScrollStrategies()
+        invalidateScrollCaches()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -221,12 +242,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     return
                 }
 
-                val position = data.extras!!.getString("position", "0").toInt()
-                communicator(ILmmFragment::class.java)?.showTabs(isVisible = true)
-                scrollToTopOfItemAtPosition(position, offset = AppRes.BUTTON_HEIGHT)
-                showRefreshPopup(isVisible = true)
-                showScrollFab(isVisible = true, restoreVisibility = true)
-
                 if (resultCode == Activity.RESULT_OK) {
                     val imageId = data.extras!!.getString("imageId")!!
                     val profileId = data.extras!!.getString("profileId")!!
@@ -237,9 +252,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     } else {
                         vm.onBlock(profileId = profileId, imageId = imageId)
                     }
-                } else {
-                    // on dialog dismiss = show controls back
-                    getRecyclerView().post { feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls) }
                 }
             }
         }
@@ -259,8 +271,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             adapter = feedAdapter
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
-            itemAnimator = FeedItemAnimator { rv_items.post { feedAdapter.notifyItemRangeChanged(it - 1, 2, FeedViewHolderShowControls) } }
+            itemAnimator = FeedItemAnimator()
             setHasFixedSize(true)
+            recycledViewPool.setMaxRecycledViews(OriginListAdapter.VIEW_TYPE_NORMAL, 10)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(itemOffsetScrollListener)
             addOnScrollListener(topScrollListener)
@@ -292,10 +305,18 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_items.apply {
+        with (rv_items) {
             removeOnScrollListener(itemOffsetScrollListener)
             removeOnScrollListener(topScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
+            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {}
+
+                override fun onViewDetachedFromWindow(v: View) {
+                    this@with.adapter = null
+                }
+            })
+            adapter = null
         }
     }
 
@@ -311,7 +332,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             noConnection(this@FeedFragment)
         } else {
             feedTrackingBus.allowSingleUnchanged()
-            offsetScrollStrats = getOffsetScrollStrategies()
+            invalidateScrollCaches()
             /**
              * Asks for location permission, and if granted - callback will then handle
              * to call refreshing procedure.
@@ -378,85 +399,24 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     // ------------------------------------------
     private lateinit var offsetScrollStrats: List<OffsetScrollStrategy>
 
+    protected fun invalidateScrollCaches() {
+        offsetScrollStrats = getOffsetScrollStrategies()
+    }
+
     protected fun getStrategyByTag(tag: String): OffsetScrollStrategy? = offsetScrollStrats.find { it.tag == tag }
 
     protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
-        listOf(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
-               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_AGE_BOTTOM, hide = FeedViewHolderHideAgeOnScroll, show = FeedViewHolderShowAgeOnScroll),
-               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.DOWN, deltaOffset = AppRes.FEED_ITEM_DISTANCE_BOTTOM, hide = FeedViewHolderHideDistanceOnScroll, show = FeedViewHolderShowDistanceOnScroll),
-               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_TOP, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
-               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
-               OffsetScrollStrategy(type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_FOOTER_LABEL_BOTTOM, hide = FeedFooterViewHolderHideControls, show = FeedFooterViewHolderShowControls))
+        listOf(OffsetScrollStrategy(tag = "dot tabs bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
+               OffsetScrollStrategy(tag = "online bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_BOTTOM, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
+               OffsetScrollStrategy(tag = "settings bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
+               OffsetScrollStrategy(tag = "prop 0 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_0, hide = FeedViewHolderHideOnScroll(4), show = FeedViewHolderShowOnScroll(4)),
+               OffsetScrollStrategy(tag = "prop 1 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_1, hide = FeedViewHolderHideOnScroll(3), show = FeedViewHolderShowOnScroll(3)),
+               OffsetScrollStrategy(tag = "prop 2 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_2, hide = FeedViewHolderHideOnScroll(2), show = FeedViewHolderShowOnScroll(2)),
+               OffsetScrollStrategy(tag = "prop 3 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_3, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)),
+               OffsetScrollStrategy(tag = "prop 4 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_4, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
 
     private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-            fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
-                offsetScrollStrats.forEach {
-                    view.post {
-                        // avoid change rv during layout, leading to crash
-                        when (it.type) {
-                            OffsetScrollStrategy.Type.BOTTOM -> {
-                                if (bottom - view.top <= AppRes.FEED_ITEM_MID_BTN_BOTTOM + 4) {
-                                    if (bottom - view.top < it.deltaOffset) {
-                                        if (!it.isHiddenAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.hide)
-                                        }
-                                    } else {
-                                        if (!it.isShownAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.show)
-                                        }
-                                    }
-                                }
-                            }
-                            OffsetScrollStrategy.Type.DOWN -> {
-                                if (bottom - view.top < it.deltaOffset) {
-                                    if (!it.isHiddenAtAndSync(position)) {
-                                        feedAdapter.notifyItemChanged(position, it.hide)
-                                    }
-                                } else {
-                                    if (!it.isShownAtAndSync(position)) {
-                                        feedAdapter.notifyItemChanged(position, it.show)
-                                    }
-                                }
-                            }
-                            OffsetScrollStrategy.Type.TOP -> {
-                                if (view.top - top <= AppRes.FEED_ITEM_MID_BTN_TOP + 4) {
-                                    if (top - view.top >= it.deltaOffset) {
-                                        if (!it.isHiddenAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.hide)
-                                        }
-                                    } else {
-                                        if (!it.isShownAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.show)
-                                        }
-                                    }
-                                }
-                            }
-                            OffsetScrollStrategy.Type.UP -> {
-                                if (view.top - top <= 0) {
-                                    if (top - view.top >= it.deltaOffset) {
-                                        if (!it.isHiddenAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.hide)
-                                        }
-                                    } else {
-                                        if (!it.isShownAtAndSync(position)) {
-                                            feedAdapter.notifyItemChanged(position, it.show)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            fun processItemView(position: Int, view: View?) {
-                view?.let {
-                    val bottom = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
-                    processItemViewControlVisibility(position, view, AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT, bottom)
-                }
-            }
-
             fun trackScrollOffset(rv: RecyclerView) {
                 rv.linearLayoutManager()?.let {
                     val from = it.findFirstVisibleItemPosition()
@@ -468,6 +428,135 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             super.onScrolled(rv, dx, dy)
             trackScrollOffset(rv)
         }
+    }
+
+    // helper method
+    private fun processItemViewControlVisibility(position: Int, view: View, top: Int, bottom: Int) {
+        fun handleBottomStrategy(it: OffsetScrollStrategy) {
+            if (bottom - view.top <= it.deltaOffset) {
+                if (!it.isHiddenAtAndSync(position)) {
+                    feedAdapter.notifyItemChanged(position, it.hide)
+                }
+            } else {
+                if (!it.isShownAtAndSync(position)) {
+                    feedAdapter.notifyItemChanged(position, it.show)
+                }
+            }
+        }
+
+        fun handleTopStrategy(it: OffsetScrollStrategy) {
+            if (top - view.top >= it.deltaOffset) {
+                if (!it.isHiddenAtAndSync(position)) {
+                    feedAdapter.notifyItemChanged(position, it.hide)
+                }
+            } else {
+                if (!it.isShownAtAndSync(position)) {
+                    feedAdapter.notifyItemChanged(position, it.show)
+                }
+            }
+        }
+
+        fun handleStrategy(it: OffsetScrollStrategy) =
+            when (it.type) {
+                OffsetScrollStrategy.Type.BOTTOM -> handleBottomStrategy(it)
+                OffsetScrollStrategy.Type.TOP -> handleTopStrategy(it)
+            }
+
+        // --------------------------------------
+        view.post {  // avoid change rv during layout, leading to crash
+            val targets = mutableSetOf<Int>()
+            if (view.top >= top && view.bottom <= bottom) {
+                // view is completely fits the space between (top, bottom), so all strategies must 'show'
+                offsetScrollStrats.forEach {
+                    if (targets.add(it.target())) {  // ignore strategy with already affected target
+                        if (!it.isShownAtAndSync(position)) {
+                            feedAdapter.notifyItemChanged(position, it.show)
+                        }
+                    }
+                }
+            } else if (view.bottom <= top || view.top >= bottom) {
+                // view is completely hidden below bottom or above top boundaries, so all strategies must 'hide'
+                offsetScrollStrats.forEach {
+                    if (targets.add(it.target())) {  // ignore strategy with already affected target
+                        if (!it.isHiddenAtAndSync(position)) {
+                            feedAdapter.notifyItemChanged(position, it.hide)
+                        }
+                    }
+                }
+            } else if (view.bottom > bottom && view.top >= top) {
+                // view is completely below top border and partially below bottom border,
+                // so only bottom strategies must operate, all top ones must be ignored (or 'show')
+                offsetScrollStrats.forEach {
+                    when (it.type) {
+                        OffsetScrollStrategy.Type.BOTTOM -> {
+                            if (targets.add(it.target())) {  // ignore strategy with already affected target
+                                handleBottomStrategy(it)
+                            }
+                        }
+                        OffsetScrollStrategy.Type.TOP -> { /* ignored */ }
+                    }
+                }
+            } else if (view.top < top && view.bottom <= bottom) {
+                // view is completely above bottom border and partially above top border,
+                // so only top strategies must operate, all bottom ones must be ignored (or 'show')
+                offsetScrollStrats.forEach {
+                    when (it.type) {
+                        OffsetScrollStrategy.Type.BOTTOM -> { /* ignored */ }
+                        OffsetScrollStrategy.Type.TOP -> {
+                            if (targets.add(it.target())) {  // ignore strategy with already affected target
+                                handleTopStrategy(it)
+                            }
+                        }
+                    }
+                }
+            } else {
+                // view is partially clipped with both of boundaries (top, bottom)
+                offsetScrollStrats.forEach {
+                    if (targets.add(it.target())) {  // if target hasn't been affected yet - apply strategy on it
+                        handleStrategy(it)
+                    } else {
+                        // target has been affected already by some previous strategy,
+                        // so need to decide whether that strategy should be overridden by this strategy
+                        when (it.type) {
+                            OffsetScrollStrategy.Type.BOTTOM -> {
+                                if (view.top + it.deltaOffset >= bottom) {
+                                    handleBottomStrategy(it)
+                                }
+                            }
+                            OffsetScrollStrategy.Type.TOP -> {
+                                if (view.top + it.deltaOffset <= top) {
+                                    handleTopStrategy(it)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected open fun getBottomBorderForOffsetScroll(): Int = rv_items.bottom - AppRes.MAIN_BOTTOM_BAR_HEIGHT
+    protected open fun getTopBorderForOffsetScroll(): Int = -2000000000  // no top border by default
+
+    // helper method
+    private fun processItemView(position: Int, view: View?) {
+        view?.let {
+            processItemViewControlVisibility(position, view, getTopBorderForOffsetScroll(), getBottomBorderForOffsetScroll())
+        }
+    }
+
+    /**
+     * Directly applies offset scroll strategies on item at [position], if any,
+     * depending on scroll offset of related view in [rv_items].
+     */
+    private fun trackScrollOffsetForPosition(position: Int) {
+        /**
+         * Loop over all offset scroll strategies and remove [position] from their lists of affected
+         * positions to force strategies to be applied on item at [position] again.
+         */
+        offsetScrollStrats.forEach { it.forgetPosition(position) }
+        // apply strategies on item at position, regardless of whether that position has been affected before
+        rv_items.linearLayoutManager()?.let { processItemView(position, it.findViewByPosition(position)) }
     }
 
     // ------------------------------------------

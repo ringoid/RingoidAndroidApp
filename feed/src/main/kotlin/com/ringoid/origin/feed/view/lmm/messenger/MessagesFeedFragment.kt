@@ -1,7 +1,5 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
-import android.os.Bundle
-import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
@@ -9,18 +7,15 @@ import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
-import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
-import com.ringoid.utility.communicator
 
-class MessengerFragment : BaseMatchesFeedFragment<MessengerViewModel>() {
+class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
 
     companion object {
-        fun newInstance(): MessengerFragment = MessengerFragment()
+        fun newInstance(): MessagesFeedFragment = MessagesFeedFragment()
     }
 
-    override fun getVmClass(): Class<MessengerViewModel> = MessengerViewModel::class.java
+    override fun getVmClass(): Class<MessagesFeedViewModel> = MessagesFeedViewModel::class.java
 
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
         MessengerFeedAdapter().apply {
@@ -37,13 +32,4 @@ class MessengerFragment : BaseMatchesFeedFragment<MessengerViewModel>() {
         }
 
     override fun getSourceFeed(): LmmNavTab = LmmNavTab.MESSAGES
-
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        with (viewLifecycleOwner) {
-            observe(vm.pushNewMessage) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
-        }
-    }
 }

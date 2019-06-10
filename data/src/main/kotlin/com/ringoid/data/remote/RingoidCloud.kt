@@ -18,6 +18,7 @@ import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.essence.push.PushTokenEssence
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.essence.user.ReferralCodeEssence
+import com.ringoid.domain.model.essence.user.UpdateUserProfileEssence
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssence
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -58,6 +59,12 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .breadcrumb("updateUserSettings", essence.toSentryData())
             .logRequest("updateUserSettings", essence.toDebugData())
             .logResponse("updateUserSettings")
+
+    fun updateUserProfile(essence: UpdateUserProfileEssence): Single<BaseResponse> =
+        restAdapter.updateUserProfile(essence.toBody())
+            .breadcrumb("updateUserProfile", essence.toSentryData())
+            .logRequest("updateUserProfile", essence.toDebugData())
+            .logResponse("updateUserProfile")
 
     // ------------------------------------------
     fun applyReferralCode(essence: ReferralCodeEssence): Single<BaseResponse> =
@@ -108,6 +115,14 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
+    fun getChat(accessToken: String, resolution: ImageResolution, peerId: String, lastActionTime: Long = 0L) =
+        restAdapter.getChat(accessToken = accessToken, resolution = resolution.resolution, peerId = peerId, lastActionTime = lastActionTime)
+            .keepDataForDebug(cloudDebug, "request" to "getChat", "resolution" to "$resolution", "peerId" to peerId)
+            .breadcrumb("getChat", "accessToken" to "", "resolution" to "$resolution", "peerId" to peerId,
+                        "lastActionTime" to "$lastActionTime")
+            .logRequest("getChat", "lastActionTime" to "$lastActionTime", "peerId" to peerId)
+            .logResponse("Chat")
+
     fun getNewFaces(accessToken: String, resolution: ImageResolution, limit: Int?, lastActionTime: Long = 0L) =
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getNewFaces", "resolution" to "$resolution")

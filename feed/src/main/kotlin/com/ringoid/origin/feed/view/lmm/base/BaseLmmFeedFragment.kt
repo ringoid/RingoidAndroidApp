@@ -26,7 +26,7 @@ import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
-import com.ringoid.origin.messenger.ChatPayload
+import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.navigation.RequestCode
@@ -156,7 +156,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         peerImageId = image?.id ?: DomainUtil.BAD_ID,
                         peerImageUri = image?.uri,
                         peerThumbnailUri = image?.thumbnailUri,
-                        sourceFeed = getSourceFeed())
+                        sourceFeed = getSourceFeed()
+                    )
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
@@ -165,12 +166,13 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
     // ------------------------------------------
     internal fun clearScreen(mode: Int) {
+        invalidateScrollCaches()  // clear cached positions in offset scrolls strategies on clear feed
         vm.clearScreen(mode)
     }
 
     override fun onRefresh() {
         super.onRefresh()
-        Bus.post(event = BusEvent.RefreshOnLmm)
+        Bus.post(event = BusEvent.RefreshOnLmm(lmmSourceFeed = getSourceFeed().feedName))
     }
 
     internal fun transferProfile(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null) {
@@ -231,12 +233,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         }
     }
 
+    @Suppress("AutoDispose", "CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe {
-            Bus.post(BusEvent.RefreshOnPush)
-            onRefresh()  // refresh by click on 'tap to refresh' popup
-        }
+        // refresh by click on 'tap to refresh' popup
+        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe { vm.onTapToRefreshClick() }
     }
 
     /* Scroll listeners */
@@ -245,10 +246,15 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         mutableListOf<OffsetScrollStrategy>()
             .apply {
                 addAll(super.getOffsetScrollStrategies())
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.STD_MARGIN_16, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_AGE_TOP, hide = FeedViewHolderHideAgeOnScroll, show = FeedViewHolderShowAgeOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_DISTANCE_TOP, hide = FeedViewHolderHideDistanceOnScroll, show = FeedViewHolderShowDistanceOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.UP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
-                add(OffsetScrollStrategy(type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
+                add(OffsetScrollStrategy(tag = "online top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.STD_MARGIN_16, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll))
+                add(OffsetScrollStrategy(tag = "dot tabs top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
+                add(OffsetScrollStrategy(tag = "settings top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
+                add(OffsetScrollStrategy(tag = "prop 0 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_0, hide = FeedViewHolderHideOnScroll(4), show = FeedViewHolderShowOnScroll(4)))
+                add(OffsetScrollStrategy(tag = "prop 1 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_1, hide = FeedViewHolderHideOnScroll(3), show = FeedViewHolderShowOnScroll(3)))
+                add(OffsetScrollStrategy(tag = "prop 2 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_2, hide = FeedViewHolderHideOnScroll(2), show = FeedViewHolderShowOnScroll(2)))
+                add(OffsetScrollStrategy(tag = "prop 3 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_3, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)))
+                add(OffsetScrollStrategy(tag = "prop 4 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_4, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
             }
+
+    override fun getTopBorderForOffsetScroll(): Int = AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT
 }

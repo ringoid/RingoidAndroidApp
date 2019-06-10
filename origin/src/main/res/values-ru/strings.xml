@@ -19,10 +19,13 @@
     <string name="common_sex_male">Мужчина</string>
     <string name="common_sex_female">Женщина</string>
     <string name="common_uncancellable">Восстановления нет.</string>
+    <string name="common_unchosen">Не выбрано</string>
 
     <string name="error_common">Ой! Что-то пошло не так&#8230;</string>
     <string name="error_crop_image">Не удалось загрузить фото</string>
     <string name="error_invalid_referral_code">Код неверен</string>
+
+    <string name="value_cm">см</string>
 
     <!-- Permissions -->
     <string name="permission_location_dialog_enable_location_service">Пожалуйста, включите геолокацию</string>
@@ -97,9 +100,11 @@
     <string name="settings_app_info">Информация</string>
     <string name="settings_language">Язык</string>
     <string name="settings_language_help">Если вы хотите помочь и перевести Ringoid на родной язык, пожалуйста, напишите в support@ringoid.com</string>
+    <string name="settings_profile">Профиль</string>
     <string name="settings_push">Push&#45;уведомления</string>
     <string name="settings_support">Написать support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
+    <string name="settings_support_rationale">Если у вас есть предложения, как улучшить Ringoid, пожалуйста, напишите на \nsupport@ringoid.com</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_theme_dark">Ночной режим</string>
 
@@ -131,4 +136,58 @@
     <string name="web_page_privacy">Политика конфиденциальности</string>
     <string name="web_page_terms">Условия использования</string>
     <string name="web_url_error_status">https://ringoid.com/status-ru.html</string>
+
+    <!-- Data -->
+    <string name="profile_property_children">Дети</string>
+    <string name="profile_property_children_0">Хочу</string>
+    <string name="profile_property_children_1">Не хочу</string>
+    <string name="profile_property_children_2">Есть и хочу еще</string>
+    <string name="profile_property_children_3">Есть и не хочу больше</string>
+
+    <string name="profile_property_education">Уровень образования</string>
+    <string name="profile_property_education_0">Среднее</string>
+    <string name="profile_property_education_1">Среднее проф.</string>
+    <string name="profile_property_education_2">Неполное высшее</string>
+    <string name="profile_property_education_3">Высшее</string>
+    <string name="profile_property_education_4">Несколько высших</string>
+    <string name="profile_property_education_5">Ученая степень</string>
+
+    <string name="profile_property_hair_color">Цвет волос</string>
+    <string name="profile_property_hair_color_m_0">Брюнет</string>
+    <string name="profile_property_hair_color_f_0">Брюнетка</string>
+    <string name="profile_property_hair_color_m_1">Блондин</string>
+    <string name="profile_property_hair_color_f_1">Блондинка</string>
+    <string name="profile_property_hair_color_m_2">Шатен</string>
+    <string name="profile_property_hair_color_f_2">Шатенка</string>
+    <string name="profile_property_hair_color_m_3">Рыжий</string>
+    <string name="profile_property_hair_color_f_3">Рыжая</string>
+    <string name="profile_property_hair_color_m_4">Пепельный</string>
+    <string name="profile_property_hair_color_f_4">Пепельная</string>
+    <string name="profile_property_hair_color_m_5">Седой</string>
+    <string name="profile_property_hair_color_f_5">Седая</string>
+
+    <string name="profile_property_height">Рост</string>
+
+    <string name="profile_property_income">Заработок</string>
+    <string name="profile_property_income_0">Низкий доход</string>
+    <string name="profile_property_income_1">Средний доход</string>
+    <string name="profile_property_income_2">Высокий доход</string>
+    <string name="profile_property_income_3">Сверхвысокий доход</string>
+
+    <string name="profile_property_property">Недвижимость</string>
+    <string name="profile_property_property_0">Живу с родителями</string>
+    <string name="profile_property_property_1">Живу в общежитии</string>
+    <string name="profile_property_property_2">Живу с другом/подругой</string>
+    <string name="profile_property_property_3">Снимаю комнату</string>
+    <string name="profile_property_property_4">Квартира (снимаю или своя)</string>
+    <string name="profile_property_property_5">Дом (снимаю или свой)</string>
+
+    <string name="profile_property_transport">Транспорт</string>
+    <string name="profile_property_transport_0">Хожу пешком</string>
+    <string name="profile_property_transport_1">Общ. Транспорт</string>
+    <string name="profile_property_transport_2">Езжу на велосипеде</string>
+    <string name="profile_property_transport_3">Есть мотоцикл</string>
+    <string name="profile_property_transport_4">Есть автомобиль</string>
+    <string name="profile_property_transport_5">Езжу на такси / Uber</string>
+    <string name="profile_property_transport_6">Личный водитель</string>
 </resources>

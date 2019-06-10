@@ -2,7 +2,7 @@ apply from: 'buildsystem/dependencies.gradle'
 
 enum Environment {
     DEVELOP('com.ringoid.dating.develop', 'Ringoid Test', '"https://test.ringoidapp.com"', "-test"),
-    PRODUCTION('com.ringoid.dating', 'Ringoid', '"https://prod.ringoidapp.com"', ""),
+    PRODUCTION('com.ringoid.dating', 'Ringoid', '"https://prod.ringoidapp.com"', "-prod"),
     STAGING('com.ringoid.dating.staging', 'Ringoid Staging', '"https://stage.ringoidapp.com"', "-staging")
 
     String appId, appName, apiUrl, versionNameSuffix
@@ -107,7 +107,7 @@ allprojects {
     ext {
         majorVersion = 2
         minorVersion = 0
-        buildVersion = 169
+        buildVersion = 178
 
         androidApplicationId = getAppId(env)
         androidVersionCode = buildVersion

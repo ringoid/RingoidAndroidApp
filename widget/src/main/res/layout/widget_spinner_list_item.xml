@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_label"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/std_btn_height"
+    android:background="?attr/refColorBg"
+    android:gravity="center_vertical|start"
+    android:paddingStart="@dimen/std_margin_16"
+    android:paddingEnd="@dimen/std_margin_16"
+    style="@style/StdText.Primary"/>

@@ -23,6 +23,16 @@
     <View style="@style/Underscore" android:visibility="gone"/>
 
     <com.ringoid.widget.view.item_view.IconItemView
+        android:id="@+id/item_profile"
+        android:layout_height="wrap_content"
+        app:icon_item_icon="?attr/refDrawableSettingsProfile"
+        app:icon_item_hide_icon="false"
+        app:icon_item_text="@string/settings_profile"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_push"
         android:layout_height="wrap_content"
         app:icon_item_hide_icon="false"
@@ -57,9 +67,10 @@
 
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_delete_account"
-        app:icon_item_color="@color/warning"
         app:icon_item_icon="@drawable/ic_remove_white_24dp"
+        app:icon_item_icon_color="@color/warning"
         app:icon_item_text="@string/settings_account_delete"
+        app:icon_item_text_color="@color/warning"
         style="?attr/iconItemView"/>
 
     <TextView

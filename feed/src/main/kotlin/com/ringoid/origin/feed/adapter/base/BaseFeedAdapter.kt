@@ -18,7 +18,7 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
 
     var onBeforeLikeListener: (() -> Boolean)? = null
     var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
-    var onFeedItemRemoveListener: ((position: Int) -> Unit)? = null
+    var onScrollHorizontalListener: (() -> Unit)? = null
     var settingsClickListener: ((model: FeedItemVO, position: Int, positionOfImage: Int) -> Unit)? = null
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
@@ -35,6 +35,7 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
                     vh.adapterPosition
                         .takeIf { it != RecyclerView.NO_POSITION }
                         ?.let { getModel(it).positionOfImage = positionOfImage }
+                    onScrollHorizontalListener?.invoke()
                 }
                 vh.trackingBus = this@BaseFeedAdapter.trackingBus
                 val wrapSettingsClickListener: ((model: FeedItemVO, position: Int) -> Unit)? =
@@ -45,8 +46,14 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 
-    override fun getOnRemovedCb(): ((position: Int, count: Int) -> Unit)? =
-        { position, _ -> onFeedItemRemoveListener?.invoke(position) }
+    override fun dispose() {
+        super.dispose()
+        onBeforeLikeListener = null
+        onImageTouchListener = null
+        onScrollHorizontalListener = null
+        settingsClickListener = null
+        trackingBus?.unsubscribe(); trackingBus = null
+    }
 
     // ------------------------------------------
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer

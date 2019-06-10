@@ -43,7 +43,8 @@ class ExploreViewModel @Inject constructor(
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    countUserImagesUseCase: CountUserImagesUseCase, userInMemoryCache: IUserInMemoryCache, app: Application)
+    countUserImagesUseCase: CountUserImagesUseCase,
+    userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
@@ -181,7 +182,7 @@ class ExploreViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
-            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Lmm...")
+            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Explore...")
             onRefresh()  // app reopen leads Explore screen to refresh as well
         }
     }

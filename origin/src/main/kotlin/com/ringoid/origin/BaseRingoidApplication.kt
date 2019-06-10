@@ -1,7 +1,7 @@
 package com.ringoid.origin
 
-import android.content.Context
 import android.content.res.Configuration
+import android.os.StrictMode
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
@@ -14,14 +14,13 @@ import com.ringoid.domain.manager.IUserSettingsManager
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.domain.scope.UserScopeProvider
 import com.ringoid.utility.manager.LocaleManager
-import com.squareup.leakcanary.LeakCanary
-import com.squareup.leakcanary.RefWatcher
 import dagger.android.support.DaggerApplication
 import io.branch.referral.Branch
 import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.sentry.Sentry
+import leakcanary.LeakSentry
 import timber.log.Timber
 import java.io.IOException
 import java.net.SocketException
@@ -29,8 +28,6 @@ import java.util.*
 import javax.inject.Inject
 
 abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplication {
-
-    private var refWatcher: RefWatcher? = null
 
     override val calendar: Calendar = Calendar.getInstance()
     @Inject override lateinit var localeManager: LocaleManager
@@ -40,27 +37,18 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     @Inject override lateinit var userSettingsManager: IUserSettingsManager
     @Inject override lateinit var updatePushTokenUseCase: UpdatePushTokenUseCase
 
-    companion object {
-        fun refWatcher(context: Context?): RefWatcher? =
-            (context?.applicationContext as? BaseRingoidApplication)?.refWatcher
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate() {
         super.onCreate()
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This processSingle is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this processSingle.
-            return
-        }
         Timber.d("Starting ${javaClass.simpleName}")
         initializeResources()
-//        initializeLeakDetection()
+        initializeLeakDetection()
         initializeCrashlytics()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeProgrammingTools()
         initializeRxErrorHandler()
+        initializeStrictMode()  // ignore StrictMode alerts for SDK's initializations
 
         imagePreviewReceiver.register()  // app-wide broadcast receiver doesn't need to unregister
     }
@@ -70,11 +58,28 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         localeManager.setLocale(this)
     }
 
-    /* Leak detection */
+    /* Debugging */
     // ------------------------------------------------------------------------
     private fun initializeLeakDetection() {
+        // suitable for production
+        LeakSentry.config = LeakSentry.config.copy(watchFragmentViews = false)
+    }
+
+    private fun initializeStrictMode() {
         if (BuildConfig.DEBUG) {
-            refWatcher = LeakCanary.install(this)
+            StrictMode.setThreadPolicy(
+                StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+//                    .penaltyDeath()
+                    .build())
+
+            StrictMode.setVmPolicy(
+                StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+//                    .penaltyDeath()
+                    .build())
         }
     }
 

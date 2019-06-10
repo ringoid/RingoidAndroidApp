@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.VectorDrawable
+import android.widget.ImageView
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import timber.log.Timber
@@ -27,4 +29,8 @@ fun getBitmap(drawable: VectorDrawable): Bitmap {
     drawable.setBounds(0, 0, canvas.width, canvas.height)
     drawable.draw(canvas)
     return bitmap
+}
+
+fun ImageView.theme(@ColorRes resId: Int) {
+    setColorFilter(ContextCompat.getColor(context, resId))
 }

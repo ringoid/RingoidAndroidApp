@@ -8,6 +8,12 @@ import io.reactivex.Single
 @Dao
 interface FeedDao {
 
+    @Query("SELECT COUNT(*) FROM ${FeedItemDbo.TABLE_NAME}")
+    fun countFeedItems(): Single<Int>
+
+    @Query("SELECT COUNT(*) FROM ${FeedItemDbo.TABLE_NAME} WHERE ${FeedItemDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
+    fun countFeedItems(sourceFeed: String): Single<Int>
+
     @Transaction
     @Query("SELECT * FROM ${FeedItemDbo.TABLE_NAME} WHERE ${FeedItemDbo.COLUMN_ID} = :profileId")
     fun feedItem(profileId: String): Single<FullFeedItemDbo>

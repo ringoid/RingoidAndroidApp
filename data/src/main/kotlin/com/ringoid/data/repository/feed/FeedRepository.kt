@@ -21,7 +21,6 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.SimulatedException
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
@@ -147,10 +146,13 @@ open class FeedRepository @Inject constructor(
     override val feedMatches = PublishSubject.create<List<FeedItem>>()
     override val feedMessages = PublishSubject.create<List<FeedItem>>()
     override val lmmChanged = PublishSubject.create<Boolean>()
-    override val lmmLoadFinish = PublishSubject.create<Long>()
+    override val lmmLoadFinish = PublishSubject.create<Int>()
     override val newLikesCount = PublishSubject.create<Int>()
     override val newMatchesCount = PublishSubject.create<Int>()
     override val newMessagesCount = PublishSubject.create<Int>()
+
+    // internal control properties
+    override val profileBlocked = PublishSubject.create<Int>()
 
     /* New Faces */
     // ------------------------------------------
@@ -191,10 +193,10 @@ open class FeedRepository @Inject constructor(
             cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
                 .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})", traceTag = "feeds/get_lmm")
                 .dropLmmResponseStatsOnSubscribe()
-                .filterOutDuplicateProfilesLmm()
-                .detectCollisionProfilesLmm()
+                .filterOutDuplicateProfilesLmmResponse()
+                .detectCollisionProfilesLmmResponse()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
-                .filterOutBlockedProfilesLmm()
+                .filterOutBlockedProfilesLmmResponse()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
                 .map { it.map() }
                 .doOnSuccess { sentMessagesLocal.deleteMessages() }  // clear sent user messages because they will be restored with new Lmm
@@ -205,14 +207,20 @@ open class FeedRepository @Inject constructor(
                 .checkForNewMessages()
                 .cacheLmm()  // cache new Lmm data fetched from the Server
                 .cacheMessagesFromLmm()
-                .doOnSuccess { lmmLoadFinish.onNext(0L) }
+                .doOnSuccess { lmmLoadFinish.onNext(it.totalCount()) }
         }
+
+    override fun getLmmTotalCount(): Single<Int> = local.countFeedItems()
+    override fun getLmmTotalCount(source: String): Single<Int> = local.countFeedItems(source)
 
     override fun getLmmProfileIds(): Single<List<String>> = local.feedItemIds()
 
     private fun getCachedLmm(): Single<Lmm> =
         getCachedLmmOnly()
             .dropLmmStatsOnSubscribe()
+            .doOnSuccess { DebugLogUtil.v("# Cached Lmm: [${it.toLogString()}] before filter out blocked profiles") }
+            .filterOutBlockedProfilesLmm()
+            .doOnSuccess { DebugLogUtil.v("# Cached Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
             .checkForNewFeedItems()
             .checkForNewLikes()
             .checkForNewMatches()
@@ -264,7 +272,7 @@ open class FeedRepository @Inject constructor(
         }
 
     // ------------------------------------------
-    private fun Single<LmmResponse>.detectCollisionProfilesLmm(): Single<LmmResponse> =
+    private fun Single<LmmResponse>.detectCollisionProfilesLmmResponse(): Single<LmmResponse> =
         doOnSuccess {
             val totalSize = it.likes.size + it.matches.size + it.messages.size
             val totalSizeDistinct = mutableListOf<String>()
@@ -278,12 +286,12 @@ open class FeedRepository @Inject constructor(
             }
         }
 
-    private fun Single<LmmResponse>.filterOutBlockedProfilesLmm(): Single<LmmResponse> =
+    private fun Single<LmmResponse>.filterOutBlockedProfilesLmmResponse(): Single<LmmResponse> =
         toObservable()
         .withLatestFrom(getBlockedProfileIds().toObservable(),
             BiFunction { lmm: LmmResponse, blockedIds: List<String> ->
                 blockedIds
-                    .takeIf { !it.isEmpty() }
+                    .takeIf { it.isNotEmpty() }
                     ?.let {
                         val likes = lmm.likes.toMutableList().apply { removeAll { it.id in blockedIds } }
                         val matches = lmm.matches.toMutableList().apply { removeAll { it.id in blockedIds } }
@@ -293,7 +301,22 @@ open class FeedRepository @Inject constructor(
             })
         .single(LmmResponse()  /* by default - empty lmm */)
 
-    private fun Single<LmmResponse>.filterOutDuplicateProfilesLmm(): Single<LmmResponse> =
+    private fun Single<Lmm>.filterOutBlockedProfilesLmm(): Single<Lmm> =
+        toObservable()
+        .withLatestFrom(getBlockedProfileIds().toObservable(),
+            BiFunction { lmm: Lmm, blockedIds: List<String> ->
+                blockedIds
+                    .takeIf { it.isNotEmpty() }
+                    ?.let {
+                        val likes = lmm.likes.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        val matches = lmm.matches.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        val messages = lmm.messages.toMutableList().apply { removeAll { it.id in blockedIds } }
+                        Lmm(likes = likes, matches = matches, messages = messages)
+                    } ?: lmm
+            })
+        .single(Lmm()  /* by default - empty lmm */)
+
+    private fun Single<LmmResponse>.filterOutDuplicateProfilesLmmResponse(): Single<LmmResponse> =
         flatMap { response ->
             val message = "Duplicate profiles detected for "
             val filterLikes = response.likes.distinctBy { it.id }
@@ -366,6 +389,7 @@ open class FeedRepository @Inject constructor(
             BiFunction { (lmm, oldCount), newCount ->
                 val diff = newCount - oldCount
                 if (diff > 0) { newLikesCount.onNext(diff) }
+                DebugLogUtil.v("# Lmm: count of new likes: $diff")
                 lmm
             })
 
@@ -383,6 +407,7 @@ open class FeedRepository @Inject constructor(
             BiFunction { (lmm, oldCount), newCount ->
                 val diff = newCount - oldCount
                 if (diff > 0) { newMatchesCount.onNext(diff) }
+                DebugLogUtil.v("# Lmm: count of new matches: $diff")
                 lmm
             })
 
@@ -400,9 +425,11 @@ open class FeedRepository @Inject constructor(
             BiFunction { lmm: Lmm, count: Int ->
                 val peerMessagesCount = lmm.peerMessagesCount()
                 if (peerMessagesCount != 0 && count < peerMessagesCount) {
+                    val diff = peerMessagesCount - count
                     badgeMessenger.onNext(true)
                     lmmChanged.onNext(true)  // have new messages from any peer
-                    newMessagesCount.onNext(peerMessagesCount - count)
+                    newMessagesCount.onNext(diff)
+                    DebugLogUtil.v("# Lmm: count of new messages: $diff")
                 }
                 lmm
             })

@@ -5,7 +5,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.text.Spannable
+import android.text.SpannableString
 import android.text.method.LinkMovementMethod
+import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
@@ -80,4 +82,15 @@ fun View.hideKeyboard() {
 
 fun Window.showKeyboard() {
     setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+}
+
+/* Span */
+// --------------------------------------------------------------------------------------------
+fun TextView.highlightFrom(start: Int, textColor: Int) {
+    if (start != -1) {
+        SpannableString(text).apply {
+            setSpan(ForegroundColorSpan(textColor), start, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            text = this
+        }
+    }
 }

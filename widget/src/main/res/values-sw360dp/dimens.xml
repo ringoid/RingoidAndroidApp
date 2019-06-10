@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="std_btn_height">53dp</dimen>
+    <dimen name="std_btn_height_narrow">42dp</dimen>
     <dimen name="std_dialog_height">180dp</dimen>
     <dimen name="std_dialog_width">341dp</dimen>
     <dimen name="std_element_height">53dp</dimen>
@@ -12,6 +13,7 @@
     <dimen name="std_margin_8">7dp</dimen>
     <dimen name="std_margin_12">11dp</dimen>
     <dimen name="std_margin_16">14dp</dimen>
+    <dimen name="std_margin_18">16dp</dimen>
     <dimen name="std_margin_20">18dp</dimen>
     <dimen name="std_margin_24">21dp</dimen>
     <dimen name="std_margin_32">28dp</dimen>
@@ -31,4 +33,5 @@
 
     <!-- Widget -->
     <dimen name="icon_item_view_height">53dp</dimen>
+    <dimen name="edit_text_icon_item_view_height">70dp</dimen>
 </resources>

@@ -7,7 +7,7 @@ data class OffsetScrollStrategy(val tag: String? = null,
     private val hiddenAtPositions: MutableSet<Int> = mutableSetOf(),
     private val shownAtPositions: MutableSet<Int> = mutableSetOf()) {
 
-    enum class Type { TOP, BOTTOM, UP, DOWN /** extends TOP, BOTTOM */ }
+    enum class Type { TOP, BOTTOM }
 
     fun isHiddenAtAndSync(position: Int): Boolean =
         if (!hiddenAtPositions.contains(position)) {
@@ -22,4 +22,28 @@ data class OffsetScrollStrategy(val tag: String? = null,
             hiddenAtPositions.remove(position)
             false
         } else true
+
+    /**
+     * Forget [position] that could have been already affected before, and let this [OffsetScrollStrategy]
+     * to apply on item at that [position] again.
+     */
+    fun forgetPosition(position: Int) {
+        hiddenAtPositions.remove(position)
+        shownAtPositions.remove(position)
+    }
+
+    /**
+     * Compare these values to detect whether two different strategies operate on the same target.
+     */
+    fun target(): Int {
+        var hash = 7
+        hash = 31 * hash + hide.hashCode()
+        hash = 31 * hash + show.hashCode()
+        return hash
+    }
+
+    fun hidePositions(): String = hiddenAtPositions.joinToString(", ","[", "]")
+    fun showPositions(): String = shownAtPositions.joinToString(", ","[", "]")
+
+    override fun toString(): String = "[$tag hide=${hidePositions()} show=${showPositions()}]"
 }

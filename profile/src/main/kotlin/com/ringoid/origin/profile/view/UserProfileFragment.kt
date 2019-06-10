@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.OvershootInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -23,28 +25,33 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
-import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
+import com.ringoid.origin.model.*
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
+import com.ringoid.origin.profile.WidgetR_color
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.common.visual.scaleUp
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.*
+import com.ringoid.utility.image.theme
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
 import kotlinx.android.synthetic.main.fragment_profile_2.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
+
 
 class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>() {
 
@@ -127,6 +134,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
             }
         }
+
+        if (isActivityCreated) animateTotalLmmCount()
     }
 
     /* Lifecycle */
@@ -145,14 +154,15 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     } else if (count > 0) {  // inserted single item
                         scrollToPosition(0)  // for append: imagesAdapter.itemCount - 1
                     }
-                    showDotTabs()
+                    showDotTabs(isVisible = true)
                 }
                 onRemoveListener = {
                     val empty = imagesAdapter.isEmpty()
                     showEmptyStub(needShow = empty)
-                    showDotTabs()
+                    showDotTabs(isVisible = true)
                     vm.onDeleteImage(empty = empty)
                 }
+                itemClickListener = { _, _ -> navigate(this@UserProfileFragment, path = "/settings_profile") }
             }
 
         imagePreloadListener = RecyclerViewPreloader(Glide.with(this), imagesAdapter, ViewPreloadSizeProvider<UserImage>(), 10)
@@ -199,6 +209,76 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             observe(vm.imageCreated, imagesAdapter::prepend)
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.images, imagesAdapter::submitList)
+            observe(vm.profile) {
+                val gender = spm.currentUserGender()
+                val showDefault = it.isAllUnknown()
+
+                if (showDefault) {
+                    with (label_children) {
+                        changeVisibility(isVisible = true)
+                        setText(OriginR_string.profile_property_children)
+                    }
+                    with (label_education) {
+                        changeVisibility(isVisible = true)
+                        setText(OriginR_string.profile_property_education)
+                    }
+                    with(label_hair_color) {
+                        changeVisibility(isVisible = true)
+                        setText(OriginR_string.profile_property_hair_color)
+                    }
+                    with(label_height) {
+                        changeVisibility(isVisible = true)
+                        setText(OriginR_string.profile_property_height)
+                    }
+                    with(label_income) {
+                        changeVisibility(isVisible = true)
+                        setText(OriginR_string.profile_property_income)
+                    }
+                    with(label_property) {
+                        changeVisibility(isVisible = true)
+                        setText(OriginR_string.profile_property_property)
+                    }
+                    with(label_transport) {
+                        changeVisibility(isVisible = true)
+                        setText(OriginR_string.profile_property_transport)
+                    }
+                } else {
+                    with (label_children) {
+                        changeVisibility(isVisible = it.children != ChildrenProfileProperty.Unknown)
+                        setText(it.children.resId)
+                    }
+                    with(label_education) {
+                        changeVisibility(isVisible = it.education != EducationProfileProperty.Unknown)
+                        setText(it.education.resId)
+                    }
+                    with(label_hair_color) {
+                        changeVisibility(isVisible = it.hairColor != HairColorProfileProperty.Unknown)
+                        setText(it.hairColor.resId(gender))
+                    }
+                    with(label_height) {
+                        changeVisibility(isVisible = it.height > 0)
+                        setText("${it.height} ${AppRes.LENGTH_CM}")
+                    }
+                    with(label_income) {
+                        changeVisibility(isVisible = it.income != IncomeProfileProperty.Unknown)
+                        setText(it.income.resId)
+                    }
+                    with(label_property) {
+                        changeVisibility(isVisible = it.property != PropertyProfileProperty.Unknown)
+                        setText(it.property.resId)
+                    }
+                    with(label_transport) {
+                        changeVisibility(isVisible = it.transport != TransportProfileProperty.Unknown)
+                        setText(it.transport.resId)
+                    }
+                }
+            }
+            observe(vm.totalLmmCount) {
+                if (it > 0) animateTotalLmmCount()
+                iv_total_lmm.changeVisibility(isVisible = it > 0, soft = true)
+                tv_total_lmm_count.changeVisibility(isVisible = it > 0, soft = true)
+                tv_total_lmm_count.text = "$it"
+            }
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
@@ -269,7 +349,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             if (yearOfBirth != DomainUtil.BAD_VALUE) {
                 alpha = 1.0f
                 val age = calendar.get(Calendar.YEAR) - yearOfBirth
-                setIcon(AppInMemory.userGender().resId)
+                setIcon(spm.currentUserGender().resId)
                 setText("$age")
             } else {
                 alpha = 0.0f
@@ -290,7 +370,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             setHasFixedSize(true)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-//            addOnScrollListener(imagePreloadListener)
+            addOnScrollListener(imagePreloadListener)
         }
         with (tv_app_title) {
             if (BuildConfig.IS_STAGING) {
@@ -302,6 +382,21 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                         positiveListener = { _, _, inputText -> simulateParticles(inputText?.toInt() ?: 0) })
                 }
             }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        with (rv_items) {
+            removeOnScrollListener(imagePreloadListener)
+            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {}
+
+                override fun onViewDetachedFromWindow(v: View) {
+                    this@with.adapter = null
+                }
+            })
+            adapter = null
         }
     }
 
@@ -372,8 +467,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     private fun showEmptyStub(needShow: Boolean) {
         showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
-        ibtn_delete_image.changeVisibility(isVisible = !needShow)
-        label_online_status.changeVisibility(isVisible = !needShow)
+        showImageControls(isVisible = !needShow)
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
@@ -410,11 +504,20 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     private fun showControls(isVisible: Boolean) {
+        showImageControls(isVisible)
         ibtn_add_image.changeVisibility(isVisible = isVisible)
-        ibtn_delete_image.changeVisibility(isVisible = isVisible)
         ibtn_settings.changeVisibility(isVisible = isVisible)
         ll_profile_header.changeVisibility(isVisible = isVisible)
-        tabs2.changeVisibility(isVisible = isVisible)
+        showDotTabs(isVisible = isVisible)
+    }
+
+    private fun showImageControls(isVisible: Boolean) {
+        ibtn_delete_image.changeVisibility(isVisible = isVisible)
+        label_online_status.changeVisibility(isVisible = isVisible)
+        ll_left_section.changeVisibility(isVisible = isVisible)
+        ll_right_section.changeVisibility(isVisible = isVisible)
+        iv_total_lmm.changeVisibility(isVisible = isVisible && (vm.totalLmmCount.value ?: 0) > 0)
+        tv_total_lmm_count.changeVisibility(isVisible = isVisible && (vm.totalLmmCount.value ?: 0) > 0)
     }
 
     // ------------------------------------------
@@ -437,8 +540,31 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
     }
 
-    private fun showDotTabs() {
-        tabs2?.post { tabs2?.changeVisibility(isVisible = imagesAdapter.itemCount > 1, soft = true) }
+    private var animationLock = AtomicBoolean(false)
+    private val animation = scaleUp(from = 0.4f, interp = OvershootInterpolator ())
+        .apply {
+            setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) {
+                    animationLock.set(true)
+                    iv_total_lmm.theme(WidgetR_color.red_love)
+                }
+                override fun onAnimationRepeat(animation: Animation) { /* no-op */ }
+                override fun onAnimationEnd(animation: Animation) {
+                    iv_total_lmm.theme(WidgetR_color.white)
+                    animationLock.set(false)
+                }
+            })
+        }
+
+    private fun animateTotalLmmCount() {
+        if (animationLock.get()) {
+            return  // don't disturb currently running animation
+        }
+        iv_total_lmm.startAnimation(animation)
+    }
+
+    private fun showDotTabs(isVisible: Boolean) {
+        tabs2?.post { tabs2?.changeVisibility(isVisible = isVisible && imagesAdapter.itemCount > 1, soft = true) }
     }
 
     @DebugOnly

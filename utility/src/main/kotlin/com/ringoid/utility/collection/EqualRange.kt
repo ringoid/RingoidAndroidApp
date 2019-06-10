@@ -12,10 +12,20 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
                 throw IllegalArgumentException("From $from exceeds To $to")
             }
             if (to - from + 1 != items.size) {
-                throw IllegalArgumentException("Inconsistency between size of items [${items.size} and range [$from, $to]")
+                throw IllegalArgumentException("Inconsistency between size of items [${items.size}] and range [$from, $to]")
             }
         } else if (!items.isEmpty()) {
             throw IllegalArgumentException("Invalid size for empty range")
+        }
+    }
+
+    fun copyWith(items: List<T>): EqualRange<T> {
+        val delta = items.size - size
+        return when {
+            delta == 0 -> EqualRange(from, to, items)
+            delta > 0 -> EqualRange(from, to + delta, items)  // items is longer
+            delta < 0 -> EqualRange(from, to - delta, items)  // items is shorter
+            else -> EqualRange(from, to, items)  // unreachable case
         }
     }
 

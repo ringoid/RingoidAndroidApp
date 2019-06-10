@@ -1,6 +1,6 @@
 package com.ringoid.origin.messenger.view
 
-import com.ringoid.origin.messenger.ChatPayload
+import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.utility.ICommunicator
 
 interface IChatHost : ICommunicator {

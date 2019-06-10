@@ -1,17 +1,17 @@
 package com.ringoid.data.local.database.dao.user
 
 import androidx.room.*
-import com.ringoid.data.local.database.model.feed.ProfileDbo
+import com.ringoid.data.local.database.model.feed.UserProfileDbo
 
 @Dao
 interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addUserProfile(profile: ProfileDbo)
+    fun addUserProfile(userProfile: UserProfileDbo)
 
-    @Query("DELETE FROM ${ProfileDbo.TABLE_NAME} WHERE ${ProfileDbo.COLUMN_ID} = :userId")
+    @Query("DELETE FROM ${UserProfileDbo.TABLE_NAME} WHERE ${UserProfileDbo.COLUMN_ID} = :userId")
     fun deleteUserProfile(userId: String)
 
     @Delete
-    fun deleteUserProfile(profile: ProfileDbo)
+    fun deleteUserProfile(userProfile: UserProfileDbo)
 }

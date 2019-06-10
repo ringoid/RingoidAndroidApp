@@ -2,7 +2,7 @@ package com.ringoid.data.repository.user
 
 import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.user.UserDao
-import com.ringoid.data.local.database.model.feed.ProfileDbo
+import com.ringoid.data.local.database.model.feed.UserProfileDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
@@ -39,7 +39,7 @@ class UserRepository @Inject constructor(
              .doOnSuccess {
                  spm.saveUserProfile(userId = it.userId, userGender = Gender.from(essence.sex),
                                      userYearOfBirth = essence.yearOfBirth, accessToken = it.accessToken)
-                 local.addUserProfile(ProfileDbo(id = it.userId))
+                 local.addUserProfile(UserProfileDbo(id = it.userId))
                  SentryUtil.setUser(spm)
              }
              .map { it.map() }
@@ -51,6 +51,11 @@ class UserRepository @Inject constructor(
             .ignoreElement()  // convert to Completable
 
     override fun deleteUserLocalData(): Completable = Completable.fromCallable { clearUserLocalData() }
+
+    override fun updateUserProfile(essence: UpdateUserProfileEssenceUnauthorized): Completable =
+        spm.accessSingle { cloud.updateUserProfile(UpdateUserProfileEssence.from(essence, it.accessToken)) }
+            .handleError(tag = "updateUserProfile", traceTag = "auth/update_profile")
+            .ignoreElement()  // convert to Completable
 
     override fun updateUserSettings(essence: UpdateUserSettingsEssenceUnauthorized): Completable =
         spm.accessSingle { cloud.updateUserSettings(UpdateUserSettingsEssence.from(essence, it.accessToken)) }

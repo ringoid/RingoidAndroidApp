@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ringoid.origin.usersettings">
+          xmlns:tools="http://schemas.android.com/tools" package="com.ringoid.origin.usersettings">
 
-    <application>
+    <application tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".view.debug.DebugActivity"
             android:screenOrientation="portrait"
@@ -10,6 +10,11 @@
 
         <activity
             android:name=".view.language.SettingsLangActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dark"/>
+
+        <activity
+            android:name=".view.profile.SettingsProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark"/>
 

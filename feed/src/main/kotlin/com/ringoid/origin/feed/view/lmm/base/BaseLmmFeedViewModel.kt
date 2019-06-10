@@ -3,7 +3,7 @@ package com.ringoid.origin.feed.view.lmm.base
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.common.util.ArrayUtils.removeAll
+import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -24,6 +24,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
@@ -54,6 +55,7 @@ abstract class BaseLmmFeedViewModel(
     private val getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
     private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
     private val addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
+    private val notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     private val transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -163,6 +165,7 @@ abstract class BaseLmmFeedViewModel(
                 }
                 feed.value = list  // prepended list
             }
+            .autoDisposable(this)
             .subscribe({ action?.invoke() }, Timber::e)
     }
 
@@ -186,7 +189,13 @@ abstract class BaseLmmFeedViewModel(
     // ------------------------------------------
     override fun onRefresh() {
         super.onRefresh()
-        refreshOnPush.value = false
+        refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
+    }
+
+    internal fun onTapToRefreshClick() {
+        Bus.post(BusEvent.RefreshOnPush)
+        analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
+        viewState.value = ViewState.DONE(REFRESH)
     }
 
     // ------------------------------------------
@@ -246,6 +255,10 @@ abstract class BaseLmmFeedViewModel(
     override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
         super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
         markFeedItemAsSeen(feedItemId = profileId)
+
+        notifyLmmProfileBlockedUseCase.source()  // notify listeners that profile has been blocked
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
     }
 
     override fun onDiscardProfile(profileId: String) {

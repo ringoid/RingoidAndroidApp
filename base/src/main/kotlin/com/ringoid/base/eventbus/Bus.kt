@@ -36,13 +36,13 @@ sealed class BusEvent {
     object Stub : BusEvent()
     object NoImagesOnProfile : BusEvent()
     object RefreshOnExplore : BusEvent()
-    object RefreshOnLmm : BusEvent()
+    data class RefreshOnLmm(val lmmSourceFeed: String) : BusEvent()
     object RefreshOnProfile : BusEvent()
     object RefreshOnPush : BusEvent()
     object ReOpenApp: BusEvent()
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
 
-    object PushNewLike : BusEvent()
-    object PushNewMatch : BusEvent()
-    object PushNewMessage : BusEvent()
+    data class PushNewLike(val peerId: String) : BusEvent()
+    data class PushNewMatch(val peerId: String) : BusEvent()
+    data class PushNewMessage(val peerId: String) : BusEvent()
 }

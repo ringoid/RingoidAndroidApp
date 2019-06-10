@@ -3,6 +3,8 @@ package com.ringoid.domain.log
 import android.os.Build
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.ApiException
+import com.ringoid.domain.log.SentryUtil.breadcrumb
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
@@ -59,7 +61,7 @@ object SentryUtil {
                 add(e.javaClass.simpleName to e.stackTraceString())
                 extras?.let { addAll(it) }
             }
-        capture(e, message = message ?: e.message ?: "empty message", level = level, `object` = null, tag = tag, extras = fullExtras)
+        capture(e, message = message ?: e.message ?: e.javaClass.simpleName, level = level, `object` = null, tag = tag, extras = fullExtras)
     }
 
     fun setUser(spm: ISharedPrefsManager) {
@@ -87,7 +89,12 @@ object SentryUtil {
                         `object`: Any? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
         message?.let { breadcrumb(it) }
         if (!message.isNullOrBlank()) {
-            Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
+            val xExtras = (e as? ApiException)?.code
+                ?.let { errorCode -> "apiErrorCode" to errorCode }
+                ?.let { mutableListOf<Pair<String, String>>().apply { add(it) } }
+                ?.let { list -> extras?.let { list.addAll(it) }; list }
+                ?: extras
+            Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = xExtras))
         } else {
             Sentry.capture(e)
         }
@@ -105,6 +112,7 @@ object SentryUtil {
             .withRelease(BuildConfig.VERSION_NAME)
             .withTimestamp(Date())
             .withExtra("userId", user?.id ?: userId)
+            .withExtra("appVersion", BuildConfig.BUILD_NUMBER)
         if (`object` != null) {
             builder.withTag(`object`.javaClass.simpleName, `object`.hashCode().toString())
         }

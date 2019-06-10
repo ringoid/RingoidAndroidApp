@@ -14,8 +14,10 @@ import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.changeTypeface
-import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_lmm.*
@@ -36,63 +38,64 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
+        fun clearScreen(mode: Int) {
+            lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.clearScreen(mode) }
+        }
+
         fun showLoading(isVisible: Boolean) {
             lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.showLoading(isVisible) }
         }
 
         super.onViewStateChange(newState)
         when (newState) {
-            ViewState.IDLE -> showLoading(isVisible = false)
-            ViewState.LOADING -> showLoading(isVisible = true)
+            is ViewState.CLEAR -> clearScreen(mode = newState.mode)
+            is ViewState.IDLE -> showLoading(isVisible = false)
+            is ViewState.LOADING -> showLoading(isVisible = true)
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    /**
+                     * When user manually pulls to refresh on some of Lmm feeds, it gets cleared and
+                     * refresh spinner is showing, and the whole Lmm data is fetching. Once completes,
+                     * all Lmm feeds will be updated, so need to programmatically clear other Lmm feeds
+                     * and display refresh spinner on them to avoid user to navigate on them and then
+                     * lost some of his actions when Lmm data received.
+                     */
+                    is CLEAR_AND_REFRESH_EXCEPT -> {
+                        val exceptLmmTab = (newState.residual as CLEAR_AND_REFRESH_EXCEPT).exceptLmmTab
+                        LmmNavTab.values.forEach { lmmTab ->
+                            when (lmmTab) {
+                                exceptLmmTab -> { /* ignore except lmm tab */ }
+                                else -> lmmPagesAdapter.accessItem(lmmTab)
+                                    ?.let { it as? BaseLmmFeedFragment<*> }
+                                    ?.let {
+                                        it.clearScreen(ViewState.CLEAR.MODE_DEFAULT)
+                                        it.showLoading(isVisible = true)
+                                    }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
     // --------------------------------------------------------------------------------------------
-    // TODO: save that fields onSaveInstanceState() for later restore
-    private var badge_likes_visibilityPrev: Boolean = false
-    private var badge_matches_visibilityPrev: Boolean = false
-    private var badge_messages_visibilityPrev: Boolean = false
-
     override fun accessViewModel(): LmmViewModel = vm
 
     // ------------------------------------------
     override fun showBadgeOnLikes(isVisible: Boolean) {
-        badge_likes_visibilityPrev = isVisible
         btn_tab_likes.showBadge(isVisible)
         hasAnyBadgeShown()
     }
 
     override fun showBadgeOnMatches(isVisible: Boolean) {
-        badge_matches_visibilityPrev = isVisible
         btn_tab_matches.showBadge(isVisible)
         hasAnyBadgeShown()
     }
 
     override fun showBadgeOnMessenger(isVisible: Boolean) {
-        badge_messages_visibilityPrev = isVisible
         btn_tab_messenger.showBadge(isVisible)
         hasAnyBadgeShown()
-    }
-
-    override fun showTabs(isVisible: Boolean) {
-        if (ll_tabs_container == null) {
-            return  // view has not been initialized yet
-        }
-
-        if (isVisible) {
-            btn_tab_likes.showBadge(badge_likes_visibilityPrev)
-            btn_tab_matches.showBadge(badge_matches_visibilityPrev)
-            btn_tab_messenger.showBadge(badge_messages_visibilityPrev)
-        } else {
-            btn_tab_likes.showBadge(false)
-            btn_tab_matches.showBadge(false)
-            btn_tab_messenger.showBadge(false)
-        }
-        btn_tab_likes.changeVisibility(isVisible)
-        btn_tab_matches.changeVisibility(isVisible)
-        btn_tab_messenger.changeVisibility(isVisible)
-        tab_delim1.changeVisibility(isVisible)
-        tab_delim2.changeVisibility(isVisible)
     }
 
     // ------------------------------------------
@@ -150,7 +153,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         payload?.let { lmmFeedName -> selectPage(LmmNavTab.from(lmmFeedName)?.page() ?: 0) }
 
         setCurrentPageVisibleHint(true)
-        showTabs(isVisible = true)
     }
 
     /* Lifecycle */
@@ -167,6 +169,9 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             observe(vm.badgeMatches, ::showBadgeOnMatches)
             observe(vm.badgeMessenger, ::showBadgeOnMessenger)
             observe(vm.clearAllFeeds, ::clearAllFeeds)
+            observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
+            observe(vm.pushNewMatch) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
+            observe(vm.pushNewMessage) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
         }
 
         val page = savedInstanceState?.getInt(BUNDLE_KEY_CURRENT_PAGE) ?: 0

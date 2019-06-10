@@ -19,6 +19,8 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.*
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.image.IImage
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.collection.EqualRange
@@ -182,6 +184,7 @@ abstract class FeedViewModel(
         }
 
     internal open fun onImageTouch(x: Float, y: Float) {
+        Timber.v("On touch feed item at ($x, $y)")
         // override in subclasses
     }
 
@@ -271,10 +274,10 @@ abstract class FeedViewModel(
             horizontalPrevRanges[it.profileId]
                 ?.delta(items)
                 ?.takeIf { !it.isRangeEmpty() }
-                ?.let {
-                    Timber.v("Excluded items in [horizontal] range ${it.range()}, consume VIEW action objects")
+                ?.let { range ->
+                    Timber.v("Excluded items in [horizontal] range ${range.range()}, consume VIEW action objects")
                     logViewObjectsBufferState(tag = "before [horiz]")  // show view aobjs buffer contents in debug logs
-                    advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId })
+                    advanceAndPushViewObjects(keys = range.map { it.image.id to it.profileId })
                     analyticsManager.fireOnce(Analytics.AHA_FIRST_SWIPE, "sourceFeed" to getFeedName())
                     logViewObjectsBufferState(tag = "after [horiz]")
                 }
@@ -289,10 +292,10 @@ abstract class FeedViewModel(
         verticalPrevRange
             ?.delta(items)
             ?.takeIf { !it.isRangeEmpty() }
-            ?.let {
-                Timber.v("Excluded items in [vertical] range ${it.range()}, consume VIEW action objects")
+            ?.let { range ->
+                Timber.v("Excluded items in [vertical] range ${range.range()}, consume VIEW action objects")
                 logViewObjectsBufferState("before [vert]")  // show view aobjs buffer contents in debug logs
-                it.pickOne()
+                range.pickOne()
                     ?.let { horizontalPrevRanges[it.profileId] }
                     ?.also { advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId }) }
                     ?.also { logViewObjectsBufferState(tag = "after [vert]") }
@@ -321,19 +324,40 @@ abstract class FeedViewModel(
         // do something when feed item with id specified has been viewed
     }
 
-    internal fun onItemBecomeVisible(profileId: String, imageId: String) {
-        DebugLogUtil.v("Item become visible [${getFeedName()}]: p=${profileId.substring(0..3)}")
+    internal fun onItemBecomeVisible(profile: FeedItemVO, image: IImage) {
+        DebugLogUtil.v("Item become visible [${getFeedName()}]: p=${profile.id.substring(0..3)}")
+        if (!horizontalPrevRanges.containsKey(profile.id)) {
+            horizontalPrevRanges[profile.id] = EqualRange(0, 0, listOf(ProfileImageVO(profileId = profile.id, image = image, isLiked = profile.isLiked(image.id))))
+        }
+
         val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
-            targetImageId = imageId, targetUserId = profileId)
+            targetImageId = image.id, targetUserId = profile.id)
         addViewObjectToBuffer(aobj)
     }
 
     open fun onDiscardProfile(profileId: String) {
+        horizontalPrevRanges.remove(profileId)  // feed item has gone
+
         advanceAndPushViewObject(profileId = profileId)  // push VIEW as profile was discarded
 
         viewActionObjectBackup.keys
             .find { it.second == profileId }
             ?.let { viewActionObjectBackup.remove(it) }
+    }
+
+    /**
+     * After discard feed item, feed collapses vertically so there could be a new feed item coming
+     * into viewport. [verticalPrevRange] should be updated with that item and discarded item should
+     * be gone, so that new [onViewVertical] during scroll will operate with correct feed items.
+     */
+    internal fun onSettleVisibleItemsAfterDiscard(items: List<FeedItemVO>) {
+        val fixItems = items.map {
+            val image = horizontalPrevRanges[it.id]?.pickOne()?.image ?: it.images[it.positionOfImage]
+            ProfileImageVO(it.id, image = image, isLiked = it.isLiked(image.id))
+        }
+        DebugLogUtil.v("Settle on discard [vert], before: $verticalPrevRange ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}")
+        verticalPrevRange = verticalPrevRange?.copyWith(fixItems)
+        DebugLogUtil.v("Settle on discard [vert], after: $verticalPrevRange ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}")
     }
 
     // --------------------------------------------------------------------------------------------

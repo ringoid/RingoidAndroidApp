@@ -2,6 +2,7 @@
 <resources>
     <dimen name="std_badge_radius">3dp</dimen>
     <dimen name="std_btn_height">47dp</dimen>
+    <dimen name="std_btn_height_narrow">37dp</dimen>
     <dimen name="std_dialog_height">160dp</dimen>
     <dimen name="std_dialog_width">303dp</dimen>
     <dimen name="std_element_height">47dp</dimen>
@@ -13,6 +14,7 @@
     <dimen name="std_margin_8">6dp</dimen>
     <dimen name="std_margin_12">9dp</dimen>
     <dimen name="std_margin_16">12dp</dimen>
+    <dimen name="std_margin_18">14dp</dimen>
     <dimen name="std_margin_20">16dp</dimen>
     <dimen name="std_margin_24">19dp</dimen>
     <dimen name="std_margin_32">24dp</dimen>
@@ -32,4 +34,5 @@
 
     <!-- Widget -->
     <dimen name="icon_item_view_height">47dp</dimen>
+    <dimen name="edit_text_icon_item_view_height">62dp</dimen>
 </resources>

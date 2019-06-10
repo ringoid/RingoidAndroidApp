@@ -1,4 +1,4 @@
-package com.ringoid.origin.messenger
+package com.ringoid.origin.messenger.model
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -50,7 +50,8 @@ data class ChatPayload(
 
         @JvmField
         val CREATOR = object : Parcelable.Creator<ChatPayload> {
-            override fun createFromParcel(source: Parcel): ChatPayload = ChatPayload(source)
+            override fun createFromParcel(source: Parcel): ChatPayload =
+                ChatPayload(source)
             override fun newArray(size: Int): Array<ChatPayload?> = arrayOfNulls(size)
         }
     }

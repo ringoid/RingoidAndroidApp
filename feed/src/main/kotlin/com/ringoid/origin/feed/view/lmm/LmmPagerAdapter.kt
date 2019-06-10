@@ -5,10 +5,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.feed.view.lmm.like.LikesFeedFragment
 import com.ringoid.origin.feed.view.lmm.match.MatchesFeedFragment
-import com.ringoid.origin.feed.view.lmm.messenger.MessengerFragment
+import com.ringoid.origin.feed.view.lmm.messenger.MessagesFeedFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import java.lang.ref.WeakReference
 
@@ -31,7 +30,7 @@ class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         when (position) {
             0 -> LikesFeedFragment.newInstance()
             1 -> MatchesFeedFragment.newInstance()
-            2 -> MessengerFragment.newInstance()
+            2 -> MessagesFeedFragment.newInstance()
             else -> throw IllegalArgumentException("Page at position [$position] is not allowed")
         }
 
@@ -44,17 +43,5 @@ class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         map.remove(position)
         super.destroyItem(container, position, `object`)
-    }
-
-    // ------------------------------------------
-    companion object {
-
-        fun getItemPositionByName(feedName: String): Int =
-            when (feedName) {
-                DomainUtil.SOURCE_FEED_LIKES -> 0
-                DomainUtil.SOURCE_FEED_MATCHES -> 1
-                DomainUtil.SOURCE_FEED_MESSAGES -> 2
-                else -> DomainUtil.BAD_POSITION
-            }
     }
 }
