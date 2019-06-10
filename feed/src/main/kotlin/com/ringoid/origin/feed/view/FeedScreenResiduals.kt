@@ -16,4 +16,4 @@ data class DISCARD_PROFILES(val profileIds: Collection<String>) : Residual() {  
 }
 
 object NO_IMAGES_IN_PROFILE : Residual()
-object REFRESH : Residual()
+object REFRESH : Residual()  // refresh programmatically

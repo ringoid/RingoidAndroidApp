@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.feed.view.lmm.like.LikesFeedFragment
 import com.ringoid.origin.feed.view.lmm.match.MatchesFeedFragment
 import com.ringoid.origin.feed.view.lmm.messenger.MessagesFeedFragment
@@ -44,17 +43,5 @@ class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         map.remove(position)
         super.destroyItem(container, position, `object`)
-    }
-
-    // ------------------------------------------
-    companion object {
-
-        fun getItemPositionByName(feedName: String): Int =
-            when (feedName) {
-                DomainUtil.SOURCE_FEED_LIKES -> 0
-                DomainUtil.SOURCE_FEED_MATCHES -> 1
-                DomainUtil.SOURCE_FEED_MESSAGES -> 2
-                else -> DomainUtil.BAD_POSITION
-            }
     }
 }

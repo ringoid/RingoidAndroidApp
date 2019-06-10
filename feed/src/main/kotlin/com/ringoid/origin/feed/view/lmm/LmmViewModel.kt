@@ -15,6 +15,7 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.utils.ScreenHelper
+import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
@@ -106,6 +107,17 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         // refresh on Explore Feed screen leads Lmm screen to refresh as well
         DebugLogUtil.i("Get LMM on refresh Explore Feed")
         getLmm()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        /**
+         * Refresh on some of Lmm's feeds. This feed is cleared and refreshed, but the whole Lmm
+         * will then be reloaded. Thus, need to display clear and refresh on the other feeds.
+         */
+        viewState.value = ViewState.DONE(CLEAR_AND_REFRESH_EXCEPT(exceptLmmTab = LmmNavTab.from(event.lmmSourceFeed)))
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)

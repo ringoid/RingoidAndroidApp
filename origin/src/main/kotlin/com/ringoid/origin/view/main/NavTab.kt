@@ -32,7 +32,7 @@ enum class LmmNavTab(val feedName: String) {
     fun page(): Int = ordinal
 
     companion object {
-        private val values: Array<LmmNavTab> = values()
+        val values: Array<LmmNavTab> = values()
 
         fun get(index: Int): LmmNavTab? = values[index]  // here order matters
 

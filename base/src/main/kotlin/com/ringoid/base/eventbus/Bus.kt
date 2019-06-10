@@ -36,7 +36,7 @@ sealed class BusEvent {
     object Stub : BusEvent()
     object NoImagesOnProfile : BusEvent()
     object RefreshOnExplore : BusEvent()
-    object RefreshOnLmm : BusEvent()
+    data class RefreshOnLmm(val lmmSourceFeed: String) : BusEvent()
     object RefreshOnProfile : BusEvent()
     object RefreshOnPush : BusEvent()
     object ReOpenApp: BusEvent()

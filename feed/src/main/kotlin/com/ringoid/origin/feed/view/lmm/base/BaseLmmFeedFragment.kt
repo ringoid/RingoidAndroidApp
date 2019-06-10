@@ -172,7 +172,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
     override fun onRefresh() {
         super.onRefresh()
-        Bus.post(event = BusEvent.RefreshOnLmm)
+        Bus.post(event = BusEvent.RefreshOnLmm(lmmSourceFeed = getSourceFeed().feedName))
     }
 
     internal fun transferProfile(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null) {
