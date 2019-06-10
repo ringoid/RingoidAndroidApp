@@ -21,6 +21,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.SimulatedException
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
@@ -182,7 +183,13 @@ open class FeedRepository @Inject constructor(
     // ------------------------------------------
     override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
         aObjPool.triggerSource()
-                .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
+                .flatMap {
+                    if (DomainUtil.withSimulatedError()) {
+                        Single.error<Lmm>(SimulatedException())
+                    } else {
+                        getLmmOnly(resolution, source = source, lastActionTime = it)
+                    }
+                }
                 .onErrorResumeNext {
                     SentryUtil.capture(it, message = "Fallback to get cached Lmm")
                     getCachedLmm()
