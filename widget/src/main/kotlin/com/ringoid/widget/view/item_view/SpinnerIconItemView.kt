@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SpinnerAdapter
 import android.widget.TextView
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.utility.changeTypeface
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.widget.R
 import com.ringoid.widget.model.IListItem
@@ -29,9 +31,11 @@ class SpinnerIconItemView : IconItemView {
 
     constructor(context: Context, attributes: AttributeSet?) : this(context, attributes, 0)
 
+    @Suppress("CheckResult")
     constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int) : super(context, attributes, defStyleAttr) {
         if (textColorPrimary == -1) textColorPrimary = context.getAttributeColor(R.attr.refTextColorPrimary)
         if (textColorSecondary == -1) textColorSecondary = context.getAttributeColor(R.attr.refTextColorSecondary)
+        clicks().compose(clickDebounce()).subscribe { spinner.performClick() }
     }
 
     override fun getLayoutId(): Int = R.layout.widget_spinner_icon_item_view_layout
