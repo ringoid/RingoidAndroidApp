@@ -53,6 +53,7 @@ object ImageLoader {
 
         return Glide.with(context)
             .load(uri)
+            .skipMemoryCache(true)  // don't keep original (large) image in memory cache
 //            .apply(optimalOptions(context, uri, options))
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
     }
