@@ -15,6 +15,7 @@ import com.ringoid.base.ContextUtil
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -71,8 +72,8 @@ class DebugView : ConstraintLayout {
         if (BG_SOLID == null) BG_SOLID = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white)
         if (BG_TRANS == null) BG_TRANS = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white_70_opaque)
         if (MIN_HEIGHT == -1) MIN_HEIGHT = resources.getDimensionPixelSize(R.dimen.widget_debug_height)
-        if (MAX_LP == null) MAX_LP = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-        if (MIN_LP == null) MIN_LP = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, MIN_HEIGHT)
+        if (MAX_LP == null) MAX_LP = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        if (MIN_LP == null) MIN_LP = LayoutParams(LayoutParams.MATCH_PARENT, MIN_HEIGHT)
             .apply { bottomToBottom = ConstraintSet.PARENT_ID }
 
         background = BG_SOLID
@@ -86,6 +87,7 @@ class DebugView : ConstraintLayout {
         ibtn_bg_flip_debug.clicks().compose(clickDebounce()).subscribe { bgToggle = !bgToggle }
         ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { clear() }
         ibtn_close_debug.clicks().compose(clickDebounce()).subscribe { Bus.post(BusEvent.CloseDebugView) }
+        ibtn_error_debug.clicks().compose(clickDebounce()).subscribe { DomainUtil.simulateError() }
         ibtn_lifecycle_debug.clicks().compose(clickDebounce()).subscribe { lifecycleToggle = !lifecycleToggle }
         ibtn_resize_debug.clicks().compose(clickDebounce()).subscribe {
             if (sizeToggle) minimize() else maximize()
@@ -97,7 +99,7 @@ class DebugView : ConstraintLayout {
         super.onAttachedToWindow()
         DebugLogUtil.logger
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { DebugLogUtil.d("${Date().date()} :: ${com.ringoid.domain.BuildConfig.VERSION_NAME}\n\n${ContextUtil.deviceInfo()}\n\n") }
+            .doOnSubscribe { DebugLogUtil.d("${Date().date()} :: ${BuildConfig.VERSION_NAME}\n\n${ContextUtil.deviceInfo()}\n\n") }
             .`as`(autoDisposable(scope()))
             .subscribe({
                 if (it == EmptyDebugLogItem) {

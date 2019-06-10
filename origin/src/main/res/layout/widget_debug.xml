@@ -32,6 +32,18 @@
         app:srcCompat="@drawable/ic_close_black_18dp"/>
 
     <ImageButton
+        android:id="@+id/ibtn_error_debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:layout_marginEnd="@dimen/std_margin_8"
+        android:background="?selectableItemBackground"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ibtn_close_debug"
+        app:srcCompat="@drawable/ic_debug_black_18dp"/>
+
+    <ImageButton
         android:id="@+id/ibtn_clear_debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
