@@ -30,6 +30,7 @@ import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.utility.image.ImageLoader
 import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -193,6 +194,7 @@ abstract class BaseLmmFeedViewModel(
     }
 
     internal fun onTapToRefreshClick() {
+        ImageLoader.clear(context)
         Bus.post(BusEvent.RefreshOnPush)
         analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
         viewState.value = ViewState.DONE(REFRESH)

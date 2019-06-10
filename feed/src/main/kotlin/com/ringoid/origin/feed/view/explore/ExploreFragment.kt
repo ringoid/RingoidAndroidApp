@@ -17,6 +17,7 @@ import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.debugToast
+import com.ringoid.utility.image.ImageLoader
 import timber.log.Timber
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
@@ -76,6 +77,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     override fun onRefresh() {
         super.onRefresh()
+        ImageLoader.clear(context)
         Bus.post(event = BusEvent.RefreshOnExplore)
     }
 

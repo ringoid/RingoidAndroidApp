@@ -36,6 +36,7 @@ import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
+import com.ringoid.utility.image.ImageLoader
 import com.ringoid.utility.runOnUiThread
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -172,6 +173,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
     override fun onRefresh() {
         super.onRefresh()
+        ImageLoader.clear(context)
         Bus.post(event = BusEvent.RefreshOnLmm(lmmSourceFeed = getSourceFeed().feedName))
     }
 

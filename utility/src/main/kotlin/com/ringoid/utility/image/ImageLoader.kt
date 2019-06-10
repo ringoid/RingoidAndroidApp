@@ -7,10 +7,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -35,6 +37,19 @@ object ImageLoader {
                 .diskCacheStrategy(cacheStrategy(uri))
                 .skipMemoryCache(skipMemoryCache)
         }
+
+    @Suppress("CheckResult")
+    fun clear(context: Context?) {
+        if (context == null) {
+            return
+        }
+
+        Completable.fromCallable { Glide.get(context).clearDiskCache() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .andThen(Completable.fromCallable { Glide.get(context).clearMemory() })
+            .subscribe({ Timber.v("Cleared Glide caches") }, Timber::e)
+    }
 
     // ------------------------------------------
     private fun loadRequest(uri: String?, thumbnailUri: String? = null, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? {
