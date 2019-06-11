@@ -56,9 +56,9 @@ class CloudModule(private val appVersion: Int) {
             .addInterceptor(requestUrlInterceptor)
             .addInterceptor(responseInterceptor)
             .addInterceptor(logInterceptor)
-            .readTimeout(2, TimeUnit.SECONDS)
-            .connectTimeout(2, TimeUnit.SECONDS)
-            .writeTimeout(2, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
             .retryOnConnectionFailure(false)
             .build()
 
