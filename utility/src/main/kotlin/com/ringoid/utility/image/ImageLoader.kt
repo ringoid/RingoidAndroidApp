@@ -75,7 +75,6 @@ object ImageLoader {
                             }
                     }
             }
-            .doOnSuccess { Timber.v("Image loaded [$uri]") }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ imageView.get()?.let { iv -> iv.post { iv.setImageDrawable(it) } } }, Timber::e)
     }
