@@ -33,6 +33,8 @@ object ImageLoader {
         uri?.let {
             imageLoader.imageLoader
                 .load(it)
+                .dontAnimate()
+                .dontTransform()
                 .diskCacheStrategy(cacheStrategy(uri))
                 .skipMemoryCache(skipMemoryCache)
         }
@@ -43,10 +45,12 @@ object ImageLoader {
             return null
         }
 
-        val thumbnailRequest = thumbnailUri?.let { Glide.with(context).load(it) }
+        val thumbnailRequest = thumbnailUri?.let { Glide.with(context).load(it).dontAnimate().dontTransform() }
 
         return Glide.with(context)
             .load(uri)
+            .dontAnimate()
+            .dontTransform()
             .diskCacheStrategy(cacheStrategy(uri))
 //            .skipMemoryCache(true)  // don't keep original (large) image in memory cache
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
