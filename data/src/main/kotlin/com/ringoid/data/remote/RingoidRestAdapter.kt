@@ -59,7 +59,7 @@ interface RingoidRestAdapter {
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
-    @GET("feed/chat")
+    @GET("feeds/chat")
     fun getChat(@Query("accessToken") accessToken: String,
                 @Query("resolution") resolution: String?,
                 @Query("userId") peerId: String?,

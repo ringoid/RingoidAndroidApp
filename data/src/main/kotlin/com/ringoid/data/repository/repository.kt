@@ -52,6 +52,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                         error.delay  // delay in ms
                     }
                     // don't retry on fatal network errors
+                    is ModelNotFoundException,
                     is InvalidAccessTokenApiException,
                     is OldAppVersionApiException,
                     is WrongRequestParamsClientApiException -> {

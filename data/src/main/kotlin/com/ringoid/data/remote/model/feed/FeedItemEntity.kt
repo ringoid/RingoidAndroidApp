@@ -2,8 +2,6 @@ package com.ringoid.data.remote.model.feed
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.ringoid.data.local.database.model.feed.FeedItemDbo.Companion.COLUMN_FLAG_NOT_SEEN
-import com.ringoid.data.remote.model.feed.LmmResponse.Companion.COLUMN_MESSAGES
 import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.remote.model.messenger.MessageEntity
 import com.ringoid.domain.DomainUtil

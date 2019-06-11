@@ -17,6 +17,8 @@ class GetLmmUseCase @Inject constructor(val repository: IFeedRepository,
 
     override fun sourceImpl(params: Params): Single<Lmm> {
         val source = params.get<String>("source")
-        return params.processSingle(ImageResolution::class.java) { repository.getLmm(it, source = source) }
+        return params.processSingle(ImageResolution::class.java) {
+            repository.getLmm(it, source = source)
+        }
     }
 }

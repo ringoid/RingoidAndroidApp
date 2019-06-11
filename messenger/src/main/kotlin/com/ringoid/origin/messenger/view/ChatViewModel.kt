@@ -5,20 +5,28 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
+import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
+import com.ringoid.domain.interactor.messenger.GetChatUseCase
 import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
 import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.Flowable
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ChatViewModel @Inject constructor(
+    private val getChatUseCase: GetChatUseCase,
+    private val getChatNewMessagesUseCase: GetChatNewMessagesUseCase,
     private val getMessagesForPeerUseCase: GetMessagesForPeerUseCase,
     private val sendMessageToPeerUseCase: SendMessageToPeerUseCase,
     app: Application) : BaseViewModel(app) {
@@ -26,6 +34,10 @@ class ChatViewModel @Inject constructor(
     val messages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
 
+    /**
+     * Get chat messages from the local storage. Those messages had been stored locally
+     * when Lmm data fetching had completed.
+     */
     fun getMessages(profileId: String, sourceFeed: LmmNavTab = LmmNavTab.MESSAGES) {
         val params = Params().put("chatId", profileId)
                              .put("sourceFeed", sourceFeed.feedName)
@@ -35,10 +47,10 @@ class ChatViewModel @Inject constructor(
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({
-                val peerMessagesCount = it.count { it.peerId != DomainUtil.CURRENT_USER_ID }
-                ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
-                messages.value = it
+            .subscribe({ msgs ->
+                updatePeerMessagesCount(profileId = profileId, messages = msgs)
+                messages.value = msgs
+                startPollingChat(profileId = profileId, sourceFeed = sourceFeed, delay = 3000L)
             }, Timber::e)
     }
 
@@ -50,7 +62,7 @@ class ChatViewModel @Inject constructor(
         }
 
         val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = sourceFeed.feedName, targetImageId = imageId, targetUserId = peerId)
-        val message = MessageEssence(peerId = peerId, text = text?.trim() ?: "", aObjEssence = essence)
+        val message = MessageEssence(peerId = peerId, text = text.trim(), aObjEssence = essence)
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT(it)) }
@@ -70,5 +82,34 @@ class ChatViewModel @Inject constructor(
                     }
                 }
             }, Timber::e)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun updatePeerMessagesCount(profileId: String, messages: List<Message>): Boolean {
+        val peerMessagesCount = messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
+        return ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
+    }
+
+    private fun startPollingChat(profileId: String, sourceFeed: LmmNavTab, delay: Long) {
+        val peerIdStr = if (BuildConfig.IS_STAGING) profileId.substring(0..3) else "<...>"
+        val logStr = if (BuildConfig.IS_STAGING) "for p=$peerIdStr on ${sourceFeed.feedName}" else ""
+
+        Flowable.timer(delay, TimeUnit.MILLISECONDS)
+            .doOnSubscribe { Timber.v("Start polling chat $logStr".trim()) }
+            .flatMap {
+                val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+                                     .put("chatId", profileId)
+                                     .put("sourceFeed", sourceFeed.feedName)
+                getChatUseCase.source(params = params)
+                    .doOnSubscribe { Timber.v("Poll chat $logStr".trim()) }
+                    .repeatWhen { completed -> completed.delay(1500, TimeUnit.MILLISECONDS) }
+            }
+            .autoDisposable(this)
+            .subscribe({ chat ->
+                if (updatePeerMessagesCount(profileId = profileId, messages = chat.messages)) {
+                    Timber.v("Count of messages from peer [$peerIdStr] has changed")
+                    messages.value = chat.messages  // append new messages to the list (by DiffUtil)
+                } else Timber.v("Count of messages from peer [$peerIdStr] has NOT changed")
+            }, Timber::e)  // on error - fail silently
     }
 }

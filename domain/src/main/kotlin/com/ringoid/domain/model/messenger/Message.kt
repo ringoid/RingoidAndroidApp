@@ -9,6 +9,12 @@ import com.ringoid.domain.model.IEssence
 import com.ringoid.domain.model.IListModel
 import com.ringoid.utility.randomString
 
+/**
+ * Message object: [id] corresponds to profileId of the opposite user,
+ * same is true for [chatId]. On the other hand, [peerId] can be either
+ * profileId of the opposite user, or [DomainUtil.CURRENT_USER_ID],
+ * if current user (a customer) is the owner (actual sender) of this message.
+ */
 data class Message(
     @Expose @SerializedName(COLUMN_ID) val id: String,
     @Expose @SerializedName(COLUMN_CHAT_ID) val chatId: String,

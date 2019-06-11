@@ -162,7 +162,7 @@ open class FeedRepository @Inject constructor(
     private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long): Single<Feed> =
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
-                 .handleError(tag = "getNewFaces($resolution,$limit,lat=${aObjPool.lastActionTime()})", traceTag = "feeds/get_new_faces")
+                 .handleError(tag = "getNewFaces($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/get_new_faces")
                  .doOnSuccess {
                      DebugLogUtil.v("# NewFaces: [${it.toLogString()}] as received from Server, before filter out duplicates")
                      if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for NewFaces")
@@ -191,7 +191,7 @@ open class FeedRepository @Inject constructor(
     private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long): Single<Lmm> =
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
-                .handleError(tag = "getLmm($resolution,lat=${aObjPool.lastActionTime()})", traceTag = "feeds/get_lmm")
+                .handleError(tag = "getLmm($resolution,lat=$lastActionTime)", traceTag = "feeds/get_lmm")
                 .dropLmmResponseStatsOnSubscribe()
                 .filterOutDuplicateProfilesLmmResponse()
                 .detectCollisionProfilesLmmResponse()
@@ -256,7 +256,7 @@ open class FeedRepository @Inject constructor(
         .withLatestFrom(idsSource,
             BiFunction { feed: FeedResponse, blockedIds: List<String> ->
                 blockedIds
-                    .takeIf { !it.isEmpty() }
+                    .takeIf { it.isNotEmpty() }
                     ?.let {
                         val l = feed.profiles.toMutableList().apply { removeAll { it.id in blockedIds } }
                         feed.copyWith(profiles = l)
@@ -330,13 +330,13 @@ open class FeedRepository @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
-        flatMap {
+        flatMap { lmm ->
             val messages = mutableListOf<MessageDbo>()
-            it.likes.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_LIKES) }) }
-            it.matches.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MATCHES) }) }
-            it.messages.forEach { messages.addAll(it.messages.map { MessageDbo.from(it, DomainUtil.SOURCE_FEED_MESSAGES) }) }
+            lmm.likes.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_LIKES) }) }
+            lmm.matches.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_MATCHES) }) }
+            lmm.messages.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_MESSAGES) }) }
             Completable.fromCallable { messengerLocal.insertMessages(messages) }  // cache new messages
-                                .toSingleDefault(it)
+                .toSingleDefault(lmm)
         }
 
     private fun Single<Lmm>.cacheLmm(): Single<Lmm> =

@@ -25,6 +25,26 @@ data class FeedItem(
     val isNotSeen: Boolean,
     override val isRealModel: Boolean = true) : IFeedItem {
 
+    fun copyWith(messages: List<Message>): FeedItem =
+        FeedItem(
+            id = id,
+            distanceText = distanceText,
+            images = images,
+            messages = messages.toMutableList(),
+            lastOnlineStatus = lastOnlineStatus,
+            lastOnlineText = lastOnlineText,
+            age = age,
+            children = children,
+            education = education,
+            gender = gender,
+            hairColor = hairColor,
+            height = height,
+            income = income,
+            property = property,
+            transport = transport,
+            isNotSeen = isNotSeen,
+            isRealModel = isRealModel)
+
     fun toShortString(): String = "FeedItem(id=${id.substring(0..3)}, ${if (isNotSeen) "Not Seen" else "Seen"}, img=[${images.size}], msg=[${messages.size}])"
 }
 

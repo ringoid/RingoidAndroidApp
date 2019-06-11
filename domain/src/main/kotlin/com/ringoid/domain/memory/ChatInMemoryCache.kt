@@ -36,13 +36,14 @@ object ChatInMemoryCache {
         }
     }
 
-    fun setPeerMessagesCountIfChanged(profileId: String, count: Int) {
+    fun setPeerMessagesCountIfChanged(profileId: String, count: Int): Boolean {
         if (!hasProfile(profileId) || getPeerMessagesCount(profileId) == count) {
-            return
+            return false
         }
 
         chatPeerMessagesCount[profileId] = count
         dropPositionForProfile(profileId)
+        return true  // count has changed
     }
 
     // ------------------------------------------

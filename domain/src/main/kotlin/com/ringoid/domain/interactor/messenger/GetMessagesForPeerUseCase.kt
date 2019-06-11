@@ -11,6 +11,9 @@ import com.ringoid.domain.repository.messenger.IMessengerRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
+/**
+ * Get local messages for chatId (chatId always equal to peerId, the opposite user).
+ */
 class GetMessagesForPeerUseCase @Inject constructor(private val repository: IMessengerRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<List<Message>>(threadExecutor, postExecutor) {
