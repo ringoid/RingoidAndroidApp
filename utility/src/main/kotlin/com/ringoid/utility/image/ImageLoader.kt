@@ -70,11 +70,12 @@ object ImageLoader {
                             ?: run {
                                 val delayTime = IMAGE_LOAD_RETRY_DELAY * Math.pow(5.0, attemptNumber.toDouble()).toLong()
                                 Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                                    .doOnSubscribe { Timber.v("Retry to load image, attempt [$attemptNumber / $IMAGE_LOAD_RETRY_COUNT] after error: $error") }
+                                    .doOnSubscribe { Timber.v("Retry load image [$attemptNumber / $IMAGE_LOAD_RETRY_COUNT] on: $error") }
                                     .doOnComplete { if (attemptNumber >= IMAGE_LOAD_RETRY_COUNT) throw error }
                             }
                     }
             }
+            .doOnSuccess { Timber.v("Image loaded [$uri]") }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ imageView.get()?.let { iv -> iv.post { iv.setImageDrawable(it) } } }, Timber::e)
     }
