@@ -21,9 +21,9 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
-import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BaseListFragment
@@ -317,6 +317,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 }
             })
             adapter = null
+            layoutManager = null
         }
     }
 
