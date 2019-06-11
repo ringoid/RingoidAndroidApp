@@ -62,6 +62,8 @@ ext {
             cropiwa:        "com.steelkiwi:cropiwa:${cropiwaVersion}",
             glide:          "com.github.bumptech.glide:glide:${glideVersion}",
             glideCompiler:  "com.github.bumptech.glide:compiler:${glideVersion}",
+            glideAnnotation: "com.github.bumptech.glide:annotations:${glideVersion}",
+            glideOkHttp:    "com.github.bumptech.glide:okhttp3-integration:${glideVersion}",
             glideRecycler:  "com.github.bumptech.glide:recyclerview-integration:${glideVersion}",
 
             branch:         "io.branch.sdk.android:library:${branchVersion}",
@@ -239,6 +241,7 @@ ext {
     ]
 
     def glide = [
+            [configuration: "api", dependency: d_libs.glideAnnotation],
             [configuration: "kapt", dependency: d_libs.glideCompiler],
             [configuration: "implementation", dependency: d_libs.glide],
     ]
@@ -303,7 +306,7 @@ ext {
 
     def leaks = [
             [configuration: "debugImplementation", dependency: d_support.leakCanary],
-            [configuration: "implementation", dependency: d_support.leakSentry],
+            [configuration: "api", dependency: d_support.leakSentry],
     ]
 
     def support = [
@@ -334,7 +337,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.branch],
     ]
     appDependencies += all_features + module_main + module_data + develop + android + dagger + deeplink + kotlin + log +
-                       fragnav + net + room + support + leaks
+                       fragnav + net + room + support
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -473,7 +476,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.gson],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
-                          support + leaks + view
+                          support + view
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
@@ -515,6 +518,7 @@ ext {
     // ------------------------------------------
     dataDependencies = [
         [configuration: "implementation", dependency: d_libs.gson],
+        [configuration: "implementation", dependency: d_libs.glideOkHttp],
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]

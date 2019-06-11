@@ -11,9 +11,10 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
-abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows: Int = 0)
+abstract class BaseFeedAdapter(protected val imageLoader: ImageRequest, diffCb: BaseDiffCallback<FeedItemVO>, headerRows: Int = 0)
     : BaseListAdapter<FeedItemVO, OriginFeedViewHolder>(diffCb, headerRows = headerRows) {
 
     var onBeforeLikeListener: (() -> Boolean)? = null

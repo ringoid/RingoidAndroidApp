@@ -12,7 +12,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import timber.log.Timber
-import java.util.concurrent.Future
+import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 object ImageLoader {
@@ -25,16 +25,18 @@ object ImageLoader {
      */
     fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
         loadRequest(uri, thumbnailUri, imageView.context, options)
-            ?.listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))//optimalOptions(imageView.context, uri, options)))
+            ?.listener(AutoRetryImageListener(uri, WeakReference(imageView), withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))
             ?.into(imageView)
     }
 
-    fun simpleLoadRequest(uri: String?, context: Context, options: RequestOptions? = null): RequestBuilder<Drawable>? =
+    fun simpleLoadRequest(imageLoader: ImageRequest, uri: String?, skipMemoryCache: Boolean = false, options: RequestOptions? = null): RequestBuilder<Drawable>? =
         uri?.let {
-            Glide.with(context)
+            imageLoader.imageLoader
                 .load(it)
-//                .apply(wrapOptions(options))
-//                .apply(optimalOptions(context, it, options))
+                .dontAnimate()
+                .dontTransform()
+                .diskCacheStrategy(cacheStrategy(uri))
+                .skipMemoryCache(skipMemoryCache)
         }
 
     // ------------------------------------------
@@ -43,65 +45,46 @@ object ImageLoader {
             return null
         }
 
-        val thumbnailRequest: RequestBuilder<Drawable>? =
-            thumbnailUri?.let {
-                Glide.with(context)
-                    .load(it)
-//                    .apply(optimalOptions(context, thumbnailUri, options))
-            }
+        val thumbnailRequest = thumbnailUri?.let { Glide.with(context).load(it).dontAnimate().dontTransform() }
 
         return Glide.with(context)
             .load(uri)
-//            .apply(optimalOptions(context, uri, options))
+            .dontAnimate()
+            .dontTransform()
+            .diskCacheStrategy(cacheStrategy(uri))
+//            .skipMemoryCache(true)  // don't keep original (large) image in memory cache
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
     }
 
     @Suppress("CheckResult")
-    internal fun load(uri: String?, imageView: ImageView, withThumbnail: Boolean = false,options: RequestOptions? = null) {
-        fun getDrawableFuture() = getDrawableFuture(uri, imageView, options)
+    internal fun load(uri: String?, imageView: WeakReference<ImageView>, withThumbnail: Boolean = false, options: RequestOptions? = null) {
+        fun getDrawableFuture() = imageView.get()?.let { iv -> Glide.with(iv).load(uri).submit() }
 
         if (uri.isNullOrBlank()) {
             return
         }
 
-        Single.just(getDrawableFuture())
+        Single.just(getDrawableFuture())  // can throw NPE, but it will be handled in onError callback
             .flatMap { Single.fromFuture(it) }
             .retryWhen {
                 it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, IMAGE_LOAD_RETRY_COUNT), BiFunction { e: Throwable, i -> i to e })
-                    .flatMap { errorWithAttempt ->
-                        val attemptNumber = errorWithAttempt.first
-                        val error = errorWithAttempt.second
-                        val delayTime = IMAGE_LOAD_RETRY_DELAY * Math.pow(5.0, attemptNumber.toDouble()).toLong()
-                        Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                            .doOnSubscribe { Timber.v("Retry to load image, attempt [$attemptNumber / $IMAGE_LOAD_RETRY_COUNT] after error: $error") }
-                            .doOnComplete { if (attemptNumber >= IMAGE_LOAD_RETRY_COUNT) throw error }
+                    .flatMap { (attemptNumber, error) ->
+                        error.takeIf { e -> e is NullPointerException }
+                            ?.let { e -> Flowable.error<Drawable>(e) }  // weak reference has expired
+                            ?: run {
+                                val delayTime = IMAGE_LOAD_RETRY_DELAY * Math.pow(5.0, attemptNumber.toDouble()).toLong()
+                                Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
+                                    .doOnSubscribe { Timber.v("Retry load image [$attemptNumber / $IMAGE_LOAD_RETRY_COUNT] on: $error") }
+                                    .doOnComplete { if (attemptNumber >= IMAGE_LOAD_RETRY_COUNT) throw error }
+                            }
                     }
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ imageView.post { imageView.setImageDrawable(it) } }, Timber::e)
+            .subscribe({ imageView.get()?.let { iv -> iv.post { iv.setImageDrawable(it) } } }, Timber::e)
     }
 
-    // ------------------------------------------
-    private fun getDrawableFuture(uri: String?, imageView: ImageView, options: RequestOptions? = null): Future<Drawable> =
-        Glide.with(imageView)
-            .load(uri)
-//            .apply(wrapOptions(options))
-            .submit()
+    private fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
 
-    // ------------------------------------------
-    private fun optimalOptions(context: Context, uri: String?, options: RequestOptions?): RequestOptions {
-        fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
-
-        if (uri.isNullOrBlank()) {
-            return wrapOptions(options)
-        }
-
-        val cacheStrategy = if (isLocalUri(uri)) DiskCacheStrategy.NONE
-                            else DiskCacheStrategy.AUTOMATIC
-
-        return wrapOptions(options).diskCacheStrategy(cacheStrategy)
-    }
-
-    private fun wrapOptions(options: RequestOptions?): RequestOptions =
-        RequestOptions().apply { options?.let { apply(it) } }
+    private fun cacheStrategy(uri: String?): DiskCacheStrategy =
+        if (isLocalUri(uri)) DiskCacheStrategy.NONE else DiskCacheStrategy.RESOURCE
 }

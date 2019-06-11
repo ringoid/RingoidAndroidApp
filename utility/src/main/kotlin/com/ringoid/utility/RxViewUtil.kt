@@ -39,6 +39,7 @@ fun delay(delay: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLI
         .subscribe({ body() }, Timber::e)
 }
 
+@Suppress("CheckResult")
 fun runOnUiThread(body: () -> Unit) {
     Single.just(0)
         .observeOn(AndroidSchedulers.mainThread())

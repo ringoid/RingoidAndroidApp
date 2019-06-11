@@ -38,9 +38,7 @@ inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = Build
 private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: MutableList<Long>, tag: String? = null, trace: Trace? = null) =
     { it: Flowable<Throwable> ->
         it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, count), BiFunction { e: Throwable, i -> i to e })
-            .flatMap { errorWithAttempt ->
-                val attemptNumber = errorWithAttempt.first
-                val error = errorWithAttempt.second
+            .flatMap { (attemptNumber, error) ->
                 var exception: Throwable? = null
                 val extras = tag?.let { listOf("tag" to "$tag [${error.javaClass.simpleName}]") }
                 val delayTime = when (error) {

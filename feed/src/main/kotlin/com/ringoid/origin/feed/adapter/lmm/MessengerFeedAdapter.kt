@@ -1,3 +1,5 @@
 package com.ringoid.origin.feed.adapter.lmm
 
-class MessengerFeedAdapter : MatchFeedAdapter()
+import com.ringoid.utility.image.ImageRequest
+
+class MessengerFeedAdapter(imageLoader: ImageRequest) : MatchFeedAdapter(imageLoader)

@@ -31,6 +31,7 @@ fun targetVersion(version: Int): Boolean = Build.VERSION.SDK_INT >= version
 fun randomLong(): Long = UUID.randomUUID().hashCode().toLong()
 
 fun randomString(): String = UUID.randomUUID().toString()
+fun randomString(length: Int): String = randomString().substring(0 until length)
 
 fun Throwable.stackTraceString(): String {
     val sw = StringWriter()

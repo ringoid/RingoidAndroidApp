@@ -4,13 +4,17 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.memory.ChatInMemoryCache
-import com.ringoid.origin.feed.adapter.base.*
+import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedViewHolder(view, viewPool) {
+open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
+    : BaseFeedViewHolder(view, viewPool, imageLoader) {
 
     init {
         itemView.tv_seen_status.changeVisibility(isVisible = BuildConfig.IS_STAGING)
