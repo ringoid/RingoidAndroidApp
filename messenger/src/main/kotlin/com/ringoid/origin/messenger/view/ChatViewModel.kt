@@ -48,7 +48,8 @@ class ChatViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ msgs ->
-                updatePeerMessagesCount(profileId = profileId, messages = msgs)
+                val peerMessagesCount = msgs.count { it.peerId != DomainUtil.CURRENT_USER_ID }
+                ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
                 messages.value = msgs
                 startPollingChat(profileId = profileId, sourceFeed = sourceFeed, delay = 3000L)
             }, Timber::e)
@@ -85,11 +86,6 @@ class ChatViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun updatePeerMessagesCount(profileId: String, messages: List<Message>): Boolean {
-        val peerMessagesCount = messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
-        return ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
-    }
-
     private fun startPollingChat(profileId: String, sourceFeed: LmmNavTab, delay: Long) {
         val peerIdStr = if (BuildConfig.IS_STAGING) profileId.substring(0..3) else "<...>"
         val logStr = if (BuildConfig.IS_STAGING) "for p=$peerIdStr on ${sourceFeed.feedName}" else ""
