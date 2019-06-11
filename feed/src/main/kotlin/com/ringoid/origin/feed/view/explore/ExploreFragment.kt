@@ -17,6 +17,7 @@ import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.debugToast
+import com.ringoid.utility.image.ImageRequest
 import timber.log.Timber
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
@@ -26,7 +27,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     }
 
     override fun createFeedAdapter(): BaseFeedAdapter =
-        FeedAdapter().apply {
+        FeedAdapter(ImageRequest(context!!)).apply {
             onLikeImageListener = { model: ProfileImageVO, _ /** image position */ ->
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@ExploreFragment)

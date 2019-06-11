@@ -29,9 +29,9 @@ object ImageLoader {
             ?.into(imageView)
     }
 
-    fun simpleLoadRequest(uri: String?, context: Context, skipMemoryCache: Boolean = false, options: RequestOptions? = null): RequestBuilder<Drawable>? =
+    fun simpleLoadRequest(imageLoader: ImageRequest, uri: String?, skipMemoryCache: Boolean = false, options: RequestOptions? = null): RequestBuilder<Drawable>? =
         uri?.let {
-            Glide.with(context)
+            imageLoader.imageLoader
                 .load(it)
                 .diskCacheStrategy(cacheStrategy(uri))
                 .skipMemoryCache(skipMemoryCache)

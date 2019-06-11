@@ -4,8 +4,9 @@ import android.view.ViewGroup
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.utility.image.ImageRequest
 
-open class MatchFeedAdapter : BaseLmmAdapter() {
+open class MatchFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoader) {
 
     var onImageToOpenChatClickListener: ((model: ProfileImageVO, feedItemPosition: Int) -> Unit)? = null
 

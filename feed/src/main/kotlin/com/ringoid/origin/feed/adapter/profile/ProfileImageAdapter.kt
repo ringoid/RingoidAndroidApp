@@ -1,6 +1,5 @@
 package com.ringoid.origin.feed.adapter.profile
 
-import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +10,9 @@ import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.EmptyProfileImageVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.image.ImageLoader
+import com.ringoid.utility.image.ImageRequest
 
-class ProfileImageAdapter(private val context: Context)
+class ProfileImageAdapter(private val imageLoader: ImageRequest)
     : BaseListAdapter<ProfileImageVO, BaseProfileImageViewHolder>(ProfileImageDiffCallback(), withListeners = false),
     ListPreloader.PreloadModelProvider<ProfileImageVO> {
 
@@ -65,7 +65,7 @@ class ProfileImageAdapter(private val context: Context)
         getModels().subList(position, position + 1)
 
     override fun getPreloadRequestBuilder(item: ProfileImageVO): RequestBuilder<*>? =
-        ImageLoader.simpleLoadRequest(uri = item.image.thumbnailUri, context = context)
+        ImageLoader.simpleLoadRequest(imageLoader = imageLoader, uri = item.image.thumbnailUri)
 
     override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
         val clickListener = if (!isLikeEnabled) {

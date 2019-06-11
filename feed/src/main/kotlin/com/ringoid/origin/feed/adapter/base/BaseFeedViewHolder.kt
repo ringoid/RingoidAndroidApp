@@ -19,6 +19,7 @@ import com.ringoid.origin.model.*
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.image.ImageRequest
 import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.LabelView
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
@@ -53,7 +54,7 @@ abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledV
     override fun getCurrentImagePosition(): Int = 0
 }
 
-abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
     : OriginFeedViewHolder(view, viewPool) {
 
     override var onBeforeLikeListener: (() -> Boolean)? = null
@@ -68,7 +69,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             profileImageAdapter.onImageTouchListener = value
         }
 
-    internal val profileImageAdapter = ProfileImageAdapter(itemView.context)
+    internal val profileImageAdapter = ProfileImageAdapter(imageLoader)
 
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
 
@@ -342,8 +343,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.rv_items.linearLayoutManager()?.findFirstVisibleItemPosition() ?: 0
 }
 
-class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedViewHolder(view, viewPool)
+class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
+    : BaseFeedViewHolder(view, viewPool, imageLoader)
 
 class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
 

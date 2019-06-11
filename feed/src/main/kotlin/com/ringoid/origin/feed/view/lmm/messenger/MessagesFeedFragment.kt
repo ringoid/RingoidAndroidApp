@@ -8,6 +8,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.utility.image.ImageRequest
 
 class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
 
@@ -18,7 +19,7 @@ class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
     override fun getVmClass(): Class<MessagesFeedViewModel> = MessagesFeedViewModel::class.java
 
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
-        MessengerFeedAdapter().apply {
+        MessengerFeedAdapter(ImageRequest(context!!)).apply {
             onImageToOpenChatClickListener = { model: ProfileImageVO, feedItemPosition: Int ->
                 openChat(position = feedItemPosition, peerId = model.profileId, image = model.image)
             }
