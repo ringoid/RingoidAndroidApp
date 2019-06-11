@@ -31,7 +31,10 @@ class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
 
     override fun cleanUp() {
         super.cleanUp()
-        itemView.iv_image.setImageDrawable(null)
+        with (itemView.iv_image) {
+            setImageBitmap(null)
+            setImageDrawable(null)
+        }
     }
 }
 
