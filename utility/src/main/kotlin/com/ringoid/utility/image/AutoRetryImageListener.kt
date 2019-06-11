@@ -10,12 +10,13 @@ import com.bumptech.glide.request.target.Target
 import com.ringoid.utility.thread
 import timber.log.Timber
 import java.io.FileNotFoundException
+import java.lang.ref.WeakReference
 
 /**
  * @see https://github.com/bumptech/glide/issues/1308
  */
 class AutoRetryImageListener(
-    private val uri: String?, private val imageView: ImageView,
+    private val uri: String?, private val imageView: WeakReference<ImageView>,
     private val options: RequestOptions? = null, private val withThumbnail: Boolean = false)
     : RequestListener<Drawable> {
 

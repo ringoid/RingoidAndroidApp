@@ -8,7 +8,12 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
-abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view)
+abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view) {
+
+    open fun cleanUp() {
+        // no-op
+    }
+}
 
 class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
 
@@ -22,6 +27,11 @@ class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
         if (BuildConfig.IS_STAGING) {
             itemView.tv_image_id.text = "Image: ${model.image.idWithFirstN()}"
         }
+    }
+
+    override fun cleanUp() {
+        super.cleanUp()
+        itemView.iv_image.setImageDrawable(null)
     }
 }
 

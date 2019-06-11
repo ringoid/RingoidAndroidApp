@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.model.debug.DebugBlob
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_drawable
 import com.ringoid.origin.feed.R
@@ -343,7 +345,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 }
 
 class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
-    : BaseFeedViewHolder(view, viewPool)
+    : BaseFeedViewHolder(view, viewPool) {
+
+    @DebugOnly lateinit var debugBlob: DebugBlob
+}
 
 class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
 

@@ -38,6 +38,11 @@ class ProfileImageAdapter(private val context: Context)
         super.onBindViewHolder(holder, position, payloads)
     }
 
+    override fun onViewRecycled(holder: BaseProfileImageViewHolder) {
+        super.onViewRecycled(holder)
+        holder.cleanUp()
+    }
+
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         dispose()

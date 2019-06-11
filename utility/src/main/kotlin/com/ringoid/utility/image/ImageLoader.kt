@@ -12,6 +12,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import timber.log.Timber
+import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 object ImageLoader {
@@ -24,7 +25,7 @@ object ImageLoader {
      */
     fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
         loadRequest(uri, thumbnailUri, imageView.context, options)
-            ?.listener(AutoRetryImageListener(uri, imageView, withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))
+            ?.listener(AutoRetryImageListener(uri, WeakReference(imageView), withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))
             ?.into(imageView)
     }
 
@@ -47,19 +48,19 @@ object ImageLoader {
         return Glide.with(context)
             .load(uri)
             .diskCacheStrategy(cacheStrategy(uri))
-//            .skipMemoryCache(true)  // don't keep original (large) image in memory cache
+            .skipMemoryCache(true)  // don't keep original (large) image in memory cache
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
     }
 
     @Suppress("CheckResult")
-    internal fun load(uri: String?, imageView: ImageView, withThumbnail: Boolean = false,options: RequestOptions? = null) {
-        fun getDrawableFuture() = Glide.with(imageView).load(uri).submit()
+    internal fun load(uri: String?, imageView: WeakReference<ImageView>, withThumbnail: Boolean = false, options: RequestOptions? = null) {
+        fun getDrawableFuture() = imageView.get()?.let { iv -> Glide.with(iv).load(uri).submit() }
 
         if (uri.isNullOrBlank()) {
             return
         }
 
-        Single.just(getDrawableFuture())
+        Single.just(getDrawableFuture())  // can throw NPE, but it will be handled in onError callback
             .flatMap { Single.fromFuture(it) }
             .retryWhen {
                 it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, IMAGE_LOAD_RETRY_COUNT), BiFunction { e: Throwable, i -> i to e })
@@ -73,7 +74,7 @@ object ImageLoader {
                     }
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ imageView.post { imageView.setImageDrawable(it) } }, Timber::e)
+            .subscribe({ imageView.get()?.let { iv -> iv.post { iv.setImageDrawable(it) } } }, Timber::e)
     }
 
     private fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
