@@ -100,15 +100,22 @@ class ChatViewModel @Inject constructor(
                 val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                                      .put("chatId", profileId)
                                      .put("sourceFeed", sourceFeed.feedName)
-                getChatUseCase.source(params = params)
+                getChatNewMessagesUseCase.source(params = params)
                     .doOnSubscribe { Timber.v("Poll chat $logStr".trim()) }
                     .repeatWhen { completed -> completed.delay(1500, TimeUnit.MILLISECONDS) }
             }
             .autoDisposable(this)
             .subscribe({ chat ->
-                if (updatePeerMessagesCount(profileId = profileId, messages = chat.messages)) {
+                val peerMessagesCount = chat.messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
+                if (peerMessagesCount > 0) {
+                    ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount + ChatInMemoryCache.getPeerMessagesCount(profileId))
                     Timber.v("Count of messages from peer [$peerIdStr] has changed")
-                    messages.value = chat.messages  // append new messages to the list (by DiffUtil)
+                    val list = mutableListOf<Message>()
+                        .apply {
+                            addAll(chat.messages.reversed())
+                            messages.value?.let { addAll(it) }
+                        }
+                    messages.value = list  // append new messages
                 } else Timber.v("Count of messages from peer [$peerIdStr] has NOT changed")
             }, Timber::e)  // on error - fail silently
     }
