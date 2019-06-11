@@ -64,13 +64,15 @@ object ImageLoader {
             .flatMap { Single.fromFuture(it) }
             .retryWhen {
                 it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, IMAGE_LOAD_RETRY_COUNT), BiFunction { e: Throwable, i -> i to e })
-                    .flatMap { errorWithAttempt ->
-                        val attemptNumber = errorWithAttempt.first
-                        val error = errorWithAttempt.second
-                        val delayTime = IMAGE_LOAD_RETRY_DELAY * Math.pow(5.0, attemptNumber.toDouble()).toLong()
-                        Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                            .doOnSubscribe { Timber.v("Retry to load image, attempt [$attemptNumber / $IMAGE_LOAD_RETRY_COUNT] after error: $error") }
-                            .doOnComplete { if (attemptNumber >= IMAGE_LOAD_RETRY_COUNT) throw error }
+                    .flatMap { (attemptNumber, error) ->
+                        error.takeIf { e -> e is NullPointerException }
+                            ?.let { e -> Flowable.error<Drawable>(e) }  // weak reference has expired
+                            ?: run {
+                                val delayTime = IMAGE_LOAD_RETRY_DELAY * Math.pow(5.0, attemptNumber.toDouble()).toLong()
+                                Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
+                                    .doOnSubscribe { Timber.v("Retry to load image, attempt [$attemptNumber / $IMAGE_LOAD_RETRY_COUNT] after error: $error") }
+                                    .doOnComplete { if (attemptNumber >= IMAGE_LOAD_RETRY_COUNT) throw error }
+                            }
                     }
             }
             .observeOn(AndroidSchedulers.mainThread())
