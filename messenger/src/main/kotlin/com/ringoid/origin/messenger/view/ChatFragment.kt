@@ -18,13 +18,14 @@ import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.IBaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil.BAD_ID
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
-import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
+import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
@@ -216,6 +217,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     // --------------------------------------------------------------------------------------------
     private fun closeChat() {
+        DebugLogUtil.clear()  // clear debug log on back from Chat to avoid app freezes
         rv_chat_messages.linearLayoutManager()?.let {
             val position = it.findFirstVisibleItemPosition()
             val scroll = it.findViewByPosition(position)?.let { rv_chat_messages.bottom - it.top } ?: 0
