@@ -22,9 +22,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.EmptyDebugLogItem
 import com.ringoid.origin.R
 import com.ringoid.origin.WidgetR_drawable
-import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.date
-import com.ringoid.utility.linearLayoutManager
+import com.ringoid.utility.*
 import com.uber.autodispose.AutoDispose.autoDisposable
 import com.uber.autodispose.android.scope
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -93,6 +91,10 @@ class DebugView : ConstraintLayout {
             if (sizeToggle) minimize() else maximize()
         }
         ibtn_separator_debug.clicks().compose(clickDebounce()).subscribe { DebugLogUtil.w("------------------------------------------------------------------------------------\n") }
+        ibtn_share_debug.clicks().compose(clickDebounce()).subscribe {
+            context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = debugLogItemAdapter.getContentText())
+            context.toast(R.string.common_clipboard)
+        }
     }
 
     override fun onAttachedToWindow() {
