@@ -5,6 +5,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.domain.debug.DebugLogUtil
 import io.reactivex.Single
 import java.util.concurrent.Semaphore
+import java.util.concurrent.atomic.AtomicLong
 
 abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsManager)
     : BaseActionObjectPool(cloud, spm) {
@@ -16,21 +17,25 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
     /**
      * Not synchronized method, because synchronization is achieved via semaphore.
      */
-    override fun triggerSource(): Single<Long> =
-        Single.just(ProcessingPayload(threadId = tid++) to tcount++)
+    override fun triggerSource(): Single<Long> {
+        fun threadStr(thread: Pair<ProcessingPayload, Long>) = "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount] at ${thread.first.startTime} ms"
+
+        return Single.just(ProcessingPayload() to tcount.incrementAndGet())
             .flatMap { thread ->
-                DebugLogUtil.v("Acquiring permission to commit actions by [t=${thread.first.threadId} / $tcount] at ${thread.first.startTime} ms")
+                DebugLogUtil.v("Commit: acquiring permission to commit actions by ${threadStr(thread)}")
+                // TODO: sometimes deadlocks
                 triggerInProgress.acquireUninterruptibly()  // acquire permission to continue, or block on a barrier otherwise
-                DebugLogUtil.v("Thread [t=${thread.first.threadId}] has just got permission to commit actions")
+                DebugLogUtil.v("Commit: just got permission to commit actions by ${threadStr(thread)}")
                 triggerSourceImpl()
-                    .doOnSubscribe { DebugLogUtil.v("Commit actions has started by [t=${thread.first.threadId} / $tcount] at ${thread.first.startTime} ms") }
+                    .doOnSubscribe { DebugLogUtil.v("Commit: commit actions has started by ${threadStr(thread)}") }
+                    .doOnError { DebugLogUtil.e("Commit: commit actions has failed by ${threadStr(thread)}") }
                     .doFinally {
                         triggerInProgress.release()
-                        --tcount
-                        DebugLogUtil.v("Commit actions has finished by [t=${thread.first.threadId} / $tcount], elapsed time ${System.currentTimeMillis() - thread.first.startTime} ms")
+                        tcount.decrementAndGet()
+                        DebugLogUtil.v("Commit: commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.first.startTime} ms")
                     }
             }
+    }
 
-    private var tid: Long = 1000L  // thread id
-    private var tcount: Long = 0L  // count of threads
+    private var tcount: AtomicLong = AtomicLong(0L)  // count of threads
 }

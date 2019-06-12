@@ -32,6 +32,7 @@ class PersistActionObjectPool @Inject constructor(
     override fun getTotalQueueSize(): Int = 0  // don't trigger by capacity hit
 
     // --------------------------------------------------------------------------------------------
+    @Suppress("CheckResult")
     override fun put(aobj: OriginActionObject) {
         Timber.v("Put action object: $aobj")
         Single.fromCallable { local.addActionObject(mapper.map(aobj)) }
