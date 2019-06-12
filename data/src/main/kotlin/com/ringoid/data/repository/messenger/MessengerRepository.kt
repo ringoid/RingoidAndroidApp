@@ -5,13 +5,11 @@ import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
-import com.ringoid.data.remote.model.feed.ChatResponse
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.ModelNotFoundException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
@@ -57,10 +55,6 @@ class MessengerRepository @Inject constructor(
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
         cloud.getChat(accessToken, resolution, chatId, lastActionTime)
-            .flatMap {
-                if (it.isChatExist) Single.just(it)
-                else Single.error<ChatResponse>(ModelNotFoundException())
-            }
             .handleError(tag = "getChat(peerId=$chatId,$resolution,lat=$lastActionTime)", traceTag = "feeds/chat")
             .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.chat.messages.size}] originally") }
             .map { it.chat.map() }
