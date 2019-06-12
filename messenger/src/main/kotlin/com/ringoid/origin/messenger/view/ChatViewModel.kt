@@ -52,7 +52,7 @@ class ChatViewModel @Inject constructor(
                 val peerMessagesCount = msgs.count { it.peerId != DomainUtil.CURRENT_USER_ID }
                 ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
                 messages.value = msgs
-                startPollingChat(profileId = profileId, sourceFeed = sourceFeed, delay = 3000L)
+                startPollingChat(profileId = profileId, sourceFeed = sourceFeed, delay = 100L)
             }, Timber::e)
     }
 
