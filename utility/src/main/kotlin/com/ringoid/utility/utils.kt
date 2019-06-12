@@ -39,3 +39,15 @@ fun Throwable.stackTraceString(): String {
     printStackTrace(pw)
     return sw.buffer.toString()
 }
+
+fun <T> MutableCollection<T>.RemoveIf(predicate: (it: T) -> Boolean): Boolean {
+    var removed = false
+    val each = iterator()
+    while (each.hasNext()) {
+        if (predicate.invoke(each.next())) {
+            each.remove()
+            removed = true
+        }
+    }
+    return removed
+}

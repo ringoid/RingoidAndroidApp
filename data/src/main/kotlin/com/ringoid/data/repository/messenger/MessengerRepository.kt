@@ -18,6 +18,7 @@ import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.messenger.IMessengerRepository
+import com.ringoid.utility.RemoveIf
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -77,8 +78,15 @@ class MessengerRepository @Inject constructor(
             BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
                 if (chat.messages.size > localMessages.size) {
                     val newMessages = chat.messages.subList(localMessages.size, chat.messages.size)
-                    chat.copyWith(newMessages)
-                } else chat.copyWith(messages = emptyList())
+                    chat.copyWith(newMessages)  // retain only new messages
+                } else chat.copyWith(messages = emptyList())  // no new messages
+            })
+        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
+            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
+                sentLocalMessages.forEach { message ->
+                    chat.messages.RemoveIf { it.isUserMessage() && it.text == message.text }
+                }
+                chat
             })
         .singleOrError()
         .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out cached (old) messages") }
