@@ -199,7 +199,7 @@ open class FeedRepository @Inject constructor(
                 .filterOutBlockedProfilesLmmResponse()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
                 .map { it.map() }
-                .doOnSuccess { sentMessagesLocal.deleteMessages() }  // clear sent user messages because they will be restored with new Lmm
+                .clearCachedSentMessages()  // clear sent user messages because they will be restored with new Lmm
                 .clearCachedPropertyFeedItemIds()  // drop any previous user data (properties) applicable on cached Lmm
                 .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
                 .checkForNewLikes()
@@ -363,6 +363,9 @@ open class FeedRepository @Inject constructor(
                 }
                 .flatMap { Single.just(lmm) }
         }
+
+    private fun Single<Lmm>.clearCachedSentMessages(): Single<Lmm> =
+        doOnSuccess { sentMessagesLocal.deleteMessages() }
 
     private fun Single<Lmm>.clearCachedPropertyFeedItemIds(): Single<Lmm> =
         flatMap { lmm ->

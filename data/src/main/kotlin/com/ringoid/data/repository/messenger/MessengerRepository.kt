@@ -41,6 +41,7 @@ class MessengerRepository @Inject constructor(
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .cacheMessagesFromChat(sourceFeed)
+                .clearCachedSentMessages()  // clear sent user messages because they are present in Chat data, that has just been cached
         }
 
     override fun getChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
@@ -51,6 +52,7 @@ class MessengerRepository @Inject constructor(
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .filterOutChatOldMessages(chatId, sourceFeed)
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages
+                .clearCachedSentMessages()  // clear sent user messages because they are present in Chat data, that has just been cached
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
@@ -71,6 +73,9 @@ class MessengerRepository @Inject constructor(
             Completable.fromCallable { local.insertMessages(messages) }
                 .toSingleDefault(chat)
         }
+
+    private fun Single<Chat>.clearCachedSentMessages(): Single<Chat> =
+        doOnSuccess { sentMessagesLocal.deleteMessages() }
 
     private fun Single<Chat>.filterOutChatOldMessages(chatId: String, sourceFeed: String): Single<Chat> =
         toObservable()
