@@ -32,6 +32,7 @@ class ChatViewModel @Inject constructor(
     app: Application) : BaseViewModel(app) {
 
     val messages by lazy { MutableLiveData<List<Message>>() }
+    val newMessages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
 
     /**
@@ -106,12 +107,7 @@ class ChatViewModel @Inject constructor(
                 if (peerMessagesCount > 0) {
                     ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount + ChatInMemoryCache.getPeerMessagesCount(profileId))
                     Timber.v("Count of messages from peer [$peerIdStr] has changed")
-                    val list = mutableListOf<Message>()
-                        .apply {
-                            addAll(chat.messages.reversed())
-                            messages.value?.let { addAll(it) }
-                        }
-                    messages.value = list  // append new messages
+                    newMessages.value = chat.messages.reversed()
                 } else Timber.v("Count of messages from peer [$peerIdStr] has NOT changed")
             }, Timber::e)  // on error - fail silently
     }

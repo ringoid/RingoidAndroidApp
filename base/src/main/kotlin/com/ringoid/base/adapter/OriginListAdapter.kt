@@ -133,6 +133,10 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
         submitList(mutableListOf<T>().apply { add(item) }.also { it.addAll(helper.currentList) })
     }
 
+    fun prependAll(items: List<T>) {
+        submitList(mutableListOf<T>().apply { addAll(items) }.also { it.addAll(helper.currentList) })
+    }
+
     fun remove(predicate: (item: T) -> Boolean) {
         submitList(ArrayList(helper.currentList).apply { removeAll(predicate) })
     }

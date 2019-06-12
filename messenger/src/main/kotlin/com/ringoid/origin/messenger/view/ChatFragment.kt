@@ -121,6 +121,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.messages, chatAdapter::submitList)
+            observe(vm.newMessages, chatAdapter::prependAll)
             observe(vm.sentMessage, chatAdapter::prepend)
         }
         communicator(IBaseActivity::class.java)?.keyboard()
