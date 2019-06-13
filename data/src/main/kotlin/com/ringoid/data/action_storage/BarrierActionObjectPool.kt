@@ -2,6 +2,7 @@ package com.ringoid.data.action_storage
 
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import io.reactivex.Single
 import java.util.concurrent.Semaphore
@@ -18,10 +19,11 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
      * Not synchronized method, because synchronization is achieved via semaphore.
      */
     override fun triggerSource(): Single<Long> {
-        fun threadStr(thread: Pair<ProcessingPayload, Long>) = "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount] at ${thread.first.startTime} ms"
+        fun threadStr(thread: ProcessingPayload) = if (BuildConfig.IS_STAGING) "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount (${triggerInProgress.queueLength})] at ${thread.startTime} ms" else "[t=${Thread.currentThread().id} / $tcount]"
 
-        return Single.just(ProcessingPayload() to tcount.incrementAndGet())
+        return Single.just(ProcessingPayload())
             .flatMap { thread ->
+                tcount.incrementAndGet()
                 DebugLogUtil.v("Acquiring permission to commit actions by ${threadStr(thread)}")
                 // TODO: sometimes deadlocks
                 triggerInProgress.acquireUninterruptibly()  // acquire permission to continue, or block on a barrier otherwise
@@ -32,7 +34,7 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
                     .doFinally {
                         triggerInProgress.release()
                         tcount.decrementAndGet()
-                        DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.first.startTime} ms")
+                        DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.startTime} ms")
                     }
             }
     }
