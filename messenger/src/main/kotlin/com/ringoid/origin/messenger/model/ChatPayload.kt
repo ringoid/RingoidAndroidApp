@@ -17,7 +17,7 @@ data class ChatPayload(
     @Expose @SerializedName(COLUMN_PEER_IMAGE_URI) val peerImageUri: String? = null,
     @Expose @SerializedName(COLUMN_PEER_THUMB_URI) val peerThumbnailUri: String? = null,
     @Expose @SerializedName(COLUMN_FIRST_USER_MESSAGE) var firstUserMessage: Message? = null,
-    @Expose @SerializedName(COLUMN_ONLINE_STATUS) var onlineStatus: OnlineStatus = OnlineStatus.UNKNOWN,
+    @Expose @SerializedName(COLUMN_ONLINE_STATUS) var onlineStatus: OnlineStatus? = null,
     @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LmmNavTab = LmmNavTab.MESSAGES)
     : IEssence, Parcelable {
 
@@ -27,7 +27,7 @@ data class ChatPayload(
         peerImageId = source.readString() ?: DomainUtil.BAD_ID,
         peerImageUri = source.readString(),
         peerThumbnailUri = source.readString(),
-        onlineStatus = source.readSerializable() as? OnlineStatus ?: OnlineStatus.UNKNOWN,
+        onlineStatus = source.readSerializable() as? OnlineStatus,
         sourceFeed = source.readSerializable() as? LmmNavTab ?: LmmNavTab.MESSAGES,
         firstUserMessage = source.readParcelable(Message::class.java.classLoader))
 

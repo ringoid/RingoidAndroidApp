@@ -71,10 +71,12 @@ data class FeedItemVO(
     fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
     fun hasLiked(): Boolean = likedImages.count { it.value } > 0
 
-    fun setOnlineStatus(onlineStatus: OnlineStatus) {
-        lastOnlineStatusX = onlineStatus
-        lastOnlineStatus = onlineStatus.str
-        lastOnlineText = onlineStatus.label
+    fun setOnlineStatus(onlineStatus: OnlineStatus?) {
+        onlineStatus?.let {
+            lastOnlineStatusX = it
+            lastOnlineStatus = it.str
+            lastOnlineText = it.label
+        }
     }
 
     fun children(): ChildrenProfileProperty = ChildrenProfileProperty.from(children)
