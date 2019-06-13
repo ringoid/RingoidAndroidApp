@@ -89,8 +89,10 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         .let {
                             it.messagedFeedItemIds.forEach { id ->
                                 feedAdapter.findModelAndPosition { it.id == id }
-                                    ?.also { it.second.messages.add(userMessage(chatId = it.second.id)) }
-                                    ?.also { feedAdapter.notifyItemChanged(it.first) }
+                                    ?.also { (position, model) ->
+                                        model.messages.add(userMessage(chatId = model.id))
+                                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+                                    }
                             }
                         }
                     /**

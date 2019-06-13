@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lmm.messenger
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -45,7 +46,7 @@ class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
                         val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
                         feedAdapter.findPosition { it.id == profileId }
                                    .takeIf { it != DomainUtil.BAD_POSITION }
-                                   ?.let { feedAdapter.notifyItemChanged(it) }
+                                   ?.let { feedAdapter.notifyItemChanged(it, FeedViewHolderShowControls) }
                     }
                 }
             }
