@@ -101,6 +101,7 @@ class MessagesFeedViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         if (ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
+            Timber.v("Chat is currently open, skip push notification handling: ${event.peerId}")
             return  // consume push event and skip any updates if target Chat is currently open
         }
 

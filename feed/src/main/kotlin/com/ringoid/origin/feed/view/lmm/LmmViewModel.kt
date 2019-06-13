@@ -12,6 +12,7 @@ import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.utils.ScreenHelper
@@ -97,7 +98,9 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMessages()
-        pushNewMessage.value = 0L  // for particle animation
+        if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
+            pushNewMessage.value = 0L  // for particle animation
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
