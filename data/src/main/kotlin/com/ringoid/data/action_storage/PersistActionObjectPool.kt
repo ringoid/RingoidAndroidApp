@@ -61,6 +61,7 @@ class PersistActionObjectPool @Inject constructor(
             .subscribeOn(Schedulers.io())
             .flatMap { count ->
                 if (count <= 0) {
+                    Timber.v("Nothing to commit (no actions)")
                     Single.just(CommitActionsResponse(lastActionTime()))  // do nothing on empty queue
                 } else {
                     local.actionObjects()
@@ -85,7 +86,10 @@ class PersistActionObjectPool @Inject constructor(
             .handleError(tag = "commitActions", traceTag = "actions/actions")
             .doOnSubscribe { dropStrategyData() }
             .doOnSuccess { updateLastActionTime(it.lastActionTime) }
-            .doOnDispose { finalizePool() }
+            .doOnDispose {
+                DebugLogUtil.d("Commit actions disposed [user scope: ${userScopeProvider.hashCode()}]")
+                finalizePool()
+            }
             .flatMap {
                 Completable.fromCallable { local.deleteUsedActionObjects() }
                            .toSingleDefault(it.lastActionTime)

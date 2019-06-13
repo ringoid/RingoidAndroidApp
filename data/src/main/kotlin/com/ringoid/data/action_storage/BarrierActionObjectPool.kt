@@ -22,20 +22,28 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
 
         return Single.just(ProcessingPayload() to tcount.incrementAndGet())
             .flatMap { thread ->
-                DebugLogUtil.v("Commit: acquiring permission to commit actions by ${threadStr(thread)}")
+                DebugLogUtil.v("Acquiring permission to commit actions by ${threadStr(thread)}")
                 // TODO: sometimes deadlocks
                 triggerInProgress.acquireUninterruptibly()  // acquire permission to continue, or block on a barrier otherwise
-                DebugLogUtil.v("Commit: just got permission to commit actions by ${threadStr(thread)}")
+                DebugLogUtil.v("Permission's been acquired to commit actions by ${threadStr(thread)}")
                 triggerSourceImpl()
-                    .doOnSubscribe { DebugLogUtil.v("Commit: commit actions has started by ${threadStr(thread)}") }
-                    .doOnError { DebugLogUtil.e("Commit: commit actions has failed by ${threadStr(thread)}") }
+                    .doOnSubscribe { DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}") }
+                    .doOnError { DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)}") }
                     .doFinally {
                         triggerInProgress.release()
                         tcount.decrementAndGet()
-                        DebugLogUtil.v("Commit: commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.first.startTime} ms")
+                        DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.first.startTime} ms")
                     }
             }
     }
 
     private var tcount: AtomicLong = AtomicLong(0L)  // count of threads
+
+    // --------------------------------------------------------------------------------------------
+    override fun finalizePool() {
+        super.finalizePool()
+        // TODO: on dispose some thread, semaphore could be locked by it and never disposed
+        // TODO: check whether it is locked and if so - release
+//        triggerInProgress.release()
+    }
 }

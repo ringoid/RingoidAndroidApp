@@ -70,6 +70,7 @@ class ActionObjectPool @Inject constructor(
 
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
+                Timber.v("Nothing to commit (no actions)")
                 Single.just(CommitActionsResponse(lastActionTime()))
             } else {
                 /**
@@ -107,7 +108,7 @@ class ActionObjectPool @Inject constructor(
             updateLastActionTime(it.lastActionTime)
         }
         .doOnDispose {
-            Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
+            DebugLogUtil.d("Commit actions disposed [user scope: ${userScopeProvider.hashCode()}]")
             finalizePool()  // clear state of pool
         }
         .doOnError { backupQueue(backupQueue) }

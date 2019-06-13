@@ -85,7 +85,7 @@ class DebugView : ConstraintLayout {
         ibtn_bg_flip_debug.clicks().compose(clickDebounce()).subscribe { bgToggle = !bgToggle }
         ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { clear() }
         ibtn_close_debug.clicks().compose(clickDebounce()).subscribe { Bus.post(BusEvent.CloseDebugView) }
-        ibtn_error_debug.clicks().compose(clickDebounce()).subscribe { DomainUtil.simulateError() }
+        ibtn_error_debug.clicks().compose(clickDebounce()).subscribe { Bus.post(BusEvent.SimulateError) }
         ibtn_lifecycle_debug.clicks().compose(clickDebounce()).subscribe { lifecycleToggle = !lifecycleToggle }
         ibtn_resize_debug.clicks().compose(clickDebounce()).subscribe {
             if (sizeToggle) minimize() else maximize()
