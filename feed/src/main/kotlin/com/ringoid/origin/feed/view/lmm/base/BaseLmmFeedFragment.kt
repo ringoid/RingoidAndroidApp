@@ -138,7 +138,10 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                         // supply first message from user to FeedItem to change in on bind
                         it.firstUserMessage?.let { _ -> vm.onFirstUserMessageSent(profileId = it.peerId) }
-                        getRecyclerView().post { feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls) }
+                        getRecyclerView().post {
+                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                            trackScrollOffsetForPosition(it.position)
+                        }
                     }
                 }
                 true  // no-op value
