@@ -18,6 +18,19 @@ object ChatInMemoryCache {
     private val chatScrollPosition = mutableMapOf<String, Pair<Int, Int>>()
 
     // ------------------------------------------
+    private var currentlyOpenChatId: String? = null
+
+    fun isChatOpen(chatId: String): Boolean = currentlyOpenChatId == chatId
+
+    fun onChatOpen(chatId: String) {
+        currentlyOpenChatId = chatId
+    }
+
+    fun onChatClose() {
+        currentlyOpenChatId = null
+    }
+
+    // ------------------------------------------
     fun getInputMessage(profileId: String): CharSequence? = chatInputMessage[profileId]
 
     fun setInputMessage(profileId: String, text: CharSequence) {

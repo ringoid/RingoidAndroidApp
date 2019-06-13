@@ -100,7 +100,10 @@ class MessagesFeedViewModel @Inject constructor(
     fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // TODO: check if this Chat is currently open - skip next steps
+        if (ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
+            return  // consume push event and skip any updates if target Chat is currently open
+        }
+
         refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
         /**
          * New messages have been received from push notification for profile with id [BusEvent.PushNewMessage.peerId],

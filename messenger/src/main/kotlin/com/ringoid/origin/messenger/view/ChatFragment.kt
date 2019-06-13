@@ -207,6 +207,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             requestFocus()
         }
 
+        ChatInMemoryCache.onChatOpen(chatId = peerId)  // Chat screen is visible to user
         dialog?.window?.showKeyboard()
     }
 
@@ -219,6 +220,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     // --------------------------------------------------------------------------------------------
     private fun closeChat() {
         DebugLogUtil.clear()  // clear debug log on back from Chat to avoid app freezes
+        ChatInMemoryCache.onChatClose()
         rv_chat_messages.linearLayoutManager()?.let {
             val position = it.findFirstVisibleItemPosition()
             val scroll = it.findViewByPosition(position)?.let { rv_chat_messages.bottom - it.top } ?: 0
