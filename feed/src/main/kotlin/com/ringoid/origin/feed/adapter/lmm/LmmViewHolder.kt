@@ -22,14 +22,14 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
     override fun bind(model: FeedItemVO) {
         super.bind(model)
-        showUnreadIcon(model)
+        showUnreadIcon(model)  // apply updates, if any
 
         itemView.tv_seen_status.text = if (model.isNotSeen) "Not Seen" else "Seen"
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
         super.bind(model, payloads)
-        showUnreadIcon(model)
+        showUnreadIcon(model)  // apply updates, if any
 
         // scroll affected
         if (payloads.contains(FeedViewHolderHideChatBtnOnScroll)) {

@@ -15,9 +15,9 @@ data class FeedItemVO(
     override val distanceText: String? = null,
     override val images: List<IImage>,
     override val messages: MutableList<Message> = mutableListOf(),
-    val lastOnlineStatusX: OnlineStatus = OnlineStatus.UNKNOWN,
-    override val lastOnlineStatus: String? = null,
-    override val lastOnlineText: String? = null,
+    var lastOnlineStatusX: OnlineStatus = OnlineStatus.UNKNOWN,
+    override var lastOnlineStatus: String? = null,
+    override var lastOnlineText: String? = null,
     override val age: Int = DomainUtil.UNKNOWN_VALUE,
     override val children: Int = DomainUtil.UNKNOWN_VALUE,
     override val education: Int = DomainUtil.UNKNOWN_VALUE,
@@ -70,6 +70,12 @@ data class FeedItemVO(
 
     fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
     fun hasLiked(): Boolean = likedImages.count { it.value } > 0
+
+    fun setOnlineStatus(onlineStatus: OnlineStatus) {
+        lastOnlineStatusX = onlineStatus
+        lastOnlineStatus = onlineStatus.str
+        lastOnlineText = onlineStatus.label
+    }
 
     fun children(): ChildrenProfileProperty = ChildrenProfileProperty.from(children)
     fun education(): EducationProfileProperty = EducationProfileProperty.from(education)

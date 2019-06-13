@@ -269,6 +269,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     }
 
     private fun showOnlineStatus(onlineStatus: OnlineStatus) {
+        payload?.onlineStatus = OnlineStatus.from("offline", label = onlineStatus.label)
         with (label_online_status) {
             alpha = if (onlineStatus == OnlineStatus.UNKNOWN) 0.0f else 1.0f
             setIcon(onlineStatus.resId)

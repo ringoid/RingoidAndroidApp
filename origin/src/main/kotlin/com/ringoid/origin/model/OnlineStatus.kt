@@ -3,7 +3,7 @@ package com.ringoid.origin.model
 import androidx.annotation.DrawableRes
 import com.ringoid.widget.R
 
-enum class OnlineStatus(private val str: String, @DrawableRes val resId: Int) {
+enum class OnlineStatus(val str: String, @DrawableRes val resId: Int) {
     ONLINE("online", R.drawable.online_status_oval),
     OFFLINE("offline", R.drawable.offline_status_oval),
     AWAY("away", R.drawable.away_status_oval),
