@@ -34,7 +34,6 @@ import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
@@ -77,16 +76,13 @@ abstract class BaseLmmFeedViewModel(
     private val discardedFeedItemIds = mutableSetOf<String>()
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
-    private val badgeIsOnDisposable: Disposable
-    private val sourceFeedDisposable: Disposable
-
     init {
-        badgeIsOnDisposable = sourceBadge()
+        sourceBadge()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeIsOn = it }, Timber::e)
 
-        sourceFeedDisposable = sourceFeed()
+        sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .doAfterNext {
@@ -228,14 +224,6 @@ abstract class BaseLmmFeedViewModel(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         refreshOnPush.value = false  // drop value on each Lmm feed, when user taps on 'tap to refresh' popup on any Lmm feed
-    }
-
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
-    override fun onCleared() {
-        super.onCleared()
-        badgeIsOnDisposable.dispose()
-        sourceFeedDisposable.dispose()
     }
 
     /* Action Objects */
