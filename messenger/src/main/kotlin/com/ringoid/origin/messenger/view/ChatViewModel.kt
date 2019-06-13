@@ -16,6 +16,7 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -34,6 +35,7 @@ class ChatViewModel @Inject constructor(
     val messages by lazy { MutableLiveData<List<Message>>() }
     val newMessages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
+    val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
 
     /**
      * Get chat messages from the local storage. Those messages had been stored locally
@@ -109,6 +111,8 @@ class ChatViewModel @Inject constructor(
                     Timber.v("Count of messages from peer [$peerIdStr] has changed")
                     newMessages.value = chat.messages.reversed()
                 } else Timber.v("Count of messages from peer [$peerIdStr] has NOT changed")
+
+                onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
             }, Timber::e)  // on error - fail silently
     }
 }

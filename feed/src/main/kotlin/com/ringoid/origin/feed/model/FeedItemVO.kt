@@ -37,7 +37,7 @@ data class FeedItemVO(
         distanceText = feedItem.distanceText,
         images = feedItem.images,
         messages = feedItem.messages,
-        lastOnlineStatusX = OnlineStatus.from(feedItem.lastOnlineStatus),
+        lastOnlineStatusX = OnlineStatus.from(feedItem.lastOnlineStatus, label = feedItem.lastOnlineText),
         lastOnlineStatus = feedItem.lastOnlineStatus,
         lastOnlineText = feedItem.lastOnlineText,
         isNotSeen = feedItem.isNotSeen,

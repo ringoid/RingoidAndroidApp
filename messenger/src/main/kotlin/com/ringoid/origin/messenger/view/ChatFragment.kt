@@ -27,6 +27,7 @@ import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.model.BlockReportPayload
+import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
@@ -123,6 +124,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             observe(vm.messages, chatAdapter::submitList)
             observe(vm.newMessages, chatAdapter::prependAll)
             observe(vm.sentMessage, chatAdapter::prepend)
+            observe(vm.onlineStatus, ::showOnlineStatus)
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)
@@ -262,6 +264,14 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ibtn_chat_close.changeVisibility(isVisible, soft = true)
         ibtn_settings.changeVisibility(isVisible, soft = true)
         ll_text_input.changeVisibility(isVisible, soft = true)
+    }
+
+    private fun showOnlineStatus(onlineStatus: OnlineStatus) {
+        with (label_online_status) {
+            alpha = if (onlineStatus == OnlineStatus.UNKNOWN) 0.0f else 1.0f
+            setIcon(onlineStatus.resId)
+            setText(onlineStatus.label)
+        }
     }
 
     // ------------------------------------------

@@ -13,9 +13,9 @@ import com.ringoid.origin.feed.OriginR_drawable
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
-import com.ringoid.origin.feed.model.OnlineStatus
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.model.*
+import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange

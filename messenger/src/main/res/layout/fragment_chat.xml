@@ -84,6 +84,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:xbtnSrc="@drawable/ic_arrow_left_white"/>
 
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_online_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_12"
+        android:layout_marginStart="@dimen/std_margin_64"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:label_icon_size="@dimen/std_icon_12"/>
+
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_settings"
         android:layout_width="wrap_content"
