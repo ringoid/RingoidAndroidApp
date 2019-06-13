@@ -53,10 +53,10 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
     // ------------------------------------------
     private fun showUnreadIcon(model: FeedItemVO) {
-        val isVisible = if (!model.messages.isEmpty()) {
+        val isVisible = if (model.messages.isNotEmpty()) {
             val peerMessagesCount = model.countOfPeerMessages()
             if (peerMessagesCount > 0) {
-                peerMessagesCount != ChatInMemoryCache.getPeerMessagesCount(model.id)
+                peerMessagesCount > ChatInMemoryCache.getPeerMessagesCount(model.id)
             } else {
                 false
             }
