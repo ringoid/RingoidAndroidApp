@@ -8,6 +8,7 @@ import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
+@Deprecated("Since Transition")
 class GetUserMessagedFeedItemIdsUseCase @Inject constructor(private val repository: IFeedRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<List<String>>(threadExecutor, postExecutor) {

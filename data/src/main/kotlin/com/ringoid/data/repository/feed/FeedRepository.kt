@@ -367,6 +367,7 @@ open class FeedRepository @Inject constructor(
     private fun Single<Lmm>.clearCachedSentMessages(): Single<Lmm> =
         doOnSuccess { sentMessagesLocal.deleteMessages() }
 
+    @Deprecated("Since Transition")
     private fun Single<Lmm>.clearCachedPropertyFeedItemIds(): Single<Lmm> =
         flatMap { lmm ->
             Single.fromCallable { feedPropertiesLocal.deleteLikedFeedItemIds() }

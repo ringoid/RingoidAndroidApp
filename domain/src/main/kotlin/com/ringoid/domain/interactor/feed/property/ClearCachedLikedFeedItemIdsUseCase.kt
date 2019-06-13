@@ -8,6 +8,7 @@ import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
+@Deprecated("Since Transition")
 class ClearCachedLikedFeedItemIdsUseCase @Inject constructor(private val repository: IFeedRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {

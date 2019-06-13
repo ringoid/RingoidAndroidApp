@@ -103,12 +103,14 @@ abstract class BaseLmmFeedViewModel(
                     }
                 }
             }
+            // TODO: @Deprecated("Since Transition")
             .flatMap {
                 // get cached feed items that were liked, to restore likes on cached feed
                 val params = Params().put("feedItemIds", it.map { it.id })
                 getLikedFeedItemIdsUseCase.source(params = params).toObservable()
             }
             .doOnNext { it.ids.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_LIKES(it)) } }
+            // TODO: @Deprecated("Since Transition")
             .flatMap {
                 // cached feed items that have only user messages inside, sent after receiving feed
                 getUserMessagedFeedItemIdsUseCase.source().toObservable()
@@ -266,6 +268,7 @@ abstract class BaseLmmFeedViewModel(
         discardedFeedItemIds.add(profileId)
     }
 
+    @Deprecated("Since Transition")
     open fun onFirstUserMessageSent(profileId: String) {
         addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
             .autoDisposable(this)

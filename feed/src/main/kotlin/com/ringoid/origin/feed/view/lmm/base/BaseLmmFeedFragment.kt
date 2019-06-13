@@ -72,8 +72,10 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                             it.likedFeedItemIds.let { map ->
                                 map.keys.forEach { id ->
                                     feedAdapter.findModelAndPosition { it.id == id }
-                                        ?.also { model -> map[id]?.forEach { model.second.likedImages[it] = true } }
-                                        ?.also { feedAdapter.notifyItemChanged(it.first, FeedViewHolderShowControls) }
+                                        ?.also { (position, model) ->
+                                            map[id]?.forEach { model.likedImages[it] = true }
+                                            feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+                                        }
                                 }
                             }
                         }

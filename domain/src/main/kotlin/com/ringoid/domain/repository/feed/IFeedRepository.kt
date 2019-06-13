@@ -25,16 +25,24 @@ interface IFeedRepository {
     fun deleteBlockedProfileIds(): Completable
 
     // ------------------------------------------
+    @Deprecated("Since Transition")
     fun cacheLikedFeedItemId(feedItemId: String, imageId: String): Completable
+    @Deprecated("Since Transition")
     fun cacheLikedFeedItemIds(ids: LikedFeedItemIds): Completable
+    @Deprecated("Since Transition")
     fun cacheUserMessagedFeedItemId(feedItemId: String): Completable
 
     fun getCachedFeedItemById(id: String): Single<FeedItem>
+    @Deprecated("Since Transition")
     fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds>
+    @Deprecated("Since Transition")
     fun getUserMessagedFeedItemIds(): Single<List<String>>
 
+    @Deprecated("Since Transition")
     fun clearCachedLikedFeedItemIds(): Completable
+    @Deprecated("Since Transition")
     fun clearCachedUserMessagedFeedItemIds(): Completable
+
     fun clearCachedLmm(): Completable
     fun clearCachedLmmProfileIds(): Completable
 
