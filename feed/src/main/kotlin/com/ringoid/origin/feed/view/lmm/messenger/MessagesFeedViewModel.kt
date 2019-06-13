@@ -96,9 +96,10 @@ class MessagesFeedViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventPushNewLike(event: BusEvent.PushNewMessage) {
+    fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
+        // TODO: mark unread
     }
 }
