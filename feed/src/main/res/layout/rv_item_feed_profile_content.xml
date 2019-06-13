@@ -76,19 +76,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Debug profile id"
         style="@style/StdText.White"/>
-
-    <View
-        android:id="@+id/iv_debug_badge"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/debug_rect"
-        android:visibility="gone"/>
-
-    <View
-        android:id="@+id/underscore"
-        android:layout_height="2dp"
-        android:background="@android:color/black"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/Underscore"/>
 </merge>
