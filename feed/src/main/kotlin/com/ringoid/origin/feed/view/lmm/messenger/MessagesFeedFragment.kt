@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
@@ -33,4 +34,21 @@ class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
         }
 
     override fun getSourceFeed(): LmmNavTab = LmmNavTab.MESSAGES
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is PUSH_NEW_MESSAGES -> {
+                        val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
+                        feedAdapter.findPosition { it.id == profileId }
+                                   .takeIf { it != DomainUtil.BAD_POSITION }
+                                   ?.let { feedAdapter.notifyItemChanged(it) }
+                    }
+                }
+            }
+        }
+    }
 }

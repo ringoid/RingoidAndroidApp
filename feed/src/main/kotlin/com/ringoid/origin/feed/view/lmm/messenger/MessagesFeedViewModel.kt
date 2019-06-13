@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lmm.messenger
 import android.app.Application
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -99,7 +100,13 @@ class MessagesFeedViewModel @Inject constructor(
     fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        // TODO: check if this Chat is currently open - skip next steps
         refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
-        // TODO: mark unread
+        /**
+         * New messages have been received from push notification for profile with id [BusEvent.PushNewMessage.peerId],
+         * so need to update corresponding feed item, if any, to visually reflect change in unread messages count.
+         */
+        ChatInMemoryCache.setPeerMessagesCount(profileId = event.peerId, count = 0)
+        viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES(profileId = event.peerId))
     }
 }
