@@ -45,6 +45,8 @@ data class FeedItem(
             isNotSeen = isNotSeen,
             isRealModel = isRealModel)
 
+    fun messagesToString(): String = messages.joinToString(", ", "{", "}", transform = { it.text })
+
     fun toShortString(): String = "FeedItem(id=${id.substring(0..3)}, ${if (isNotSeen) "Not Seen" else "Seen"}, img=[${images.size}], msg=[${messages.size}])"
 }
 

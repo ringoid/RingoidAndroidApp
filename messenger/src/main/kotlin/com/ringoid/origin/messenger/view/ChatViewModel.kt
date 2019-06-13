@@ -99,7 +99,7 @@ class ChatViewModel @Inject constructor(
                                      .put("sourceFeed", sourceFeed.feedName)
                 getChatNewMessagesUseCase.source(params = params)
                     .doOnSubscribe { Timber.v("Poll chat $logStr".trim()) }
-                    .repeatWhen { completed -> completed.delay(1500, TimeUnit.MILLISECONDS) }
+                    .repeatWhen { completed -> completed.delay(3000, TimeUnit.MILLISECONDS) }
             }
             .autoDisposable(this)
             .subscribe({ chat ->
