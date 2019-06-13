@@ -111,13 +111,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // TODO: compare peerId with peerIds in Lmm, and if absent - increment
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
