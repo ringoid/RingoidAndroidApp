@@ -220,7 +220,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
 
     fun getModelsInRange(from: Int, to: Int): MutableList<T> {
         if (to < from || from < 0 || to < 0 || to >= itemCount) {
-            throw IllegalArgumentException("Invalid input range: ($from, $to)")
+            throw IllegalArgumentException("Invalid input range: ($from, $to) of $itemCount")
         }
 
         val xfrom = if (withHeader()) from + 1 else from
