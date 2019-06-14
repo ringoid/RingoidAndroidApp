@@ -1,97 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/ProgressBar.Horizontal"/>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/std_margin_32">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true">
 
-        <include layout="@layout/toolbar" android:id="@id/toolbar"/>
-
-        <ProgressBar
-            android:id="@+id/pb_loading"
-            android:visibility="invisible"
-            app:layout_constraintTop_toTopOf="parent"
-            style="@style/ProgressBar.Horizontal"/>
-
-        <com.ringoid.widget.view.item_view.TextIconItemView
-            android:id="@+id/item_profile_property_height"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyHeight"
-            app:icon_item_text="@string/profile_property_height"
-            style="?attr/spinnerIconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_hair_color"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyHairColor"
-            app:icon_item_text="@string/profile_property_hair_color"
-            style="?attr/spinnerIconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_education"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyEducation"
-            app:icon_item_text="@string/profile_property_education"
-            style="?attr/spinnerIconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_children"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyChildren"
-            app:icon_item_text="@string/profile_property_children"
-            style="?attr/spinnerIconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_income"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyIncome"
-            app:icon_item_text="@string/profile_property_income"
-            style="?attr/spinnerIconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_property"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyProperty"
-            app:icon_item_text="@string/profile_property_property"
-            style="?attr/spinnerIconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <com.ringoid.widget.view.item_view.SpinnerIconItemView
-            android:id="@+id/item_profile_property_transport"
-            android:layout_marginTop="@dimen/std_margin_16"
-            app:icon_item_icon="?refDrawableProfilePropertyTransport"
-            app:icon_item_text="@string/profile_property_transport"
-            style="?attr/spinnerIconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <TextView
-            android:id="@+id/tv_support"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/std_margin_40"
-            android:layout_marginStart="@dimen/std_margin_16"
-            android:layout_marginEnd="@dimen/std_margin_16"
-            android:gravity="start|center_vertical"
-            android:text="@string/settings_support_rationale"
-            style="@style/StdText.Secondary"/>
-    </LinearLayout>
-</ScrollView>
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/std_margin_32">
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_property_height"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyHeight"
+                app:icon_item_text="@string/profile_property_height"
+                style="?attr/spinnerIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.SpinnerIconItemView
+                android:id="@+id/item_profile_property_hair_color"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyHairColor"
+                app:icon_item_text="@string/profile_property_hair_color"
+                style="?attr/spinnerIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.SpinnerIconItemView
+                android:id="@+id/item_profile_property_education"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyEducation"
+                app:icon_item_text="@string/profile_property_education"
+                style="?attr/spinnerIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.SpinnerIconItemView
+                android:id="@+id/item_profile_property_children"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyChildren"
+                app:icon_item_text="@string/profile_property_children"
+                style="?attr/spinnerIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.SpinnerIconItemView
+                android:id="@+id/item_profile_property_income"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyIncome"
+                app:icon_item_text="@string/profile_property_income"
+                style="?attr/spinnerIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.SpinnerIconItemView
+                android:id="@+id/item_profile_property_property"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyProperty"
+                app:icon_item_text="@string/profile_property_property"
+                style="?attr/spinnerIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.SpinnerIconItemView
+                android:id="@+id/item_profile_property_transport"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyTransport"
+                app:icon_item_text="@string/profile_property_transport"
+                style="?attr/spinnerIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <TextView
+                android:id="@+id/tv_support"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/std_margin_40"
+                android:layout_marginStart="@dimen/std_margin_16"
+                android:layout_marginEnd="@dimen/std_margin_16"
+                android:gravity="start|center_vertical"
+                android:text="@string/settings_support_rationale"
+                style="@style/StdText.Secondary"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
