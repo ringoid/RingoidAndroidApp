@@ -80,7 +80,13 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
 
                 exception?.let { Flowable.error<Long>(it) }
                     ?: Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
-                                .doOnSubscribe { DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}") }
+                                .doOnSubscribe {
+                                    DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}")
+                                    SentryUtil.breadcrumb("Retry attempt", "tag" to "$tag",
+                                        "attemptNumber" to "$attemptNumber", "count" to "$count",
+                                        "exception" to error.javaClass.canonicalName, "message" to "${error.message}",
+                                        "exception message" to "${error.message}")
+                                }
                                 .doOnNext {
                                     if (error is RepeatRequestAfterSecException) {
 //                                        SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)

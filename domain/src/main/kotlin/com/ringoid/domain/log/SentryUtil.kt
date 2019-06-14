@@ -86,7 +86,7 @@ object SentryUtil {
 
     private fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
                         `object`: Any? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
-        breadcrumb("Captured exception", "exception" to "${e.javaClass}", "message" to "$message",
+        breadcrumb("Captured exception", "exception" to e.javaClass.canonicalName, "message" to "$message",
                    "exception message" to "${e.message}", "tag" to "$tag", "extras" to "${extras?.joinToString { "[${it.first}:${it.second}]" }}")
         message?.let { breadcrumb(it) }
         if (!message.isNullOrBlank()) {
