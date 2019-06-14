@@ -9,7 +9,6 @@ import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
 import com.ringoid.domain.debug.ICloudDebug
-import com.ringoid.domain.log.SentryUtil.breadcrumb
 import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -35,7 +34,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun createUserProfile(essence: AuthCreateProfileEssence): Single<AuthCreateProfileResponse> =
         restAdapter.createUserProfile(essence.toBody())
-            .breadcrumb("createUserProfile", essence.toSentryData())
+            .breadcrumb("createUserProfile", essence.toSentryData(), "yearOfBirth" to "${essence.yearOfBirth}", "gender" to essence.sex)
             .logRequest("createUserProfile")
             .logResponse("createUserProfile")
 
