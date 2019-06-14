@@ -60,6 +60,7 @@ class ActionObjectPool @Inject constructor(
         }
 
         triggerSource()
+            .subscribeOn(Schedulers.io())
             .autoDisposable(userScopeProvider)
             .subscribe({ Timber.d("Trigger Queue finished, last action time: $it") }, Timber::e)
     }
@@ -116,7 +117,6 @@ class ActionObjectPool @Inject constructor(
         .map { it.lastActionTime }
 
         return backup.actionObjects()
-            .subscribeOn(Schedulers.io())
             .map { it.mapList() }
             .flatMapCompletable {
                 it.reversed().forEach { queue.offerFirst(it) }
