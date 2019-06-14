@@ -194,7 +194,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         with(viewLifecycleOwner) {
             observe(vm.feed) {
                 feedAdapter.submitList(it)
-                runOnUiThread { scrollListToPosition(0) }
+                runOnUiThread { rv_items?.let { scrollListToPosition(0) } }
             }
             observe(vm.refreshOnPush) { showRefreshPopup(isVisible = it) }
         }
