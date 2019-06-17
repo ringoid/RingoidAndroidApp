@@ -89,7 +89,7 @@ class MessengerRepository @Inject constructor(
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
-        .doOnNext { Timber.v("New messages [${it.messages.size}]: ${it.messagesToString()}") }
+        .doOnNext { Timber.v("New messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}") }
         .singleOrError()
         .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out cached (old) messages") }
 
@@ -108,7 +108,7 @@ class MessengerRepository @Inject constructor(
                 }
                 chat
             })
-        .doOnNext { Timber.v("Final messages [${it.messages.size}]: ${it.messagesToString()}") }
+        .doOnNext { Timber.v("Final messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}") }
         .singleOrError()
         .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out sent messages") }
 

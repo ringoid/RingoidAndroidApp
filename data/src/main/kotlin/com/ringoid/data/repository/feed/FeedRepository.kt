@@ -36,6 +36,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -336,6 +337,7 @@ open class FeedRepository @Inject constructor(
             lmm.matches.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_MATCHES) }) }
             lmm.messages.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_MESSAGES) }) }
             Completable.fromCallable { messengerLocal.insertMessages(messages) }  // cache new messages
+                .doOnComplete { Timber.v("Cached messages from Lmm: ${messages.joinToString { it.text }}") }
                 .toSingleDefault(lmm)
         }
 
