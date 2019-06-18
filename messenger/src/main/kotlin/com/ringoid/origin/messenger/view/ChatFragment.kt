@@ -106,13 +106,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
         chatAdapter = ChatAdapter().apply {
             itemClickListener = { _, _ -> closeChat() }
-            onMessageInsertListener = { _ ->
-                /**
-                 * If vertical position is near the last message in Chat - scroll to the bottom of
-                 * each newly inserted message, otherwise - remain on the current vertical position.
-                 */
-                scrollToLastItemIfNearBottom()
-            }
+            onMessageInsertListener = { _ -> scrollToLastItem() }
         }
     }
 
@@ -244,6 +238,14 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         }
     }
 
+    private fun scrollToLastItem() {
+        scrollToTopOfItemAtPosition(0)  // scroll to last message
+    }
+
+    /**
+     * If vertical position is near the last message in Chat - scroll to the bottom of
+     * each newly inserted message, otherwise - remain on the current vertical position.
+     */
     private fun scrollToLastItemIfNearBottom() {
         rv_chat_messages?.linearLayoutManager()
             ?.takeIf { it.findFirstVisibleItemPosition() <= 1 }
