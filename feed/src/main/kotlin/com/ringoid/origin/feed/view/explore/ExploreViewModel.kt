@@ -178,6 +178,13 @@ class ExploreViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        onRefresh()  // app reopen leads Explore screen to refresh as well
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")

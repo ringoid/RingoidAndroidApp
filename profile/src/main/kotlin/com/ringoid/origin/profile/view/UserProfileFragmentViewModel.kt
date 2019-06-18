@@ -130,7 +130,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        onRefresh()  // app reopen leads Profile screen to refresh cascade
+        onRefresh()  // app reopen leads Profile screen to refresh
     }
 
     // --------------------------------------------------------------------------------------------
