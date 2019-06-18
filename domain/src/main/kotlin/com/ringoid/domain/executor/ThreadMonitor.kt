@@ -20,8 +20,7 @@ import kotlin.math.min
  * @see https://gist.github.com/joshallenit/9f9271474d62d206174ae580147e876f
  */
 class ThreadMonitor constructor(
-    // Default is to run every 2 minutes
-    private val intervalMs: Long = 120000,
+    private val intervalMs: Long = 30000,  // run every 'intervalMs' ms
     private val maxStack: Int = 10) : Thread("ThreadMonitor") {
 
     init {
@@ -36,9 +35,7 @@ class ThreadMonitor constructor(
                 // Get all the threads and sort them by name
                 val threads = getAllStackTraces()
                     .toList()
-                    .sortedBy { (thread, _) ->
-                        thread.name
-                    }
+                    .sortedBy { (thread, _) -> thread.name }
                 // For each thread, we get the index, name and stacktrace up to 10 items
                 // and log them
                 for (i in 0 until threads.size) {

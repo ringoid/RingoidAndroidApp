@@ -58,6 +58,7 @@ class PersistActionObjectPool @Inject constructor(
 
     override fun triggerSourceImpl(): Single<Long> =
         local.countActionObjects()
+            .subscribeOn(Schedulers.io())
             .flatMap { count ->
                 if (count <= 0) {
                     Timber.v("Nothing to commit (no actions)")

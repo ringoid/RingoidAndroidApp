@@ -306,7 +306,7 @@ ext {
     ]
 
     def leaks = [
-            [configuration: "debugImplementation", dependency: d_support.leakCanary],
+//            [configuration: "debugImplementation", dependency: d_support.leakCanary],
             [configuration: "api", dependency: d_support.leakSentry],
     ]
 
