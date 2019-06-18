@@ -37,7 +37,6 @@ class PersistActionObjectPool @Inject constructor(
         Timber.v("Put action object: $aobj")
         Single.fromCallable { local.addActionObject(mapper.map(aobj)) }
             .subscribeOn(Schedulers.io())
-            .flatMap { local.countActionObjects() }
             .subscribe({ analyzeActionObject(aobj) }, Timber::e)
     }
 
