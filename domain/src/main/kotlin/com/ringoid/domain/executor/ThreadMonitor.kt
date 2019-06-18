@@ -2,6 +2,7 @@ package com.ringoid.domain.executor
 
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
 import timber.log.Timber
 import kotlin.math.min
 
@@ -21,6 +22,7 @@ import kotlin.math.min
  *
  * @see https://gist.github.com/joshallenit/9f9271474d62d206174ae580147e876f
  */
+@DebugOnly
 class ThreadMonitor constructor(
     private val intervalMs: Long = 30000,  // run every 'intervalMs' ms
     private val maxStack: Int = 10) : Thread("ThreadMonitor") {
@@ -34,28 +36,23 @@ class ThreadMonitor constructor(
     override fun run() {
         try {
             while (!Thread.currentThread().isInterrupted) {
-                // Get all the threads and sort them by name
-                val threads = getAllStackTraces()
-                    .toList()
-                    .sortedBy { (thread, _) -> thread.name }
-                // For each thread, we get the index, name and stacktrace up to 10 items
-                // and log them
-                for (i in 0 until threads.size) {
-                    val (thread, stacktrace) = threads[i]
-                    val stack = stacktrace.toList().subList(0, min(maxStack, stacktrace.size))
-                    val message = "Thread status: ${thread.name}[${thread.state}](${i + 1}/${threads.size}) ${stack.joinToString("\n\t\t\t", "\n\t\t\t", "\n-------------------------")}"
-                    if (DomainUtil.withThreadInfo()) {
+                if (DomainUtil.withThreadInfo()) {
+                    // Get all the threads and sort them by name
+                    val threads = getAllStackTraces().toList().sortedBy { (thread, _) -> thread.name }
+                    // For each thread, we get the index, name and stacktrace up to 10 items
+                    // and log them
+                    for (i in 0 until threads.size) {
+                        val (thread, stacktrace) = threads[i]
+                        val stack = stacktrace.toList().subList(0, min(maxStack, stacktrace.size))
+                        val message = "Thread status: ${thread.name}[${thread.state}](${i + 1}/${threads.size}) ${stack.joinToString("\n\t\t\t", "\n\t\t\t", "\n-------------------------")}"
                         DebugLogUtil.d(message)
-                    } else {
-                        Timber.v(message)
                     }
                 }
-
                 sleep(intervalMs)
             }
         } catch (interrupted: InterruptedException) {
             Timber.e(interrupted, "Thread monitor was interrupted")
-            interrupted()  // clear interrupted flag
+            // stop 'while' loop
         }
     }
 }

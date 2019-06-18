@@ -1,6 +1,7 @@
 package com.ringoid.domain
 
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
 
 object DomainUtil {
 
@@ -26,22 +27,26 @@ object DomainUtil {
     const val SOURCE_FEED_PROFILE = "profile"
 
     // ------------------------------------------
-    private var withError: Boolean = false
-    private var withThreadInfo: Boolean = false
+    @DebugOnly private var withError: Boolean = false
+    @DebugOnly private var withThreadInfo: Boolean = BuildConfig.DEBUG
 
+    @DebugOnly
     fun withSimulatedError(): Boolean {
         val value = withError
         withError = false
         return value
     }
 
+    @DebugOnly
     fun withThreadInfo(): Boolean = withThreadInfo
 
+    @DebugOnly
     fun dumpThreadInfo() {
         withThreadInfo = !withThreadInfo
         DebugLogUtil.w(if (withThreadInfo) "Start dumping thread info" else "Stop dumping thread info")
     }
 
+    @DebugOnly
     fun simulateError() {
         DebugLogUtil.w("Next request will fail with simulated error")
         withError = true
