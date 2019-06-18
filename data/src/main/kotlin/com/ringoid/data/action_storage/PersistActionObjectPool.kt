@@ -35,8 +35,9 @@ class PersistActionObjectPool @Inject constructor(
     @Suppress("CheckResult")
     override fun put(aobj: OriginActionObject) {
         Timber.v("Put action object: $aobj")
-        Single.fromCallable { local.addActionObject(mapper.map(aobj)) }
+        Completable.fromCallable { local.addActionObject(mapper.map(aobj)) }
             .subscribeOn(Schedulers.io())
+            .autoDisposable(userScopeProvider)
             .subscribe({ analyzeActionObject(aobj) }, Timber::e)
     }
 
