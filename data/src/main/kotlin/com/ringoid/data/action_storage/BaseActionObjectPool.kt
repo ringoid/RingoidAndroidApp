@@ -5,15 +5,11 @@ import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.exception.SimulatedException
 import com.ringoid.domain.executor.ThreadMonitor
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.OriginActionObject
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
@@ -128,22 +124,6 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
                         .subscribe({ Timber.v("Delay strategy has just satisfied at $aobj") }, Timber::e)
                 }
         }
-    }
-
-    // ------------------------------------------
-    @DebugOnly
-    override fun errorTriggerSource(): Single<Long> = Single.error(SimulatedException())
-
-    @DebugOnly
-    override fun triggerAndDisposeImmediately() {
-        val disposable = triggerSource()
-            .subscribeOn(Schedulers.io())
-            .delay(1, TimeUnit.SECONDS)
-            .doOnDispose { DebugLogUtil.w("TEST: Commit actions disposed") }
-            .doFinally { DebugLogUtil.d("TEST: Commit actions has finished") }
-            .subscribe({}, Timber::e)
-        DebugLogUtil.d("TEST: Dispose commit actions now")
-        disposable.dispose()
     }
 
     // --------------------------------------------------------------------------------------------
