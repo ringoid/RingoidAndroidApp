@@ -44,7 +44,7 @@ class PersistActionObjectPool @Inject constructor(
     @Suppress("CheckResult")
     override fun trigger() {
         local.countActionObjects()
-            .subscribeOn(Schedulers.io())
+            .subscribeOn(Schedulers.newThread())
             .flatMap { count ->
                 if (count <= 0) {
                     Single.just(0L)  // do nothing on empty queue
