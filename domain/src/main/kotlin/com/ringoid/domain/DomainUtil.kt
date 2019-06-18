@@ -27,11 +27,19 @@ object DomainUtil {
 
     // ------------------------------------------
     private var withError: Boolean = false
+    private var withThreadInfo: Boolean = false
 
     fun withSimulatedError(): Boolean {
         val value = withError
         withError = false
         return value
+    }
+
+    fun withThreadInfo(): Boolean = withThreadInfo
+
+    fun dumpThreadInfo() {
+        withThreadInfo = !withThreadInfo
+        DebugLogUtil.w(if (withThreadInfo) "Start dumping thread info" else "Stop dumping thread info")
     }
 
     fun simulateError() {

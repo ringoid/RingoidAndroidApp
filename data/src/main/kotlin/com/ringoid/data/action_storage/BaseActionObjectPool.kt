@@ -1,8 +1,8 @@
 package com.ringoid.data.action_storage
 
-import com.ringoid.data.BuildConfig
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.executor.ThreadMonitor
@@ -25,7 +25,7 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
 
     init {
         lastActionTimeValue.set(spm.getLastActionTime())
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.IS_STAGING) {
             ThreadMonitor().start()
         }
     }

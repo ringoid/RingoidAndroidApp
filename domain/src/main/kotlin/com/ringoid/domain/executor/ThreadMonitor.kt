@@ -1,5 +1,7 @@
 package com.ringoid.domain.executor
 
+import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import timber.log.Timber
 import kotlin.math.min
 
@@ -41,13 +43,19 @@ class ThreadMonitor constructor(
                 for (i in 0 until threads.size) {
                     val (thread, stacktrace) = threads[i]
                     val stack = stacktrace.toList().subList(0, min(maxStack, stacktrace.size))
-                    Timber.v("Thread status %s %s (%s) > %s", (i + 1), thread.name, thread.state, stack)
+                    val message = "Thread status: ${thread.name}[${thread.state}](${i + 1}/${threads.size}) ${stack.joinToString("\n\t\t\t", "\n\t\t\t", "\n-------------------------")}"
+                    if (DomainUtil.withThreadInfo()) {
+                        DebugLogUtil.d(message)
+                    } else {
+                        Timber.v(message)
+                    }
                 }
 
                 sleep(intervalMs)
             }
         } catch (interrupted: InterruptedException) {
-            System.out.println("Thread monitor was interrupted")
+            Timber.e(interrupted, "Thread monitor was interrupted")
+            interrupted()  // clear interrupted flag
         }
     }
 }
