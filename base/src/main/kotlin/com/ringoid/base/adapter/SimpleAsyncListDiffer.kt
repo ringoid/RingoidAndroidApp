@@ -15,6 +15,7 @@ class SimpleAsyncListDiffer<T>(private val cb: ListUpdateCallback, diffCb: BaseD
 
     override fun getCurrentList(): MutableList<T> = currentList
 
+    @Suppress("CheckResult")
     override fun submitList(list: List<T>?) {
         val countInserted = list?.size ?: 0
         val countRemoved = currentList.size
