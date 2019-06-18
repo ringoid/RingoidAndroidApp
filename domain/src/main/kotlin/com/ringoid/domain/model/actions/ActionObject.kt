@@ -85,5 +85,5 @@ open class ActionObject(
                 .substring(0..3)}," +
             "p=${targetUserId.substring(0..3)}," +
             "aT=${actionTime % 1000000},$sourceFeed"
-        } else ""
+        } else sourceFeed
 }
