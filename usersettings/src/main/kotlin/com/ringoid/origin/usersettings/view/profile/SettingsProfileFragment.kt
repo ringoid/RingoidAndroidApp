@@ -36,7 +36,7 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onIdleState() {
-            pb_loading.changeVisibility(isVisible = false, soft = true)
+            pb_loading?.changeVisibility(isVisible = false, soft = true)
         }
 
         super.onViewStateChange(newState)
