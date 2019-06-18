@@ -1,5 +1,6 @@
 package com.ringoid.domain.executor
 
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -43,8 +44,11 @@ class ThreadMonitor constructor(
                     // and log them
                     for (i in 0 until threads.size) {
                         val (thread, stacktrace) = threads[i]
-                        val stack = stacktrace.toList().subList(0, min(maxStack, stacktrace.size))
-                        val message = "Thread status: ${thread.name}[${thread.state}](${i + 1}/${threads.size}) ${stack.joinToString("\n\t\t\t", "\n\t\t\t", "\n-------------------------")}"
+                        val message = "Thread status: ${thread.name}[${thread.state}](${i + 1}/${threads.size})"
+                        if (BuildConfig.DEBUG) {
+                            val stack = stacktrace.toList().subList(0, min(maxStack, stacktrace.size))
+                            Timber.v("$message ${stack.joinToString("\n\t\t\t", "\n\t\t\t", "\n-------------------------")}")
+                        }
                         DebugLogUtil.d(message)
                     }
                 }
