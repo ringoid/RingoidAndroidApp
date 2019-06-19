@@ -42,6 +42,7 @@ class ThreadMonitor constructor(
                     val threads = getAllStackTraces().toList().sortedBy { (thread, _) -> thread.name }
                     // For each thread, we get the index, name and stacktrace up to 10 items
                     // and log them
+                    DebugLogUtil.b("------------------------------------------------------------------------------------")
                     for (i in 0 until threads.size) {
                         val (thread, stacktrace) = threads[i]
                         val message = "Thread status: ${thread.name}[${thread.state}](${i + 1}/${threads.size})"
@@ -49,10 +50,9 @@ class ThreadMonitor constructor(
                             val stack = stacktrace.toList().subList(0, min(maxStack, stacktrace.size))
                             Timber.v("$message ${stack.joinToString("\n\t\t\t", "\n\t\t\t", "\n-------------------------")}")
                         }
-                        DebugLogUtil.b("------------------------------------------------------------------------------------")
                         DebugLogUtil.d(message)
-                        DebugLogUtil.b("------------------------------------------------------------------------------------")
                     }
+                    DebugLogUtil.b("------------------------------------------------------------------------------------")
                 }
                 sleep(intervalMs)
             }
