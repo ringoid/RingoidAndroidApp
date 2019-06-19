@@ -6,6 +6,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.executor.ThreadMonitor
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.OriginActionObject
 import io.reactivex.Observable
@@ -129,6 +130,7 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
     // --------------------------------------------------------------------------------------------
     override fun finalizePool() {
         Timber.v("Finalizing pool")
+        SentryUtil.breadcrumb("Finalized pool")
         updateLastActionTime(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
     }
 
@@ -141,5 +143,6 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
         } else {
             spm.saveLastActionTime(lastActionTime)
         }
+        SentryUtil.breadcrumb("Commit actions success", "lastActionTime" to "$lastActionTime")
     }
 }
