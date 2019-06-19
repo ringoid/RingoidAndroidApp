@@ -9,6 +9,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
@@ -90,7 +91,11 @@ class PersistActionObjectPool @Inject constructor(
                     }
                 }
             }
-            .doOnError { DebugLogUtil.e("Commit actions error: $it") }
+            .doOnError {
+                SentryUtil.breadcrumb("Commit actions error",
+                    "exception" to "${it.javaClass}", "message" to "${it.message}")
+                DebugLogUtil.e("Commit actions error: $it")
+            }
             .handleError(tag = "commitActions", traceTag = "actions/actions")
             .doOnSubscribe { dropStrategyData() }
             .doOnSuccess { updateLastActionTime(it.lastActionTime) }
