@@ -61,7 +61,7 @@ buildscript {
         retrofitVersion = '2.6.0'
 
         rxJavaVersion = '2.2.9'
-        rxAndroidVersion = '2.1.1'
+        rxAndroidVersion = '2.1.0'
         rxKotlinVersion = '2.3.0'
         rxBindingVersion = '3.0.0-alpha2'
         autoDisposeVersion = '1.1.0'
