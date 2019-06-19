@@ -41,6 +41,7 @@ object SentryUtil {
                 .setType(Breadcrumb.Type.DEFAULT)
                 .build()
             Sentry.getContext().recordBreadcrumb(breadcrumb)
+            DebugLogUtil.v("Breadcrumb: $message")
         } catch (e: Throwable) {
             capture(e, "Failed to record breadcrumb: $message")
         }
