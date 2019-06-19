@@ -150,7 +150,7 @@ private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer
         if (!it.unexpected.isNullOrBlank()) {
             throw NetworkUnexpected(it.unexpected)
         }
-        if (!it.errorCode.isNullOrBlank()) {
+        if (it.errorCode.isNotBlank()) {
             val apiError = when (it.errorCode) {
                 ApiException.OLD_APP_VERSION -> OldAppVersionApiException(message = it.errorMessage, tag = tag)
                 ApiException.INVALID_ACCESS_TOKEN -> InvalidAccessTokenApiException( message = it.errorMessage, tag = tag)
