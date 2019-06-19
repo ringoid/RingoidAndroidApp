@@ -49,7 +49,9 @@ class ThreadMonitor constructor(
                             val stack = stacktrace.toList().subList(0, min(maxStack, stacktrace.size))
                             Timber.v("$message ${stack.joinToString("\n\t\t\t", "\n\t\t\t", "\n-------------------------")}")
                         }
+                        DebugLogUtil.b("------------------------------------------------------------------------------------")
                         DebugLogUtil.d(message)
+                        DebugLogUtil.b("------------------------------------------------------------------------------------")
                     }
                 }
                 sleep(intervalMs)
