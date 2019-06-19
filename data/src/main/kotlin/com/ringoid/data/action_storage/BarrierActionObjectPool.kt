@@ -37,7 +37,7 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
                 DebugLogUtil.v("Permission's been acquired to commit actions by ${threadStr(thread)}")
                 triggerSourceImpl()
                     .doOnSubscribe { DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}") }
-                    .doOnError { DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)}") }
+                    .doOnError { DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)} with $it") }
                     .doFinally {
                         finishTriggerSource()  // 'doFinally' must be thread-safe
                         DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.startTime} ms")
@@ -48,11 +48,12 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
     private fun finishTriggerSource() {
         triggerInProgress.release()
         tcount.decrementAndGet()
-        SentryUtil.breadcrumb("Released lock by thread $lockOwnerThreadId")
+        SentryUtil.breadcrumb("Released lock by thread: ${threadInfo()}")
         lockOwnerThreadId = DomainUtil.BAD_VALUE_L
     }
 
     private var tcount: AtomicLong = AtomicLong(0L)  // count of threads
 
-    private fun threadStr(thread: ProcessingPayload) = if (BuildConfig.IS_STAGING) "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount (${triggerInProgress.queueLength})] at ${thread.startTime} ms" else "[t=${Thread.currentThread().id} / $tcount]"
+    private fun threadInfo(): String = "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount (${triggerInProgress.queueLength})]"
+    private fun threadStr(thread: ProcessingPayload) = if (BuildConfig.IS_STAGING) "${threadInfo()} at ${thread.startTime} ms" else "[t=${Thread.currentThread().id} / $tcount]"
 }
