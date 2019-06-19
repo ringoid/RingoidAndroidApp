@@ -4,9 +4,9 @@ import android.app.Application
 import com.ringoid.base.view.Residual
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.debug.*
+import com.ringoid.domain.debug.DebugOnly
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.CompletableTransformer
@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 @DebugOnly
 class DebugViewModel @Inject constructor(
-    @DebugOnly private val commitActionsFailUseCase: CommitActionsFailUseCase,
     @DebugOnly private val invalidAccessTokenRequestUseCase: InvalidAccessTokenRequestUseCase,
     @DebugOnly private val requestFailUseCase: RequestFailUseCase,
     @DebugOnly private val requestRepeatAfterDelayUseCase: RequestRepeatAfterDelayUseCase,
@@ -29,13 +28,6 @@ class DebugViewModel @Inject constructor(
     @DebugOnly private val debugTimeOutRequestUseCase: DebugTimeOutRequestUseCase,
     @DebugOnly private val debugUnsupportedAppVersionRequestUseCase: DebugUnsupportedAppVersionRequestUseCase,
     app: Application) : BaseViewModel(app) {
-
-    fun requestWithCommitActionsFailAllRetries() {
-        commitActionsFailUseCase.source()
-            .handleResult(this)
-            .autoDisposable(this)
-            .subscribe({ /* no-op */}, Timber::e)
-    }
 
     fun requestWithExpiredAccessToken() {
 //        invalidAccessTokenRequestUseCase.source(params = Params().put("token", "98736c88-b82e-48d2-bf8b-aeab10a663f7"))

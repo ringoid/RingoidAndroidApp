@@ -8,8 +8,6 @@ import io.reactivex.Single
 @DebugOnly
 interface IDebugRepository {
 
-    fun commitActionObjectsWithFailAllRetries(): Completable
-
     fun requestWithFailAllRetries(): Completable
     fun requestWithFailNTimesBeforeSuccess(count: Int): Completable
     fun requestWithRepeatAfterDelay(delay: Long): Completable

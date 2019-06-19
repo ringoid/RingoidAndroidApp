@@ -14,9 +14,9 @@ import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.*
+import timber.log.Timber
 import kotlinx.android.synthetic.main.fragment_debug.*
 import kotlinx.android.synthetic.main.fragment_debug.view.*
-import timber.log.Timber
 
 @DebugOnly
 class DebugFragment : BaseFragment<DebugViewModel>() {
@@ -62,7 +62,6 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         item_error_token_expired.clicks().compose(clickDebounce()).subscribe { vm.requestWithExpiredAccessToken() }
         item_error_app_version.clicks().compose(clickDebounce()).subscribe { vm.requestWithStaledAppVersion() }
         item_error_server.clicks().compose(clickDebounce()).subscribe { vm.requestWithServerError() }
-        item_error_commit_actions_fail_all_attempts.clicks().compose(clickDebounce()).subscribe { vm.requestWithCommitActionsFailAllRetries() }
         item_error_request_fail_all_attempts.clicks().compose(clickDebounce()).subscribe { vm.requestWithFailAllRetries() }
         item_error_request_n_fail_attempts.clicks().compose(clickDebounce()).subscribe { vm.requestWithFailNTimesBeforeSuccess(n = 3) }
         item_error_request_params.clicks().compose(clickDebounce()).subscribe { vm.requestWithWrongParams() }

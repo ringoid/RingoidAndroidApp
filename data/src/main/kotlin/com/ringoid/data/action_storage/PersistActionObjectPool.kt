@@ -8,9 +8,7 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.SimulatedException
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -71,10 +69,6 @@ class PersistActionObjectPool @Inject constructor(
     override fun triggerSourceImpl(): Single<Long> =
         local.countActionObjects()
             .flatMap { count ->
-                if (DomainUtil.withSimulatedError()) {
-                    DomainUtil.simulateError()
-                    Single.error<CommitActionsResponse>(SimulatedException())
-                } else
                 if (count <= 0) {
                     Timber.v("Nothing to commit (no actions)")
                     Single.just(CommitActionsResponse(lastActionTime()))  // do nothing on empty queue
