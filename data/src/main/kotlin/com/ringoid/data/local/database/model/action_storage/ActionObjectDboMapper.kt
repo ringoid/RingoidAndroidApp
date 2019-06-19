@@ -29,4 +29,7 @@ class ActionObjectDboMapper @Inject constructor() {
             else -> dbo
         }
     }
+
+    fun map(aobjs: Collection<OriginActionObject>): List<ActionObjectDbo> =
+        mutableListOf<ActionObjectDbo>().apply { aobjs.forEach { add(map(it)) } }
 }

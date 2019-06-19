@@ -42,6 +42,15 @@ class PersistActionObjectPool @Inject constructor(
     }
 
     @Suppress("CheckResult")
+    override fun put(aobjs: Collection<OriginActionObject>) {
+        Timber.v("Put actions object: ${aobjs.joinToString()}")
+        Completable.fromCallable { local.addActionObjects(mapper.map(aobjs)) }
+            .subscribeOn(Schedulers.io())
+            .autoDisposable(userScopeProvider)
+            .subscribe({ aobjs.forEach { analyzeActionObject(it) } }, Timber::e)
+    }
+
+    @Suppress("CheckResult")
     override fun trigger() {
         local.countActionObjects()
             .subscribeOn(Schedulers.newThread())

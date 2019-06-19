@@ -52,6 +52,11 @@ class ActionObjectPool @Inject constructor(
         analyzeActionObject(aobj)
     }
 
+    @Synchronized
+    override fun put(aobjs: Collection<OriginActionObject>) {
+        aobjs.forEach { put(it) }
+    }
+
     // ------------------------------------------
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {

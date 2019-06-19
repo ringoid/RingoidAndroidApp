@@ -371,13 +371,7 @@ abstract class FeedViewModel(
     }
 
     private fun advanceAndPushViewObject(key: Pair<String, String>): ViewActionObject? =
-        viewActionObjectBuffer.let {
-            val aobj = it[key]?.advance()
-            it.remove(key)
-            aobj as? ViewActionObject
-        }
-        ?.also { onViewFeedItem(it.targetUserId) }
-        ?.also { actionObjectPool.put(it) }
+        advanceViewObject(key)?.also { actionObjectPool.put(it) }
 
     private fun advanceAndPushViewObject(key: Pair<String, String>, recreate: Boolean) {
         advanceAndPushViewObject(key)
@@ -391,18 +385,27 @@ abstract class FeedViewModel(
                 .apply { keys.forEach { add(it.second) } }
                 .forEach { onViewFeedItem(feedItemId = it) }
 
-            values.forEach {
-                it.advance()
-                actionObjectPool.put(it)
-            }
+            values.forEach { it.advance() }
+            actionObjectPool.put(values)  // add all aobjs at once
             backupPool?.putAll(this)
             clear()
         }
     }
 
     private fun advanceAndPushViewObjects(keys: Collection<Pair<String, String>>) {
-        keys.forEach { advanceAndPushViewObject(it) }
+        val aobjs = mutableListOf<ViewActionObject>()
+        keys.forEach { key -> advanceViewObject(key)?.also { aobjs.add(it) } }
+        actionObjectPool.put(aobjs)  // add all aobjs at once
     }
+
+    // ------------------------------------------
+    private fun advanceViewObject(key: Pair<String, String>): ViewActionObject? =
+        viewActionObjectBuffer.let {
+            val aobj = it[key]?.advance()
+            it.remove(key)
+            aobj as? ViewActionObject
+        }
+        ?.also { onViewFeedItem(it.targetUserId) }
 
     // ------------------------------------------
     private fun logViewObjectsBufferState(tag: String) {
