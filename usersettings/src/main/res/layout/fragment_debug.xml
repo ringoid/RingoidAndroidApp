@@ -134,6 +134,13 @@
             <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.IconItemView
+                android:id="@+id/item_error_commit_actions_fail_all_attempts"
+                app:icon_item_text="@string/debug_item_response_error_commit_actions_fail_all_attempts"
+                style="?attr/iconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.IconItemView
                 android:id="@+id/item_error_request_fail_all_attempts"
                 app:icon_item_text="@string/debug_item_response_error_request_fail_all_attempts"
                 style="?attr/iconItemView"/>

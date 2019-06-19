@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Debug screen -->
+    <string name="debug_item_response_error_commit_actions_fail_all_attempts" translatable="false">Commit actions failure</string>
     <string name="debug_item_response_error_http" translatable="false">Response code not 200</string>
     <string name="debug_item_response_error_http_404" translatable="false">Response code 404</string>
     <string name="debug_item_response_error_expired_token" translatable="false">Expired Access Token</string>
