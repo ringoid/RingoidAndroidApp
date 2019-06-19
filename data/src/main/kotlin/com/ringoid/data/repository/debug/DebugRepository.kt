@@ -20,6 +20,7 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.data.repository.handleErrorNoRetry
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.log.breadcrumb
@@ -80,6 +81,12 @@ class DebugRepository @Inject constructor(
             else -> EmptyFeed
         }
     }
+
+    // --------------------------------------------------------------------------------------------
+    override fun commitActionObjectsWithFailAllRetries(): Completable =
+        aObjPool.triggerSource()
+                .doOnSubscribe { DomainUtil.simulateError() }
+                .ignoreElement()
 
     // --------------------------------------------------------------------------------------------
     private var requestAttempt: Int = 0
