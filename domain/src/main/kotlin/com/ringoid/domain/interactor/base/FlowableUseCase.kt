@@ -1,11 +1,11 @@
 package com.ringoid.domain.interactor.base
 
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
 import io.reactivex.Flowable
 import io.reactivex.FlowableTransformer
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 
 abstract class FlowableUseCase<T>(threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : UseCase(threadExecutor, postExecutor) {
@@ -15,7 +15,7 @@ abstract class FlowableUseCase<T>(threadExecutor: UseCaseThreadExecutor, postExe
     fun source(params: Params = Params()): Flowable<T> =
         sourceImpl(params)
             .compose(transformer())
-            .doOnSubscribe { Timber.v("Perform use case ${javaClass.simpleName} with params: $params") }
+            .doOnSubscribe { DebugLogUtil.v("Perform use case ${javaClass.simpleName} with params: $params") }
 
     private fun transformer(): FlowableTransformer<T, T> =
         FlowableTransformer {
