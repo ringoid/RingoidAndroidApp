@@ -18,7 +18,6 @@ import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.messenger.IMessengerRepository
-import com.ringoid.utility.RemoveIf
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -41,7 +40,6 @@ class MessengerRepository @Inject constructor(
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .cacheMessagesFromChat(sourceFeed)
-                .clearCachedSentMessages()  // clear sent user messages because they are present in Chat data, that has just been cached
         }
 
     override fun getChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
@@ -53,7 +51,6 @@ class MessengerRepository @Inject constructor(
                 .filterOutChatOldMessages(chatId, sourceFeed)
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
                 .filterOutChatSentMessages(chatId, sourceFeed)  // if there are sent messages by current user, filter them out to avoid duplicates on subscriber's side
-                .clearCachedSentMessages()  // clear sent user messages because they are present in Chat data, that has just been cached
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
@@ -89,9 +86,11 @@ class MessengerRepository @Inject constructor(
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
-        .doOnNext { Timber.v("New messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}") }
         .singleOrError()
-        .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out cached (old) messages") }
+        .doOnSuccess {
+            Timber.v("New messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}")
+            DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out cached (old) messages")
+        }
 
     /**
      * Compare chat's messages list to locally stored sent messages for chat given by [chatId] and retain only
@@ -103,14 +102,30 @@ class MessengerRepository @Inject constructor(
         toObservable()
         .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
             BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
-                sentLocalMessages.forEach { message ->
-                    chat.messages.RemoveIf { it.isUserMessage() && it.text == message.text }
+                val consumedSentMessages = mutableListOf<MessageDbo>()
+                val iter = chat.messages.iterator()
+
+                while (iter.hasNext()) {
+                    val message = iter.next()
+                    if (message.isUserMessage()) {
+                        sentLocalMessages.find { it.clientId == message.clientId }
+                            ?.let { sentMessage ->
+                                consumedSentMessages.add(sentMessage)
+                                iter.remove()
+                            }
+                    }
                 }
-                chat
+                chat to consumedSentMessages
             })
-        .doOnNext { Timber.v("Final messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}") }
         .singleOrError()
-        .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out sent messages") }
+        .flatMap { (chat, consumedSentMessages) ->
+            Completable.fromCallable { sentMessagesLocal.deleteMessages(consumedSentMessages) }
+                       .toSingleDefault(chat)
+        }
+        .doOnSuccess {
+            Timber.v("Final messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}")
+            DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out sent messages")
+        }
 
     // --------------------------------------------------------------------------------------------
     override fun clearMessages(): Completable =
@@ -135,7 +150,7 @@ class MessengerRepository @Inject constructor(
 
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         val sentMessage = Message(
-            id = "${essence.peerId}_${randomString()}",  // client-side id
+            id = "s_${essence.peerId}_${randomString()}",  // client-side id
             chatId = essence.peerId,
             /** 'clientId' equals to 'id' */
             peerId = DomainUtil.CURRENT_USER_ID,

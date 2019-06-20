@@ -1,9 +1,6 @@
 package com.ringoid.data.local.database.dao.messenger
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.domain.DomainUtil
 import io.reactivex.Maybe
@@ -54,4 +51,7 @@ interface MessageDao {
 
     @Query("DELETE FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
     fun deleteMessages(chatId: String)
+
+    @Delete
+    fun deleteMessages(messages: Collection<MessageDbo>)
 }
