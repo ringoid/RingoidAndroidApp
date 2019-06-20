@@ -3,6 +3,7 @@ package com.ringoid.data.remote.model.feed
 import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.remote.model.messenger.MessageEntity
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.model.messenger.Chat
 
 /**
  * {
@@ -71,4 +72,7 @@ class ChatEntity(
         height = height,
         income = income,
         property = property,
-        transport = transport)
+        transport = transport) {
+
+    fun mapToChat(): Chat = Chat(feedItem = map())
+}

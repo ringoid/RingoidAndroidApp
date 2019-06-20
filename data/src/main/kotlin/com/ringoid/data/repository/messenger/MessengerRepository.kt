@@ -59,7 +59,7 @@ class MessengerRepository @Inject constructor(
         cloud.getChat(accessToken, resolution, chatId, lastActionTime)
             .handleError(tag = "getChat(peerId=$chatId,$resolution,lat=$lastActionTime)", traceTag = "feeds/chat")
             .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.chat.messages.size}] originally") }
-            .map { it.chat.map() }
+            .map { it.chat.mapToChat() }
 
     // ------------------------------------------
     private fun Single<Chat>.cacheMessagesFromChat(sourceFeed: String): Single<Chat> =
