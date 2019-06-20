@@ -2,10 +2,8 @@ package com.ringoid.data.action_storage
 
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.remote.RingoidCloud
-import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.executor.ThreadMonitor
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.OriginActionObject
@@ -26,9 +24,9 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
 
     init {
         lastActionTimeValue.set(spm.getLastActionTime())
-        if (BuildConfig.IS_STAGING) {
-            ThreadMonitor().start()
-        }
+//        if (BuildConfig.DEBUG) {
+//            ThreadMonitor().start()
+//        }
     }
 
     private val numbers = mutableMapOf<Class<OriginActionObject>, Int>()
