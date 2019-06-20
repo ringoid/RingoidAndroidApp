@@ -54,6 +54,7 @@ data class ActionObjectDbo(
     override fun map(): OriginActionObject =
         when (actionType) {
             ActionObject.ACTION_TYPE_BLOCK -> BlockActionObject(numberOfBlockReason = blockReasonNumber, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_DEBUG -> DebugActionObject()
             ActionObject.ACTION_TYPE_LOCATION -> LocationActionObject(latitude = latitude, longitude = longitude, actionTime = actionTime)
             ActionObject.ACTION_TYPE_LIKE -> LikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_MESSAGE -> MessageActionObject(text = messageText, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)

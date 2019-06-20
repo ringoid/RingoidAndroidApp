@@ -107,7 +107,7 @@ class DebugView : ConstraintLayout {
                 if (it == EmptyDebugLogItem) {
                     clear()
                 } else {
-                    Timber.v("DebugView item: ${it.log}")
+//                    Timber.v("DebugView item: ${it.log}")
                     if (it.level == DebugLogLevel.LIFECYCLE && !lifecycleToggle) {
                         // ignore LIFECYCLE logs if they are turned off
                     } else {

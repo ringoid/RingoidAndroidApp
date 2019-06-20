@@ -39,6 +39,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
     { it: Flowable<Throwable> ->
         it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, count), BiFunction { e: Throwable, i -> i to e })
             .flatMap { (attemptNumber, error) ->
+                Timber.v("Handle error ${error.javaClass.simpleName} for attempt $attemptNumber in thread: ${threadInfo()}")
                 var exception: Throwable? = null
                 val extras = tag?.let { listOf("tag" to "$tag [${error.javaClass.simpleName}]") }
                 val delayTime = when (error) {
@@ -98,7 +99,11 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                                         trace?.incrementMetric("retry", 1L)
                                     }
                                 }
-                                .doOnComplete { if (attemptNumber >= count) throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras) } }
+                                .doOnComplete {
+                                    if (attemptNumber >= count) {
+                                        throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras) }
+                                    }
+                                }
             }
     }
 
@@ -129,11 +134,12 @@ fun <T : BaseResponse> expBackoffFlowable(count: Int, delay: Long, tag: String? 
 fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Long, tag: String? = null, trace: Trace? = null): ObservableTransformer<T, T> =
     ObservableTransformer {
         val elapsedTimes = mutableListOf<Long>()
-        it
-            .toFlowable(BackpressureStrategy.MISSING)
-            .retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace))
-            .toObservable()
+        it.toFlowable(BackpressureStrategy.MISSING)
+          .retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace))
+          .toObservable()
     }
+
+private fun threadInfo(): String = "${Thread.currentThread().id} ${Thread.currentThread().name}"
 
 /* Api Error */
 // --------------------------------------------------------------------------------------------

@@ -9,6 +9,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -56,6 +57,12 @@ class ActionObjectPool @Inject constructor(
     override fun put(aobjs: Collection<OriginActionObject>) {
         aobjs.forEach { put(it) }
     }
+
+    @DebugOnly
+    override fun putSource(aobj: OriginActionObject): Completable = Completable.complete()
+
+    @DebugOnly
+    override fun putSource(aobjs: Collection<OriginActionObject>): Completable = Completable.complete()
 
     // ------------------------------------------
     @Synchronized @Suppress("CheckResult")

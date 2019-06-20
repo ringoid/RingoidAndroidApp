@@ -8,6 +8,7 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.DeadlockException
 import com.ringoid.domain.log.SentryUtil
 import io.reactivex.Single
+import timber.log.Timber
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicLong
 
@@ -28,6 +29,7 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
                 tcount.incrementAndGet()
                 DebugLogUtil.v("Acquiring permission to commit actions by ${threadStr(thread)}")
                 if (Thread.currentThread().id == lockOwnerThreadId) {
+                    Timber.e("Deadlock ${threadInfo()}")
                     SentryUtil.capture(DeadlockException(), "Deadlock in commit actions",
                         tag = "interrupted = ${Thread.currentThread().isInterrupted}",
                         extras = Thread.currentThread().stackTrace.map { it.className to "${it.methodName}:${it.lineNumber}" })
@@ -54,6 +56,6 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
 
     private var tcount: AtomicLong = AtomicLong(0L)  // count of threads
 
-    private fun threadInfo(): String = "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount (${triggerInProgress.queueLength})]"
+    protected fun threadInfo(): String = "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount (${triggerInProgress.queueLength})]"
     private fun threadStr(thread: ProcessingPayload) = if (BuildConfig.IS_STAGING) "${threadInfo()} at ${thread.startTime} ms" else "[t=${Thread.currentThread().id} / $tcount]"
 }
