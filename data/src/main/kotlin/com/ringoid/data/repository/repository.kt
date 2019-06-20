@@ -11,6 +11,7 @@ import com.ringoid.domain.log.SentryUtil
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
 import io.sentry.event.Event
 import retrofit2.HttpException
 import timber.log.Timber
@@ -79,7 +80,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                 }
 
                 exception?.let { Flowable.error<Long>(it) }
-                    ?: Flowable.timer(delayTime, TimeUnit.MILLISECONDS)
+                    ?: Flowable.timer(delayTime, TimeUnit.MILLISECONDS, Schedulers.io())
                                 .doOnSubscribe {
                                     DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}")
                                     SentryUtil.breadcrumb("Retry attempt", "tag" to "$tag",
