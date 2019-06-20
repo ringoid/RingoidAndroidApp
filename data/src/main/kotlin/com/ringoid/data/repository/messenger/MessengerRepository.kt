@@ -105,6 +105,7 @@ class MessengerRepository @Inject constructor(
                 val consumedSentMessages = mutableListOf<MessageDbo>()
                 val iter = chat.messages.iterator()
 
+                Timber.v("Sent local messages [${sentLocalMessages.size}]: ${sentLocalMessages.joinToString(", ", "{", "}", transform = { it.text })}, ${sentLocalMessages.joinToString(",", "[", "]", transform = { "{${it.peerId.substring(0..3)}:${it.clientId.substring(0..5)}:${it.text}" })}")
                 while (iter.hasNext()) {
                     val message = iter.next()
                     if (message.isUserMessage()) {
@@ -150,7 +151,7 @@ class MessengerRepository @Inject constructor(
 
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         val sentMessage = Message(
-            id = "s_${essence.peerId}_${randomString()}",  // client-side id
+            id = "_${randomString()}_${essence.peerId}",  // client-side id
             chatId = essence.peerId,
             /** 'clientId' equals to 'id' */
             peerId = DomainUtil.CURRENT_USER_ID,
