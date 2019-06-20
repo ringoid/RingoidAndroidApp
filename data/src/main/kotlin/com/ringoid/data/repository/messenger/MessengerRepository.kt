@@ -50,7 +50,9 @@ class MessengerRepository @Inject constructor(
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .filterOutChatOldMessages(chatId, sourceFeed)
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
-                .filterOutChatSentMessages(chatId, sourceFeed)  // if there are sent messages by current user, filter them out to avoid duplicates on subscriber's side
+//                .filterOutChatSentMessages(chatId, sourceFeed)  // if there are sent messages by current user, filter them out to avoid duplicates on subscriber's side
+//                .concatWithUnconsumedSentLocalMessages(chatId, sourceFeed)
+//                .clearCachedSentMessages()
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
@@ -98,35 +100,51 @@ class MessengerRepository @Inject constructor(
      * by the current user, to avoid duplicates, because subscriber is likely to show sent message at the moment
      * of sending, so it should be excluded further on refresh chat's data.
      */
-    private fun Single<Chat>.filterOutChatSentMessages(chatId: String, sourceFeed: String): Single<Chat> =
-        toObservable()
-        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
-            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
-                val consumedSentMessages = mutableListOf<MessageDbo>()
-                val iter = chat.messages.iterator()
-
-                Timber.v("Sent local messages [${sentLocalMessages.size}]: ${sentLocalMessages.joinToString(", ", "{", "}", transform = { it.text })}, ${sentLocalMessages.joinToString(",", "[", "]", transform = { "{${it.peerId.substring(0..3)}:${it.clientId.substring(0..5)}:${it.text}" })}")
-                while (iter.hasNext()) {
-                    val message = iter.next()
-                    if (message.isUserMessage()) {
-                        sentLocalMessages.find { it.clientId == message.clientId }
-                            ?.let { sentMessage ->
-                                consumedSentMessages.add(sentMessage)
-                                iter.remove()
-                            }
-                    }
-                }
-                chat to consumedSentMessages
-            })
-        .singleOrError()
-        .flatMap { (chat, consumedSentMessages) ->
-            Completable.fromCallable { sentMessagesLocal.deleteMessages(consumedSentMessages) }
-                       .toSingleDefault(chat)
-        }
-        .doOnSuccess {
-            Timber.v("Final messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}")
-            DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out sent messages")
-        }
+//    private fun Single<Chat>.filterOutChatSentMessages(chatId: String, sourceFeed: String): Single<Chat> =
+//        toObservable()
+//        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
+//            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
+//                val consumedSentMessages = mutableListOf<MessageDbo>()
+//                val iter = chat.messages.iterator()
+//
+////                Timber.v("Sent local messages [${sentLocalMessages.size}]: ${sentLocalMessages.joinToString(", ", "{", "}", transform = { it.text })}, ${sentLocalMessages.joinToString(",", "[", "]", transform = { "{${it.peerId.substring(0..3)}:${it.clientId.substring(0..5)}:${it.text}" })}")
+//                while (iter.hasNext()) {
+//                    val message = iter.next()
+//                    if (message.isUserMessage()) {
+//                        sentLocalMessages.find { it.clientId == message.clientId }
+//                            ?.let { sentMessage ->
+//                                consumedSentMessages.add(sentMessage)
+//                                iter.remove()
+//                            }
+//                    }
+//                }
+//                chat to consumedSentMessages
+//            })
+//        .singleOrError()
+//        .flatMap { (chat, consumedSentMessages) ->
+//            Completable.fromCallable { sentMessagesLocal.deleteMessages(consumedSentMessages) }
+//                       .toSingleDefault(chat)
+//        }
+//        .doOnSuccess {
+//            Timber.v("Final messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}")
+//            DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out sent messages")
+//        }
+//
+//    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String, sourceFeed: String): Single<Chat> =
+//        toObservable()
+//        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
+//            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
+//                val unconsumedSentMessages = mutableListOf<MessageDbo>().apply { addAll(sentLocalMessages) }
+//                chat.messages.forEach { message ->
+//                    if (message.isUserMessage()) {
+//                        unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
+//                    }
+//                }
+////                Timber.v("Concat sent messages [${unconsumedSentMessages.size}]: ${unconsumedSentMessages.joinToString(", ", "{", "}", transform = { it.text })}, ${unconsumedSentMessages.joinToString(",", "[", "]", transform = { "{${it.peerId.substring(0..3)}:${it.clientId.substring(0..5)}:${it.text}" })}")
+//                chat.messages.addAll(unconsumedSentMessages.mapList())
+//                chat
+//            })
+//        .singleOrError()
 
     // --------------------------------------------------------------------------------------------
     override fun clearMessages(): Completable =
@@ -169,5 +187,8 @@ class MessengerRepository @Inject constructor(
 
     // ------------------------------------------
     private fun Single<Message>.cacheSentMessage(): Single<Message> =
-        doOnSuccess { sentMessagesLocal.addMessage(MessageDbo.from(it)) }
+        flatMap { message ->
+            Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(message)) }
+                       .toSingleDefault(message)
+        }
 }

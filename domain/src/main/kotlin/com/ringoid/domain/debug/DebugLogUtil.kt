@@ -6,7 +6,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.ReplaySubject
 import io.sentry.event.Event
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 @DebugOnly
@@ -41,7 +40,7 @@ object DebugLogUtil {
 
     @Synchronized
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
-        Timber.log(level.priority, log)
+//        Timber.log(level.priority, log)
         if (config.isDeveloper() && config.collectDebugLogs()) {
             val logItem = DebugLogItem(log = log, level = level)
             logger.onNext(logItem)

@@ -109,9 +109,15 @@ class ChatViewModel @Inject constructor(
                 if (peerMessagesCount > 0) {
                     ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount + ChatInMemoryCache.getPeerMessagesCount(profileId))
                     Timber.v("Count of messages from peer [$peerIdStr] has changed")
-                    newMessages.value = chat.messages.reversed()
                 } else Timber.v("Count of messages from peer [$peerIdStr] has NOT changed")
 
+                val list = mutableListOf<Message>()
+                    .apply {
+                        addAll(chat.messages.reversed())
+                        messages.value?.let { addAll(it) }
+                    }
+                messages.value = list
+                //newMessages.values = chat.unconsumedSentLocalMessages
                 onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
             }, Timber::e)  // on error - fail silently
     }
