@@ -81,7 +81,13 @@ open class FeedItemEntity(
             images = images.mapList(),
             messages = messages.mapIndexed { index, message ->
                 val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
-                Message(id = "${id}_$index", chatId = id, peerId = peerId, text = message.text)
+                Message(
+                    id = message.id,
+                    chatId = id,
+                    clientId = message.clientId,
+                    peerId = peerId,
+                    text = message.text,
+                    ts = message.ts)
             }.toMutableList(),
             lastOnlineStatus = lastOnlineStatus,
             lastOnlineText = lastOnlineText,

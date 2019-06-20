@@ -25,7 +25,6 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.actions.DebugActionObject
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.feed.EmptyFeed
 import com.ringoid.domain.model.feed.Feed
@@ -84,8 +83,7 @@ class DebugRepository @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     override fun commitActionObjectsWithFailAllRetries(): Completable =
-        aObjPool.putSource(DebugActionObject())
-                .andThen(aObjPool.triggerSource().ignoreElement())
+        aObjPool.triggerSource().ignoreElement()
 
     // --------------------------------------------------------------------------------------------
     private var requestAttempt: Int = 0

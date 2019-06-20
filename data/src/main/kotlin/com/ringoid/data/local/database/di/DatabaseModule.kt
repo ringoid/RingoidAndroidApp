@@ -19,9 +19,10 @@ class DatabaseModule {
                         migration_101_102: Migration_101_102,
                         migration_102_103: Migration_102_103,
                         migration_103_104: Migration_103_104,
-                        migration_104_105: Migration_104_105): RingoidDatabase =
+                        migration_104_105: Migration_104_105,
+                        migration_105_106: Migration_105_106): RingoidDatabase =
         Room.databaseBuilder(applicationContext, RingoidDatabase::class.java, RingoidDatabase.DATABASE_NAME)
-            .addMigrations(migration_100_101, migration_101_102, migration_102_103, migration_103_104, migration_104_105)
+            .addMigrations(migration_100_101, migration_101_102, migration_102_103, migration_103_104, migration_104_105, migration_105_106)
             .fallbackToDestructiveMigrationFrom(8, 9, 10)
             .build()
 
@@ -29,9 +30,10 @@ class DatabaseModule {
     fun provideUserDatabase(applicationContext: Context,
                             migration_9_10: MessageMigration_9_10,
                             majorMigration_10_100: MajorMigration_10_100,
-                            migration_100_101: UserMigration_100_101): UserRingoidDatabase =
+                            migration_100_101: UserMigration_100_101,
+                            migration_101_102: UserMigration_101_102): UserRingoidDatabase =
         Room.databaseBuilder(applicationContext, UserRingoidDatabase::class.java, UserRingoidDatabase.DATABASE_NAME)
-            .addMigrations(migration_9_10, majorMigration_10_100, migration_100_101)
+            .addMigrations(migration_9_10, majorMigration_10_100, migration_100_101, migration_101_102)
             .build()
 
     @Provides @Singleton

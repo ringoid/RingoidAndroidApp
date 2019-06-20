@@ -134,9 +134,20 @@ class MessengerRepository @Inject constructor(
             .map { it.mapList().reversed() }
 
     override fun sendMessage(essence: MessageEssence): Single<Message> {
-        aObjPool.put(MessageActionObject(text = essence.text, sourceFeed = essence.aObjEssence?.sourceFeed ?: "",
-            targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID, targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID))
-        val sentMessage = Message(id = "${essence.peerId}_${randomString()}", chatId = essence.peerId, peerId = DomainUtil.CURRENT_USER_ID, text = essence.text)
+        val sentMessage = Message(
+            id = "${essence.peerId}_${randomString()}",  // client-side id
+            chatId = essence.peerId,
+            /** 'clientId' equals to 'id' */
+            peerId = DomainUtil.CURRENT_USER_ID,
+            text = essence.text)
+
+        val aobj = MessageActionObject(
+            clientId = sentMessage.clientId, text = essence.text,
+            sourceFeed = essence.aObjEssence?.sourceFeed ?: "",
+            targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID,
+            targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID)
+
+        aObjPool.put(aobj)
         return Single.just(sentMessage).cacheSentMessage()
     }
 

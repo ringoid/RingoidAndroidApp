@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.action_storage.Immediate
 
 class MessageActionObject(
+    @Expose @SerializedName(COLUMN_CLIENT_ID) val clientId: String,
     @Expose @SerializedName(COLUMN_TEXT) val text: String,
     actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String)
@@ -13,8 +14,9 @@ class MessageActionObject(
                    triggerStrategies = listOf(Immediate)) {
 
     companion object {
+        const val COLUMN_CLIENT_ID = "clientMsgId"
         const val COLUMN_TEXT = "text"
     }
 
-    override fun propertyString(): String? = "text=$text"
+    override fun propertyString(): String? = "clientId=${clientId.substring(0..3)},text=$text"
 }

@@ -13,7 +13,7 @@ class ActionObjectDboMapper @Inject constructor() {
             is ActionObject -> {
                 val xDbo = when (aobj) {
                     is BlockActionObject -> dbo.apply { blockReasonNumber = aobj.numberOfBlockReason }
-                    is MessageActionObject -> dbo.apply { messageText = aobj.text }
+                    is MessageActionObject -> dbo.apply { messageClientId = aobj.clientId ; messageText = aobj.text }
                     is OpenChatActionObject -> dbo.apply { openChatTimeMillis = aobj.timeInMillis }
                     is ViewChatActionObject -> dbo.apply { viewChatTimeMillis = aobj.timeInMillis }
                     is ViewActionObject -> dbo.apply { viewTimeMillis = aobj.timeInMillis }

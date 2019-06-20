@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 100,
-    "identityHash": "a04f9dbd911f538120ae6a4286e6c6cb",
+    "identityHash": "c40e4150de6bfcab8285bf6e9ca73094",
     "entities": [
       {
         "tableName": "ActionObjects",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `actionTime` INTEGER NOT NULL, `actionType` TEXT NOT NULL, `used` INTEGER NOT NULL, `sourceFeed` TEXT NOT NULL, `targetPhotoId` TEXT NOT NULL, `targetUserId` TEXT NOT NULL, `blockReasonNum` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `messageText` TEXT NOT NULL, `openChatTimeMillis` INTEGER NOT NULL, `viewChatTimeMillis` INTEGER NOT NULL, `viewTimeMillis` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `actionTime` INTEGER NOT NULL, `actionType` TEXT NOT NULL, `used` INTEGER NOT NULL, `sourceFeed` TEXT NOT NULL, `targetPhotoId` TEXT NOT NULL, `targetUserId` TEXT NOT NULL, `blockReasonNum` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `messageClientId` TEXT NOT NULL, `messageText` TEXT NOT NULL, `openChatTimeMillis` INTEGER NOT NULL, `viewChatTimeMillis` INTEGER NOT NULL, `viewTimeMillis` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -69,6 +69,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "messageClientId",
+            "columnName": "messageClientId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "messageText",
             "columnName": "messageText",
             "affinity": "TEXT",
@@ -105,7 +111,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a04f9dbd911f538120ae6a4286e6c6cb\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c40e4150de6bfcab8285bf6e9ca73094\")"
     ]
   }
 }

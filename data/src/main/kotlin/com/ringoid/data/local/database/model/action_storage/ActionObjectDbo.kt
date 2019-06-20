@@ -20,6 +20,7 @@ data class ActionObjectDbo(
     @ColumnInfo(name = COLUMN_NUMBER_BLOCK_REASON) var blockReasonNumber: Int = 0,
     @ColumnInfo(name = COLUMN_LOCATION_LATITUDE) var latitude: Double = 0.0,
     @ColumnInfo(name = COLUMN_LOCATION_LONGITUDE) var longitude: Double = 0.0,
+    @ColumnInfo(name = COLUMN_MESSAGE_CLIENT_ID) var messageClientId: String = "",
     @ColumnInfo(name = COLUMN_MESSAGE_TEXT) var messageText: String = "",
     @ColumnInfo(name = COLUMN_OPEN_CHAT_TIME_MILLIS) var openChatTimeMillis: Long = 0L,
     @ColumnInfo(name = COLUMN_VIEW_CHAT_TIME_MILLIS) var viewChatTimeMillis: Long = 0L,
@@ -40,6 +41,7 @@ data class ActionObjectDbo(
         const val COLUMN_NUMBER_BLOCK_REASON = "blockReasonNum"
         const val COLUMN_LOCATION_LATITUDE = "latitude"
         const val COLUMN_LOCATION_LONGITUDE = "longitude"
+        const val COLUMN_MESSAGE_CLIENT_ID = "messageClientId"
         const val COLUMN_MESSAGE_TEXT = "messageText"
         const val COLUMN_OPEN_CHAT_TIME_MILLIS = "openChatTimeMillis"
         const val COLUMN_VIEW_CHAT_TIME_MILLIS = "viewChatTimeMillis"
@@ -57,7 +59,7 @@ data class ActionObjectDbo(
             ActionObject.ACTION_TYPE_DEBUG -> DebugActionObject()
             ActionObject.ACTION_TYPE_LOCATION -> LocationActionObject(latitude = latitude, longitude = longitude, actionTime = actionTime)
             ActionObject.ACTION_TYPE_LIKE -> LikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
-            ActionObject.ACTION_TYPE_MESSAGE -> MessageActionObject(text = messageText, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_MESSAGE -> MessageActionObject(clientId = messageClientId, text = messageText, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_OPEN_CHAT -> OpenChatActionObject(timeInMillis = openChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_UNLIKE -> UnlikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_VIEW -> ViewActionObject(timeInMillis = viewTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)

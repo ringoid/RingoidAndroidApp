@@ -18,13 +18,19 @@ import com.ringoid.utility.randomString
 data class Message(
     @Expose @SerializedName(COLUMN_ID) val id: String,
     @Expose @SerializedName(COLUMN_CHAT_ID) val chatId: String,
+    @Expose @SerializedName(COLUMN_CLIENT_ID) val clientId: String = id,
     @Expose @SerializedName(COLUMN_PEER_ID) val peerId: String,
-    @Expose @SerializedName(COLUMN_TEXT) val text: String)
+    @Expose @SerializedName(COLUMN_TEXT) val text: String,
+    @Expose @SerializedName(COLUMN_TIMESTAMP) val ts: Long = 0L)
     : IEssence, IListModel, Parcelable {
 
-    private constructor(source: Parcel): this(id = source.readString() ?: DomainUtil.BAD_ID,
-        chatId = source.readString() ?: DomainUtil.BAD_ID, peerId = source.readString() ?: DomainUtil.BAD_ID,
-        text = source.readString() ?: "")
+    private constructor(source: Parcel): this(
+        id = source.readString() ?: DomainUtil.BAD_ID,
+        chatId = source.readString() ?: DomainUtil.BAD_ID,
+        clientId = source.readString() ?: DomainUtil.BAD_ID,
+        peerId = source.readString() ?: DomainUtil.BAD_ID,
+        text = source.readString() ?: "",
+        ts = source.readLong())
 
     override fun getModelId(): Long = id.hashCode().toLong()
 
@@ -34,8 +40,10 @@ data class Message(
         dest.apply {
             writeString(id)
             writeString(chatId)
+            writeString(clientId)
             writeString(peerId)
             writeString(text)
+            writeLong(ts)
         }
     }
 
@@ -45,8 +53,10 @@ data class Message(
     companion object {
         const val COLUMN_ID = "id"
         const val COLUMN_CHAT_ID = "chatId"
+        const val COLUMN_CLIENT_ID = "clientId"
         const val COLUMN_PEER_ID = "peerId"
         const val COLUMN_TEXT = "text"
+        const val COLUMN_TIMESTAMP = "ts"
 
         @JvmField
         val CREATOR = object : Parcelable.Creator<Message> {
@@ -56,6 +66,9 @@ data class Message(
     }
 }
 
-val EmptyMessage = Message(id = randomString(), chatId = DomainUtil.BAD_ID, peerId = DomainUtil.BAD_ID, text = "")
+val EmptyMessage = Message(id = randomString(), chatId = DomainUtil.BAD_ID, clientId = DomainUtil.BAD_ID,
+                           peerId = DomainUtil.BAD_ID, text = "", ts = 0L)
 
-fun userMessage(chatId: String): Message = Message(id = randomString(), chatId = chatId, peerId = DomainUtil.CURRENT_USER_ID, text = "")
+fun userMessage(chatId: String): Message =
+    Message(id = randomString(), chatId = chatId, clientId = DomainUtil.BAD_ID,
+            peerId = DomainUtil.CURRENT_USER_ID, text = "", ts = 0L)
