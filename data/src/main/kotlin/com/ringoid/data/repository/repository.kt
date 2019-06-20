@@ -39,7 +39,6 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
     { it: Flowable<Throwable> ->
         it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, count), BiFunction { e: Throwable, i -> i to e })
             .flatMap { (attemptNumber, error) ->
-                Timber.v("Handle error ${error.javaClass.simpleName} for attempt $attemptNumber in thread: ${threadInfo()}")
                 var exception: Throwable? = null
                 val extras = tag?.let { listOf("tag" to "$tag [${error.javaClass.simpleName}]") }
                 val delayTime = when (error) {
@@ -138,8 +137,6 @@ fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Long, tag: String
           .retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace))
           .toObservable()
     }
-
-private fun threadInfo(): String = "${Thread.currentThread().id} ${Thread.currentThread().name}"
 
 /* Api Error */
 // --------------------------------------------------------------------------------------------
