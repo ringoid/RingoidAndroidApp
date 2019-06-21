@@ -19,10 +19,10 @@ import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.model.print
 import com.ringoid.domain.repository.messenger.IMessengerRepository
-import com.ringoid.utility.RemoveIf
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import timber.log.Timber
@@ -96,51 +96,37 @@ class MessengerRepository @Inject constructor(
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
-        .doOnNext {
+        .flatMap { chat ->
+            //region mutex
+            Timber.v("[${Thread.currentThread().name}] New messages ${chat.print()}")
             mutex.acquireUninterruptibly()
-            Timber.v("[${Thread.currentThread().name}] New messages ${it.print()}")
             if (sentMessageLocalReadersCount.incrementAndGet() == 1) {
                 sentMessagesLocalWriterLock.acquireUninterruptibly()
             }
             mutex.release()
-        }
+            //endregion
 
-        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId).toObservable(),
-            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
-                Timber.v("[${Thread.currentThread().name}] Sent messages local: ${sentLocalMessages.print()}")
-                val unconsumedSentMessages = mutableListOf<MessageDbo>().apply { addAll(sentLocalMessages) }
-                chat.messages.forEach { message ->
-                    if (message.isUserMessage()) {
-                        unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
-                    }
+            val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessageLocalIds) }
+            chat.messages.forEach { message ->
+                if (message.isUserMessage()) {
+                    unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
                 }
-                chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages.mapList())
-                chat
-            })
-        .doOnNext { Timber.v("[${Thread.currentThread().name}] Unconsumed sent messages: ${it.print()}") }
-        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId).toObservable(),
-            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
-                val consumedSentMessages = mutableListOf<MessageDbo>().apply {
-                    addAll(sentLocalMessages)
-                    chat.unconsumedSentLocalMessages.forEach { message -> RemoveIf { it.id == message.id } }
-                }
-                Timber.v("[${Thread.currentThread().name}] Consumed sent messages: ${consumedSentMessages.print()}")
-                chat to consumedSentMessages
-            })
-        .doFinally {
+            }
+            chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages)
+            sentMessageLocalIds.retainAll(unconsumedSentMessages)
+
+            //region mutex
             mutex.acquireUninterruptibly()
             if (sentMessageLocalReadersCount.decrementAndGet() == 0) {
                 sentMessagesLocalWriterLock.release()
             }
             mutex.release()
+            Timber.v("[${Thread.currentThread().name}] Unconsumed sent messages: ${chat.print()}")
+            //endregion
+
+            Observable.just(chat)
         }
         .singleOrError()
-        .flatMap { (chat, consumedSentMessages) ->
-            Completable.fromCallable { sentMessagesLocal.deleteMessages(consumedSentMessages) }
-                .toSingleDefault(chat)
-        }
-
-//        .singleOrError()
         .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out cached (old) messages") }
 
     /**
@@ -178,35 +164,36 @@ class MessengerRepository @Inject constructor(
 //            Timber.v("Final messages [${it.messages.size}]: ${it.messagesToString()}, ${it.messagesDetailsToString()}")
 //            DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out sent messages")
 //        }
-
-    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String, sourceFeed: String): Single<Chat> =
-        toObservable()
-        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
-            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
-                val unconsumedSentMessages = mutableListOf<MessageDbo>().apply { addAll(sentLocalMessages) }
-                chat.messages.forEach { message ->
-                    if (message.isUserMessage()) {
-                        unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
-                    }
-                }
-                chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages.mapList())
-                chat
-            })
-        .doOnNext { Timber.v("[${Thread.currentThread().name}] Unconsumed sent messages: ${it.print()}") }
-        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
-            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
-                val consumedSentMessages = mutableListOf<MessageDbo>().apply {
-                    addAll(sentLocalMessages)
-                    chat.unconsumedSentLocalMessages.forEach { message -> RemoveIf { it.id == message.id } }
-                }
-                Timber.v("[${Thread.currentThread().name}] Consumed sent messages: ${consumedSentMessages.print()}")
-                chat to consumedSentMessages
-            })
-        .singleOrError()
-        .flatMap { (chat, consumedSentMessages) ->
-            Completable.fromCallable { sentMessagesLocal.deleteMessages(consumedSentMessages) }
-                       .toSingleDefault(chat)
-        }
+//
+//    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String, sourceFeed: String): Single<Chat> =
+//        toObservable()
+//        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
+//            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
+//                Timber.v("[${Thread.currentThread().name}] Sent messages local: ${sentLocalMessages.print()}")
+//                val unconsumedSentMessages = mutableListOf<MessageDbo>().apply { addAll(sentLocalMessages) }
+//                chat.messages.forEach { message ->
+//                    if (message.isUserMessage()) {
+//                        unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
+//                    }
+//                }
+//                chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages.mapList())
+//                chat
+//            })
+//        .doOnNext { Timber.v("[${Thread.currentThread().name}] Unconsumed sent messages: ${it.print()}") }
+//        .withLatestFrom(sentMessagesLocal.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
+//            BiFunction { chat: Chat, sentLocalMessages: List<MessageDbo> ->
+//                val consumedSentMessages = mutableListOf<MessageDbo>().apply {
+//                    addAll(sentLocalMessages)
+//                    chat.unconsumedSentLocalMessages.forEach { message -> RemoveIf { it.id == message.id } }
+//                }
+//                Timber.v("[${Thread.currentThread().name}] Consumed sent messages: ${consumedSentMessages.print()}")
+//                chat to consumedSentMessages
+//            })
+//        .singleOrError()
+//        .flatMap { (chat, consumedSentMessages) ->
+//            Completable.fromCallable { sentMessagesLocal.deleteMessages(consumedSentMessages) }
+//                       .toSingleDefault(chat)
+//        }
 
     // --------------------------------------------------------------------------------------------
     override fun clearMessages(): Completable =
@@ -250,9 +237,14 @@ class MessengerRepository @Inject constructor(
                     .doOnSuccess { Timber.i("[${Thread.currentThread().name}] Sent storage: ${it.print()}") }
                     .ignoreElement()
             }
-            .doOnSubscribe { sentMessagesLocalWriterLock.acquireUninterruptibly() }
+            .doOnSubscribe {
+                sentMessagesLocalWriterLock.acquireUninterruptibly()
+                sentMessageLocalIds.add(sentMessage)
+            }
             .doFinally { sentMessagesLocalWriterLock.release() }
             .doOnComplete { aObjPool.put(aobj) }
             .toSingleDefault(sentMessage)
     }
+
+    private val sentMessageLocalIds = mutableSetOf<Message>()
 }
