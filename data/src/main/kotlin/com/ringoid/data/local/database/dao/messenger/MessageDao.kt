@@ -28,6 +28,9 @@ interface MessageDao {
     @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_PEER_ID} != '${DomainUtil.CURRENT_USER_ID}' AND ${MessageDbo.COLUMN_UNREAD} != 0 AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun countUnreadMessages(sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Int>
 
+    @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
+    fun messages(chatId: String): Maybe<List<MessageDbo>>  // Maybe calls onComplete() rather than Single
+
     @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun messages(chatId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Maybe<List<MessageDbo>>  // Maybe calls onComplete() rather than Single
 

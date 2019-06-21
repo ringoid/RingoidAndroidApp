@@ -89,7 +89,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         if (BuildConfig.DEBUG) {
             Timber.plant(object : Timber.DebugTree() {
                 override fun createStackElementTag(element: StackTraceElement): String =
-                    packageName + ":" + super.createStackElementTag(element) + ":" + element.lineNumber
+                    "$packageName:${super.createStackElementTag(element)}:${element.lineNumber}"//-${Thread.currentThread().name}"
             })
         } else {
             Timber.plant(CrashlyticsTree())
