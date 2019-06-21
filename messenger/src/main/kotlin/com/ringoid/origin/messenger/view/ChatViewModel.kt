@@ -118,13 +118,12 @@ class ChatViewModel @Inject constructor(
 
                 val list = mutableListOf<Message>()
                     .apply {
-                        addAll(chat.unconsumedSentLocalMessages.reversed())
                         addAll(chat.messages.reversed())
                         addAll(currentMessageList)
                     }
                 Timber.i("[${Thread.currentThread().name}] List: ${list.subList(0, 8).print()}")
                 currentMessageList = list
-                messages.value = list
+                messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
                 onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
             }, Timber::e)  // on error - fail silently
     }
