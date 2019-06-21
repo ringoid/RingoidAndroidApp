@@ -16,6 +16,7 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.domain.model.print
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
@@ -37,6 +38,8 @@ class ChatViewModel @Inject constructor(
     val sentMessage by lazy { MutableLiveData<Message>() }
     val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
 
+    private var currentMessageList: List<Message> = emptyList()
+
     /**
      * Get chat messages from the local storage. Those messages had been stored locally
      * when Lmm data fetching had completed.
@@ -53,6 +56,7 @@ class ChatViewModel @Inject constructor(
             .subscribe({ msgs ->
                 val peerMessagesCount = msgs.count { it.peerId != DomainUtil.CURRENT_USER_ID }
                 ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
+                currentMessageList = msgs
                 messages.value = msgs
                 startPollingChat(profileId = profileId, sourceFeed = sourceFeed, delay = 100L)
             }, Timber::e)
@@ -114,11 +118,13 @@ class ChatViewModel @Inject constructor(
 
                 val list = mutableListOf<Message>()
                     .apply {
+                        addAll(chat.unconsumedSentLocalMessages.reversed())
                         addAll(chat.messages.reversed())
-                        messages.value?.let { addAll(it) }
+                        addAll(currentMessageList)
                     }
+                Timber.i("[${Thread.currentThread().name}] List: ${list.subList(0, 8).print()}")
+                currentMessageList = list
                 messages.value = list
-                newMessages.value = chat.unconsumedSentLocalMessages
                 onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
             }, Timber::e)  // on error - fail silently
     }

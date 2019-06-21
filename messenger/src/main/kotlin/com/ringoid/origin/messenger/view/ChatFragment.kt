@@ -13,7 +13,6 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
-import com.mikepenz.itemanimators.SlideUpAlphaAnimator
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.IBaseActivity
@@ -190,7 +189,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     reverseLayout = true
                     stackFromEnd = true
                 }
-            itemAnimator = SlideUpAlphaAnimator()
+//            itemAnimator = SlideUpAlphaAnimator()
             setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
         }
     }

@@ -60,7 +60,7 @@ class MessengerRepository @Inject constructor(
 //                .concatWithUnconsumedSentLocalMessages(chatId, sourceFeed)
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
 //                .clearCachedSentMessages()
-                .doOnSuccess { Timber.d("Chat messages: ${it.print()}") }
+                .doOnSuccess { Timber.d("[${Thread.currentThread().name}] Chat messages: ${it.print()}") }
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
@@ -106,6 +106,7 @@ class MessengerRepository @Inject constructor(
             mutex.release()
             //endregion
 
+            Timber.v("[${Thread.currentThread().name}] Sent messages local: ${sentMessageLocalIds.print()}")
             val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessageLocalIds) }
             chat.messages.forEach { message ->
                 if (message.isUserMessage()) {
@@ -121,7 +122,7 @@ class MessengerRepository @Inject constructor(
                 sentMessagesLocalWriterLock.release()
             }
             mutex.release()
-            Timber.v("[${Thread.currentThread().name}] Unconsumed sent messages: ${chat.print()}")
+            Timber.v("[${Thread.currentThread().name}] Unconsumed sent messages: ${sentMessageLocalIds.print()}")
             //endregion
 
             Observable.just(chat)
@@ -226,23 +227,25 @@ class MessengerRepository @Inject constructor(
 
         val sourceFeed = essence.aObjEssence?.sourceFeed ?: ""
         val aobj = MessageActionObject(
-            clientId = sentMessage.clientId, text = essence.text,
+            clientId = sentMessage.clientId,
+            text = essence.text,
             sourceFeed = sourceFeed,
             targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID,
             targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID)
 
-        return Single.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, sourceFeed = sourceFeed)) }
-            .flatMapCompletable {
-                sentMessagesLocal.messages(essence.peerId)
-                    .doOnSuccess { Timber.i("[${Thread.currentThread().name}] Sent storage: ${it.print()}") }
-                    .ignoreElement()
-            }
+        return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, sourceFeed = sourceFeed)) }
+//            .flatMapCompletable {
+//                sentMessagesLocal.messages(essence.peerId)
+//                    .doOnSuccess { Timber.i("[${Thread.currentThread().name}] Sent storage: ${it.print()}") }
+//                    .ignoreElement()
+//            }
             .doOnSubscribe {
                 sentMessagesLocalWriterLock.acquireUninterruptibly()
                 sentMessageLocalIds.add(sentMessage)
+                aObjPool.put(aobj)
+                Timber.i("[${Thread.currentThread().name}] Sent storage: ${sentMessageLocalIds.print()}")
+                sentMessagesLocalWriterLock.release()
             }
-            .doFinally { sentMessagesLocalWriterLock.release() }
-            .doOnComplete { aObjPool.put(aobj) }
             .toSingleDefault(sentMessage)
     }
 
