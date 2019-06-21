@@ -4,6 +4,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.domain.model.print
 
 class Chat(
     id: String,
@@ -22,7 +23,8 @@ class Chat(
     property: Int = DomainUtil.UNKNOWN_VALUE,
     transport: Int = DomainUtil.UNKNOWN_VALUE,
     isNotSeen: Boolean,
-    isRealModel: Boolean = true)
+    isRealModel: Boolean = true,
+    val unconsumedSentLocalMessages: MutableList<Message> = mutableListOf())
     : FeedItem(
         id = id,
         distanceText = distanceText,
@@ -82,6 +84,5 @@ class Chat(
             isNotSeen = isNotSeen,
             isRealModel = isRealModel)
 
-    fun messagesToString(): String = messages.joinToString(", ", "{", "}", transform = { it.text })
-    fun messagesDetailsToString(): String = ""//messages.joinToString(",", "[", "]", transform = { "{${it.peerId.substring(0..3)}:${it.clientId.substring(0..5)}:${it.text}" })
+    fun print(): String = "[${messages.size}]: ${messages.print()} :: unconsumed: ${unconsumedSentLocalMessages.print()}"
 }

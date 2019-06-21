@@ -134,6 +134,9 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     }
 
     fun prependAll(items: List<T>) {
+        if (items.isEmpty()) {
+            return
+        }
         submitList(mutableListOf<T>().apply { addAll(items) }.also { it.addAll(helper.currentList) })
     }
 

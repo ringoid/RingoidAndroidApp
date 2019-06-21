@@ -67,6 +67,7 @@ class ChatViewModel @Inject constructor(
 
         val essence = ActionObjectEssence(actionType = "MESSAGE", sourceFeed = sourceFeed.feedName, targetImageId = imageId, targetUserId = peerId)
         val message = MessageEssence(peerId = peerId, text = text.trim(), aObjEssence = essence)
+
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT(it)) }
@@ -117,7 +118,7 @@ class ChatViewModel @Inject constructor(
                         messages.value?.let { addAll(it) }
                     }
                 messages.value = list
-                //newMessages.values = chat.unconsumedSentLocalMessages
+                newMessages.value = chat.unconsumedSentLocalMessages
                 onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
             }, Timber::e)  // on error - fail silently
     }

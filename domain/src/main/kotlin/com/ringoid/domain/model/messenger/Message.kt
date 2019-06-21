@@ -20,9 +20,9 @@ data class Message(
     @Expose @SerializedName(COLUMN_CHAT_ID) val chatId: String,
     @Expose @SerializedName(COLUMN_CLIENT_ID) val clientId: String = id,
     @Expose @SerializedName(COLUMN_PEER_ID) val peerId: String,
-    @Expose @SerializedName(COLUMN_TEXT) val text: String,
+    @Expose @SerializedName(COLUMN_TEXT) override val text: String,
     @Expose @SerializedName(COLUMN_TIMESTAMP) val ts: Long = 0L)
-    : IEssence, IListModel, Parcelable {
+    : IEssence, IListModel, IMessage, Parcelable {
 
     private constructor(source: Parcel): this(
         id = source.readString() ?: DomainUtil.BAD_ID,
