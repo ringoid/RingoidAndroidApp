@@ -16,7 +16,6 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Message
-import com.ringoid.domain.model.print
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
@@ -122,10 +121,8 @@ class ChatViewModel @Inject constructor(
                         addAll(currentMessageList)
                     }
                 currentMessageList = ArrayList(list)  // clone list to avoid further modifications
-                Timber.w("[${Thread.currentThread().name}] List: ${currentMessageList.subList(0, 12).print()}")
                 messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
                 onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
-                Timber.i("[${Thread.currentThread().name}] List: ${messages.value?.subList(0, 12)?.print()}")
             }, Timber::e)  // on error - fail silently
     }
 }

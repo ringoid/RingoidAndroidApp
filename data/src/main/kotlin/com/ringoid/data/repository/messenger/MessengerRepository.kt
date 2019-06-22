@@ -9,7 +9,6 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
@@ -60,13 +59,11 @@ class MessengerRepository @Inject constructor(
 //                .concatWithUnconsumedSentLocalMessages(chatId, sourceFeed)
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
 //                .clearCachedSentMessages()
-                .doOnSuccess { Timber.d("[${Thread.currentThread().name}] Chat messages: ${it.print()}") }
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
         cloud.getChat(accessToken, resolution, chatId, lastActionTime)
             .handleError(tag = "getChat(peerId=$chatId,$resolution,lat=$lastActionTime)", traceTag = "feeds/chat")
-            .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.chat.messages.size}] originally") }
             .map { it.chat.mapToChat() }
 
     // ------------------------------------------
@@ -98,7 +95,6 @@ class MessengerRepository @Inject constructor(
             })
         .flatMap { chat ->
             //region mutex
-            Timber.v("[${Thread.currentThread().name}] New messages ${chat.print()}")
             mutex.acquireUninterruptibly()
             if (sentMessageLocalReadersCount.incrementAndGet() == 1) {
                 sentMessagesLocalWriterLock.acquireUninterruptibly()
@@ -106,7 +102,6 @@ class MessengerRepository @Inject constructor(
             mutex.release()
             //endregion
 
-            Timber.v("[${Thread.currentThread().name}] Sent messages local: ${sentMessageLocalIds.print()}")
             val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessageLocalIds) }
             chat.messages.forEach { message ->
                 if (message.isUserMessage()) {
@@ -122,13 +117,11 @@ class MessengerRepository @Inject constructor(
                 sentMessagesLocalWriterLock.release()
             }
             mutex.release()
-            Timber.v("[${Thread.currentThread().name}] Unconsumed sent messages: ${sentMessageLocalIds.print()}")
             //endregion
 
             Observable.just(chat)
         }
         .singleOrError()
-        .doOnSuccess { DebugLogUtil.v("# Chat messages: [${it.messages.size}] after filtering out cached (old) messages") }
 
     /**
      * Compare chat's messages list to locally stored sent messages for chat given by [chatId] and retain only
@@ -234,11 +227,6 @@ class MessengerRepository @Inject constructor(
             targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID)
 
         return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, sourceFeed = sourceFeed)) }
-//            .flatMapCompletable {
-//                sentMessagesLocal.messages(essence.peerId)
-//                    .doOnSuccess { Timber.i("[${Thread.currentThread().name}] Sent storage: ${it.print()}") }
-//                    .ignoreElement()
-//            }
             .doOnSubscribe {
                 sentMessagesLocalWriterLock.acquireUninterruptibly()
                 sentMessageLocalIds.add(sentMessage)
