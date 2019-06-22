@@ -21,7 +21,6 @@ import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import timber.log.Timber
@@ -56,9 +55,8 @@ class MessengerRepository @Inject constructor(
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .filterOutChatOldMessages(chatId, sourceFeed)
-//                .concatWithUnconsumedSentLocalMessages(chatId, sourceFeed)
+                .concatWithUnconsumedSentLocalMessages()
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
-//                .clearCachedSentMessages()
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
@@ -93,7 +91,16 @@ class MessengerRepository @Inject constructor(
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
-        .flatMap { chat ->
+        .singleOrError()
+
+    /**
+     * Given the most recent sublist of chat's messages, analyze locally stored sent messages and
+     * retain only unconsumed ones, i.e. those sent messages that don't present in chat.
+     *
+     * @note N-Readers-1-Writer pattern is used to concurrently access locally stored sent messages.
+     */
+    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(): Single<Chat> =
+        map { chat ->
             //region mutex
             mutex.acquireUninterruptibly()
             if (sentMessageLocalReadersCount.incrementAndGet() == 1) {
@@ -119,9 +126,8 @@ class MessengerRepository @Inject constructor(
             mutex.release()
             //endregion
 
-            Observable.just(chat)
+            chat  // result value
         }
-        .singleOrError()
 
     // --------------------------------------------------------------------------------------------
     override fun clearMessages(): Completable =
