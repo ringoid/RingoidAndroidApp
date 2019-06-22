@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
@@ -94,17 +93,12 @@ class ChatViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     private fun startPollingChat(profileId: String, sourceFeed: LmmNavTab, delay: Long) {
-        val peerIdStr = if (BuildConfig.IS_STAGING) profileId.substring(0..3) else "<...>"
-        val logStr = if (BuildConfig.IS_STAGING) "for p=$peerIdStr on ${sourceFeed.feedName}" else ""
-
         Flowable.timer(delay, TimeUnit.MILLISECONDS)
-            .doOnSubscribe { Timber.v("Start polling chat $logStr".trim()) }
             .flatMap {
                 val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                                      .put("chatId", profileId)
                                      .put("sourceFeed", sourceFeed.feedName)
                 getChatNewMessagesUseCase.source(params = params)
-                    .doOnSubscribe { Timber.v("Poll chat $logStr".trim()) }
                     .repeatWhen { completed -> completed.delay(3000, TimeUnit.MILLISECONDS) }
             }
             .autoDisposable(this)
@@ -112,8 +106,7 @@ class ChatViewModel @Inject constructor(
                 val peerMessagesCount = chat.messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
                 if (peerMessagesCount > 0) {
                     ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount + ChatInMemoryCache.getPeerMessagesCount(profileId))
-                    Timber.v("Count of messages from peer [$peerIdStr] has changed")
-                } else Timber.v("Count of messages from peer [$peerIdStr] has NOT changed")
+                }
 
                 val list = mutableListOf<Message>()
                     .apply {
