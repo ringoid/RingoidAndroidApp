@@ -165,7 +165,6 @@ class MessengerRepository @Inject constructor(
                 sentMessagesLocalWriterLock.acquireUninterruptibly()
                 sentMessageLocalIds.add(sentMessage)
                 aObjPool.put(aobj)
-                Timber.i("[${Thread.currentThread().name}] Sent storage: ${sentMessageLocalIds.print()}")
                 sentMessagesLocalWriterLock.release()
             }
             .toSingleDefault(sentMessage)
