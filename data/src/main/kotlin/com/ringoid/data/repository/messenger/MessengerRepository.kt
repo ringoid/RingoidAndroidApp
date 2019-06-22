@@ -36,6 +36,7 @@ class MessengerRepository @Inject constructor(
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
     private val mutex = Semaphore(1)
+    private val sentMessageLocalIds = mutableSetOf<Message>()
     private val sentMessageLocalReadersCount = AtomicInteger(0)
     private val sentMessagesLocalWriterLock = Semaphore(1)
 
@@ -175,6 +176,4 @@ class MessengerRepository @Inject constructor(
             }
             .toSingleDefault(sentMessage)
     }
-
-    private val sentMessageLocalIds = mutableSetOf<Message>()
 }
