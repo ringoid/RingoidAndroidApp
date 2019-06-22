@@ -121,10 +121,11 @@ class ChatViewModel @Inject constructor(
                         addAll(chat.messages.reversed())
                         addAll(currentMessageList)
                     }
-                Timber.i("[${Thread.currentThread().name}] List: ${list.subList(0, 8).print()}")
-                currentMessageList = list
+                currentMessageList = ArrayList(list)  // clone list to avoid further modifications
+                Timber.w("[${Thread.currentThread().name}] List: ${currentMessageList.subList(0, 12).print()}")
                 messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
                 onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
+                Timber.i("[${Thread.currentThread().name}] List: ${messages.value?.subList(0, 12)?.print()}")
             }, Timber::e)  // on error - fail silently
     }
 }
