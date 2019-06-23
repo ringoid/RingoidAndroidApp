@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class UseCaseThreadExecutorImpl @Inject constructor() : UseCaseThreadExecutor {
 
-    private val executor = ThreadPoolExecutor(4, 8, 10, TimeUnit.SECONDS,
+    private val executor = ThreadPoolExecutor(5, 10, 10, TimeUnit.SECONDS,
                                               LinkedBlockingQueue(), UseCaseThreadFactory(executorName = "$this"))
 
     override fun execute(command: Runnable) {
