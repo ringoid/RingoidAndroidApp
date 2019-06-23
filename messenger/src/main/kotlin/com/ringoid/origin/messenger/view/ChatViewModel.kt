@@ -2,21 +2,26 @@ package com.ringoid.origin.messenger.view
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.*
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
+import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Flowable
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -29,11 +34,14 @@ class ChatViewModel @Inject constructor(
     private val sendMessageToPeerUseCase: SendMessageToPeerUseCase,
     app: Application) : BaseViewModel(app) {
 
+    private data class ChatData(val chatId: String, val sourceFeed: LmmNavTab)
+
     val messages by lazy { MutableLiveData<List<Message>>() }
     val newMessages by lazy { MutableLiveData<List<Message>>() }
     val sentMessage by lazy { MutableLiveData<Message>() }
     val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
 
+    private var chatData: ChatData? = null
     private var currentMessageList: List<Message> = emptyList()
 
     // --------------------------------------------------------------------------------------------
@@ -42,6 +50,7 @@ class ChatViewModel @Inject constructor(
      * when Lmm data fetching had completed.
      */
     fun getMessages(profileId: String, sourceFeed: LmmNavTab = LmmNavTab.MESSAGES) {
+        chatData = ChatData(chatId = profileId, sourceFeed = sourceFeed)
         val params = Params().put("chatId", profileId)
                              .put("sourceFeed", sourceFeed.feedName)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
@@ -94,27 +103,45 @@ class ChatViewModel @Inject constructor(
     private fun startPollingChat(profileId: String, sourceFeed: LmmNavTab, delay: Long) {
         Flowable.timer(delay, TimeUnit.MILLISECONDS)
             .flatMap {
-                val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
-                                     .put("chatId", profileId)
-                                     .put("sourceFeed", sourceFeed.feedName)
-                pollChatNewMessagesUseCase.source(params = params)
+                pollChatNewMessagesUseCase.source(params = prepareGetChatParams(profileId, sourceFeed))
                     .takeUntil { isStopped }  // stop polling if Chat screen was hidden
             }
+            .doOnNext { if (it.id != profileId) Timber.e("IDS DIFF: ${it.id} / $profileId") }
             .autoDisposable(this)
-            .subscribe({ chat ->
-                val peerMessagesCount = chat.messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
-                if (peerMessagesCount > 0) {
-                    ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount + ChatInMemoryCache.getPeerMessagesCount(profileId))
-                }
+            .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
+    }
 
-                val list = mutableListOf<Message>()
-                    .apply {
-                        addAll(chat.messages.reversed())
-                        addAll(currentMessageList)
-                    }
-                currentMessageList = ArrayList(list)  // clone list to avoid further modifications
-                messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
-                onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
-            }, Timber::e)  // on error - fail silently
+    // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        if (event.peerId == chatData?.chatId) {
+            getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = event.peerId, sourceFeed = chatData?.sourceFeed ?: LmmNavTab.MESSAGES))
+                .autoDisposable(this)
+                .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun prepareGetChatParams(profileId: String, sourceFeed: LmmNavTab): Params =
+        Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+                .put("chatId", profileId)
+                .put("sourceFeed", sourceFeed.feedName)
+
+    private fun handleChatUpdate(chat: Chat) {
+        val peerMessagesCount = chat.messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
+        if (peerMessagesCount > 0) {
+            ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = chat.id, count = peerMessagesCount + ChatInMemoryCache.getPeerMessagesCount(chat.id))
+        }
+
+        val list = mutableListOf<Message>()
+            .apply {
+                addAll(chat.messages.reversed())
+                addAll(currentMessageList)
+            }
+        currentMessageList = ArrayList(list)  // clone list to avoid further modifications
+        messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
+        onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
     }
 }
