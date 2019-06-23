@@ -76,7 +76,11 @@ class MessengerRepository @Inject constructor(
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
         cloud.getChat(accessToken, resolution, chatId, lastActionTime)
             .handleError(tag = "getChat(peerId=$chatId,$resolution,lat=$lastActionTime)", traceTag = "feeds/chat")
-            .doOnSuccess { pollingDelay = it.pullAgainAfter }  // update polling delay from response data
+            .doOnSuccess { chat ->
+                if (chat.pullAgainAfter >= 500L) {
+                    pollingDelay = chat.pullAgainAfter  // update polling delay from response data
+                }
+            }
             .map { it.chat.mapToChat() }
 
     // ------------------------------------------
