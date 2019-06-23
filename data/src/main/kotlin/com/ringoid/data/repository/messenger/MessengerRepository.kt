@@ -4,7 +4,6 @@ import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.data.misc.printDbo
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
@@ -17,7 +16,6 @@ import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
-import com.ringoid.domain.model.print
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
@@ -25,13 +23,11 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import timber.log.Timber
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
 
 @Singleton
 class MessengerRepository @Inject constructor(
@@ -102,14 +98,11 @@ class MessengerRepository @Inject constructor(
         toObservable()
         .withLatestFrom(local.messages(chatId = chatId).toObservable(),
             BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
-                Timber.v("[${Thread.currentThread().name}] Old messages ${localMessages.printDbo()}")
-                Timber.v("[${Thread.currentThread().name}] Chat messages ${chat.messages.print()}")
                 if (chat.messages.size > localMessages.size) {
                     val newMessages = chat.messages.subList(localMessages.size, chat.messages.size)
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
-        .doOnNext { Timber.v("[${Thread.currentThread().name}] New messages ${it.print()}") }
         .singleOrError()
 
     /**
