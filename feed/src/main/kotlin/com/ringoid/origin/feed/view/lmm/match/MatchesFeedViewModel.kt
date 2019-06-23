@@ -18,6 +18,7 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
+import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
 import io.reactivex.Observable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -39,7 +40,7 @@ class MatchesFeedViewModel @Inject constructor(
     countUserImagesUseCase: CountUserImagesUseCase,
     notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
-    : BaseLmmFeedViewModel(
+    : BaseMatchesFeedViewModel(
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
         getLikedFeedItemIdsUseCase,
