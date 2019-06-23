@@ -81,29 +81,29 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
 
                 exception?.let { Flowable.error<Long>(it) }
                     ?: Flowable.timer(delayTime, TimeUnit.MILLISECONDS, Schedulers.io())
-                                .doOnSubscribe {
-                                    DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}")
-                                    SentryUtil.breadcrumb("Retry attempt", "tag" to "$tag",
-                                        "attemptNumber" to "$attemptNumber", "count" to "$count",
-                                        "exception" to error.javaClass.canonicalName, "message" to "${error.message}",
-                                        "exception message" to "${error.message}")
-                                }
-                                .doOnNext {
-                                    if (error is RepeatRequestAfterSecException) {
-//                                        SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
-                                        if (attemptNumber >= 3) {
-                                            SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row", tag = tag, extras = extras)
-                                        }
-                                        trace?.incrementMetric("repeatRequestAfter", 1L)
-                                    } else {
-                                        trace?.incrementMetric("retry", 1L)
+                            .doOnSubscribe {
+                                DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}")
+                                SentryUtil.breadcrumb("Retry attempt", "tag" to "$tag",
+                                    "attemptNumber" to "$attemptNumber", "count" to "$count",
+                                    "exception" to error.javaClass.canonicalName, "message" to "${error.message}",
+                                    "exception message" to "${error.message}")
+                            }
+                            .doOnNext {
+                                if (error is RepeatRequestAfterSecException) {
+//                                  SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
+                                    if (attemptNumber >= 3) {
+                                        SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row", tag = tag, extras = extras)
                                     }
+                                    trace?.incrementMetric("repeatRequestAfter", 1L)
+                                } else {
+                                    trace?.incrementMetric("retry", 1L)
                                 }
-                                .doOnComplete {
-                                    if (attemptNumber >= count) {
-                                        throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras) }
-                                    }
+                            }
+                            .doOnComplete {
+                                if (attemptNumber >= count) {
+                                    throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras) }
                                 }
+                            }
             }
     }
 
