@@ -20,11 +20,13 @@ import com.ringoid.domain.model.print
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import timber.log.Timber
 import java.util.concurrent.Semaphore
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -40,17 +42,24 @@ class MessengerRepository @Inject constructor(
     private val sentMessageLocalReadersCount = AtomicInteger(0)
     private val sentMessagesLocalWriterLock = Semaphore(1)
 
+    private var pollingDelay = 5000L  // in ms
+
     override fun getChat(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
         aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
 
+    override fun getChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
+        aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
+
+    override fun pollChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Flowable<Chat> =
+        getChatNew(chatId, resolution, sourceFeed)
+            .repeatWhen { completed -> completed.delay(pollingDelay, TimeUnit.MILLISECONDS) }
+
+    // ------------------------------------------
     private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .cacheMessagesFromChat(sourceFeed)
         }
-
-    override fun getChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
-        aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
 
     private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
         spm.accessSingle {
@@ -66,6 +75,9 @@ class MessengerRepository @Inject constructor(
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
         cloud.getChat(accessToken, resolution, chatId, lastActionTime)
             .handleError(tag = "getChat(peerId=$chatId,$resolution,lat=$lastActionTime)", traceTag = "feeds/chat")
+            .doOnSuccess {
+                Timber.w("POLL: $pollingDelay")
+                pollingDelay = it.pullAgainAfter }  // update polling delay from response data
             .map { it.chat.mapToChat() }
 
     // ------------------------------------------

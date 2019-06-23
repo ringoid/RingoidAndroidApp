@@ -7,10 +7,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
-import com.ringoid.domain.interactor.messenger.GetChatUseCase
-import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
-import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
+import com.ringoid.domain.interactor.messenger.*
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
@@ -28,6 +25,7 @@ class ChatViewModel @Inject constructor(
     private val getChatUseCase: GetChatUseCase,
     private val getChatNewMessagesUseCase: GetChatNewMessagesUseCase,
     private val getMessagesForPeerUseCase: GetMessagesForPeerUseCase,
+    private val pollChatNewMessagesUseCase: PollChatNewMessagesUseCase,
     private val sendMessageToPeerUseCase: SendMessageToPeerUseCase,
     app: Application) : BaseViewModel(app) {
 
@@ -38,6 +36,7 @@ class ChatViewModel @Inject constructor(
 
     private var currentMessageList: List<Message> = emptyList()
 
+    // --------------------------------------------------------------------------------------------
     /**
      * Get chat messages from the local storage. Those messages had been stored locally
      * when Lmm data fetching had completed.
@@ -98,8 +97,8 @@ class ChatViewModel @Inject constructor(
                 val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                                      .put("chatId", profileId)
                                      .put("sourceFeed", sourceFeed.feedName)
-                getChatNewMessagesUseCase.source(params = params)
-                    .repeatWhen { completed -> completed.delay(3000, TimeUnit.MILLISECONDS) }
+                pollChatNewMessagesUseCase.source(params = params)
+                    .takeUntil { isStopped }  // stop polling if Chat screen was hidden
             }
             .autoDisposable(this)
             .subscribe({ chat ->
