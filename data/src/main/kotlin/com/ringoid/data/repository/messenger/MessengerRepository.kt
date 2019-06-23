@@ -56,7 +56,10 @@ class MessengerRepository @Inject constructor(
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .filterOutChatOldMessages(chatId, sourceFeed)
-                .concatWithUnconsumedSentLocalMessages()
+                .acquireReadAccessToSentLocalMessagesStore()
+                .concatWithUnconsumedSentLocalMessages(chatId, sourceFeed)
+                .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
+                .releaseReadAccessToSentLocalMessagesStore()
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
         }
 
@@ -73,9 +76,6 @@ class MessengerRepository @Inject constructor(
             Completable.fromCallable { local.insertMessages(messages) }
                        .toSingleDefault(chat)
         }
-
-    private fun Single<Chat>.clearCachedSentMessages(): Single<Chat> =
-        doOnSuccess { sentMessagesLocal.deleteMessages() }
 
     /**
      * Compare old messages list to incoming messages list for chat given by [chatId] and retain only
@@ -100,16 +100,8 @@ class MessengerRepository @Inject constructor(
      *
      * @note N-Readers-1-Writer pattern is used to concurrently access locally stored sent messages.
      */
-    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(): Single<Chat> =
+    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String, sourceFeed: String): Single<Chat> =
         map { chat ->
-            //region mutex
-            mutex.acquireUninterruptibly()
-            if (sentMessageLocalReadersCount.incrementAndGet() == 1) {
-                sentMessagesLocalWriterLock.acquireUninterruptibly()
-            }
-            mutex.release()
-            //endregion
-
             val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessageLocalIds) }
             chat.messages.forEach { message ->
                 if (message.isUserMessage()) {
@@ -119,15 +111,48 @@ class MessengerRepository @Inject constructor(
             chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages)
             sentMessageLocalIds.retainAll(unconsumedSentMessages)
 
-            //region mutex
+            chat  // result value
+        }
+
+    private fun Single<Chat>.cacheUnconsumedSentLocalMessages(chatId: String, sourceFeed: String): Single<Chat> =
+        flatMap { chat ->
+            sentMessagesLocal.countChatMessages(chatId, sourceFeed)
+                .map { count -> count to chat }
+        }
+        .flatMap { (count, chat) ->
+            if (count > 0) {
+                Completable.fromCallable { sentMessagesLocal.deleteMessages(chatId) }
+                           .toSingleDefault(chat)
+            } else Single.just(chat)
+        }
+        .flatMap { chat ->
+            if (sentMessageLocalIds.isNotEmpty()) {
+                Completable.fromCallable {
+                    val dbos = sentMessageLocalIds.map { MessageDbo.from(it, sourceFeed) }
+                    sentMessagesLocal.addMessages(dbos)
+                }
+                .toSingleDefault(chat)
+            } else Single.just(chat)
+        }
+
+    // ------------------------------------------
+    private fun Single<Chat>.acquireReadAccessToSentLocalMessagesStore(): Single<Chat> =
+        map { chat ->
+            mutex.acquireUninterruptibly()
+            if (sentMessageLocalReadersCount.incrementAndGet() == 1) {
+                sentMessagesLocalWriterLock.acquireUninterruptibly()
+            }
+            mutex.release()
+            chat  // result value
+        }
+
+    private fun Single<Chat>.releaseReadAccessToSentLocalMessagesStore(): Single<Chat> =
+        doFinally {
             mutex.acquireUninterruptibly()
             if (sentMessageLocalReadersCount.decrementAndGet() == 0) {
                 sentMessagesLocalWriterLock.release()
             }
             mutex.release()
-            //endregion
-
-            chat  // result value
         }
 
     // --------------------------------------------------------------------------------------------
