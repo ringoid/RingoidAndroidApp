@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
 @Singleton
 class MessengerRepository @Inject constructor(
@@ -43,6 +44,7 @@ class MessengerRepository @Inject constructor(
     private val sentMessagesLocalWriterLock = Semaphore(1)
 
     private var pollingDelay = 5000L  // in ms
+    private val rng = Random(239L)
 
     override fun getChat(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
         aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
@@ -52,7 +54,12 @@ class MessengerRepository @Inject constructor(
 
     override fun pollChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Flowable<Chat> =
         getChatNew(chatId, resolution, sourceFeed)
-            .repeatWhen { completed -> completed.delay(pollingDelay, TimeUnit.MILLISECONDS) }
+            .repeatWhen { it.flatMap {
+                Timber.i("POLL: $pollingDelay")
+                pollingDelay = rng.nextLong(10000)
+                Timber.w("POLL: $pollingDelay")
+                Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS)
+            } }
 
     // ------------------------------------------
     private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
