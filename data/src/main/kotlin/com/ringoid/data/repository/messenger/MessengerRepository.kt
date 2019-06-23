@@ -67,7 +67,7 @@ class MessengerRepository @Inject constructor(
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .filterOutChatOldMessages(chatId, sourceFeed)
                 .acquireReadAccessToSentLocalMessagesStore()
-                .concatWithUnconsumedSentLocalMessages(chatId, sourceFeed)
+                .concatWithUnconsumedSentLocalMessages()
                 .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
                 .releaseReadAccessToSentLocalMessagesStore()
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
@@ -115,7 +115,7 @@ class MessengerRepository @Inject constructor(
      *
      * @note N-Readers-1-Writer pattern is used to concurrently access locally stored sent messages.
      */
-    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String, sourceFeed: String): Single<Chat> =
+    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(): Single<Chat> =
         map { chat ->
             val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessageLocalIds) }
             chat.messages.forEach { message ->
