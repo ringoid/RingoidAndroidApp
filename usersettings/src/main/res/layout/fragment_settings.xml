@@ -66,6 +66,14 @@
     <View style="@style/Underscore"/>
 
     <com.ringoid.widget.view.item_view.IconItemView
+        android:id="@+id/item_suggest_improvements"
+        app:icon_item_hide_icon="false"
+        app:icon_item_text="@string/settings_suggest_improvements"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_delete_account"
         app:icon_item_icon="@drawable/ic_remove_white_24dp"
         app:icon_item_icon_color="@color/warning"

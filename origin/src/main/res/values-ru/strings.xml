@@ -93,6 +93,12 @@
     <string name="referral_dialog_title">Код приглашения</string>
     <string name="referral_dialog_reward_message">Начислено %s монет</string>
 
+    <!-- Suggest Improvements dialog -->
+    <string name="suggest_improvements_description_account_delete">Перед уходом, пожалуйста, предложите, как сделать Ringoid лучше.</string>
+    <string name="suggest_improvements_description">Как сделать Ringoid лучше?</string>
+    <string name="suggest_improvements_positive_button">Предложить</string>
+    <string name="suggest_improvements_title">Предложить улучшения</string>
+
     <!-- Settings screen -->
     <string name="settings_account_delete">Удалить аккаунт</string>
     <string name="settings_account_delete_info">Если вы не открывали Ringoid более 16 дней, профиль автоматически удаляется.</string>
@@ -102,6 +108,7 @@
     <string name="settings_language_help">Если вы хотите помочь и перевести Ringoid на родной язык, пожалуйста, напишите в support@ringoid.com</string>
     <string name="settings_profile">Профиль</string>
     <string name="settings_push">Push&#45;уведомления</string>
+    <string name="settings_suggest_improvements">Предложить улучшения</string>
     <string name="settings_support">Написать support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_support_rationale">Если у вас есть предложения, как улучшить Ringoid, пожалуйста, напишите на \nsupport@ringoid.com</string>

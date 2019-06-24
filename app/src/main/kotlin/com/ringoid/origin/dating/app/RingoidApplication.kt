@@ -2,6 +2,7 @@ package com.ringoid.origin.dating.app
 
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
+import com.ringoid.data.remote.di.SystemCloudModule
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.BaseRingoidApplication
@@ -18,6 +19,7 @@ class RingoidApplication : BaseRingoidApplication() {
             .applicationContext(applicationContext)
             .cloudModule(CloudModule(appVersion = BuildConfig.BUILD_NUMBER))
             .ringoidCloudModule(RingoidCloudModule())
+            .systemCloudModule(SystemCloudModule())
             .create(this)
             .also { DebugLogUtil.connectToDb((it as ApplicationComponent).debugLogDao()) }
 }
