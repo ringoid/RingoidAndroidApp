@@ -39,6 +39,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
 import io.reactivex.subjects.PublishSubject
+import io.sentry.event.Event
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -187,7 +188,7 @@ open class FeedRepository @Inject constructor(
         aObjPool.triggerSource()
                 .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
                 .onErrorResumeNext {
-                    SentryUtil.capture(it, message = "Fallback to get cached Lmm")
+                    SentryUtil.capture(it, message = "Fallback to get cached Lmm", level = Event.Level.WARNING)
                     getCachedLmm()
                 }
 
