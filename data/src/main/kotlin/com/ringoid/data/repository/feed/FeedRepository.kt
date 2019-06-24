@@ -1,6 +1,9 @@
 package com.ringoid.data.repository.feed
 
-import com.ringoid.data.di.*
+import com.ringoid.data.di.PerAlreadySeen
+import com.ringoid.data.di.PerBlock
+import com.ringoid.data.di.PerLmmLikes
+import com.ringoid.data.di.PerLmmMatches
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.feed.property.FeedPropertyDao
@@ -46,7 +49,6 @@ open class FeedRepository @Inject constructor(
     private val feedPropertiesLocal: FeedPropertyDao,
     private val imagesLocal: ImageDao,
     private val messengerLocal: MessageDao,
-    @PerUser private val sentMessagesLocal: MessageDao,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
     @PerBlock private val blockedProfilesCache: UserFeedDao,
     @PerLmmLikes private val newLikesProfilesCache: UserFeedDao,
@@ -200,7 +202,6 @@ open class FeedRepository @Inject constructor(
                 .filterOutBlockedProfilesLmmResponse()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
                 .map { it.map() }
-                .clearCachedSentMessages()  // clear sent user messages because they will be restored with new Lmm
                 .clearCachedPropertyFeedItemIds()  // drop any previous user data (properties) applicable on cached Lmm
                 .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
                 .checkForNewLikes()
@@ -208,7 +209,7 @@ open class FeedRepository @Inject constructor(
                 .checkForNewMessages()
                 .cacheLmm()  // cache new Lmm data fetched from the Server
                 .cacheMessagesFromLmm()
-                .doOnSuccess { lmmLoadFinish.onNext(it.totalCount()) }
+                .doOnSuccess { lmm -> lmmLoadFinish.onNext(lmm.totalCount()) }
         }
 
     override fun getLmmTotalCount(): Single<Int> = local.countFeedItems()
@@ -365,9 +366,6 @@ open class FeedRepository @Inject constructor(
                 }
                 .flatMap { Single.just(lmm) }
         }
-
-    private fun Single<Lmm>.clearCachedSentMessages(): Single<Lmm> =
-        doOnSuccess { sentMessagesLocal.deleteMessages() }
 
     @Deprecated("Since Transition")
     private fun Single<Lmm>.clearCachedPropertyFeedItemIds(): Single<Lmm> =

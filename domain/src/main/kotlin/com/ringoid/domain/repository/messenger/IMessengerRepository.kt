@@ -22,6 +22,10 @@ interface IMessengerRepository {
 
     fun clearMessages(chatId: String): Completable
 
+    fun clearSentMessages(): Completable
+
+    fun clearSentMessages(chatId: String): Completable
+
     fun getMessages(chatId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<List<Message>>
 
     fun sendMessage(essence: MessageEssence): Single<Message>

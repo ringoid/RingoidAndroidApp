@@ -11,6 +11,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
+import com.ringoid.domain.interactor.messenger.ClearSentMessagesUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.feed.Lmm
@@ -25,7 +26,9 @@ import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
-class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
+class LmmViewModel @Inject constructor(
+    val getLmmUseCase: GetLmmUseCase,
+    private val clearSentMessagesUseCase: ClearSentMessagesUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
     private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
     : BaseViewModel(app) {
@@ -57,6 +60,13 @@ class LmmViewModel @Inject constructor(val getLmmUseCase: GetLmmUseCase,
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeMessenger.value = it }, Timber::e)
+
+        // clear sent user messages because they will be restored with new Lmm
+        getLmmUseCase.repository.lmmLoadFinish
+            .flatMapCompletable { clearSentMessagesUseCase.source() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
     }
 
     /* Lifecycle */

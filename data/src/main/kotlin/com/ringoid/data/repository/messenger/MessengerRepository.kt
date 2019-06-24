@@ -183,15 +183,23 @@ class MessengerRepository @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     override fun clearMessages(): Completable =
-        Completable.fromCallable {
-            local.deleteMessages()
-            sentMessagesLocal.deleteMessages()
-        }
+        Completable.fromCallable { local.deleteMessages() }
+                   .andThen(clearSentMessages())
 
     override fun clearMessages(chatId: String): Completable =
+        Completable.fromCallable { local.deleteMessages(chatId) }
+                   .andThen(clearSentMessages(chatId))
+
+    override fun clearSentMessages(): Completable =
         Completable.fromCallable {
-            local.deleteMessages(chatId)
+            sentMessagesLocal.deleteMessages()
+            sentMessages.clear()
+        }
+
+    override fun clearSentMessages(chatId: String): Completable =
+        Completable.fromCallable {
             sentMessagesLocal.deleteMessages(chatId)
+            sentMessages[chatId]?.clear()
         }
 
     // messages cached since last network request + sent user messages (cache locally)
