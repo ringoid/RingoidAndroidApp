@@ -25,13 +25,13 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
 
 @Singleton
 class MessengerRepository @Inject constructor(
@@ -40,12 +40,17 @@ class MessengerRepository @Inject constructor(
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
     private val mutex = Semaphore(1)
-    private val sentMessageLocalIds = mutableSetOf<Message>()
+    private val sentMessages = mutableMapOf<String, MutableSet<Message>>()
     private val sentMessageLocalReadersCount = AtomicInteger(0)
     private val sentMessagesLocalWriterLock = Semaphore(1)
 
     private var pollingDelay = 5000L  // in ms
 
+    init {
+        restoreCachedSentMessagesLocal()
+    }
+
+    // --------------------------------------------------------------------------------------------
     override fun getChat(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
         aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
 
@@ -68,7 +73,7 @@ class MessengerRepository @Inject constructor(
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .filterOutChatOldMessages(chatId, sourceFeed)
                 .acquireReadAccessToSentLocalMessagesStore()
-                .concatWithUnconsumedSentLocalMessages()
+                .concatWithUnconsumedSentLocalMessages(chatId)
                 .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
                 .releaseReadAccessToSentLocalMessagesStore()
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
@@ -118,16 +123,18 @@ class MessengerRepository @Inject constructor(
      *
      * @note N-Readers-1-Writer pattern is used to concurrently access locally stored sent messages.
      */
-    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(): Single<Chat> =
+    private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String): Single<Chat> =
         map { chat ->
-            val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessageLocalIds) }
-            chat.messages.forEach { message ->
-                if (message.isUserMessage()) {
-                    unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
+            if (sentMessages.containsKey(chatId)) {
+                val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessages[chatId]!!) }
+                chat.messages.forEach { message ->
+                    if (message.isUserMessage()) {
+                        unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
+                    }
                 }
+                chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages)
+                sentMessages[chatId]!!.retainAll(unconsumedSentMessages)
             }
-            chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages)
-            sentMessageLocalIds.retainAll(unconsumedSentMessages)
 
             chat  // result value
         }
@@ -144,9 +151,9 @@ class MessengerRepository @Inject constructor(
             } else Single.just(chat)
         }
         .flatMap { chat ->
-            if (sentMessageLocalIds.isNotEmpty()) {
+            if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
                 Completable.fromCallable {
-                    val dbos = sentMessageLocalIds.map { MessageDbo.from(it, sourceFeed) }
+                    val dbos = sentMessages[chatId]!!.map { MessageDbo.from(it, sourceFeed) }
                     sentMessagesLocal.addMessages(dbos)
                 }
                 .toSingleDefault(chat)
@@ -213,10 +220,29 @@ class MessengerRepository @Inject constructor(
         return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, sourceFeed = sourceFeed)) }
             .doOnSubscribe {
                 sentMessagesLocalWriterLock.acquireUninterruptibly()
-                sentMessageLocalIds.add(sentMessage)
+                keepSentMessage(sentMessage)
                 aObjPool.put(aobj)
                 sentMessagesLocalWriterLock.release()
             }
             .toSingleDefault(sentMessage)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    @Suppress("CheckResult")
+    private fun restoreCachedSentMessagesLocal() {
+        sentMessagesLocal.messages()
+            .subscribeOn(Schedulers.io())
+            .subscribe({ sentMessages ->
+                sentMessagesLocalWriterLock.acquireUninterruptibly()
+                sentMessages.forEach { keepSentMessage(it.map()) }
+                sentMessagesLocalWriterLock.release()
+            }, Timber::e)
+    }
+
+    private fun keepSentMessage(sentMessage: Message) {
+        if (!sentMessages.containsKey(sentMessage.chatId)) {
+            sentMessages[sentMessage.chatId] = mutableSetOf()
+        }
+        sentMessages[sentMessage.chatId]!!.add(sentMessage)
     }
 }
