@@ -81,9 +81,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 when (newState.residual) {
                     is CHAT_MESSAGE_SENT -> {
                         onIdleState()
-                        if (chatAdapter.isEmpty()) {
+                        if (chatAdapter.isEmpty()) {  // quick reply mode
                             // user has just sent her first message to peer
-                            payload?.firstUserMessage = (newState.residual as? CHAT_MESSAGE_SENT)?.message
+                            payload?.isChatEmpty = false
                             closeChat()
                         }
                     }
@@ -210,6 +210,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        payload?.isChatEmpty = chatAdapter.isEmpty() && payload?.isChatEmpty == true
         val tag = arguments?.getString(BUNDLE_KEY_TAG, TAG) ?: TAG
         communicator(IDialogCallback::class.java)?.onDialogDismiss(tag = tag, payload = payload)
     }

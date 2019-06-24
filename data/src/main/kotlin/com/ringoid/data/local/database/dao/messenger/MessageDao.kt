@@ -52,6 +52,9 @@ interface MessageDao {
     @Query("UPDATE ${MessageDbo.TABLE_NAME} SET ${MessageDbo.COLUMN_UNREAD} = 0 WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun markMessagesAsRead(chatId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Int
 
+    @Query("UPDATE ${MessageDbo.TABLE_NAME} SET ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
+    fun updateSourceFeed(chatId: String, sourceFeed: String): Int
+
     @Query("DELETE FROM ${MessageDbo.TABLE_NAME}")
     fun deleteMessages()
 

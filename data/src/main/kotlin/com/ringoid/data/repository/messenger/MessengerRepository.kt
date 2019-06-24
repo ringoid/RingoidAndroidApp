@@ -71,7 +71,7 @@ class MessengerRepository @Inject constructor(
     private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                .filterOutChatOldMessages(chatId)
+                .filterOutChatOldMessages(chatId, sourceFeed)
                 .acquireReadAccessToSentLocalMessagesStore()
                 .concatWithUnconsumedSentLocalMessages(chatId)
                 .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
@@ -103,12 +103,12 @@ class MessengerRepository @Inject constructor(
      * new messages, that have appeared in chat data. These messages can also include messages sent
      * by the current user.
      */
-    private fun Single<Chat>.filterOutChatOldMessages(chatId: String): Single<Chat> =
+    private fun Single<Chat>.filterOutChatOldMessages(chatId: String, sourceFeed: String): Single<Chat> =
         toObservable()
-        .withLatestFrom(local.messages(chatId = chatId).toObservable(),
+        .withLatestFrom(local.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
             BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
                 Timber.v("[${Thread.currentThread().name}] Old messages ${localMessages.printDbo()}")
-                Timber.v("[${Thread.currentThread().name}] Chat messages ${chat.messages.print()}")
+                Timber.v("[${Thread.currentThread().name}] Chat messages ${chat.messages.print()} :: ${chat.messages.joinToString { "(${it.id.substring(0..3)})${it.text}" }}")
                 if (chat.messages.size > localMessages.size) {
                     val newMessages = chat.messages.subList(localMessages.size, chat.messages.size)
                     chat.copyWith(newMessages)  // retain only new messages
@@ -206,7 +206,7 @@ class MessengerRepository @Inject constructor(
     override fun getMessages(chatId: String, sourceFeed: String): Single<List<Message>> =
         Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId, sourceFeed = sourceFeed) }
             .flatMap { local.messages(chatId = chatId, sourceFeed = sourceFeed) }
-            .concatWith(sentMessagesLocal.messages(chatId))
+            .concatWith(sentMessagesLocal.messages(chatId, sourceFeed))
             .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.mapList().reversed() }
 

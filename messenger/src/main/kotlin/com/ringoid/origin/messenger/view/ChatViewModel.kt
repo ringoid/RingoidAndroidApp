@@ -80,7 +80,7 @@ class ChatViewModel @Inject constructor(
 
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT(it)) }
+            .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT) }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({

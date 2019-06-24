@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.view.lmm.match
 import android.app.Application
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
-import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -16,8 +15,6 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
-import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
-import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
 import io.reactivex.Observable
 import org.greenrobot.eventbus.Subscribe
@@ -90,12 +87,6 @@ class MatchesFeedViewModel @Inject constructor(
     override fun onSettingsClick(profileId: String) {
         super.onSettingsClick(profileId)
         markFeedItemAsSeen(profileId)
-    }
-
-    override fun onFirstUserMessageSent(profileId: String) {
-        super.onFirstUserMessageSent(profileId)
-        // transfer firstly messaged profile from Matches Feed to Messages Feed, by Product
-        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }
 
     // --------------------------------------------------------------------------------------------

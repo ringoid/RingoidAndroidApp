@@ -6,7 +6,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IEssence
-import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.main.LmmNavTab
 
@@ -16,7 +15,7 @@ data class ChatPayload(
     @Expose @SerializedName(COLUMN_PEER_IMAGE_ID) val peerImageId: String = DomainUtil.BAD_ID,
     @Expose @SerializedName(COLUMN_PEER_IMAGE_URI) val peerImageUri: String? = null,
     @Expose @SerializedName(COLUMN_PEER_THUMB_URI) val peerThumbnailUri: String? = null,
-    @Expose @SerializedName(COLUMN_FIRST_USER_MESSAGE) var firstUserMessage: Message? = null,
+    @Expose @SerializedName(COLUMN_FLAG_CHAT_EMPTY) var isChatEmpty: Boolean = true,
     @Expose @SerializedName(COLUMN_ONLINE_STATUS) var onlineStatus: OnlineStatus? = null,
     @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LmmNavTab = LmmNavTab.MESSAGES)
     : IEssence, Parcelable {
@@ -27,9 +26,9 @@ data class ChatPayload(
         peerImageId = source.readString() ?: DomainUtil.BAD_ID,
         peerImageUri = source.readString(),
         peerThumbnailUri = source.readString(),
+        isChatEmpty = source.readInt() != 0,
         onlineStatus = source.readSerializable() as? OnlineStatus,
-        sourceFeed = source.readSerializable() as? LmmNavTab ?: LmmNavTab.MESSAGES,
-        firstUserMessage = source.readParcelable(Message::class.java.classLoader))
+        sourceFeed = source.readSerializable() as? LmmNavTab ?: LmmNavTab.MESSAGES)
 
     override fun describeContents(): Int = 0
 
@@ -40,9 +39,9 @@ data class ChatPayload(
             writeString(peerImageId)
             writeString(peerImageUri)
             writeString(peerThumbnailUri)
+            writeInt(if (isChatEmpty) 1 else 0)
             writeSerializable(onlineStatus)
             writeSerializable(sourceFeed)
-            writeParcelable(firstUserMessage, flags)
         }
     }
 
@@ -52,7 +51,7 @@ data class ChatPayload(
         const val COLUMN_PEER_IMAGE_ID = "peerImageId"
         const val COLUMN_PEER_IMAGE_URI = "peerImageUri"
         const val COLUMN_PEER_THUMB_URI = "peerThumbUri"
-        const val COLUMN_FIRST_USER_MESSAGE = "firstUserMessage"
+        const val COLUMN_FLAG_CHAT_EMPTY = "isChatEmpty"
         const val COLUMN_ONLINE_STATUS = "onlineStatus"
         const val COLUMN_SOURCE_FEED = "sourceFeed"
 

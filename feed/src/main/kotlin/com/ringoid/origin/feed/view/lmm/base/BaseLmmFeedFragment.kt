@@ -135,13 +135,14 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
                 when (tag) {
                     ChatFragment.TAG -> {
-                        vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
-                        // supply first message from user to FeedItem to change in on bind
-                        it.firstUserMessage?.let { _ -> vm.onFirstUserMessageSent(profileId = it.peerId) }
-                        feedAdapter.findModel(it.position)?.setOnlineStatus(it.onlineStatus)
-                        getRecyclerView().post {
-                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
-                            trackScrollOffsetForPosition(it.position)
+                        if (!it.isChatEmpty && it.sourceFeed == LmmNavTab.MATCHES) {
+                            vm.transferProfile(profileId = it.peerId)
+                        } else {
+                            feedAdapter.findModel(it.position)?.setOnlineStatus(it.onlineStatus)
+                            getRecyclerView().post {
+                                feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                                trackScrollOffsetForPosition(it.position)
+                            }
                         }
                     }
                 }
@@ -235,8 +236,12 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 when (data.getStringExtra("action")) {
                     "block" -> onBlockFromChat(tag = tag, payload = payload)
                     "report" -> onReportFromChat(tag = tag, payload = payload, reasonNumber = data.getIntExtra("reason", 0))
+                    else -> onDialogDismiss(tag = tag, payload = payload)
                 }
-                onDialogDismiss(tag = tag, payload = payload)
+
+                payload?.let {
+                    vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
+                }
             }
         }
     }

@@ -28,6 +28,7 @@ import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.runOnUiThread
@@ -256,10 +257,7 @@ abstract class BaseLmmFeedViewModel(
         discardedFeedItemIds.add(profileId)
     }
 
-    @Deprecated("Since Transition")
-    open fun onFirstUserMessageSent(profileId: String) {
-        addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
-            .autoDisposable(this)
-            .subscribe({}, Timber::e)  // keep those peers that user has sent the first message to
+    internal fun transferProfile(profileId: String) {
+        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }
 }
