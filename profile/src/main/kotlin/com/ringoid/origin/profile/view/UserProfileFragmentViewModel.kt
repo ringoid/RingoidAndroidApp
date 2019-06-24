@@ -188,7 +188,7 @@ class UserProfileFragmentViewModel @Inject constructor(
         }
 
         DebugLogUtil.d("Applying referral code: $code")
-        applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code!!)))
+        applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code)))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError {
                 viewState.value = when (it) {
