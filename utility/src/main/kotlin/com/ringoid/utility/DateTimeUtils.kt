@@ -1,8 +1,7 @@
 package com.ringoid.utility
 
 import org.joda.time.DateTime
-import org.joda.time.Period
-import org.joda.time.format.PeriodFormatterBuilder
+import org.joda.time.Days
 import java.util.*
 
 fun isAdultAge(yearOfBirth: Int, calendar: Calendar, adultThreshold: Int = 0): Boolean =
@@ -12,13 +11,7 @@ fun Date.date(): String = "${1900 + year}.${wrapTimeUnit(month + 1)}.${wrapTimeU
 fun Date.time(): String = "${wrapTimeUnit(hours)}:${wrapTimeUnit(minutes)}:${wrapTimeUnit(seconds)}"
 
 fun daysAgo(ts: Long): String =
-    Period(DateTime(ts), DateTime.now())
-        .let { period ->
-            PeriodFormatterBuilder()
-                .appendDays().appendSuffix(" days ago")
-                .toFormatter()
-                .print(period)
-        }
+    Days.daysBetween(DateTime(ts), DateTime.now()).let { "${it.days} days ago" }
 
 fun fromTs(ts: Long): String =
     DateTime(ts).let { dt -> "${dt.year().get()}-${dt.monthOfYear().get()}-${dt.dayOfMonth().get()}" }
