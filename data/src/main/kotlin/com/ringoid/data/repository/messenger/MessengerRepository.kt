@@ -136,6 +136,7 @@ class MessengerRepository @Inject constructor(
                 sentMessages[chatId]!!.retainAll(unconsumedSentMessages)
             }
 
+            Timber.d("[${Thread.currentThread().name}] Final messages ${chat.print()}")
             chat  // result value
         }
 
