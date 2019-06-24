@@ -197,7 +197,7 @@ open class FeedRepository @Inject constructor(
                 .handleError(tag = "getLmm($resolution,lat=$lastActionTime)", traceTag = "feeds/get_lmm")
                 .dropLmmResponseStatsOnSubscribe()
                 .filterOutDuplicateProfilesLmmResponse()
-                .detectCollisionProfilesLmmResponse()
+//                .detectCollisionProfilesLmmResponse()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
                 .filterOutBlockedProfilesLmmResponse()
                 .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
