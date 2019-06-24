@@ -21,7 +21,7 @@ fun daysAgo(ts: Long): String =
         }
 
 fun fromTs(ts: Long): String =
-    DateTime(ts).let { dt -> "${dt.year()}-${dt.monthOfYear()}-${dt.dayOfMonth()}" }
+    DateTime(ts).let { dt -> "${dt.year().get()}-${dt.monthOfYear().get()}-${dt.dayOfMonth().get()}" }
 
 
 fun wrapTimeUnit(unit: Int): String = if (unit < 10) "0$unit" else "$unit"

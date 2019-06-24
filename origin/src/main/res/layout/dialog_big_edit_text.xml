@@ -7,38 +7,44 @@
     android:layout_height="wrap_content"
     android:background="?attr/refColorBg"
     android:minHeight="@dimen/std_dialog_height_double"
+    android:minWidth="@dimen/std_dialog_width"
     android:paddingTop="@dimen/std_margin_16"
-    android:paddingBottom="@dimen/std_margin_8"
     android:paddingStart="@dimen/std_margin_16"
     android:paddingEnd="@dimen/std_margin_16">
 
     <TextView
         android:id="@+id/tv_dialog_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:gravity="center"
         android:textSize="@dimen/std_text_20"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Suggest improvements"
         style="@style/StdText.Primary"/>
 
     <TextView
         android:id="@+id/tv_dialog_subtitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_marginTop="@dimen/std_margin_8"
         android:gravity="center"
         android:textSize="@dimen/std_text_16"
         app:layout_constraintTop_toBottomOf="@id/tv_dialog_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="There is no undo."
         style="@style/StdText.Primary"/>
 
     <TextView
         android:id="@+id/tv_dialog_description"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/std_margin_32"
+        android:layout_width="0dp"
+        android:layout_marginTop="@dimen/std_margin_24"
         android:gravity="center_vertical|start"
         android:textSize="@dimen/std_text_16"
         app:layout_constraintTop_toBottomOf="@id/tv_dialog_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="How to make Ringoid better?"
         style="@style/StdText.Primary"/>
 
@@ -59,16 +65,18 @@
 
     <EditText
         android:id="@+id/et_dialog_entry"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginBottom="@dimen/std_margin_8"
         android:background="@drawable/rect_round_secondary_stroke_white"
         android:gravity="start|top"
         android:inputType="text"
         android:maxLength="300"
+        android:padding="@dimen/std_margin_8"
         app:layout_constraintTop_toBottomOf="@id/tv_dialog_description"
-        app:layout_constraintBottom_toTopOf="@id/btn_done">
+        app:layout_constraintBottom_toTopOf="@id/btn_done"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
         <requestFocus/>
     </EditText>
 </androidx.constraintlayout.widget.ConstraintLayout>

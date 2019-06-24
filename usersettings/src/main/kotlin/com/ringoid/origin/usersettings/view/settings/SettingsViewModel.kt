@@ -46,7 +46,7 @@ class SettingsViewModel @Inject constructor(
         val createdAt = spm.currentUserCreateTs().takeIf { it > 0L }?.let { fromTs(it) }
         val daysAgo = spm.currentUserCreateTs().takeIf { it > 0L }?.let { daysAgo(it) }
         val gender = spm.currentUserGender()
-        val reportText = "*$age ${gender.short()}* from `$tag`\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n$id${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt($daysAgo)"}"
+        val reportText = "*$age ${gender.short()}* from `$tag`\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt($daysAgo)"}"
 
         val params = Params().put("channelId", "CJDASTGTC")
                              .put("text", reportText)
