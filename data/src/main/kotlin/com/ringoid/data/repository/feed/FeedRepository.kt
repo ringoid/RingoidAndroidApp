@@ -335,6 +335,12 @@ open class FeedRepository @Inject constructor(
     // --------------------------------------------------------------------------------------------
     private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
         flatMap { lmm ->
+            /**
+             * Note that since [MessageDao.insertMessages] inserts only new [MessageDbo] instances
+             * ignoring any updates in existing items (comparing them by [MessageDbo.id]), any updates,
+             * in particular - change of [MessageDbo.sourceFeed] value due to profile transfer,
+             * should be performed in addition.
+             */
             val messages = mutableListOf<MessageDbo>()
             lmm.likes.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_LIKES) }) }
             lmm.matches.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_MATCHES) }) }
