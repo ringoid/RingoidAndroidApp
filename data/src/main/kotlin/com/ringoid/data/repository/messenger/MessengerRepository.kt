@@ -71,7 +71,7 @@ class MessengerRepository @Inject constructor(
     private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                .filterOutChatOldMessages(chatId, sourceFeed)
+                .filterOutChatOldMessages(chatId)
                 .acquireReadAccessToSentLocalMessagesStore()
                 .concatWithUnconsumedSentLocalMessages(chatId)
                 .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
@@ -103,7 +103,7 @@ class MessengerRepository @Inject constructor(
      * new messages, that have appeared in chat data. These messages can also include messages sent
      * by the current user.
      */
-    private fun Single<Chat>.filterOutChatOldMessages(chatId: String, sourceFeed: String): Single<Chat> =
+    private fun Single<Chat>.filterOutChatOldMessages(chatId: String): Single<Chat> =
         toObservable()
         .withLatestFrom(local.messages(chatId = chatId).toObservable(),
             BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
