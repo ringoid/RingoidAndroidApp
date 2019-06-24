@@ -100,6 +100,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>(), BigEditTextDialog.IB
             descriptionResId = OriginR_string.suggest_improvements_description_account_delete,
             btnPositiveResId = OriginR_string.button_delete,
             tag = "DeleteAccount")
+            .show(childFragmentManager, BigEditTextDialog.TAG)
     }
 
     private fun openSuggestImprovementsDialog() {
@@ -107,5 +108,6 @@ class SettingsFragment : BaseFragment<SettingsViewModel>(), BigEditTextDialog.IB
             descriptionResId = OriginR_string.suggest_improvements_description,
             btnPositiveResId = OriginR_string.suggest_improvements_positive_button,
             tag = "SuggestFromSettings")
+            .show(childFragmentManager, BigEditTextDialog.TAG)
     }
 }
