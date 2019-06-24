@@ -12,6 +12,7 @@ import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.image.UserImageRepository
 import com.ringoid.data.repository.messenger.MessengerRepository
 import com.ringoid.data.repository.push.PushRepository
+import com.ringoid.data.repository.system.SystemRepository
 import com.ringoid.data.repository.user.UserRepository
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -21,6 +22,7 @@ import com.ringoid.domain.repository.feed.IFeedRepository
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.domain.repository.push.IPushRepository
+import com.ringoid.domain.repository.system.ISystemRepository
 import com.ringoid.domain.repository.user.IUserRepository
 import dagger.Module
 import dagger.Provides
@@ -47,6 +49,9 @@ class RepositoryModule {
 
     @Provides @Singleton
     fun providePushRepository(repository: PushRepository): IPushRepository = repository
+
+    @Provides @Singleton
+    fun provideSystemRepository(repository: SystemRepository): ISystemRepository = repository
 
     @Provides @Singleton
     fun provideUserRepository(repository: UserRepository): IUserRepository = repository
