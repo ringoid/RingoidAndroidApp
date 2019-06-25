@@ -1,5 +1,6 @@
 package com.ringoid.data.repository.feed
 
+import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import com.ringoid.data.di.PerAlreadySeen
 import com.ringoid.data.di.PerBlock
@@ -162,8 +163,14 @@ open class FeedRepository @Inject constructor(
 
     /* New Faces */
     // ------------------------------------------
-    override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
-        aObjPool.triggerSource().flatMap { getNewFacesOnly(resolution, limit, lastActionTime = it) }
+    override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> {
+        val trace = FirebasePerformance.getInstance().newTrace("refresh_new_faces")
+        return aObjPool
+            .triggerSource()
+            .doOnSubscribe { trace.start() }
+            .flatMap { getNewFacesOnly(resolution, limit, lastActionTime = it) }
+            .doFinally { trace.stop() }
+    }
 
     private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long,
                                 extraTraces: Collection<Trace> = emptyList()): Single<Feed> =
@@ -181,13 +188,18 @@ open class FeedRepository @Inject constructor(
 
     /* LMM */
     // ------------------------------------------
-    override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> =
-        aObjPool.triggerSource()
-                .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it) }
-                .onErrorResumeNext {
-                    SentryUtil.capture(it, message = "Fallback to get cached Lmm", level = Event.Level.WARNING)
-                    getCachedLmm()
-                }
+    override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> {
+        val trace = FirebasePerformance.getInstance().newTrace("refresh_lmm")
+        return aObjPool
+            .triggerSource()
+            .doOnSubscribe { trace.start() }
+            .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it, extraTraces = listOf(trace)) }
+            .onErrorResumeNext {
+                SentryUtil.capture(it, message = "Fallback to get cached Lmm", level = Event.Level.WARNING)
+                getCachedLmm()
+            }
+            .doFinally { trace.stop() }
+    }
 
     private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long,
                            extraTraces: Collection<Trace> = emptyList()): Single<Lmm> =
