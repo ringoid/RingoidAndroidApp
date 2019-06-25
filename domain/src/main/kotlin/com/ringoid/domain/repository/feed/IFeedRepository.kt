@@ -4,7 +4,6 @@ import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
-import com.ringoid.domain.model.feed.property.LikedFeedItemIds
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
@@ -25,16 +24,8 @@ interface IFeedRepository {
     fun deleteBlockedProfileIds(): Completable
 
     // ------------------------------------------
-    fun cacheLikedFeedItemId(feedItemId: String, imageId: String): Completable
-    fun cacheLikedFeedItemIds(ids: LikedFeedItemIds): Completable
-    fun cacheUserMessagedFeedItemId(feedItemId: String): Completable
-
     fun getCachedFeedItemById(id: String): Single<FeedItem>
-    fun getLikedFeedItemIds(ids: List<String>): Single<LikedFeedItemIds>
-    fun getUserMessagedFeedItemIds(): Single<List<String>>
 
-    fun clearCachedLikedFeedItemIds(): Completable
-    fun clearCachedUserMessagedFeedItemIds(): Completable
     fun clearCachedLmm(): Completable
     fun clearCachedLmmProfileIds(): Completable
 

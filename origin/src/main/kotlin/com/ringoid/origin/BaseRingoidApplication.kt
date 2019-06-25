@@ -48,7 +48,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeProgrammingTools()
         initializeRxErrorHandler()
-        initializeStrictMode()  // ignore StrictMode alerts for SDK's initializations
+//        initializeStrictMode()  // ignore StrictMode alerts for SDK's initializations
 
         imagePreviewReceiver.register()  // app-wide broadcast receiver doesn't need to unregister
     }
@@ -89,7 +89,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         if (BuildConfig.DEBUG) {
             Timber.plant(object : Timber.DebugTree() {
                 override fun createStackElementTag(element: StackTraceElement): String =
-                    packageName + ":" + super.createStackElementTag(element) + ":" + element.lineNumber
+                    "$packageName:${super.createStackElementTag(element)}:${element.lineNumber}"//-${Thread.currentThread().name}"
             })
         } else {
             Timber.plant(CrashlyticsTree())

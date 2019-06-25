@@ -82,6 +82,10 @@ class DebugRepository @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun commitActionObjectsWithFailAllRetries(): Completable =
+        aObjPool.triggerSource().ignoreElement()
+
+    // --------------------------------------------------------------------------------------------
     private var requestAttempt: Int = 0
     private var requestRepeatAfterDelayAttempt: Int = 0
 

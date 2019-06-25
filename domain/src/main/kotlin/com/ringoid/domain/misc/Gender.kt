@@ -8,6 +8,8 @@ enum class Gender(val string: String, @DrawableRes val resId: Int) {
     FEMALE("female", R.drawable.ic_sex_female_white_24dp),
     UNKNOWN("", 0);
 
+    fun short(): Char = name.takeIf { it.isNotEmpty() }?.get(0)?.toUpperCase() ?: ' '
+
     companion object {
         fun from(str: String?): Gender =
             when (str) {

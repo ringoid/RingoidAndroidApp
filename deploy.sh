@@ -15,6 +15,10 @@ function slackPost() {
 	./slackpost_cmd.sh $@
 }
 
+function slackUpload() {
+    ./slackupload_cmd.sh $@
+}
+
 function getBuildCode() {
 	echo "$1" | cut -d'-' -f 2
 }
@@ -38,6 +42,6 @@ do
 #	if [[ "$TO_SLACK" == true ]]
 #	then
 		echo $(slackPost $buildVariant $buildCode $url)
+		echo $(slackUpload $buildVariant $buildCode)
 #	fi
 done
-

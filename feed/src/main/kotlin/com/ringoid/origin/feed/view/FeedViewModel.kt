@@ -17,7 +17,10 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
-import com.ringoid.domain.model.actions.*
+import com.ringoid.domain.model.actions.BlockActionObject
+import com.ringoid.domain.model.actions.LikeActionObject
+import com.ringoid.domain.model.actions.ViewActionObject
+import com.ringoid.domain.model.actions.ViewChatActionObject
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -188,29 +191,19 @@ abstract class FeedViewModel(
         // override in subclasses
     }
 
-    internal open fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
+    internal open fun onLike(profileId: String, imageId: String) {
         advanceAndPushViewObject(imageId to profileId)
-        val aobj = if (isLiked) LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
-                   else UnlikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
+        val aobj = LikeActionObject(sourceFeed = getFeedName(), targetImageId = imageId, targetUserId = profileId)
         actionObjectPool.put(aobj)
 
         // analytics
         with (analyticsManager) {
             val sourceFeed = getFeedName()
-            if (isLiked) {
-                fire(Analytics.ACTION_USER_LIKE_PHOTO, "sourceFeed" to sourceFeed)
-                when (sourceFeed) {
-                    DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_LIKES)
-                    DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MATCHES)
-                    DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MESSAGES)
-                }
-            } else {
-                fire(Analytics.ACTION_USER_UNLIKE_PHOTO, "sourceFeed" to sourceFeed)
-                when (sourceFeed) {
-                    DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_UNLIKE_PHOTO_FROM_LIKES)
-                    DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_UNLIKE_PHOTO_FROM_MATCHES)
-                    DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_UNLIKE_PHOTO_FROM_MESSAGES)
-                }
+            fire(Analytics.ACTION_USER_LIKE_PHOTO, "sourceFeed" to sourceFeed)
+            when (sourceFeed) {
+                DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_LIKES)
+                DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MATCHES)
+                DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MESSAGES)
             }
         }
     }
@@ -308,7 +301,7 @@ abstract class FeedViewModel(
          * It's possible because we keep track on what images we are looking at while scrolling
          * horizontally.
          */
-        val fixItems = items.map { ProfileImageVO(it.profileId, image = horizontalPrevRanges[it.profileId]?.pickOne()?.image ?: it.image, isLiked = it.isLiked) }
+        val fixItems = items.map { ProfileImageVO(it.profileId, image = horizontalPrevRanges[it.profileId]?.pickOne()?.image ?: it.image) }
         val fixRange = EqualRange(from = items.from, to = items.to, items = fixItems)
         addViewObjectsToBuffer(fixRange, tag = "[vert]")
         items.filter { !horizontalPrevRanges.containsKey(it.profileId) }
@@ -327,7 +320,7 @@ abstract class FeedViewModel(
     internal fun onItemBecomeVisible(profile: FeedItemVO, image: IImage) {
         DebugLogUtil.v("Item become visible [${getFeedName()}]: p=${profile.id.substring(0..3)}")
         if (!horizontalPrevRanges.containsKey(profile.id)) {
-            horizontalPrevRanges[profile.id] = EqualRange(0, 0, listOf(ProfileImageVO(profileId = profile.id, image = image, isLiked = profile.isLiked(image.id))))
+            horizontalPrevRanges[profile.id] = EqualRange(0, 0, listOf(ProfileImageVO(profileId = profile.id, image = image)))
         }
 
         val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
@@ -351,10 +344,7 @@ abstract class FeedViewModel(
      * be gone, so that new [onViewVertical] during scroll will operate with correct feed items.
      */
     internal fun onSettleVisibleItemsAfterDiscard(items: List<FeedItemVO>) {
-        val fixItems = items.map {
-            val image = horizontalPrevRanges[it.id]?.pickOne()?.image ?: it.images[it.positionOfImage]
-            ProfileImageVO(it.id, image = image, isLiked = it.isLiked(image.id))
-        }
+        val fixItems = items.map { ProfileImageVO(it.id, image = horizontalPrevRanges[it.id]?.pickOne()?.image ?: it.images[it.positionOfImage]) }
         DebugLogUtil.v("Settle on discard [vert], before: $verticalPrevRange ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}")
         verticalPrevRange = verticalPrevRange?.copyWith(fixItems)
         DebugLogUtil.v("Settle on discard [vert], after: $verticalPrevRange ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}")
@@ -371,13 +361,7 @@ abstract class FeedViewModel(
     }
 
     private fun advanceAndPushViewObject(key: Pair<String, String>): ViewActionObject? =
-        viewActionObjectBuffer.let {
-            val aobj = it[key]?.advance()
-            it.remove(key)
-            aobj as? ViewActionObject
-        }
-        ?.also { onViewFeedItem(it.targetUserId) }
-        ?.also { actionObjectPool.put(it) }
+        advanceViewObject(key)?.also { actionObjectPool.put(it) }
 
     private fun advanceAndPushViewObject(key: Pair<String, String>, recreate: Boolean) {
         advanceAndPushViewObject(key)
@@ -391,18 +375,27 @@ abstract class FeedViewModel(
                 .apply { keys.forEach { add(it.second) } }
                 .forEach { onViewFeedItem(feedItemId = it) }
 
-            values.forEach {
-                it.advance()
-                actionObjectPool.put(it)
-            }
+            values.forEach { it.advance() }
+            actionObjectPool.put(values)  // add all aobjs at once
             backupPool?.putAll(this)
             clear()
         }
     }
 
     private fun advanceAndPushViewObjects(keys: Collection<Pair<String, String>>) {
-        keys.forEach { advanceAndPushViewObject(it) }
+        val aobjs = mutableListOf<ViewActionObject>()
+        keys.forEach { key -> advanceViewObject(key)?.also { aobjs.add(it) } }
+        actionObjectPool.put(aobjs)  // add all aobjs at once
     }
+
+    // ------------------------------------------
+    private fun advanceViewObject(key: Pair<String, String>): ViewActionObject? =
+        viewActionObjectBuffer.let {
+            val aobj = it[key]?.advance()
+            it.remove(key)
+            aobj as? ViewActionObject
+        }
+        ?.also { onViewFeedItem(it.targetUserId) }
 
     // ------------------------------------------
     private fun logViewObjectsBufferState(tag: String) {

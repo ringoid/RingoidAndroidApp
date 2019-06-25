@@ -4,7 +4,6 @@ import android.os.Build
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ApiException
-import com.ringoid.domain.log.SentryUtil.breadcrumb
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
@@ -42,6 +41,7 @@ object SentryUtil {
                 .setType(Breadcrumb.Type.DEFAULT)
                 .build()
             Sentry.getContext().recordBreadcrumb(breadcrumb)
+            DebugLogUtil.v("Breadcrumb: $message")
         } catch (e: Throwable) {
             capture(e, "Failed to record breadcrumb: $message")
         }
@@ -87,6 +87,8 @@ object SentryUtil {
 
     private fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
                         `object`: Any? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
+        breadcrumb("Captured exception", "exception" to e.javaClass.canonicalName, "message" to "$message",
+                   "exception message" to "${e.message}", "tag" to "$tag", "extras" to "${extras?.joinToString { "[${it.first}:${it.second}]" }}")
         message?.let { breadcrumb(it) }
         if (!message.isNullOrBlank()) {
             val xExtras = (e as? ApiException)?.code

@@ -70,10 +70,13 @@
     <!-- Image Preview screen -->
 
     <!-- Lmm screen -->
-    <string name="lmm_popup_refresh">Tap to refresh</string>
+    <string name="lmm_popup_refresh">Refresh</string>
     <string name="lmm_tab_likes">Likes You</string>
+    <string name="lmm_tab_likes_n">%d likes</string>
     <string name="lmm_tab_matches">Matches</string>
+    <string name="lmm_tab_matches_n">%d matches</string>
     <string name="lmm_tab_messenger">Chats</string>
+    <string name="lmm_tab_messenger_n">%d chats</string>
 
     <!-- Login screen -->
     <string name="login_button">Continue to Upload Photo</string>
@@ -98,6 +101,12 @@
     <string name="referral_dialog_title">Referral code</string>
     <string name="referral_dialog_reward_message">%s coins gifted</string>
 
+    <!-- Suggest Improvements dialog -->
+    <string name="suggest_improvements_description_account_delete">Before you leave, please suggest how to make Ringoid better.</string>
+    <string name="suggest_improvements_description">How to make Ringoid better?</string>
+    <string name="suggest_improvements_positive_button">Suggest</string>
+    <string name="suggest_improvements_title">Suggest improvements</string>
+
     <!-- Settings screen -->
     <string name="settings_account_delete">Delete Account</string>
     <string name="settings_account_delete_info">If you don\'t use Ringoid for more than 16 days, your account will be automatically deleted.</string>
@@ -107,6 +116,7 @@
     <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email support@ringoid.com</string>
     <string name="settings_profile">Profile</string>
     <string name="settings_push">Push Notifications</string>
+    <string name="settings_suggest_improvements">Suggest improvements</string>
     <string name="settings_support">Email support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
     <string name="settings_support_rationale">If you have suggestions how to improve Ringoid, please email support@ringoid.com</string>

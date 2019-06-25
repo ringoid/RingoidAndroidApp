@@ -18,6 +18,19 @@ object ChatInMemoryCache {
     private val chatScrollPosition = mutableMapOf<String, Pair<Int, Int>>()
 
     // ------------------------------------------
+    private var currentlyOpenChatId: String? = null
+
+    fun isChatOpen(chatId: String): Boolean = currentlyOpenChatId == chatId
+
+    fun onChatOpen(chatId: String) {
+        currentlyOpenChatId = chatId
+    }
+
+    fun onChatClose() {
+        currentlyOpenChatId = null
+    }
+
+    // ------------------------------------------
     fun getInputMessage(profileId: String): CharSequence? = chatInputMessage[profileId]
 
     fun setInputMessage(profileId: String, text: CharSequence) {
@@ -36,13 +49,14 @@ object ChatInMemoryCache {
         }
     }
 
-    fun setPeerMessagesCountIfChanged(profileId: String, count: Int) {
+    fun setPeerMessagesCountIfChanged(profileId: String, count: Int): Boolean {
         if (!hasProfile(profileId) || getPeerMessagesCount(profileId) == count) {
-            return
+            return false
         }
 
         chatPeerMessagesCount[profileId] = count
         dropPositionForProfile(profileId)
+        return true  // count has changed
     }
 
     // ------------------------------------------

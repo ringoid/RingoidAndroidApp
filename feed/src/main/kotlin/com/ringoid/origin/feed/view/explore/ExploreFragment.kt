@@ -18,7 +18,6 @@ import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.image.ImageRequest
-import timber.log.Timber
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
@@ -32,8 +31,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@ExploreFragment)
                 } else {
-                    Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
-                    vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
+                    vm.onLike(profileId = model.profileId, imageId = model.image.id)
                 }
             }
         }

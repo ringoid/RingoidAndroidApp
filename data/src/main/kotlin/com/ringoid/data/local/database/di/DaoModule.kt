@@ -7,7 +7,6 @@ import com.ringoid.data.local.database.dao.debug.DebugLogDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDaoHelper
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
-import com.ringoid.data.local.database.dao.feed.property.FeedPropertyDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.image.UserImageDao
@@ -30,9 +29,6 @@ class DaoModule {
 
     @Provides @Singleton
     fun provideFeedDao(database: RingoidDatabase): FeedDao = database.feedDao()
-
-    @Provides @Singleton
-    fun provideFeedPropertyDao(database: RingoidDatabase): FeedPropertyDao = database.feedPropertyDao()
 
     @Provides @Singleton
     fun provideFeedImageDao(database: RingoidDatabase): ImageDao = database.imageDao()

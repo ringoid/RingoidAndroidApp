@@ -14,10 +14,10 @@ data class FeedItemVO(
     override val id: String,
     override val distanceText: String? = null,
     override val images: List<IImage>,
-    override val messages: MutableList<Message> = mutableListOf(),
-    val lastOnlineStatusX: OnlineStatus = OnlineStatus.UNKNOWN,
-    override val lastOnlineStatus: String? = null,
-    override val lastOnlineText: String? = null,
+    override val messages: List<Message> = emptyList(),
+    var lastOnlineStatusX: OnlineStatus = OnlineStatus.UNKNOWN,
+    override var lastOnlineStatus: String? = null,
+    override var lastOnlineText: String? = null,
     override val age: Int = DomainUtil.UNKNOWN_VALUE,
     override val children: Int = DomainUtil.UNKNOWN_VALUE,
     override val education: Int = DomainUtil.UNKNOWN_VALUE,
@@ -29,7 +29,6 @@ data class FeedItemVO(
     override val transport: Int = DomainUtil.UNKNOWN_VALUE,
     val isNotSeen: Boolean = false,
     override val isRealModel: Boolean = true,
-    val likedImages: MutableMap<String, Boolean> = mutableMapOf(),
     var positionOfImage: Int = 0) : IFeedItem {
 
     constructor(feedItem: FeedItem): this(
@@ -37,7 +36,7 @@ data class FeedItemVO(
         distanceText = feedItem.distanceText,
         images = feedItem.images,
         messages = feedItem.messages,
-        lastOnlineStatusX = OnlineStatus.from(feedItem.lastOnlineStatus),
+        lastOnlineStatusX = OnlineStatus.from(feedItem.lastOnlineStatus, label = feedItem.lastOnlineText),
         lastOnlineStatus = feedItem.lastOnlineStatus,
         lastOnlineText = feedItem.lastOnlineText,
         isNotSeen = feedItem.isNotSeen,
@@ -68,8 +67,13 @@ data class FeedItemVO(
         property = profile.property,
         transport = profile.transport)
 
-    fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
-    fun hasLiked(): Boolean = likedImages.count { it.value } > 0
+    fun setOnlineStatus(onlineStatus: OnlineStatus?) {
+        onlineStatus?.let {
+            lastOnlineStatusX = it
+            lastOnlineStatus = it.str
+            lastOnlineText = it.label
+        }
+    }
 
     fun children(): ChildrenProfileProperty = ChildrenProfileProperty.from(children)
     fun education(): EducationProfileProperty = EducationProfileProperty.from(education)

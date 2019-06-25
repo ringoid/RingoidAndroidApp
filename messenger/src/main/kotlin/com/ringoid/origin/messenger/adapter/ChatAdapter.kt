@@ -10,6 +10,7 @@ import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.messenger.R
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.rv_item_chat_item.view.*
+import timber.log.Timber
 
 class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCallback()) {
 
@@ -67,6 +68,9 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
     // ------------------------------------------
     override fun getOnInsertedCb(): ((position: Int, count: Int) -> Unit)? =
         { position: Int, _ -> onMessageInsertListener?.invoke(position) }
+
+    override fun getOnRemovedCb(): ((position: Int, count: Int) -> Unit)? =
+        { position: Int, count -> Timber.w("List removed [$count] ${getModel(position).text}") }
 
     // ------------------------------------------
     override fun getStubItem(): Message = EmptyMessage

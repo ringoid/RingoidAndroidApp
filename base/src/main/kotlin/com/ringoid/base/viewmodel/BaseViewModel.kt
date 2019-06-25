@@ -39,6 +39,8 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     val viewState: MutableLiveData<ViewState> by lazy { ActiveMutableLiveData<ViewState>() }
     val oneShot: MutableLiveData<LiveEvent<Any?>> by lazy { MutableLiveData<LiveEvent<Any?>>() }
 
+    protected var isStopped = false
+        private set
     private var userVisibilityHint: Boolean = false
 
     // --------------------------------------------------------------------------------------------
@@ -75,6 +77,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     }
 
     open fun onStart() {
+        isStopped = false
         // override in subclasses
     }
 
@@ -91,6 +94,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     }
 
     open fun onStop() {
+        isStopped = true
         // override in subclasses
     }
 

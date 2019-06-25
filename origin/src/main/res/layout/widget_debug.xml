@@ -92,6 +92,18 @@
         app:srcCompat="@drawable/ic_lifecycle_18dp"/>
 
     <ImageButton
+        android:id="@+id/ibtn_share_debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:layout_marginEnd="@dimen/std_margin_8"
+        android:background="?selectableItemBackground"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toBottomOf="@id/ibtn_bg_flip_debug"
+        app:layout_constraintEnd_toStartOf="@id/ibtn_lifecycle_debug"
+        app:srcCompat="@drawable/ic_share_black_18dp"/>
+
+    <ImageButton
         android:id="@+id/ibtn_separator_debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

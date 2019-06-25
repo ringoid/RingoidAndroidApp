@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.adapter.base
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 
 class FeedItemAnimator : DefaultItemAnimator() {
 

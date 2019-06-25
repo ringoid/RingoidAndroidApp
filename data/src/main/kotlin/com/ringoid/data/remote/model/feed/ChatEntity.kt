@@ -2,6 +2,8 @@ package com.ringoid.data.remote.model.feed
 
 import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.remote.model.messenger.MessageEntity
+import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.model.messenger.Chat
 
 /**
  * {
@@ -44,15 +46,15 @@ class ChatEntity(
     isNotSeen: Boolean,
     lastOnlineStatus: String? = null,
     lastOnlineText: String? = null,
-    age: Int,
-    children: Int,
-    education: Int,
-    gender: String?,
-    hairColor: Int,
-    height: Int,
-    income: Int,
-    property: Int,
-    transport: Int)
+    age: Int = DomainUtil.UNKNOWN_VALUE,
+    children: Int = DomainUtil.UNKNOWN_VALUE,
+    education: Int = DomainUtil.UNKNOWN_VALUE,
+    gender: String? = null,
+    hairColor: Int = DomainUtil.UNKNOWN_VALUE,
+    height: Int = DomainUtil.UNKNOWN_VALUE,
+    income: Int = DomainUtil.UNKNOWN_VALUE,
+    property: Int = DomainUtil.UNKNOWN_VALUE,
+    transport: Int = DomainUtil.UNKNOWN_VALUE)
     : FeedItemEntity(
         id = id,
         sortPosition = sortPosition,
@@ -70,4 +72,7 @@ class ChatEntity(
         height = height,
         income = income,
         property = property,
-        transport = transport)
+        transport = transport) {
+
+    fun mapToChat(): Chat = Chat(feedItem = map())
+}

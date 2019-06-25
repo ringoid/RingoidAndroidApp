@@ -16,12 +16,12 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
-import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings.*
 
-class SettingsFragment : BaseFragment<SettingsViewModel>() {
+class SettingsFragment : BaseFragment<SettingsViewModel>(), BigEditTextDialog.IBigEditTextDialogDone {
 
     companion object {
         internal const val TAG = "SettingsFragment_tag"
@@ -72,12 +72,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
             setTitle(OriginR_string.settings_title)
         }
 
-        item_delete_account.clicks().compose(clickDebounce()).subscribe {
-            Dialogs.showTextDialog(activity, titleResId = OriginR_string.settings_account_delete_dialog_title,
-                descriptionResId = OriginR_string.common_uncancellable,
-                positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
-                positiveListener = { _, _ -> vm.deleteAccount() })
-        }
+        item_delete_account.clicks().compose(clickDebounce()).subscribe { openDeleteAccountDialog() }
         item_language.apply {
             clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsFragment, path = "/settings_lang", rc = RequestCode.RC_SETTINGS_LANG) }
 //            setLabel(LocaleUtils.getLangById(context, app?.localeManager?.getLang() ?: LocaleManager.LANG_RU))
@@ -86,9 +81,33 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
         item_profile.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile") }
         item_push.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_push") }
         item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
+        item_suggest_improvements.clicks().compose(clickDebounce()).subscribe { openSuggestImprovementsDialog() }
 //        item_theme.apply {
 //            setChecked(!ThemeUtils.isDefaultTheme(spm))
 //            clicks().compose(clickDebounce()).subscribe { vm.switchTheme() }
 //        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onDone(text: String, tag: String?) {
+        vm.suggestImprovements(text, tag)
+        if (tag == "DeleteAccount") vm.deleteAccount()
+    }
+
+    private fun openDeleteAccountDialog() {
+        BigEditTextDialog.newInstance(titleResId = OriginR_string.settings_account_delete_dialog_title,
+            subtitleResId = OriginR_string.common_uncancellable,
+            descriptionResId = OriginR_string.suggest_improvements_description_account_delete,
+            btnPositiveResId = OriginR_string.button_delete,
+            tag = "DeleteAccount")
+            .show(childFragmentManager, BigEditTextDialog.TAG)
+    }
+
+    private fun openSuggestImprovementsDialog() {
+        BigEditTextDialog.newInstance(titleResId = OriginR_string.suggest_improvements_title,
+            descriptionResId = OriginR_string.suggest_improvements_description,
+            btnPositiveResId = OriginR_string.suggest_improvements_positive_button,
+            tag = "SuggestFromSettings")
+            .show(childFragmentManager, BigEditTextDialog.TAG)
     }
 }

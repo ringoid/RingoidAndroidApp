@@ -4,11 +4,10 @@ import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.SimulatedException
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.OriginActionObject
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -25,6 +24,9 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
 
     init {
         lastActionTimeValue.set(spm.getLastActionTime())
+//        if (BuildConfig.DEBUG) {
+//            ThreadMonitor().start()
+//        }
     }
 
     private val numbers = mutableMapOf<Class<OriginActionObject>, Int>()
@@ -123,11 +125,10 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
         }
     }
 
-    // ------------------------------------------
-    override fun errorTriggerSource(): Single<Long> = Single.error(SimulatedException())
-
     // --------------------------------------------------------------------------------------------
     override fun finalizePool() {
+        Timber.v("Finalizing pool")
+        SentryUtil.breadcrumb("Finalized pool")
         updateLastActionTime(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
     }
 
@@ -140,5 +141,6 @@ abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected
         } else {
             spm.saveLastActionTime(lastActionTime)
         }
+        SentryUtil.breadcrumb("Commit actions success", "lastActionTime" to "$lastActionTime")
     }
 }

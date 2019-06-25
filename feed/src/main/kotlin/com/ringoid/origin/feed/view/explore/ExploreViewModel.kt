@@ -59,6 +59,7 @@ class ExploreViewModel @Inject constructor(
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_EXPLORE
 
     init {
+        // discard profiles that appear in Lmm from Explore feed
         getNewFacesUseCase.repository.lmmLoadFinish
             .flatMap { getCachedLmmFeedItemIdsUseCase.source().toObservable() }
             .observeOn(AndroidSchedulers.mainThread())
@@ -140,9 +141,9 @@ class ExploreViewModel @Inject constructor(
                 .put("failPage", failPage)
 
     // --------------------------------------------------------------------------------------------
-    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        super.onLike(profileId, imageId, isLiked)
-        // discard profile from feed after like / unlike (unlike is not possible, left for symmetry)
+    override fun onLike(profileId: String, imageId: String) {
+        super.onLike(profileId, imageId)
+        // discard profile from feed after like
         viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
     }
 
@@ -177,6 +178,13 @@ class ExploreViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        onRefresh()  // app reopen leads Explore screen to refresh as well
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")

@@ -72,6 +72,7 @@ class UserProfileFragmentViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({ decrementTotalLmmCount() }, Timber::e)
 
+        // show total Lmm count on Profile screen
         getLmmPropertyUseCase.repository.lmmLoadFinish
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
@@ -111,13 +112,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // TODO: compare peerId with peerIds in Lmm, and if absent - increment
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
@@ -137,7 +131,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        onRefresh()  // app reopen leads Profile screen to refresh cascade
+        onRefresh()  // app reopen leads Profile screen to refresh
     }
 
     // --------------------------------------------------------------------------------------------
@@ -195,7 +189,7 @@ class UserProfileFragmentViewModel @Inject constructor(
         }
 
         DebugLogUtil.d("Applying referral code: $code")
-        applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code!!)))
+        applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code)))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError {
                 viewState.value = when (it) {

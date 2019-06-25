@@ -58,9 +58,9 @@ buildscript {
 
         logInterceptorVersion = '3.0.0'
         okHttpVersion = '3.14.2'
-        retrofitVersion = '2.5.0'
+        retrofitVersion = '2.6.0'
 
-        rxJavaVersion = '2.2.2'
+        rxJavaVersion = '2.2.9'
         rxAndroidVersion = '2.1.0'
         rxKotlinVersion = '2.3.0'
         rxBindingVersion = '3.0.0-alpha2'

@@ -10,12 +10,14 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.*
+import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
+import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -25,36 +27,21 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.REFRESH
-import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
-import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 
-/**
- * Cached feed represented with [Lmm] is used when fetching of original feed has failed,
- * basically due to exceeded request threshold, that is actually expressed via [ThresholdExceededException].
- * But this is only done upon refreshing the feed. Before that user could like some feed items
- * and / or compose the very first message to some peers (which then changes appearance of chat icon).
- * Thus, upon failed to refresh, feed is restored from the cache, but that cache lacks this information,
- * so that information is kept in special sources such as [getLikedFeedItemIdsUseCase] and [messagedFeedItemIds]
- * and hence could be applied on a cached feed, restoring the information to user.
- */
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
     private val getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    private val getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
-    private val getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
-    private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
-    private val addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     private val notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     private val transferFeedItemUseCase: TransferFeedItemUseCase,
@@ -70,6 +57,7 @@ abstract class BaseLmmFeedViewModel(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
+    val count by lazy { MutableLiveData<Int>() }
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
@@ -77,16 +65,15 @@ abstract class BaseLmmFeedViewModel(
     private val discardedFeedItemIds = mutableSetOf<String>()
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
-    private val badgeIsOnDisposable: Disposable
-    private val sourceFeedDisposable: Disposable
+    protected abstract fun getSourceFeed(): LmmNavTab
 
     init {
-        badgeIsOnDisposable = sourceBadge()
+        sourceBadge()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeIsOn = it }, Timber::e)
 
-        sourceFeedDisposable = sourceFeed()
+        sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .doAfterNext {
@@ -103,17 +90,6 @@ abstract class BaseLmmFeedViewModel(
                     }
                 }
             }
-            .flatMap {
-                // get cached feed items that were liked, to restore likes on cached feed
-                val params = Params().put("feedItemIds", it.map { it.id })
-                getLikedFeedItemIdsUseCase.source(params = params).toObservable()
-            }
-            .doOnNext { it.ids.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_LIKES(it)) } }
-            .flatMap {
-                // cached feed items that have only user messages inside, sent after receiving feed
-                getUserMessagedFeedItemIdsUseCase.source().toObservable()
-            }
-            .doOnNext { it.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_USER_MESSAGES(it)) } }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
@@ -173,6 +149,7 @@ abstract class BaseLmmFeedViewModel(
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
+        count.value = items.size
         if (items.isEmpty()) {
             viewState.value = ViewState.CLEAR(mode = clearMode)
         } else {
@@ -228,22 +205,10 @@ abstract class BaseLmmFeedViewModel(
         refreshOnPush.value = false  // drop value on each Lmm feed, when user taps on 'tap to refresh' popup on any Lmm feed
     }
 
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
-    override fun onCleared() {
-        super.onCleared()
-        badgeIsOnDisposable.dispose()
-        sourceFeedDisposable.dispose()
-    }
-
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
-    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        super.onLike(profileId, imageId, isLiked)
-        addLikedImageForFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId).put("imageId", imageId))
-            .autoDisposable(this)
-            .subscribe({}, Timber::e)
-
+    override fun onLike(profileId: String, imageId: String) {
+        super.onLike(profileId, imageId)
         markFeedItemAsSeen(feedItemId = profileId)
     }
 
@@ -266,9 +231,7 @@ abstract class BaseLmmFeedViewModel(
         discardedFeedItemIds.add(profileId)
     }
 
-    open fun onFirstUserMessageSent(profileId: String) {
-        addUserMessagedFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId))
-            .autoDisposable(this)
-            .subscribe({}, Timber::e)  // keep those peers that user has sent the first message to
+    internal fun transferProfile(profileId: String) {
+        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }
 }

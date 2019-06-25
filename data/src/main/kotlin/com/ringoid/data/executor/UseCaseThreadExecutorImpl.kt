@@ -11,19 +11,21 @@ import javax.inject.Singleton
 @Singleton
 class UseCaseThreadExecutorImpl @Inject constructor() : UseCaseThreadExecutor {
 
-    private val executor = ThreadPoolExecutor(4, 8, 10, TimeUnit.SECONDS,
-                                              LinkedBlockingQueue(), UseCaseThreadFactory())
+    private val executor = ThreadPoolExecutor(5, 10, 10, TimeUnit.SECONDS,
+                                              LinkedBlockingQueue(), UseCaseThreadFactory(executorName = "$this"))
 
     override fun execute(command: Runnable) {
         executor.execute(command)
     }
+
+    override fun toString(): String = "Ex${hashCode()}"
 }
 
-class UseCaseThreadFactory : ThreadFactory {
+class UseCaseThreadFactory(private val executorName: String) : ThreadFactory {
 
     companion object {
         private var INDEX = 0
     }
 
-    override fun newThread(command: Runnable): Thread = Thread(command, "useCase_thread_${INDEX++}")
+    override fun newThread(command: Runnable): Thread = Thread(command, "UCThread_$executorName-${INDEX++}")
 }

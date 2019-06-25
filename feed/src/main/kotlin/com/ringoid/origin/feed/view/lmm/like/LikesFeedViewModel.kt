@@ -8,7 +8,10 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.*
+import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
+import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -20,6 +23,7 @@ import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
+import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -29,10 +33,6 @@ import javax.inject.Inject
 class LikesFeedViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
-    getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
-    addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
-    addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -44,10 +44,6 @@ class LikesFeedViewModel @Inject constructor(
     : BaseLmmFeedViewModel(
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
-        getLikedFeedItemIdsUseCase,
-        getUserMessagedFeedItemIdsUseCase,
-        addLikedImageForFeedItemIdUseCase,
-        addUserMessagedFeedItemIdUseCase,
         notifyLmmProfileBlockedUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,
@@ -60,6 +56,8 @@ class LikesFeedViewModel @Inject constructor(
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
+
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.LIKES
 
     override fun sourceBadge(): Observable<Boolean> =
         getLmmUseCase.repository.badgeLikes
@@ -83,8 +81,8 @@ class LikesFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        super.onLike(profileId, imageId, isLiked)
+    override fun onLike(profileId: String, imageId: String) {
+        super.onLike(profileId, imageId)
         // transfer liked profile from Likes Feed to Matches Feed, by Product
         viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }

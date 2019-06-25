@@ -30,8 +30,8 @@ sealed class BusEvent {
 
     override fun toString(): String = javaClass.simpleName
 
-    @DebugOnly
-    object CloseDebugView : BusEvent()
+    @DebugOnly object CloseDebugView : BusEvent()
+    @DebugOnly object SimulateError : BusEvent()
 
     object Stub : BusEvent()
     object NoImagesOnProfile : BusEvent()

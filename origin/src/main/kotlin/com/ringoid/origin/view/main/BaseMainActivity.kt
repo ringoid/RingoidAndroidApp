@@ -188,12 +188,20 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun decrementCountOnLmm(decrementBy: Int) {
+        bottom_bar.decrementCountOnLmm(decrementBy)
+    }
+
     override fun showBadgeOnLmm(isVisible: Boolean) {
         bottom_bar.showBadgeOnLmm(isVisible)
     }
 
     override fun showBadgeWarningOnProfile(isVisible: Boolean) {
         bottom_bar.showWarningOnProfile(isVisible)
+    }
+
+    override fun showCountOnLmm(count: Int) {
+        bottom_bar.showCountOnLmm(count)
     }
 
     override fun showParticleAnimation(id: String, count: Int) {

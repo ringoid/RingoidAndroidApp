@@ -302,10 +302,11 @@ ext {
             [configuration: "api", dependency: d_view.dotsIndicatorFix],
             [configuration: "api", dependency: d_view.overscroll],
             [configuration: "api", dependency: d_view.rvAnim],
+            [configuration: "api", dependency: d_view.rvItemAnim],
     ]
 
     def leaks = [
-            [configuration: "debugImplementation", dependency: d_support.leakCanary],
+//            [configuration: "debugImplementation", dependency: d_support.leakCanary],
             [configuration: "api", dependency: d_support.leakSentry],
     ]
 
@@ -401,8 +402,7 @@ ext {
     /* Feature Feed */
     // ------------------------------------------
     feedDependencies = [
-        [configuration: "implementation", dependency: d_libs.gson],
-        [configuration: "implementation", dependency: d_view.rvItemAnim]
+        [configuration: "implementation", dependency: d_libs.gson]
     ]
     feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink + kotlin +
                         glide + log + rx + rxBind

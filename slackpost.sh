@@ -54,4 +54,3 @@ escapedText=$(echo $text | sed 's/"/\"/g' | sed "s/'/\'/g" )
 json="{\"channel\": \"$channel\", \"username\":\"$username\", \"icon_emoji\":\"ghost\", \"attachments\":[{\"color\":\"good\", \"pretext\": \"Please find new build here\", \"text\": \"$escapedText\"}]}"
 
 curl -s -d "payload=$json" "$webhook_url"
-

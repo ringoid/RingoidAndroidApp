@@ -3,21 +3,24 @@ package com.ringoid.origin.feed.view.lmm.match
 import android.app.Application
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
-import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.*
+import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
+import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.interactor.messenger.GetChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
-import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
-import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
+import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
+import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -25,12 +28,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MatchesFeedViewModel @Inject constructor(
+    getChatUseCase: GetChatUseCase,
     getLmmUseCase: GetLmmUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
-    getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
-    addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
-    addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -39,13 +39,10 @@ class MatchesFeedViewModel @Inject constructor(
     countUserImagesUseCase: CountUserImagesUseCase,
     notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
-    : BaseLmmFeedViewModel(
+    : BaseMatchesFeedViewModel(
+        getChatUseCase,
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
-        getLikedFeedItemIdsUseCase,
-        getUserMessagedFeedItemIdsUseCase,
-        addLikedImageForFeedItemIdUseCase,
-        addUserMessagedFeedItemIdUseCase,
         notifyLmmProfileBlockedUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,
@@ -58,6 +55,8 @@ class MatchesFeedViewModel @Inject constructor(
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MATCHES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.matches
+
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.MATCHES
 
     override fun sourceBadge(): Observable<Boolean> =
         getLmmUseCase.repository.badgeMatches
@@ -91,15 +90,9 @@ class MatchesFeedViewModel @Inject constructor(
         markFeedItemAsSeen(profileId)
     }
 
-    override fun onFirstUserMessageSent(profileId: String) {
-        super.onFirstUserMessageSent(profileId)
-        // transfer firstly messaged profile from Matches Feed to Messages Feed, by Product
-        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
-    }
-
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventPushNewLike(event: BusEvent.PushNewMatch) {
+    fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen

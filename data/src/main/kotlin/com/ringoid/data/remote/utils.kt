@@ -118,4 +118,3 @@ fun checkElapsedTimeAndWarn(startTime: Long, tag: String = DEFAULT_TAG) {
 
 inline fun <reified T : BaseResponse> Single<T>.withTimeout(timeout: Long = BuildConfig.REQUEST_TIME_THRESHOLD): Single<T> =
     timeout(timeout, TimeUnit.MILLISECONDS)
-

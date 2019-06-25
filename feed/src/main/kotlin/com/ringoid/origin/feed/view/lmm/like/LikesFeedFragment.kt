@@ -13,7 +13,6 @@ import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
-import timber.log.Timber
 
 class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
 
@@ -29,8 +28,7 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@LikesFeedFragment)
                 } else {
-                    Timber.v("${if (model.isLiked) "L" else "Unl"}iked image: ${model.image}")
-                    vm.onLike(profileId = model.profileId, imageId = model.image.id, isLiked = model.isLiked)
+                    vm.onLike(profileId = model.profileId, imageId = model.image.id)
                 }
             }
         }
@@ -53,7 +51,10 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         val discarded = onDiscardProfileState(profileId)  // discard profile on transfer
-                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, LmmNavTab.MATCHES)
+                        communicator(ILmmFragment::class.java)?.let {
+                            it.changeCountOnTopTab(tab = LmmNavTab.LIKES, delta = -1)
+                            it.transferProfile(discarded, LmmNavTab.MATCHES)
+                        }
                     }
                 }
             }

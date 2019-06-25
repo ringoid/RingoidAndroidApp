@@ -9,6 +9,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
@@ -32,18 +33,28 @@ class PersistActionObjectPool @Inject constructor(
     override fun getTotalQueueSize(): Int = 0  // don't trigger by capacity hit
 
     // --------------------------------------------------------------------------------------------
+    @Suppress("CheckResult")
     override fun put(aobj: OriginActionObject) {
         Timber.v("Put action object: $aobj")
-        Single.fromCallable { local.addActionObject(mapper.map(aobj)) }
+        Completable.fromCallable { local.addActionObject(mapper.map(aobj)) }
             .subscribeOn(Schedulers.io())
-            .flatMap { local.countActionObjects() }
+            .autoDisposable(userScopeProvider)
             .subscribe({ analyzeActionObject(aobj) }, Timber::e)
+    }
+
+    @Suppress("CheckResult")
+    override fun put(aobjs: Collection<OriginActionObject>) {
+        Timber.v("Put actions object: ${aobjs.joinToString()}")
+        Completable.fromCallable { local.addActionObjects(mapper.map(aobjs)) }
+            .subscribeOn(Schedulers.io())
+            .autoDisposable(userScopeProvider)
+            .subscribe({ aobjs.forEach { analyzeActionObject(it) } }, Timber::e)
     }
 
     @Suppress("CheckResult")
     override fun trigger() {
         local.countActionObjects()
-            .subscribeOn(Schedulers.io())
+            .subscribeOn(Schedulers.newThread())
             .flatMap { count ->
                 if (count <= 0) {
                     Single.just(0L)  // do nothing on empty queue
@@ -57,9 +68,9 @@ class PersistActionObjectPool @Inject constructor(
 
     override fun triggerSourceImpl(): Single<Long> =
         local.countActionObjects()
-            .subscribeOn(Schedulers.io())
             .flatMap { count ->
                 if (count <= 0) {
+                    Timber.v("Nothing to commit (no actions)")
                     Single.just(CommitActionsResponse(lastActionTime()))  // do nothing on empty queue
                 } else {
                     local.actionObjects()
@@ -76,15 +87,21 @@ class PersistActionObjectPool @Inject constructor(
                                 val queueCopy = ArrayDeque(queue)
                                 val essence = CommitActionsEssence(it.accessToken, queueCopy)
                                 cloud.commitActions(essence)
-                        }
+                                     .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)                       }
                     }
                 }
             }
-            .doOnError { DebugLogUtil.e("Commit actions error: $it") }
-            .handleError(tag = "commitActions", traceTag = "actions/actions")
+            .doOnError {
+                SentryUtil.breadcrumb("Commit actions error",
+                    "exception" to "${it.javaClass}", "message" to "${it.message}")
+                DebugLogUtil.e("Commit actions error: $it ;; ${threadInfo()}")
+            }
             .doOnSubscribe { dropStrategyData() }
             .doOnSuccess { updateLastActionTime(it.lastActionTime) }
-            .doOnDispose { finalizePool() }
+            .doOnDispose {
+                DebugLogUtil.d("Commit actions disposed [user scope: ${userScopeProvider.hashCode()}]")
+                finalizePool()
+            }
             .flatMap {
                 Completable.fromCallable { local.deleteUsedActionObjects() }
                            .toSingleDefault(it.lastActionTime)

@@ -7,29 +7,27 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.*
+import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
+import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.interactor.messenger.GetChatUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
-import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
+import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
+import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
-import timber.log.Timber
 import javax.inject.Inject
 
 class MessagesFeedViewModel @Inject constructor(
+    getChatUseCase: GetChatUseCase,
     getLmmUseCase: GetLmmUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
-    getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
-    addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
-    addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -38,13 +36,10 @@ class MessagesFeedViewModel @Inject constructor(
     countUserImagesUseCase: CountUserImagesUseCase,
     notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
-    : BaseLmmFeedViewModel(
+    : BaseMatchesFeedViewModel(
+        getChatUseCase,
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
-        getLikedFeedItemIdsUseCase,
-        getUserMessagedFeedItemIdsUseCase,
-        addLikedImageForFeedItemIdUseCase,
-        addUserMessagedFeedItemIdUseCase,
         notifyLmmProfileBlockedUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,
@@ -66,6 +61,8 @@ class MessagesFeedViewModel @Inject constructor(
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.messages
+
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.MESSAGES
 
     override fun sourceBadge(): Observable<Boolean> =
         getLmmUseCase.repository.badgeMessenger
@@ -89,16 +86,8 @@ class MessagesFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun onChatClose(profileId: String, imageId: String) {
-        super.onChatClose(profileId, imageId)
-        markFeedItemAsSeen(feedItemId = profileId)
-    }
-
-    // --------------------------------------------------------------------------------------------
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventPushNewLike(event: BusEvent.PushNewMessage) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+    override fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
+        super.onEventPushNewMessage(event)
         refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
     }
 }

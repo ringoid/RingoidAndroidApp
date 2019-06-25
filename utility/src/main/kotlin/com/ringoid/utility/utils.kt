@@ -39,3 +39,19 @@ fun Throwable.stackTraceString(): String {
     printStackTrace(pw)
     return sw.buffer.toString()
 }
+
+fun <K, V> Map<K, V>.ForEach(action: (key: K, value: V) -> Unit) {
+    entries.forEach { action(it.key, it.value) }
+}
+
+fun <T> MutableCollection<T>.RemoveIf(predicate: (it: T) -> Boolean): Boolean {
+    var removed = false
+    val each = iterator()
+    while (each.hasNext()) {
+        if (predicate.invoke(each.next())) {
+            each.remove()
+            removed = true
+        }
+    }
+    return removed
+}

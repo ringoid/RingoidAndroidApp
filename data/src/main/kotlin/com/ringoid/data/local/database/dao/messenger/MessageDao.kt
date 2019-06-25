@@ -1,9 +1,6 @@
 package com.ringoid.data.local.database.dao.messenger
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.domain.DomainUtil
 import io.reactivex.Maybe
@@ -31,6 +28,12 @@ interface MessageDao {
     @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_PEER_ID} != '${DomainUtil.CURRENT_USER_ID}' AND ${MessageDbo.COLUMN_UNREAD} != 0 AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun countUnreadMessages(sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Int>
 
+    @Query("SELECT * FROM ${MessageDbo.TABLE_NAME}")
+    fun messages(): Maybe<List<MessageDbo>>
+
+    @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
+    fun messages(chatId: String): Maybe<List<MessageDbo>>  // Maybe calls onComplete() rather than Single
+
     @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun messages(chatId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Maybe<List<MessageDbo>>  // Maybe calls onComplete() rather than Single
 
@@ -49,9 +52,15 @@ interface MessageDao {
     @Query("UPDATE ${MessageDbo.TABLE_NAME} SET ${MessageDbo.COLUMN_UNREAD} = 0 WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed")
     fun markMessagesAsRead(chatId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Int
 
+    @Query("UPDATE ${MessageDbo.TABLE_NAME} SET ${MessageDbo.COLUMN_SOURCE_FEED} = :sourceFeed WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
+    fun updateSourceFeed(chatId: String, sourceFeed: String): Int
+
     @Query("DELETE FROM ${MessageDbo.TABLE_NAME}")
     fun deleteMessages()
 
     @Query("DELETE FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
     fun deleteMessages(chatId: String)
+
+    @Delete
+    fun deleteMessages(messages: Collection<MessageDbo>)
 }

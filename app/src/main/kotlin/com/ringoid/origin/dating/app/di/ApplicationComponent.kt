@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
+import com.ringoid.data.remote.di.SystemCloudModule
 import com.ringoid.domain.debug.IDebugLogDaoHelper
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.auth.di.LoginActivityModule
@@ -36,6 +37,7 @@ import com.ringoid.origin.usersettings.view.push.di.SettingsPushActivityModule
 import com.ringoid.origin.usersettings.view.push.di.SettingsPushFragmentModule
 import com.ringoid.origin.usersettings.view.settings.di.SettingsActivityModule
 import com.ringoid.origin.usersettings.view.settings.di.SettingsFragmentModule
+import com.ringoid.origin.view.dialog.di.BigEditTextDialogModule
 import com.ringoid.origin.view.dialog.di.StatusDialogModule
 import com.ringoid.origin.view.error.di.NoNetworkConnectionActivityModule
 import com.ringoid.origin.view.error.di.OldAppVersionActivityModule
@@ -51,7 +53,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
                       /** Screen modules */
-                      AboutDialogModule::class,
+                      AboutDialogModule::class, BigEditTextDialogModule::class,
                       BlockBottomSheetActivityModule::class, BlockBottomSheetDialogModule::class,
                       DeleteUserProfileImageActivityModule::class, DeleteUserProfileImageDialogModule::class,
                       ReportBottomSheetDialogModule::class, ChatHostActivityModule::class, ChatFragmentModule::class,
@@ -76,6 +78,7 @@ interface ApplicationComponent : AndroidInjector<RingoidApplication> {
         @BindsInstance abstract fun applicationContext(context: Context): Builder
         abstract fun cloudModule(cloudModule: CloudModule): Builder
         abstract fun ringoidCloudModule(ringoidCloudModule: RingoidCloudModule): Builder
+        abstract fun systemCloudModule(systemCloudModule: SystemCloudModule): Builder
     }
 
     fun debugLogDao(): IDebugLogDaoHelper  // exposed access to debug-log database

@@ -133,6 +133,13 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
         submitList(mutableListOf<T>().apply { add(item) }.also { it.addAll(helper.currentList) })
     }
 
+    fun prependAll(items: List<T>) {
+        if (items.isEmpty()) {
+            return
+        }
+        submitList(mutableListOf<T>().apply { addAll(items) }.also { it.addAll(helper.currentList) })
+    }
+
     fun remove(predicate: (item: T) -> Boolean) {
         submitList(ArrayList(helper.currentList).apply { removeAll(predicate) })
     }
@@ -216,7 +223,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
 
     fun getModelsInRange(from: Int, to: Int): MutableList<T> {
         if (to < from || from < 0 || to < 0 || to >= itemCount) {
-            throw IllegalArgumentException("Invalid input range: ($from, $to)")
+            throw IllegalArgumentException("Invalid input range: ($from, $to) of $itemCount")
         }
 
         val xfrom = if (withHeader()) from + 1 else from

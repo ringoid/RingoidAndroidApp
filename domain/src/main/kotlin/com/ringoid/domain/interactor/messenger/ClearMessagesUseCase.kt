@@ -8,6 +8,9 @@ import com.ringoid.domain.repository.messenger.IMessengerRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
+/**
+ * Clear all local messages.
+ */
 class ClearMessagesUseCase @Inject constructor(private val repository: IMessengerRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {

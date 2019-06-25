@@ -36,7 +36,7 @@ object ImageLoader {
                 .dontAnimate()
                 .dontTransform()
                 .diskCacheStrategy(cacheStrategy(uri))
-                .skipMemoryCache(skipMemoryCache)
+                .skipMemoryCache(skipMemoryCache || isLocalUri(uri))
         }
 
     // ------------------------------------------
@@ -52,7 +52,7 @@ object ImageLoader {
             .dontAnimate()
             .dontTransform()
             .diskCacheStrategy(cacheStrategy(uri))
-//            .skipMemoryCache(true)  // don't keep original (large) image in memory cache
+            .skipMemoryCache(isLocalUri(uri))
             .let { request -> thumbnailRequest?.let { request.thumbnail(it) } ?: request.thumbnail(0.1f) }
     }
 
@@ -86,5 +86,5 @@ object ImageLoader {
     private fun isLocalUri(uri: String?): Boolean = uri?.startsWith("file") ?: false
 
     private fun cacheStrategy(uri: String?): DiskCacheStrategy =
-        if (isLocalUri(uri)) DiskCacheStrategy.NONE else DiskCacheStrategy.RESOURCE
+        if (isLocalUri(uri)) DiskCacheStrategy.NONE else DiskCacheStrategy.AUTOMATIC
 }

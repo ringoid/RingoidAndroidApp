@@ -6,11 +6,11 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.utility.randomString
 
-data class FeedItem(
+open class FeedItem(
     override val id: String,
     override val distanceText: String? = null,
     override val images: List<IImage>,
-    override val messages: MutableList<Message>,
+    override val messages: List<Message>,
     override val lastOnlineStatus: String? = null,
     override val lastOnlineText: String? = null,
     override val age: Int = DomainUtil.UNKNOWN_VALUE,

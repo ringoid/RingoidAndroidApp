@@ -1,9 +1,11 @@
 package com.ringoid.data.repository.debug
 
-import com.ringoid.data.di.*
+import com.ringoid.data.di.PerAlreadySeen
+import com.ringoid.data.di.PerBlock
+import com.ringoid.data.di.PerLmmLikes
+import com.ringoid.data.di.PerLmmMatches
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
-import com.ringoid.data.local.database.dao.feed.property.FeedPropertyDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.remote.RingoidCloud
@@ -28,17 +30,17 @@ import javax.inject.Singleton
 
 @Singleton @DebugOnly
 class DebugFeedRepository @Inject constructor(
-    local: FeedDao, feedPropertiesLocal: FeedPropertyDao,
-    imagesLocal: ImageDao, messengerLocal: MessageDao,
-    @PerUser sentMessagesLocal: MessageDao,
+    local: FeedDao, imagesLocal: ImageDao, messengerLocal: MessageDao,
     @PerAlreadySeen alreadySeenProfilesCache: UserFeedDao,
     @PerBlock blockedProfilesCache: UserFeedDao,
     @PerLmmLikes newLikesProfilesCache: UserFeedDao,
     @PerLmmMatches newMatchesProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
-    : FeedRepository(local, feedPropertiesLocal, imagesLocal, messengerLocal, sentMessagesLocal,
-                     alreadySeenProfilesCache, blockedProfilesCache,
-                     newLikesProfilesCache, newMatchesProfilesCache, cloud, spm, aObjPool), IDebugFeedRepository {
+    : FeedRepository(
+        local, imagesLocal, messengerLocal,
+        alreadySeenProfilesCache, blockedProfilesCache,
+        newLikesProfilesCache, newMatchesProfilesCache,
+        cloud, spm, aObjPool), IDebugFeedRepository {
 
     /* Debug */
     // --------------------------------------------------------------------------------------------

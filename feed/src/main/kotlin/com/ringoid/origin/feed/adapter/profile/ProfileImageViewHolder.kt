@@ -22,7 +22,7 @@ class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
     }
 
     override fun bind(model: ProfileImageVO) {
-        ImageLoader.load(uri = model.image.uri, thumbnailUri = null/*model.image.thumbnailUri*/, imageView = itemView.iv_image)
+        ImageLoader.load(uri = model.image.uri, thumbnailUri = model.image.thumbnailUri, imageView = itemView.iv_image)
 
         if (BuildConfig.IS_STAGING) {
             itemView.tv_image_id.text = "Image: ${model.image.idWithFirstN()}"

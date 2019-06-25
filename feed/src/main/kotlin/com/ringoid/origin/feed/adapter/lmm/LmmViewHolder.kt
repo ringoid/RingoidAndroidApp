@@ -22,14 +22,14 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
     override fun bind(model: FeedItemVO) {
         super.bind(model)
-        showUnreadIcon(model)
+        showUnreadIcon(model)  // apply updates, if any
 
         itemView.tv_seen_status.text = if (model.isNotSeen) "Not Seen" else "Seen"
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
         super.bind(model, payloads)
-        showUnreadIcon(model)
+        showUnreadIcon(model)  // apply updates, if any
 
         // scroll affected
         if (payloads.contains(FeedViewHolderHideChatBtnOnScroll)) {
@@ -53,10 +53,10 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
     // ------------------------------------------
     private fun showUnreadIcon(model: FeedItemVO) {
-        val isVisible = if (!model.messages.isEmpty()) {
+        val isVisible = if (model.messages.isNotEmpty()) {
             val peerMessagesCount = model.countOfPeerMessages()
             if (peerMessagesCount > 0) {
-                peerMessagesCount != ChatInMemoryCache.getPeerMessagesCount(model.id)
+                peerMessagesCount > ChatInMemoryCache.getPeerMessagesCount(model.id)
             } else {
                 false
             }

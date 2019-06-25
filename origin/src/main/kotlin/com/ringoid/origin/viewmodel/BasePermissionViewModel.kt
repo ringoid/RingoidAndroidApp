@@ -6,8 +6,8 @@ import com.ringoid.base.manager.location.LocationServiceUnavailableException
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.model.actions.LocationActionObject
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
+import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -21,6 +21,7 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
 
     /* Permission */
     // --------------------------------------------------------------------------------------------
+    @Suppress("CheckResult")
     fun onLocationPermissionGranted(handleCode: Int) {
         Timber.v("onLocationPermissionGranted($handleCode)")
         onLocationPermissionGrantedAction(handleCode)
@@ -32,6 +33,7 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
                 val elapsed = System.currentTimeMillis() - start
                 DebugLogUtil.v("Obtain location has taken $elapsed ms")
             }
+            .autoDisposable(this)
             .subscribe({ onLocationReceived(handleCode) }) {
                 DebugLogUtil.e(it)
                 when (it) {

@@ -9,6 +9,9 @@ import com.ringoid.domain.repository.messenger.IMessengerRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
+/**
+ * Clear all local messages for chatId (chatId always equal to peerId, the opposite user).
+ */
 class ClearMessagesForChatUseCase @Inject constructor(private val repository: IMessengerRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {

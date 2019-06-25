@@ -13,9 +13,9 @@ import com.ringoid.origin.feed.OriginR_drawable
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
-import com.ringoid.origin.feed.model.OnlineStatus
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.model.*
+import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
@@ -134,6 +134,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         // --------------------------------------
         showControls()  // cancel any effect caused by applied payloads
+        showOnlineStatus(model)  // apply updates, if any
+
         val positionOfImage = model.positionOfImage
         profileImageAdapter.apply {
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
@@ -146,7 +148,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f
                 }, Timber::e)
 
-            submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
+            submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
         }
 
         // left section
@@ -243,12 +245,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             }
         }
 
-        with (itemView.label_online_status) {
-            alpha = if (model.lastOnlineStatusX == OnlineStatus.UNKNOWN) 0.0f else 1.0f
-            setIcon(model.lastOnlineStatusX.resId)
-            setText(model.lastOnlineText)
-        }
-
         if (BuildConfig.IS_STAGING) {
             itemView.tv_profile_id.text = "Profile: ${model.idWithFirstN()}"
         }
@@ -272,6 +268,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // --------------------------------------
+        showOnlineStatus(model)  // apply updates, if any
+
         if (payloads.contains(FeedViewHolderHideControls)) {
             hideControls()
             return
@@ -337,6 +335,14 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             ll_right_section.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
+    }
+
+    private fun showOnlineStatus(model: FeedItemVO) {
+        with (itemView.label_online_status) {
+            alpha = if (model.lastOnlineStatusX == OnlineStatus.UNKNOWN) 0.0f else 1.0f
+            setIcon(model.lastOnlineStatusX.resId)
+            setText(model.lastOnlineText)
+        }
     }
 
     override fun getCurrentImagePosition(): Int =

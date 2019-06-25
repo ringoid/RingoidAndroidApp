@@ -6,12 +6,14 @@ import com.ringoid.data.local.database.di.DaoModule
 import com.ringoid.data.local.memory.UserInMemoryCache
 import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.RingoidCloudModule
+import com.ringoid.data.remote.di.SystemCloudModule
 import com.ringoid.data.repository.debug.DebugFeedRepository
 import com.ringoid.data.repository.debug.DebugRepository
 import com.ringoid.data.repository.feed.FeedRepository
 import com.ringoid.data.repository.image.UserImageRepository
 import com.ringoid.data.repository.messenger.MessengerRepository
 import com.ringoid.data.repository.push.PushRepository
+import com.ringoid.data.repository.system.SystemRepository
 import com.ringoid.data.repository.user.UserRepository
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -21,13 +23,14 @@ import com.ringoid.domain.repository.feed.IFeedRepository
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.domain.repository.push.IPushRepository
+import com.ringoid.domain.repository.system.ISystemRepository
 import com.ringoid.domain.repository.user.IUserRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module(includes = [RingoidCloudModule::class, ActionObjectPoolModule::class, DaoModule::class,
-                    SharedPrefsManagerModule::class, UseCaseExecutorModule::class])
+@Module(includes = [RingoidCloudModule::class, SystemCloudModule::class, ActionObjectPoolModule::class,
+                    DaoModule::class, SharedPrefsManagerModule::class, UseCaseExecutorModule::class])
 class RepositoryModule {
 
     @Provides @Singleton @DebugOnly
@@ -47,6 +50,9 @@ class RepositoryModule {
 
     @Provides @Singleton
     fun providePushRepository(repository: PushRepository): IPushRepository = repository
+
+    @Provides @Singleton
+    fun provideSystemRepository(repository: SystemRepository): ISystemRepository = repository
 
     @Provides @Singleton
     fun provideUserRepository(repository: UserRepository): IUserRepository = repository

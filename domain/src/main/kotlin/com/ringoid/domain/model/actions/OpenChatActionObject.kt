@@ -6,6 +6,7 @@ import com.ringoid.domain.action_storage.DelayFromLast
 import com.ringoid.domain.action_storage.TriggerStrategy
 import com.ringoid.domain.action_storage.VIEW_DELAY_ON_TRIGGER
 
+@Deprecated("Use [ViewChatActionObject] instead")
 class OpenChatActionObject(
     @Expose @SerializedName(COLUMN_OPEN_CHAT_COUNT) val count: Int = 1,
     @Expose @SerializedName(COLUMN_OPEN_CHAT_TIME_MILLIS) override var timeInMillis: Long = 1L,

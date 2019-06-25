@@ -18,7 +18,6 @@ class FeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoader, Feed
         FeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
             .also { vh ->
                 vh.profileImageAdapter.itemClickListener = { model, position ->
-                    getModel(vh.adapterPosition).likedImages[model.image.id] = model.isLiked
                     onLikeImageListener?.invoke(model, position)
                 }
             }

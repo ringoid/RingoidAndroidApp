@@ -61,6 +61,7 @@ open class ActionObject(
         const val COLUMN_TARGET_USER_ID = "targetUserId"
 
         const val ACTION_TYPE_BLOCK = "BLOCK"
+        const val ACTION_TYPE_DEBUG = "DEBUG"
         const val ACTION_TYPE_LIKE = "LIKE"
         const val ACTION_TYPE_LOCATION = "LOCATION"
         const val ACTION_TYPE_MESSAGE = "MESSAGE"
@@ -85,5 +86,5 @@ open class ActionObject(
                 .substring(0..3)}," +
             "p=${targetUserId.substring(0..3)}," +
             "aT=${actionTime % 1000000},$sourceFeed"
-        } else ""
+        } else sourceFeed
 }

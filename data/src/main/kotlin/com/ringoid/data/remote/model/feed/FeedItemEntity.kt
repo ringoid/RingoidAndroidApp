@@ -2,8 +2,6 @@ package com.ringoid.data.remote.model.feed
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.ringoid.data.local.database.model.feed.FeedItemDbo.Companion.COLUMN_FLAG_NOT_SEEN
-import com.ringoid.data.remote.model.feed.LmmResponse.Companion.COLUMN_MESSAGES
 import com.ringoid.data.remote.model.image.ImageEntity
 import com.ringoid.data.remote.model.messenger.MessageEntity
 import com.ringoid.domain.DomainUtil
@@ -83,7 +81,13 @@ open class FeedItemEntity(
             images = images.mapList(),
             messages = messages.mapIndexed { index, message ->
                 val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
-                Message(id = "${id}_$index", chatId = id, peerId = peerId, text = message.text)
+                Message(
+                    id = message.id,
+                    chatId = id,
+                    clientId = message.clientId,
+                    peerId = peerId,
+                    text = message.text,
+                    ts = message.ts)
             }.toMutableList(),
             lastOnlineStatus = lastOnlineStatus,
             lastOnlineText = lastOnlineText,

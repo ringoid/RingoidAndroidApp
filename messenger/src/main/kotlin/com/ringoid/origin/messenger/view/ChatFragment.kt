@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.observe
@@ -18,14 +19,16 @@ import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.IBaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil.BAD_ID
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
-import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
+import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.model.BlockReportPayload
+import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
@@ -79,9 +82,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 when (newState.residual) {
                     is CHAT_MESSAGE_SENT -> {
                         onIdleState()
-                        if (chatAdapter.isEmpty()) {
+                        if (chatAdapter.isEmpty()) {  // quick reply mode
                             // user has just sent her first message to peer
-                            payload?.firstUserMessage = (newState.residual as? CHAT_MESSAGE_SENT)?.message
+                            payload?.isChatEmpty = false
                             closeChat()
                         }
                     }
@@ -103,13 +106,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
         chatAdapter = ChatAdapter().apply {
             itemClickListener = { _, _ -> closeChat() }
-            onMessageInsertListener = { _ ->
-                /**
-                 * If vertical position is near the last message in Chat - scroll to the bottom of
-                 * each newly inserted message, otherwise - remain on the current vertical position.
-                 */
-                scrollToLastItemIfNearBottom()
-            }
+            onMessageInsertListener = { _ -> scrollToLastItem() }
         }
     }
 
@@ -120,7 +117,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.messages, chatAdapter::submitList)
+            observe(vm.newMessages, chatAdapter::prependAll)
             observe(vm.sentMessage, chatAdapter::prepend)
+            observe(vm.onlineStatus, ::showOnlineStatus)
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)
@@ -191,6 +190,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     reverseLayout = true
                     stackFromEnd = true
                 }
+//            itemAnimator = SlideUpAlphaAnimator()
+            (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
             setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
         }
     }
@@ -205,17 +206,21 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             requestFocus()
         }
 
+        ChatInMemoryCache.onChatOpen(chatId = peerId)  // Chat screen is visible to user
         dialog?.window?.showKeyboard()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        payload?.isChatEmpty = chatAdapter.isEmpty() && payload?.isChatEmpty == true
         val tag = arguments?.getString(BUNDLE_KEY_TAG, TAG) ?: TAG
         communicator(IDialogCallback::class.java)?.onDialogDismiss(tag = tag, payload = payload)
     }
 
     // --------------------------------------------------------------------------------------------
     private fun closeChat() {
+        DebugLogUtil.clear()  // clear debug log on back from Chat to avoid app freezes
+        ChatInMemoryCache.onChatClose()
         rv_chat_messages.linearLayoutManager()?.let {
             val position = it.findFirstVisibleItemPosition()
             val scroll = it.findViewByPosition(position)?.let { rv_chat_messages.bottom - it.top } ?: 0
@@ -235,6 +240,14 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         }
     }
 
+    private fun scrollToLastItem() {
+        scrollToTopOfItemAtPosition(0)  // scroll to last message
+    }
+
+    /**
+     * If vertical position is near the last message in Chat - scroll to the bottom of
+     * each newly inserted message, otherwise - remain on the current vertical position.
+     */
     private fun scrollToLastItemIfNearBottom() {
         rv_chat_messages?.linearLayoutManager()
             ?.takeIf { it.findFirstVisibleItemPosition() <= 1 }
@@ -257,6 +270,15 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ibtn_chat_close.changeVisibility(isVisible, soft = true)
         ibtn_settings.changeVisibility(isVisible, soft = true)
         ll_text_input.changeVisibility(isVisible, soft = true)
+    }
+
+    private fun showOnlineStatus(onlineStatus: OnlineStatus) {
+        payload?.onlineStatus = onlineStatus
+        with (label_online_status) {
+            alpha = if (onlineStatus == OnlineStatus.UNKNOWN) 0.0f else 1.0f
+            setIcon(onlineStatus.resId)
+            setText(onlineStatus.label)
+        }
     }
 
     // ------------------------------------------

@@ -52,6 +52,11 @@ class ActionObjectPool @Inject constructor(
         analyzeActionObject(aobj)
     }
 
+    @Synchronized
+    override fun put(aobjs: Collection<OriginActionObject>) {
+        aobjs.forEach { put(it) }
+    }
+
     // ------------------------------------------
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
@@ -60,6 +65,7 @@ class ActionObjectPool @Inject constructor(
         }
 
         triggerSource()
+            .subscribeOn(Schedulers.io())
             .autoDisposable(userScopeProvider)
             .subscribe({ Timber.d("Trigger Queue finished, last action time: $it") }, Timber::e)
     }
@@ -70,6 +76,7 @@ class ActionObjectPool @Inject constructor(
 
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
+                Timber.v("Nothing to commit (no actions)")
                 Single.just(CommitActionsResponse(lastActionTime()))
             } else {
                 /**
@@ -107,7 +114,7 @@ class ActionObjectPool @Inject constructor(
             updateLastActionTime(it.lastActionTime)
         }
         .doOnDispose {
-            Timber.d("Disposed trigger Queue, out of user scope: ${userScopeProvider.hashCode()}")
+            DebugLogUtil.d("Commit actions disposed [user scope: ${userScopeProvider.hashCode()}]")
             finalizePool()  // clear state of pool
         }
         .doOnError { backupQueue(backupQueue) }
@@ -115,7 +122,6 @@ class ActionObjectPool @Inject constructor(
         .map { it.lastActionTime }
 
         return backup.actionObjects()
-            .subscribeOn(Schedulers.io())
             .map { it.mapList() }
             .flatMapCompletable {
                 it.reversed().forEach { queue.offerFirst(it) }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/refColorBg"
+    android:minWidth="@dimen/std_dialog_width"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/std_margin_16"
+    android:paddingStart="@dimen/std_margin_16"
+    android:paddingEnd="@dimen/std_margin_16">
+
+    <TextView
+        android:id="@+id/tv_dialog_title"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:textSize="@dimen/std_text_20"
+        android:textStyle="bold"
+        tools:text="Suggest improvements"
+        style="@style/StdText.Primary"/>
+
+    <TextView
+        android:id="@+id/tv_dialog_subtitle"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:gravity="center"
+        android:textSize="@dimen/std_text_16"
+        tools:text="There is no undo."
+        style="@style/StdText.Primary"/>
+
+    <TextView
+        android:id="@+id/tv_dialog_description"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/std_margin_24"
+        android:gravity="center_vertical|start"
+        android:textSize="@dimen/std_text_16"
+        tools:text="How to make Ringoid better?"
+        style="@style/StdText.Primary"/>
+
+    <EditText
+        android:id="@+id/et_dialog_entry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:background="@drawable/rect_round_secondary_stroke_white"
+        android:gravity="start|top"
+        android:inputType="text"
+        android:maxLength="300"
+        android:minHeight="@dimen/dialog_big_edit_text_height"
+        android:padding="@dimen/std_margin_8">
+        <requestFocus/>
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/std_margin_8"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_marginEnd="@dimen/std_margin_24"
+            android:text="@string/button_cancel"
+            style="@style/FlatButton"/>
+
+        <Button
+            android:id="@+id/btn_done"
+            android:text="@string/button_done"
+            style="@style/FlatButton"/>
+    </LinearLayout>
+</LinearLayout>

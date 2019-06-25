@@ -31,6 +31,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     }
 
     private lateinit var lmmPagesAdapter: LmmPagerAdapter
+    private val tabsCounts = mutableMapOf<LmmNavTab, Int>().apply { LmmNavTab.values.forEach { put(it, 0) } }
 
     override fun getVmClass(): Class<LmmViewModel> = LmmViewModel::class.java
 
@@ -83,6 +84,11 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun accessViewModel(): LmmViewModel = vm
 
     // ------------------------------------------
+    override fun changeCountOnTopTab(tab: LmmNavTab, delta: Int) {
+        tabsCounts[tab] = tabsCounts[tab]!! + delta
+        showCountOnTopTab(tab = tab, count = tabsCounts[tab]!!)
+    }
+
     override fun showBadgeOnLikes(isVisible: Boolean) {
         btn_tab_likes.showBadge(isVisible)
         hasAnyBadgeShown()
@@ -98,8 +104,18 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         hasAnyBadgeShown()
     }
 
+    override fun showCountOnTopTab(tab: LmmNavTab, count: Int) {
+        tabsCounts[tab] = maxOf(count, 0)  // omit negative values
+        when (tab) {
+            LmmNavTab.LIKES -> btn_tab_likes.text = String.format(AppRes.LMM_TOP_TAB_LABEL_LIKES_N, count)
+            LmmNavTab.MATCHES -> btn_tab_matches.text = String.format(AppRes.LMM_TOP_TAB_LABEL_MATCHES_N, count)
+            LmmNavTab.MESSAGES -> btn_tab_messenger.text = String.format(AppRes.LMM_TOP_TAB_LABEL_MESSAGES_N, count)
+        }
+    }
+
     // ------------------------------------------
     override fun transferProfile(profileId: String, destinationFeed: LmmNavTab) {
+        changeCountOnTopTab(tab = destinationFeed, delta = 1)
         lmmPagesAdapter.accessItem(destinationFeed)
             ?.let { it as? BaseLmmFeedFragment<*> }
             ?.transferProfile(profileId, destinationFeed, payload = null)
@@ -110,6 +126,7 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             return
         }
 
+        changeCountOnTopTab(tab = destinationFeed, delta = 1)
         val payload = Bundle().apply { putInt("positionOfImage", discarded.positionOfImage) }
         lmmPagesAdapter.accessItem(destinationFeed)
             ?.let { it as? BaseLmmFeedFragment<*> }
