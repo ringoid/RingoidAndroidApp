@@ -148,7 +148,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f
                 }, Timber::e)
 
-            submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it, isLiked = model.isLiked(imageId = it.id)) })
+            submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
         }
 
         // left section

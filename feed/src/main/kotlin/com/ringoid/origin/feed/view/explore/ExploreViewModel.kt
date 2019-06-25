@@ -141,9 +141,9 @@ class ExploreViewModel @Inject constructor(
                 .put("failPage", failPage)
 
     // --------------------------------------------------------------------------------------------
-    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        super.onLike(profileId, imageId, isLiked)
-        // discard profile from feed after like / unlike (unlike is not possible, left for symmetry)
+    override fun onLike(profileId: String, imageId: String) {
+        super.onLike(profileId, imageId)
+        // discard profile from feed after like
         viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
     }
 

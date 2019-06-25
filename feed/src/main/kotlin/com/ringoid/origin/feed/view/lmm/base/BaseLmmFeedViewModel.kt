@@ -205,8 +205,8 @@ abstract class BaseLmmFeedViewModel(
 
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
-    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        super.onLike(profileId, imageId, isLiked)
+    override fun onLike(profileId: String, imageId: String) {
+        super.onLike(profileId, imageId)
         markFeedItemAsSeen(feedItemId = profileId)
     }
 

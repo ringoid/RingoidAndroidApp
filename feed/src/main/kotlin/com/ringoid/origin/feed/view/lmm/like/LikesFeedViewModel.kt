@@ -8,7 +8,10 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.*
+import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
+import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -75,8 +78,8 @@ class LikesFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
-        super.onLike(profileId, imageId, isLiked)
+    override fun onLike(profileId: String, imageId: String) {
+        super.onLike(profileId, imageId)
         // transfer liked profile from Likes Feed to Matches Feed, by Product
         viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
     }

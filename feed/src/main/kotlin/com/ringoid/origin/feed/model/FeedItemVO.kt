@@ -29,7 +29,6 @@ data class FeedItemVO(
     override val transport: Int = DomainUtil.UNKNOWN_VALUE,
     val isNotSeen: Boolean = false,
     override val isRealModel: Boolean = true,
-    val likedImages: MutableMap<String, Boolean> = mutableMapOf(),
     var positionOfImage: Int = 0) : IFeedItem {
 
     constructor(feedItem: FeedItem): this(
@@ -67,9 +66,6 @@ data class FeedItemVO(
         income = profile.income,
         property = profile.property,
         transport = profile.transport)
-
-    fun isLiked(imageId: String): Boolean = likedImages[imageId] ?: false
-    fun hasLiked(): Boolean = likedImages.count { it.value } > 0
 
     fun setOnlineStatus(onlineStatus: OnlineStatus?) {
         onlineStatus?.let {

@@ -71,7 +71,7 @@ class ProfileImageAdapter(private val imageLoader: ImageRequest)
         val clickListener = if (!isLikeEnabled) {
             super.getOnItemClickListener(vh)
         } else {
-            wrapOnItemClickListener(vh, getLikeClickListener(vh, alwaysLiked = true))
+            wrapOnItemClickListener(vh, getLikeClickListener(vh))
         }
         // detect touch on image item and call visual effect at touch point
         vh.itemView.setOnTouchListener { view, event ->
@@ -83,15 +83,11 @@ class ProfileImageAdapter(private val imageLoader: ImageRequest)
         return clickListener
     }
 
-    private fun getLikeClickListener(vh: BaseProfileImageViewHolder, alwaysLiked: Boolean = false)
+    private fun getLikeClickListener(vh: BaseProfileImageViewHolder)
         : ((model: ProfileImageVO, position: Int) -> Unit)? =
             { model: ProfileImageVO, position: Int ->
                 if (onBeforeLikeListener?.invoke() != false) {
-                    val isLiked = if (alwaysLiked) true else !model.isLiked
-                    model.isLiked = isLiked
-                    if (isLiked) {  // animate on Like, don't animate on Unlike
-                        notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
-                    }
+                    notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
                     itemClickListener?.invoke(model, position)
                     vh.itemView.tag
                         ?.let { it as MotionEvent }
