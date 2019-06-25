@@ -23,6 +23,7 @@ import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
+import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -55,6 +56,8 @@ class LikesFeedViewModel @Inject constructor(
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
+
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.LIKES
 
     override fun sourceBadge(): Observable<Boolean> =
         getLmmUseCase.repository.badgeLikes

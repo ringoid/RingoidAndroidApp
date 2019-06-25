@@ -8,7 +8,10 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.messenger.*
+import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
+import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
+import com.ringoid.domain.interactor.messenger.PollChatNewMessagesUseCase
+import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
@@ -27,7 +30,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ChatViewModel @Inject constructor(
-    private val getChatUseCase: GetChatUseCase,
     private val getChatNewMessagesUseCase: GetChatNewMessagesUseCase,
     private val getMessagesForPeerUseCase: GetMessagesForPeerUseCase,
     private val pollChatNewMessagesUseCase: PollChatNewMessagesUseCase,

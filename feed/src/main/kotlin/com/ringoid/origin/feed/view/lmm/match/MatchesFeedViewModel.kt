@@ -13,12 +13,14 @@ import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.interactor.messenger.GetChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
+import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,6 +28,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MatchesFeedViewModel @Inject constructor(
+    getChatUseCase: GetChatUseCase,
     getLmmUseCase: GetLmmUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
@@ -37,6 +40,7 @@ class MatchesFeedViewModel @Inject constructor(
     notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseMatchesFeedViewModel(
+        getChatUseCase,
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
         notifyLmmProfileBlockedUseCase,
@@ -51,6 +55,8 @@ class MatchesFeedViewModel @Inject constructor(
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MATCHES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.matches
+
+    override fun getSourceFeed(): LmmNavTab = LmmNavTab.MATCHES
 
     override fun sourceBadge(): Observable<Boolean> =
         getLmmUseCase.repository.badgeMatches

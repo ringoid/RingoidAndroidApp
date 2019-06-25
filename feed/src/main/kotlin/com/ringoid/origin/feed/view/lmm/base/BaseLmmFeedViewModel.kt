@@ -65,6 +65,8 @@ abstract class BaseLmmFeedViewModel(
     private val discardedFeedItemIds = mutableSetOf<String>()
     private var notSeenFeedItemIds = mutableSetOf<String>()
 
+    protected abstract fun getSourceFeed(): LmmNavTab
+
     init {
         sourceBadge()
             .observeOn(AndroidSchedulers.mainThread())
