@@ -170,17 +170,11 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
                  .handleError(tag = "getNewFaces($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/get_new_faces", extraTraces = extraTraces)
-                 .doOnSuccess {
-                     DebugLogUtil.v("# NewFaces: [${it.toLogString()}] as received from Server, before filter out duplicates")
-                     if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for NewFaces")
-                 }
+                 .doOnSuccess { if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for NewFaces") }
                  .filterOutDuplicateProfilesFeed()
-                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] before filter out cached/blocked profiles") }
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
-                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] after filtering out cached/blocked profiles") }
                  .filterOutLMMProfilesFeed()
-                 .doOnSuccess { DebugLogUtil.v("# NewFaces: [${it.toLogString()}] after filtering out LMM profiles, final") }
                  .cacheNewFacesAsAlreadySeen()
                  .map { it.map() }
         }
@@ -203,9 +197,7 @@ open class FeedRepository @Inject constructor(
                 .dropLmmResponseStatsOnSubscribe()
                 .filterOutDuplicateProfilesLmmResponse()
 //                .detectCollisionProfilesLmmResponse()
-                .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] before filter out blocked profiles") }
                 .filterOutBlockedProfilesLmmResponse()
-                .doOnSuccess { DebugLogUtil.v("# Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
                 .map { it.map() }
                 .clearCachedPropertyFeedItemIds()  // drop any previous user data (properties) applicable on cached Lmm
                 .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data

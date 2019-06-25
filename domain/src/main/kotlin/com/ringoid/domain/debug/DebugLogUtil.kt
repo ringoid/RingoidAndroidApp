@@ -41,7 +41,7 @@ object DebugLogUtil {
 
     @Synchronized
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
-        Timber.log(level.priority, log)
+//        Timber.log(level.priority, log)
         if (config.isDeveloper() && config.collectDebugLogs()) {
             val logItem = DebugLogItem(log = log, level = level)
             logger.onNext(logItem)
