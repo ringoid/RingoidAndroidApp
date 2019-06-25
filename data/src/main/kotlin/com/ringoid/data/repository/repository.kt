@@ -101,6 +101,7 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                             }
                             .doOnComplete {
                                 if (attemptNumber >= count) {
+                                    trace?.putAttribute("result", "failed")
                                     throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras) }
                                 }
                             }
