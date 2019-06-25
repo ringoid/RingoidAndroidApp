@@ -67,11 +67,11 @@
     <!-- Lmm screen -->
     <string name="lmm_popup_refresh">Обновить</string>
     <string name="lmm_tab_likes">Ты нравишься</string>
-    <string name="lmm_tab_likes_n">%s лайков</string>
+    <string name="lmm_tab_likes_n">%d лайков</string>
     <string name="lmm_tab_matches">Взаимно</string>
-    <string name="lmm_tab_matches_n">%s взаимно</string>
+    <string name="lmm_tab_matches_n">%d взаимно</string>
     <string name="lmm_tab_messenger">Чаты</string>
-    <string name="lmm_tab_messenger_n">%s чатов</string>
+    <string name="lmm_tab_messenger_n">%d чатов</string>
 
     <!-- Login screen -->
     <string name="login_button">Продолжить и Загрузить фото</string>

@@ -196,6 +196,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
+            observe(vm.count) { communicator(ILmmFragment::class.java)?.showCountOnTopTab(tab = getSourceFeed(), count = it) }
             observe(vm.feed) {
                 feedAdapter.submitList(it)
                 runOnUiThread { rv_items?.let { scrollListToPosition(0) } }

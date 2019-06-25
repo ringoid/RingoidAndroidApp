@@ -98,6 +98,14 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         hasAnyBadgeShown()
     }
 
+    override fun showCountOnTopTab(tab: LmmNavTab, count: Int) {
+        when (tab) {
+            LmmNavTab.LIKES -> btn_tab_likes.text = String.format(AppRes.LMM_TOP_TAB_LABEL_LIKES_N, count)
+            LmmNavTab.MATCHES -> btn_tab_matches.text = String.format(AppRes.LMM_TOP_TAB_LABEL_MATCHES_N, count)
+            LmmNavTab.MESSAGES -> btn_tab_messenger.text = String.format(AppRes.LMM_TOP_TAB_LABEL_MESSAGES_N, count)
+        }
+    }
+
     // ------------------------------------------
     override fun transferProfile(profileId: String, destinationFeed: LmmNavTab) {
         lmmPagesAdapter.accessItem(destinationFeed)

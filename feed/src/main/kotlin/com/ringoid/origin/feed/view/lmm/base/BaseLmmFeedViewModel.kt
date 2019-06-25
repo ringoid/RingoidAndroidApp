@@ -70,6 +70,7 @@ abstract class BaseLmmFeedViewModel(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
+    val count by lazy { MutableLiveData<Int>() }
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
@@ -172,6 +173,7 @@ abstract class BaseLmmFeedViewModel(
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
+        count.value = items.size
         if (items.isEmpty()) {
             viewState.value = ViewState.CLEAR(mode = clearMode)
         } else {
