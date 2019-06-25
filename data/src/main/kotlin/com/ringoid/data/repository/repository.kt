@@ -20,23 +20,51 @@ import java.util.concurrent.TimeUnit
 
 /* Retry with exponential backoff */
 // ------------------------------------------------------------------------------------------------
-fun Completable.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, trace: Trace? = null): Completable =
-    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffCompletable(count = count, delay = delay, tag = tag, trace = trace))
+fun Completable.withRetry(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, trace: Trace? = null,
+    extraTraces: Collection<Trace> = emptyList()): Completable =
+        doOnError { Timber.w("Retry [$tag] on error $count") }
+        .compose(expBackoffCompletable(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces))
 
-inline fun <reified T : BaseResponse> Maybe<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, trace: Trace? = null): Maybe<T> =
-    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffMaybe(count = count, delay = delay, tag = tag, trace = trace))
+inline fun <reified T : BaseResponse> Maybe<T>.withRetry(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, trace: Trace? = null,
+    extraTraces: Collection<Trace> = emptyList()): Maybe<T> =
+        doOnError { Timber.w("Retry [$tag] on error $count") }
+        .compose(expBackoffMaybe(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces))
 
-inline fun <reified T : BaseResponse> Single<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, trace: Trace? = null): Single<T> =
-    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffSingle(count = count, delay = delay, tag = tag, trace = trace))
+inline fun <reified T : BaseResponse> Single<T>.withRetry(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, trace: Trace? = null,
+    extraTraces: Collection<Trace> = emptyList()): Single<T> =
+        doOnError { Timber.w("Retry [$tag] on error $count") }
+        .compose(expBackoffSingle(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces))
 
-inline fun <reified T : BaseResponse> Flowable<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, trace: Trace? = null): Flowable<T> =
-    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffFlowable(count = count, delay = delay, tag = tag, trace = trace))
+inline fun <reified T : BaseResponse> Flowable<T>.withRetry(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, trace: Trace? = null,
+    extraTraces: Collection<Trace> = emptyList()): Flowable<T> =
+        doOnError { Timber.w("Retry [$tag] on error $count") }
+        .compose(expBackoffFlowable(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces))
 
-inline fun <reified T : BaseResponse> Observable<T>.withRetry(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, trace: Trace? = null): Observable<T> =
-    doOnError { Timber.w("Retry [$tag] on error $count") }.compose(expBackoffObservable(count = count, delay = delay, tag = tag, trace = trace))
+inline fun <reified T : BaseResponse> Observable<T>.withRetry(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, trace: Trace? = null,
+    extraTraces: Collection<Trace> = emptyList()): Observable<T> =
+        doOnError { Timber.w("Retry [$tag] on error $count") }
+        .compose(expBackoffObservable(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces))
 
 // ----------------------------------------------
-private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: MutableList<Long>, tag: String? = null, trace: Trace? = null) =
+private fun expBackoffFlowableImpl(
+        count: Int, delay: Long, elapsedTimes: MutableList<Long>,
+        tag: String? = null, trace: Trace? = null,
+        extraTraces: Collection<Trace> = emptyList()) =
     { it: Flowable<Throwable> ->
         it.zipWith<Int, Pair<Int, Throwable>>(Flowable.range(1, count), BiFunction { e: Throwable, i -> i to e })
             .flatMap { (attemptNumber, error) ->
@@ -95,48 +123,56 @@ private fun expBackoffFlowableImpl(count: Int, delay: Long, elapsedTimes: Mutabl
                                         SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row", tag = tag, extras = extras)
                                     }
                                     trace?.incrementMetric("repeatRequestAfter", 1L)
+                                    extraTraces.forEach { it.incrementMetric("repeatRequestAfter", 1L) }
                                 } else {
                                     trace?.incrementMetric("retry", 1L)
+                                    extraTraces.forEach { it.incrementMetric("retry", 1L) }
                                 }
                             }
                             .doOnComplete {
                                 if (attemptNumber >= count) {
                                     trace?.putAttribute("result", "failed")
+                                    extraTraces.forEach { it.putAttribute("result", "failed") }
                                     throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras) }
                                 }
                             }
             }
     }
 
-fun expBackoffCompletable(count: Int, delay: Long, tag: String? = null, trace: Trace? = null): CompletableTransformer =
+fun expBackoffCompletable(count: Int, delay: Long, tag: String? = null, trace: Trace? = null,
+                          extraTraces: Collection<Trace> = emptyList()): CompletableTransformer =
     CompletableTransformer {
         val elapsedTimes = mutableListOf<Long>()
-        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace))
+        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace, extraTraces))
     }
 
-fun <T : BaseResponse> expBackoffMaybe(count: Int, delay: Long, tag: String? = null, trace: Trace? = null): MaybeTransformer<T, T> =
+fun <T : BaseResponse> expBackoffMaybe(count: Int, delay: Long, tag: String? = null, trace: Trace? = null,
+                                       extraTraces: Collection<Trace> = emptyList()): MaybeTransformer<T, T> =
     MaybeTransformer {
         val elapsedTimes = mutableListOf<Long>()
-        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace))
+        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace, extraTraces))
     }
 
-fun <T : BaseResponse> expBackoffSingle(count: Int, delay: Long, tag: String? = null, trace: Trace? = null): SingleTransformer<T, T> =
+fun <T : BaseResponse> expBackoffSingle(count: Int, delay: Long, tag: String? = null, trace: Trace? = null,
+                                        extraTraces: Collection<Trace> = emptyList()): SingleTransformer<T, T> =
     SingleTransformer {
         val elapsedTimes = mutableListOf<Long>()
-        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace))
+        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace, extraTraces))
     }
 
-fun <T : BaseResponse> expBackoffFlowable(count: Int, delay: Long, tag: String? = null, trace: Trace? = null): FlowableTransformer<T, T> =
+fun <T : BaseResponse> expBackoffFlowable(count: Int, delay: Long, tag: String? = null, trace: Trace? = null,
+                                          extraTraces: Collection<Trace> = emptyList()): FlowableTransformer<T, T> =
     FlowableTransformer {
         val elapsedTimes = mutableListOf<Long>()
-        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace))
+        it.retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace, extraTraces))
     }
 
-fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Long, tag: String? = null, trace: Trace? = null): ObservableTransformer<T, T> =
+fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Long, tag: String? = null, trace: Trace? = null,
+                                            extraTraces: Collection<Trace> = emptyList()): ObservableTransformer<T, T> =
     ObservableTransformer {
         val elapsedTimes = mutableListOf<Long>()
         it.toFlowable(BackpressureStrategy.MISSING)
-          .retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace))
+          .retryWhen(expBackoffFlowableImpl(count, delay, elapsedTimes, tag, trace, extraTraces))
           .toObservable()
     }
 
@@ -245,50 +281,70 @@ inline fun <reified T : BaseResponse> onNetErrorObservable(tag: String? = null):
 /* Error handling */
 // --------------------------------------------------------------------------------------------
 fun Completable.handleErrorNoRetry(tag: String? = null): Completable = withNetError(tag)
-fun Completable.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, traceTag: String = tag ?: ""): Completable =
+fun Completable.handleError(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, traceTag: String = tag ?: "",
+    extraTraces: Collection<Trace> = emptyList()): Completable =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
-            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace) else it
+            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces) else it
             source.doOnSubscribe { trace.start() }.doFinally { trace.stop() }
         }
 
 inline fun <reified T : BaseResponse> Maybe<T>.handleErrorNoRetry(tag: String? = null): Maybe<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Maybe<T>.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, traceTag: String = tag ?: ""): Maybe<T> =
+inline fun <reified T : BaseResponse> Maybe<T>.handleError(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, traceTag: String = tag ?: "",
+    extraTraces: Collection<Trace> = emptyList()): Maybe<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
-            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace) else it
+            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces) else it
             source.doOnSubscribe { trace.start() }.doFinally { trace.stop() }
         }
 
 inline fun <reified T : BaseResponse> Single<T>.handleErrorNoRetry(tag: String? = null): Single<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Single<T>.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, traceTag: String = tag ?: ""): Single<T> =
+inline fun <reified T : BaseResponse> Single<T>.handleError(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, traceTag: String = tag ?: "",
+    extraTraces: Collection<Trace> = emptyList()): Single<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
-            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace) else it
+            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces) else it
             source.doOnSubscribe { trace.start() }.doFinally { trace.stop() }
         }
 
 inline fun <reified T : BaseResponse> Flowable<T>.handleErrorNoRetry(tag: String? = null): Flowable<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Flowable<T>.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, traceTag: String = tag ?: ""): Flowable<T> =
+inline fun <reified T : BaseResponse> Flowable<T>.handleError(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, traceTag: String = tag ?: "",
+    extraTraces: Collection<Trace> = emptyList()): Flowable<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
-            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace) else it
+            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces) else it
             source.doOnSubscribe { trace.start() }.doFinally { trace.stop() }
         }
 
 inline fun <reified T : BaseResponse> Observable<T>.handleErrorNoRetry(tag: String? = null): Observable<T> =
     withApiError(tag).withNetError(tag)
-inline fun <reified T : BaseResponse> Observable<T>.handleError(count: Int = BuildConfig.DEFAULT_RETRY_COUNT, delay: Long = BuildConfig.DEFAULT_RETRY_DELAY, tag: String? = null, traceTag: String = tag ?: ""): Observable<T> =
+inline fun <reified T : BaseResponse> Observable<T>.handleError(
+    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+    tag: String? = null, traceTag: String = tag ?: "",
+    extraTraces: Collection<Trace> = emptyList()): Observable<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
-            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace) else it
+            val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces) else it
             source.doOnSubscribe { trace.start() }.doFinally { trace.stop() }
         }

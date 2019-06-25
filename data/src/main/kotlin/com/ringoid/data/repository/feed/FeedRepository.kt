@@ -1,5 +1,6 @@
 package com.ringoid.data.repository.feed
 
+import com.google.firebase.perf.metrics.Trace
 import com.ringoid.data.di.PerAlreadySeen
 import com.ringoid.data.di.PerBlock
 import com.ringoid.data.di.PerLmmLikes
@@ -164,10 +165,11 @@ open class FeedRepository @Inject constructor(
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> =
         aObjPool.triggerSource().flatMap { getNewFacesOnly(resolution, limit, lastActionTime = it) }
 
-    private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long): Single<Feed> =
+    private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long,
+                                extraTraces: Collection<Trace> = emptyList()): Single<Feed> =
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
-                 .handleError(tag = "getNewFaces($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/get_new_faces")
+                 .handleError(tag = "getNewFaces($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/get_new_faces", extraTraces = extraTraces)
                  .doOnSuccess {
                      DebugLogUtil.v("# NewFaces: [${it.toLogString()}] as received from Server, before filter out duplicates")
                      if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for NewFaces")
@@ -193,10 +195,11 @@ open class FeedRepository @Inject constructor(
                     getCachedLmm()
                 }
 
-    private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long): Single<Lmm> =
+    private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long,
+                           extraTraces: Collection<Trace> = emptyList()): Single<Lmm> =
         spm.accessSingle {
             cloud.getLmm(it.accessToken, resolution, source, lastActionTime)
-                .handleError(tag = "getLmm($resolution,lat=$lastActionTime)", traceTag = "feeds/get_lmm")
+                .handleError(tag = "getLmm($resolution,lat=$lastActionTime)", traceTag = "feeds/get_lmm", extraTraces = extraTraces)
                 .dropLmmResponseStatsOnSubscribe()
                 .filterOutDuplicateProfilesLmmResponse()
 //                .detectCollisionProfilesLmmResponse()
