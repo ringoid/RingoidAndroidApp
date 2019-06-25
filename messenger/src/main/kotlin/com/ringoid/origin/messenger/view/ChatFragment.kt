@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.observe
@@ -190,6 +191,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                     stackFromEnd = true
                 }
 //            itemAnimator = SlideUpAlphaAnimator()
+            (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
             setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
         }
     }
