@@ -15,6 +15,10 @@ function slackPost() {
 	./slackpost_cmd.sh $@
 }
 
+function slackUpload() {
+    ./slackupload_cmd.sh $@
+}
+
 function getBuildCode() {
 	echo "$1" | cut -d'-' -f 2
 }
