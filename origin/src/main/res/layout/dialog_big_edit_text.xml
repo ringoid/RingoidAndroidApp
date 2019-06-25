@@ -46,7 +46,7 @@
         android:gravity="start|top"
         android:inputType="text"
         android:maxLength="300"
-        android:minHeight="@dimen/std_dialog_height"
+        android:minHeight="@dimen/dialog_big_edit_text_height"
         android:padding="@dimen/std_margin_8">
         <requestFocus/>
     </EditText>
