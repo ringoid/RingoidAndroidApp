@@ -63,7 +63,10 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is DISCARD_PROFILE -> communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
+                    is DISCARD_PROFILE -> {
+                        communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
+                        communicator(ILmmFragment::class.java)?.changeCountOnTopTab(tab = getSourceFeed(), delta = -1)
+                    }
                     /**
                      * When Lmm feed has been restored from a cache, there could be some liked images
                      * on some feed items, that were liked by user in between first successful fetch

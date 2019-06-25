@@ -46,7 +46,10 @@ class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         val discarded = onDiscardProfileState(profileId)  // discard profile on transfer
-                        communicator(ILmmFragment::class.java)?.transferProfile(discarded, LmmNavTab.MESSAGES)
+                        communicator(ILmmFragment::class.java)?.let {
+                            it.changeCountOnTopTab(tab = LmmNavTab.MATCHES, delta = -1)
+                            it.transferProfile(discarded, LmmNavTab.MESSAGES)
+                        }
                     }
                 }
             }
