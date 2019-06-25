@@ -47,6 +47,7 @@ data class Message(
         }
     }
 
+    fun isLocal(): Boolean = id == clientId
     fun isPeerMessage(): Boolean = peerId != DomainUtil.CURRENT_USER_ID
     fun isUserMessage(): Boolean = peerId == DomainUtil.CURRENT_USER_ID
 
