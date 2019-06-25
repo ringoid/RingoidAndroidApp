@@ -112,6 +112,12 @@ object AppRes {
     // ------------------------------------------
     var LENGTH_CM = ""
         private set
+    var LMM_TOP_TAB_LABEL_LIKES_N = ""
+        private set
+    var LMM_TOP_TAB_LABEL_MATCHES_N = ""
+        private set
+    var LMM_TOP_TAB_LABEL_MESSAGES_N = ""
+        private set
 
     // ------------------------------------------
     var EMAIL_OFFICER_MAIL_SUBJECT = ""
@@ -200,6 +206,9 @@ object AppRes {
     fun initTranslatableStrings(resources: Resources) {
         with (resources) {
             LENGTH_CM = getString(R.string.value_cm)
+            LMM_TOP_TAB_LABEL_LIKES_N = getString(R.string.lmm_tab_likes_n)
+            LMM_TOP_TAB_LABEL_MATCHES_N = getString(R.string.lmm_tab_matches_n)
+            LMM_TOP_TAB_LABEL_MESSAGES_N = getString(R.string.lmm_tab_messenger_n)
         }
     }
 }
