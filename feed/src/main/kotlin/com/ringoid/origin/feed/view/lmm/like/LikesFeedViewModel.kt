@@ -29,10 +29,6 @@ import javax.inject.Inject
 class LikesFeedViewModel @Inject constructor(
     getLmmUseCase: GetLmmUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
-    getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
-    addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
-    addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -44,10 +40,6 @@ class LikesFeedViewModel @Inject constructor(
     : BaseLmmFeedViewModel(
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
-        getLikedFeedItemIdsUseCase,
-        getUserMessagedFeedItemIdsUseCase,
-        addLikedImageForFeedItemIdUseCase,
-        addUserMessagedFeedItemIdUseCase,
         notifyLmmProfileBlockedUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,

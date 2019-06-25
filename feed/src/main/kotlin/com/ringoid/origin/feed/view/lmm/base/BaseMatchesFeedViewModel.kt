@@ -20,10 +20,6 @@ import timber.log.Timber
 abstract class BaseMatchesFeedViewModel(
     getLmmUseCase: GetLmmUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
-    getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
-    addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
-    addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     transferFeedItemUseCase: TransferFeedItemUseCase,
@@ -35,10 +31,6 @@ abstract class BaseMatchesFeedViewModel(
     : BaseLmmFeedViewModel(
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
-        getLikedFeedItemIdsUseCase,
-        getUserMessagedFeedItemIdsUseCase,
-        addLikedImageForFeedItemIdUseCase,
-        addUserMessagedFeedItemIdUseCase,
         notifyLmmProfileBlockedUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,

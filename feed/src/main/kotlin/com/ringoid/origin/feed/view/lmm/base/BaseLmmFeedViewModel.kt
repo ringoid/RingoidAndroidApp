@@ -10,12 +10,14 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.*
+import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
+import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -25,8 +27,6 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.REFRESH
-import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
-import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.utils.ScreenHelper
@@ -39,22 +39,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 
-/**
- * Cached feed represented with [Lmm] is used when fetching of original feed has failed,
- * basically due to exceeded request threshold, that is actually expressed via [ThresholdExceededException].
- * But this is only done upon refreshing the feed. Before that user could like some feed items
- * and / or compose the very first message to some peers (which then changes appearance of chat icon).
- * Thus, upon failed to refresh, feed is restored from the cache, but that cache lacks this information,
- * so that information is kept in special sources such as [getLikedFeedItemIdsUseCase] and [messagedFeedItemIds]
- * and hence could be applied on a cached feed, restoring the information to user.
- */
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
     private val getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    private val getLikedFeedItemIdsUseCase: GetLikedFeedItemIdsUseCase,
-    private val getUserMessagedFeedItemIdsUseCase: GetUserMessagedFeedItemIdsUseCase,
-    private val addLikedImageForFeedItemIdUseCase: AddLikedImageForFeedItemIdUseCase,
-    private val addUserMessagedFeedItemIdUseCase: AddUserMessagedFeedItemIdUseCase,
     private val notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     private val transferFeedItemUseCase: TransferFeedItemUseCase,
@@ -101,19 +88,6 @@ abstract class BaseLmmFeedViewModel(
                     }
                 }
             }
-            // TODO: @Deprecated("Since Transition")
-            .flatMap {
-                // get cached feed items that were liked, to restore likes on cached feed
-                val params = Params().put("feedItemIds", it.map { it.id })
-                getLikedFeedItemIdsUseCase.source(params = params).toObservable()
-            }
-            .doOnNext { it.ids.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_LIKES(it)) } }
-            // TODO: @Deprecated("Since Transition")
-            .flatMap {
-                // cached feed items that have only user messages inside, sent after receiving feed
-                getUserMessagedFeedItemIdsUseCase.source().toObservable()
-            }
-            .doOnNext { it.takeIf { it.isNotEmpty() }?.let { viewState.value = ViewState.DONE(RESTORE_CACHED_USER_MESSAGES(it)) } }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
@@ -233,10 +207,6 @@ abstract class BaseLmmFeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String, isLiked: Boolean) {
         super.onLike(profileId, imageId, isLiked)
-        addLikedImageForFeedItemIdUseCase.source(params = Params().put("feedItemId", profileId).put("imageId", imageId))
-            .autoDisposable(this)
-            .subscribe({}, Timber::e)
-
         markFeedItemAsSeen(feedItemId = profileId)
     }
 

@@ -15,7 +15,6 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
-import com.ringoid.domain.model.messenger.userMessage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.*
@@ -24,8 +23,6 @@ import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
-import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
-import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_USER_MESSAGES
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
@@ -67,42 +64,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
                         communicator(ILmmFragment::class.java)?.changeCountOnTopTab(tab = getSourceFeed(), delta = -1)
                     }
-                    /**
-                     * When Lmm feed has been restored from a cache, there could be some liked images
-                     * on some feed items, that were liked by user in between first successful fetch
-                     * for feed and the following unsuccessful fetch, when time threshold has been hit.
-                     * In that case, cache Lmm is restored and those likes should also be restored.
-                     */
-                    is RESTORE_CACHED_LIKES -> (newState.residual as RESTORE_CACHED_LIKES)
-                        .let {
-                            it.likedFeedItemIds.let { map ->
-                                map.keys.forEach { id ->
-                                    feedAdapter.findModelAndPosition { it.id == id }
-                                        ?.also { (position, model) ->
-                                            map[id]?.forEach { model.likedImages[it] = true }
-                                            feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
-                                        }
-                                }
-                            }
-                        }
-                    /**
-                     * When Lmm feed has been restored from a cache, there could be some profiles that
-                     * user has sent a single message to. This affect appearance of feed item in list
-                     * (in particular, a chat icon changes). That messages could be sent by user in
-                     * between first successful fetch for feed and the following unsuccessful fetch,
-                     * when time threshold has been hit. In that case, cache Lmm is restored and fictive
-                     * messages should be applied to such feed items to apply changes on their appearance.
-                     */
-                    is RESTORE_CACHED_USER_MESSAGES -> (newState.residual as RESTORE_CACHED_USER_MESSAGES)
-                        .let {
-                            it.messagedFeedItemIds.forEach { id ->
-                                feedAdapter.findModelAndPosition { it.id == id }
-                                    ?.also { (position, model) ->
-                                        model.messages.add(userMessage(chatId = model.id))
-                                        feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
-                                    }
-                            }
-                        }
                     /**
                      * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
                      * have been seen by user, so it's time to hide red badge on a corresponding Lmm tab.

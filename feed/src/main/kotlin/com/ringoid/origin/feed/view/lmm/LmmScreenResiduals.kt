@@ -4,11 +4,6 @@ import com.ringoid.base.view.Residual
 import com.ringoid.origin.feed.view.ProfileResidual
 import com.ringoid.origin.view.main.LmmNavTab
 
-@Deprecated("Since Transition")
-data class RESTORE_CACHED_LIKES(val likedFeedItemIds: Map<String, MutableList<String>>) : Residual()
-@Deprecated("Since Transition")
-data class RESTORE_CACHED_USER_MESSAGES(val messagedFeedItemIds: Collection<String>) : Residual()
-
 // visually display clear screen in mode DEFAULT and refresh spinner on all Lmm tabs except the specified one
 data class CLEAR_AND_REFRESH_EXCEPT(val exceptLmmTab: LmmNavTab?) : Residual()
 
