@@ -72,8 +72,11 @@
     <!-- Lmm screen -->
     <string name="lmm_popup_refresh">Refresh</string>
     <string name="lmm_tab_likes">Likes You</string>
+    <string name="lmm_tab_likes_n">%s likes</string>
     <string name="lmm_tab_matches">Matches</string>
+    <string name="lmm_tab_matches_n">%s matches</string>
     <string name="lmm_tab_messenger">Chats</string>
+    <string name="lmm_tab_messenger_n">%s chats</string>
 
     <!-- Login screen -->
     <string name="login_button">Continue to Upload Photo</string>
