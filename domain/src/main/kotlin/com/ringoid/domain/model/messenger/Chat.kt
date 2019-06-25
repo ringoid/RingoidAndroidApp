@@ -10,7 +10,7 @@ class Chat(
     id: String,
     distanceText: String? = null,
     images: List<IImage>,
-    messages: MutableList<Message>,
+    messages: List<Message>,
     lastOnlineStatus: String? = null,
     lastOnlineText: String? = null,
     age: Int = DomainUtil.UNKNOWN_VALUE,

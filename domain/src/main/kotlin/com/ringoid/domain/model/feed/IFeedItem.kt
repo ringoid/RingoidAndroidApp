@@ -5,7 +5,7 @@ import com.ringoid.domain.model.messenger.Message
 
 interface IFeedItem : IProfile {
 
-    val messages: MutableList<Message>
+    val messages: List<Message>
 
     fun profile(): Profile = Profile(id = id, age = age, images = images)
     fun feedItem(): FeedItem = FeedItem(id = id, age = age, images = images, messages = messages, isNotSeen = false)

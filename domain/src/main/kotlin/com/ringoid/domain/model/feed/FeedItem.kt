@@ -10,7 +10,7 @@ open class FeedItem(
     override val id: String,
     override val distanceText: String? = null,
     override val images: List<IImage>,
-    override val messages: MutableList<Message>,
+    override val messages: List<Message>,
     override val lastOnlineStatus: String? = null,
     override val lastOnlineText: String? = null,
     override val age: Int = DomainUtil.UNKNOWN_VALUE,
