@@ -72,6 +72,7 @@ class UserProfileFragmentViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({ decrementTotalLmmCount() }, Timber::e)
 
+        // show total Lmm count on Profile screen
         getLmmPropertyUseCase.repository.lmmLoadFinish
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)

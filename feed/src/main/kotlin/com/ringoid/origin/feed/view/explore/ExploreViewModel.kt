@@ -59,6 +59,7 @@ class ExploreViewModel @Inject constructor(
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_EXPLORE
 
     init {
+        // discard profiles that appear in Lmm from Explore feed
         getNewFacesUseCase.repository.lmmLoadFinish
             .flatMap { getCachedLmmFeedItemIdsUseCase.source().toObservable() }
             .observeOn(AndroidSchedulers.mainThread())
