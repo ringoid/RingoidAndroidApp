@@ -318,7 +318,7 @@ inline fun <reified T : BaseResponse> Single<T>.handleError(
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
             val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces) else it
-            source.doOnSubscribe { Timber.e("TRACE START $tag"); trace.start() }.doFinally { Timber.e("TRACE END $tag");trace.stop() }
+            source.doOnSubscribe { trace.start() }.doFinally { trace.stop() }
         }
 
 inline fun <reified T : BaseResponse> Flowable<T>.handleErrorNoRetry(tag: String? = null): Flowable<T> =

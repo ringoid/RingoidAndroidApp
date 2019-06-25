@@ -167,9 +167,9 @@ open class FeedRepository @Inject constructor(
         val trace = FirebasePerformance.getInstance().newTrace("refresh_new_faces")
         return aObjPool
             .triggerSource()
-            .doOnSubscribe { trace.start(); Timber.i("TRACE START") }
+            .doOnSubscribe { trace.start() }
             .flatMap { getNewFacesOnly(resolution, limit, lastActionTime = it) }
-            .doFinally { Timber.i("TRACE END"); trace.stop() }
+            .doFinally { trace.stop() }
     }
 
     private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long,
@@ -179,13 +179,10 @@ open class FeedRepository @Inject constructor(
                  .handleError(tag = "getNewFaces($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/get_new_faces", extraTraces = extraTraces)
                  .doOnSuccess { if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for NewFaces") }
                  .filterOutDuplicateProfilesFeed()
-                .doOnSuccess { Timber.w("TRACE 1") }
                  .filterOutAlreadySeenProfilesFeed()
-                .doOnSuccess { Timber.w("TRACE 2") }
                  .filterOutBlockedProfilesFeed()
                  .filterOutLMMProfilesFeed()
                  .cacheNewFacesAsAlreadySeen()
-                .doOnSuccess { Timber.w("TRACE 3") }
                  .map { it.map() }
         }
 
