@@ -25,9 +25,9 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.util.concurrent.Semaphore
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,11 +37,7 @@ class MessengerRepository @Inject constructor(
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
-    private val mutex = Semaphore(1)
-    private val sentMessages = mutableMapOf<String, MutableSet<Message>>()
-    private val sentMessageLocalReadersCount = AtomicInteger(0)
-    private val sentMessagesLocalWriterLock = Semaphore(1)
-
+    private val sentMessages = ConcurrentHashMap<String, MutableSet<Message>>()
     private var pollingDelay = 5000L  // in ms
 
     init {
@@ -70,10 +66,8 @@ class MessengerRepository @Inject constructor(
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                 .filterOutChatOldMessages(chatId, sourceFeed)
-                .acquireReadAccessToSentLocalMessagesStore()
                 .concatWithUnconsumedSentLocalMessages(chatId)
                 .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
-                .releaseReadAccessToSentLocalMessagesStore()
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
         }
 
@@ -154,26 +148,6 @@ class MessengerRepository @Inject constructor(
             } else Single.just(chat)
         }
 
-    // ------------------------------------------
-    private fun Single<Chat>.acquireReadAccessToSentLocalMessagesStore(): Single<Chat> =
-        map { chat ->
-            mutex.acquireUninterruptibly()
-            if (sentMessageLocalReadersCount.incrementAndGet() == 1) {
-                sentMessagesLocalWriterLock.acquireUninterruptibly()
-            }
-            mutex.release()
-            chat  // result value
-        }
-
-    private fun Single<Chat>.releaseReadAccessToSentLocalMessagesStore(): Single<Chat> =
-        doFinally {
-            mutex.acquireUninterruptibly()
-            if (sentMessageLocalReadersCount.decrementAndGet() == 0) {
-                sentMessagesLocalWriterLock.release()
-            }
-            mutex.release()
-        }
-
     // --------------------------------------------------------------------------------------------
     override fun clearMessages(): Completable =
         Completable.fromCallable { local.deleteMessages() }
@@ -221,10 +195,8 @@ class MessengerRepository @Inject constructor(
 
         return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, sourceFeed = sourceFeed)) }
             .doOnSubscribe {
-                sentMessagesLocalWriterLock.acquireUninterruptibly()
                 keepSentMessage(sentMessage)
                 aObjPool.put(aobj)
-                sentMessagesLocalWriterLock.release()
             }
             .toSingleDefault(sentMessage)
     }
@@ -234,16 +206,13 @@ class MessengerRepository @Inject constructor(
     private fun restoreCachedSentMessagesLocal() {
         sentMessagesLocal.messages()
             .subscribeOn(Schedulers.io())
-            .subscribe({ sentMessages ->
-                sentMessagesLocalWriterLock.acquireUninterruptibly()
-                sentMessages.forEach { keepSentMessage(it.map()) }
-                sentMessagesLocalWriterLock.release()
-            }, Timber::e)
+            .subscribe({ it.forEach { keepSentMessage(it.map()) } }, Timber::e)
     }
 
+    @Synchronized
     private fun keepSentMessage(sentMessage: Message) {
         if (!sentMessages.containsKey(sentMessage.chatId)) {
-            sentMessages[sentMessage.chatId] = mutableSetOf()
+            sentMessages[sentMessage.chatId] = Collections.newSetFromMap(ConcurrentHashMap())
         }
         sentMessages[sentMessage.chatId]!!.add(sentMessage)
     }
