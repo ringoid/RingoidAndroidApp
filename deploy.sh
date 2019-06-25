@@ -38,6 +38,6 @@ do
 #	if [[ "$TO_SLACK" == true ]]
 #	then
 		echo $(slackPost $buildVariant $buildCode $url)
+		echo $(slackUpload $buildVariant $buildCode)
 #	fi
 done
-
