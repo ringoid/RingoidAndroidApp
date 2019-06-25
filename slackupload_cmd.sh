@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # see https://api.slack.com/methods/files.upload
+# see https://gist.github.com/polbins/0fa2902e6603245a2be6fc9a76a874c1
 message="$1 $2"
 for FILE in `find ./release/ -name "*-aligned-signed.apk" -type f`
 do
