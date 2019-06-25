@@ -48,6 +48,8 @@ class BottomBar : LinearLayout {
     private var profileIcon: Drawable? = null
     private var profileSelectIcon: Drawable? = null
 
+    private var countOnLmm: Int = 0
+
     constructor(context: Context): this(context, null)
 
     constructor(context: Context, attributes: AttributeSet?): this(context, attributes, 0)
@@ -80,6 +82,11 @@ class BottomBar : LinearLayout {
 
     /* API */
     // --------------------------------------------------------------------------------------------
+    fun decrementCountOnLmm(decrementBy: Int) {
+        countOnLmm -= decrementBy
+        showCountOnLmm(countOnLmm)
+    }
+
     fun setOnNavigationItemSelectedListener(l: ((item: NavTab) -> Unit)?) {
         selectListener = l
     }
@@ -90,6 +97,11 @@ class BottomBar : LinearLayout {
 
     fun showBadgeOnLmm(isVisible: Boolean) {
         iv_item_badge_lmm.changeVisibility(isVisible, soft = true)
+    }
+
+    fun showCountOnLmm(count: Int) {
+        countOnLmm = maxOf(count, 0)  // omit negative values
+        tv_lmm_count.text = if (count > 0) " $count" else ""
     }
 
     fun showWarningOnProfile(isVisible: Boolean) {

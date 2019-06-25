@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -41,10 +42,11 @@
             android:layout_gravity="center"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_lmm_count"
             app:srcCompat="@drawable/ic_menu_favorite_white_outline_36dp"/>
 
         <ImageView
@@ -56,6 +58,20 @@
             android:visibility="invisible"
             app:layout_constraintTop_toTopOf="@id/iv_item_lmm"
             app:layout_constraintEnd_toEndOf="@id/iv_item_lmm"/>
+
+        <TextView
+            android:id="@+id/tv_lmm_count"
+            android:gravity="center"
+            android:shadowColor="@color/text_shadow"
+            android:shadowRadius="6"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/std_text_18"
+            app:layout_constraintTop_toTopOf="@id/iv_item_lmm"
+            app:layout_constraintBottom_toBottomOf="@id/iv_item_lmm"
+            app:layout_constraintStart_toEndOf="@id/iv_item_lmm"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text=" 123"
+            style="@style/StdText.Primary"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -39,6 +39,7 @@ class MainViewModel @Inject constructor(
 
     val badgeLmm by lazy { MutableLiveData<Boolean>() }
     val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
+    val countLmm by lazy { MutableLiveData<Int>() }
     val newLikesCount by lazy { MutableLiveData<Int>() }
     val newMatchesCount by lazy { MutableLiveData<Int>() }
     val newMessagesCount by lazy { MutableLiveData<Int>() }
@@ -52,7 +53,10 @@ class MainViewModel @Inject constructor(
         getLmmUseCase.repository.lmmLoadFinish
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ HandledPushDataInMemory.dropCountsOfHandledPush() }, Timber::e)
+            .subscribe({
+                HandledPushDataInMemory.dropCountsOfHandledPush()
+                countLmm.value = it
+            }, Timber::e)
 
         getLmmUseCase.repository.newLikesCount
             .observeOn(AndroidSchedulers.mainThread())

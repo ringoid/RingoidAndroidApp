@@ -47,6 +47,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme_Dark)
         observe(vm.badgeLmm, ::showBadgeOnLmm)
         observe(vm.badgeWarningProfile, ::showBadgeWarningOnProfile)
+        observe(vm.countLmm, ::showCountOnLmm)
         observe(vm.newLikesCount) { showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = it) }
         observe(vm.newMatchesCount) { showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = it) }
         observe(vm.newMessagesCount) { showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = it) }

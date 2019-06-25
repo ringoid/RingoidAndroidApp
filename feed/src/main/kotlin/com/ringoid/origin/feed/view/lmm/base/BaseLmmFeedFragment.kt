@@ -21,6 +21,7 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
+import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.RESTORE_CACHED_LIKES
@@ -33,6 +34,7 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
+import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
@@ -61,6 +63,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is DISCARD_PROFILE -> communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
                     /**
                      * When Lmm feed has been restored from a cache, there could be some liked images
                      * on some feed items, that were liked by user in between first successful fetch
