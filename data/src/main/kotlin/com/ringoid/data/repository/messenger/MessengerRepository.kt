@@ -86,13 +86,14 @@ class MessengerRepository @Inject constructor(
     private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
         spm.accessSingle {
             if (semaphore.tryAcquire()) {
+                Timber.w("ACQUIRE ${Thread.currentThread().name}")
                 getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
                     .filterOutChatOldMessages(chatId)
                     .concatWithUnconsumedSentLocalMessages(chatId)
                     .cacheUnconsumedSentLocalMessages(chatId)
                     .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
-                    .doOnSuccess { chat -> Timber.v("Final messages: ${chat.print()}") }
-                    .doFinally { semaphore.release() }
+                    .doOnSuccess { chat -> Timber.v("Final messages  ${Thread.currentThread().name}: ${chat.print()}") }
+                    .doFinally { Timber.w("RELEASE  ${Thread.currentThread().name}"); semaphore.release() }
             } else {
                 Timber.w("Skip current iteration")
                 Single.error(SkipThisTryException())
@@ -127,10 +128,10 @@ class MessengerRepository @Inject constructor(
         toObservable()
         .withLatestFrom(local.messages(chatId = chatId).toObservable(),
             BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
-                Timber.v("Old messages: ${localMessages.print()}")
+                Timber.v("Old messages ${Thread.currentThread().name}: ${localMessages.print()}")
                 if (chat.messages.size > localMessages.size) {
                     val newMessages = chat.messages.subList(localMessages.size, chat.messages.size)
-                    Timber.v("New messages: ${newMessages.print()}")
+                    Timber.d("New messages ${Thread.currentThread().name}: ${newMessages.print()}")
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
@@ -227,6 +228,7 @@ class MessengerRepository @Inject constructor(
         return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage)) }
             .doOnSubscribe {
                 keepSentMessage(sentMessage)
+                Timber.i("Sent: ${sentMessages[essence.peerId]?.print()}")
                 aObjPool.put(aobj)
             }
             .toSingleDefault(sentMessage)
