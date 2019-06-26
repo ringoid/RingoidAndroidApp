@@ -35,7 +35,7 @@
             android:gravity="center_vertical|end"
             android:minHeight="@dimen/std_btn_height_narrow"
             android:paddingEnd="@dimen/std_margin_12"
-            android:text="@string/lmm_tab_likes"
+            android:text="@string/lmm_tab_likes_0"
             android:textColor="@color/tab_button_text_color"
             style="@style/FlatButton"/>
 
@@ -52,7 +52,7 @@
             android:minHeight="@dimen/std_btn_height_narrow"
             android:paddingStart="@dimen/std_margin_8"
             android:paddingEnd="@dimen/std_margin_8"
-            android:text="@string/lmm_tab_matches"
+            android:text="@string/lmm_tab_matches_0"
             android:textColor="@color/tab_button_text_color"
             style="@style/FlatButton"/>
 
@@ -71,7 +71,7 @@
             android:gravity="center_vertical|start"
             android:minHeight="@dimen/std_btn_height_narrow"
             android:paddingStart="@dimen/std_margin_16"
-            android:text="@string/lmm_tab_messenger"
+            android:text="@string/lmm_tab_messenger_0"
             android:textColor="@color/tab_button_text_color"
             style="@style/FlatButton"/>
     </LinearLayout>
