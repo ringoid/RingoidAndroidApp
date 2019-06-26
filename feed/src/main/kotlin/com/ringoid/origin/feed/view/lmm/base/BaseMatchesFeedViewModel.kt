@@ -18,6 +18,7 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.origin.feed.view.lmm.messenger.PUSH_NEW_MESSAGES
+import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -71,7 +72,8 @@ abstract class BaseMatchesFeedViewModel(
         viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES(profileId = event.peerId))
 
         // update messages in local cache
-        val params = Params().put("chatId", event.peerId)
+        val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+                             .put("chatId", event.peerId)
                              .put("sourceFeed", getSourceFeed().feedName)
         getChatUseCase.source(params = params)
             .autoDisposable(this)
