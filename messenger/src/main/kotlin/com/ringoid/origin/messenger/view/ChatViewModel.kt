@@ -18,7 +18,6 @@ import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
-import com.ringoid.domain.model.print
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
@@ -140,10 +139,8 @@ class ChatViewModel @Inject constructor(
                 addAll(chat.messages.reversed())
                 addAll(currentMessageList)
             }
-        Timber.d("ListData: ${list.print()}")
         currentMessageList = ArrayList(list)  // clone list to avoid further modifications
         messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
-        Timber.i("LiveData: ${messages.value?.print()}")
         onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
     }
 }
