@@ -120,7 +120,7 @@ class ChatViewModel @Inject constructor(
         if (event.peerId == chatData?.chatId) {
             getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = event.peerId))
                 .autoDisposable(this)
-//                .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
+                .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
         }
     }
 

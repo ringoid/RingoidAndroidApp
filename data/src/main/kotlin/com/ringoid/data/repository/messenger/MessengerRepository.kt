@@ -9,6 +9,7 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
+import com.ringoid.domain.exception.SkipThisTryException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
@@ -28,6 +29,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -39,6 +41,7 @@ class MessengerRepository @Inject constructor(
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
     private val sentMessages = ConcurrentHashMap<String, MutableSet<Message>>()
+    private val semaphore = Semaphore(1)
     private var pollingDelay = 5000L  // in ms
 
     init {
@@ -53,23 +56,47 @@ class MessengerRepository @Inject constructor(
         aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it) }
 
     override fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat> =
-        getChatNew(chatId, resolution).repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS) } }
+        getChatNew(chatId, resolution)
+            .repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS) } }
+            .retryWhen {
+                it.flatMap { error ->
+                    if (error is SkipThisTryException) {
+                        // delay resubscription by 'pollingDelay' and continue polling
+                        Timber.w("Skip current iteration and continue polling later on in $pollingDelay ms")
+                        Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS, Schedulers.io()).doOnComplete { semaphore.release() }
+                    } else {
+                        Flowable.error(error)
+                    }
+                }
+            }
 
     // ------------------------------------------
     private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
         spm.accessSingle {
-            getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                .cacheMessagesFromChat()
+            if (semaphore.tryAcquire()) {
+                getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
+                    .cacheMessagesFromChat()
+                    .doFinally { semaphore.release() }
+            } else {
+                Timber.w("Skip current iteration")
+                Single.error(SkipThisTryException())
+            }
         }
 
     private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
         spm.accessSingle {
-            getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                .filterOutChatOldMessages(chatId)
-                .concatWithUnconsumedSentLocalMessages(chatId)
-                .cacheUnconsumedSentLocalMessages(chatId)
-                .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
-                .doOnSuccess { chat -> Timber.v("Final messages: ${chat.print()}") }
+            if (semaphore.tryAcquire()) {
+                getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
+                    .filterOutChatOldMessages(chatId)
+                    .concatWithUnconsumedSentLocalMessages(chatId)
+                    .cacheUnconsumedSentLocalMessages(chatId)
+                    .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
+                    .doOnSuccess { chat -> Timber.v("Final messages: ${chat.print()}") }
+                    .doFinally { semaphore.release() }
+            } else {
+                Timber.w("Skip current iteration")
+                Single.error(SkipThisTryException())
+            }
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
