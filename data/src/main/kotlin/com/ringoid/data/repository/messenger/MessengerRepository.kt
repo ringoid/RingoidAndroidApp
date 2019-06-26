@@ -4,7 +4,6 @@ import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.data.misc.printDbo
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
@@ -47,30 +46,29 @@ class MessengerRepository @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun getChat(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
-        aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
+    override fun getChat(chatId: String, resolution: ImageResolution): Single<Chat> =
+        aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it) }
 
-    override fun getChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
-        aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
+    override fun getChatNew(chatId: String, resolution: ImageResolution): Single<Chat> =
+        aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it) }
 
-    override fun pollChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Flowable<Chat> =
-        getChatNew(chatId, resolution, sourceFeed)
-            .repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS) } }
+    override fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat> =
+        getChatNew(chatId, resolution).repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS) } }
 
     // ------------------------------------------
-    private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
+    private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                .cacheMessagesFromChat(sourceFeed)
+                .cacheMessagesFromChat()
         }
 
-    private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
+    private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
         spm.accessSingle {
             getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                .filterOutChatOldMessages(chatId, sourceFeed)
+                .filterOutChatOldMessages(chatId)
                 .concatWithUnconsumedSentLocalMessages(chatId)
-                .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
-                .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
+                .cacheUnconsumedSentLocalMessages(chatId)
+                .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
                 .doOnSuccess { chat -> Timber.v("Final messages: ${chat.print()}") }
         }
 
@@ -85,10 +83,10 @@ class MessengerRepository @Inject constructor(
             .map { it.chat.mapToChat() }
 
     // ------------------------------------------
-    private fun Single<Chat>.cacheMessagesFromChat(sourceFeed: String): Single<Chat> =
+    private fun Single<Chat>.cacheMessagesFromChat(): Single<Chat> =
         flatMap { chat ->
             val messages = mutableListOf<MessageDbo>()
-                .apply { addAll(chat.messages.map { MessageDbo.from(it, sourceFeed) }) }
+                .apply { addAll(chat.messages.map { MessageDbo.from(it) }) }
             Completable.fromCallable { local.insertMessages(messages) }
                        .toSingleDefault(chat)
         }
@@ -98,15 +96,11 @@ class MessengerRepository @Inject constructor(
      * new messages, that have appeared in chat data. These messages can also include messages sent
      * by the current user.
      */
-    private fun Single<Chat>.filterOutChatOldMessages(chatId: String, sourceFeed: String): Single<Chat> =
+    private fun Single<Chat>.filterOutChatOldMessages(chatId: String): Single<Chat> =
         toObservable()
         .withLatestFrom(local.messages(chatId = chatId).toObservable(),
             BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
-                Timber.v("Old ALL messages: ${localMessages.printDbo()}")
-                chat})
-        .withLatestFrom(local.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
-            BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
-                Timber.v("Old messages: ${localMessages.printDbo()}")
+                Timber.v("Old messages: ${localMessages.print()}")
                 if (chat.messages.size > localMessages.size) {
                     val newMessages = chat.messages.subList(localMessages.size, chat.messages.size)
                     Timber.v("New messages: ${newMessages.print()}")
@@ -136,9 +130,9 @@ class MessengerRepository @Inject constructor(
             chat  // result value
         }
 
-    private fun Single<Chat>.cacheUnconsumedSentLocalMessages(chatId: String, sourceFeed: String): Single<Chat> =
+    private fun Single<Chat>.cacheUnconsumedSentLocalMessages(chatId: String): Single<Chat> =
         flatMap { chat ->
-            sentMessagesLocal.countChatMessages(chatId, sourceFeed)
+            sentMessagesLocal.countChatMessages(chatId)
                 .map { count -> count to chat }
         }
         .flatMap { (count, chat) ->
@@ -150,7 +144,7 @@ class MessengerRepository @Inject constructor(
         .flatMap { chat ->
             if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
                 Completable.fromCallable {
-                    val dbos = sentMessages[chatId]!!.map { MessageDbo.from(it, sourceFeed) }
+                    val dbos = sentMessages[chatId]!!.map { MessageDbo.from(it) }
                     sentMessagesLocal.addMessages(dbos)
                 }
                 .toSingleDefault(chat)
@@ -179,10 +173,10 @@ class MessengerRepository @Inject constructor(
         }
 
     // messages cached since last network request + sent user messages (cache locally)
-    override fun getMessages(chatId: String, sourceFeed: String): Single<List<Message>> =
-        Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId, sourceFeed = sourceFeed) }
-            .flatMap { local.messages(chatId = chatId, sourceFeed = sourceFeed) }
-            .concatWith(sentMessagesLocal.messages(chatId, sourceFeed))
+    override fun getMessages(chatId: String): Single<List<Message>> =
+        Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId) }
+            .flatMap { local.messages(chatId = chatId) }
+            .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.mapList().reversed() }
 
@@ -203,7 +197,7 @@ class MessengerRepository @Inject constructor(
             targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID,
             targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID)
 
-        return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, sourceFeed = sourceFeed)) }
+        return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage)) }
             .doOnSubscribe {
                 keepSentMessage(sentMessage)
                 aObjPool.put(aobj)

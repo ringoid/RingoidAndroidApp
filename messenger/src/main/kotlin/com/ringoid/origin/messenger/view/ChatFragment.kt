@@ -198,7 +198,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onStart() {
         super.onStart()
-        vm.getMessages(profileId = peerId, sourceFeed = payload?.sourceFeed ?: LmmNavTab.MESSAGES)
+        vm.getMessages(profileId = peerId)
         et_message.apply {
             val text = ChatInMemoryCache.getInputMessage(profileId = peerId)
             setText(text)

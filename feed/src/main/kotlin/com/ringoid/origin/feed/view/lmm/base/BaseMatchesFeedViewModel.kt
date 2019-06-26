@@ -74,7 +74,6 @@ abstract class BaseMatchesFeedViewModel(
         // update messages in local cache
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                              .put("chatId", event.peerId)
-                             .put("sourceFeed", getSourceFeed().feedName)
         getChatUseCase.source(params = params)
             .autoDisposable(this)
 //            .subscribe({}, Timber::e)

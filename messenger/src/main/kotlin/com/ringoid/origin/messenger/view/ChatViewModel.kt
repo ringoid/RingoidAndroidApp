@@ -37,7 +37,7 @@ class ChatViewModel @Inject constructor(
     private val sendMessageToPeerUseCase: SendMessageToPeerUseCase,
     app: Application) : BaseViewModel(app) {
 
-    private data class ChatData(val chatId: String, val sourceFeed: LmmNavTab)
+    private data class ChatData(val chatId: String)
 
     val messages by lazy { MutableLiveData<List<Message>>() }
     val newMessages by lazy { MutableLiveData<List<Message>>() }
@@ -52,12 +52,10 @@ class ChatViewModel @Inject constructor(
      * Get chat messages from the local storage. Those messages had been stored locally
      * when Lmm data fetching had completed.
      */
-    fun getMessages(profileId: String, sourceFeed: LmmNavTab = LmmNavTab.MESSAGES) {
-        chatData = ChatData(chatId = profileId, sourceFeed = sourceFeed)
-        val params = Params().put("chatId", profileId)
-                             .put("sourceFeed", sourceFeed.feedName)
+    fun getMessages(profileId: String) {
+        chatData = ChatData(chatId = profileId)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
-        getMessagesForPeerUseCase.source(params = params)
+        getMessagesForPeerUseCase.source(params = Params().put("chatId", profileId))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
@@ -67,7 +65,7 @@ class ChatViewModel @Inject constructor(
                 ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
                 currentMessageList = msgs.toMutableList().apply { removeAll { it.isLocal() } }
                 messages.value = msgs
-                startPollingChat(profileId = profileId, sourceFeed = sourceFeed, delay = 100L)
+                startPollingChat(profileId = profileId, delay = 100L)
             }, Timber::e)
     }
 
@@ -103,10 +101,10 @@ class ChatViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun startPollingChat(profileId: String, sourceFeed: LmmNavTab, delay: Long) {
+    private fun startPollingChat(profileId: String, delay: Long) {
         Flowable.timer(delay, TimeUnit.MILLISECONDS)
             .flatMap {
-                pollChatNewMessagesUseCase.source(params = prepareGetChatParams(profileId, sourceFeed))
+                pollChatNewMessagesUseCase.source(params = prepareGetChatParams(profileId))
                     .takeUntil { isStopped }  // stop polling if Chat screen was hidden
             }
             .doOnNext { if (it.id != profileId) Timber.e("IDS DIFF: ${it.id} / $profileId") }
@@ -120,17 +118,16 @@ class ChatViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         if (event.peerId == chatData?.chatId) {
-            getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = event.peerId, sourceFeed = chatData?.sourceFeed ?: LmmNavTab.MESSAGES))
+            getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = event.peerId))
                 .autoDisposable(this)
-                .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
+//                .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
         }
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun prepareGetChatParams(profileId: String, sourceFeed: LmmNavTab): Params =
+    private fun prepareGetChatParams(profileId: String): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("chatId", profileId)
-                .put("sourceFeed", sourceFeed.feedName)
 
     private fun handleChatUpdate(chat: Chat) {
         val peerMessagesCount = chat.messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }

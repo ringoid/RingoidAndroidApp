@@ -1,6 +1,5 @@
 package com.ringoid.domain.interactor.messenger
 
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.MissingRequiredParamsException
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
@@ -23,13 +22,12 @@ class GetChatNewMessagesUseCase @Inject constructor(private val repository: IMes
 
     override fun sourceImpl(params: Params): Single<Chat> {
         val chatId = params.get<String>("chatId")
-        val sourceFeed = params.get<String>("sourceFeed") ?: DomainUtil.SOURCE_FEED_MESSAGES
 
         return if (chatId.isNullOrBlank()) {
             Single.error(MissingRequiredParamsException())
         } else {
             params.processSingle(ImageResolution::class.java) {
-                repository.getChatNew(chatId = chatId, resolution = it, sourceFeed = sourceFeed)
+                repository.getChatNew(chatId = chatId, resolution = it)
             }
         }
     }
