@@ -115,13 +115,13 @@ class MessengerRepository @Inject constructor(
     private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String): Single<Chat> =
         map { chat ->
             if (sentMessages.containsKey(chatId)) {
-                val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessages[chatId]!!) }
+                val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessages[chatId]!!) }  // order can change here
                 chat.messages.forEach { message ->
                     if (message.isUserMessage()) {
                         unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
                     }
                 }
-                chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages)
+                chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages.sortedBy { it.ts })
                 sentMessages[chatId]!!.retainAll(unconsumedSentMessages)
             }
             chat  // result value
@@ -183,7 +183,8 @@ class MessengerRepository @Inject constructor(
             chatId = essence.peerId,
             /** 'clientId' equals to 'id' */
             peerId = DomainUtil.CURRENT_USER_ID,
-            text = essence.text)
+            text = essence.text,
+            ts = System.currentTimeMillis())  // ts at sending message
 
         val sourceFeed = essence.aObjEssence?.sourceFeed ?: ""
         val aobj = MessageActionObject(
@@ -214,6 +215,6 @@ class MessengerRepository @Inject constructor(
         if (!sentMessages.containsKey(sentMessage.chatId)) {
             sentMessages[sentMessage.chatId] = Collections.newSetFromMap(ConcurrentHashMap())
         }
-        sentMessages[sentMessage.chatId]!!.add(sentMessage)
+        sentMessages[sentMessage.chatId]!!.add(sentMessage)  // will be sorted by ts
     }
 }
