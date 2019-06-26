@@ -10,11 +10,11 @@ abstract class BaseSettingsFragment<VM : BaseSettingsViewModel> : BaseFragment<V
         vm.suggestImprovements(text, tag)
     }
 
-    protected fun openSuggestImprovementsDialog() {
+    protected fun openSuggestImprovementsDialog(tag: String) {
         BigEditTextDialog.newInstance(titleResId = OriginR_string.suggest_improvements_title,
             descriptionResId = OriginR_string.suggest_improvements_description,
             btnPositiveResId = OriginR_string.suggest_improvements_positive_button,
-            tag = "SuggestFromSettings")
+            tag = tag)
             .show(childFragmentManager, BigEditTextDialog.TAG)
     }
 }
