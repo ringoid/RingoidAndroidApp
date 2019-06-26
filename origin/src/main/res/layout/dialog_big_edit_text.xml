@@ -47,7 +47,8 @@
         android:inputType="text"
         android:maxLength="300"
         android:minHeight="@dimen/dialog_big_edit_text_height"
-        android:padding="@dimen/std_margin_8">
+        android:padding="@dimen/std_margin_8"
+        android:textColor="?refTextColorPrimary">
         <requestFocus/>
     </EditText>
 
