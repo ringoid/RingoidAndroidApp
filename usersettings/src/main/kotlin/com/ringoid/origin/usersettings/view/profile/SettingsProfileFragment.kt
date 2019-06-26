@@ -6,13 +6,13 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
-import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.*
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.WidgetR_attrs
+import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.*
 import com.ringoid.widget.model.ListItem
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
 import kotlinx.android.synthetic.main.fragment_settings_push.toolbar
 
-class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
+class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>() {
 
     companion object {
         internal const val TAG = "SettingsProfileFragment_tag"
@@ -111,12 +111,13 @@ class SettingsProfileFragment : BaseFragment<SettingsProfileViewModel>() {
             textChanges().compose(inputDebounce()).subscribe(::onHeightTextChange)
             setSuffix(OriginR_string.value_cm)
         }
+        item_suggest_improvements.clicks().compose(clickDebounce()).subscribe { openSuggestImprovementsDialog() }
         with (tv_support) {
             highlightFrom(start = text.lastIndexOf(' '), textColor = context.getAttributeColor(WidgetR_attrs.refTextColorPrimary))
         }
     }
 
-    // ------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private fun handleInputHeight(it: String?): Int =
         if (it.isNullOrBlank()) 0 else it.toInt().takeIf { int -> int in 92..214 } ?: 0
 

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.ExternalNavigator
@@ -16,12 +15,13 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
+import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
 import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings.*
 
-class SettingsFragment : BaseFragment<SettingsViewModel>(), BigEditTextDialog.IBigEditTextDialogDone {
+class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
 
     companion object {
         internal const val TAG = "SettingsFragment_tag"
@@ -90,7 +90,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>(), BigEditTextDialog.IB
 
     // --------------------------------------------------------------------------------------------
     override fun onDone(text: String, tag: String?) {
-        vm.suggestImprovements(text, tag)
+        super.onDone(text, tag)
         if (tag == "DeleteAccount") vm.deleteAccount()
     }
 
@@ -100,14 +100,6 @@ class SettingsFragment : BaseFragment<SettingsViewModel>(), BigEditTextDialog.IB
             descriptionResId = OriginR_string.suggest_improvements_description_account_delete,
             btnPositiveResId = OriginR_string.button_delete,
             tag = "DeleteAccount")
-            .show(childFragmentManager, BigEditTextDialog.TAG)
-    }
-
-    private fun openSuggestImprovementsDialog() {
-        BigEditTextDialog.newInstance(titleResId = OriginR_string.suggest_improvements_title,
-            descriptionResId = OriginR_string.suggest_improvements_description,
-            btnPositiveResId = OriginR_string.suggest_improvements_positive_button,
-            tag = "SuggestFromSettings")
             .show(childFragmentManager, BigEditTextDialog.TAG)
     }
 }

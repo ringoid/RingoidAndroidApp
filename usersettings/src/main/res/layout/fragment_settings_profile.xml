@@ -89,6 +89,12 @@
 
             <View style="@style/Underscore"/>
 
+            <com.ringoid.widget.view.item_view.IconItemView
+                android:id="@+id/item_suggest_improvements"
+                app:icon_item_hide_icon="false"
+                app:icon_item_text="@string/settings_suggest_improvements"
+                style="?attr/iconItemView"/>
+
             <TextView
                 android:id="@+id/tv_support"
                 android:layout_width="match_parent"
@@ -97,6 +103,7 @@
                 android:layout_marginEnd="@dimen/std_margin_16"
                 android:gravity="start|center_vertical"
                 android:text="@string/settings_support_rationale"
+                android:visibility="gone"
                 style="@style/StdText.Secondary"/>
         </LinearLayout>
     </ScrollView>
