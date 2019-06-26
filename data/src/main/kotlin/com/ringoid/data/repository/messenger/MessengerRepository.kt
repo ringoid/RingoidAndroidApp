@@ -57,7 +57,7 @@ class MessengerRepository @Inject constructor(
 
     override fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat> =
         getChatNew(chatId, resolution)
-            .repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS) } }
+            .repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS, Schedulers.io()) } }
             .retryWhen {
                 it.flatMap { error ->
                     if (error is SkipThisTryException) {
