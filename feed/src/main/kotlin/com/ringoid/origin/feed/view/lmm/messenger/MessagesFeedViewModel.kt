@@ -51,11 +51,11 @@ class MessagesFeedViewModel @Inject constructor(
 
     override fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.takeIf { it.isNotEmpty() }
-            ?.let {
-                it.map { it.id to it.countOfPeerMessages() }
-                    .filter { it.second > 0 }
-                    .filter { it.second != ChatInMemoryCache.getPeerMessagesCount(it.first) }
-                    .map { it.first }
+            ?.let { items ->
+                items.map { it.id to it.countOfPeerMessages() }
+                     .filter { it.second > 0 }
+                     .filter { it.second > ChatInMemoryCache.getPeerMessagesCount(it.first) }
+                     .map { it.first }
             } ?: emptyList()
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER

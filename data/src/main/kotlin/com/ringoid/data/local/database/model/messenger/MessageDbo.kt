@@ -32,14 +32,15 @@ data class MessageDbo(
 
         const val TABLE_NAME = "Messages"
 
-        fun from(message: Message): MessageDbo =
+        fun from(message: Message, unread: Int = 1): MessageDbo =
             MessageDbo(
                 id = message.id,
                 chatId = message.chatId,
                 clientId = message.clientId,
                 peerId = message.peerId,
                 text = message.text,
-                ts = message.ts)
+                ts = message.ts,
+                unread = unread)
     }
 
     override fun map(): Message =

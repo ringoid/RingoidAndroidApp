@@ -111,7 +111,7 @@ class MessengerRepository @Inject constructor(
     private fun Single<Chat>.cacheMessagesFromChat(): Single<Chat> =
         flatMap { chat ->
             val messages = mutableListOf<MessageDbo>()
-                .apply { addAll(chat.messages.map { MessageDbo.from(it) }) }
+                .apply { addAll(chat.messages.map { MessageDbo.from(it, unread = 0) }) }
             Completable.fromCallable { local.insertMessages(messages) }
                        .toSingleDefault(chat)
         }
@@ -167,7 +167,7 @@ class MessengerRepository @Inject constructor(
         .flatMap { chat ->
             if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
                 Completable.fromCallable {
-                    val dbos = sentMessages[chatId]!!.map { MessageDbo.from(it) }
+                    val dbos = sentMessages[chatId]!!.map { MessageDbo.from(it, unread = 0) }
                     sentMessagesLocal.addMessages(dbos)
                 }
                 .toSingleDefault(chat)
@@ -220,7 +220,7 @@ class MessengerRepository @Inject constructor(
             targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID,
             targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID)
 
-        return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage)) }
+        return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, unread = 0)) }
             .doOnSubscribe {
                 keepSentMessage(sentMessage)
                 aObjPool.put(aobj)
