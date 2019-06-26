@@ -71,30 +71,36 @@ class MessengerRepository @Inject constructor(
 
     // ------------------------------------------
     private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
-        spm.accessSingle {
-            if (semaphore.tryAcquire()) {
-                getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                    .cacheMessagesFromChat()
-                    .doFinally { semaphore.release() }
-            } else {
-                Timber.w("Skip current iteration")
-                Single.error(SkipThisTryException())
-            }
+        spm.accessSingle { accessToken ->
+            Single.just(0L)
+                .flatMap {
+                    if (semaphore.tryAcquire()) {
+                        getChatImpl(accessToken.accessToken, chatId, resolution, lastActionTime)
+                            .cacheMessagesFromChat()
+                            .doFinally { semaphore.release() }
+                    } else {
+                        Timber.w("Skip current iteration")
+                        Single.error(SkipThisTryException())
+                    }
+                }
         }
 
     private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
-        spm.accessSingle {
-            if (semaphore.tryAcquire()) {
-                getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                    .filterOutChatOldMessages(chatId)
-                    .concatWithUnconsumedSentLocalMessages(chatId)
-                    .cacheUnconsumedSentLocalMessages(chatId)
-                    .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
-                    .doFinally { semaphore.release() }
-            } else {
-                Timber.w("Skip current iteration")
-                Single.error(SkipThisTryException())
-            }
+        spm.accessSingle { accessToken ->
+            Single.just(0L)
+                .flatMap {
+                    if (semaphore.tryAcquire()) {
+                        getChatImpl(accessToken.accessToken, chatId, resolution, lastActionTime)
+                            .filterOutChatOldMessages(chatId)
+                            .concatWithUnconsumedSentLocalMessages(chatId)
+                            .cacheUnconsumedSentLocalMessages(chatId)
+                            .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
+                            .doFinally { semaphore.release() }
+                    } else {
+                        Timber.w("Skip current iteration")
+                        Single.error(SkipThisTryException())
+                    }
+                }
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
