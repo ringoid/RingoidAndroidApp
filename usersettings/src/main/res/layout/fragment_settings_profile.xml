@@ -91,6 +91,7 @@
 
             <com.ringoid.widget.view.item_view.IconItemView
                 android:id="@+id/item_suggest_improvements"
+                android:layout_marginTop="@dimen/std_margin_8"
                 app:icon_item_hide_icon="false"
                 app:icon_item_text="@string/settings_suggest_improvements"
                 style="?attr/iconItemView"/>
