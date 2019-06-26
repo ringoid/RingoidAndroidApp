@@ -176,31 +176,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:xbtnSrc="@drawable/ic_more_white"/>
 
-    <ImageView
-        android:id="@+id/iv_total_lmm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:contentDescription="@null"
-        app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_like_white"/>
-
-    <TextView
-        android:id="@+id/tv_total_lmm_count"
-        android:layout_marginStart="4dp"
-        android:gravity="center"
-        android:shadowColor="@color/text_shadow"
-        android:shadowRadius="6"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/std_text_22"
-        app:layout_constraintTop_toTopOf="@id/iv_total_lmm"
-        app:layout_constraintBottom_toBottomOf="@id/iv_total_lmm"
-        app:layout_constraintStart_toEndOf="@id/iv_total_lmm"
-        tools:text="0"
-        style="@style/StdText.Primary"/>
-
     <ProgressBar
         android:id="@+id/pb_profile"
         android:layout_marginBottom="@dimen/main_bottom_bar_height"
