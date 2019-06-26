@@ -38,6 +38,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
@@ -63,7 +65,7 @@ abstract class BaseLmmFeedViewModel(
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
     private val discardedFeedItemIds = mutableSetOf<String>()
-    private var notSeenFeedItemIds = mutableSetOf<String>()
+    private val notSeenFeedItemIds = Collections.newSetFromMap<String>(ConcurrentHashMap())
 
     protected abstract fun getSourceFeed(): LmmNavTab
 
@@ -179,12 +181,26 @@ abstract class BaseLmmFeedViewModel(
     }
 
     // ------------------------------------------
-    protected fun markFeedItemAsSeen(feedItemId: String) {
-        if (notSeenFeedItemIds.isEmpty()) {
-            return
+    protected fun markFeedItemAsNotSeen(feedItemId: String) {
+        if (!notSeenFeedItemIds.add(feedItemId)) {
+            return  // feed item has been added already
         }
 
-        updateFeedItemAsSeenUseCase.source(params = Params().put("feedItemId", feedItemId).put("isNotSeen", false))
+        val params = Params().put("feedItemId", feedItemId)
+                             .put("isNotSeen", true)
+        updateFeedItemAsSeenUseCase.source(params = params)
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
+    }
+
+    protected fun markFeedItemAsSeen(feedItemId: String) {
+        if (notSeenFeedItemIds.isEmpty()) {
+            return  // nothing to mark as seen
+        }
+
+        val params = Params().put("feedItemId", feedItemId)
+                             .put("isNotSeen", false)
+        updateFeedItemAsSeenUseCase.source(params = params)
             .autoDisposable(this)
             .subscribe({}, Timber::e)
 

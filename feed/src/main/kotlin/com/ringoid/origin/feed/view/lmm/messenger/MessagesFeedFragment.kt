@@ -1,15 +1,15 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
 
 class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
@@ -42,12 +42,7 @@ class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is PUSH_NEW_MESSAGES -> {
-                        val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
-                        feedAdapter.findPosition { it.id == profileId }
-                                   .takeIf { it != DomainUtil.BAD_POSITION }
-                                   ?.let { feedAdapter.notifyItemChanged(it, FeedViewHolderShowControls) }
-                    }
+                    is PUSH_NEW_MESSAGES -> communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(isVisible = true)
                 }
             }
         }

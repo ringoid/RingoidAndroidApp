@@ -89,5 +89,6 @@ class MessagesFeedViewModel @Inject constructor(
     override fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
         super.onEventPushNewMessage(event)
         refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
+        markFeedItemAsNotSeen(feedItemId = event.peerId)
     }
 }

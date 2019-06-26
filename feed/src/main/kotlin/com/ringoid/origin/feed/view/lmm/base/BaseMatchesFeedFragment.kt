@@ -1,10 +1,32 @@
 package com.ringoid.origin.feed.view.lmm.base
 
+import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.AppRes
-import com.ringoid.origin.feed.adapter.base.*
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
+import com.ringoid.origin.feed.view.lmm.messenger.PUSH_NEW_MESSAGES
 
 abstract class BaseMatchesFeedFragment<VM : BaseLmmFeedViewModel> : BaseLmmFeedFragment<VM>() {
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is PUSH_NEW_MESSAGES -> {
+                        val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
+                        feedAdapter.findPosition { it.id == profileId }
+                            .takeIf { it != DomainUtil.BAD_POSITION }
+                            ?.let { feedAdapter.notifyItemChanged(it, FeedViewHolderShowControls) }
+                    }
+                }
+            }
+        }
+    }
 
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
