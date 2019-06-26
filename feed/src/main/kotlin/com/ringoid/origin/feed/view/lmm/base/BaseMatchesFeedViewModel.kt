@@ -77,6 +77,6 @@ abstract class BaseMatchesFeedViewModel(
                              .put("sourceFeed", getSourceFeed().feedName)
         getChatUseCase.source(params = params)
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+//            .subscribe({}, Timber::e)
     }
 }
