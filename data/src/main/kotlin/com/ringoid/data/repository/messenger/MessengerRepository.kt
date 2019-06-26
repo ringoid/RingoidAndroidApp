@@ -4,6 +4,7 @@ import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
+import com.ringoid.data.misc.printDbo
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
@@ -16,6 +17,7 @@ import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.domain.model.print
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
@@ -69,6 +71,7 @@ class MessengerRepository @Inject constructor(
                 .concatWithUnconsumedSentLocalMessages(chatId)
                 .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
                 .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
+                .doOnSuccess { chat -> Timber.v("Final messages: ${chat.print()}") }
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
@@ -97,10 +100,16 @@ class MessengerRepository @Inject constructor(
      */
     private fun Single<Chat>.filterOutChatOldMessages(chatId: String, sourceFeed: String): Single<Chat> =
         toObservable()
+        .withLatestFrom(local.messages(chatId = chatId).toObservable(),
+            BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
+                Timber.v("Old ALL messages: ${localMessages.printDbo()}")
+                chat})
         .withLatestFrom(local.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
             BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
+                Timber.v("Old messages: ${localMessages.printDbo()}")
                 if (chat.messages.size > localMessages.size) {
                     val newMessages = chat.messages.subList(localMessages.size, chat.messages.size)
+                    Timber.v("New messages: ${newMessages.print()}")
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
