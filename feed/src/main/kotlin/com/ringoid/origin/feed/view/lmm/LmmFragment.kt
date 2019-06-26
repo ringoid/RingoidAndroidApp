@@ -85,8 +85,8 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     // ------------------------------------------
     override fun changeCountOnTopTab(tab: LmmNavTab, delta: Int) {
-        tabsCounts[tab] = tabsCounts[tab]!! + delta
-        showCountOnTopTab(tab = tab, count = tabsCounts[tab]!!)
+        tabsCounts[tab] = (tabsCounts[tab] ?: 0) + delta
+        showCountOnTopTab(tab = tab, count = tabsCounts[tab] ?: 0)
     }
 
     override fun showBadgeOnLikes(isVisible: Boolean) {
@@ -107,9 +107,9 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     override fun showCountOnTopTab(tab: LmmNavTab, count: Int) {
         tabsCounts[tab] = maxOf(count, 0)  // omit negative values
         when (tab) {
-            LmmNavTab.LIKES -> btn_tab_likes.text = String.format(AppRes.LMM_TOP_TAB_LABEL_LIKES_N, count)
-            LmmNavTab.MATCHES -> btn_tab_matches.text = String.format(AppRes.LMM_TOP_TAB_LABEL_MATCHES_N, count)
-            LmmNavTab.MESSAGES -> btn_tab_messenger.text = String.format(AppRes.LMM_TOP_TAB_LABEL_MESSAGES_N, count)
+            LmmNavTab.LIKES -> btn_tab_likes.text = String.format(AppRes.LMM_TOP_TAB_LABEL_LIKES_N, tabsCounts[LmmNavTab.LIKES])
+            LmmNavTab.MATCHES -> btn_tab_matches.text = String.format(AppRes.LMM_TOP_TAB_LABEL_MATCHES_N, tabsCounts[LmmNavTab.MATCHES])
+            LmmNavTab.MESSAGES -> btn_tab_messenger.text = String.format(AppRes.LMM_TOP_TAB_LABEL_MESSAGES_N, tabsCounts[LmmNavTab.MESSAGES])
         }
     }
 

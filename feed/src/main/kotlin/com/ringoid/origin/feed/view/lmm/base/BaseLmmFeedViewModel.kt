@@ -129,6 +129,7 @@ abstract class BaseLmmFeedViewModel(
                             ?.takeIf { it != DomainUtil.BAD_POSITION }
                             ?.let { this.positionOfImage = it }
                     }
+                    Timber.v("Transfer profile [${getSourceFeed().feedName}]: $profileId")
                     add(item)  // prepend transitioned item
                     /**
                      * Add the rest items, but remove previously discarded items, if any.
@@ -139,6 +140,7 @@ abstract class BaseLmmFeedViewModel(
                         ?.let { list -> addAll(list) }
                         ?.also { discardedFeedItemIds.clear() }
                 }
+                Timber.v("Feed [${getSourceFeed().feedName}] after transfer: ${list.joinToString("\n\t\t", "\n\t\t", transform = { it.id })}")
                 feed.value = list  // prepended list
             }
             .autoDisposable(this)
@@ -151,6 +153,7 @@ abstract class BaseLmmFeedViewModel(
 
         count.value = items.size
         if (items.isEmpty()) {
+            feed.value = emptyList()
             viewState.value = ViewState.CLEAR(mode = clearMode)
         } else {
             if (BuildConfig.DEBUG) {
@@ -228,6 +231,7 @@ abstract class BaseLmmFeedViewModel(
 
     override fun onDiscardProfile(profileId: String) {
         super.onDiscardProfile(profileId)
+        Timber.v("Discard profile [${getSourceFeed().feedName}]: $profileId")
         discardedFeedItemIds.add(profileId)
     }
 
