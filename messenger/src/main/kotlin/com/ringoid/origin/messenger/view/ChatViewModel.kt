@@ -130,9 +130,7 @@ class ChatViewModel @Inject constructor(
 
     private fun handleChatUpdate(chat: Chat) {
         val peerMessagesCount = chat.messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
-        if (peerMessagesCount > 0) {
-            ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = chat.id, count = peerMessagesCount + ChatInMemoryCache.getPeerMessagesCount(chat.id))
-        }
+        ChatInMemoryCache.addPeerMessagesCount(profileId = chat.id, count = peerMessagesCount)
 
         val list = mutableListOf<Message>()
             .apply {

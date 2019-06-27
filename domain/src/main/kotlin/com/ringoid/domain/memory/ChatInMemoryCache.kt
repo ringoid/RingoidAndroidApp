@@ -40,6 +40,10 @@ object ChatInMemoryCache {
     }
 
     // ------------------------------------------
+    fun addPeerMessagesCount(profileId: String, count: Int) {
+        setPeerMessagesCount(profileId, getPeerMessagesCount(profileId) + count)
+    }
+
     fun getPeerMessagesCount(profileId: String): Int = chatPeerMessagesCount[profileId] ?: 0
 
     fun setPeerMessagesCount(profileId: String, count: Int) {
