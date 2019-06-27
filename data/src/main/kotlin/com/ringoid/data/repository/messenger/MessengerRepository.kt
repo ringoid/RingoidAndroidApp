@@ -62,11 +62,6 @@ class MessengerRepository @Inject constructor(
         semaphores[chatId]?.release()
     }
 
-    @Synchronized
-    private fun releaseAllLocks() {
-        semaphores.forEach { it.value.release() }
-    }
-
     // --------------------------------------------------------------------------------------------
     override fun getChat(chatId: String, resolution: ImageResolution): Single<Chat> =
         aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it) }
