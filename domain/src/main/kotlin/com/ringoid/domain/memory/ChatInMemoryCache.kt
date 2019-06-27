@@ -22,10 +22,12 @@ object ChatInMemoryCache {
 
     fun isChatOpen(chatId: String): Boolean = currentlyOpenChatId == chatId
 
+    @Synchronized
     fun onChatOpen(chatId: String) {
         currentlyOpenChatId = chatId
     }
 
+    @Synchronized
     fun onChatClose() {
         currentlyOpenChatId = null
     }
@@ -33,6 +35,7 @@ object ChatInMemoryCache {
     // ------------------------------------------
     fun getInputMessage(profileId: String): CharSequence? = chatInputMessage[profileId]
 
+    @Synchronized
     fun setInputMessage(profileId: String, text: CharSequence) {
         if (hasProfile(profileId)) {
             chatInputMessage[profileId] = text
@@ -40,12 +43,14 @@ object ChatInMemoryCache {
     }
 
     // ------------------------------------------
+    @Synchronized
     fun addPeerMessagesCount(profileId: String, count: Int) {
         setPeerMessagesCount(profileId, getPeerMessagesCount(profileId) + count)
     }
 
     fun getPeerMessagesCount(profileId: String): Int = chatPeerMessagesCount[profileId] ?: 0
 
+    @Synchronized
     fun setPeerMessagesCount(profileId: String, count: Int) {
         if (hasProfile(profileId)) {
             chatPeerMessagesCount[profileId] = count
@@ -54,6 +59,7 @@ object ChatInMemoryCache {
         }
     }
 
+    @Synchronized
     fun setPeerMessagesCountIfChanged(profileId: String, count: Int): Boolean {
         if (!hasProfile(profileId) || getPeerMessagesCount(profileId) == count) {
             return false
@@ -71,6 +77,7 @@ object ChatInMemoryCache {
     fun getProfilePosition(profileId: String): Pair<Int, Int> =
             chatScrollPosition[profileId] ?: BOTTOM_CHAT_POSITION
 
+    @Synchronized
     fun addProfileIfNotExists(profileId: String): Boolean {
         val result = hasProfile(profileId)
         if (!result) {
@@ -79,12 +86,14 @@ object ChatInMemoryCache {
         return result
     }
 
+    @Synchronized
     fun addProfileWithPosition(profileId: String, position: Pair<Int, Int>): Boolean {
         val result = hasProfile(profileId)
         chatScrollPosition[profileId] = position
         return result
     }
 
+    @Synchronized
     fun addProfileWithPositionIfNotExists(profileId: String, position: Pair<Int, Int>): Boolean {
         val result = hasProfile(profileId)
         if (!result) {
@@ -93,12 +102,14 @@ object ChatInMemoryCache {
         return result
     }
 
+    @Synchronized
     fun deleteProfile(profileId: String) {
         chatInputMessage.remove(profileId)
         chatPeerMessagesCount.remove(profileId)
         chatScrollPosition.remove(profileId)
     }
 
+    @Synchronized
     fun dropPositionForProfile(profileId: String) {
         if (hasProfile(profileId)) {
             chatScrollPosition[profileId] = BOTTOM_CHAT_POSITION
@@ -108,25 +119,30 @@ object ChatInMemoryCache {
     // ------------------------------------------
     private var wasRestored: Boolean = false
 
+    @Synchronized
     fun clear() {
         chatInputMessage.clear()
         chatPeerMessagesCount.clear()
         chatScrollPosition.clear()
     }
 
+    @Synchronized
     fun persist(outState: Bundle) {
         outState.putString(SP_KEY_CHAT_CACHE, toJson())
     }
 
+    @Synchronized
     fun persist(spm: ISharedPrefsManager) {
         Timber.v("Saving cached chat data... ${if (BuildConfig.DEBUG) toJson() else ""}")
         spm.saveByKey(SP_KEY_CHAT_CACHE, toJson())
     }
 
+    @Synchronized
     fun restore(savedInstanceState: Bundle?) {
         savedInstanceState?.getString(SP_KEY_CHAT_CACHE)?.let { restore(it) }
     }
 
+    @Synchronized
     fun restore(spm: ISharedPrefsManager) {
         spm.getByKey(SP_KEY_CHAT_CACHE)?.let { restore(it) }
     }
