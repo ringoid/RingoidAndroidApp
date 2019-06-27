@@ -95,6 +95,7 @@ class MessengerRepository @Inject constructor(
                             .concatWithUnconsumedSentLocalMessages(chatId)
                             .cacheUnconsumedSentLocalMessages(chatId)
                             .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
+                            .doOnSuccess { Timber.v("New chat: ${it.print()}") }
                             .doFinally { semaphore.release() }
                     } else {
                         Timber.w("Skip current iteration")
