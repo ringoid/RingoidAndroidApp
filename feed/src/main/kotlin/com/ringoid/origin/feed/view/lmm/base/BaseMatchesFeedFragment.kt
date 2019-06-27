@@ -7,7 +7,6 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
-import com.ringoid.origin.feed.view.lmm.messenger.PUSH_NEW_MESSAGES
 
 abstract class BaseMatchesFeedFragment<VM : BaseLmmFeedViewModel> : BaseLmmFeedFragment<VM>() {
 

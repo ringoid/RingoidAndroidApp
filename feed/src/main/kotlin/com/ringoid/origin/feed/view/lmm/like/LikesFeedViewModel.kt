@@ -61,7 +61,6 @@ class LikesFeedViewModel @Inject constructor(
     init {
         // show 'tap-to-refresh' popup on Feed screen
         incomingPushLike
-            .doOnNext { Timber.d("Received bus event: $it") }
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ refreshOnPush.value = feed.value?.isNotEmpty() == true }, Timber::e)

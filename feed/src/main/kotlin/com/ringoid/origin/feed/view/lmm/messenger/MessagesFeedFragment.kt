@@ -7,6 +7,7 @@ import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
+import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.communicator
@@ -42,7 +43,7 @@ class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is PUSH_NEW_MESSAGES -> communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(isVisible = true)
+                    is PUSH_NEW_MESSAGES_TOTAL -> communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(isVisible = true)
                 }
             }
         }
