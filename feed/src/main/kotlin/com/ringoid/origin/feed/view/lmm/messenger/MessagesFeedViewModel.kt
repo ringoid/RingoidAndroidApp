@@ -1,8 +1,8 @@
 package com.ringoid.origin.feed.view.lmm.messenger
 
 import android.app.Application
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
+import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -20,6 +20,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
+import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -51,11 +52,11 @@ class MessagesFeedViewModel @Inject constructor(
 
     override fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.takeIf { it.isNotEmpty() }
-            ?.let {
-                it.map { it.id to it.countOfPeerMessages() }
-                    .filter { it.second > 0 }
-                    .filter { it.second != ChatInMemoryCache.getPeerMessagesCount(it.first) }
-                    .map { it.first }
+            ?.let { items ->
+                items.map { it.id to it.countOfPeerMessages() }
+                     .filter { it.second > 0 }
+                     .filter { it.second > ChatInMemoryCache.getPeerMessagesCount(it.first) }
+                     .map { it.first }
             } ?: emptyList()
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER
@@ -86,8 +87,11 @@ class MessagesFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
-        super.onEventPushNewMessage(event)
-        refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
+    override fun handlePushMessage(peerId: String) {
+        super.handlePushMessage(peerId)
+        // show badge on Messages Lmm top tab
+        viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
+        // show 'tap-to-refresh' popup on Feed screen
+        refreshOnPush.value = feed.value?.isNotEmpty() == true
     }
 }

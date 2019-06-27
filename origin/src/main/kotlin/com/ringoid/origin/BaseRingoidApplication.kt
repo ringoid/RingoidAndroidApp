@@ -165,7 +165,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     inner class CrashlyticsTree : Timber.DebugTree() {
 
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-            if (priority == Log.VERBOSE) {
+            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
                 return
             }
 

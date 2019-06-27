@@ -1,6 +1,5 @@
 package com.ringoid.domain.interactor.messenger
 
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.MissingRequiredParamsException
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
@@ -19,13 +18,12 @@ class PollChatNewMessagesUseCase @Inject constructor(private val repository: IMe
 
     override fun sourceImpl(params: Params): Flowable<Chat> {
         val chatId = params.get<String>("chatId")
-        val sourceFeed = params.get<String>("sourceFeed") ?: DomainUtil.SOURCE_FEED_MESSAGES
 
         return if (chatId.isNullOrBlank()) {
             Flowable.error(MissingRequiredParamsException())
         } else {
             params.processFlowable(ImageResolution::class.java) {
-                repository.pollChatNew(chatId = chatId, resolution = it, sourceFeed = sourceFeed)
+                repository.pollChatNew(chatId = chatId, resolution = it)
             }
         }
     }

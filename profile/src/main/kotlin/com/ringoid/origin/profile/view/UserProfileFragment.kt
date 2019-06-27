@@ -5,8 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.OvershootInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -31,12 +29,10 @@ import com.ringoid.origin.model.*
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
-import com.ringoid.origin.profile.WidgetR_color
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
-import com.ringoid.origin.view.common.visual.scaleUp
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
@@ -44,15 +40,12 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.*
 import com.ringoid.utility.image.ImageRequest
-import com.ringoid.utility.image.theme
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
 import kotlinx.android.synthetic.main.fragment_profile_2.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
-
 
 class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>() {
 
@@ -135,8 +128,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
             }
         }
-
-        if (isActivityCreated) animateTotalLmmCount()
     }
 
     /* Lifecycle */
@@ -273,12 +264,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                         setText(it.transport.resId)
                     }
                 }
-            }
-            observe(vm.totalLmmCount) {
-                if (it > 0) animateTotalLmmCount()
-                iv_total_lmm.changeVisibility(isVisible = it > 0, soft = true)
-                tv_total_lmm_count.changeVisibility(isVisible = it > 0, soft = true)
-                tv_total_lmm_count.text = "$it"
             }
         }
 
@@ -517,8 +502,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         label_online_status.changeVisibility(isVisible = isVisible)
         ll_left_section.changeVisibility(isVisible = isVisible)
         ll_right_section.changeVisibility(isVisible = isVisible)
-        iv_total_lmm.changeVisibility(isVisible = isVisible && (vm.totalLmmCount.value ?: 0) > 0)
-        tv_total_lmm_count.changeVisibility(isVisible = isVisible && (vm.totalLmmCount.value ?: 0) > 0)
     }
 
     // ------------------------------------------
@@ -539,29 +522,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 setPadding(margin16, margin8, margin16, margin8)
             }
         }
-    }
-
-    private var animationLock = AtomicBoolean(false)
-    private val animation = scaleUp(from = 0.4f, interp = OvershootInterpolator ())
-        .apply {
-            setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation) {
-                    animationLock.set(true)
-                    iv_total_lmm.theme(WidgetR_color.red_love)
-                }
-                override fun onAnimationRepeat(animation: Animation) { /* no-op */ }
-                override fun onAnimationEnd(animation: Animation) {
-                    iv_total_lmm.theme(WidgetR_color.white)
-                    animationLock.set(false)
-                }
-            })
-        }
-
-    private fun animateTotalLmmCount() {
-        if (animationLock.get()) {
-            return  // don't disturb currently running animation
-        }
-        iv_total_lmm.startAnimation(animation)
     }
 
     private fun showDotTabs(isVisible: Boolean) {

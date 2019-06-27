@@ -72,10 +72,13 @@
     <!-- Lmm screen -->
     <string name="lmm_popup_refresh">Refresh</string>
     <string name="lmm_tab_likes">Likes You</string>
+    <string name="lmm_tab_likes_0">0 likes</string>
     <string name="lmm_tab_likes_n">%d likes</string>
     <string name="lmm_tab_matches">Matches</string>
+    <string name="lmm_tab_matches_0">0 matches</string>
     <string name="lmm_tab_matches_n">%d matches</string>
     <string name="lmm_tab_messenger">Chats</string>
+    <string name="lmm_tab_messenger_0">0 chats</string>
     <string name="lmm_tab_messenger_n">%d chats</string>
 
     <!-- Login screen -->

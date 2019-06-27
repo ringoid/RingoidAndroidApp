@@ -96,7 +96,6 @@ open class FeedRepository @Inject constructor(
 
     override fun transferFeedItem(feedItemId: String, destinationFeed: String): Completable =
         Completable.fromCallable { local.updateSourceFeed(feedItemId, destinationFeed) }
-                   .andThen(Completable.fromCallable { messengerLocal.updateSourceFeed(chatId = feedItemId, sourceFeed = destinationFeed) })
 
     // --------------------------------------------------------------------------------------------
     override val badgeLikes = PublishSubject.create<Boolean>()
@@ -301,9 +300,9 @@ open class FeedRepository @Inject constructor(
              * should be performed in addition.
              */
             val messages = mutableListOf<MessageDbo>()
-            lmm.likes.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_LIKES) }) }
-            lmm.matches.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_MATCHES) }) }
-            lmm.messages.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message, DomainUtil.SOURCE_FEED_MESSAGES) }) }
+            lmm.likes.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
+            lmm.matches.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
+            lmm.messages.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
             Completable.fromCallable { messengerLocal.insertMessages(messages) }  // cache new messages
                        .doOnComplete { Timber.v("Cached messages from Lmm: ${messages.joinToString { it.text }}") }
                        .toSingleDefault(lmm)

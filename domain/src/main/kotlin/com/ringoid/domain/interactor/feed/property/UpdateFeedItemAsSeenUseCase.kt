@@ -18,7 +18,7 @@ class UpdateFeedItemAsSeenUseCase @Inject constructor(private val repository: IF
         val isNotSeen = params.get<Boolean>("isNotSeen") ?: true
 
         return feedItemId.takeIf { !it.isNullOrBlank() }
-            ?.let { repository.markFeedItemAsSeen(feedItemId = it,isNotSeen = isNotSeen) }
+            ?.let { repository.markFeedItemAsSeen(feedItemId = it, isNotSeen = isNotSeen) }
             ?: Completable.error(MissingRequiredParamsException())
     }
 }

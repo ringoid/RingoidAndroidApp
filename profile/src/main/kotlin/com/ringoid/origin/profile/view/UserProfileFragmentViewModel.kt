@@ -11,7 +11,6 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.property.GetLmmPropertyUseCase
 import com.ringoid.domain.interactor.image.*
 import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -34,7 +33,6 @@ import javax.inject.Inject
 
 class UserProfileFragmentViewModel @Inject constructor(
     private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
-    getLmmPropertyUseCase: GetLmmPropertyUseCase,  // only to access subjects
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
@@ -46,7 +44,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     val imageDeleted by lazy { MutableLiveData<String>() }
     val images by lazy { MutableLiveData<List<UserImage>>() }
     val profile by lazy { MutableLiveData<UserProfileProperties>() }
-    val totalLmmCount by lazy { MutableLiveData<Int>() }
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
@@ -66,27 +63,6 @@ class UserProfileFragmentViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
             .subscribe({ imageDeleted.value = it }, Timber::e)
-
-        getLmmPropertyUseCase.repository.profileBlocked
-            .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(this)
-            .subscribe({ decrementTotalLmmCount() }, Timber::e)
-
-        // show total Lmm count on Profile screen
-        getLmmPropertyUseCase.repository.lmmLoadFinish
-            .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(this)
-            .subscribe({ totalLmmCount.value = it }, Timber::e)
-    }
-
-    private fun decrementTotalLmmCount() {
-        val count = totalLmmCount.value ?: 1
-        totalLmmCount.value = maxOf(0, count - 1)
-    }
-
-    private fun incrementTotalLmmCount() {
-        val count = totalLmmCount.value ?: -1
-        totalLmmCount.value = maxOf(0, count + 1)
     }
 
     /* Lifecycle */
@@ -97,20 +73,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventPushNewLike(event: BusEvent.PushNewLike) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        incrementTotalLmmCount()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        incrementTotalLmmCount()
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
         Timber.d("Received bus event: $event")

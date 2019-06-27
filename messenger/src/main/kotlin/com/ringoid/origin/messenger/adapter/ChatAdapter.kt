@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.EmptyMessage
 import com.ringoid.domain.model.messenger.Message
@@ -31,8 +32,8 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
         val view = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
         val viewHolder = when (viewType) {
             VIEW_TYPE_FOOTER -> HeaderChatViewHolder(view).also { it.setOnClickListener(getOnItemClickListener(it)) }
-            VIEW_TYPE_NORMAL -> PeerChatViewHolder(view)
-            VIEW_TYPE_NORMAL_MY -> MyChatViewHolder(view)
+            VIEW_TYPE_NORMAL -> if (BuildConfig.IS_STAGING) DebugPeerChatViewHolder(view) else PeerChatViewHolder(view)
+            VIEW_TYPE_NORMAL_MY -> if (BuildConfig.IS_STAGING) DebugMyChatViewHolder(view) else MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
 

@@ -12,7 +12,6 @@ import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
 import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
 import com.ringoid.domain.interactor.messenger.PollChatNewMessagesUseCase
 import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
@@ -23,6 +22,7 @@ import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Flowable
+import io.reactivex.subjects.PublishSubject
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
@@ -36,7 +36,7 @@ class ChatViewModel @Inject constructor(
     private val sendMessageToPeerUseCase: SendMessageToPeerUseCase,
     app: Application) : BaseViewModel(app) {
 
-    private data class ChatData(val chatId: String, val sourceFeed: LmmNavTab)
+    private data class ChatData(val chatId: String)
 
     val messages by lazy { MutableLiveData<List<Message>>() }
     val newMessages by lazy { MutableLiveData<List<Message>>() }
@@ -46,17 +46,32 @@ class ChatViewModel @Inject constructor(
     private var chatData: ChatData? = null
     private var currentMessageList: List<Message> = emptyList()
 
+    private val incomingPushMessage = PublishSubject.create<BusEvent>()
+
+    private fun subscribeOnPush() {
+        if (incomingPushMessage.hasObservers()) {
+            return
+        }
+
+        Timber.v("Subscribe on incoming messages push notifications")
+        incomingPushMessage
+            .map { it as BusEvent.PushNewMessage }
+            .filter { it.peerId == chatData?.chatId }
+            .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS)
+            .flatMapSingle { getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = it.peerId)) }
+            .autoDisposable(this)
+            .subscribe(::handleChatUpdate, Timber::e)
+    }
+
     // --------------------------------------------------------------------------------------------
     /**
      * Get chat messages from the local storage. Those messages had been stored locally
      * when Lmm data fetching had completed.
      */
-    fun getMessages(profileId: String, sourceFeed: LmmNavTab = LmmNavTab.MESSAGES) {
-        chatData = ChatData(chatId = profileId, sourceFeed = sourceFeed)
-        val params = Params().put("chatId", profileId)
-                             .put("sourceFeed", sourceFeed.feedName)
+    fun getMessages(profileId: String) {
+        chatData = ChatData(chatId = profileId)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
-        getMessagesForPeerUseCase.source(params = params)
+        getMessagesForPeerUseCase.source(params = Params().put("chatId", profileId))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
@@ -66,7 +81,7 @@ class ChatViewModel @Inject constructor(
                 ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
                 currentMessageList = msgs.toMutableList().apply { removeAll { it.isLocal() } }
                 messages.value = msgs
-                startPollingChat(profileId = profileId, sourceFeed = sourceFeed, delay = 100L)
+                startPollingChat(profileId = profileId, delay = 50L)
             }, Timber::e)
     }
 
@@ -102,13 +117,13 @@ class ChatViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun startPollingChat(profileId: String, sourceFeed: LmmNavTab, delay: Long) {
+    private fun startPollingChat(profileId: String, delay: Long) {
         Flowable.timer(delay, TimeUnit.MILLISECONDS)
             .flatMap {
-                pollChatNewMessagesUseCase.source(params = prepareGetChatParams(profileId, sourceFeed))
+                pollChatNewMessagesUseCase.source(params = prepareGetChatParams(profileId))
                     .takeUntil { isStopped }  // stop polling if Chat screen was hidden
             }
-            .doOnNext { if (it.id != profileId) Timber.e("IDS DIFF: ${it.id} / $profileId") }
+            .doOnNext { subscribeOnPush() }
             .autoDisposable(this)
             .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
     }
@@ -116,26 +131,17 @@ class ChatViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        if (event.peerId == chatData?.chatId) {
-            getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = event.peerId, sourceFeed = chatData?.sourceFeed ?: LmmNavTab.MESSAGES))
-                .autoDisposable(this)
-                .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
-        }
+        incomingPushMessage.onNext(event)
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun prepareGetChatParams(profileId: String, sourceFeed: LmmNavTab): Params =
+    private fun prepareGetChatParams(profileId: String): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("chatId", profileId)
-                .put("sourceFeed", sourceFeed.feedName)
 
     private fun handleChatUpdate(chat: Chat) {
         val peerMessagesCount = chat.messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
-        if (peerMessagesCount > 0) {
-            ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = chat.id, count = peerMessagesCount + ChatInMemoryCache.getPeerMessagesCount(chat.id))
-        }
+        ChatInMemoryCache.addPeerMessagesCount(profileId = chat.id, count = peerMessagesCount)
 
         val list = mutableListOf<Message>()
             .apply {

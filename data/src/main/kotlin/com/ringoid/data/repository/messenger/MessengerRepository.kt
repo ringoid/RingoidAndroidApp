@@ -9,6 +9,7 @@ import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
+import com.ringoid.domain.exception.SkipThisTryException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
@@ -27,6 +28,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,37 +40,86 @@ class MessengerRepository @Inject constructor(
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
     private val sentMessages = ConcurrentHashMap<String, MutableSet<Message>>()
+    private val semaphores = mutableMapOf<String, Semaphore>()
     private var pollingDelay = 5000L  // in ms
 
     init {
         restoreCachedSentMessagesLocal()
     }
 
+    /* Concurrency */
     // --------------------------------------------------------------------------------------------
-    override fun getChat(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
-        aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
+    @Synchronized
+    private fun tryAcquireLock(chatId: String): Boolean {
+        if (!semaphores.contains(chatId)) {
+            semaphores[chatId] = Semaphore(1)  // mutex
+        }
+        return semaphores[chatId]!!.tryAcquire()
+    }
 
-    override fun getChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Single<Chat> =
-        aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it, sourceFeed = sourceFeed) }
+    @Synchronized
+    private fun releaseLock(chatId: String) {
+        semaphores[chatId]?.release()
+    }
 
-    override fun pollChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String): Flowable<Chat> =
-        getChatNew(chatId, resolution, sourceFeed)
-            .repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS) } }
+    // --------------------------------------------------------------------------------------------
+    override fun getChat(chatId: String, resolution: ImageResolution): Single<Chat> =
+        aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it) }
+
+    override fun getChatNew(chatId: String, resolution: ImageResolution): Single<Chat> =
+        aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it) }
+
+    override fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat> =
+        getChatNew(chatId, resolution)
+            .repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS, Schedulers.io()) } }
+            .retryWhen { errorSource ->
+                errorSource.flatMap { error ->
+                    if (error is SkipThisTryException) {
+                        // delay resubscription by 'pollingDelay' and continue polling
+                        Timber.w("Skip current iteration and continue polling later on in $pollingDelay ms")
+                        Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS, Schedulers.io())
+                    } else {
+                        Flowable.error(error)
+                    }
+                }
+            }
 
     // ------------------------------------------
-    private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
-        spm.accessSingle {
-            getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                .cacheMessagesFromChat(sourceFeed)
+    private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
+        spm.accessSingle { accessToken ->
+            Single.just(0L)
+                .flatMap {
+                    if (tryAcquireLock(chatId)) {
+                        getChatImpl(accessToken.accessToken, chatId, resolution, lastActionTime)
+                            .concatWithUnconsumedSentLocalMessages(chatId)
+                            .cacheUnconsumedSentLocalMessages(chatId)
+                            .cacheMessagesFromChat()
+                            .doOnSuccess { Timber.v("New chat full: ${it.print()}") }
+                            .doFinally { releaseLock(chatId) }
+                    } else {
+                        Timber.w("Skip current iteration")
+                        Single.error(SkipThisTryException())
+                    }
+                }
         }
 
-    private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long, sourceFeed: String): Single<Chat> =
-        spm.accessSingle {
-            getChatImpl(it.accessToken, chatId, resolution, lastActionTime)
-                .filterOutChatOldMessages(chatId, sourceFeed)
-                .concatWithUnconsumedSentLocalMessages(chatId)
-                .cacheUnconsumedSentLocalMessages(chatId, sourceFeed)
-                .cacheMessagesFromChat(sourceFeed)  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
+    private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
+        spm.accessSingle { accessToken ->
+            Single.just(0L)
+                .flatMap {
+                    if (tryAcquireLock(chatId)) {
+                        getChatImpl(accessToken.accessToken, chatId, resolution, lastActionTime)
+                            .filterOutChatOldMessages(chatId)
+                            .concatWithUnconsumedSentLocalMessages(chatId)
+                            .cacheUnconsumedSentLocalMessages(chatId)
+                            .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
+                            .doOnSuccess { Timber.v("New chat delta: ${it.print()}") }
+                            .doFinally { releaseLock(chatId) }
+                    } else {
+                        Timber.w("Skip current iteration")
+                        Single.error(SkipThisTryException())
+                    }
+                }
         }
 
     private fun getChatImpl(accessToken: String, chatId: String, resolution: ImageResolution, lastActionTime: Long) =
@@ -82,10 +133,10 @@ class MessengerRepository @Inject constructor(
             .map { it.chat.mapToChat() }
 
     // ------------------------------------------
-    private fun Single<Chat>.cacheMessagesFromChat(sourceFeed: String): Single<Chat> =
+    private fun Single<Chat>.cacheMessagesFromChat(): Single<Chat> =
         flatMap { chat ->
             val messages = mutableListOf<MessageDbo>()
-                .apply { addAll(chat.messages.map { MessageDbo.from(it, sourceFeed) }) }
+                .apply { addAll(chat.messages.map { MessageDbo.from(it, unread = 0) }) }
             Completable.fromCallable { local.insertMessages(messages) }
                        .toSingleDefault(chat)
         }
@@ -95,12 +146,12 @@ class MessengerRepository @Inject constructor(
      * new messages, that have appeared in chat data. These messages can also include messages sent
      * by the current user.
      */
-    private fun Single<Chat>.filterOutChatOldMessages(chatId: String, sourceFeed: String): Single<Chat> =
+    private fun Single<Chat>.filterOutChatOldMessages(chatId: String): Single<Chat> =
         toObservable()
-        .withLatestFrom(local.messages(chatId = chatId, sourceFeed = sourceFeed).toObservable(),
-            BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
-                if (chat.messages.size > localMessages.size) {
-                    val newMessages = chat.messages.subList(localMessages.size, chat.messages.size)
+        .withLatestFrom(local.countChatMessages(chatId = chatId).toObservable(),
+            BiFunction { chat: Chat, localMessagesCount: Int ->
+                if (chat.messages.size > localMessagesCount) {
+                    val newMessages = chat.messages.subList(localMessagesCount, chat.messages.size)
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
@@ -115,21 +166,21 @@ class MessengerRepository @Inject constructor(
     private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String): Single<Chat> =
         map { chat ->
             if (sentMessages.containsKey(chatId)) {
-                val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessages[chatId]!!) }
+                val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessages[chatId]!!) }  // order can change here
                 chat.messages.forEach { message ->
                     if (message.isUserMessage()) {
                         unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
                     }
                 }
-                chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages)
+                chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages.sortedBy { it.ts })
                 sentMessages[chatId]!!.retainAll(unconsumedSentMessages)
             }
             chat  // result value
         }
 
-    private fun Single<Chat>.cacheUnconsumedSentLocalMessages(chatId: String, sourceFeed: String): Single<Chat> =
+    private fun Single<Chat>.cacheUnconsumedSentLocalMessages(chatId: String): Single<Chat> =
         flatMap { chat ->
-            sentMessagesLocal.countChatMessages(chatId, sourceFeed)
+            sentMessagesLocal.countChatMessages(chatId)
                 .map { count -> count to chat }
         }
         .flatMap { (count, chat) ->
@@ -141,7 +192,7 @@ class MessengerRepository @Inject constructor(
         .flatMap { chat ->
             if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
                 Completable.fromCallable {
-                    val dbos = sentMessages[chatId]!!.map { MessageDbo.from(it, sourceFeed) }
+                    val dbos = sentMessages[chatId]!!.map { MessageDbo.from(it, unread = 0) }
                     sentMessagesLocal.addMessages(dbos)
                 }
                 .toSingleDefault(chat)
@@ -169,21 +220,47 @@ class MessengerRepository @Inject constructor(
             sentMessages[chatId]?.clear()
         }
 
+    // ------------------------------------------
     // messages cached since last network request + sent user messages (cache locally)
-    override fun getMessages(chatId: String, sourceFeed: String): Single<List<Message>> =
-        Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId, sourceFeed = sourceFeed) }
-            .flatMap { local.messages(chatId = chatId, sourceFeed = sourceFeed) }
-            .concatWith(sentMessagesLocal.messages(chatId, sourceFeed))
+    override fun getMessages(chatId: String): Single<List<Message>> =
+        getMessagesOnly(chatId)
+            .retryWhen { errorSource ->
+                errorSource.flatMap { error ->
+                    if (error is SkipThisTryException) {
+                        Flowable.timer(200, TimeUnit.MILLISECONDS, Schedulers.io())
+                    } else {
+                        Flowable.error(error)
+                    }
+                }
+            }
+
+    private fun getMessagesOnly(chatId: String): Single<List<Message>> =
+        Single.just(0L)
+            .flatMap {
+                if (tryAcquireLock(chatId)) {
+                    getMessagesImpl(chatId).doFinally { releaseLock(chatId) }
+                } else {
+                    Timber.w("Cache is busy, retry get local messages")
+                    Single.error(SkipThisTryException())
+                }
+            }
+
+    private fun getMessagesImpl(chatId: String): Single<List<Message>> =
+        Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId) }
+            .flatMap { local.messages(chatId = chatId) }
+            .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.mapList().reversed() }
 
+    // ------------------------------------------
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         val sentMessage = Message(
             id = "_${randomString()}_${essence.peerId}",  // client-side id
             chatId = essence.peerId,
             /** 'clientId' equals to 'id' */
             peerId = DomainUtil.CURRENT_USER_ID,
-            text = essence.text)
+            text = essence.text,
+            ts = System.currentTimeMillis())  // ts at sending message
 
         val sourceFeed = essence.aObjEssence?.sourceFeed ?: ""
         val aobj = MessageActionObject(
@@ -193,7 +270,7 @@ class MessengerRepository @Inject constructor(
             targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID,
             targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID)
 
-        return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, sourceFeed = sourceFeed)) }
+        return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, unread = 0)) }
             .doOnSubscribe {
                 keepSentMessage(sentMessage)
                 aObjPool.put(aobj)
@@ -214,6 +291,6 @@ class MessengerRepository @Inject constructor(
         if (!sentMessages.containsKey(sentMessage.chatId)) {
             sentMessages[sentMessage.chatId] = Collections.newSetFromMap(ConcurrentHashMap())
         }
-        sentMessages[sentMessage.chatId]!!.add(sentMessage)
+        sentMessages[sentMessage.chatId]!!.add(sentMessage)  // will be sorted by ts
     }
 }

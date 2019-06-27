@@ -1,6 +1,5 @@
 package com.ringoid.domain.repository.messenger
 
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
@@ -11,11 +10,11 @@ import io.reactivex.Single
 
 interface IMessengerRepository {
 
-    fun getChat(chatId: String, resolution: ImageResolution, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Chat>
+    fun getChat(chatId: String, resolution: ImageResolution): Single<Chat>
 
-    fun getChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<Chat>
+    fun getChatNew(chatId: String, resolution: ImageResolution): Single<Chat>
 
-    fun pollChatNew(chatId: String, resolution: ImageResolution, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Flowable<Chat>
+    fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat>
 
     // ------------------------------------------
     fun clearMessages(): Completable
@@ -26,7 +25,7 @@ interface IMessengerRepository {
 
     fun clearSentMessages(chatId: String): Completable
 
-    fun getMessages(chatId: String, sourceFeed: String = DomainUtil.SOURCE_FEED_MESSAGES): Single<List<Message>>
+    fun getMessages(chatId: String): Single<List<Message>>
 
     fun sendMessage(essence: MessageEssence): Single<Message>
 }
