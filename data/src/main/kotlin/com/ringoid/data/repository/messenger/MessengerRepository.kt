@@ -57,12 +57,12 @@ class MessengerRepository @Inject constructor(
     override fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat> =
         getChatNew(chatId, resolution)
             .repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS, Schedulers.io()) } }
-            .retryWhen {
-                it.flatMap { error ->
+            .retryWhen { errorSource ->
+                errorSource.flatMap { error ->
                     if (error is SkipThisTryException) {
                         // delay resubscription by 'pollingDelay' and continue polling
                         Timber.w("Skip current iteration and continue polling later on in $pollingDelay ms")
-                        Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS, Schedulers.io()).doOnComplete { semaphore.release() }
+                        Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS, Schedulers.io())
                     } else {
                         Flowable.error(error)
                     }
@@ -201,14 +201,39 @@ class MessengerRepository @Inject constructor(
             sentMessages[chatId]?.clear()
         }
 
+    // ------------------------------------------
     // messages cached since last network request + sent user messages (cache locally)
     override fun getMessages(chatId: String): Single<List<Message>> =
+        getMessagesOnly(chatId)
+            .retryWhen { errorSource ->
+                errorSource.flatMap { error ->
+                    if (error is SkipThisTryException) {
+                        Flowable.timer(200, TimeUnit.MILLISECONDS, Schedulers.io())
+                    } else {
+                        Flowable.error(error)
+                    }
+                }
+            }
+
+    private fun getMessagesOnly(chatId: String): Single<List<Message>> =
+        Single.just(0L)
+            .flatMap {
+                if (semaphore.tryAcquire()) {
+                    getMessagesImpl(chatId).doFinally { semaphore.release() }
+                } else {
+                    Timber.w("Cache is busy, retry get local messages")
+                    Single.error(SkipThisTryException())
+                }
+            }
+
+    private fun getMessagesImpl(chatId: String): Single<List<Message>> =
         Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId) }
             .flatMap { local.messages(chatId = chatId) }
             .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.mapList().reversed() }
 
+    // ------------------------------------------
     override fun sendMessage(essence: MessageEssence): Single<Message> {
         val sentMessage = Message(
             id = "_${randomString()}_${essence.peerId}",  // client-side id
