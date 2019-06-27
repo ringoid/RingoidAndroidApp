@@ -50,6 +50,7 @@ object ChatInMemoryCache {
         if (hasProfile(profileId)) {
             chatPeerMessagesCount[profileId] = count
             dropPositionForProfile(profileId)
+            Timber.v("Update peer [$profileId] messages count: $count")
         }
     }
 
@@ -60,11 +61,12 @@ object ChatInMemoryCache {
 
         chatPeerMessagesCount[profileId] = count
         dropPositionForProfile(profileId)
+        Timber.v("Update peer [$profileId] messages count: $count")
         return true  // count has changed
     }
 
     // ------------------------------------------
-    fun hasProfile(profileId: String): Boolean = chatScrollPosition.containsKey(profileId)
+    private fun hasProfile(profileId: String): Boolean = chatScrollPosition.containsKey(profileId)
 
     fun getProfilePosition(profileId: String): Pair<Int, Int> =
             chatScrollPosition[profileId] ?: BOTTOM_CHAT_POSITION
@@ -122,9 +124,7 @@ object ChatInMemoryCache {
     }
 
     fun restore(savedInstanceState: Bundle?) {
-        savedInstanceState
-            ?.let { it.getString(SP_KEY_CHAT_CACHE) }
-            ?.let { restore(it) }
+        savedInstanceState?.getString(SP_KEY_CHAT_CACHE)?.let { restore(it) }
     }
 
     fun restore(spm: ISharedPrefsManager) {
