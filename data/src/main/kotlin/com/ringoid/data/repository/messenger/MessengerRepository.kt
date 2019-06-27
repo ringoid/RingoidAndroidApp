@@ -1,6 +1,5 @@
 package com.ringoid.data.repository.messenger
 
-import android.os.Build
 import com.ringoid.data.di.PerUser
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
@@ -41,7 +40,7 @@ class MessengerRepository @Inject constructor(
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
     private val sentMessages = ConcurrentHashMap<String, MutableSet<Message>>()
-    private val semaphores = ConcurrentHashMap<String, Semaphore>()
+    private val semaphores = mutableMapOf<String, Semaphore>()
     private var pollingDelay = 5000L  // in ms
 
     init {
@@ -50,6 +49,7 @@ class MessengerRepository @Inject constructor(
 
     /* Concurrency */
     // --------------------------------------------------------------------------------------------
+    @Synchronized
     private fun tryAcquireLock(chatId: String): Boolean {
         if (!semaphores.contains(chatId)) {
             semaphores[chatId] = Semaphore(1)  // mutex
@@ -57,16 +57,14 @@ class MessengerRepository @Inject constructor(
         return semaphores[chatId]!!.tryAcquire()
     }
 
+    @Synchronized
     private fun releaseLock(chatId: String) {
         semaphores[chatId]?.release()
     }
 
+    @Synchronized
     private fun releaseAllLocks() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            semaphores.forEachEntry(3) { it.value.release() }
-        } else {
-            semaphores.forEach { it.value.release() }
-        }
+        semaphores.forEach { it.value.release() }
     }
 
     // --------------------------------------------------------------------------------------------
