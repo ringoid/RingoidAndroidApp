@@ -85,7 +85,7 @@ class Chat(
             isNotSeen = isNotSeen,
             isRealModel = isRealModel)
 
-    fun print(): String = "[${messages.size}]: ${messages.print()} :: unconsumed: ${unconsumedSentLocalMessages.print()}"
+    fun print(): String = "[${messages.size}]: ${messages.print(n = 5)} :: unconsumed: ${unconsumedSentLocalMessages.print()}"
 }
 
 val EmptyChat = Chat(EmptyFeedItem)
