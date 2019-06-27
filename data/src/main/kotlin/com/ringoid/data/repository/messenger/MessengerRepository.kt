@@ -91,7 +91,10 @@ class MessengerRepository @Inject constructor(
                 .flatMap {
                     if (tryAcquireLock(chatId)) {
                         getChatImpl(accessToken.accessToken, chatId, resolution, lastActionTime)
+                            .concatWithUnconsumedSentLocalMessages(chatId)
+                            .cacheUnconsumedSentLocalMessages(chatId)
                             .cacheMessagesFromChat()
+                            .doOnSuccess { Timber.v("New chat full: ${it.print()}") }
                             .doFinally { releaseLock(chatId) }
                     } else {
                         Timber.w("Skip current iteration")
@@ -110,7 +113,7 @@ class MessengerRepository @Inject constructor(
                             .concatWithUnconsumedSentLocalMessages(chatId)
                             .cacheUnconsumedSentLocalMessages(chatId)
                             .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
-                            .doOnSuccess { Timber.v("New chat: ${it.print()}") }
+                            .doOnSuccess { Timber.v("New chat delta: ${it.print()}") }
                             .doFinally { releaseLock(chatId) }
                     } else {
                         Timber.w("Skip current iteration")
@@ -245,7 +248,6 @@ class MessengerRepository @Inject constructor(
     private fun getMessagesImpl(chatId: String): Single<List<Message>> =
         Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId) }
             .flatMap { local.messages(chatId = chatId) }
-            .doOnSuccess { sentMessages.clear() }  // TODO: investigate why not consumed by push
             .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.mapList().reversed() }
