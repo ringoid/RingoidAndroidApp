@@ -230,6 +230,7 @@ class MessengerRepository @Inject constructor(
     private fun getMessagesImpl(chatId: String): Single<List<Message>> =
         Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId) }
             .flatMap { local.messages(chatId = chatId) }
+            .doOnSuccess { sentMessages.clear() }  // TODO: investigate why not consumed by push
             .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.mapList().reversed() }
