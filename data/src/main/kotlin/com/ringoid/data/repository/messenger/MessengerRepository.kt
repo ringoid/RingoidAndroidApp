@@ -129,10 +129,10 @@ class MessengerRepository @Inject constructor(
      */
     private fun Single<Chat>.filterOutChatOldMessages(chatId: String): Single<Chat> =
         toObservable()
-        .withLatestFrom(local.messages(chatId = chatId).toObservable(),
-            BiFunction { chat: Chat, localMessages: List<MessageDbo> ->
-                if (chat.messages.size > localMessages.size) {
-                    val newMessages = chat.messages.subList(localMessages.size, chat.messages.size)
+        .withLatestFrom(local.countChatMessages(chatId = chatId).toObservable(),
+            BiFunction { chat: Chat, localMessagesCount: Int ->
+                if (chat.messages.size > localMessagesCount) {
+                    val newMessages = chat.messages.subList(localMessagesCount, chat.messages.size)
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
