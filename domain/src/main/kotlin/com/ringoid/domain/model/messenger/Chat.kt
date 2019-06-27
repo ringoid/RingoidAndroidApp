@@ -2,6 +2,7 @@ package com.ringoid.domain.model.messenger
 
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.misc.Gender
+import com.ringoid.domain.model.feed.EmptyFeedItem
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.print
@@ -86,3 +87,5 @@ class Chat(
 
     fun print(): String = "[${messages.size}]: ${messages.print()} :: unconsumed: ${unconsumedSentLocalMessages.print()}"
 }
+
+val EmptyChat = Chat(EmptyFeedItem)

@@ -17,8 +17,10 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
+import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.internal.functions.ObjectHelper
 import io.reactivex.schedulers.Schedulers
@@ -67,6 +69,7 @@ abstract class BaseMatchesFeedViewModel(
                                      .put("chatId", peerId)
                 getChatUseCase.source(params = params)
                     .doOnSuccess { markFeedItemAsNotSeen(feedItemId = peerId) }
+                    .onErrorResumeNext { Single.just(EmptyChat) }
                     .map { peerId }
             }  // use case will deliver it's result to Main thread
             .doOnNext { peerId ->
