@@ -37,6 +37,7 @@ object ImageLoader {
                     .setLowResImageRequest(com.facebook.imagepipeline.request.ImageRequest.fromUri(it))
                     .setImageRequest(com.facebook.imagepipeline.request.ImageRequest.fromUri(Uri.parse(uri)))
                     .setOldController(imageView.controller)
+                    .setTapToRetryEnabled(true)
                     .build()
                 imageView.controller = controller
             } ?: run { imageView.setImageURI(Uri.parse(uri)) }
