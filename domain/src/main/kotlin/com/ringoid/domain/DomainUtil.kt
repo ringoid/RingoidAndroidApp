@@ -13,6 +13,7 @@ object DomainUtil {
     const val UNKNOWN_VALUE = 0
     const val CURRENT_USER_ID: String = "currentUserId"
     const val DEBOUNCE_NET = 400L
+    const val DEBOUNCE_PUSH = 300L
     const val LIMIT_PER_PAGE = 100
     const val LOAD_MORE_THRESHOLD = 10  // items left to end
 

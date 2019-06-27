@@ -12,7 +12,6 @@ import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
 import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
 import com.ringoid.domain.interactor.messenger.PollChatNewMessagesUseCase
 import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
@@ -23,6 +22,7 @@ import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Flowable
+import io.reactivex.subjects.PublishSubject
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
@@ -45,6 +45,19 @@ class ChatViewModel @Inject constructor(
 
     private var chatData: ChatData? = null
     private var currentMessageList: List<Message> = emptyList()
+
+    private val incomingPushMessage = PublishSubject.create<BusEvent>()
+
+    init {
+        incomingPushMessage
+            .doOnNext { Timber.d("Received bus event: $it") }
+            .map { it as BusEvent.PushNewMessage }
+            .filter { it.peerId == chatData?.chatId }
+            .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS)
+            .flatMapSingle { getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = it.peerId)) }
+            .autoDisposable(this)
+            .subscribe(::handleChatUpdate, Timber::e)
+    }
 
     // --------------------------------------------------------------------------------------------
     /**
@@ -114,13 +127,7 @@ class ChatViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        if (event.peerId == chatData?.chatId) {
-            getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = event.peerId))
-                .autoDisposable(this)
-                .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
-        }
+        incomingPushMessage.onNext(event)
     }
 
     // --------------------------------------------------------------------------------------------

@@ -14,7 +14,6 @@ import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
@@ -24,10 +23,14 @@ import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.ringoid.origin.view.main.LmmNavTab
+import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.subjects.PublishSubject
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(
@@ -52,6 +55,17 @@ class LikesFeedViewModel @Inject constructor(
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
         userInMemoryCache, app) {
+
+    private val incomingPushLike = PublishSubject.create<BusEvent>()
+
+    init {
+        // show 'tap-to-refresh' popup on Feed screen
+        incomingPushLike
+            .doOnNext { Timber.d("Received bus event: $it") }
+            .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ refreshOnPush.value = feed.value?.isNotEmpty() == true }, Timber::e)
+    }
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
@@ -105,8 +119,6 @@ class LikesFeedViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
+        incomingPushLike.onNext(event)
     }
 }

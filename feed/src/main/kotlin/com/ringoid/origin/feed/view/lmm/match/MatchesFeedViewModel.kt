@@ -14,17 +14,20 @@ import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
 import com.ringoid.origin.view.main.LmmNavTab
+import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.subjects.PublishSubject
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MatchesFeedViewModel @Inject constructor(
@@ -51,6 +54,17 @@ class MatchesFeedViewModel @Inject constructor(
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
         userInMemoryCache, app) {
+
+    private val incomingPushMatch = PublishSubject.create<BusEvent>()
+
+    init {
+        // show 'tap-to-refresh' popup on Feed screen
+        incomingPushMatch
+            .doOnNext { Timber.d("Received bus event: $it") }
+            .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ refreshOnPush.value = feed.value?.isNotEmpty() == true }, Timber::e)
+    }
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MATCHES
 
@@ -93,8 +107,6 @@ class MatchesFeedViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        refreshOnPush.value = feed.value?.isNotEmpty() == true  // show 'tap-to-refresh' popup on Feed screen
+        incomingPushMatch.onNext(event)
     }
 }
