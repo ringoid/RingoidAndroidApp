@@ -81,7 +81,7 @@ class ChatViewModel @Inject constructor(
                 ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
                 currentMessageList = msgs.toMutableList().apply { removeAll { it.isLocal() } }
                 messages.value = msgs
-                startPollingChat(profileId = profileId, delay = 100L)
+                startPollingChat(profileId = profileId, delay = 50L)
             }, Timber::e)
     }
 
