@@ -48,9 +48,13 @@ class ChatViewModel @Inject constructor(
 
     private val incomingPushMessage = PublishSubject.create<BusEvent>()
 
-    init {
+    private fun subscribeOnPush() {
+        if (incomingPushMessage.hasObservers()) {
+            return
+        }
+
+        Timber.v("Subscribe on incoming messages push notifications")
         incomingPushMessage
-            .doOnNext { Timber.d("Received bus event: $it") }
             .map { it as BusEvent.PushNewMessage }
             .filter { it.peerId == chatData?.chatId }
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS)
@@ -119,7 +123,7 @@ class ChatViewModel @Inject constructor(
                 pollChatNewMessagesUseCase.source(params = prepareGetChatParams(profileId))
                     .takeUntil { isStopped }  // stop polling if Chat screen was hidden
             }
-            .doOnNext { if (it.id != profileId) Timber.e("IDS DIFF: ${it.id} / $profileId") }
+            .doOnNext { subscribeOnPush() }
             .autoDisposable(this)
             .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
     }
