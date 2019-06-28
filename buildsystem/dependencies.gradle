@@ -66,10 +66,10 @@ ext {
             glideOkHttp:    "com.github.bumptech.glide:okhttp3-integration:${glideVersion}",
             glideRecycler:  "com.github.bumptech.glide:recyclerview-integration:${glideVersion}",
 
-            branch:         "io.branch.sdk.android:library:${branchVersion}",
-//            deeplink:       "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
+            branch:            "io.branch.sdk.android:library:${branchVersion}",
+//            deeplink:          "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
 //            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
-            deeplink:       "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:eb7e520d87",
+            deeplink:          "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:eb7e520d87",
             deeplinkProcessor: "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch-processor:eb7e520d87",
             firebase:          "com.google.firebase:firebase-core:${firebaseVersion}",
             firebaseMessaging: "com.google.firebase:firebase-messaging:$firebaseMessagingVersion",
@@ -240,7 +240,8 @@ ext {
             [configuration: "implementation", dependency: d_libs.fragNav]
     ]
 
-    def glide = [
+    def image = [
+            [configuration: "implementation", dependency: d_libs.fresco],
             [configuration: "api", dependency: d_libs.glideAnnotation],
             [configuration: "kapt", dependency: d_libs.glideCompiler],
             [configuration: "implementation", dependency: d_libs.glide],
@@ -404,8 +405,8 @@ ext {
     feedDependencies = [
         [configuration: "implementation", dependency: d_libs.gson]
     ]
-    feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink + kotlin +
-                        glide + log + rx + rxBind
+    feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink +
+                        image + kotlin + log + rx + rxBind
 
     androidTestFeedDeps = androidTest
     testFeedDependencies = test
@@ -420,7 +421,7 @@ ext {
     /* Feature ImagePreview */
     // ------------------------------------------
     imagePreviewDependencies = []
-    imagePreviewDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
+    imagePreviewDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
     testImagePreviewDependencies = test
@@ -437,7 +438,7 @@ ext {
     messengerDependencies = [
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    messengerDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
+    messengerDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test
@@ -452,7 +453,7 @@ ext {
     /* Feature Profile */
     // ------------------------------------------
     profileDependencies = []
-    profileDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + glide + log + rx + rxBind
+    profileDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + image + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
@@ -475,7 +476,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    originDependencies += develop + android + arch + dagger + deeplink + kotlin + glide + log + fragnav + rx + rxBind +
+    originDependencies += develop + android + arch + dagger + deeplink + kotlin + image + log + fragnav + rx + rxBind +
                           support + view
 
     androidTestOriginDeps = androidTest
@@ -551,7 +552,7 @@ ext {
     utilityDependencies = [
         [configuration: "implementation", dependency: d_libs.jodaTime],
     ]
-    utilityDependencies += android + kotlin + glide + log + rx
+    utilityDependencies += android + kotlin + image + log + rx
     testUtilityDependencies = test
 
     utilityPlugins = [

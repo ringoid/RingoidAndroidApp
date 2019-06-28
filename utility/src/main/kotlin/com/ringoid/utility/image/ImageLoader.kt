@@ -2,11 +2,14 @@ package com.ringoid.utility.image
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,9 +27,25 @@ object ImageLoader {
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
     fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
-        loadRequest(uri, thumbnailUri, imageView.context, options)
-            ?.listener(AutoRetryImageListener(uri, WeakReference(imageView), withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))
-            ?.into(imageView)
+        if (uri.isNullOrBlank()) {
+            return
+        }
+
+        if (imageView is SimpleDraweeView) {
+            thumbnailUri?.let {
+                val controller = Fresco.newDraweeControllerBuilder()
+                    .setLowResImageRequest(com.facebook.imagepipeline.request.ImageRequest.fromUri(it))
+                    .setImageRequest(com.facebook.imagepipeline.request.ImageRequest.fromUri(Uri.parse(uri)))
+                    .setOldController(imageView.controller)
+                    .setTapToRetryEnabled(true)
+                    .build()
+                imageView.controller = controller
+            } ?: run { imageView.setImageURI(Uri.parse(uri)) }
+        } else {
+            loadRequest(uri, thumbnailUri, imageView.context, options)
+                ?.listener(AutoRetryImageListener(uri, WeakReference(imageView), withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))
+                ?.into(imageView)
+        }
     }
 
     fun simpleLoadRequest(imageLoader: ImageRequest, uri: String?, skipMemoryCache: Boolean = false, options: RequestOptions? = null): RequestBuilder<Drawable>? =

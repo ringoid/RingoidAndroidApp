@@ -5,6 +5,7 @@ import android.os.StrictMode
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.flurry.android.FlurryAgent
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
@@ -113,6 +114,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     // ------------------------------------------------------------------------
     private fun initializeResources() {
         localeManager.setLocale(this)
+        Fresco.initialize(this)
         AppRes.init(applicationContext)
     }
 
