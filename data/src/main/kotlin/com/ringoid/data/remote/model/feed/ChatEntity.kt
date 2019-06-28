@@ -34,7 +34,17 @@ import com.ringoid.domain.model.messenger.Chat
  *   "income": 0,
  *   "height": 0,
  *   "hairColor": 0,
- *   "children":0
+ *   "children":0,
+ *
+ *   "name":"Mikhail",
+ *   "jobTitle":"Developer",
+ *   "company":"Ringoid",
+ *   "education":"BGTU Voenmeh",
+ *   "about":"Nice person",
+ *   "instagram":"unknown",
+ *   "tikTok":"unknown",
+ *   "whereLive":"St.Petersburg",
+ *   "whereFrom":"Leningrad"
  *  }
  */
 class ChatEntity(
@@ -54,7 +64,16 @@ class ChatEntity(
     height: Int = DomainUtil.UNKNOWN_VALUE,
     income: Int = DomainUtil.UNKNOWN_VALUE,
     property: Int = DomainUtil.UNKNOWN_VALUE,
-    transport: Int = DomainUtil.UNKNOWN_VALUE)
+    transport: Int = DomainUtil.UNKNOWN_VALUE,
+    about: String? = null,
+    company: String? = null,
+    jobTitle: String? = null,
+    name: String? = null,
+    instagram: String? = null,
+    tiktok: String? = null,
+    university: String? = null,
+    whereFrom: String? = null,
+    whereLive: String? = null)
     : FeedItemEntity(
         id = id,
         sortPosition = sortPosition,
@@ -72,7 +91,16 @@ class ChatEntity(
         height = height,
         income = income,
         property = property,
-        transport = transport) {
+        transport = transport,
+        about = about,
+        company = company,
+        jobTitle = jobTitle,
+        name = name,
+        instagram = instagram,
+        tiktok = tiktok,
+        university = university,
+        whereFrom = whereFrom,
+        whereLive = whereLive) {
 
     fun mapToChat(): Chat = Chat(feedItem = map())
 }
