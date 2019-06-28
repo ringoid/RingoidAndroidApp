@@ -139,6 +139,21 @@
     <string name="settings_info_terms">Terms of Service</string>
     <string name="settings_info_title">Legal</string>
 
+    <!-- Settings Profile screen -->
+    <string name="settings_profile_item_custom_property_about">Bio</string>
+    <string name="settings_profile_item_custom_property_company">Company</string>
+    <string name="settings_profile_item_custom_property_company_placeholder"> </string>
+    <string name="settings_profile_item_custom_property_job_title">Job title</string>
+    <string name="settings_profile_item_custom_property_name">Name</string>
+    <string name="settings_profile_item_custom_property_instagram">Instagram</string>
+    <string name="settings_profile_item_custom_property_instagram_placeholder">\&#64;username</string>
+    <string name="settings_profile_item_custom_property_tiktok">TikTok</string>
+    <string name="settings_profile_item_custom_property_tiktok_placeholder">\&#64;username</string>
+    <string name="settings_profile_item_custom_property_university">Education</string>
+    <string name="settings_profile_item_custom_property_university_placeholder">University, college, etc.</string>
+    <string name="settings_profile_item_custom_property_where_live">Where I live</string>
+    <string name="settings_profile_item_custom_property_where_live_placeholder">City, village, etc.</string>
+
     <!-- Settings Push screen -->
     <string name="settings_push_item_like">New Like</string>
     <string name="settings_push_item_match">New Match</string>

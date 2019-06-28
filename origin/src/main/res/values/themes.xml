@@ -22,6 +22,7 @@
         <item name="colorPrimaryDark">?refColorPrimaryDark</item>
         <item name="iconItemView">@style/IconItemView</item>
         <item name="spinnerIconItemView">@style/IconItemView.Secondary</item>
+        <item name="textIconItemView">@style/TextIconItemView.Secondary</item>
         <item name="flatButtonBg">@drawable/flat_button_bg_white</item>
     </style>
 
@@ -45,11 +46,15 @@
         <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_black_36dp</item>
         <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_black_36dp</item>
         <item name="refDrawableProfilePropertyChildren">@drawable/ic_children_black_24dp</item>
+        <item name="refDrawableProfilePropertyCompany">@drawable/ic_company_job_black_24dp</item>
         <item name="refDrawableProfilePropertyEducation">@drawable/ic_education_black_24dp</item>
         <item name="refDrawableProfilePropertyHairColor">@drawable/ic_hair_color_black_24dp</item>
         <item name="refDrawableProfilePropertyHeight">@drawable/ic_height_property_black_24dp</item>
         <item name="refDrawableProfilePropertyIncome">@drawable/ic_income_black_24dp</item>
+        <item name="refDrawableProfilePropertyInstagram">@drawable/ic_instagram_black_24dp</item>
+        <item name="refDrawableProfilePropertyLocation">@drawable/ic_location_marker_black_24dp</item>
         <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_black_24dp</item>
+        <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_black_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_black_24dp</item>
         <item name="refDrawableSettingsProfile">@drawable/ic_person_black_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
@@ -76,11 +81,15 @@
         <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_white_36dp</item>
         <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_white_36dp</item>
         <item name="refDrawableProfilePropertyChildren">@drawable/ic_children_white_24dp</item>
+        <item name="refDrawableProfilePropertyCompany">@drawable/ic_company_job_white_24dp</item>
         <item name="refDrawableProfilePropertyEducation">@drawable/ic_education_white_24dp</item>
         <item name="refDrawableProfilePropertyHairColor">@drawable/ic_hair_color_white_24dp</item>
         <item name="refDrawableProfilePropertyHeight">@drawable/ic_height_property_white_24dp</item>
         <item name="refDrawableProfilePropertyIncome">@drawable/ic_income_white_24dp</item>
+        <item name="refDrawableProfilePropertyInstagram">@drawable/ic_instagram_white_24dp</item>
+        <item name="refDrawableProfilePropertyLocation">@drawable/ic_location_marker_white_24dp</item>
         <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_white_24dp</item>
+        <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_white_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_white_24dp</item>
         <item name="refDrawableSettingsProfile">@drawable/ic_person_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>

@@ -134,6 +134,21 @@
     <string name="settings_info_terms">Условия использования</string>
     <string name="settings_info_title">Информация</string>
 
+    <!-- Settings Profile screen -->
+    <string name="settings_profile_item_custom_property_about">О себе</string>
+    <string name="settings_profile_item_custom_property_company">Место работы</string>
+    <string name="settings_profile_item_custom_property_company_placeholder">Название компании, фирмы и т.п.</string>
+    <string name="settings_profile_item_custom_property_job_title">Должность</string>
+    <string name="settings_profile_item_custom_property_name">Имя</string>
+    <string name="settings_profile_item_custom_property_instagram">Instagram</string>
+    <string name="settings_profile_item_custom_property_instagram_placeholder">\&#64;username</string>
+    <string name="settings_profile_item_custom_property_tiktok">TikTok</string>
+    <string name="settings_profile_item_custom_property_tiktok_placeholder">\&#64;username</string>
+    <string name="settings_profile_item_custom_property_university">Место учебы</string>
+    <string name="settings_profile_item_custom_property_university_placeholder">Университет, колледж и т.п.</string>
+    <string name="settings_profile_item_custom_property_where_live">Город</string>
+    <string name="settings_profile_item_custom_property_where_live_placeholder"> </string>
+
     <!-- Settings Push screen -->
     <string name="settings_push_item_like">Новый лайк</string>
     <string name="settings_push_item_match">Новая взаимность</string>

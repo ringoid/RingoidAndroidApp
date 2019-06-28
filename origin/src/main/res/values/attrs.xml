@@ -18,11 +18,15 @@
         <attr name="refDrawableProfileMenuAddImage" format="reference"/>
         <attr name="refDrawableProfileMenuSettings" format="reference"/>
         <attr name="refDrawableProfilePropertyChildren" format="reference"/>
+        <attr name="refDrawableProfilePropertyCompany" format="reference"/>
         <attr name="refDrawableProfilePropertyEducation" format="reference"/>
         <attr name="refDrawableProfilePropertyHairColor" format="reference"/>
         <attr name="refDrawableProfilePropertyHeight" format="reference"/>
         <attr name="refDrawableProfilePropertyIncome" format="reference"/>
+        <attr name="refDrawableProfilePropertyInstagram" format="reference"/>
+        <attr name="refDrawableProfilePropertyLocation" format="reference"/>
         <attr name="refDrawableProfilePropertyProperty" format="reference"/>
+        <attr name="refDrawableProfilePropertyTikTok" format="reference"/>
         <attr name="refDrawableProfilePropertyTransport" format="reference"/>
         <attr name="refDrawableSettingsProfile" format="reference"/>
         <attr name="refDrawableThemeSwitch" format="reference"/>

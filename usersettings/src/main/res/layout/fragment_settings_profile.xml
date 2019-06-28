@@ -26,12 +26,103 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/std_margin_32">
 
+            <!-- Custom Properties -->
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_name"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_hide_icon="false"
+                app:icon_item_text="@string/settings_profile_item_custom_property_name"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_instagram"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyInstagram"
+                app:icon_item_text="@string/settings_profile_item_custom_property_instagram"
+                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_instagram_placeholder"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_tiktok"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyTikTok"
+                app:icon_item_text="@string/settings_profile_item_custom_property_tiktok"
+                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_tiktok_placeholder"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_where_live"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyLocation"
+                app:icon_item_text="@string/settings_profile_item_custom_property_where_live"
+                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_where_live_placeholder"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_about"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_hide_icon="false"
+                app:icon_item_text="@string/settings_profile_item_custom_property_about"
+                app:text_icon_item_text_field_height="@dimen/settings_big_text_item_height"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_job_title"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyCompany"
+                app:icon_item_text="@string/settings_profile_item_custom_property_job_title"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_company"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyCompany"
+                app:icon_item_text="@string/settings_profile_item_custom_property_company"
+                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_company_placeholder"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_university"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyEducation"
+                app:icon_item_text="@string/settings_profile_item_custom_property_university"
+                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_university_placeholder"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <!-- Properties -->
             <com.ringoid.widget.view.item_view.TextIconItemView
                 android:id="@+id/item_profile_property_height"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyHeight"
                 app:icon_item_text="@string/profile_property_height"
-                style="?attr/spinnerIconItemView"/>
+                app:text_icon_item_text_gravity="center"
+                app:text_icon_item_text_max_length="3"
+                app:text_icon_item_side_padding="0dp"
+                style="?attr/textIconItemView"/>
 
             <View style="@style/Underscore"/>
 

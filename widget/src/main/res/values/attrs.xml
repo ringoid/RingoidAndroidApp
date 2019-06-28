@@ -12,6 +12,7 @@
         <attr name="refTextColorSecondary" format="reference"/>
         <attr name="iconItemView" format="reference"/>
         <attr name="spinnerIconItemView" format="reference"/>
+        <attr name="textIconItemView" format="reference"/>
         <attr name="flatButtonBg" format="reference"/>
     </declare-styleable>
 
@@ -35,6 +36,24 @@
         <attr name="icon_item_text_color" format="reference"/>
         <attr name="icon_item_text_label" format="reference|string"/>
         <attr name="refItemViewArrow" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="TextIconItemView">
+        <attr name="text_icon_item_text_field_height" format="reference"/>
+        <attr name="text_icon_item_text" format="reference|string"/>
+        <attr name="text_icon_item_text_gravity">
+            <flag name="bottom" value="80"/>
+            <flag name="center" value="17"/>
+            <flag name="center_horizontal" value="1"/>
+            <flag name="center_vertical" value="16"/>
+            <flag name="end" value="8388613"/>
+            <flag name="start" value="8388611"/>
+            <flag name="top" value="48"/>
+        </attr>
+        <attr name="text_icon_item_text_hint" format="reference|string"/>
+        <attr name="text_icon_item_text_max_length" format="integer"/>
+        <attr name="text_icon_item_side_padding" format="dimension"/>
+        <attr name="text_icon_item_wrap_content" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="LabelView">

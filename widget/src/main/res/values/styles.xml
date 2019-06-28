@@ -101,6 +101,14 @@
         <item name="icon_item_text_color">?refTextColorSecondary</item>
     </style>
 
+    <style name="TextIconItemView" parent="IconItemView">
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextIconItemView.Secondary">
+        <item name="icon_item_text_color">?refTextColorSecondary</item>
+    </style>
+
     <style name="Underscore">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>

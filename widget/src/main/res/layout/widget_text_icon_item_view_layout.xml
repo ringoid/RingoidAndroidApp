@@ -12,6 +12,7 @@
         android:contentDescription="@null"/>
 
     <LinearLayout
+        android:id="@+id/ll_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -36,9 +37,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:background="@drawable/rect_round_secondary_stroke"
-                android:gravity="center"
-                android:maxLength="3"
+                android:gravity="center_vertical|start"
                 android:minHeight="@dimen/std_margin_32"
+                android:paddingStart="@dimen/std_margin_12"
+                android:paddingEnd="@dimen/std_margin_12"
                 style="@style/StdText.Primary"/>
 
             <TextView
@@ -47,6 +49,7 @@
                 style="@style/StdText.Primary"/>
 
             <Space
+                android:id="@+id/space"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
