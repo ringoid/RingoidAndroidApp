@@ -20,6 +20,15 @@ data class Profile(
     override val income: Int = DomainUtil.UNKNOWN_VALUE,
     override val property: Int = DomainUtil.UNKNOWN_VALUE,
     override val transport: Int = DomainUtil.UNKNOWN_VALUE,
+    override val about: String? = null,
+    override val company: String? = null,
+    override val jobTitle: String? = null,
+    override val name: String? = null,
+    override val instagram: String? = null,
+    override val tiktok: String? = null,
+    override val university: String? = null,
+    override val whereFrom: String? = null,
+    override val whereLive: String? = null,
     override val isRealModel: Boolean = true) : IProfile
 
 val EmptyProfile = Profile(id = randomString(), images = emptyList(), isRealModel = false)

@@ -128,7 +128,16 @@ open class FeedItemEntity(
             height = height,
             income = income,
             property = property,
-            transport = transport)
+            transport = transport,
+            about = about,
+            company = company,
+            jobTitle = jobTitle,
+            name = name,
+            instagram = instagram,
+            tiktok = tiktok,
+            university = university,
+            whereFrom = whereFrom,
+            whereLive = whereLive)
 
     override fun toString(): String = "FeedItemEntity(isNotSeen=$isNotSeen, messages=${messages.joinToString(", ", "[", "]")}, ${super.toString()})"
 }

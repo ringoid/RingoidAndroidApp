@@ -22,6 +22,17 @@ interface IProfile : IModel {
     val property: Int
     val transport: Int
 
+    // custom properties
+    val about: String?
+    val company: String?
+    val jobTitle: String?
+    val name: String?
+    val instagram: String?
+    val tiktok: String?
+    val university: String?
+    val whereFrom: String?
+    val whereLive: String?
+
     fun sameContent(other: IProfile): Boolean {
         if (images == other.images) {
             return true
