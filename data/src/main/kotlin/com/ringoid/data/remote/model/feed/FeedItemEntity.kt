@@ -79,7 +79,7 @@ open class FeedItemEntity(
             id = id,
             distanceText = distanceText,
             images = images.mapList(),
-            messages = messages.mapIndexed { index, message ->
+            messages = messages.map { message ->
                 val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
                 Message(
                     id = message.id,

@@ -157,6 +157,10 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                     when (gender) {
                         Gender.MALE -> tv_sex_male.isSelected = true
                         Gender.FEMALE -> tv_sex_female.isSelected = true
+                        Gender.UNKNOWN -> {
+                            tv_sex_male.isSelected = false
+                            tv_sex_female.isSelected = false
+                        }
                     }
                     vm.onGenderSelect(gender)
                 }

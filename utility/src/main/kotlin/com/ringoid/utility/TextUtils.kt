@@ -55,7 +55,7 @@ fun Context.copyToClipboard(key: String, value: String) {
         ?.primaryClip = ClipData.newPlainText(key, value)
 }
 
-fun Context.pasteFromClipboard(key: String): String {
+fun Context.pasteFromClipboard(): String {
     val stringBuilder = StringBuilder()
     (getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager)
         ?.primaryClip

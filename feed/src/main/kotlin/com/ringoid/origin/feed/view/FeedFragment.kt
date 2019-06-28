@@ -135,7 +135,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             .takeIf { it.isNotEmpty() }
             ?.forEach { id ->  // retained items are the new ones that come into viewport, i.e. became visible
                 feedAdapter.findModelAndPosition { it.id == id }
-                    ?.let { (position, model) ->
+                    ?.let { (_, model) ->
                         val image = model.images[model.positionOfImage]
                         vm.onItemBecomeVisible(profile = model, image = image)
                     }
