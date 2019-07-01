@@ -13,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         fresco:actualImageScaleType="centerCrop"
+        fresco:fadeDuration="0"
         fresco:retryImage="@drawable/ic_no_photo_placeholder_grey_96dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
