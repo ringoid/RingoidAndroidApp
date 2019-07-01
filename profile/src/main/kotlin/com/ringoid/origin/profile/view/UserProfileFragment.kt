@@ -59,7 +59,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     private val calendar = Calendar.getInstance()
 
     private var imageOnViewPortId: String = DomainUtil.BAD_ID
-    private var currentImagePosition: Int = DomainUtil.BAD_POSITION
+    private var currentImagePosition: Int = 0
     private var cropImageAfterLogin: Boolean = false
     private var handleRequestToAddImage: Boolean = false
 
@@ -536,7 +536,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             ?.let { imagesAdapter.getModel(it) }
 
     private fun scrollToPosition(position: Int) {
-        rv_items?.post { rv_items?.scrollToPosition(position) }
+        rv_items?.post {
+            rv_items?.scrollToPosition(position)
+            onImageSelect(position)
+        }
     }
 
     private fun showControls(isVisible: Boolean) {
