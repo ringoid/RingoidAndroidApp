@@ -55,7 +55,7 @@ data class UserProfileProperties(
         about.isBlank() &&
         company.isBlank() &&
         jobTitle.isBlank() &&
-        name.isBlank() &&
+        // name is not included
         socialInstagram.isBlank() &&
         socialTikTok.isBlank() &&
         university.isBlank() &&

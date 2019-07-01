@@ -242,7 +242,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     ?.let { tv_about.text = it }
 
                 mutableListOf<String>().apply {
-                    add(properties.name)
+                    properties.name
+                        .takeIf { it.isNotBlank() }
+                        ?.let { name -> add(name) }
+                        ?: run { add(resources.getString(OriginR_string.settings_profile_item_custom_property_name)) }
                     add("$age")
                 }
                 .let { tv_name_age.text = it.joinToString() }
@@ -444,7 +447,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     getChildAt(i).changeVisibility(isVisible = false)
                 }
                 if (startIndex < childCount) {
-                    changeVisibility(isVisible = true)
+                    changeVisibility(isVisible = !imagesAdapter.isEmpty())
                     for (i in startIndex until minOf(endIndex, childCount)) {
                         getChildAt(i).changeVisibility(isVisible = true)
                     }

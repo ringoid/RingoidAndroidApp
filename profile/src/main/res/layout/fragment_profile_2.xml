@@ -66,6 +66,14 @@
 
     </com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout>
 
+    <View
+        android:id="@+id/gradient"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/rect_gradient"
+        app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
+        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"/>
+
     <Button
         android:id="@+id/btn_referral"
         android:textColor="?refTextColorPrimary"
@@ -148,8 +156,7 @@
             android:id="@+id/ll_left_section"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"/>
+            android:orientation="vertical"/>
     </LinearLayout>
 
     <com.ringoid.widget.view.ExtendImageButton
