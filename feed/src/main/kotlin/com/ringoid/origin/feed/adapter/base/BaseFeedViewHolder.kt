@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
-import com.ringoid.origin.AppRes
-import com.ringoid.origin.feed.OriginR_drawable
-import com.ringoid.origin.feed.R
+import com.ringoid.domain.misc.Gender
+import com.ringoid.domain.misc.UserProfilePropertyId
+import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.model.*
+import com.ringoid.origin.feed.view.FeedScreenUtils
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
@@ -105,6 +105,16 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                         snapPositionListener?.invoke(from)
                     }
                 }
+
+                override fun onScrollStateChanged(rv: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(rv, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        rv.linearLayoutManager()?.let {
+                            val positionOfImage = it.findFirstCompletelyVisibleItemPosition()
+                            onImageSelect(positionOfImage = positionOfImage)
+                        }
+                    }
+                }
             }
             .also { listener -> addOnScrollListener(listener) }
 
@@ -151,99 +161,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
         }
 
-        // left section
-        with (itemView.ll_left_section) {
-            // transport property
-            model.transport().let { transport ->
-                findViewById<LabelView>(TransportProfileProperty.TRANSPORT_PROPERTY_ID)?.let { removeView(it) }
-                if (transport != TransportProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = transport.resId, iconResId = OriginR_drawable.ic_transport_white_18dp)
-                        .apply { id = TransportProfileProperty.TRANSPORT_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // education property
-            model.education().let { education ->
-                findViewById<LabelView>(EducationProfileProperty.EDUCATION_PROPERTY_ID)?.let { removeView(it) }
-                if (education != EducationProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = education.resId, iconResId = OriginR_drawable.ic_education_white_18dp)
-                        .apply { id = EducationProfileProperty.EDUCATION_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // property property
-            model.property().let { property ->
-                findViewById<LabelView>(PropertyProfileProperty.PROPERTY_PROPERTY_ID)?.let { removeView(it) }
-                if (property != PropertyProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = property.resId, iconResId = OriginR_drawable.ic_home_property_white_18dp)
-                        .apply { id = PropertyProfileProperty.PROPERTY_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // income property
-            model.income().let { income ->
-                findViewById<LabelView>(IncomeProfileProperty.INCOME_PROPERTY_ID)?.let { removeView(it) }
-                if (income != IncomeProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = income.resId, iconResId = OriginR_drawable.ic_income_white_18dp)
-                        .apply { id = IncomeProfileProperty.INCOME_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // children property
-            model.children().let { children ->
-                findViewById<LabelView>(ChildrenProfileProperty.CHILDREN_PROPERTY_ID)?.let { removeView(it) }
-                if (children != ChildrenProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = children.resId, iconResId = OriginR_drawable.ic_children_white_18dp)
-                        .apply { id = ChildrenProfileProperty.CHILDREN_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-        }
-
-        // right section
-        with (itemView.ll_right_section) {
-            // distance
-            findViewById<LabelView>(DISTANCE_PROPERTY_ID)?.let { removeView(it) }
-            if (!model.distanceText.isNullOrBlank() && model.distanceText != "unknown") {
-                val view = createLabelView(text = model.distanceText, iconResId = R.drawable.ic_location_white_18dp)
-                    .apply { id = DISTANCE_PROPERTY_ID }
-                addView(view, 0)  // prepend
-            }
-
-            // hair color property
-            model.hairColor().let { hairColor ->
-                findViewById<LabelView>(HairColorProfileProperty.HAIR_COLOR_PROPERTY_ID)?.let { removeView(it) }
-                if (hairColor != HairColorProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = hairColor.resId(model.gender), iconResId = OriginR_drawable.ic_hair_color_white_18dp)
-                        .apply { id = HairColorProfileProperty.HAIR_COLOR_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // height property
-            model.height.let { height ->
-                findViewById<LabelView>(HEIGHT_PROPERTY_ID)?.let { removeView(it) }
-                if (height > 0) {
-                    val view = createLabelView(text = "${model.height} ${AppRes.LENGTH_CM}", iconResId = OriginR_drawable.ic_height_property_white_18dp)
-                        .apply { id = HEIGHT_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // age, sex
-            model.age.let { age ->
-                findViewById<LabelView>(AGE_PROPERTY_ID)?.let { removeView(it) }
-                if (age >= 18) {
-                    val view = createLabelView(text = "$age", iconResId = model.gender.resId)
-                        .apply { id = AGE_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-        }
+        setPropertyFields(model)
+        onImageSelect(positionOfImage)
 
         if (BuildConfig.IS_STAGING) {
             itemView.tv_profile_id.text = "Profile: ${model.idWithFirstN()}"
@@ -320,7 +239,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
             label_online_status.changeVisibility(isVisible = false)
-            ll_left_section.changeVisibility(isVisible = false)
+            ll_left_container.changeVisibility(isVisible = false)
             ll_right_section.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
@@ -331,7 +250,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
             label_online_status.changeVisibility(isVisible = true)
-            ll_left_section.changeVisibility(isVisible = true)
+            ll_left_container.changeVisibility(isVisible = true)
             ll_right_section.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
@@ -347,6 +266,102 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     override fun getCurrentImagePosition(): Int =
         itemView.rv_items.linearLayoutManager()?.findFirstVisibleItemPosition() ?: 0
+
+    // --------------------------------------------------------------------------------------------
+    private fun onImageSelect(positionOfImage: Int) {
+        fun showLabels(containerView: ViewGroup, startIndex: Int, endIndex: Int) {
+            with (containerView) {
+                for (i in 0 until childCount) {
+                    getChildAt(i).changeVisibility(isVisible = false)
+                }
+                if (startIndex < childCount) {
+                    changeVisibility(isVisible = true)
+                    for (i in startIndex until minOf(endIndex, childCount)) {
+                        getChildAt(i).changeVisibility(isVisible = true)
+                    }
+                } else {
+                    changeVisibility(isVisible = false)
+                }
+            }
+        }
+
+        fun showAbout() {
+            itemView.tv_about.changeVisibility(isVisible = true)
+            itemView.ll_left_section.changeVisibility(isVisible = false)
+            itemView.ll_right_section.changeVisibility(isVisible = false)
+        }
+
+        fun showLabels(startIndex: Int, endIndex: Int) {
+            itemView.tv_about.changeVisibility(isVisible = false)
+            showLabels(itemView.ll_left_section, startIndex, endIndex)
+            showLabels(itemView.ll_right_section, startIndex, endIndex)
+        }
+
+        // --------------------------------------
+        val page = maxOf(0, positionOfImage - 1)
+        val startIndex = page * FeedScreenUtils.COUNT_LABELS_ON_PAGE
+        val endIndex = startIndex + FeedScreenUtils.COUNT_LABELS_ON_PAGE
+
+        when (AppInMemory.oppositeUserGender()) {
+            Gender.FEMALE -> {
+                when (positionOfImage) {
+                    0 -> showAbout()
+                    else -> showLabels(startIndex, endIndex)
+                }
+            }
+            else -> {
+                when (positionOfImage) {
+                    1 -> showAbout()
+                    else -> showLabels(startIndex, endIndex)
+                }
+            }
+        }
+    }
+
+    private fun setPropertyFields(model: FeedItemVO) {
+        fun addLabelView(
+                containerView: ViewGroup,
+                propertyId: UserProfilePropertyId,
+                properties: FeedItemVO) {
+            FeedScreenUtils.createLabelView(
+                container = containerView,
+                gender = properties.gender,
+                propertyId = propertyId,
+                properties = properties)
+            ?.let { labelView ->
+                containerView.addView(labelView)
+                labelView.changeVisibility(isVisible = false)
+            }
+        }
+
+        model.about
+            .takeIf { !it.isNullOrBlank() }
+            ?.let { itemView.tv_about.text = it }
+
+        model.name
+            .takeIf { !it.isNullOrBlank() }
+            ?.let { name ->
+                mutableListOf<String>().apply {
+                    add(name)
+                    model.age.takeIf { it > 0 }?.let { age -> add("$age") }
+                }
+                .let { itemView.tv_name_age.text = it.joinToString() }
+            }
+
+        itemView.ll_left_section?.let { containerView ->
+            containerView.removeAllViews()
+            when (model.gender) {
+                Gender.FEMALE -> FeedScreenUtils.propertiesFemale
+                else -> FeedScreenUtils.propertiesMale
+            }
+            .forEach { propertyId -> addLabelView(containerView, propertyId, model) }
+        }
+        itemView.ll_right_section?.let { containerView ->
+            containerView.removeAllViews()
+            FeedScreenUtils.propertiesRight
+                .forEach { propertyId -> addLabelView(containerView, propertyId, model) }
+        }
+    }
 }
 
 class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)

@@ -89,7 +89,7 @@
         android:layout_marginStart="@dimen/std_margin_16"
         android:layout_marginEnd="@dimen/std_margin_8"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/anchor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ll_right_section">
 
