@@ -26,7 +26,6 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
-import com.ringoid.origin.model.*
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
@@ -43,7 +42,6 @@ import com.ringoid.utility.*
 import com.ringoid.utility.image.ImageRequest
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_2.*
 import kotlinx.android.synthetic.main.fragment_profile_2.btn_referral
 import kotlinx.android.synthetic.main.fragment_profile_2.fl_empty_container
@@ -212,66 +210,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             observe(vm.profile) {
                 val gender = spm.currentUserGender()
                 val showDefault = it.isAllUnknown()
-
-                if (showDefault) {
-                    with (label_children) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_children)
-                    }
-                    with (label_education) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_education)
-                    }
-                    with(label_hair_color) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_hair_color)
-                    }
-                    with(label_height) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_height)
-                    }
-                    with(label_income) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_income)
-                    }
-                    with(label_property) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_property)
-                    }
-                    with(label_transport) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_transport)
-                    }
-                } else {
-                    with (label_children) {
-                        changeVisibility(isVisible = it.children != ChildrenProfileProperty.Unknown)
-                        setText(it.children.resId)
-                    }
-                    with(label_education) {
-                        changeVisibility(isVisible = it.education != EducationProfileProperty.Unknown)
-                        setText(it.education.resId)
-                    }
-                    with(label_hair_color) {
-                        changeVisibility(isVisible = it.hairColor != HairColorProfileProperty.Unknown)
-                        setText(it.hairColor.resId(gender))
-                    }
-                    with(label_height) {
-                        changeVisibility(isVisible = it.height > 0)
-                        setText("${it.height} ${AppRes.LENGTH_CM}")
-                    }
-                    with(label_income) {
-                        changeVisibility(isVisible = it.income != IncomeProfileProperty.Unknown)
-                        setText(it.income.resId)
-                    }
-                    with(label_property) {
-                        changeVisibility(isVisible = it.property != PropertyProfileProperty.Unknown)
-                        setText(it.property.resId)
-                    }
-                    with(label_transport) {
-                        changeVisibility(isVisible = it.transport != TransportProfileProperty.Unknown)
-                        setText(it.transport.resId)
-                    }
-                }
             }
         }
 
@@ -338,17 +276,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
         }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
-        with (label_age_sex) {
-            val yearOfBirth = spm.currentUserYearOfBirth()
-            if (yearOfBirth != DomainUtil.BAD_VALUE) {
-                alpha = 1.0f
-                val age = calendar.get(Calendar.YEAR) - yearOfBirth
-                setIcon(spm.currentUserGender().resId)
-                setText("$age")
-            } else {
-                alpha = 0.0f
-            }
-        }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe { onRefresh() }
