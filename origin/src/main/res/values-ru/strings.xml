@@ -100,6 +100,7 @@
     <string name="referral_dialog_reward_message">Начислено %s монет</string>
 
     <!-- Suggest Improvements dialog -->
+    <string name="suggest_improvements_dialog_done_title">Спасибо! Мы прочитаем ваши предложения в ближайшие минуты.</string>
     <string name="suggest_improvements_description_account_delete">Перед уходом, пожалуйста, предложите, как сделать Ringoid лучше.</string>
     <string name="suggest_improvements_description">Как сделать Ringoid лучше?</string>
     <string name="suggest_improvements_positive_button">Предложить</string>

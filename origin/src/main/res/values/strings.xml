@@ -105,6 +105,7 @@
     <string name="referral_dialog_reward_message">%s coins gifted</string>
 
     <!-- Suggest Improvements dialog -->
+    <string name="suggest_improvements_dialog_done_title">Thank you! We will look into your suggestions shortly.</string>
     <string name="suggest_improvements_description_account_delete">Before you leave, please suggest how to make Ringoid better.</string>
     <string name="suggest_improvements_description">How to make Ringoid better?</string>
     <string name="suggest_improvements_positive_button">Suggest</string>

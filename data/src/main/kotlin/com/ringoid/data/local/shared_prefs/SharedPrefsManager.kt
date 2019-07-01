@@ -87,6 +87,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_PROFILE_PROPERTY_INCOME = "sp_key_user_profile_property_income"
         const val SP_KEY_USER_PROFILE_PROPERTY_PROPERTY = "sp_key_user_profile_property_property"
         const val SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT = "sp_key_user_profile_property_transport"
+
+        /* Misc */
+        // --------------------------------------
+        const val SP_KEY_BIG_EDIT_TEXT = "sp_key_big_edit_text"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -321,6 +325,18 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun dropUserProfileProperties() {
         setUserProfileProperties(propertiesRaw = UserProfilePropertiesRaw())
+    }
+
+    /* Misc */
+    // --------------------------------------------------------------------------------------------
+    override fun getBigEditText(): String = sharedPreferences.getString(SP_KEY_BIG_EDIT_TEXT, "") ?: ""
+
+    override fun setBigEditText(text: String) {
+        sharedPreferences.edit().putString(SP_KEY_BIG_EDIT_TEXT, text).apply()
+    }
+
+    override fun dropBigEditText() {
+        sharedPreferences.edit().remove(SP_KEY_BIG_EDIT_TEXT).apply()
     }
 }
 

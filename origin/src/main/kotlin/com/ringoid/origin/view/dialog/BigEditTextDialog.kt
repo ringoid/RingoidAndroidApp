@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
         private const val BUNDLE_KEY_DESCRIPTION_RES_ID = "bundle_key_description_res_id"
         private const val BUNDLE_KEY_SUBTITLE_RES_ID = "bundle_key_subtitle_res_id"
         private const val BUNDLE_KEY_TITLE_RES_ID = "bundle_key_title_res_id"
+        private const val BUNDLE_KEY_INPUT = "bundle_key_input"
         private const val BUNDLE_KEY_TAG = "bundle_key_tag"
 
         fun newInstance(@StringRes titleResId: Int,
@@ -37,7 +39,7 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
                         @StringRes descriptionResId: Int = 0,
                         @StringRes btnPositiveResId: Int = R.string.button_ok,
                         @StringRes btnNegativeResId: Int = R.string.button_cancel,
-                        tag: String? = null)
+                        input: String = "", tag: String? = null)
                 : BigEditTextDialog =
             BigEditTextDialog().apply {
                 arguments = Bundle().apply {
@@ -46,6 +48,7 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
                     putInt(BUNDLE_KEY_DESCRIPTION_RES_ID, descriptionResId)
                     putInt(BUNDLE_KEY_BUTTON_POSITIVE_RES_ID, btnPositiveResId)
                     putInt(BUNDLE_KEY_BUTTON_NEGATIVE_RES_ID, btnNegativeResId)
+                    putString(BUNDLE_KEY_INPUT, input)
                     putString(BUNDLE_KEY_TAG, tag)
                 }
             }
@@ -88,6 +91,18 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
 
             args.getInt(BUNDLE_KEY_BUTTON_POSITIVE_RES_ID).takeIf { it != 0 }?.let { btn_done.setText(it) }
             args.getInt(BUNDLE_KEY_BUTTON_NEGATIVE_RES_ID).takeIf { it != 0 }?.let { btn_cancel.setText(it) }
+
+            args.getString(BUNDLE_KEY_INPUT)
+                .takeIf { !it.isNullOrBlank() }
+                ?.let {
+                    et_dialog_entry.setText(it)
+                    et_dialog_entry.setSelection(it.length)
+                }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        spm.setBigEditText(et_dialog_entry?.text?.toString() ?: "")
     }
 }

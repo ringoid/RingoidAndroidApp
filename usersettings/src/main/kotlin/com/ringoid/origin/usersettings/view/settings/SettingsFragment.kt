@@ -99,7 +99,7 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
             subtitleResId = OriginR_string.common_uncancellable,
             descriptionResId = OriginR_string.suggest_improvements_description_account_delete,
             btnPositiveResId = OriginR_string.button_delete,
-            tag = "DeleteAccount")
+            input = spm.getBigEditText(), tag = "DeleteAccount")
             .show(childFragmentManager, BigEditTextDialog.TAG)
     }
 }

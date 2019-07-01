@@ -2,6 +2,7 @@ package com.ringoid.origin.usersettings.view.base
 
 import android.app.Application
 import android.os.Build
+import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.interactor.base.Params
@@ -30,7 +31,8 @@ abstract class BaseSettingsViewModel(
         val params = Params().put("channelId", "CJDASTGTC")
                              .put("text", reportText)
         postToSlackUseCase.source(params = params)
+            .doOnComplete { viewState.value = ViewState.DONE(SUGGEST_IMPROVEMENTS) }
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe({ spm.dropBigEditText() }, Timber::e)
     }
 }

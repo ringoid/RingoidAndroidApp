@@ -97,4 +97,9 @@ interface ISharedPrefsManager {
     fun getUserProfileProperties(): UserProfilePropertiesRaw
     fun setUserProfileProperties(propertiesRaw: UserProfilePropertiesRaw)
     fun dropUserProfileProperties()
+
+    // ------------------------------------------
+    fun getBigEditText(): String
+    fun setBigEditText(text: String)
+    fun dropBigEditText()
 }
