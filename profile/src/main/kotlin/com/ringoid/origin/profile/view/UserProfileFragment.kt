@@ -215,15 +215,15 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 properties: UserProfileProperties,
                 useDefault: Boolean) {
             UserProfileScreenUtils.createLabelView(
-                    container = containerView,
-                    gender = gender,
-                    propertyId = propertyId,
-                    properties = properties,
-                    useDefault = useDefault)
-                ?.let { labelView ->
-                    containerView.addView(labelView)
-                    labelView.changeVisibility(isVisible = false)
-                }
+                container = containerView,
+                gender = gender,
+                propertyId = propertyId,
+                properties = properties,
+                useDefault = useDefault)
+            ?.let { labelView ->
+                containerView.addView(labelView)
+                labelView.changeVisibility(isVisible = false)
+            }
         }
 
         super.onActivityCreated(savedInstanceState)
