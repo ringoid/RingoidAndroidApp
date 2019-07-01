@@ -447,7 +447,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     getChildAt(i).changeVisibility(isVisible = false)
                 }
                 if (startIndex < childCount) {
-                    changeVisibility(isVisible = !imagesAdapter.isEmpty())
+                    changeVisibility(isVisible = true)
                     for (i in startIndex until minOf(endIndex, childCount)) {
                         getChildAt(i).changeVisibility(isVisible = true)
                     }
@@ -513,6 +513,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     private fun showEmptyStub(needShow: Boolean, input: EmptyFragment.Companion.Input) {
         fl_empty_container.changeVisibility(isVisible = needShow)
+        gradient.changeVisibility(isVisible = !needShow)
         if (!needShow) {
             return
         }
