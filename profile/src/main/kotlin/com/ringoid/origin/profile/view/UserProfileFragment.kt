@@ -252,7 +252,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
                 ll_left_section?.let { containerView ->
                     containerView.removeAllViews()
-
                     when (gender) {
                         Gender.FEMALE -> UserProfileScreenUtils.propertiesFemale
                         else -> UserProfileScreenUtils.propertiesMale
@@ -261,7 +260,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
                 ll_right_section?.let { containerView ->
                     containerView.removeAllViews()
-
                     UserProfileScreenUtils.propertiesRight
                         .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
                 }
