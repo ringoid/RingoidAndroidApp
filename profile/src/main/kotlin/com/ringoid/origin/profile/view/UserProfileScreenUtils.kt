@@ -45,8 +45,8 @@ internal object UserProfileScreenUtils {
             container: ViewGroup, gender: Gender,
             propertyId: UserProfilePropertyId,
             properties: UserProfileProperties,
-            useDefault: Boolean = false): LabelView? {
-        return when (propertyId) {
+            useDefault: Boolean = false): LabelView? =
+        when (propertyId) {
             UserProfilePropertyId.CHILDREN -> {
                 if (properties.children != ChildrenProfileProperty.Unknown) {
                     LabelView(container.context).apply {
@@ -213,5 +213,4 @@ internal object UserProfileScreenUtils {
                 } else null
             }
         }
-    }
 }
