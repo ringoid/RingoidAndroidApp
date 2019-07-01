@@ -439,7 +439,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     private fun onImageSelect(position: Int) {
         fun showLabels(containerView: ViewGroup, startIndex: Int, endIndex: Int) {
-            tv_about.changeVisibility(isVisible = false)
             with (containerView) {
                 for (i in 0 until childCount) {
                     getChildAt(i).changeVisibility(isVisible = false)
@@ -462,6 +461,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
 
         fun showLabels(startIndex: Int, endIndex: Int) {
+            tv_about.changeVisibility(isVisible = false)
             showLabels(ll_left_section, startIndex, endIndex)
             showLabels(ll_right_section, startIndex, endIndex)
         }
