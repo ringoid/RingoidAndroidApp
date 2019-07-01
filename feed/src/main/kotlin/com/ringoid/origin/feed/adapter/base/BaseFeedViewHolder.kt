@@ -1,9 +1,12 @@
 package com.ringoid.origin.feed.adapter.base
 
+import android.graphics.Typeface
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
@@ -11,17 +14,19 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.origin.AppInMemory
+import com.ringoid.origin.feed.WidgetR_color
+import com.ringoid.origin.feed.WidgetR_dimen
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.FeedScreenUtils
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
+import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.image.ImageRequest
 import com.ringoid.utility.linearLayoutManager
-import com.ringoid.widget.view.LabelView
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -130,19 +135,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     override fun bind(model: FeedItemVO) {
-        fun createLabelView(@StringRes textResId: Int, @DrawableRes iconResId: Int): LabelView =
-            LabelView(itemView.context).apply {
-                setText(textResId)
-                setIcon(iconResId)
-            }
-
-        fun createLabelView(text: String?, @DrawableRes iconResId: Int): LabelView =
-            LabelView(itemView.context).apply {
-                setText(text)
-                setIcon(iconResId)
-            }
-
-        // --------------------------------------
         showControls()  // cancel any effect caused by applied payloads
         showOnlineStatus(model)  // apply updates, if any
 
@@ -172,17 +164,19 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
         fun hideLabelInZone(container: ViewGroup, zone: Int) {
             with (container) {
-                (zone - (5 - childCount))
+                (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
                     .takeIf { it >= 0 }
-                    ?.let { getChildAt(it)?.changeVisibility(isVisible = false, soft = true) }
+                    ?.let { it + maxOf(0, model.positionOfImage - 1) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
+                    ?.let { getChildAt(it)?.alpha = 0.0f }
             }
         }
 
         fun showLabelInZone(container: ViewGroup, zone: Int) {
             with (container) {
-                (zone - (5 - childCount))
+                (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
                     .takeIf { it >= 0 }
-                    ?.let { getChildAt(it)?.changeVisibility(isVisible = true) }
+                    ?.let { it + maxOf(0, model.positionOfImage - 1) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
+                    ?.let { getChildAt(it)?.alpha = 1.0f }
             }
         }
 
@@ -268,6 +262,15 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.rv_items.linearLayoutManager()?.findFirstVisibleItemPosition() ?: 0
 
     // --------------------------------------------------------------------------------------------
+    private fun countLabelsOnPosition(container: ViewGroup, positionOfImage: Int): Int {
+        val page = maxOf(0, positionOfImage - 1)
+        val startIndex = page * FeedScreenUtils.COUNT_LABELS_ON_PAGE
+        return if (startIndex < container.childCount) {
+            val endIndex = startIndex + FeedScreenUtils.COUNT_LABELS_ON_PAGE
+            minOf(endIndex, container.childCount) - startIndex
+        } else 0  // no labels on page
+    }
+
     private fun onImageSelect(positionOfImage: Int) {
         fun showLabels(containerView: ViewGroup, startIndex: Int, endIndex: Int) {
             with (containerView) {
@@ -334,11 +337,33 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             }
         }
 
-        model.about
+        fun createNameAgeView(model: FeedItemVO): View? =
+            model.name
+                .takeIf { !it.isNullOrBlank() }
+                ?.let { name ->
+                    mutableListOf<String>().apply {
+                        add(name)
+                        model.age.takeIf { it > 0 }?.let { age -> add("$age") }
+                    }
+                    .let {
+                        TextView(itemView.context)
+                            .apply {
+                                gravity = Gravity.CENTER_VERTICAL or Gravity.START
+                                text = it.joinToString()
+                                setTextColor(ContextCompat.getColor(context, WidgetR_color.white))
+                                setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(WidgetR_dimen.std_text_22).toFloat())
+                                changeTypeface(style = Typeface.BOLD)
+                            }
+                    }
+                }
+
+//        model.about
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis orci et dolor pharetra egestas. Phasellus ac lobortis est. Vestibulum scelerisque, risus in cursus vulputate, ligula dolor volutpat quam, id feugiat justo mauris a risus. Suspendisse nibh nisl, viverra dignissim leo vehicula, sollicitudin suscipit ex."
             .takeIf { !it.isNullOrBlank() }
             ?.let { itemView.tv_about.text = it }
 
-        model.name
+//        model.name
+        "Sauron Anchient"
             .takeIf { !it.isNullOrBlank() }
             ?.let { name ->
                 mutableListOf<String>().apply {

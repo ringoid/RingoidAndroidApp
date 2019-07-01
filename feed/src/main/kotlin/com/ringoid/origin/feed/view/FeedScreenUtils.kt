@@ -67,7 +67,14 @@ internal object FeedScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.DISTANCE -> null  // distance is not defined on Profile screen
+            UserProfilePropertyId.DISTANCE -> {
+                if (!properties.distanceText.isNullOrBlank()/* && properties.distanceText != "unknown"*/) {
+                    LabelView(container.context).apply {
+                        setIcon(OriginR_drawable.ic_location_marker_white_18dp)
+                        setText(properties.distanceText)
+                    }
+                } else null
+            }
             UserProfilePropertyId.EDUCATION_LEVEL -> {
                 val education = properties.education()
                 if (education != EducationProfileProperty.Unknown) {

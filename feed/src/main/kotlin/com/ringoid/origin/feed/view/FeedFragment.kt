@@ -410,11 +410,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         listOf(OffsetScrollStrategy(tag = "dot tabs bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
                OffsetScrollStrategy(tag = "online bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_BOTTOM, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
                OffsetScrollStrategy(tag = "settings bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
-               OffsetScrollStrategy(tag = "prop 0 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_0, hide = FeedViewHolderHideOnScroll(4), show = FeedViewHolderShowOnScroll(4)),
-               OffsetScrollStrategy(tag = "prop 1 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_1, hide = FeedViewHolderHideOnScroll(3), show = FeedViewHolderShowOnScroll(3)),
-               OffsetScrollStrategy(tag = "prop 2 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_2, hide = FeedViewHolderHideOnScroll(2), show = FeedViewHolderShowOnScroll(2)),
-               OffsetScrollStrategy(tag = "prop 3 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_3, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)),
-               OffsetScrollStrategy(tag = "prop 4 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_4, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
+               OffsetScrollStrategy(tag = "prop 0 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_0, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)),
+               OffsetScrollStrategy(tag = "prop 1 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_1, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
+//               OffsetScrollStrategy(tag = "prop 2 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_2, hide = FeedViewHolderHideOnScroll(2), show = FeedViewHolderShowOnScroll(2)),
+//               OffsetScrollStrategy(tag = "prop 3 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_3, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)),
+//               OffsetScrollStrategy(tag = "prop 4 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_4, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
 
     private val itemOffsetScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
