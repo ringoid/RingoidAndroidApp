@@ -95,7 +95,7 @@
         app:label_text="@string/common_online"/>
 
     <LinearLayout
-        android:id="@+id/ll_left_section"
+        android:id="@+id/ll_left_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/std_margin_32"
@@ -104,36 +104,33 @@
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.ringoid.widget.view.LabelView
-            android:id="@+id/label_children"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:label_icon="@drawable/ic_children_white_18dp"/>
+        <TextView
+            android:id="@+id/tv_name_age"
+            android:textSize="@dimen/std_text_22"
+            android:textStyle="bold"
+            tools:text="Maxim, 29"
+            style="@style/StdText.Primary"/>
 
-        <com.ringoid.widget.view.LabelView
-            android:id="@+id/label_income"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:label_icon="@drawable/ic_income_white_18dp"/>
-
-        <com.ringoid.widget.view.LabelView
-            android:id="@+id/label_property"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:label_icon="@drawable/ic_home_property_white_18dp"/>
-
-        <com.ringoid.widget.view.LabelView
-            android:id="@+id/label_education"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:label_icon="@drawable/ic_education_white_18dp"/>
-
-        <com.ringoid.widget.view.LabelView
-            android:id="@+id/label_transport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:label_icon="@drawable/ic_transport_white_18dp"/>
+        <LinearLayout
+            android:id="@+id/ll_left_section"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_about"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:maxLines="3"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In maximus, magna non finibus ultrices, nunc lacus facilisis ligula, vitae placerat ex ante id lorem. Maecenas ornare malesuada tincidunt. Nullam pulvinar nisi in lorem dictum imperdiet. Donec tincidunt lacus a tincidunt imperdiet."
+        app:layout_constraintTop_toBottomOf="@id/ll_left_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/StdText.Primary"/>
 
     <LinearLayout
         android:id="@+id/ll_right_section"
@@ -143,26 +140,7 @@
         android:layout_marginEnd="@dimen/std_margin_16"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.ringoid.widget.view.LabelView
-            android:id="@+id/label_age_sex"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
-
-        <com.ringoid.widget.view.LabelView
-            android:id="@+id/label_height"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:label_icon="@drawable/ic_height_property_white_18dp"/>
-
-        <com.ringoid.widget.view.LabelView
-            android:id="@+id/label_hair_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:label_icon="@drawable/ic_hair_color_white_18dp"/>
-    </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_delete_image"

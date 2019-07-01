@@ -21,6 +21,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppRes
@@ -42,7 +43,14 @@ import com.ringoid.utility.*
 import com.ringoid.utility.image.ImageRequest
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_2.*
+import kotlinx.android.synthetic.main.fragment_profile_2.btn_referral
+import kotlinx.android.synthetic.main.fragment_profile_2.fl_empty_container
+import kotlinx.android.synthetic.main.fragment_profile_2.ibtn_add_image
+import kotlinx.android.synthetic.main.fragment_profile_2.ibtn_settings
+import kotlinx.android.synthetic.main.fragment_profile_2.rv_items
+import kotlinx.android.synthetic.main.fragment_profile_2.swipe_refresh_layout
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 import java.util.*
@@ -444,6 +452,35 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_blocked_button,
             negativeBtnLabelResId = OriginR_string.button_close,
             positiveListener = { _, _ -> navigate(this, path = "/webpage?url=${AppRes.WEB_URL_TERMS}") })
+    }
+
+    private fun onImageSelect(position: Int) {
+        when (spm.currentUserGender()) {
+            Gender.FEMALE -> {
+                when (position) {
+                    1 -> {
+                        tv_about.changeVisibility(isVisible = true)
+                        ll_left_section.changeVisibility(isVisible = false)
+                    }
+                    else -> {
+                        tv_about.changeVisibility(isVisible = false)
+                        ll_left_section.changeVisibility(isVisible = true)
+                    }
+                }
+            }
+            else -> {
+                when (position) {
+                    0 -> {
+                        tv_about.changeVisibility(isVisible = true)
+                        ll_left_section.changeVisibility(isVisible = false)
+                    }
+                    else -> {
+                        tv_about.changeVisibility(isVisible = false)
+                        ll_left_section.changeVisibility(isVisible = true)
+                    }
+                }
+            }
+        }
     }
 
     // ------------------------------------------
