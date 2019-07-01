@@ -11,7 +11,9 @@ import com.ringoid.widget.view.LabelView
 
 internal object UserProfileScreenUtils {
 
-    internal val propertiesMale =
+    const val COUNT_LABELS_ON_PAGE = 2
+
+    val propertiesMale =
         listOf(UserProfilePropertyId.INCOME,
                UserProfilePropertyId.COMPANY_JOB_TITLE,
                UserProfilePropertyId.CHILDREN,
@@ -22,7 +24,7 @@ internal object UserProfileScreenUtils {
                UserProfilePropertyId.SOCIAL_TIKTOK,
                UserProfilePropertyId.SOCIAL_INSTAGRAM)
 
-    internal val propertiesFemale =
+    val propertiesFemale =
         listOf(UserProfilePropertyId.SOCIAL_TIKTOK,
                UserProfilePropertyId.SOCIAL_INSTAGRAM,
                UserProfilePropertyId.CHILDREN,
@@ -33,7 +35,13 @@ internal object UserProfileScreenUtils {
                UserProfilePropertyId.PROPERTY,
                UserProfilePropertyId.TRANSPORT)
 
-    internal fun createLabelView(
+    val propertiesRight =
+        listOf(UserProfilePropertyId.WHERE_LIVE,
+               UserProfilePropertyId.DISTANCE,
+               UserProfilePropertyId.HEIGHT,
+               UserProfilePropertyId.HAIR_COLOR)
+
+    fun createLabelView(
             container: ViewGroup, gender: Gender,
             propertyId: UserProfilePropertyId,
             properties: UserProfileProperties,

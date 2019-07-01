@@ -94,29 +94,13 @@
         app:label_icon_size="@dimen/std_icon_12"
         app:label_text="@string/common_online"/>
 
-    <LinearLayout
-        android:id="@+id/ll_left_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <View
+        android:id="@+id/anchor"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
         android:layout_marginBottom="@dimen/std_margin_32"
-        android:layout_marginStart="@dimen/std_margin_16"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/tv_name_age"
-            android:textSize="@dimen/std_text_22"
-            android:textStyle="bold"
-            tools:text="Maxim, 29"
-            style="@style/StdText.Primary"/>
-
-        <LinearLayout
-            android:id="@+id/ll_left_section"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"/>
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/tv_about"
@@ -127,7 +111,7 @@
         android:gravity="start|center_vertical"
         android:maxLines="3"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In maximus, magna non finibus ultrices, nunc lacus facilisis ligula, vitae placerat ex ante id lorem. Maecenas ornare malesuada tincidunt. Nullam pulvinar nisi in lorem dictum imperdiet. Donec tincidunt lacus a tincidunt imperdiet."
-        app:layout_constraintTop_toBottomOf="@id/ll_left_container"
+        app:layout_constraintBottom_toTopOf="@id/anchor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/StdText.Primary"/>
@@ -141,6 +125,32 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/ll_left_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_8"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/tv_about"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ll_right_section">
+
+        <TextView
+            android:id="@+id/tv_name_age"
+            android:textSize="@dimen/std_text_22"
+            android:textStyle="bold"
+            tools:text="Maxim, 29"
+            style="@style/StdText.Primary"/>
+
+        <LinearLayout
+            android:id="@+id/ll_left_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"/>
+    </LinearLayout>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_delete_image"
