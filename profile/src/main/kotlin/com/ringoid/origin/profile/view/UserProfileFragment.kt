@@ -233,7 +233,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.images, imagesAdapter::submitList)
             observe(vm.profile) { properties ->
-                val age = maxOf(0, calendar?.get(Calendar.YEAR)!! - spm.currentUserYearOfBirth())
+                val age = maxOf(0, calendar.get(Calendar.YEAR) - spm.currentUserYearOfBirth())
                 val gender = spm.currentUserGender()
                 val showDefault = properties.isAllUnknown()
 
