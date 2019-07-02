@@ -199,6 +199,12 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun currentUserYearOfBirth(): Int =
         sharedPreferences.getInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, DomainUtil.BAD_VALUE)
 
+    override fun hasUserCreateTs(): Boolean = currentUserCreateTs() != 0L
+
+    override fun hasUserGender(): Boolean = currentUserGender() != Gender.UNKNOWN
+
+    override fun hasUserYearOfBirth(): Boolean = currentUserYearOfBirth() != DomainUtil.BAD_VALUE
+
     override fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String) {
         sharedPreferences.edit()
             .putString(SP_KEY_AUTH_USER_ID, userId)

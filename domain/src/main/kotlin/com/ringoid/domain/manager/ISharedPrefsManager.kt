@@ -47,15 +47,15 @@ interface ISharedPrefsManager {
     fun accessToken(): AccessToken?
 
     fun currentUserId(): String?
-
     fun currentUserCreateTs(): Long
-
     fun currentUserGender(): Gender
-
     fun currentUserYearOfBirth(): Int
 
-    fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String)
+    fun hasUserCreateTs(): Boolean
+    fun hasUserGender(): Boolean
+    fun hasUserYearOfBirth(): Boolean
 
+    fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String)
     fun deleteUserProfile(userId: String)
 
     /* Location */
