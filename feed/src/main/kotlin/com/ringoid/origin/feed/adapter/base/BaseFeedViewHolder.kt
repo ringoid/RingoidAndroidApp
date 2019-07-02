@@ -347,8 +347,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             }
 
         // --------------------------------------
-//        model.about
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis orci et dolor pharetra egestas. Phasellus ac lobortis est. Vestibulum scelerisque, risus in cursus vulputate, ligula dolor volutpat quam, id feugiat justo mauris a risus. Suspendisse nibh nisl, viverra dignissim leo vehicula, sollicitudin suscipit ex."
+        model.about
             .takeIf { !it.isNullOrBlank() }
             ?.let { itemView.tv_about.text = it }
 
