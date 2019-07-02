@@ -72,8 +72,8 @@ internal object UserProfileScreenUtils {
                     }
                 } else if (useDefault) {
                     val strList = mutableListOf<String>().apply {
-                        container.resources.getString(OriginR_string.settings_profile_item_custom_property_job_title)
-                        container.resources.getString(OriginR_string.settings_profile_item_custom_property_company)
+                        add(container.resources.getString(OriginR_string.settings_profile_item_custom_property_job_title))
+                        add(container.resources.getString(OriginR_string.settings_profile_item_custom_property_company))
                     }
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_company_job_white_18dp)
