@@ -187,6 +187,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // scroll affected
+        if (payloads.contains(FeedViewHolderHideAboutOnScroll)) {
+            itemView.tv_about.alpha = 0.0f
+        }
+        if (payloads.contains(FeedViewHolderShowAboutOnScroll)) {
+            itemView.tv_about.alpha = 1.0f
+        }
         if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
             itemView.label_online_status.changeVisibility(isVisible = false, soft = true)
         }
@@ -217,6 +223,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                     .also { zone -> showLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> showLabelInZone(itemView.ll_right_section, zone) }
             }
+
+        onImageSelect(model.positionOfImage)
     }
 
     // ------------------------------------------------------------------------

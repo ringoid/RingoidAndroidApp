@@ -5,6 +5,8 @@ sealed class FeedViewHolderPayload
 object FeedViewHolderHideControls : FeedViewHolderPayload()
 object FeedViewHolderShowControls : FeedViewHolderPayload()
 
+object FeedViewHolderHideAboutOnScroll : FeedViewHolderPayload()
+object FeedViewHolderShowAboutOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideChatBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowChatBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideOnlineStatusOnScroll : FeedViewHolderPayload()
