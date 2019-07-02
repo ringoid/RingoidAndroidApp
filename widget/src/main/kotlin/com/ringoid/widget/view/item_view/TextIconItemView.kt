@@ -67,15 +67,18 @@ open class TextIconItemView : IconItemView {
     // --------------------------------------------------------------------------------------------
     open fun getText(): String = inputText ?: ""
 
-    fun setInputText(@StringRes resId: Int) {
+    fun setInputText(@StringRes resId: Int): Boolean {
         if (resId == 0) {
-            return
+            return false
         }
-        setInputText(text = resources.getString(resId))
+        return setInputText(text = resources.getString(resId))
     }
 
-    open fun setInputText(text: String?) {
+    open fun setInputText(text: String?): Boolean {
+        val changed = if (inputText.isNullOrBlank() && text.isNullOrBlank()) false
+                      else inputText != text
         inputText = text
+
         Timber.w("TEXT CHANGE[$id]: $text [${hasText()}]")
         if (text.isNullOrBlank()) {
             tv_input.text = hint  // can be empty
@@ -86,6 +89,7 @@ open class TextIconItemView : IconItemView {
             tv_input.text = text
             tv_input.setTextColor(context.getAttributeColor(R.attr.refTextColorPrimary))
         }
+        return changed
     }
 
     fun setSuffix(@StringRes resId: Int) {

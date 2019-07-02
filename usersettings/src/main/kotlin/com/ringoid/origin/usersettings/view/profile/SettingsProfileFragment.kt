@@ -20,6 +20,7 @@ import com.ringoid.widget.view.item_view.textChanges
 import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
 import kotlinx.android.synthetic.main.fragment_settings_push.toolbar
+import timber.log.Timber
 
 class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>() {
 
@@ -114,8 +115,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveBtnLabelResId = OriginR_string.button_done,
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
-                        this.setInputText(text)
-                        onAboutTextChange(text)
+                        if (this.setInputText(text)) onAboutTextChange(text)
                         dialog.dismiss()
                     },
                     initText = getText(),
@@ -129,8 +129,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveBtnLabelResId = OriginR_string.button_done,
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
-                        this.setInputText(text)
-                        onCompanyTextChange(text)
+                        if (this.setInputText(text)) onCompanyTextChange(text)
                         dialog.dismiss()
                     },
                     initText = getText(),
@@ -144,8 +143,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveBtnLabelResId = OriginR_string.button_done,
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
-                        this.setInputText(text)
-                        onJobTitleTextChange(text)
+                        if (this.setInputText(text)) onJobTitleTextChange(text)
                         dialog.dismiss()
                     },
                     initText = getText(),
@@ -160,8 +158,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
                         val heightStr = handleInputHeight(text).takeIf { it > 0 }?.toString() ?: ""
-                        this.setInputText(heightStr)
-                        onHeightTextChange(heightStr)
+                        if (this.setInputText(heightStr)) onHeightTextChange(heightStr)
                         dialog.dismiss()
                     },
                     initText = getText(), inputType = InputType.TYPE_CLASS_NUMBER, maxLength = 3)
@@ -175,8 +172,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveBtnLabelResId = OriginR_string.button_done,
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
-                        this.setInputText(text)
-                        onNameTextChange(text)
+                        if (this.setInputText(text)) onNameTextChange(text)
                         dialog.dismiss()
                     },
                     initText = getText(),
@@ -190,8 +186,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveBtnLabelResId = OriginR_string.button_done,
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
-                        this.setInputText(text)
-                        onSocialInstagramTextChange(text)
+                        if (this.setInputText(text)) onSocialInstagramTextChange(text)
                         dialog.dismiss()
                     },
                     initText = getText())
@@ -204,8 +199,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveBtnLabelResId = OriginR_string.button_done,
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
-                        this.setInputText(text)
-                        onSocialTikTokTextChange(text)
+                        if (this.setInputText(text)) onSocialTikTokTextChange(text)
                         dialog.dismiss()
                     },
                     initText = getText())
@@ -218,8 +212,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveBtnLabelResId = OriginR_string.button_done,
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
-                        this.setInputText(text)
-                        onUniversityTextChange(text)
+                        if (this.setInputText(text)) onUniversityTextChange(text)
                         dialog.dismiss()
                     },
                     initText = getText(),
@@ -233,8 +226,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveBtnLabelResId = OriginR_string.button_done,
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
-                        this.setInputText(text)
-                        onWhereLiveTextChange(text)
+                        if (this.setInputText(text)) onWhereLiveTextChange(text)
                         dialog.dismiss()
                     },
                     initText = getText(),
@@ -260,6 +252,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onCompanyTextChange(text: CharSequence?) {
+        Timber.e("TEXT CHANGE: $text [${item_profile_custom_property_company.hasText()}]")
         text?.let { vm.onCustomPropertyChanged_company(text = it.toString()) }
     }
 
