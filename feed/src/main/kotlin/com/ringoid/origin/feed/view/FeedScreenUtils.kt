@@ -56,7 +56,8 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.COMPANY_JOB_TITLE -> {
-                if (!properties.company.isNullOrBlank() || !properties.jobTitle.isNullOrBlank()) {
+                if ((!properties.company.isNullOrBlank()  && properties.company != "unknown") ||
+                    (!properties.jobTitle.isNullOrBlank() && properties.jobTitle != "unknown")) {
                     val strList = mutableListOf<String>().apply {
                         properties.jobTitle.takeIf { !it.isNullOrBlank() }?.let { add(it) }
                         properties.company.takeIf { !it.isNullOrBlank() }?.let { add(it) }
@@ -120,7 +121,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.SOCIAL_INSTAGRAM -> {
-                if (!properties.instagram.isNullOrBlank()) {
+                if (!properties.instagram.isNullOrBlank() && properties.instagram != "unknown") {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
                         setText("Instagram: ${properties.instagram}")
@@ -128,7 +129,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.SOCIAL_TIKTOK -> {
-                if (!properties.tiktok.isNullOrBlank()) {
+                if (!properties.tiktok.isNullOrBlank() && properties.tiktok != "unknown") {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
                         setText("TikTok: ${properties.tiktok}")
@@ -145,7 +146,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.UNIVERSITY -> {
-                if (!properties.university.isNullOrBlank()) {
+                if (!properties.university.isNullOrBlank() && properties.university != "unknown") {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_education_white_18dp)
                         setText(properties.university)
@@ -153,7 +154,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.WHERE_LIVE -> {
-                if (!properties.whereLive.isNullOrBlank()) {
+                if (!properties.whereLive.isNullOrBlank() && properties.whereLive != "unknown") {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_marker_white_18dp)
                         setText(properties.whereLive)
