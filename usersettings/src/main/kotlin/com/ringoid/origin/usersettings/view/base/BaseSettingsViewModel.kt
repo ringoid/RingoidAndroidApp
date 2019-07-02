@@ -31,7 +31,10 @@ abstract class BaseSettingsViewModel(
         val params = Params().put("channelId", "CJDASTGTC")
                              .put("text", reportText)
         postToSlackUseCase.source(params = params)
-            .doOnComplete { viewState.value = ViewState.DONE(SUGGEST_IMPROVEMENTS) }
+            .doOnComplete {
+                viewState.value = ViewState.DONE(SUGGEST_IMPROVEMENTS)
+                viewState.value = ViewState.IDLE
+            }
             .autoDisposable(this)
             .subscribe({ spm.dropBigEditText() }, Timber::e)
     }
