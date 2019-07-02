@@ -250,7 +250,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                         .takeIf { it.isNotBlank() }
                         ?.let { name -> add(name) }
                         ?: run { add(resources.getString(OriginR_string.settings_profile_item_custom_property_name)) }
-                    add("$age")
+                    age.takeIf { it >= 18 }?.let { age -> add("$age") }
                 }
                 .let { tv_name_age.text = it.joinToString() }
 
