@@ -13,6 +13,7 @@ import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.WidgetR_attrs
 import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
+import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.*
 import com.ringoid.widget.model.ListItem
@@ -21,10 +22,12 @@ import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
 import kotlinx.android.synthetic.main.fragment_settings_push.toolbar
 
-class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>() {
+class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>(),
+    BigEditTextDialog.IBigEditTextDialogDone {
 
     companion object {
         internal const val TAG = "SettingsProfileFragment_tag"
+        private const val ABOUT_PROPERTY_DIALOG_TAG = "PropertyAbout"
 
         fun newInstance(): SettingsProfileFragment = SettingsProfileFragment()
     }
@@ -110,15 +113,11 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         // custom properties
         with (item_profile_custom_property_about) {
             clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_about,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        if (this.setInputText(text)) onAboutTextChange(text)
-                        dialog.dismiss()
-                    },
-                    initText = getText(),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+                BigEditTextDialog.newInstance(titleResId = OriginR_string.settings_profile_item_custom_property_about,
+                    btnPositiveResId = OriginR_string.button_done,
+                    btnNegativeResId = OriginR_string.button_cancel,
+                    input = getText(), tag = ABOUT_PROPERTY_DIALOG_TAG)
+                    .show(childFragmentManager, BigEditTextDialog.TAG)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
         }
@@ -246,6 +245,20 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     // --------------------------------------------------------------------------------------------
     private fun handleInputHeight(it: String?): Int =
         if (it.isNullOrBlank()) 0 else it.toInt().takeIf { int -> int in 92..214 } ?: 0
+
+    override fun onCancel(text: String, tag: String?) {
+        if (tag != ABOUT_PROPERTY_DIALOG_TAG) {
+            super.onCancel(text, tag)
+        }
+    }
+
+    override fun onDone(text: String, tag: String?) {
+        if (tag != ABOUT_PROPERTY_DIALOG_TAG) {
+            super.onDone(text, tag)
+        } else if (item_profile_custom_property_about.setInputText(text)) {
+            onAboutTextChange(text)
+        }
+    }
 
     // ------------------------------------------
     private fun onAboutTextChange(text: CharSequence?) {
