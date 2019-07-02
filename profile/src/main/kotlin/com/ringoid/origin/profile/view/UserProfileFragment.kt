@@ -448,7 +448,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     getChildAt(i).changeVisibility(isVisible = false)
                 }
                 if (startIndex < childCount) {
-                    changeVisibility(isVisible = true)
+                    changeVisibility(isVisible = !fl_empty_container.isVisible())
                     for (i in startIndex until minOf(endIndex, childCount)) {
                         getChildAt(i).changeVisibility(isVisible = true)
                     }
