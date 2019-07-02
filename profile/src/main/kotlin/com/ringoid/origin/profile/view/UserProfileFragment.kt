@@ -459,7 +459,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
 
         fun showAbout() {
-            tv_about.changeVisibility(isVisible = true)
+            tv_about.changeVisibility(isVisible = !fl_empty_container.isVisible())
             ll_left_section.changeVisibility(isVisible = false)
             ll_right_section.changeVisibility(isVisible = false)
         }
