@@ -22,6 +22,8 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
+import com.ringoid.origin.feed.view.lmm.CLEAR_AND_REFRESH_EXCEPT
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.messenger.model.ChatPayload
@@ -64,6 +66,18 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
                         communicator(ILmmFragment::class.java)?.changeCountOnTopTab(tab = getSourceFeed(), delta = -1)
                     }
+                    /**
+                     * Since on refresh on Lmm each other Lmm's Feed except the current one goes into
+                     * [ViewState.DONE] with [CLEAR_AND_REFRESH_EXCEPT] residual payload, and the
+                     * current Feed stops refreshing if there is no images in user's profile, it is
+                     * also needed to stop refreshing for all the other Lmm's Feeds as well.
+                     */
+                    is NO_IMAGES_IN_PROFILE ->
+                        communicator(ILmmFragment::class.java)?.accessViewModel()
+                            ?.let {
+                                it.viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                                it.viewState.value = ViewState.IDLE
+                            }
                     /**
                      * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
                      * have been seen by user, so it's time to hide red badge on a corresponding Lmm tab.
