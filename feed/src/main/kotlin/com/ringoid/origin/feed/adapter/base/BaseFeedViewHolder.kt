@@ -331,12 +331,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         fun showLabels(containerView: ViewGroup, startIndex: Int, endIndex: Int) {
             with (containerView) {
                 for (i in 0 until childCount) {
-                    getChildAt(i).changeVisibility(isVisible = false)
+                    getChildAt(i)?.changeVisibility(isVisible = false)
                 }
                 if (startIndex < childCount) {
                     changeVisibility(isVisible = true)
                     for (i in startIndex until minOf(endIndex, childCount)) {
-                        getChildAt(i).changeVisibility(isVisible = true)
+                        getChildAt(i)?.changeVisibility(isVisible = true)
                     }
                 } else {
                     changeVisibility(isVisible = false)
