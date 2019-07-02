@@ -45,6 +45,7 @@
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
         <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_black_36dp</item>
         <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_black_36dp</item>
+        <item name="refDrawableProfilePropertyAbout">@drawable/ic_info_black_24dp</item>
         <item name="refDrawableProfilePropertyChildren">@drawable/ic_children_black_24dp</item>
         <item name="refDrawableProfilePropertyCompany">@drawable/ic_company_job_black_24dp</item>
         <item name="refDrawableProfilePropertyEducation">@drawable/ic_education_black_24dp</item>
@@ -53,6 +54,7 @@
         <item name="refDrawableProfilePropertyIncome">@drawable/ic_income_black_24dp</item>
         <item name="refDrawableProfilePropertyInstagram">@drawable/ic_instagram_black_24dp</item>
         <item name="refDrawableProfilePropertyLocation">@drawable/ic_location_marker_black_24dp</item>
+        <item name="refDrawableProfilePropertyName">@drawable/ic_person_black_24dp</item>
         <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_black_24dp</item>
         <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_black_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_black_24dp</item>
@@ -80,6 +82,7 @@
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
         <item name="refDrawableProfileMenuAddImage">@drawable/ic_add_white_36dp</item>
         <item name="refDrawableProfileMenuSettings">@drawable/ic_settings_white_36dp</item>
+        <item name="refDrawableProfilePropertyAbout">@drawable/ic_info_white_24dp</item>
         <item name="refDrawableProfilePropertyChildren">@drawable/ic_children_white_24dp</item>
         <item name="refDrawableProfilePropertyCompany">@drawable/ic_company_job_white_24dp</item>
         <item name="refDrawableProfilePropertyEducation">@drawable/ic_education_white_24dp</item>
@@ -88,6 +91,7 @@
         <item name="refDrawableProfilePropertyIncome">@drawable/ic_income_white_24dp</item>
         <item name="refDrawableProfilePropertyInstagram">@drawable/ic_instagram_white_24dp</item>
         <item name="refDrawableProfilePropertyLocation">@drawable/ic_location_marker_white_24dp</item>
+        <item name="refDrawableProfilePropertyName">@drawable/ic_person_white_24dp</item>
         <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_white_24dp</item>
         <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_white_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_white_24dp</item>
