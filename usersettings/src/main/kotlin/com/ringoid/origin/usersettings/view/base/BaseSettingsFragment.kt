@@ -31,6 +31,10 @@ abstract class BaseSettingsFragment<VM : BaseSettingsViewModel> : BaseFragment<V
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun onCancel(text: String, tag: String?) {
+        spm.setBigEditText(text)
+    }
+
     override fun onDone(text: String, tag: String?) {
         vm.suggestImprovements(text, tag)
     }
