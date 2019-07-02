@@ -2,19 +2,20 @@ package com.ringoid.widget.view.item_view
 
 import android.content.Context
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.Gravity
 import androidx.annotation.StringRes
-import com.jakewharton.rxbinding3.InitialValueObservable
-import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_text_icon_item_view_layout.view.*
+import timber.log.Timber
 
 open class TextIconItemView : IconItemView {
 
     private var hint: String = ""
+    private var inputText: String? = null
 
     constructor(context: Context) : this(context, null)
 
@@ -64,7 +65,7 @@ open class TextIconItemView : IconItemView {
 
     /* API */
     // --------------------------------------------------------------------------------------------
-    open fun getText(): String = tv_input.text.toString()
+    open fun getText(): String = inputText ?: ""
 
     fun setInputText(@StringRes resId: Int) {
         if (resId == 0) {
@@ -74,6 +75,8 @@ open class TextIconItemView : IconItemView {
     }
 
     open fun setInputText(text: String?) {
+        inputText = text
+        Timber.w("TEXT CHANGE[$id]: $text [${hasText()}]")
         if (text.isNullOrBlank()) {
             tv_input.text = hint  // can be empty
             if (hint.isNotBlank()) {
@@ -99,6 +102,17 @@ open class TextIconItemView : IconItemView {
     fun setTextHint(hint: String?) {
         this.hint = hint ?: ""
     }
-}
 
-fun TextIconItemView.textChanges(): InitialValueObservable<CharSequence> = tv_input.textChanges()
+    /* Internal */
+    // --------------------------------------------------------------------------------------------
+    internal fun hasHint(): Boolean = hint.isNotBlank()
+    fun hasText(): Boolean = !inputText.isNullOrBlank()
+
+    internal fun addTextChangedListener(listener: TextWatcher) {
+        tv_input.addTextChangedListener(listener)
+    }
+
+    internal fun removeTextChangedListener(listener: TextWatcher) {
+        tv_input.removeTextChangedListener(listener)
+    }
+}

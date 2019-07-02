@@ -121,7 +121,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     initText = getText(),
                     inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
-            textChanges().compose(inputDebounce()).subscribe(::onAboutTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
         }
         with (item_profile_custom_property_company) {
             clicks().compose(clickDebounce()).subscribe {
@@ -136,7 +136,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     initText = getText(),
                     inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
-            textChanges().compose(inputDebounce()).subscribe(::onCompanyTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onCompanyTextChange)
         }
         with (item_profile_custom_property_job_title) {
             clicks().compose(clickDebounce()).subscribe {
@@ -151,7 +151,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     initText = getText(),
                     inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
-            textChanges().compose(inputDebounce()).subscribe(::onJobTitleTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onJobTitleTextChange)
         }
         with (item_profile_property_height) {
             clicks().compose(clickDebounce()).subscribe {
@@ -166,7 +166,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText(), inputType = InputType.TYPE_CLASS_NUMBER, maxLength = 3)
             }
-            textChanges().compose(inputDebounce()).subscribe(::onHeightTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onHeightTextChange)
             setSuffix(OriginR_string.value_cm)
         }
         with (item_profile_custom_property_name) {
@@ -182,7 +182,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     initText = getText(),
                     inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
-            textChanges().compose(inputDebounce()).subscribe(::onNameTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onNameTextChange)
         }
         with (item_profile_custom_property_instagram) {
             clicks().compose(clickDebounce()).subscribe {
@@ -196,7 +196,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText())
             }
-            textChanges().compose(inputDebounce()).subscribe(::onSocialInstagramTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onSocialInstagramTextChange)
         }
         with (item_profile_custom_property_tiktok) {
             clicks().compose(clickDebounce()).subscribe {
@@ -210,7 +210,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText())
             }
-            textChanges().compose(inputDebounce()).subscribe(::onSocialTikTokTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onSocialTikTokTextChange)
         }
         with (item_profile_custom_property_university) {
             clicks().compose(clickDebounce()).subscribe {
@@ -225,7 +225,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     initText = getText(),
                     inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
-            textChanges().compose(inputDebounce()).subscribe(::onUniversityTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onUniversityTextChange)
         }
         with (item_profile_custom_property_where_live) {
             clicks().compose(clickDebounce()).subscribe {
@@ -240,7 +240,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     initText = getText(),
                     inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
-            textChanges().compose(inputDebounce()).subscribe(::onWhereLiveTextChange)
+            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onWhereLiveTextChange)
         }
 
         // other
