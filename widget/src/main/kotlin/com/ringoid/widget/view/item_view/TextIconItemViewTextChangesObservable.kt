@@ -7,7 +7,6 @@ import com.jakewharton.rxbinding3.InitialValueObservable
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.MainThreadDisposable
-import timber.log.Timber
 
 /**
  * Text changes [Observable], that ignores hint value on [TextIconItemView].
@@ -38,9 +37,7 @@ private class TextIconItemViewTextChangesObservable(private val view: TextIconIt
         }
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            Timber.d("TEXT CHANGE[${view.id}]: $s [${view.hasText()}]")
             if (!isDisposed && view.hasText()) {
-                Timber.i("TEXT CHANGE[${view.id}]: $s [${view.hasText()}]")
                 observer.onNext(s)
             }
         }

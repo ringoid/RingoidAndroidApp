@@ -20,7 +20,6 @@ import com.ringoid.widget.view.item_view.textChanges
 import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
 import kotlinx.android.synthetic.main.fragment_settings_push.toolbar
-import timber.log.Timber
 
 class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>() {
 
@@ -252,7 +251,6 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onCompanyTextChange(text: CharSequence?) {
-        Timber.e("TEXT CHANGE: $text [${item_profile_custom_property_company.hasText()}]")
         text?.let { vm.onCustomPropertyChanged_company(text = it.toString()) }
     }
 

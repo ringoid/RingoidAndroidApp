@@ -10,7 +10,6 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_text_icon_item_view_layout.view.*
-import timber.log.Timber
 
 open class TextIconItemView : IconItemView {
 
@@ -79,7 +78,6 @@ open class TextIconItemView : IconItemView {
                       else inputText != text
         inputText = text
 
-        Timber.w("TEXT CHANGE[$id]: $text [${hasText()}]")
         if (text.isNullOrBlank()) {
             tv_input.text = hint  // can be empty
             if (hint.isNotBlank()) {
