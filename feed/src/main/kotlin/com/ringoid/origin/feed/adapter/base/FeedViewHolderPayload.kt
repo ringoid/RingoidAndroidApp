@@ -1,5 +1,7 @@
 package com.ringoid.origin.feed.adapter.base
 
+import com.ringoid.origin.feed.misc.OffsetScrollStrategy
+
 sealed class FeedViewHolderPayload
 
 object FeedViewHolderHideControls : FeedViewHolderPayload()
@@ -18,3 +20,5 @@ object FeedViewHolderHideTabsIndicatorOnScroll : FeedViewHolderPayload()
 
 data class FeedViewHolderHideOnScroll(val index: Int) : FeedViewHolderPayload()
 data class FeedViewHolderShowOnScroll(val index: Int) : FeedViewHolderPayload()
+data class FeedViewHolderHideNameOnScroll(val index: Int, val type: OffsetScrollStrategy.Type) : FeedViewHolderPayload()
+data class FeedViewHolderShowNameOnScroll(val index: Int, val type: OffsetScrollStrategy.Type) : FeedViewHolderPayload()

@@ -11,6 +11,7 @@ import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
+import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.FeedScreenUtils
@@ -156,22 +157,45 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
-        fun hideLabelInZone(container: ViewGroup, zone: Int) {
+        fun showLabelInZone(container: ViewGroup, zone: Int, isVisible: Boolean) {
+            val alpha = if (isVisible) 1.0f else 0.0f
             with (container) {
                 (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
                     .takeIf { it >= 0 }
                     ?.let { it + fixupPage(model.positionOfImage) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
-                    ?.let { getChildAt(it)?.alpha = 0.0f }
+                    ?.let { getChildAt(it)?.alpha = alpha }
             }
         }
 
-        fun showLabelInZone(container: ViewGroup, zone: Int) {
-            with (container) {
-                (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
-                    .takeIf { it >= 0 }
-                    ?.let { it + fixupPage(model.positionOfImage) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
-                    ?.let { getChildAt(it)?.alpha = 1.0f }
+        fun showNameInZone(zone: Int, isVisible: Boolean) {
+            val alpha = if (isVisible) 1.0f else 0.0f
+            if (isAboutPage(model)) {
+                model.about  // approximate number of lines
+                    ?.let { minOf(3, it.length / 50 + 1) }
+                    ?.takeIf { zone == it - 1 }
+                    ?.let { itemView.tv_name_age.alpha = alpha }
+            } else {
+                val countOfLabels = countLabelsOnPosition(itemView.ll_left_section, model.positionOfImage)
+                if (zone == countOfLabels) {
+                    itemView.tv_name_age.alpha = alpha
+                }
             }
+        }
+
+        fun hideLabelInZone(container: ViewGroup, zone: Int) {
+            showLabelInZone(container, zone, isVisible = false)
+        }
+
+        fun hideNameInZone(zone: Int) {
+            showNameInZone(zone, isVisible = false)
+        }
+
+        fun showLabelInZone(container: ViewGroup, zone: Int) {
+            showLabelInZone(container, zone, isVisible = true)
+        }
+
+        fun showNameInZone(zone: Int) {
+            showNameInZone(zone, isVisible = true)
         }
 
         // --------------------------------------
@@ -211,17 +235,49 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
             itemView.tabs.changeVisibility(isVisible = true)
         }
-        payloads.filter { it is FeedViewHolderHideOnScroll }
+        payloads
+            .filter { it is FeedViewHolderHideOnScroll }
+            .distinct()
             .forEach {
                 (it as FeedViewHolderHideOnScroll).index
                     .also { zone -> hideLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> hideLabelInZone(itemView.ll_right_section, zone) }
             }
-        payloads.filter { it is FeedViewHolderShowOnScroll }
+        payloads
+            .filter { it is FeedViewHolderShowOnScroll }
+            .distinct()
             .forEach {
                 (it as FeedViewHolderShowOnScroll).index
                     .also { zone -> showLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> showLabelInZone(itemView.ll_right_section, zone) }
+            }
+
+        // grouped payloads
+        payloads
+            .filter { it is FeedViewHolderHideNameOnScroll }
+            .distinct()
+            .map { it as FeedViewHolderHideNameOnScroll }
+            .let { list ->
+                val top = list.filter { it.type == OffsetScrollStrategy.Type.TOP }
+                val bottom = list.filter { it.type == OffsetScrollStrategy.Type.BOTTOM }
+                top.sortedByDescending { it.index } to bottom.sortedBy { it.index }
+            }
+            .let { (top, bottom) ->
+                top.forEach { hideNameInZone(it.index) }
+                bottom.forEach { hideNameInZone(it.index) }
+            }
+        payloads
+            .filter { it is FeedViewHolderShowNameOnScroll }
+            .distinct()
+            .map { it as FeedViewHolderShowNameOnScroll }
+            .let { list ->
+                val top = list.filter { it.type == OffsetScrollStrategy.Type.TOP }
+                val bottom = list.filter { it.type == OffsetScrollStrategy.Type.BOTTOM }
+                top.sortedBy { it.index } to bottom.sortedByDescending { it.index }
+            }
+            .let { (top, bottom) ->
+                top.forEach { showNameInZone(it.index) }
+                bottom.forEach { showNameInZone(it.index) }
             }
 
         onImageSelect(model.positionOfImage)
@@ -324,6 +380,14 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             showLabels(startIndex, endIndex)
         }
     }
+
+    private fun isAboutPage(model: FeedItemVO): Boolean =
+        if (withAbout) {
+            when (model.gender) {
+                Gender.FEMALE -> model.positionOfImage == 0
+                else -> model.positionOfImage == 1
+            }
+        } else false
 
     private fun fixupPage(positionOfImage: Int): Int =
         if (withAbout) maxOf(0, positionOfImage - 1)

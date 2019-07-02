@@ -233,9 +233,9 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 add(OffsetScrollStrategy(tag = "prop about top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_ABOUT_TOP, hide = FeedViewHolderHideAboutOnScroll, show = FeedViewHolderShowAboutOnScroll))
                 add(OffsetScrollStrategy(tag = "prop 0 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_0, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)))
                 add(OffsetScrollStrategy(tag = "prop 1 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_1, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
-//                add(OffsetScrollStrategy(tag = "prop 2 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_2, hide = FeedViewHolderHideOnScroll(2), show = FeedViewHolderShowOnScroll(2)))
-//                add(OffsetScrollStrategy(tag = "prop 3 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_3, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)))
-//                add(OffsetScrollStrategy(tag = "prop 4 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_4, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
+                add(OffsetScrollStrategy(tag = "prop name 0 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_0, hide = FeedViewHolderHideNameOnScroll(0, type = OffsetScrollStrategy.Type.TOP), show = FeedViewHolderShowNameOnScroll(0, type = OffsetScrollStrategy.Type.TOP)))
+                add(OffsetScrollStrategy(tag = "prop name 1 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_1, hide = FeedViewHolderHideNameOnScroll(1, type = OffsetScrollStrategy.Type.TOP), show = FeedViewHolderShowNameOnScroll(1, type = OffsetScrollStrategy.Type.TOP)))
+                add(OffsetScrollStrategy(tag = "prop name 2 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_2, hide = FeedViewHolderHideNameOnScroll(2, type = OffsetScrollStrategy.Type.TOP), show = FeedViewHolderShowNameOnScroll(2, type = OffsetScrollStrategy.Type.TOP)))
             }
 
     override fun getTopBorderForOffsetScroll(): Int = AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT
