@@ -2,26 +2,25 @@ package com.ringoid.origin.feed.adapter.base
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.misc.Gender
+import com.ringoid.domain.misc.UserProfilePropertyId
+import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
-import com.ringoid.origin.feed.OriginR_drawable
-import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
+import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.model.*
+import com.ringoid.origin.feed.view.FeedScreenUtils
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.image.ImageRequest
 import com.ringoid.utility.linearLayoutManager
-import com.ringoid.widget.view.LabelView
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -72,6 +71,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     internal val profileImageAdapter = ProfileImageAdapter(imageLoader)
 
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
+    private var withAbout: Boolean = false
 
     init {
         itemView.rv_items.apply {
@@ -105,6 +105,16 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                         snapPositionListener?.invoke(from)
                     }
                 }
+
+                override fun onScrollStateChanged(rv: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(rv, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        rv.linearLayoutManager()?.let {
+                            val positionOfImage = it.findFirstCompletelyVisibleItemPosition()
+                            onImageSelect(positionOfImage = positionOfImage)
+                        }
+                    }
+                }
             }
             .also { listener -> addOnScrollListener(listener) }
 
@@ -120,19 +130,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     override fun bind(model: FeedItemVO) {
-        fun createLabelView(@StringRes textResId: Int, @DrawableRes iconResId: Int): LabelView =
-            LabelView(itemView.context).apply {
-                setText(textResId)
-                setIcon(iconResId)
-            }
-
-        fun createLabelView(text: String?, @DrawableRes iconResId: Int): LabelView =
-            LabelView(itemView.context).apply {
-                setText(text)
-                setIcon(iconResId)
-            }
-
-        // --------------------------------------
         showControls()  // cancel any effect caused by applied payloads
         showOnlineStatus(model)  // apply updates, if any
 
@@ -151,99 +148,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
         }
 
-        // left section
-        with (itemView.ll_left_section) {
-            // transport property
-            model.transport().let { transport ->
-                findViewById<LabelView>(TransportProfileProperty.TRANSPORT_PROPERTY_ID)?.let { removeView(it) }
-                if (transport != TransportProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = transport.resId, iconResId = OriginR_drawable.ic_transport_white_18dp)
-                        .apply { id = TransportProfileProperty.TRANSPORT_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // education property
-            model.education().let { education ->
-                findViewById<LabelView>(EducationProfileProperty.EDUCATION_PROPERTY_ID)?.let { removeView(it) }
-                if (education != EducationProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = education.resId, iconResId = OriginR_drawable.ic_education_white_18dp)
-                        .apply { id = EducationProfileProperty.EDUCATION_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // property property
-            model.property().let { property ->
-                findViewById<LabelView>(PropertyProfileProperty.PROPERTY_PROPERTY_ID)?.let { removeView(it) }
-                if (property != PropertyProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = property.resId, iconResId = OriginR_drawable.ic_home_property_white_18dp)
-                        .apply { id = PropertyProfileProperty.PROPERTY_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // income property
-            model.income().let { income ->
-                findViewById<LabelView>(IncomeProfileProperty.INCOME_PROPERTY_ID)?.let { removeView(it) }
-                if (income != IncomeProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = income.resId, iconResId = OriginR_drawable.ic_income_white_18dp)
-                        .apply { id = IncomeProfileProperty.INCOME_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // children property
-            model.children().let { children ->
-                findViewById<LabelView>(ChildrenProfileProperty.CHILDREN_PROPERTY_ID)?.let { removeView(it) }
-                if (children != ChildrenProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = children.resId, iconResId = OriginR_drawable.ic_children_white_18dp)
-                        .apply { id = ChildrenProfileProperty.CHILDREN_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-        }
-
-        // right section
-        with (itemView.ll_right_section) {
-            // distance
-            findViewById<LabelView>(DISTANCE_PROPERTY_ID)?.let { removeView(it) }
-            if (!model.distanceText.isNullOrBlank() && model.distanceText != "unknown") {
-                val view = createLabelView(text = model.distanceText, iconResId = R.drawable.ic_location_white_18dp)
-                    .apply { id = DISTANCE_PROPERTY_ID }
-                addView(view, 0)  // prepend
-            }
-
-            // hair color property
-            model.hairColor().let { hairColor ->
-                findViewById<LabelView>(HairColorProfileProperty.HAIR_COLOR_PROPERTY_ID)?.let { removeView(it) }
-                if (hairColor != HairColorProfileProperty.Unknown) {
-                    val view = createLabelView(textResId = hairColor.resId(model.gender), iconResId = OriginR_drawable.ic_hair_color_white_18dp)
-                        .apply { id = HairColorProfileProperty.HAIR_COLOR_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // height property
-            model.height.let { height ->
-                findViewById<LabelView>(HEIGHT_PROPERTY_ID)?.let { removeView(it) }
-                if (height > 0) {
-                    val view = createLabelView(text = "${model.height} ${AppRes.LENGTH_CM}", iconResId = OriginR_drawable.ic_height_property_white_18dp)
-                        .apply { id = HEIGHT_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-
-            // age, sex
-            model.age.let { age ->
-                findViewById<LabelView>(AGE_PROPERTY_ID)?.let { removeView(it) }
-                if (age >= 18) {
-                    val view = createLabelView(text = "$age", iconResId = model.gender.resId)
-                        .apply { id = AGE_PROPERTY_ID }
-                    addView(view, 0)  // prepend
-                }
-            }
-        }
+        setPropertyFields(model)
+        onImageSelect(positionOfImage)
 
         if (BuildConfig.IS_STAGING) {
             itemView.tv_profile_id.text = "Profile: ${model.idWithFirstN()}"
@@ -251,20 +157,45 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
-        fun hideLabelInZone(container: ViewGroup, zone: Int) {
+        fun showLabelInZone(container: ViewGroup, zone: Int, isVisible: Boolean) {
+            val alpha = if (isVisible) 1.0f else 0.0f
             with (container) {
-                (zone - (5 - childCount))
+                (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
                     .takeIf { it >= 0 }
-                    ?.let { getChildAt(it)?.changeVisibility(isVisible = false, soft = true) }
+                    ?.let { it + fixupPage(model.positionOfImage) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
+                    ?.let { getChildAt(it)?.alpha = alpha }
             }
         }
 
-        fun showLabelInZone(container: ViewGroup, zone: Int) {
-            with (container) {
-                (zone - (5 - childCount))
-                    .takeIf { it >= 0 }
-                    ?.let { getChildAt(it)?.changeVisibility(isVisible = true) }
+        fun showNameInZone(zone: Int, isVisible: Boolean) {
+            val alpha = if (isVisible) 1.0f else 0.0f
+            if (isAboutPage(model)) {
+                model.about()  // approximate number of lines
+                    ?.let { minOf(3, it.length / 50 + 1) }
+                    ?.takeIf { zone == it - 1 }
+                    ?.let { itemView.tv_name_age.alpha = alpha }
+            } else {
+                val countOfLabels = countLabelsOnPosition(itemView.ll_left_section, model.positionOfImage)
+                if (zone == countOfLabels) {
+                    itemView.tv_name_age.alpha = alpha
+                }
             }
+        }
+
+        fun hideLabelInZone(container: ViewGroup, zone: Int) {
+            showLabelInZone(container, zone, isVisible = false)
+        }
+
+        fun hideNameInZone(zone: Int) {
+            showNameInZone(zone, isVisible = false)
+        }
+
+        fun showLabelInZone(container: ViewGroup, zone: Int) {
+            showLabelInZone(container, zone, isVisible = true)
+        }
+
+        fun showNameInZone(zone: Int) {
+            showNameInZone(zone, isVisible = true)
         }
 
         // --------------------------------------
@@ -280,6 +211,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // scroll affected
+        if (payloads.contains(FeedViewHolderHideAboutOnScroll)) {
+            itemView.tv_about.alpha = 0.0f
+        }
+        if (payloads.contains(FeedViewHolderShowAboutOnScroll)) {
+            itemView.tv_about.alpha = 1.0f
+        }
         if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
             itemView.label_online_status.changeVisibility(isVisible = false, soft = true)
         }
@@ -298,20 +235,52 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowTabsIndicatorOnScroll)) {
             itemView.tabs.changeVisibility(isVisible = true)
         }
-        payloads.filter { it is FeedViewHolderHideOnScroll }
+        payloads
+            .filter { it is FeedViewHolderHideOnScroll }
+            .distinct()
             .forEach {
-                (it as FeedViewHolderHideOnScroll)
-                    .let { it.index }
+                (it as FeedViewHolderHideOnScroll).index
                     .also { zone -> hideLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> hideLabelInZone(itemView.ll_right_section, zone) }
             }
-        payloads.filter { it is FeedViewHolderShowOnScroll }
+        payloads
+            .filter { it is FeedViewHolderShowOnScroll }
+            .distinct()
             .forEach {
-                (it as FeedViewHolderShowOnScroll)
-                    .let { it.index }
+                (it as FeedViewHolderShowOnScroll).index
                     .also { zone -> showLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> showLabelInZone(itemView.ll_right_section, zone) }
             }
+
+        // grouped payloads
+        payloads
+            .filter { it is FeedViewHolderHideNameOnScroll }
+            .distinct()
+            .map { it as FeedViewHolderHideNameOnScroll }
+            .let { list ->
+                val top = list.filter { it.type == OffsetScrollStrategy.Type.TOP }
+                val bottom = list.filter { it.type == OffsetScrollStrategy.Type.BOTTOM }
+                top.sortedByDescending { it.index } to bottom.sortedBy { it.index }
+            }
+            .let { (top, bottom) ->
+                top.forEach { hideNameInZone(it.index) }
+                bottom.forEach { hideNameInZone(it.index) }
+            }
+        payloads
+            .filter { it is FeedViewHolderShowNameOnScroll }
+            .distinct()
+            .map { it as FeedViewHolderShowNameOnScroll }
+            .let { list ->
+                val top = list.filter { it.type == OffsetScrollStrategy.Type.TOP }
+                val bottom = list.filter { it.type == OffsetScrollStrategy.Type.BOTTOM }
+                top.sortedBy { it.index } to bottom.sortedByDescending { it.index }
+            }
+            .let { (top, bottom) ->
+                top.forEach { showNameInZone(it.index) }
+                bottom.forEach { showNameInZone(it.index) }
+            }
+
+        onImageSelect(model.positionOfImage)
     }
 
     // ------------------------------------------------------------------------
@@ -320,7 +289,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             tabs.changeVisibility(isVisible = false)
             ibtn_settings.changeVisibility(isVisible = false)
             label_online_status.changeVisibility(isVisible = false)
-            ll_left_section.changeVisibility(isVisible = false)
+            ll_left_container.changeVisibility(isVisible = false)
             ll_right_section.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
@@ -331,7 +300,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
             label_online_status.changeVisibility(isVisible = true)
-            ll_left_section.changeVisibility(isVisible = true)
+            ll_left_container.changeVisibility(isVisible = true)
             ll_right_section.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
@@ -347,8 +316,139 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     override fun getCurrentImagePosition(): Int =
         itemView.rv_items.linearLayoutManager()?.findFirstVisibleItemPosition() ?: 0
+
+    // --------------------------------------------------------------------------------------------
+    private fun countLabelsOnPosition(container: ViewGroup, positionOfImage: Int): Int {
+        val page = fixupPage(positionOfImage)
+        val startIndex = page * FeedScreenUtils.COUNT_LABELS_ON_PAGE
+        return if (startIndex < container.childCount) {
+            val endIndex = startIndex + FeedScreenUtils.COUNT_LABELS_ON_PAGE
+            minOf(endIndex, container.childCount) - startIndex
+        } else 0  // no labels on page
+    }
+
+    private fun onImageSelect(positionOfImage: Int) {
+        fun showLabels(containerView: ViewGroup, startIndex: Int, endIndex: Int) {
+            with (containerView) {
+                for (i in 0 until childCount) {
+                    getChildAt(i)?.changeVisibility(isVisible = false)
+                }
+                if (startIndex < childCount) {
+                    changeVisibility(isVisible = true)
+                    for (i in startIndex until minOf(endIndex, childCount)) {
+                        getChildAt(i)?.changeVisibility(isVisible = true)
+                    }
+                } else {
+                    changeVisibility(isVisible = false)
+                }
+            }
+        }
+
+        fun showAbout() {
+            itemView.tv_about.changeVisibility(isVisible = true)
+            itemView.ll_left_section.changeVisibility(isVisible = false)
+            itemView.ll_right_section.changeVisibility(isVisible = false)
+        }
+
+        fun showLabels(startIndex: Int, endIndex: Int) {
+            itemView.tv_about.changeVisibility(isVisible = false)
+            showLabels(itemView.ll_left_section, startIndex, endIndex)
+            showLabels(itemView.ll_right_section, startIndex, endIndex)
+        }
+
+        // --------------------------------------
+        val page = fixupPage(positionOfImage)
+        val startIndex = page * FeedScreenUtils.COUNT_LABELS_ON_PAGE
+        val endIndex = startIndex + FeedScreenUtils.COUNT_LABELS_ON_PAGE
+
+        if (withAbout) {
+            when (AppInMemory.oppositeUserGender()) {
+                Gender.FEMALE -> {
+                    when (positionOfImage) {
+                        0 -> showAbout()
+                        else -> showLabels(startIndex, endIndex)
+                    }
+                }
+                else -> {
+                    when (positionOfImage) {
+                        1 -> showAbout()
+                        else -> showLabels(startIndex, endIndex)
+                    }
+                }
+            }
+        } else {
+            showLabels(startIndex, endIndex)
+        }
+    }
+
+    private fun isAboutPage(model: FeedItemVO): Boolean =
+        if (withAbout) {
+            when (model.gender) {
+                Gender.FEMALE -> model.positionOfImage == 0
+                else -> model.positionOfImage == 1
+            }
+        } else false
+
+    private fun fixupPage(positionOfImage: Int): Int =
+        if (withAbout) maxOf(0, positionOfImage - 1)
+        else positionOfImage
+
+    private fun setPropertyFields(model: FeedItemVO) {
+        fun addLabelView(
+                containerView: ViewGroup,
+                propertyId: UserProfilePropertyId,
+                properties: FeedItemVO) {
+            FeedScreenUtils.createLabelView(
+                container = containerView,
+                gender = properties.gender,
+                propertyId = propertyId,
+                properties = properties)
+            ?.let { labelView ->
+                containerView.addView(labelView)
+                labelView.changeVisibility(isVisible = false)
+            }
+        }
+
+        fun genderString(gender: Gender): String? =
+            when (gender) {
+                Gender.MALE -> AppRes.SEX_MALE
+                Gender.FEMALE -> AppRes.SEX_FEMALE
+                else -> null
+            }
+
+        // --------------------------------------
+        model.about()
+            .takeIf { !it.isNullOrBlank() }
+            ?.let { itemView.tv_about.text = it }
+
+        withAbout = !model.about().isNullOrBlank()
+
+        (model.name() ?: genderString(model.gender))
+            ?.let { name ->
+                mutableListOf<String>().apply {
+                    add(name)
+                    model.age.takeIf { it >= 18 }?.let { age -> add("$age") }
+                }
+                .let { itemView.tv_name_age.text = it.joinToString() }
+            }
+
+        itemView.ll_left_section?.let { containerView ->
+            containerView.removeAllViews()
+            when (model.gender) {
+                Gender.FEMALE -> FeedScreenUtils.propertiesFemale
+                else -> FeedScreenUtils.propertiesMale
+            }
+            .forEach { propertyId -> addLabelView(containerView, propertyId, model) }
+        }
+        itemView.ll_right_section?.let { containerView ->
+            containerView.removeAllViews()
+            FeedScreenUtils.propertiesRight
+                .forEach { propertyId -> addLabelView(containerView, propertyId, model) }
+        }
+    }
 }
 
+// ------------------------------------------------------------------------------------------------
 class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
     : BaseFeedViewHolder(view, viewPool, imageLoader)
 

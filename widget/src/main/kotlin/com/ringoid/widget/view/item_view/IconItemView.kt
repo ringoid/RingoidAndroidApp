@@ -48,6 +48,7 @@ open class IconItemView : LinearLayout {
                 getResourceId(R.styleable.IconItemView_icon_item_text, 0)
                     .takeIf { it != 0 }?.let { setText(resId = it) }
                     ?: run { setText(text = getString(R.styleable.IconItemView_icon_item_text)) }
+
                 recycle()
             }
     }

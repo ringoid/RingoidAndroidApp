@@ -53,6 +53,8 @@ object AppRes {
         private set
     var FEED_ITEM_PROPERTY_TOP_0: Int = -1
         private set
+    var FEED_ITEM_PROPERTY_TOP_0_X: Int = -1
+        private set
     var FEED_ITEM_PROPERTY_BOTTOM_1: Int = -1
         private set
     var FEED_ITEM_PROPERTY_TOP_1: Int = -1
@@ -68,6 +70,10 @@ object AppRes {
     var FEED_ITEM_PROPERTY_BOTTOM_4: Int = -1
         private set
     var FEED_ITEM_PROPERTY_TOP_4: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_ABOUT_BOTTOM: Int = -1
+        private set
+    var FEED_ITEM_PROPERTY_ABOUT_TOP: Int = -1
         private set
     var FEED_ITEM_SETTINGS_BTN_BOTTOM: Int = -1
         private set
@@ -117,6 +123,10 @@ object AppRes {
     var LMM_TOP_TAB_LABEL_MATCHES_N = ""
         private set
     var LMM_TOP_TAB_LABEL_MESSAGES_N = ""
+        private set
+    var SEX_FEMALE = ""
+        private set
+    var SEX_MALE = ""
         private set
 
     // ------------------------------------------
@@ -168,6 +178,7 @@ object AppRes {
 
             FEED_ITEM_PROPERTY_BOTTOM_0 = FEED_IMAGE_HEIGHT - STD_MARGIN_32
             FEED_ITEM_PROPERTY_TOP_0 = FEED_ITEM_PROPERTY_BOTTOM_0 - STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_TOP_0_X = FEED_ITEM_PROPERTY_TOP_0 - STD_MARGIN_16
             FEED_ITEM_PROPERTY_BOTTOM_1 = FEED_ITEM_PROPERTY_TOP_0
             FEED_ITEM_PROPERTY_TOP_1 = FEED_ITEM_PROPERTY_BOTTOM_1 - STD_MARGIN_18 * 2
             FEED_ITEM_PROPERTY_BOTTOM_2 = FEED_ITEM_PROPERTY_TOP_1
@@ -176,6 +187,8 @@ object AppRes {
             FEED_ITEM_PROPERTY_TOP_3 = FEED_ITEM_PROPERTY_BOTTOM_3 - STD_MARGIN_18 * 2
             FEED_ITEM_PROPERTY_BOTTOM_4 = FEED_ITEM_PROPERTY_TOP_3
             FEED_ITEM_PROPERTY_TOP_4 = FEED_ITEM_PROPERTY_BOTTOM_4 - STD_MARGIN_18 * 2
+            FEED_ITEM_PROPERTY_ABOUT_BOTTOM = FEED_ITEM_PROPERTY_BOTTOM_0 - STD_MARGIN_16
+            FEED_ITEM_PROPERTY_ABOUT_TOP = FEED_ITEM_PROPERTY_ABOUT_BOTTOM - STD_MARGIN_24
 
             FEED_ITEM_SETTINGS_BTN_TOP = STD_MARGIN_16
             FEED_ITEM_SETTINGS_BTN_BOTTOM = STD_MARGIN_24
@@ -209,6 +222,8 @@ object AppRes {
             LMM_TOP_TAB_LABEL_LIKES_N = getString(R.string.lmm_tab_likes_n)
             LMM_TOP_TAB_LABEL_MATCHES_N = getString(R.string.lmm_tab_matches_n)
             LMM_TOP_TAB_LABEL_MESSAGES_N = getString(R.string.lmm_tab_messenger_n)
+            SEX_FEMALE = getString(R.string.common_sex_female)
+            SEX_MALE = getString(R.string.common_sex_male)
         }
     }
 }

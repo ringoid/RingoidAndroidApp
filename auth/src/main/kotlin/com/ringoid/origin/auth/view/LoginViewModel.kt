@@ -111,6 +111,7 @@ class LoginViewModel @Inject constructor(
                 DebugLogUtil.clear()
                 SentryUtil.clear()
                 spm.deleteLocation()  // forget saved location on logout
+                spm.dropBigEditText()  // forget saved input text for dialog
                 spm.dropUserProfileProperties()  // forget profile properties for previous user
                 actionObjectPool.finalizePool()  // clear state of pool, if any
                 analyticsManager.exitUserScope(spm)  // clear analytics manager data for the current user

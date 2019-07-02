@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="settings_big_text_item_height">62dp</dimen>
     <dimen name="settings_item_aligned_margin_left">47dp</dimen>
     <dimen name="settings_lang_item_height">47dp</dimen>
 </resources>

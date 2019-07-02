@@ -27,6 +27,15 @@ data class FeedItemVO(
     override val income: Int = DomainUtil.UNKNOWN_VALUE,
     override val property: Int = DomainUtil.UNKNOWN_VALUE,
     override val transport: Int = DomainUtil.UNKNOWN_VALUE,
+    override val about: String? = null,
+    override val company: String? = null,
+    override val jobTitle: String? = null,
+    override val name: String? = null,
+    override val instagram: String? = null,
+    override val tiktok: String? = null,
+    override val university: String? = null,
+    override val whereFrom: String? = null,
+    override val whereLive: String? = null,
     val isNotSeen: Boolean = false,
     override val isRealModel: Boolean = true,
     var positionOfImage: Int = 0) : IFeedItem {
@@ -48,7 +57,16 @@ data class FeedItemVO(
         height = feedItem.height,
         income = feedItem.income,
         property = feedItem.property,
-        transport = feedItem.transport)
+        transport = feedItem.transport,
+        about = feedItem.about,
+        company = feedItem.company,
+        jobTitle = feedItem.jobTitle,
+        name = feedItem.name,
+        instagram = feedItem.instagram,
+        tiktok = feedItem.tiktok,
+        university = feedItem.university,
+        whereFrom = feedItem.whereFrom,
+        whereLive = feedItem.whereLive)
 
     constructor(profile: Profile): this(
         id = profile.id,
@@ -65,7 +83,16 @@ data class FeedItemVO(
         height = profile.height,
         income = profile.income,
         property = profile.property,
-        transport = profile.transport)
+        transport = profile.transport,
+        about = profile.about,
+        company = profile.company,
+        jobTitle = profile.jobTitle,
+        name = profile.name,
+        instagram = profile.instagram,
+        tiktok = profile.tiktok,
+        university = profile.university,
+        whereFrom = profile.whereFrom,
+        whereLive = profile.whereLive)
 
     fun setOnlineStatus(onlineStatus: OnlineStatus?) {
         onlineStatus?.let {
@@ -75,12 +102,24 @@ data class FeedItemVO(
         }
     }
 
+    // property accessors
     fun children(): ChildrenProfileProperty = ChildrenProfileProperty.from(children)
     fun education(): EducationProfileProperty = EducationProfileProperty.from(education)
     fun hairColor(): HairColorProfileProperty = HairColorProfileProperty.from(hairColor)
     fun income(): IncomeProfileProperty = IncomeProfileProperty.from(income)
     fun property(): PropertyProfileProperty = PropertyProfileProperty.from(property)
     fun transport(): TransportProfileProperty = TransportProfileProperty.from(transport)
+
+    // custom property accessors
+    fun about(): String? = if (about != DomainUtil.BAD_PROPERTY) about else null
+    fun company(): String? = if (company != DomainUtil.BAD_PROPERTY) company else null
+    fun jobTitle(): String? = if (jobTitle != DomainUtil.BAD_PROPERTY) jobTitle else null
+    fun name(): String? = if (name != DomainUtil.BAD_PROPERTY) name else null
+    fun instagram(): String? = if (instagram != DomainUtil.BAD_PROPERTY) instagram else null
+    fun tiktok(): String? = if (tiktok != DomainUtil.BAD_PROPERTY) tiktok else null
+    fun university(): String? = if (university != DomainUtil.BAD_PROPERTY) university else null
+    fun whereFrom(): String? = if (whereFrom != DomainUtil.BAD_PROPERTY) whereFrom else null
+    fun whereLive(): String? = if (whereLive != DomainUtil.BAD_PROPERTY) whereLive else null
 
     fun hashIdWithFirst4(): String = "${idWithFirstN()}_${getModelId()}"
 }

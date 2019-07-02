@@ -8,6 +8,8 @@ import com.ringoid.origin.view.dialog.Dialogs
 
 abstract class BaseSettingsFragment<VM : BaseSettingsViewModel> : BaseFragment<VM>(), BigEditTextDialog.IBigEditTextDialogDone {
 
+    private var dialog: Dialogs.HashAlertDialog? = null
+
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
@@ -20,7 +22,19 @@ abstract class BaseSettingsFragment<VM : BaseSettingsViewModel> : BaseFragment<V
         }
     }
 
+    /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onDestroyView() {
+        super.onDestroyView()
+        dialog?.dialog?.dismiss()
+        dialog = null
+    }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onCancel(text: String, tag: String?) {
+        spm.setBigEditText(text)
+    }
+
     override fun onDone(text: String, tag: String?) {
         vm.suggestImprovements(text, tag)
     }
@@ -34,6 +48,6 @@ abstract class BaseSettingsFragment<VM : BaseSettingsViewModel> : BaseFragment<V
     }
 
     private fun showSuggestImprovementsDoneDialog() {
-        Dialogs.showTextDialog(activity, titleResId = 0, descriptionResId = OriginR_string.suggest_improvements_dialog_done_title)
+        dialog = Dialogs.showTextDialog(activity, titleResId = 0, descriptionResId = OriginR_string.suggest_improvements_dialog_done_title)
     }
 }

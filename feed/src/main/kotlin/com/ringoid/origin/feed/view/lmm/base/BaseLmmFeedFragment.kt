@@ -22,6 +22,8 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
+import com.ringoid.origin.feed.view.lmm.CLEAR_AND_REFRESH_EXCEPT
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.messenger.model.ChatPayload
@@ -64,6 +66,18 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
                         communicator(ILmmFragment::class.java)?.changeCountOnTopTab(tab = getSourceFeed(), delta = -1)
                     }
+                    /**
+                     * Since on refresh on Lmm each other Lmm's Feed except the current one goes into
+                     * [ViewState.DONE] with [CLEAR_AND_REFRESH_EXCEPT] residual payload, and the
+                     * current Feed stops refreshing if there is no images in user's profile, it is
+                     * also needed to stop refreshing for all the other Lmm's Feeds as well.
+                     */
+                    is NO_IMAGES_IN_PROFILE ->
+                        communicator(ILmmFragment::class.java)?.accessViewModel()
+                            ?.let {
+                                it.viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                                it.viewState.value = ViewState.IDLE
+                            }
                     /**
                      * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
                      * have been seen by user, so it's time to hide red badge on a corresponding Lmm tab.
@@ -230,11 +244,12 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 add(OffsetScrollStrategy(tag = "online top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.STD_MARGIN_16, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll))
                 add(OffsetScrollStrategy(tag = "dot tabs top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_TOP2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll))
                 add(OffsetScrollStrategy(tag = "settings top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_TOP, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll))
-                add(OffsetScrollStrategy(tag = "prop 0 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_0, hide = FeedViewHolderHideOnScroll(4), show = FeedViewHolderShowOnScroll(4)))
-                add(OffsetScrollStrategy(tag = "prop 1 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_1, hide = FeedViewHolderHideOnScroll(3), show = FeedViewHolderShowOnScroll(3)))
-                add(OffsetScrollStrategy(tag = "prop 2 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_2, hide = FeedViewHolderHideOnScroll(2), show = FeedViewHolderShowOnScroll(2)))
-                add(OffsetScrollStrategy(tag = "prop 3 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_3, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)))
-                add(OffsetScrollStrategy(tag = "prop 4 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_4, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
+                add(OffsetScrollStrategy(tag = "prop about top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_ABOUT_TOP, hide = FeedViewHolderHideAboutOnScroll, show = FeedViewHolderShowAboutOnScroll))
+                add(OffsetScrollStrategy(tag = "prop 0 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_0, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)))
+                add(OffsetScrollStrategy(tag = "prop 1 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_1, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)))
+                add(OffsetScrollStrategy(tag = "prop name 0 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_0_X, hide = FeedViewHolderHideNameOnScroll(0, type = OffsetScrollStrategy.Type.TOP), show = FeedViewHolderShowNameOnScroll(0, type = OffsetScrollStrategy.Type.TOP)))
+                add(OffsetScrollStrategy(tag = "prop name 1 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_1, hide = FeedViewHolderHideNameOnScroll(1, type = OffsetScrollStrategy.Type.TOP), show = FeedViewHolderShowNameOnScroll(1, type = OffsetScrollStrategy.Type.TOP)))
+                add(OffsetScrollStrategy(tag = "prop name 2 top", type = OffsetScrollStrategy.Type.TOP, deltaOffset = AppRes.FEED_ITEM_PROPERTY_TOP_2, hide = FeedViewHolderHideNameOnScroll(2, type = OffsetScrollStrategy.Type.TOP), show = FeedViewHolderShowNameOnScroll(2, type = OffsetScrollStrategy.Type.TOP)))
             }
 
     override fun getTopBorderForOffsetScroll(): Int = AppRes.LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT

@@ -9,4 +9,13 @@ data class UserProfilePropertiesRaw(
     var height: Int = DomainUtil.UNKNOWN_VALUE,
     var income: Int = DomainUtil.UNKNOWN_VALUE,  // IncomeProfileProperty
     var property: Int = DomainUtil.UNKNOWN_VALUE,  // PropertyProfileProperty
-    var transport: Int = DomainUtil.UNKNOWN_VALUE)  // TransportProfileProperty
+    var transport: Int = DomainUtil.UNKNOWN_VALUE,  // TransportProfileProperty
+    var about: String = "",
+    var company: String = "",
+    var jobTitle: String = "",
+    var name: String = "",
+    var socialInstagram: String = "",
+    var socialTikTok: String = "",
+    var university: String = "",
+    var whereFrom: String = "",
+    var whereLive: String = "")

@@ -28,7 +28,17 @@ import com.ringoid.domain.model.Mappable
  *   "income": 0,
  *   "height": 0,
  *   "hairColor": 0,
- *   "children":0
+ *   "children":0,
+ *
+ *   "name":"Mikhail",
+ *   "jobTitle":"Developer",
+ *   "company":"Ringoid",
+ *   "education":"BGTU Voenmeh",
+ *   "about":"Nice person",
+ *   "instagram":"unknown",
+ *   "tikTok":"unknown",
+ *   "whereLive":"St.Petersburg",
+ *   "whereFrom":"Leningrad"
  * }
  */
 abstract class BaseProfileEntity<T>(
@@ -46,7 +56,16 @@ abstract class BaseProfileEntity<T>(
     @Expose @SerializedName(COLUMN_PROPERTY_HEIGHT) val height: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_INCOME) val income: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_PROPERTY_PROPERTY) val property: Int = DomainUtil.UNKNOWN_VALUE,
-    @Expose @SerializedName(COLUMN_PROPERTY_TRANSPORT) val transport: Int = DomainUtil.UNKNOWN_VALUE)
+    @Expose @SerializedName(COLUMN_PROPERTY_TRANSPORT) val transport: Int = DomainUtil.UNKNOWN_VALUE,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_ABOUT) val about: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_COMPANY) val company: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_JOB_TITLE) val jobTitle: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_NAME) val name: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM) val instagram: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK) val tiktok: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_UNIVERSITY) val university: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_FROM) val whereFrom: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_LIVE) val whereLive: String? = null)
     : Mappable<T> {
 
     companion object {
@@ -65,6 +84,15 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_PROPERTY_INCOME = "income"
         const val COLUMN_PROPERTY_PROPERTY = "property"
         const val COLUMN_PROPERTY_TRANSPORT = "transport"
+        const val COLUMN_PROPERTY_CUSTOM_ABOUT = "about"
+        const val COLUMN_PROPERTY_CUSTOM_COMPANY = "company"
+        const val COLUMN_PROPERTY_CUSTOM_JOB_TITLE = "jobTitle"
+        const val COLUMN_PROPERTY_CUSTOM_NAME = "name"
+        const val COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM = "instagram"
+        const val COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK = "tikTok"
+        const val COLUMN_PROPERTY_CUSTOM_UNIVERSITY = "education"
+        const val COLUMN_PROPERTY_CUSTOM_WHERE_FROM = "whereFrom"
+        const val COLUMN_PROPERTY_CUSTOM_WHERE_LIVE = "whereLive"
     }
 
     override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, children=$children, gender='$gender', education=$education, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport)"
