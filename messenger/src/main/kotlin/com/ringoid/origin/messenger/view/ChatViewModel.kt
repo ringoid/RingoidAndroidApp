@@ -152,6 +152,6 @@ class ChatViewModel @Inject constructor(
         currentMessageList = ArrayList(list)  // clone list to avoid further modifications
         messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
         onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
-        peerName.value = chat.name ?: ""
+        peerName.value = chat.name() ?: ""
     }
 }
