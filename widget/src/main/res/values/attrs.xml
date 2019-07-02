@@ -60,5 +60,16 @@
         <attr name="label_icon" format="reference"/>
         <attr name="label_icon_size" format="reference"/>
         <attr name="label_text" format="reference"/>
+        <attr name="label_text_gravity">
+            <flag name="bottom" value="80"/>
+            <flag name="center" value="17"/>
+            <flag name="center_horizontal" value="1"/>
+            <flag name="center_vertical" value="16"/>
+            <flag name="end" value="8388613"/>
+            <flag name="start" value="8388611"/>
+            <flag name="top" value="48"/>
+        </attr>
+        <attr name="label_text_size" format="reference"/>
+        <attr name="label_wrap_content" format="boolean"/>
     </declare-styleable>
 </resources>

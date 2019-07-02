@@ -87,7 +87,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_12"
+        android:layout_marginTop="@dimen/std_margin_8"
         android:layout_marginStart="@dimen/std_margin_64"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
@@ -95,10 +95,10 @@
 
         <TextView
             android:id="@+id/tv_peer_name"
-            android:gravity="center_vertical|start"
+            android:gravity="bottom|start"
             android:shadowColor="@color/text_shadow"
             android:shadowRadius="6"
-            android:textSize="@dimen/std_text_22"
+            android:textSize="@dimen/std_text_20"
             android:textStyle="bold"
             android:visibility="gone"
             style="@style/StdText.Primary"/>
@@ -107,7 +107,10 @@
             android:id="@+id/label_online_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:label_icon_size="@dimen/std_icon_12"/>
+            app:label_icon_size="@dimen/std_icon_8"
+            app:label_text_gravity="top|start"
+            app:label_text_size="@dimen/std_text_12"
+            app:label_wrap_content="true"/>
     </LinearLayout>
 
     <com.ringoid.widget.view.ExtendImageButton

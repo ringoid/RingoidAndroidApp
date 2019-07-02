@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.ringoid.utility.changeTypeface
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_label_view_layout.view.*
 
@@ -22,7 +23,6 @@ class LabelView : LinearLayout {
     }
 
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
-        minimumHeight = context.resources.getDimensionPixelSize(R.dimen.std_icon_36)
         orientation = HORIZONTAL
 
         LayoutInflater.from(context).inflate(R.layout.widget_label_view_layout, this, true)
@@ -30,11 +30,25 @@ class LabelView : LinearLayout {
         context.obtainStyledAttributes(attributes, R.styleable.LabelView, defStyleAttr, 0)
             .apply {
                 setIcon(resId = getResourceId(R.styleable.LabelView_label_icon, 0))
+
+                val wrapContent = getBoolean(R.styleable.LabelView_label_wrap_content, false)
+                if (!wrapContent) {
+                    minimumHeight = context.resources.getDimensionPixelSize(R.dimen.std_icon_36)
+                }
+
                 getResourceId(R.styleable.LabelView_label_icon_size, 0)
                     .takeIf { it != 0 }?.let { setIconSize(resId = it) }
+
+                getResourceId(R.styleable.LabelView_label_text_size, 0)
+                    .takeIf { it != 0 }?.let { tv_text.changeTypeface(textSize = resources.getDimensionPixelSize(it)) }
+
+                getInt(R.styleable.LabelView_label_text_gravity, Gravity.CENTER_VERTICAL or Gravity.START)
+                    .let { tv_text.gravity = it }
+
                 getResourceId(R.styleable.LabelView_label_text, 0)
                     .takeIf { it != 0 }?.let { setText(resId = it) }
                     ?: run { setText(text = getString(R.styleable.LabelView_label_text)) }
+
                 recycle()
             }
     }
@@ -49,7 +63,7 @@ class LabelView : LinearLayout {
         resId.takeIf { it != 0 }
             ?.let {
                 val size = resources.getDimensionPixelSize(resId)
-                iv_icon.layoutParams = LinearLayout.LayoutParams(size, size)
+                iv_icon.layoutParams = LayoutParams(size, size)
                     .apply { gravity = Gravity.CENTER_VERTICAL or Gravity.START }
             }
     }
