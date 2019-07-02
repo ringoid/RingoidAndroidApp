@@ -75,6 +75,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
     }
 
+    private var withAbout: Boolean = false
+
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_profile_2
@@ -240,6 +242,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 properties.about
                     .takeIf { it.isNotBlank() }
                     ?.let { tv_about.text = it }
+
+                withAbout = properties.about.isNotBlank()
 
                 mutableListOf<String>().apply {
                     properties.name
@@ -468,28 +472,32 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
         // --------------------------------------
         currentImagePosition = position
-        val page = maxOf(0, position - 1)
+        val page = if (withAbout) maxOf(0, position - 1) else position
         val startIndex = page * UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
         val endIndex = startIndex + UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
 
-        when (spm.currentUserGender()) {
-            Gender.FEMALE -> {
-                when (position) {
-                    1 -> showAbout()
-                    else -> showLabels(startIndex, endIndex)
+        if (withAbout) {
+            when (spm.currentUserGender()) {
+                Gender.FEMALE -> {
+                    when (position) {
+                        1 -> showAbout()
+                        else -> showLabels(startIndex, endIndex)
+                    }
+                }
+                else -> {
+                    when (position) {
+                        0 -> showAbout()
+                        else -> showLabels(startIndex, endIndex)
+                    }
                 }
             }
-            else -> {
-                when (position) {
-                    0 -> showAbout()
-                    else -> showLabels(startIndex, endIndex)
-                }
-            }
+        } else {
+            showLabels(startIndex, endIndex)
         }
     }
 
     private fun isAboutVisible(): Boolean =
-        when (spm.currentUserGender()) {
+        withAbout && when (spm.currentUserGender()) {
             Gender.FEMALE -> currentImagePosition == 1
             else -> currentImagePosition == 0
         }

@@ -77,6 +77,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     internal val profileImageAdapter = ProfileImageAdapter(imageLoader)
 
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
+    private var withAbout: Boolean = false
 
     init {
         itemView.rv_items.apply {
@@ -166,7 +167,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             with (container) {
                 (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
                     .takeIf { it >= 0 }
-                    ?.let { it + maxOf(0, model.positionOfImage - 1) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
+                    ?.let { it + fixupPage(model.positionOfImage) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
                     ?.let { getChildAt(it)?.alpha = 0.0f }
             }
         }
@@ -175,7 +176,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             with (container) {
                 (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
                     .takeIf { it >= 0 }
-                    ?.let { it + maxOf(0, model.positionOfImage - 1) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
+                    ?.let { it + fixupPage(model.positionOfImage) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
                     ?.let { getChildAt(it)?.alpha = 1.0f }
             }
         }
@@ -263,7 +264,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
     // --------------------------------------------------------------------------------------------
     private fun countLabelsOnPosition(container: ViewGroup, positionOfImage: Int): Int {
-        val page = maxOf(0, positionOfImage - 1)
+        val page = fixupPage(positionOfImage)
         val startIndex = page * FeedScreenUtils.COUNT_LABELS_ON_PAGE
         return if (startIndex < container.childCount) {
             val endIndex = startIndex + FeedScreenUtils.COUNT_LABELS_ON_PAGE
@@ -301,25 +302,33 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // --------------------------------------
-        val page = maxOf(0, positionOfImage - 1)
+        val page = fixupPage(positionOfImage)
         val startIndex = page * FeedScreenUtils.COUNT_LABELS_ON_PAGE
         val endIndex = startIndex + FeedScreenUtils.COUNT_LABELS_ON_PAGE
 
-        when (AppInMemory.oppositeUserGender()) {
-            Gender.FEMALE -> {
-                when (positionOfImage) {
-                    0 -> showAbout()
-                    else -> showLabels(startIndex, endIndex)
+        if (withAbout) {
+            when (AppInMemory.oppositeUserGender()) {
+                Gender.FEMALE -> {
+                    when (positionOfImage) {
+                        0 -> showAbout()
+                        else -> showLabels(startIndex, endIndex)
+                    }
+                }
+                else -> {
+                    when (positionOfImage) {
+                        1 -> showAbout()
+                        else -> showLabels(startIndex, endIndex)
+                    }
                 }
             }
-            else -> {
-                when (positionOfImage) {
-                    1 -> showAbout()
-                    else -> showLabels(startIndex, endIndex)
-                }
-            }
+        } else {
+            showLabels(startIndex, endIndex)
         }
     }
+
+    private fun fixupPage(positionOfImage: Int): Int =
+        if (withAbout) maxOf(0, positionOfImage - 1)
+        else positionOfImage
 
     private fun setPropertyFields(model: FeedItemVO) {
         fun addLabelView(
@@ -362,6 +371,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             .takeIf { !it.isNullOrBlank() }
             ?.let { itemView.tv_about.text = it }
 
+        withAbout = !model.about.isNullOrBlank()
+
 //        model.name
         "Sauron Anchient"
             .takeIf { !it.isNullOrBlank() }
@@ -389,6 +400,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 }
 
+// ------------------------------------------------------------------------------------------------
 class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
     : BaseFeedViewHolder(view, viewPool, imageLoader)
 
