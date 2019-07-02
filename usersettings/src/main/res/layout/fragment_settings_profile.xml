@@ -38,28 +38,6 @@
             <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.TextIconItemView
-                android:id="@+id/item_profile_custom_property_instagram"
-                android:layout_marginTop="@dimen/std_margin_16"
-                app:icon_item_icon="?refDrawableProfilePropertyInstagram"
-                app:icon_item_text="@string/settings_profile_item_custom_property_instagram"
-                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_instagram_placeholder"
-                app:text_icon_item_wrap_content="false"
-                style="?attr/textIconItemView"/>
-
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.TextIconItemView
-                android:id="@+id/item_profile_custom_property_tiktok"
-                android:layout_marginTop="@dimen/std_margin_16"
-                app:icon_item_icon="?refDrawableProfilePropertyTikTok"
-                app:icon_item_text="@string/settings_profile_item_custom_property_tiktok"
-                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_tiktok_placeholder"
-                app:text_icon_item_wrap_content="false"
-                style="?attr/textIconItemView"/>
-
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.TextIconItemView
                 android:id="@+id/item_profile_custom_property_where_live"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyLocation"
@@ -78,6 +56,28 @@
                 app:text_icon_item_text_field_height="@dimen/settings_big_text_item_height"
                 app:text_icon_item_wrap_content="false"
                 app:text_icon_item_text_gravity="center_vertical|start"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_instagram"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyInstagram"
+                app:icon_item_text="@string/settings_profile_item_custom_property_instagram"
+                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_instagram_placeholder"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <View style="@style/Underscore"/>
+
+            <com.ringoid.widget.view.item_view.TextIconItemView
+                android:id="@+id/item_profile_custom_property_tiktok"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyTikTok"
+                app:icon_item_text="@string/settings_profile_item_custom_property_tiktok"
+                app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_tiktok_placeholder"
+                app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
             <View style="@style/Underscore"/>
