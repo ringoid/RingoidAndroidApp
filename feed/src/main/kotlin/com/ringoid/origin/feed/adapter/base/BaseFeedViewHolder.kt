@@ -1,12 +1,7 @@
 package com.ringoid.origin.feed.adapter.base
 
-import android.graphics.Typeface
-import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
@@ -14,15 +9,13 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.origin.AppInMemory
-import com.ringoid.origin.feed.WidgetR_color
-import com.ringoid.origin.feed.WidgetR_dimen
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.FeedScreenUtils
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
-import com.ringoid.utility.changeTypeface
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.image.ImageRequest
@@ -346,26 +339,14 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             }
         }
 
-        fun createNameAgeView(model: FeedItemVO): View? =
-            model.name
-                .takeIf { !it.isNullOrBlank() }
-                ?.let { name ->
-                    mutableListOf<String>().apply {
-                        add(name)
-                        model.age.takeIf { it > 0 }?.let { age -> add("$age") }
-                    }
-                    .let {
-                        TextView(itemView.context)
-                            .apply {
-                                gravity = Gravity.CENTER_VERTICAL or Gravity.START
-                                text = it.joinToString()
-                                setTextColor(ContextCompat.getColor(context, WidgetR_color.white))
-                                setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(WidgetR_dimen.std_text_22).toFloat())
-                                changeTypeface(style = Typeface.BOLD)
-                            }
-                    }
-                }
+        fun genderString(gender: Gender): String? =
+            when (gender) {
+                Gender.MALE -> AppRes.SEX_FEMALE
+                Gender.FEMALE -> AppRes.SEX_MALE
+                else -> null
+            }
 
+        // --------------------------------------
 //        model.about
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis orci et dolor pharetra egestas. Phasellus ac lobortis est. Vestibulum scelerisque, risus in cursus vulputate, ligula dolor volutpat quam, id feugiat justo mauris a risus. Suspendisse nibh nisl, viverra dignissim leo vehicula, sollicitudin suscipit ex."
             .takeIf { !it.isNullOrBlank() }
@@ -373,9 +354,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         withAbout = !model.about.isNullOrBlank()
 
-//        model.name
-        "Sauron Anchient"
-            .takeIf { !it.isNullOrBlank() }
+        (model.name ?: genderString(model.gender))
             ?.let { name ->
                 mutableListOf<String>().apply {
                     add(name)

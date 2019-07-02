@@ -118,6 +118,10 @@ object AppRes {
         private set
     var LMM_TOP_TAB_LABEL_MESSAGES_N = ""
         private set
+    var SEX_FEMALE = ""
+        private set
+    var SEX_MALE = ""
+        private set
 
     // ------------------------------------------
     var EMAIL_OFFICER_MAIL_SUBJECT = ""
@@ -209,6 +213,8 @@ object AppRes {
             LMM_TOP_TAB_LABEL_LIKES_N = getString(R.string.lmm_tab_likes_n)
             LMM_TOP_TAB_LABEL_MATCHES_N = getString(R.string.lmm_tab_matches_n)
             LMM_TOP_TAB_LABEL_MESSAGES_N = getString(R.string.lmm_tab_messenger_n)
+            SEX_FEMALE = getString(R.string.common_sex_female)
+            SEX_MALE = getString(R.string.common_sex_male)
         }
     }
 }
