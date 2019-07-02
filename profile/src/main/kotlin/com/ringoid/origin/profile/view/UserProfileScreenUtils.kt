@@ -151,7 +151,7 @@ internal object UserProfileScreenUtils {
                 if (properties.socialInstagram.isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
-                        setText(properties.socialInstagram)
+                        setText("Instagram: ${properties.socialInstagram}")
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
@@ -164,7 +164,7 @@ internal object UserProfileScreenUtils {
                 if (properties.socialTikTok.isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
-                        setText(properties.socialTikTok)
+                        setText("TikTok: ${properties.socialTikTok}")
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {

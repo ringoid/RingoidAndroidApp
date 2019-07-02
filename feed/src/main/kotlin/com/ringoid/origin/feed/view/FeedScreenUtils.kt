@@ -123,7 +123,7 @@ internal object FeedScreenUtils {
                 if (!properties.instagram.isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
-                        setText(properties.instagram)
+                        setText("Instagram: ${properties.instagram}")
                     }
                 } else null
             }
@@ -131,7 +131,7 @@ internal object FeedScreenUtils {
                 if (!properties.tiktok.isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
-                        setText(properties.tiktok)
+                        setText("TikTok: ${properties.tiktok}")
                     }
                 } else null
             }
