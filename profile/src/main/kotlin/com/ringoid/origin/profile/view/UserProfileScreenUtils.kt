@@ -61,10 +61,10 @@ internal object UserProfileScreenUtils {
                 } else null
             }
             UserProfilePropertyId.COMPANY_JOB_TITLE -> {
-                if (properties.company.isNotBlank() || properties.jobTitle.isNotBlank()) {
+                if (properties.company().isNotBlank() || properties.jobTitle().isNotBlank()) {
                     val strList = mutableListOf<String>().apply {
-                        properties.jobTitle.takeIf { it.isNotBlank() }?.let { add(it) }
-                        properties.company.takeIf { it.isNotBlank() }?.let { add(it) }
+                        properties.jobTitle().takeIf { it.isNotBlank() }?.let { add(it) }
+                        properties.company().takeIf { it.isNotBlank() }?.let { add(it) }
                     }
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_company_job_white_18dp)
@@ -148,10 +148,10 @@ internal object UserProfileScreenUtils {
                 } else null
             }
             UserProfilePropertyId.SOCIAL_INSTAGRAM -> {
-                if (properties.socialInstagram.isNotBlank()) {
+                if (properties.instagram().isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
-                        setText("Instagram: ${properties.socialInstagram}")
+                        setText("Instagram: ${properties.instagram()}")
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
@@ -161,10 +161,10 @@ internal object UserProfileScreenUtils {
                 } else null
             }
             UserProfilePropertyId.SOCIAL_TIKTOK -> {
-                if (properties.socialTikTok.isNotBlank()) {
+                if (properties.tiktok().isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
-                        setText("TikTok: ${properties.socialTikTok}")
+                        setText("TikTok: ${properties.tiktok()}")
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
@@ -187,10 +187,10 @@ internal object UserProfileScreenUtils {
                 } else null
             }
             UserProfilePropertyId.UNIVERSITY -> {
-                if (properties.university.isNotBlank()) {
+                if (properties.university().isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_education_white_18dp)
-                        setText(properties.university)
+                        setText(properties.university())
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
@@ -200,10 +200,10 @@ internal object UserProfileScreenUtils {
                 } else null
             }
             UserProfilePropertyId.WHERE_LIVE -> {
-                if (properties.whereLive.isNotBlank()) {
+                if (properties.whereLive().isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_marker_white_18dp)
-                        setText(properties.whereLive)
+                        setText(properties.whereLive())
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {

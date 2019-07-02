@@ -83,26 +83,26 @@ class SettingsProfileViewModel @Inject constructor(
     /* Custom Properties */
     // --------------------------------------------------------------------------------------------
     fun onCustomPropertyChanged_about(text: String) {
-        if (properties.about == text) {
+        if (properties.about() == text) {
             return
         }
-        properties.about = text
+        properties.about(text)
         updateProfileProperties(propertyName = "about")
     }
 
     fun onCustomPropertyChanged_company(text: String) {
-        if (properties.company == text) {
+        if (properties.company() == text) {
             return
         }
-        properties.company = text
+        properties.company(text)
         updateProfileProperties(propertyName = "company")
     }
 
     fun onCustomPropertyChanged_jobTitle(text: String) {
-        if (properties.jobTitle == text) {
+        if (properties.jobTitle() == text) {
             return
         }
-        properties.jobTitle = text
+        properties.jobTitle(text)
         updateProfileProperties(propertyName = "jobTitle")
     }
 
@@ -115,42 +115,42 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     fun onCustomPropertyChanged_name(text: String) {
-        if (properties.name == text) {
+        if (properties.name() == text) {
             return
         }
-        properties.name = text
+        properties.name(text)
         updateProfileProperties(propertyName = "name")
     }
 
     fun onCustomPropertyChanged_socialInstagram(text: String) {
-        if (properties.socialInstagram == text) {
+        if (properties.instagram() == text) {
             return
         }
-        properties.socialInstagram = text
+        properties.instagram(text)
         updateProfileProperties(propertyName = "instagram")
     }
 
     fun onCustomPropertyChanged_socialTikTok(text: String) {
-        if (properties.socialTikTok == text) {
+        if (properties.tiktok() == text) {
             return
         }
-        properties.socialTikTok = text
+        properties.tiktok(text)
         updateProfileProperties(propertyName = "tiktok")
     }
 
     fun onCustomPropertyChanged_university(text: String) {
-        if (properties.university == text) {
+        if (properties.university() == text) {
             return
         }
-        properties.university = text
+        properties.university(text)
         updateProfileProperties(propertyName = "education")
     }
 
     fun onCustomPropertyChanged_whereLive(text: String) {
-        if (properties.whereLive == text) {
+        if (properties.whereLive() == text) {
             return
         }
-        properties.whereLive = text
+        properties.whereLive(text)
         updateProfileProperties(propertyName = "whereLive")
     }
 

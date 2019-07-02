@@ -12,15 +12,15 @@ data class UserProfileProperties(
     var income: IncomeProfileProperty = IncomeProfileProperty.Unknown,
     var property: PropertyProfileProperty = PropertyProfileProperty.Unknown,
     var transport: TransportProfileProperty = TransportProfileProperty.Unknown,
-    var about: String = "",
-    var company: String = "",
-    var jobTitle: String = "",
-    var name: String = "",
-    var socialInstagram: String = "",
-    var socialTikTok: String = "",
-    var university: String = "",
-    var whereFrom: String = "",
-    var whereLive: String = "")
+    internal var about: String = "",
+    internal var company: String = "",
+    internal var jobTitle: String = "",
+    internal var name: String = "",
+    internal var socialInstagram: String = "",
+    internal var socialTikTok: String = "",
+    internal var university: String = "",
+    internal var whereFrom: String = "",
+    internal var whereLive: String = "")
     : Mappable<UserProfilePropertiesRaw> {
 
     companion object {
@@ -80,4 +80,24 @@ data class UserProfileProperties(
             university = university,
             whereFrom = whereFrom,
             whereLive = whereLive)
+
+    // custom property accessors
+    fun about(): String = if (about != DomainUtil.BAD_PROPERTY) about else ""
+    fun about(value: String) { about = value }
+    fun company(): String = if (company != DomainUtil.BAD_PROPERTY) company else ""
+    fun company(value: String) { company = value }
+    fun jobTitle(): String = if (jobTitle != DomainUtil.BAD_PROPERTY) jobTitle else ""
+    fun jobTitle(value: String) { jobTitle = value }
+    fun name(): String = if (name != DomainUtil.BAD_PROPERTY) name else ""
+    fun name(value: String) { name = value }
+    fun instagram(): String = if (socialInstagram != DomainUtil.BAD_PROPERTY) socialInstagram else ""
+    fun instagram(value: String) { socialInstagram = value }
+    fun tiktok(): String = if (socialTikTok != DomainUtil.BAD_PROPERTY) socialTikTok else ""
+    fun tiktok(value: String) { socialTikTok = value }
+    fun university(): String = if (university != DomainUtil.BAD_PROPERTY) university else ""
+    fun university(value: String) { university = value }
+    fun whereFrom(): String = if (whereFrom != DomainUtil.BAD_PROPERTY) whereFrom else ""
+    fun whereFrom(value: String) { whereFrom = value }
+    fun whereLive(): String = if (whereLive != DomainUtil.BAD_PROPERTY) whereLive else ""
+    fun whereLive(value: String) { whereLive = value }
 }

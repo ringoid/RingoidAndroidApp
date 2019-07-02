@@ -239,14 +239,14 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 val gender = spm.currentUserGender()
                 val showDefault = properties.isAllUnknown()
 
-                properties.about
+                properties.about()
                     .takeIf { it.isNotBlank() }
                     ?.let { tv_about.text = it }
 
-                withAbout = properties.about.isNotBlank()
+                withAbout = properties.about().isNotBlank()
 
                 mutableListOf<String>().apply {
-                    properties.name
+                    properties.name()
                         .takeIf { it.isNotBlank() }
                         ?.let { name -> add(name) }
                         ?: run { add(resources.getString(OriginR_string.settings_profile_item_custom_property_name)) }

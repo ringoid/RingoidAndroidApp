@@ -63,15 +63,15 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                 item_profile_property_property.setSelectedItem(it.property)
                 item_profile_property_transport.setSelectedItem(it.transport)
                 // custom properties
-                item_profile_custom_property_about.setInputText(it.about)
-                item_profile_custom_property_company.setInputText(it.company)
-                item_profile_custom_property_job_title.setInputText(it.jobTitle)
+                item_profile_custom_property_about.setInputText(it.about())
+                item_profile_custom_property_company.setInputText(it.company())
+                item_profile_custom_property_job_title.setInputText(it.jobTitle())
                 item_profile_property_height.setInputText(if (it.height > 0) "${it.height}" else "")
-                item_profile_custom_property_name.setInputText(it.name)
-                item_profile_custom_property_instagram.setInputText(it.socialInstagram)
-                item_profile_custom_property_tiktok.setInputText(it.socialTikTok)
-                item_profile_custom_property_university.setInputText(it.university)
-                item_profile_custom_property_where_live.setInputText(it.whereLive)
+                item_profile_custom_property_name.setInputText(it.name())
+                item_profile_custom_property_instagram.setInputText(it.instagram())
+                item_profile_custom_property_tiktok.setInputText(it.tiktok())
+                item_profile_custom_property_university.setInputText(it.university())
+                item_profile_custom_property_where_live.setInputText(it.whereLive())
             }
         }
     }

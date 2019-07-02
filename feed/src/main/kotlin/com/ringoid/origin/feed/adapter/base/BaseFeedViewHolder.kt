@@ -170,7 +170,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         fun showNameInZone(zone: Int, isVisible: Boolean) {
             val alpha = if (isVisible) 1.0f else 0.0f
             if (isAboutPage(model)) {
-                model.about  // approximate number of lines
+                model.about()  // approximate number of lines
                     ?.let { minOf(3, it.length / 50 + 1) }
                     ?.takeIf { zone == it - 1 }
                     ?.let { itemView.tv_name_age.alpha = alpha }
@@ -417,13 +417,13 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             }
 
         // --------------------------------------
-        model.about
+        model.about()
             .takeIf { !it.isNullOrBlank() }
             ?.let { itemView.tv_about.text = it }
 
-        withAbout = !model.about.isNullOrBlank()
+        withAbout = !model.about().isNullOrBlank()
 
-        (model.name ?: genderString(model.gender))
+        (model.name() ?: genderString(model.gender))
             ?.let { name ->
                 mutableListOf<String>().apply {
                     add(name)

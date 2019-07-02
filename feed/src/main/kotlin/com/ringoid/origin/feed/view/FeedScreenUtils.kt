@@ -57,11 +57,10 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.COMPANY_JOB_TITLE -> {
-                if ((!properties.company.isNullOrBlank()  && properties.company != DomainUtil.BAD_PROPERTY) ||
-                    (!properties.jobTitle.isNullOrBlank() && properties.jobTitle != DomainUtil.BAD_PROPERTY)) {
+                if (!properties.company().isNullOrBlank() || !properties.jobTitle().isNullOrBlank()) {
                     val strList = mutableListOf<String>().apply {
-                        properties.jobTitle.takeIf { !it.isNullOrBlank() }?.let { add(it) }
-                        properties.company.takeIf { !it.isNullOrBlank() }?.let { add(it) }
+                        properties.jobTitle().takeIf { !it.isNullOrBlank() }?.let { add(it) }
+                        properties.company().takeIf { !it.isNullOrBlank() }?.let { add(it) }
                     }
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_company_job_white_18dp)
@@ -122,18 +121,18 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.SOCIAL_INSTAGRAM -> {
-                if (!properties.instagram.isNullOrBlank() && properties.instagram != DomainUtil.BAD_PROPERTY) {
+                if (!properties.instagram().isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
-                        setText("Instagram: ${properties.instagram}")
+                        setText("Instagram: ${properties.instagram()}")
                     }
                 } else null
             }
             UserProfilePropertyId.SOCIAL_TIKTOK -> {
-                if (!properties.tiktok.isNullOrBlank() && properties.tiktok != DomainUtil.BAD_PROPERTY) {
+                if (!properties.tiktok().isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
-                        setText("TikTok: ${properties.tiktok}")
+                        setText("TikTok: ${properties.tiktok()}")
                     }
                 } else null
             }
@@ -147,18 +146,18 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.UNIVERSITY -> {
-                if (!properties.university.isNullOrBlank() && properties.university != DomainUtil.BAD_PROPERTY) {
+                if (!properties.university().isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_education_white_18dp)
-                        setText(properties.university)
+                        setText(properties.university())
                     }
                 } else null
             }
             UserProfilePropertyId.WHERE_LIVE -> {
-                if (!properties.whereLive.isNullOrBlank() && properties.whereLive != DomainUtil.BAD_PROPERTY) {
+                if (!properties.whereLive().isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_marker_white_18dp)
-                        setText(properties.whereLive)
+                        setText(properties.whereLive())
                     }
                 } else null
             }
