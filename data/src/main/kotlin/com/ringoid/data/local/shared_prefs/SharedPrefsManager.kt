@@ -354,7 +354,24 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     }
 
     override fun dropUserProfileProperties() {
-        setUserProfileProperties(propertiesRaw = UserProfilePropertiesRaw())
+        sharedPreferences.edit()
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_CHILDREN)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_EDUCATION)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_HEIGHT)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_INCOME)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_PROPERTY)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_ABOUT)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE)
+            .apply()
     }
 
     /* Misc */
