@@ -58,6 +58,8 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
     @LayoutRes
     override fun getLayoutId(): Int = R.layout.dialog_big_edit_text
 
+    private var dialogTag: String? = null
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,10 +72,11 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        dialogTag = arguments?.getString(BUNDLE_KEY_TAG)
+
         btn_cancel.clicks().compose(clickDebounce()).subscribe { cancel() }
         btn_done.clicks().compose(clickDebounce()).subscribe {
-            val tag = arguments?.getString(BUNDLE_KEY_TAG)
-            communicator(IBigEditTextDialogDone::class.java)?.onDone(text = et_dialog_entry.text.trim().toString(), tag = tag)
+            communicator(IBigEditTextDialogDone::class.java)?.onDone(text = et_dialog_entry.text.trim().toString(), tag = dialogTag)
             dismiss()
         }
 
@@ -108,6 +111,6 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
 
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
-        communicator(IBigEditTextDialogDone::class.java)?.onCancel(text = et_dialog_entry.text.trim().toString(), tag = tag)
+        communicator(IBigEditTextDialogDone::class.java)?.onCancel(text = et_dialog_entry.text.trim().toString(), tag = dialogTag)
     }
 }
