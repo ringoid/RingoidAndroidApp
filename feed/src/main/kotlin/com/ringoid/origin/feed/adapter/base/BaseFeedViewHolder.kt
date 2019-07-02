@@ -207,15 +207,13 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
         payloads.filter { it is FeedViewHolderHideOnScroll }
             .forEach {
-                (it as FeedViewHolderHideOnScroll)
-                    .let { it.index }
+                (it as FeedViewHolderHideOnScroll).index
                     .also { zone -> hideLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> hideLabelInZone(itemView.ll_right_section, zone) }
             }
         payloads.filter { it is FeedViewHolderShowOnScroll }
             .forEach {
-                (it as FeedViewHolderShowOnScroll)
-                    .let { it.index }
+                (it as FeedViewHolderShowOnScroll).index
                     .also { zone -> showLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> showLabelInZone(itemView.ll_right_section, zone) }
             }
