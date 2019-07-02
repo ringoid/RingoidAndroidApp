@@ -150,7 +150,7 @@
     <string name="settings_profile_item_custom_property_tiktok">TikTok</string>
     <string name="settings_profile_item_custom_property_tiktok_placeholder">\&#64;username</string>
     <string name="settings_profile_item_custom_property_university">Education</string>
-    <string name="settings_profile_item_custom_property_university_placeholder">University, college, etc.</string>
+    <string name="settings_profile_item_custom_property_university_placeholder">University, college. Graduation year</string>
     <string name="settings_profile_item_custom_property_where_live">Where I live</string>
     <string name="settings_profile_item_custom_property_where_live_placeholder">City, village, etc.</string>
 
