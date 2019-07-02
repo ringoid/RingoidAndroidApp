@@ -118,6 +118,8 @@
         android:ellipsize="end"
         android:gravity="start|center_vertical"
         android:maxLines="3"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In maximus, magna non finibus ultrices, nunc lacus facilisis ligula, vitae placerat ex ante id lorem. Maecenas ornare malesuada tincidunt. Nullam pulvinar nisi in lorem dictum imperdiet. Donec tincidunt lacus a tincidunt imperdiet."
         app:layout_constraintBottom_toTopOf="@id/anchor"
         app:layout_constraintStart_toStartOf="parent"
@@ -147,6 +149,8 @@
 
         <TextView
             android:id="@+id/tv_name_age"
+            android:shadowColor="@color/text_shadow"
+            android:shadowRadius="6"
             android:textSize="@dimen/std_text_22"
             android:textStyle="bold"
             tools:text="Maxim, 29"
