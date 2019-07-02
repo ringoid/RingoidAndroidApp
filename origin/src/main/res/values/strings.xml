@@ -152,7 +152,7 @@
     <string name="settings_profile_item_custom_property_university">Education</string>
     <string name="settings_profile_item_custom_property_university_placeholder">University, college. Graduation year</string>
     <string name="settings_profile_item_custom_property_where_live">City</string>
-    <string name="settings_profile_item_custom_property_where_live_placeholder">City, village, etc.</string>
+    <string name="settings_profile_item_custom_property_where_live_placeholder">Where I live</string>
 
     <!-- Settings Push screen -->
     <string name="settings_push_item_like">New Like</string>

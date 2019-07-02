@@ -147,7 +147,7 @@
     <string name="settings_profile_item_custom_property_university">Место учебы</string>
     <string name="settings_profile_item_custom_property_university_placeholder">Университет, колледж. Год выпуска</string>
     <string name="settings_profile_item_custom_property_where_live">Город</string>
-    <string name="settings_profile_item_custom_property_where_live_placeholder"> </string>
+    <string name="settings_profile_item_custom_property_where_live_placeholder">Где я живу</string>
 
     <!-- Settings Push screen -->
     <string name="settings_push_item_like">Новый лайк</string>
