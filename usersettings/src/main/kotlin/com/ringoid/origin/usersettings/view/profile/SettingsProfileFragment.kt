@@ -118,7 +118,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
         }
@@ -132,7 +132,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onCompanyTextChange)
         }
@@ -146,7 +146,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onJobTitleTextChange)
         }
@@ -160,7 +160,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(heightStr)) onHeightTextChange(heightStr)
                         dialog.dismiss()
                     },
-                    initText = getText(), inputType = InputType.TYPE_CLASS_NUMBER, maxLength = 3)
+                    initText = getText(),
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_CLASS_NUMBER,
+                    maxLength = 3)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onHeightTextChange)
             setSuffix(OriginR_string.value_cm)
@@ -175,7 +177,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onNameTextChange)
         }
@@ -215,7 +217,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onUniversityTextChange)
         }
@@ -229,7 +231,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onWhereLiveTextChange)
         }
