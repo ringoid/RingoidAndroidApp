@@ -379,7 +379,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             ?.let { name ->
                 mutableListOf<String>().apply {
                     add(name)
-                    model.age.takeIf { it > 0 }?.let { age -> add("$age") }
+                    model.age.takeIf { it >= 18 }?.let { age -> add("$age") }
                 }
                 .let { itemView.tv_name_age.text = it.joinToString() }
             }
