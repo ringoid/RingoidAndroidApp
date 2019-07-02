@@ -411,8 +411,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         fun genderString(gender: Gender): String? =
             when (gender) {
-                Gender.MALE -> AppRes.SEX_FEMALE
-                Gender.FEMALE -> AppRes.SEX_MALE
+                Gender.MALE -> AppRes.SEX_MALE
+                Gender.FEMALE -> AppRes.SEX_FEMALE
                 else -> null
             }
 
