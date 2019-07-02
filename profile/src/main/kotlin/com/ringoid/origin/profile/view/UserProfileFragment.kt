@@ -471,6 +471,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
 
         // --------------------------------------
+        imageOnViewPortId = imagesAdapter.findModel(position)?.id ?: DomainUtil.BAD_ID
         currentImagePosition = position
         val page = if (withAbout) maxOf(0, position - 1) else position
         val startIndex = page * UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
