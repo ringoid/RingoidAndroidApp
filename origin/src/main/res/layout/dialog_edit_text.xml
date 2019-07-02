@@ -10,6 +10,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/std_margin_20"
         android:layout_marginEnd="@dimen/std_margin_20"
+        android:imeOptions="actionDone"
         android:inputType="text">
         <requestFocus/>
     </EditText>
