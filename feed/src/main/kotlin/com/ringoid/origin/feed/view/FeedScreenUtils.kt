@@ -68,7 +68,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.DISTANCE -> {
-                if (!properties.distanceText.isNullOrBlank()/* && properties.distanceText != "unknown"*/) {
+                if (!properties.distanceText.isNullOrBlank() && properties.distanceText != "unknown") {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_marker_white_18dp)
                         setText(properties.distanceText)
