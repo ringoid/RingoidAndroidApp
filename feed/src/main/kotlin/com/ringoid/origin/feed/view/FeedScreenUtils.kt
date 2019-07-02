@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view
 
 import android.view.ViewGroup
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.origin.AppRes
@@ -56,8 +57,8 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.COMPANY_JOB_TITLE -> {
-                if ((!properties.company.isNullOrBlank()  && properties.company != "unknown") ||
-                    (!properties.jobTitle.isNullOrBlank() && properties.jobTitle != "unknown")) {
+                if ((!properties.company.isNullOrBlank()  && properties.company != DomainUtil.BAD_PROPERTY) ||
+                    (!properties.jobTitle.isNullOrBlank() && properties.jobTitle != DomainUtil.BAD_PROPERTY)) {
                     val strList = mutableListOf<String>().apply {
                         properties.jobTitle.takeIf { !it.isNullOrBlank() }?.let { add(it) }
                         properties.company.takeIf { !it.isNullOrBlank() }?.let { add(it) }
@@ -69,7 +70,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.DISTANCE -> {
-                if (!properties.distanceText.isNullOrBlank() && properties.distanceText != "unknown") {
+                if (!properties.distanceText.isNullOrBlank() && properties.distanceText != DomainUtil.BAD_PROPERTY) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_arrow_white_18dp)
                         setText(properties.distanceText)
@@ -121,7 +122,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.SOCIAL_INSTAGRAM -> {
-                if (!properties.instagram.isNullOrBlank() && properties.instagram != "unknown") {
+                if (!properties.instagram.isNullOrBlank() && properties.instagram != DomainUtil.BAD_PROPERTY) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
                         setText("Instagram: ${properties.instagram}")
@@ -129,7 +130,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.SOCIAL_TIKTOK -> {
-                if (!properties.tiktok.isNullOrBlank() && properties.tiktok != "unknown") {
+                if (!properties.tiktok.isNullOrBlank() && properties.tiktok != DomainUtil.BAD_PROPERTY) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
                         setText("TikTok: ${properties.tiktok}")
@@ -146,7 +147,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.UNIVERSITY -> {
-                if (!properties.university.isNullOrBlank() && properties.university != "unknown") {
+                if (!properties.university.isNullOrBlank() && properties.university != DomainUtil.BAD_PROPERTY) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_education_white_18dp)
                         setText(properties.university)
@@ -154,7 +155,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.WHERE_LIVE -> {
-                if (!properties.whereLive.isNullOrBlank() && properties.whereLive != "unknown") {
+                if (!properties.whereLive.isNullOrBlank() && properties.whereLive != DomainUtil.BAD_PROPERTY) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_marker_white_18dp)
                         setText(properties.whereLive)
