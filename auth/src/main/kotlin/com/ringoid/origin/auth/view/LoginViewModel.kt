@@ -69,7 +69,8 @@ class LoginViewModel @Inject constructor(
             sex = gender?.string ?: Gender.MALE.string /* safe null-check */,
             device = String.format("%s, %s, %s", Build.MODEL, Build.MANUFACTURER, Build.PRODUCT),
             osVersion = String.format("%s, %d", Build.VERSION.RELEASE, Build.VERSION.SDK_INT),
-            privateKey = spm.createPrivateKeyIfNotExists(), referralId = spm.getReferralCode(),
+            privateKey = spm.createPrivateKeyIfNotExists(),
+            referralId = spm.getReferralCode(),
             settings = app.userSettingsManager.getUserSettings())
 
         createUserProfileUseCase.source(params = Params().put(essence))
