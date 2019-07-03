@@ -11,6 +11,7 @@ buildscript {
         androidAppCompatVersion = '1.0.2'
         androidCoreVersion = '1.0.1'
         androidFragmentVersion = '1.0.0'
+        androidInstallReferrerVersion = '1.0'
         androidMaterialVersion = '1.1.0-alpha01'
 
         androidCardViewVersion = '1.0.0'

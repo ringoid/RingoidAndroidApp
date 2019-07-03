@@ -72,6 +72,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         // --------------------------------------
         internal const val SP_KEY_PRIVATE_KEY = "sp_key_private_key"
         internal const val SP_KEY_REFERRAL_CODE = "sp_key_referral_code"
+        internal const val SP_KEY_REFERRAL_CODE_DONT_OVERRIDE = "sp_key_referral_code_dont_override"
 
         /* User Settings */
         // --------------------------------------
@@ -289,8 +290,16 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun hasReferralCode(): Boolean = !backupSharedPreferences.getString(SP_KEY_REFERRAL_CODE, null).isNullOrBlank()
 
-    override fun setReferralCode(code: String?) {
-        backupSharedPreferences.edit().putString(SP_KEY_REFERRAL_CODE, code).apply()
+    override fun setReferralCode(code: String?, dontOverride: Boolean) {
+        if (backupSharedPreferences.getBoolean(SP_KEY_REFERRAL_CODE_DONT_OVERRIDE, false)) {
+            backupSharedPreferences.edit().remove(SP_KEY_REFERRAL_CODE_DONT_OVERRIDE).apply()
+            return  // don't override, if flag is set
+        }
+
+        backupSharedPreferences.edit()
+            .putString(SP_KEY_REFERRAL_CODE, code)
+            .putBoolean(SP_KEY_REFERRAL_CODE_DONT_OVERRIDE, dontOverride)
+            .apply()
     }
 
     /* User Settings */

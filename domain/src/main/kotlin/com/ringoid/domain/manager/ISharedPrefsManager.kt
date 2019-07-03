@@ -71,16 +71,12 @@ interface ISharedPrefsManager {
     fun createPrivateKeyIfNotExists(): String?
 
     fun getPrivateKey(): String?
-
     fun hasPrivateKey(): Boolean
-
     fun setPrivateKey(privateKey: String?)
 
     fun getReferralCode(): String?
-
     fun hasReferralCode(): Boolean
-
-    fun setReferralCode(code: String?)
+    fun setReferralCode(code: String?, dontOverride: Boolean = false)
 
     /* User Settings */
     // ------------------------------------------

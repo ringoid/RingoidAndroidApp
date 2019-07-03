@@ -9,6 +9,7 @@ ext {
             appcompat:  "androidx.appcompat:appcompat:${androidAppCompatVersion}",
             core:       "androidx.core:core:${androidCoreVersion}",
             fragment:   "androidx.fragment:fragment:${androidFragmentVersion}",
+            install:    "com.android.installreferrer:installreferrer:${androidInstallReferrerVersion}",
             localBroadcast: "androidx.localbroadcastmanager:localbroadcastmanager:${jetpackVersion}",
             material:   "com.google.android.material:material:${androidMaterialVersion}",
 
@@ -336,6 +337,7 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = [
+        [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_libs.branch],
     ]
     appDependencies += all_features + module_main + module_data + develop + android + dagger + deeplink + kotlin + log +

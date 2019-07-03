@@ -5,7 +5,7 @@ import com.ringoid.utility.paths
 
 object ReferralUtils {
 
-    fun getReferralCode(intent: Intent?): String?=
+    fun getReferralCode(intent: Intent?): String? =
         intent?.dataString
               ?.takeIf { it.isNotBlank() }
               ?.takeIf {
