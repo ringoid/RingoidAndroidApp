@@ -9,7 +9,6 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.origin.AppInMemory
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.adapter.profile.ProfileImageAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -409,13 +408,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             }
         }
 
-        fun genderString(gender: Gender): String? =
-            when (gender) {
-                Gender.MALE -> AppRes.SEX_MALE
-                Gender.FEMALE -> AppRes.SEX_FEMALE
-                else -> null
-            }
-
         // --------------------------------------
         model.about()
             .takeIf { !it.isNullOrBlank() }
@@ -423,7 +415,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         withAbout = !model.about().isNullOrBlank()
 
-        (model.name() ?: genderString(model.gender))
+        (model.name() ?: AppInMemory.genderString(model.gender))
             ?.let { name ->
                 mutableListOf<String>().apply {
                     add(name)

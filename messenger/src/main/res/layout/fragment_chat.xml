@@ -100,7 +100,6 @@
             android:shadowRadius="6"
             android:textSize="@dimen/std_text_20"
             android:textStyle="bold"
-            android:visibility="gone"
             style="@style/StdText.Primary"/>
 
         <com.ringoid.widget.view.LabelView

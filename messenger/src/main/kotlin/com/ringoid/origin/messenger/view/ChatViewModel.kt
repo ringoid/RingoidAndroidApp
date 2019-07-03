@@ -17,6 +17,8 @@ import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.origin.AppInMemory
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
@@ -152,6 +154,6 @@ class ChatViewModel @Inject constructor(
         currentMessageList = ArrayList(list)  // clone list to avoid further modifications
         messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
         onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
-        peerName.value = chat.name() ?: ""
+        peerName.value = chat.name() ?: AppInMemory.genderString(chat.gender, default = AppRes.SEX_MALE)
     }
 }

@@ -18,4 +18,11 @@ object AppInMemory {
             Gender.FEMALE -> Gender.MALE
             else -> Gender.UNKNOWN
         }
+
+    fun genderString(gender: Gender, default: String? = null): String? =
+        when (gender) {
+            Gender.MALE -> AppRes.SEX_MALE
+            Gender.FEMALE -> AppRes.SEX_FEMALE
+            else -> default
+        }
 }
