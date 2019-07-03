@@ -6,11 +6,13 @@ import com.ringoid.utility.paths
 object ReferralUtils {
 
     fun getReferralCode(intent: Intent?): String?=
-        intent?.takeIf { !it.dataString.isNullOrBlank() }
+        intent?.dataString
+              ?.takeIf { it.isNotBlank() }
               ?.takeIf {
-                  it.dataString.startsWith("https://ringoid.app.link/") ||
-                  it.dataString.startsWith("https://ringoid.com/r/")
+                  it.startsWith("https://ringoid.app.link/") ||
+                  it.startsWith("https://ringoid.com/r/")
               }
+              ?.let { intent }
               ?.data?.paths()
               ?.find { it != "r" }
 }

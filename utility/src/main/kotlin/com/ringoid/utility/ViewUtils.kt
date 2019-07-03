@@ -2,6 +2,7 @@ package com.ringoid.utility
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
@@ -72,6 +73,10 @@ fun TextView.changeTypeface(tf: Typeface? = null, style: Int = Typeface.NORMAL, 
 }
 
 // ------------------------------------------------------------------------------------------------
+fun dpToPx(dp: Float): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
+
+fun pxToDp(px: Int): Float = px.toFloat() / Resources.getSystem().displayMetrics.density
+
 @DrawableRes
 fun Context.getSelectableItemBgResId(): Int {
     val typedValue = TypedValue()

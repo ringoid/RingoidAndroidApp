@@ -30,6 +30,7 @@ class SettingsProfileViewModel @Inject constructor(
         profile.value = properties
     }
 
+    /* Properties */
     // --------------------------------------------------------------------------------------------
     fun onPropertyChanged_children(children: ChildrenProfileProperty) {
         if (properties.children == children) {
@@ -53,14 +54,6 @@ class SettingsProfileViewModel @Inject constructor(
         }
         properties.hairColor = hairColor
         updateProfileProperties(propertyName = hairColor.name)
-    }
-
-    fun onPropertyChanged_height(height: Int) {
-        if (properties.height == height || height in 1..91) {
-            return
-        }
-        properties.height = height
-        updateProfileProperties(propertyName = "height")
     }
 
     fun onPropertyChanged_income(income: IncomeProfileProperty) {
@@ -87,7 +80,81 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = transport.name)
     }
 
-    // ------------------------------------------
+    /* Custom Properties */
+    // --------------------------------------------------------------------------------------------
+    fun onCustomPropertyChanged_about(text: String) {
+        if (properties.about() == text) {
+            return
+        }
+        properties.about(text)
+        updateProfileProperties(propertyName = "about")
+    }
+
+    fun onCustomPropertyChanged_company(text: String) {
+        if (properties.company() == text) {
+            return
+        }
+        properties.company(text)
+        updateProfileProperties(propertyName = "company")
+    }
+
+    fun onCustomPropertyChanged_jobTitle(text: String) {
+        if (properties.jobTitle() == text) {
+            return
+        }
+        properties.jobTitle(text)
+        updateProfileProperties(propertyName = "jobTitle")
+    }
+
+    fun onCustomPropertyChanged_height(height: Int) {
+        if (properties.height == height || height in 1..91) {
+            return
+        }
+        properties.height = height
+        updateProfileProperties(propertyName = "height")
+    }
+
+    fun onCustomPropertyChanged_name(text: String) {
+        if (properties.name() == text) {
+            return
+        }
+        properties.name(text)
+        updateProfileProperties(propertyName = "name")
+    }
+
+    fun onCustomPropertyChanged_socialInstagram(text: String) {
+        if (properties.instagram() == text) {
+            return
+        }
+        properties.instagram(text)
+        updateProfileProperties(propertyName = "instagram")
+    }
+
+    fun onCustomPropertyChanged_socialTikTok(text: String) {
+        if (properties.tiktok() == text) {
+            return
+        }
+        properties.tiktok(text)
+        updateProfileProperties(propertyName = "tiktok")
+    }
+
+    fun onCustomPropertyChanged_university(text: String) {
+        if (properties.university() == text) {
+            return
+        }
+        properties.university(text)
+        updateProfileProperties(propertyName = "education")
+    }
+
+    fun onCustomPropertyChanged_whereLive(text: String) {
+        if (properties.whereLive() == text) {
+            return
+        }
+        properties.whereLive(text)
+        updateProfileProperties(propertyName = "whereLive")
+    }
+
+    // --------------------------------------------------------------------------------------------
     private fun updateProfileProperties(propertyName: String) {
         updateUserProfileSettingsUseCase.source(Params().put(properties.map()))
             .doOnSubscribe {

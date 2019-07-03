@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dialog_big_edit_text_height">158dp</dimen>
+    <dimen name="dialog_big_edit_text_height">114dp</dimen>
     <dimen name="dialog_bottom_sheet_block_height">106dp</dimen>
     <dimen name="dialog_bottom_sheet_report_height">212dp</dimen>
     <dimen name="widget_debug_height">212dp</dimen>

@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import com.flurry.android.Constants
 import com.flurry.android.FlurryAgent
-import com.flurry.android.FlurryAgent.setUserId
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
@@ -28,7 +27,7 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
 
     private val firebase = FirebaseAnalytics.getInstance(context)
 
-    fun enterUserScope(spm: ISharedPrefsManager) {
+    fun enterUserScope() {
         consumedEventIds.clear()
     }
 

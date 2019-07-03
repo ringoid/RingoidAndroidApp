@@ -40,7 +40,14 @@ class StatusDialog : SimpleBaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_cancel.clicks().compose(clickDebounce()).subscribe { dismiss() }
-        btn_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this); dismiss() }
+        btn_support.clicks().compose(clickDebounce()).subscribe {
+            ExternalNavigator.emailSupportTeam(this, "",
+                "id" to "${spm.currentUserId()}",
+                "request" to "${cloudDebug.get("request")}",
+                "response" to "${cloudDebug.get("result")}",
+                "lastActionTime" to "${cloudDebug.get("lastActionTime")}")
+            dismiss()
+        }
         tv_dialog_title.setText(arguments?.getInt(BUNDLE_KEY_TITLE_RES_ID) ?: R.string.error_common)
 
         resources.getString(R.string.web_url_error_status).readFromUrl()

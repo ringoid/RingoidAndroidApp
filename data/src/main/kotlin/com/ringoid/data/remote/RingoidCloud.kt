@@ -2,6 +2,7 @@ package com.ringoid.data.remote
 
 import com.google.firebase.perf.FirebasePerformance
 import com.ringoid.data.remote.debug.keepDataForDebug
+import com.ringoid.data.remote.debug.keepResultForDebug
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
@@ -34,6 +35,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun createUserProfile(essence: AuthCreateProfileEssence): Single<AuthCreateProfileResponse> =
         restAdapter.createUserProfile(essence.toBody())
+            .keepDataForDebug(cloudDebug, "request" to "createUserProfile")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("createUserProfile", essence.toSentryData(), "yearOfBirth" to "${essence.yearOfBirth}", "gender" to essence.sex)
             .logRequest("createUserProfile")
             .logResponse("createUserProfile")
@@ -42,6 +45,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
         val content = "{\"accessToken\":\"$accessToken\"}"
         val body = RequestBody.create(MediaType.parse("application/json"), content)
         return restAdapter.deleteUserProfile(body)
+            .keepDataForDebug(cloudDebug, "request" to "deleteUserProfile")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("deleteUserProfile", "accessToken" to "")
             .logRequest("deleteUserProfile")
             .logResponse("deleteUserProfile")
@@ -49,18 +54,24 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun getUserSettings(accessToken: String): Single<UserSettingsResponse> =
         restAdapter.getUserSettings(accessToken = accessToken)
+            .keepDataForDebug(cloudDebug, "request" to "getUserSettings")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("getUserSettings", "accessToken" to "")
             .logRequest("getUserSettings")
             .logResponse("getUserSettings")
 
     fun updateUserSettings(essence: UpdateUserSettingsEssence): Single<BaseResponse> =
         restAdapter.updateUserSettings(essence.toBody())
+            .keepDataForDebug(cloudDebug, "request" to "updateUserSettings")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("updateUserSettings", essence.toSentryData())
             .logRequest("updateUserSettings", essence.toDebugData())
             .logResponse("updateUserSettings")
 
     fun updateUserProfile(essence: UpdateUserProfileEssence): Single<BaseResponse> =
         restAdapter.updateUserProfile(essence.toBody())
+            .keepDataForDebug(cloudDebug, "request" to "updateUserProfile")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("updateUserProfile", essence.toSentryData())
             .logRequest("updateUserProfile", essence.toDebugData())
             .logResponse("updateUserProfile")
@@ -68,6 +79,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // ------------------------------------------
     fun applyReferralCode(essence: ReferralCodeEssence): Single<BaseResponse> =
         restAdapter.applyReferralCode(essence.toBody())
+            .keepDataForDebug(cloudDebug, "request" to "applyReferralCode")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("applyReferralCode", essence.toSentryData())
             .logRequest("applyReferralCode", essence.toDebugData())
             .logResponse("applyReferralCode", essence.toDebugData())
@@ -76,6 +89,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun commitActions(essence: CommitActionsEssence): Single<CommitActionsResponse> =
         restAdapter.commitActions(essence.toBody())
+            .keepDataForDebug(cloudDebug, "request" to "commitActions")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("commitActions", essence.toSentryData())
             .logRequest("commitActions", essence.toDebugData())
             .logResponse("commitActions", essence.toDebugData())
@@ -84,6 +99,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun getImageUploadUrl(essence: ImageUploadUrlEssence): Single<ImageUploadUrlResponse> =
         restAdapter.getImageUploadUrl(essence.toBody())
+            .keepDataForDebug(cloudDebug, "request" to "getImageUploadUrl")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("getImageUploadUrl", essence.toSentryData())
             .logRequest("getImageUploadUrl")
             .logResponse("getImageUploadUrl")
@@ -91,12 +108,15 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     fun getUserImages(accessToken: String, resolution: ImageResolution): Single<UserImageListResponse> =
         restAdapter.getUserImages(accessToken = accessToken, resolution = resolution.resolution)
             .keepDataForDebug(cloudDebug,"request" to "getUserImages", "resolution" to "$resolution")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("getUserImages", "accessToken" to "", "resolution" to "$resolution")
             .logRequest("getUserImages")
             .logResponse("UserPhotos")
 
     fun deleteUserImage(essence: ImageDeleteEssence): Single<BaseResponse> =
         restAdapter.deleteUserImage(essence.toBody())
+            .keepDataForDebug(cloudDebug, "request" to "deleteUserImage")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("deleteUserImage", essence.toSentryData())
             .logRequest("deleteUserImage")
             .logResponse("deleteUserImage")
@@ -105,6 +125,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
         val body = RequestBody.create(MediaType.parse("image/*"), image)
         val trace = FirebasePerformance.getInstance().newTrace("image upload")
         return restAdapter.uploadImage(url = url, body = body)
+            .keepDataForDebug(cloudDebug, "request" to "uploadImage")
             .breadcrumb("uploadImage", "url" to url)
             .logRequest("uploadImage")
             .logResponse("uploadImage")
@@ -116,7 +137,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun getChat(accessToken: String, resolution: ImageResolution, peerId: String, lastActionTime: Long = 0L) =
         restAdapter.getChat(accessToken = accessToken, resolution = resolution.resolution, peerId = peerId, lastActionTime = lastActionTime)
-            .keepDataForDebug(cloudDebug, "request" to "getChat", "resolution" to "$resolution", "peerId" to peerId)
+            .keepDataForDebug(cloudDebug, "request" to "getChat", "resolution" to "$resolution", "peerId" to peerId, "lastActionTime" to "$lastActionTime")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("getChat", "accessToken" to "", "resolution" to "$resolution", "peerId" to peerId,
                         "lastActionTime" to "$lastActionTime")
             .logRequest("getChat", "lastActionTime" to "$lastActionTime", "peerId" to peerId)
@@ -124,7 +146,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun getNewFaces(accessToken: String, resolution: ImageResolution, limit: Int?, lastActionTime: Long = 0L) =
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
-            .keepDataForDebug(cloudDebug, "request" to "getNewFaces", "resolution" to "$resolution")
+            .keepDataForDebug(cloudDebug, "request" to "getNewFaces", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("getNewFaces", "accessToken" to "", "resolution" to "$resolution",
                         "lastActionTime" to "$lastActionTime")
             .logRequest("getNewFaces", "lastActionTime" to "$lastActionTime")
@@ -132,7 +155,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun getLmm(accessToken: String, resolution: ImageResolution, source: String?, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, source = source, lastActionTime = lastActionTime)
-            .keepDataForDebug(cloudDebug, "request" to "getLmm", "resolution" to "$resolution")
+            .keepDataForDebug(cloudDebug, "request" to "getLmm", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("getLmm", "accessToken" to "",
                         "resolution" to "$resolution", "source" to "$source", "lastActionTime" to "$lastActionTime")
             .logRequest("getLmm", "lastActionTime" to "$lastActionTime")
@@ -142,6 +166,8 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun updatePushToken(essence: PushTokenEssence): Single<BaseResponse> =
         restAdapter.updatePushToken(essence.toBody())
+            .keepDataForDebug(cloudDebug, "request" to "updatePushToken")
+            .keepResultForDebug(cloudDebug)
             .breadcrumb("updatePushToken", essence.toSentryData())
             .logRequest("updatePushToken")
             .logResponse("updatePushToken")

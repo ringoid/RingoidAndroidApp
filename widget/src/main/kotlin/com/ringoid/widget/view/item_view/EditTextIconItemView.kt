@@ -21,11 +21,12 @@ class EditTextIconItemView : TextIconItemView {
     // --------------------------------------------------------------------------------------------
     override fun getText(): String = et_input.text.toString()
 
-    override fun setInputText(text: String?) {
+    override fun setInputText(text: String?): Boolean {
         with (et_input) {
             setText(text)
             setSelection(text?.length ?: 0)
         }
+        return true
     }
 }
 

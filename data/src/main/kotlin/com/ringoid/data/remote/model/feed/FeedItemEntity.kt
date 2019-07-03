@@ -31,7 +31,17 @@ import com.ringoid.domain.model.messenger.Message
  *   "income": 0,
  *   "height": 0,
  *   "hairColor": 0,
- *   "children":0
+ *   "children":0,
+ *
+ *   "name":"Mikhail",
+ *   "jobTitle":"Developer",
+ *   "company":"Ringoid",
+ *   "education":"BGTU Voenmeh",
+ *   "about":"Nice person",
+ *   "instagram":"unknown",
+ *   "tikTok":"unknown",
+ *   "whereLive":"St.Petersburg",
+ *   "whereFrom":"Leningrad"
  * }
  */
 open class FeedItemEntity(
@@ -51,7 +61,16 @@ open class FeedItemEntity(
     height: Int = DomainUtil.UNKNOWN_VALUE,
     income: Int = DomainUtil.UNKNOWN_VALUE,
     property: Int = DomainUtil.UNKNOWN_VALUE,
-    transport: Int = DomainUtil.UNKNOWN_VALUE)
+    transport: Int = DomainUtil.UNKNOWN_VALUE,
+    about: String? = null,
+    company: String? = null,
+    jobTitle: String? = null,
+    name: String? = null,
+    instagram: String? = null,
+    tiktok: String? = null,
+    university: String? = null,
+    whereFrom: String? = null,
+    whereLive: String? = null)
     : BaseProfileEntity<FeedItem>(
         id = id,
         sortPosition = sortPosition,
@@ -67,7 +86,16 @@ open class FeedItemEntity(
         height = height,
         income = income,
         property = property,
-        transport = transport) {
+        transport = transport,
+        about = about,
+        company = company,
+        jobTitle = jobTitle,
+        name = name,
+        instagram = instagram,
+        tiktok = tiktok,
+        university = university,
+        whereFrom = whereFrom,
+        whereLive = whereLive) {
 
     companion object {
         const val COLUMN_FLAG_NOT_SEEN = "notSeen"
@@ -79,7 +107,7 @@ open class FeedItemEntity(
             id = id,
             distanceText = distanceText,
             images = images.mapList(),
-            messages = messages.mapIndexed { index, message ->
+            messages = messages.map { message ->
                 val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
                 Message(
                     id = message.id,
@@ -100,7 +128,16 @@ open class FeedItemEntity(
             height = height,
             income = income,
             property = property,
-            transport = transport)
+            transport = transport,
+            about = about,
+            company = company,
+            jobTitle = jobTitle,
+            name = name,
+            instagram = instagram,
+            tiktok = tiktok,
+            university = university,
+            whereFrom = whereFrom,
+            whereLive = whereLive)
 
     override fun toString(): String = "FeedItemEntity(isNotSeen=$isNotSeen, messages=${messages.joinToString(", ", "[", "]")}, ${super.toString()})"
 }

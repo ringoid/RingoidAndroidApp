@@ -87,6 +87,20 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_PROFILE_PROPERTY_INCOME = "sp_key_user_profile_property_income"
         const val SP_KEY_USER_PROFILE_PROPERTY_PROPERTY = "sp_key_user_profile_property_property"
         const val SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT = "sp_key_user_profile_property_transport"
+
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_ABOUT = "sp_key_user_profile_custom_property_about"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY = "sp_key_user_profile_custom_property_company"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE = "sp_key_user_profile_custom_property_job_title"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME = "sp_key_user_profile_custom_property_name"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM = "sp_key_user_profile_custom_property_social_instagram"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK = "sp_key_user_profile_custom_property_social_tiktok"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY = "sp_key_user_profile_custom_property_university"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM = "sp_key_user_profile_custom_property_where_from"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE = "sp_key_user_profile_custom_property_where_live"
+
+        /* Misc */
+        // --------------------------------------
+        const val SP_KEY_BIG_EDIT_TEXT = "sp_key_big_edit_text"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -184,6 +198,12 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun currentUserYearOfBirth(): Int =
         sharedPreferences.getInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, DomainUtil.BAD_VALUE)
+
+    override fun hasUserCreateTs(): Boolean = currentUserCreateTs() != 0L
+
+    override fun hasUserGender(): Boolean = currentUserGender() != Gender.UNKNOWN
+
+    override fun hasUserYearOfBirth(): Boolean = currentUserYearOfBirth() != DomainUtil.BAD_VALUE
 
     override fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String) {
         sharedPreferences.edit()
@@ -298,14 +318,25 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     // ------------------------------------------
     override fun getUserProfileProperties(): UserProfilePropertiesRaw =
-        UserProfilePropertiesRaw(
-            children = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_CHILDREN, DomainUtil.UNKNOWN_VALUE),
-            education = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_EDUCATION, DomainUtil.UNKNOWN_VALUE),
-            hairColor = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR, DomainUtil.UNKNOWN_VALUE),
-            height = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_HEIGHT, DomainUtil.UNKNOWN_VALUE),
-            income = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_INCOME, DomainUtil.UNKNOWN_VALUE),
-            property = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_PROPERTY, DomainUtil.UNKNOWN_VALUE),
-            transport = sharedPreferences.getInt(SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT, DomainUtil.UNKNOWN_VALUE))
+        with (sharedPreferences) {
+            UserProfilePropertiesRaw(
+                children = getInt(SP_KEY_USER_PROFILE_PROPERTY_CHILDREN, DomainUtil.UNKNOWN_VALUE),
+                education = getInt(SP_KEY_USER_PROFILE_PROPERTY_EDUCATION, DomainUtil.UNKNOWN_VALUE),
+                hairColor = getInt(SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR, DomainUtil.UNKNOWN_VALUE),
+                height = getInt(SP_KEY_USER_PROFILE_PROPERTY_HEIGHT, DomainUtil.UNKNOWN_VALUE),
+                income = getInt(SP_KEY_USER_PROFILE_PROPERTY_INCOME, DomainUtil.UNKNOWN_VALUE),
+                property = getInt(SP_KEY_USER_PROFILE_PROPERTY_PROPERTY, DomainUtil.UNKNOWN_VALUE),
+                transport = getInt(SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT, DomainUtil.UNKNOWN_VALUE),
+                about = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_ABOUT, "") ?: "",
+                company = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY, "") ?: "",
+                jobTitle = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE, "") ?: "",
+                name = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME, "") ?: "",
+                socialInstagram = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM, "") ?: "",
+                socialTikTok = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK, "") ?: "",
+                university = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY, "") ?: "",
+                whereFrom = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM, "") ?: "",
+                whereLive = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE, "") ?: "")
+        }
 
     override fun setUserProfileProperties(propertiesRaw: UserProfilePropertiesRaw) {
         sharedPreferences.edit()
@@ -316,11 +347,49 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .putInt(SP_KEY_USER_PROFILE_PROPERTY_INCOME, propertiesRaw.income)
             .putInt(SP_KEY_USER_PROFILE_PROPERTY_PROPERTY, propertiesRaw.property)
             .putInt(SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT, propertiesRaw.transport)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_ABOUT, propertiesRaw.about)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY, propertiesRaw.company)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE, propertiesRaw.jobTitle)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME, propertiesRaw.name)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM, propertiesRaw.socialInstagram)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK, propertiesRaw.socialTikTok)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY, propertiesRaw.university)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM, propertiesRaw.whereFrom)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE, propertiesRaw.whereLive)
             .apply()
     }
 
     override fun dropUserProfileProperties() {
-        setUserProfileProperties(propertiesRaw = UserProfilePropertiesRaw())
+        sharedPreferences.edit()
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_CHILDREN)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_EDUCATION)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_HEIGHT)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_INCOME)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_PROPERTY)
+            .remove(SP_KEY_USER_PROFILE_PROPERTY_TRANSPORT)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_ABOUT)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE)
+            .apply()
+    }
+
+    /* Misc */
+    // --------------------------------------------------------------------------------------------
+    override fun getBigEditText(): String = sharedPreferences.getString(SP_KEY_BIG_EDIT_TEXT, "") ?: ""
+
+    override fun setBigEditText(text: String) {
+        sharedPreferences.edit().putString(SP_KEY_BIG_EDIT_TEXT, text).apply()
+    }
+
+    override fun dropBigEditText() {
+        sharedPreferences.edit().remove(SP_KEY_BIG_EDIT_TEXT).apply()
     }
 }
 

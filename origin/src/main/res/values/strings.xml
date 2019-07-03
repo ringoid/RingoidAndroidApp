@@ -105,6 +105,7 @@
     <string name="referral_dialog_reward_message">%s coins gifted</string>
 
     <!-- Suggest Improvements dialog -->
+    <string name="suggest_improvements_dialog_done_title">Thank you! We will look into your suggestions shortly.</string>
     <string name="suggest_improvements_description_account_delete">Before you leave, please suggest how to make Ringoid better.</string>
     <string name="suggest_improvements_description">How to make Ringoid better?</string>
     <string name="suggest_improvements_positive_button">Suggest</string>
@@ -137,6 +138,21 @@
     <string name="settings_info_privacy">Privacy Policy</string>
     <string name="settings_info_terms">Terms of Service</string>
     <string name="settings_info_title">Legal</string>
+
+    <!-- Settings Profile screen -->
+    <string name="settings_profile_item_custom_property_about">Bio</string>
+    <string name="settings_profile_item_custom_property_company">Company</string>
+    <string name="settings_profile_item_custom_property_company_placeholder"> </string>
+    <string name="settings_profile_item_custom_property_job_title">Job title</string>
+    <string name="settings_profile_item_custom_property_name">Name</string>
+    <string name="settings_profile_item_custom_property_instagram">Instagram</string>
+    <string name="settings_profile_item_custom_property_instagram_placeholder">\&#64;username</string>
+    <string name="settings_profile_item_custom_property_tiktok">TikTok</string>
+    <string name="settings_profile_item_custom_property_tiktok_placeholder">\&#64;username</string>
+    <string name="settings_profile_item_custom_property_university">Education</string>
+    <string name="settings_profile_item_custom_property_university_placeholder">University, college. Graduation year</string>
+    <string name="settings_profile_item_custom_property_where_live">City</string>
+    <string name="settings_profile_item_custom_property_where_live_placeholder">Where I live</string>
 
     <!-- Settings Push screen -->
     <string name="settings_push_item_like">New Like</string>

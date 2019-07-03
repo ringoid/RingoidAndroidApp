@@ -120,6 +120,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             observe(vm.newMessages, chatAdapter::prependAll)
             observe(vm.sentMessage, chatAdapter::prepend)
             observe(vm.onlineStatus, ::showOnlineStatus)
+            observe(vm.peerName) { peerName -> tv_peer_name?.text = peerName }
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)

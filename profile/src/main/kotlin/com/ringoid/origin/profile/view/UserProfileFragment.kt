@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,11 +22,13 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.misc.Gender
+import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
-import com.ringoid.origin.model.*
+import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
@@ -53,14 +56,26 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         fun newInstance(): UserProfileFragment = UserProfileFragment()
     }
 
-    private val calendar: Calendar by lazy { app!!.calendar }
+    private val calendar = Calendar.getInstance()
 
     private var imageOnViewPortId: String = DomainUtil.BAD_ID
+    private var currentImagePosition: Int = 0
     private var cropImageAfterLogin: Boolean = false
     private var handleRequestToAddImage: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
     private lateinit var imagePreloadListener: RecyclerViewPreloader<UserImage>
+    private val pageSelectListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            recyclerView.linearLayoutManager()?.findFirstCompletelyVisibleItemPosition()
+                ?.takeIf { it != RecyclerView.NO_POSITION }
+                ?.takeIf { it != currentImagePosition }  // skip excess scrolling w.o changing position
+                ?.let { position -> onImageSelect(position) }
+        }
+    }
+
+    private var withAbout: Boolean = false
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
@@ -195,75 +210,67 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             doOnCropSuccessAfterLogin()
         }
 
+        fun addLabelView(
+                containerView: ViewGroup,
+                gender: Gender,
+                propertyId: UserProfilePropertyId,
+                properties: UserProfileProperties,
+                useDefault: Boolean) {
+            UserProfileScreenUtils.createLabelView(
+                container = containerView,
+                gender = gender,
+                propertyId = propertyId,
+                properties = properties,
+                useDefault = useDefault)
+            ?.let { labelView ->
+                containerView.addView(labelView)
+                labelView.changeVisibility(isVisible = false)
+            }
+        }
+
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.imageBlocked, ::doOnBlockedImage)
             observe(vm.imageCreated, imagesAdapter::prepend)
             observe(vm.imageDeleted, imagesAdapter::remove)
             observe(vm.images, imagesAdapter::submitList)
-            observe(vm.profile) {
+            observe(vm.profile) { properties ->
+                val age = maxOf(0, calendar.get(Calendar.YEAR) - spm.currentUserYearOfBirth())
                 val gender = spm.currentUserGender()
-                val showDefault = it.isAllUnknown()
+                val showDefault = properties.isAllUnknown()
 
-                if (showDefault) {
-                    with (label_children) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_children)
-                    }
-                    with (label_education) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_education)
-                    }
-                    with(label_hair_color) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_hair_color)
-                    }
-                    with(label_height) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_height)
-                    }
-                    with(label_income) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_income)
-                    }
-                    with(label_property) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_property)
-                    }
-                    with(label_transport) {
-                        changeVisibility(isVisible = true)
-                        setText(OriginR_string.profile_property_transport)
-                    }
-                } else {
-                    with (label_children) {
-                        changeVisibility(isVisible = it.children != ChildrenProfileProperty.Unknown)
-                        setText(it.children.resId)
-                    }
-                    with(label_education) {
-                        changeVisibility(isVisible = it.education != EducationProfileProperty.Unknown)
-                        setText(it.education.resId)
-                    }
-                    with(label_hair_color) {
-                        changeVisibility(isVisible = it.hairColor != HairColorProfileProperty.Unknown)
-                        setText(it.hairColor.resId(gender))
-                    }
-                    with(label_height) {
-                        changeVisibility(isVisible = it.height > 0)
-                        setText("${it.height} ${AppRes.LENGTH_CM}")
-                    }
-                    with(label_income) {
-                        changeVisibility(isVisible = it.income != IncomeProfileProperty.Unknown)
-                        setText(it.income.resId)
-                    }
-                    with(label_property) {
-                        changeVisibility(isVisible = it.property != PropertyProfileProperty.Unknown)
-                        setText(it.property.resId)
-                    }
-                    with(label_transport) {
-                        changeVisibility(isVisible = it.transport != TransportProfileProperty.Unknown)
-                        setText(it.transport.resId)
+                properties.about()
+                    .takeIf { it.isNotBlank() }
+                    ?.let { tv_about.text = it }
+
+                withAbout = properties.about().isNotBlank()
+
+                mutableListOf<String>().apply {
+                    properties.name()
+                        .takeIf { it.isNotBlank() }
+                        ?.let { name -> add(name) }
+                        ?: run { add(resources.getString(OriginR_string.settings_profile_item_custom_property_name)) }
+
+                    if (spm.hasUserYearOfBirth()) {
+                        age.takeIf { it >= 18 }?.let { age -> add("$age") }
                     }
                 }
+                .let { tv_name_age.text = it.joinToString() }
+
+                ll_left_section?.let { containerView ->
+                    containerView.removeAllViews()
+                    when (gender) {
+                        Gender.FEMALE -> UserProfileScreenUtils.propertiesFemale
+                        else -> UserProfileScreenUtils.propertiesMale
+                    }
+                    .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
+                }
+                ll_right_section?.let { containerView ->
+                    containerView.removeAllViews()
+                    UserProfileScreenUtils.propertiesRight
+                        .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
+                }
+                onImageSelect(position = currentImagePosition)
             }
         }
 
@@ -330,17 +337,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
         }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
-        with (label_age_sex) {
-            val yearOfBirth = spm.currentUserYearOfBirth()
-            if (yearOfBirth != DomainUtil.BAD_VALUE) {
-                alpha = 1.0f
-                val age = calendar.get(Calendar.YEAR) - yearOfBirth
-                setIcon(spm.currentUserGender().resId)
-                setText("$age")
-            } else {
-                alpha = 0.0f
-            }
-        }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe { onRefresh() }
@@ -356,6 +352,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             setHasFixedSize(true)
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+            addOnScrollListener(pageSelectListener)
             addOnScrollListener(imagePreloadListener)
         }
         with (tv_app_title) {
@@ -374,6 +371,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     override fun onDestroyView() {
         super.onDestroyView()
         with (rv_items) {
+            removeOnScrollListener(pageSelectListener)
             removeOnScrollListener(imagePreloadListener)
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View) {}
@@ -446,6 +444,68 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             positiveListener = { _, _ -> navigate(this, path = "/webpage?url=${AppRes.WEB_URL_TERMS}") })
     }
 
+    private fun onImageSelect(position: Int) {
+        fun showLabels(containerView: ViewGroup, startIndex: Int, endIndex: Int) {
+            with (containerView) {
+                for (i in 0 until childCount) {
+                    getChildAt(i).changeVisibility(isVisible = false)
+                }
+                if (startIndex < childCount) {
+                    changeVisibility(isVisible = !fl_empty_container.isVisible())
+                    for (i in startIndex until minOf(endIndex, childCount)) {
+                        getChildAt(i).changeVisibility(isVisible = true)
+                    }
+                } else {
+                    changeVisibility(isVisible = false)
+                }
+            }
+        }
+
+        fun showAbout() {
+            tv_about.changeVisibility(isVisible = !fl_empty_container.isVisible())
+            ll_left_section.changeVisibility(isVisible = false)
+            ll_right_section.changeVisibility(isVisible = false)
+        }
+
+        fun showLabels(startIndex: Int, endIndex: Int) {
+            tv_about.changeVisibility(isVisible = false)
+            showLabels(ll_left_section, startIndex, endIndex)
+            showLabels(ll_right_section, startIndex, endIndex)
+        }
+
+        // --------------------------------------
+        imageOnViewPortId = imagesAdapter.findModel(position)?.id ?: DomainUtil.BAD_ID
+        currentImagePosition = position
+        val page = if (withAbout) maxOf(0, position - 1) else position
+        val startIndex = page * UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
+        val endIndex = startIndex + UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
+
+        if (withAbout) {
+            when (spm.currentUserGender()) {
+                Gender.FEMALE -> {
+                    when (position) {
+                        1 -> showAbout()
+                        else -> showLabels(startIndex, endIndex)
+                    }
+                }
+                else -> {
+                    when (position) {
+                        0 -> showAbout()
+                        else -> showLabels(startIndex, endIndex)
+                    }
+                }
+            }
+        } else {
+            showLabels(startIndex, endIndex)
+        }
+    }
+
+    private fun isAboutVisible(): Boolean =
+        withAbout && when (spm.currentUserGender()) {
+            Gender.FEMALE -> currentImagePosition == 1
+            else -> currentImagePosition == 0
+        }
+
     // ------------------------------------------
     private fun showBeginStub() {
         showEmptyStub(needShow = true, input = EmptyFragment.Companion.Input())
@@ -463,6 +523,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     private fun showEmptyStub(needShow: Boolean, input: EmptyFragment.Companion.Input) {
         fl_empty_container.changeVisibility(isVisible = needShow)
+        gradient.changeVisibility(isVisible = !needShow)
         if (!needShow) {
             return
         }
@@ -486,7 +547,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             ?.let { imagesAdapter.getModel(it) }
 
     private fun scrollToPosition(position: Int) {
-        rv_items?.post { rv_items?.scrollToPosition(position) }
+        rv_items?.post {
+            rv_items?.scrollToPosition(position)
+            onImageSelect(position)
+        }
     }
 
     private fun showControls(isVisible: Boolean) {
@@ -500,8 +564,9 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     private fun showImageControls(isVisible: Boolean) {
         ibtn_delete_image.changeVisibility(isVisible = isVisible)
         label_online_status.changeVisibility(isVisible = isVisible)
-        ll_left_section.changeVisibility(isVisible = isVisible)
+        ll_left_container.changeVisibility(isVisible = isVisible)
         ll_right_section.changeVisibility(isVisible = isVisible)
+        tv_about.changeVisibility(isVisible = isVisible && isAboutVisible())
     }
 
     // ------------------------------------------

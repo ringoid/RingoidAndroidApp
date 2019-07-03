@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="chat_blob_divider_height">5dp</dimen>
+    <dimen name="chat_blob_divider_height">2dp</dimen>
     <dimen name="chat_footer_et_padding_end">50dp</dimen>
     <dimen name="chat_header_item_height">78dp</dimen>
 </resources>
