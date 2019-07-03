@@ -501,11 +501,14 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
     }
 
-    private fun isAboutVisible(): Boolean =
-        withAbout && when (spm.currentUserGender()) {
-            Gender.FEMALE -> currentImagePosition == 1
-            else -> currentImagePosition == 0
-        }
+    private fun isAboutVisible(): Boolean {
+        val isOnPageAbout =
+            when (spm.currentUserGender()) {
+                Gender.FEMALE -> currentImagePosition == 1
+                else -> currentImagePosition == 0
+            }
+        return withAbout && isOnPageAbout
+    }
 
     // ------------------------------------------
     private fun showBeginStub() {
