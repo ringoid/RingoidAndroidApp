@@ -7,6 +7,7 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
+import com.ringoid.domain.misc.Gender
 import com.ringoid.utility.daysAgo
 import com.ringoid.utility.fromTs
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -26,7 +27,15 @@ abstract class BaseSettingsViewModel(
         val createdAt = spm.currentUserCreateTs().takeIf { it > 0L }?.let { fromTs(it) }
         val daysAgo = spm.currentUserCreateTs().takeIf { it > 0L }?.let { daysAgo(it) }
         val gender = spm.currentUserGender()
-        val reportText = "*$age ${gender.short()}* from `$tag`\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt ($daysAgo)"}"
+        val ageGenderStr = mutableListOf<String>().apply {
+            if (spm.hasUserYearOfBirth()) {
+                add("$age")
+            }
+            if (gender != Gender.UNKNOWN) {
+                add("${gender.short()}")
+            }
+        }
+        val reportText = "*${ageGenderStr.joinToString(" ").trim()}* from `$tag`\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt ($daysAgo)"}"
 
         val params = Params().put("channelId", "CJDASTGTC")
                              .put("text", reportText)
