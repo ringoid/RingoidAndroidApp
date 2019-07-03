@@ -80,7 +80,13 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
         item_legal.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_info") }
         item_profile.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile") }
         item_push.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_push") }
-        item_support.clicks().compose(clickDebounce()).subscribe { ExternalNavigator.emailSupportTeam(this) }
+        item_support.clicks().compose(clickDebounce()).subscribe {
+            ExternalNavigator.emailSupportTeam(this, "",
+                "id" to "${spm.currentUserId()}",
+                "request" to "${cloudDebug.get("request")}",
+                "response" to "${cloudDebug.get("result")}",
+                "lastActionTime" to "${cloudDebug.get("lastActionTime")}")
+        }
         item_suggest_improvements.clicks().compose(clickDebounce()).subscribe { openSuggestImprovementsDialog("SuggestFromSettings") }
 //        item_theme.apply {
 //            setChecked(!ThemeUtils.isDefaultTheme(spm))

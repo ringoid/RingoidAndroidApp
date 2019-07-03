@@ -64,46 +64,41 @@ inline fun <reified T : BaseResponse> Observable<T>.logResponse(tag: String = DE
 fun logResponseCompletable(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): CompletableTransformer =
     CompletableTransformer {
         var startTime = 0L
-        it
-            .doOnSubscribe { startTime = System.currentTimeMillis() }
-            .doOnComplete { logBaseResponse(tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
+        it.doOnSubscribe { startTime = System.currentTimeMillis() }
+          .doOnComplete { logBaseResponse(tag, startTime, *data) }
+          .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
 inline fun <reified T : BaseResponse> logResponseMaybe(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): MaybeTransformer<T, T> =
     MaybeTransformer {
         var startTime = 0L
-        it
-            .doOnSubscribe { startTime = System.currentTimeMillis() }
-            .doOnSuccess { logBaseResponse(it, tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
+        it.doOnSubscribe { startTime = System.currentTimeMillis() }
+          .doOnSuccess { logBaseResponse(it, tag, startTime, *data) }
+          .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
 inline fun <reified T : BaseResponse> logResponseSingle(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): SingleTransformer<T, T> =
     SingleTransformer {
         var startTime = 0L
-        it
-            .doOnSubscribe { startTime = System.currentTimeMillis() }
-            .doOnSuccess { logBaseResponse(it, tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
+        it.doOnSubscribe { startTime = System.currentTimeMillis() }
+          .doOnSuccess { logBaseResponse(it, tag, startTime, *data) }
+          .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
 inline fun <reified T : BaseResponse> logResponseFlowable(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): FlowableTransformer<T, T> =
     FlowableTransformer {
         var startTime = 0L
-        it
-            .doOnSubscribe { startTime = System.currentTimeMillis() }
-            .doOnNext { logBaseResponse(it, tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
+        it.doOnSubscribe { startTime = System.currentTimeMillis() }
+          .doOnNext { logBaseResponse(it, tag, startTime, *data) }
+          .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
 inline fun <reified T : BaseResponse> logResponseObservable(tag: String = DEFAULT_TAG, vararg data: Pair<String, String>): ObservableTransformer<T, T> =
     ObservableTransformer {
         var startTime = 0L
-        it
-            .doOnSubscribe { startTime = System.currentTimeMillis() }
-            .doOnNext { logBaseResponse(it, tag, startTime, *data) }
-            .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
+        it.doOnSubscribe { startTime = System.currentTimeMillis() }
+          .doOnNext { logBaseResponse(it, tag, startTime, *data) }
+          .doFinally { checkElapsedTimeAndWarn(startTime, tag = tag) }
     }
 
 // ----------------------------------------------

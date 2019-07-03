@@ -77,9 +77,10 @@ object ExternalNavigator {
         openEmailComposer(fragment, email = "data.protection@ringoid.com", subject = subject, body = body)
     }
 
-    fun emailSupportTeam(fragment: Fragment, body: String = "") {
+    fun emailSupportTeam(fragment: Fragment, body: String = "", vararg extras: Pair<String, String>) {
         val subject = String.format(AppRes.EMAIL_SUPPORT_MAIL_SUBJECT, ContextUtil.appInfo())
-        openEmailComposer(fragment, email = "support@ringoid.com", subject = subject, body = body)
+        val xbody = "${extras.joinToString()}\n\n$body".trim()
+        openEmailComposer(fragment, email = "support@ringoid.com", subject = subject, body = xbody)
     }
 
     private fun openEmailComposerIntent(email: String, subject: String = "", body: String = ""): Intent =
