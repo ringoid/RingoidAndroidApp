@@ -46,7 +46,7 @@ buildscript {
         firebaseVersion = '16.0.8'
         firebaseMessagingVersion = '17.3.3'
         firebasePerformanceVersion = '16.2.5'
-        firebasePerformancePluginVersion = '1.2.0'
+        firebasePerformancePluginVersion = '1.2.1'
         firebaseReferralVersion = '17.0.0'
         flurryVersion = '11.4.0@aar'
         googlePlayServicesVersion = '15.0.1'
