@@ -75,6 +75,7 @@ ext {
             firebase:          "com.google.firebase:firebase-core:${firebaseVersion}",
             firebaseMessaging: "com.google.firebase:firebase-messaging:$firebaseMessagingVersion",
             firebasePerformance: "com.google.firebase:firebase-perf:${firebasePerformanceVersion}",
+            firebaseReferral:  "com.google.firebase:firebase-dynamic-links:${firebaseReferralVersion}",
             flurry:            "com.flurry.android:analytics:${flurryVersion}",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
@@ -474,6 +475,7 @@ ext {
         [configuration: "api", dependency: d_libs.glideRecycler, options: { transitive = true }],
         [configuration: "implementation", dependency: d_libs.confetti],
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
+        [configuration: "implementation", dependency: d_libs.firebaseReferral],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + image + log + fragnav + rx + rxBind +
