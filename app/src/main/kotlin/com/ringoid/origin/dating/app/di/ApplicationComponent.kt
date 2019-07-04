@@ -5,6 +5,7 @@ import android.content.Context
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
+import com.ringoid.domain.debug.IBarrierLogDaoHelper
 import com.ringoid.domain.debug.IDebugLogDaoHelper
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.auth.di.LoginActivityModule
@@ -81,5 +82,6 @@ interface ApplicationComponent : AndroidInjector<RingoidApplication> {
         abstract fun systemCloudModule(systemCloudModule: SystemCloudModule): Builder
     }
 
+    fun barrierLogDao(): IBarrierLogDaoHelper  // exposed access to barrier-log database
     fun debugLogDao(): IDebugLogDaoHelper  // exposed access to debug-log database
 }

@@ -1,13 +1,14 @@
 package com.ringoid.data.local.database.dao.debug
 
 import com.ringoid.domain.debug.DebugLogItem
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.IDebugLogDaoHelper
 import com.ringoid.domain.model.mapList
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@Singleton @DebugOnly
 class DebugLogDaoHelper @Inject constructor(private val dao: DebugLogDao) : IDebugLogDaoHelper {
 
     override fun debugLog(): Single<List<DebugLogItem>> = dao.debugLog().map { it.mapList() }

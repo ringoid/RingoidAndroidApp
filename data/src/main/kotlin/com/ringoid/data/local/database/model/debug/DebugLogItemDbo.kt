@@ -8,7 +8,8 @@ import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.Mappable
 
-@Entity(tableName = DebugLogItemDbo.TABLE_NAME) @DebugOnly
+@DebugOnly
+@Entity(tableName = DebugLogItemDbo.TABLE_NAME)
 data class DebugLogItemDbo(
     @PrimaryKey @ColumnInfo(name = COLUMN_ID) val id: String,
     @ColumnInfo(name = COLUMN_LOG) val log: String,
