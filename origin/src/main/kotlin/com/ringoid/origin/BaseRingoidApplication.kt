@@ -16,7 +16,6 @@ import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.domain.scope.UserScopeProvider
 import com.ringoid.utility.manager.LocaleManager
 import dagger.android.support.DaggerApplication
-import io.branch.referral.Branch
 import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -100,7 +99,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     /* Programming Tools */
     // --------------------------------------------------------------------------------------------
     private fun initializeProgrammingTools() {
-        Branch.getAutoInstance(this)
         FlurryAgent.Builder()
             .withLogEnabled(true)
             .withCaptureUncaughtExceptions(true)
