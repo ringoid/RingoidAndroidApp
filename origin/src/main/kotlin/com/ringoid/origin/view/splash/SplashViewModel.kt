@@ -13,9 +13,11 @@ class SplashViewModel @Inject constructor(app: Application) : BaseViewModel(app)
     // --------------------------------------------------------------------------------------------
     fun analyzeIntent(intent: Intent?) {
         val referralId = ReferralUtils.getReferralCode(intent)
-        Timber.v("Referral Code on link open: $referralId")
-        SentryUtil.i("Referral Code received on link open",
-                     listOf("referralId" to "$referralId", "link" to "${intent?.dataString}"))
+        if (!referralId.isNullOrBlank()) {
+            Timber.v("Referral Code on link open: $referralId")
+            SentryUtil.i("Referral Code received on link open",
+                         listOf("referralId" to "$referralId", "link" to "${intent?.dataString}"))
+        }
         spm.setReferralCode(referralId)  // save input referral code (or null)
     }
 }

@@ -12,14 +12,16 @@ import javax.inject.Inject
 
 class ReferralInstallListener : BroadcastReceiver() {
 
-    @Inject private lateinit var spm: ISharedPrefsManager
+    @Inject lateinit var spm: ISharedPrefsManager
 
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
         val referralId = ReferralUtils.getReferralCode(intent)
-        Timber.v("Referral Code on install: $referralId")
-        SentryUtil.i("Referral Code received on App install",
-                     listOf("referralId" to "$referralId", "link" to intent.dataString))
-        spm.setReferralCode(referralId, dontOverride = true)  // save input referral code (or null)
+        if (!referralId.isNullOrBlank()) {
+            Timber.v("Referral Code on install: $referralId")
+            SentryUtil.i("Referral Code received on App install",
+                         listOf("referralId" to "$referralId", "link" to intent.dataString))
+        }
+        spm.setReferralCode(referralId, dontOverride = !referralId.isNullOrBlank())  // save input referral code (or null)
     }
 }
