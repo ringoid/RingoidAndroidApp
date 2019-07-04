@@ -73,7 +73,7 @@
         <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
 
         <!-- Branch install referrer tracking -->
-        <receiver android:name="io.branch.referral.InstallListener" android:exported="true">
+        <receiver android:name="com.ringoid.origin.dating.app.deeplink.ReferralInstallListener" android:exported="true">
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
