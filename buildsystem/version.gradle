@@ -11,6 +11,7 @@ buildscript {
         androidAppCompatVersion = '1.0.2'
         androidCoreVersion = '1.0.1'
         androidFragmentVersion = '1.0.0'
+        androidInstallReferrerVersion = '1.0'
         androidMaterialVersion = '1.1.0-alpha01'
 
         androidCardViewVersion = '1.0.0'
@@ -45,7 +46,8 @@ buildscript {
         firebaseVersion = '16.0.8'
         firebaseMessagingVersion = '17.3.3'
         firebasePerformanceVersion = '16.2.5'
-        firebasePerformancePluginVersion = '1.2.0'
+        firebasePerformancePluginVersion = '1.2.1'
+        firebaseReferralVersion = '17.0.0'
         flurryVersion = '11.4.0@aar'
         googlePlayServicesVersion = '15.0.1'
 

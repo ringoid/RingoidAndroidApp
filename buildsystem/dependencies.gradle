@@ -9,6 +9,7 @@ ext {
             appcompat:  "androidx.appcompat:appcompat:${androidAppCompatVersion}",
             core:       "androidx.core:core:${androidCoreVersion}",
             fragment:   "androidx.fragment:fragment:${androidFragmentVersion}",
+            install:    "com.android.installreferrer:installreferrer:${androidInstallReferrerVersion}",
             localBroadcast: "androidx.localbroadcastmanager:localbroadcastmanager:${jetpackVersion}",
             material:   "com.google.android.material:material:${androidMaterialVersion}",
 
@@ -66,7 +67,7 @@ ext {
             glideOkHttp:    "com.github.bumptech.glide:okhttp3-integration:${glideVersion}",
             glideRecycler:  "com.github.bumptech.glide:recyclerview-integration:${glideVersion}",
 
-            branch:            "io.branch.sdk.android:library:${branchVersion}",
+//            branch:            "io.branch.sdk.android:library:${branchVersion}",
 //            deeplink:          "com.airbnb:deeplinkdispatch:${deeplinkVersion}",
 //            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
             deeplink:          "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:eb7e520d87",
@@ -74,6 +75,7 @@ ext {
             firebase:          "com.google.firebase:firebase-core:${firebaseVersion}",
             firebaseMessaging: "com.google.firebase:firebase-messaging:$firebaseMessagingVersion",
             firebasePerformance: "com.google.firebase:firebase-perf:${firebasePerformanceVersion}",
+            firebaseReferral:  "com.google.firebase:firebase-dynamic-links:${firebaseReferralVersion}",
             flurry:            "com.flurry.android:analytics:${flurryVersion}",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
@@ -336,7 +338,7 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = [
-        [configuration: "implementation", dependency: d_libs.branch],
+        [configuration: "implementation", dependency: d_android.install],
     ]
     appDependencies += all_features + module_main + module_data + develop + android + dagger + deeplink + kotlin + log +
                        fragnav + net + room + support
@@ -472,8 +474,8 @@ ext {
         [configuration: "api", dependency: project(modules.cropiwa)],
         [configuration: "api", dependency: d_libs.glideRecycler, options: { transitive = true }],
         [configuration: "implementation", dependency: d_libs.confetti],
-        [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
+        [configuration: "implementation", dependency: d_libs.firebaseReferral],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + image + log + fragnav + rx + rxBind +

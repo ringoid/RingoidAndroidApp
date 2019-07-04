@@ -46,6 +46,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         private const val BACKUP_SHARED_PREFS_FILE_NAME = "RingoidBackup.prefs"
 
         private const val SP_KEY_BUILD_CODE = "sp_key_build_code"
+        private const val SP_KEY_APP_FIRST_LAUNCH = "sp_key_app_first_launch"
         private const val SP_KEY_APP_UID = "sp_key_app_uid"
         private const val SP_KEY_THEME = "sp_key_theme"
         @DebugOnly private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
@@ -72,6 +73,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         // --------------------------------------
         internal const val SP_KEY_PRIVATE_KEY = "sp_key_private_key"
         internal const val SP_KEY_REFERRAL_CODE = "sp_key_referral_code"
+        internal const val SP_KEY_REFERRAL_CODE_DONT_OVERRIDE = "sp_key_referral_code_dont_override"
 
         /* User Settings */
         // --------------------------------------
@@ -107,6 +109,12 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun getAppUid(): String =
         sharedPreferences.getString(SP_KEY_APP_UID, null)
             ?: run { randomString().also { sharedPreferences.edit().putString(SP_KEY_APP_UID, it).apply() } }
+
+    override fun isFirstAppLaunch(): Boolean = sharedPreferences.getBoolean(SP_KEY_APP_FIRST_LAUNCH, true)
+
+    override fun dropFirstAppLaunch() {
+        sharedPreferences.edit().putBoolean(SP_KEY_APP_FIRST_LAUNCH, false).apply()
+    }
 
     private fun isAppUpdated(): Boolean =
         sharedPreferences.getInt(SP_KEY_BUILD_CODE, 0) < BuildConfig.BUILD_NUMBER
@@ -289,8 +297,16 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun hasReferralCode(): Boolean = !backupSharedPreferences.getString(SP_KEY_REFERRAL_CODE, null).isNullOrBlank()
 
-    override fun setReferralCode(code: String?) {
-        backupSharedPreferences.edit().putString(SP_KEY_REFERRAL_CODE, code).apply()
+    override fun setReferralCode(code: String?, dontOverride: Boolean) {
+        if (backupSharedPreferences.getBoolean(SP_KEY_REFERRAL_CODE_DONT_OVERRIDE, false)) {
+            backupSharedPreferences.edit().remove(SP_KEY_REFERRAL_CODE_DONT_OVERRIDE).apply()
+            return  // don't override, if flag is set
+        }
+
+        backupSharedPreferences.edit()
+            .putString(SP_KEY_REFERRAL_CODE, code)
+            .putBoolean(SP_KEY_REFERRAL_CODE_DONT_OVERRIDE, dontOverride)
+            .apply()
     }
 
     /* User Settings */

@@ -69,7 +69,8 @@ class LoginViewModel @Inject constructor(
             sex = gender?.string ?: Gender.MALE.string /* safe null-check */,
             device = String.format("%s, %s, %s", Build.MODEL, Build.MANUFACTURER, Build.PRODUCT),
             osVersion = String.format("%s, %d", Build.VERSION.RELEASE, Build.VERSION.SDK_INT),
-            privateKey = spm.createPrivateKeyIfNotExists(), referralId = spm.getReferralCode(),
+            privateKey = spm.createPrivateKeyIfNotExists(),
+            referralId = spm.getReferralCode(),
             settings = app.userSettingsManager.getUserSettings())
 
         createUserProfileUseCase.source(params = Params().put(essence))
@@ -80,7 +81,7 @@ class LoginViewModel @Inject constructor(
             .subscribe({
                 Timber.d("Successfully signed up, current user: $it")
                 analyticsManager.enterUserScope()  // prepare analytics manager data for the new logged in user
-                analyticsManager.fire(Analytics.AUTH_USER_PROFILE_CREATED, "yearOfBirth" to "${essence.yearOfBirth}", "sex" to essence.sex)
+                analyticsManager.fire(Analytics.AUTH_USER_PROFILE_CREATED, "yearOfBirth" to "${essence.yearOfBirth}", "sex" to essence.sex, "referralId" to "${essence.referralId}")
                 app.userScopeProvider.onLogin()
             }, Timber::e)
     }

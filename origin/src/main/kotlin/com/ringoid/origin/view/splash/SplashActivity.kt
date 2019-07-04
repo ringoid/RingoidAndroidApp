@@ -9,10 +9,6 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.splash
 import com.ringoid.utility.getScreenWidth
-import io.branch.referral.Branch
-import io.branch.referral.BranchError
-import org.json.JSONObject
-import timber.log.Timber
 
 class SplashActivity : BaseActivity<SplashViewModel>() {
 
@@ -31,7 +27,6 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppRes.SCREEN_WIDTH = getScreenWidth()
-        initializeBranch()
 
         vm.analyzeIntent(intent)
         vm.accessToken.observe(this, Observer {
@@ -46,13 +41,5 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
         if (isViewModelInitialized) {
             vm.analyzeIntent(intent)
         }
-    }
-
-    // --------------------------------------------------------------------------------------------
-    private fun initializeBranch() {
-        Branch.getInstance().initSession({ params: JSONObject, error: BranchError? ->
-            error?.let { Timber.e("Branch error [${it.errorCode}]: ${it.message}") }
-                 ?: run { Timber.i("Branch success: $params") }
-        }, intent.data, this)
     }
 }

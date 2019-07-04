@@ -158,6 +158,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                         imagesAdapter.getModelAdapterPosition { it.id == imageOnViewPortId }
                             .takeIf { it != DomainUtil.BAD_POSITION }
                             ?.let { scrollToPosition(it) }
+                            ?: run { scrollToPosition(0) }  // no previously seen image - scroll to the first image
                     } else if (count > 0) {  // inserted single item
                         scrollToPosition(0)  // for append: imagesAdapter.itemCount - 1
                     }
@@ -500,11 +501,14 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
     }
 
-    private fun isAboutVisible(): Boolean =
-        withAbout && when (spm.currentUserGender()) {
-            Gender.FEMALE -> currentImagePosition == 1
-            else -> currentImagePosition == 0
-        }
+    private fun isAboutVisible(): Boolean {
+        val isOnPageAbout =
+            when (spm.currentUserGender()) {
+                Gender.FEMALE -> currentImagePosition == 1
+                else -> currentImagePosition == 0
+            }
+        return withAbout && isOnPageAbout
+    }
 
     // ------------------------------------------
     private fun showBeginStub() {

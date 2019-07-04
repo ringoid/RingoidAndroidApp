@@ -10,17 +10,16 @@ import com.ringoid.domain.model.user.AccessToken
 interface ISharedPrefsManager {
 
     fun getAppUid(): String
+    fun isFirstAppLaunch(): Boolean
+    fun dropFirstAppLaunch()
 
     // ------------------------------------------
     fun getByKey(key: String): String?
-
     fun saveByKey(key: String, json: String)
-
     fun deleteByKey(key: String)
 
     // ------------------------------------------
     fun getThemeResId(@StyleRes defaultThemeResId: Int = 0): Int
-
     fun saveThemeResId(@StyleRes themeResId: Int)
 
     // ------------------------------------------
@@ -37,9 +36,7 @@ interface ISharedPrefsManager {
     fun testBackup()
 
     fun isDeveloperModeEnabled(): Boolean
-
     fun enableDeveloperMode()
-
     fun switchDeveloperMode()
 
     /* Auth */
@@ -71,16 +68,12 @@ interface ISharedPrefsManager {
     fun createPrivateKeyIfNotExists(): String?
 
     fun getPrivateKey(): String?
-
     fun hasPrivateKey(): Boolean
-
     fun setPrivateKey(privateKey: String?)
 
     fun getReferralCode(): String?
-
     fun hasReferralCode(): Boolean
-
-    fun setReferralCode(code: String?)
+    fun setReferralCode(code: String?, dontOverride: Boolean = false)
 
     /* User Settings */
     // ------------------------------------------
