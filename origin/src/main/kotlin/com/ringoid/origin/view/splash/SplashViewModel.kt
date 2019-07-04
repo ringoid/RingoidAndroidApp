@@ -4,12 +4,20 @@ import android.app.Application
 import android.content.Intent
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.origin.utils.ReferralUtils
 import timber.log.Timber
 import javax.inject.Inject
 
 class SplashViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onFreshStart() {
+        super.onFreshStart()
+        SentryUtil.breadcrumb("App Version", "code" to "${BuildConfig.VERSION_CODE}", "version" to "${BuildConfig.VERSION_NAME}")
+    }
 
     // --------------------------------------------------------------------------------------------
     fun analyzeIntent(intent: Intent?) {
