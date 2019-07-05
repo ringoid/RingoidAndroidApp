@@ -8,6 +8,7 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.repository.handleError
+import com.ringoid.domain.debug.BarrierLogUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.OriginActionObject
@@ -74,8 +75,14 @@ class PersistActionObjectPool @Inject constructor(
                     Single.just(CommitActionsResponse(lastActionTime()))  // do nothing on empty queue
                 } else {
                     local.actionObjects()
+                        .doOnSubscribe { BarrierLogUtil.v("Start get local aObjects") }
+                        .doOnSuccess { l -> BarrierLogUtil.v("Finish get local aObjects [${l.size}]") }
+                        .doOnError { e -> BarrierLogUtil.v("Error get local aObjects: $e") }
                         .flatMap {
                             Completable.fromCallable { local.markActionObjectsAsUsed(ids = it.map { it.id }) }
+                                       .doOnSubscribe { BarrierLogUtil.v("Start mark local aObjects as used") }
+                                       .doOnComplete { BarrierLogUtil.v("Finish mark local aObjects as used") }
+                                       .doOnError { e -> BarrierLogUtil.v("Error mark local aObjects as used: $e") }
                                        .toSingleDefault(it)
                         }
                         .map { it.map { it.map() } }  // map from dbo to domain model
@@ -87,23 +94,32 @@ class PersistActionObjectPool @Inject constructor(
                                 val queueCopy = ArrayDeque(queue)
                                 val essence = CommitActionsEssence(it.accessToken, queueCopy)
                                 cloud.commitActions(essence)
-                                     .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)                       }
-                    }
+                                     .doOnSubscribe { BarrierLogUtil.v("Start commitActions network") }
+                                     .doOnSuccess { r -> BarrierLogUtil.v("Finish commitActions network: $r") }
+                                     .doOnError { e -> BarrierLogUtil.v("commitActions network error: $e") }
+                                     .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8, withBarrierLogs = true)
+                            }
+                        }
                 }
             }
             .doOnError {
                 SentryUtil.breadcrumb("Commit actions error",
                     "exception" to "${it.javaClass}", "message" to "${it.message}")
+                BarrierLogUtil.v("Commit actions error inside: $it")
                 DebugLogUtil.e("Commit actions error: $it ;; ${threadInfo()}")
             }
             .doOnSubscribe { dropStrategyData() }
             .doOnSuccess { updateLastActionTime(it.lastActionTime) }
             .doOnDispose {
+                BarrierLogUtil.v("Commit actions disposed")
                 DebugLogUtil.d("Commit actions disposed [user scope: ${userScopeProvider.hashCode()}]")
                 finalizePool()
             }
             .flatMap {
                 Completable.fromCallable { local.deleteUsedActionObjects() }
+                           .doOnSubscribe { BarrierLogUtil.v("Start delete local aObjects") }
+                           .doOnComplete { BarrierLogUtil.v("Finish delete local aObjects") }
+                           .doOnError { e -> BarrierLogUtil.v("Error delete local aObjects: $e") }
                            .toSingleDefault(it.lastActionTime)
             }
 }

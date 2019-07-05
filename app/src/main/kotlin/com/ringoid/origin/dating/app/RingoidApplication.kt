@@ -1,6 +1,6 @@
 package com.ringoid.origin.dating.app
 
-import com.ringoid.data.debug.BarrierLogUtil
+import com.ringoid.domain.debug.BarrierLogUtil
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule

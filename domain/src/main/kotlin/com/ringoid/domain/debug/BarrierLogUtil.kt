@@ -1,8 +1,5 @@
-package com.ringoid.data.debug
+package com.ringoid.domain.debug
 
-import com.ringoid.domain.debug.BarrierLogItem
-import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.debug.IBarrierLogDaoHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -24,7 +21,15 @@ object BarrierLogUtil {
     private var dao: IBarrierLogDaoHelper? = null
     private val logs = mutableListOf<BarrierLogItem>()
 
-    fun log(log: String) {
+    fun c(log: String) {
+        if (cachingInProgress.tryAcquire(0, TimeUnit.SECONDS)) {
+            logs.clear()
+            logs.add(BarrierLogItem(log = log))
+            cachingInProgress.release()
+        }
+    }
+
+    fun v(log: String) {
         if (cachingInProgress.tryAcquire(0, TimeUnit.SECONDS)) {
             logs.add(BarrierLogItem(log = log))
             cachingInProgress.release()
@@ -33,13 +38,20 @@ object BarrierLogUtil {
 
     // ------------------------------------------
     fun connectToDb(dao: IBarrierLogDaoHelper) {
-        this.dao = dao
+        BarrierLogUtil.dao = dao
         persistLogsPeriodically()  // start timer to persist logs periodically
     }
 
     fun getLog(): Single<List<BarrierLogItem>>? =
         dao?.log()
            ?.subscribeOn(Schedulers.io())
+           ?.concatWith {
+               Flowable.fromIterable(logs)
+                   .doOnSubscribe { cachingInProgress.tryAcquire(0, TimeUnit.SECONDS) }
+                   .doFinally { cachingInProgress.release() }
+           }
+           ?.collect({ mutableListOf<BarrierLogItem>() }, { out, items -> out.addAll(items) })
+           ?.map { it.toList() }
            ?.observeOn(AndroidSchedulers.mainThread())
 
     @Suppress("CheckResult")

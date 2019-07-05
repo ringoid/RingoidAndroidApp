@@ -3,6 +3,7 @@ package com.ringoid.data.action_storage
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.BarrierLogUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import io.reactivex.Single
@@ -25,11 +26,19 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
                 tcount.incrementAndGet()
                 DebugLogUtil.v("Acquiring permission to commit actions by ${threadStr(thread)}")
                 triggerInProgress.acquireUninterruptibly()  // acquire permission to continue, or block on a barrier otherwise
+                BarrierLogUtil.c("Acquired lock: queue[${triggerInProgress.queueLength}]")
                 DebugLogUtil.v("Permission's been acquired to commit actions by ${threadStr(thread)}")
                 triggerSourceImpl()
-                    .doOnSubscribe { DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}") }
-                    .doOnError { DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)} with $it") }
+                    .doOnSubscribe {
+                        BarrierLogUtil.v("Commit actions started")
+                        DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}")
+                    }
+                    .doOnError {
+                        BarrierLogUtil.v("Commit actions error: $it")
+                        DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)} with $it")
+                    }
                     .doFinally {
+                        BarrierLogUtil.v("Commit actions finally")
                         finishTriggerSource()  // 'doFinally' must be thread-safe
                         DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.startTime} ms")
                     }
@@ -38,6 +47,7 @@ abstract class BarrierActionObjectPool(cloud: RingoidCloud, spm: SharedPrefsMana
     @Synchronized
     private fun finishTriggerSource() {
         triggerInProgress.release()
+        BarrierLogUtil.v("Released lock: queue[${triggerInProgress.queueLength}]")
         tcount.decrementAndGet()
         SentryUtil.breadcrumb("Released lock by thread: ${threadInfo()}")
     }
