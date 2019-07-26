@@ -37,7 +37,11 @@ abstract class BaseSettingsViewModel(
         }
         val reportText = "*${ageGenderStr.joinToString(" ").trim()}* from `$tag`\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt ($daysAgo)"}"
 
-        val params = Params().put("channelId", "CJDASTGTC")
+        val channelId = when (gender) {
+            Gender.FEMALE -> "CL9ATCU3B"
+            else -> "CJDASTGTC"
+        }
+        val params = Params().put("channelId", channelId)
                              .put("text", reportText)
         postToSlackUseCase.source(params = params)
             .doOnComplete {
