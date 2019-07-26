@@ -63,7 +63,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                 item_profile_property_property.setSelectedItem(it.property)
                 item_profile_property_transport.setSelectedItem(it.transport)
                 // custom properties
-                item_profile_custom_property_about.setInputText(it.about())
+                item_profile_custom_property_about.setInputText(it.about().trim())
                 item_profile_custom_property_company.setInputText(it.company())
                 item_profile_custom_property_job_title.setInputText(it.jobTitle())
                 item_profile_property_height.setInputText(if (it.height > 0) "${it.height}" else "")

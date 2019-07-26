@@ -411,7 +411,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         // --------------------------------------
         model.about()
             .takeIf { !it.isNullOrBlank() }
-            ?.let { itemView.tv_about.text = it }
+            ?.let { itemView.tv_about.text = it.trim() }
 
         withAbout = !model.about().isNullOrBlank()
 

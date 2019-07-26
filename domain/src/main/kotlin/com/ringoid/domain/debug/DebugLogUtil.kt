@@ -6,7 +6,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.ReplaySubject
 import io.sentry.event.Event
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 @DebugOnly
@@ -65,6 +64,6 @@ object DebugLogUtil {
 
     fun getDebugLog(): Single<List<DebugLogItem>>? =
         dao?.debugLog()
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
+           ?.subscribeOn(Schedulers.io())
+           ?.observeOn(AndroidSchedulers.mainThread())
 }

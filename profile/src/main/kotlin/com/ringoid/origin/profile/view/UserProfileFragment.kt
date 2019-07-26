@@ -242,7 +242,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
                 properties.about()
                     .takeIf { it.isNotBlank() }
-                    ?.let { tv_about.text = it }
+                    ?.let { tv_about.text = it.trim() }
 
                 withAbout = properties.about().isNotBlank()
 
