@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
+import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings_push.*
 
-class SettingsPushFragment : BaseFragment<SettingsPushViewModel>() {
+class SettingsPushFragment : BaseSettingsFragment<SettingsPushViewModel>() {
 
     companion object {
         internal const val TAG = "SettingsPushFragment_tag"
@@ -64,5 +64,8 @@ class SettingsPushFragment : BaseFragment<SettingsPushViewModel>() {
             setChecked(spm.getUserSettingMessagesPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMessages(isChecked()) }
         }
+
+        // other
+        item_suggest_improvements.clicks().compose(clickDebounce()).subscribe { openSuggestImprovementsDialog("SuggestFromNotificationsSettings") }
     }
 }
