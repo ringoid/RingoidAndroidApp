@@ -64,7 +64,10 @@ object BarrierLogUtil {
                     val xlogs = ArrayList(logs)
                     logs.clear()
                     Completable.fromCallable { dao?.addLogs(xlogs) }
-                        .doOnSubscribe { cachingInProgress.tryAcquire(0, TimeUnit.SECONDS) }
+                        .doOnSubscribe {
+                            cachingInProgress.tryAcquire(0, TimeUnit.SECONDS)
+                            Timber.v("Start caching barrier logs [${xlogs.size}]")
+                        }
                         .doOnComplete { Timber.v("Finished caching barrier logs") }
                         .doFinally { cachingInProgress.release() }
                 } else {
