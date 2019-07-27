@@ -26,6 +26,7 @@ import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
+@Deprecated("LMM -> LC")
 class LmmViewModel @Inject constructor(
     val getLmmUseCase: GetLmmUseCase,
     private val clearSentMessagesUseCase: ClearSentMessagesUseCase,

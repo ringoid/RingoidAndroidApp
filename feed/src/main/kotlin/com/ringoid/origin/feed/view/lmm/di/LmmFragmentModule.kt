@@ -4,7 +4,7 @@ import com.ringoid.origin.feed.view.lmm.LmmFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-@Module
+@Module @Deprecated("LMM -> LC")
 abstract class LmmFragmentModule {
 
     @ContributesAndroidInjector

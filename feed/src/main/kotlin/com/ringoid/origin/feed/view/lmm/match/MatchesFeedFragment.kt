@@ -13,6 +13,7 @@ import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
 
+@Deprecated("LMM -> LC")
 class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
 
     companion object {

@@ -22,6 +22,7 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_lmm.*
 
+@Deprecated("LMM -> LC")
 class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     companion object {

@@ -30,6 +30,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@Deprecated("LMM -> LC")
 class MatchesFeedViewModel @Inject constructor(
     getChatUseCase: GetChatUseCase,
     getLmmUseCase: GetLmmUseCase,

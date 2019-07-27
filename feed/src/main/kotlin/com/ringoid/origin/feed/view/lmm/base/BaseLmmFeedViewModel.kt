@@ -41,6 +41,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+@Deprecated("LMM -> LC")
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
     private val getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,

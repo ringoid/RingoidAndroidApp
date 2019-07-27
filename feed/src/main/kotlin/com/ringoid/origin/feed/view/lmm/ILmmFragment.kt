@@ -4,6 +4,7 @@ import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.ICommunicator
 
+@Deprecated("LMM -> LC")
 interface ILmmFragment : ICommunicator {
 
     fun accessViewModel(): LmmViewModel

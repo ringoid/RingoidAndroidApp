@@ -31,6 +31,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
+@Deprecated("LMM -> LC")
 abstract class BaseMatchesFeedViewModel(
     private val getChatUseCase: GetChatUseCase,
     getLmmUseCase: GetLmmUseCase,

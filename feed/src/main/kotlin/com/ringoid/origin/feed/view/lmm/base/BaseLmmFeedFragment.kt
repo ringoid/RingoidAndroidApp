@@ -41,6 +41,7 @@ import com.ringoid.utility.runOnUiThread
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
+@Deprecated("LMM -> LC")
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>(), IChatHost, IDialogCallback  {
 
     abstract fun instantiateFeedAdapter(): BaseLmmAdapter

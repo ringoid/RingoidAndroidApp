@@ -25,6 +25,7 @@ import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
 import javax.inject.Inject
 
+@Deprecated("LMM -> LC")
 class MessagesFeedViewModel @Inject constructor(
     getChatUseCase: GetChatUseCase,
     getLmmUseCase: GetLmmUseCase,
