@@ -65,17 +65,22 @@ interface RingoidRestAdapter {
                 @Query("userId") peerId: String?,
                 @Query("lastActionTime") lastActionTime: Long = 0L): Single<ChatResponse>
 
+    @Deprecated("LMM -> LC")
     @GET("feeds/get_new_faces")
     fun getNewFaces(@Query("accessToken") accessToken: String,
                     @Query("resolution") resolution: String?,
                     @Query("limit") limit: Int?,
                     @Query("lastActionTime") lastActionTime: Long = 0L): Single<FeedResponse>
 
+    @Deprecated("LMM -> LC")
     @GET("feeds/get_lmm")
     fun getLmm(@Query("accessToken") accessToken: String,
                @Query("resolution") resolution: String?,
                @Query("source") source: String?,
                @Query("lastActionTime") lastActionTime: Long = 0L): Single<LmmResponse>
+
+    @GET("feeds/get_lc")
+    fun getLc(@Body body: RequestBody): Single<LmmResponse>
 
     /* Push */
     // --------------------------------------------------------------------------------------------
