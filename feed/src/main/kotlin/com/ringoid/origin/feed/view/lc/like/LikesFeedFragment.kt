@@ -1,5 +1,7 @@
 package com.ringoid.origin.feed.view.lc.like
 
+import android.os.Bundle
+import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
@@ -8,7 +10,9 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
 
 class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
@@ -39,5 +43,12 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
 
     override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
 
+    /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with(viewLifecycleOwner) {
+            observe(vm.count) { communicator(IBaseMainActivity::class.java)?.showCountOnLikes(count = it) }
+        }
+    }
 }

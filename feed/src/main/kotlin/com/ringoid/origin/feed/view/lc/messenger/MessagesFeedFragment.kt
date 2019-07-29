@@ -1,5 +1,7 @@
 package com.ringoid.origin.feed.view.lc.messenger
 
+import android.os.Bundle
+import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
@@ -15,7 +17,9 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
 
 class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
@@ -44,6 +48,15 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
         }
 
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with(viewLifecycleOwner) {
+            observe(vm.count) { communicator(IBaseMainActivity::class.java)?.showCountOnMessages(count = it) }
+        }
+    }
 
     // --------------------------------------------------------------------------------------------
     private fun openChat(position: Int, peerId: String, image: IImage? = null, tag: String = ChatFragment.TAG) {
