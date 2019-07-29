@@ -34,7 +34,7 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
-import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.*
 import com.uber.autodispose.lifecycle.autoDisposable
 import kotlinx.android.synthetic.main.fragment_chat.*
@@ -174,7 +174,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
             val imageId = payload?.peerImageId ?: BAD_ID
             vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString(),
-                           sourceFeed = payload?.sourceFeed ?: LmmNavTab.MESSAGES)
+                           sourceFeed = payload?.sourceFeed ?: LcNavTab.MESSAGES)
             clearEditText()
         }
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }

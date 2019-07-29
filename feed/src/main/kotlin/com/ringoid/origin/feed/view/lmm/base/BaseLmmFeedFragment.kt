@@ -101,11 +101,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(tag: String, payload: ChatPayload) {
-        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
+        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeedCompat.feedName, fromChat = true)
     }
 
     override fun onReportFromChat(tag: String, payload: ChatPayload, reasonNumber: Int) {
-        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
+        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeedCompat.feedName, fromChat = true)
     }
 
     override fun onDialogDismiss(tag: String, payload: Parcelable?) {
@@ -117,7 +117,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
                 when (tag) {
                     ChatFragment.TAG -> {
-                        if (!it.isChatEmpty && it.sourceFeed == LmmNavTab.MATCHES) {
+                        if (!it.isChatEmpty && it.sourceFeedCompat == LmmNavTab.MATCHES) {
                             vm.transferProfile(profileId = it.peerId)
                         } else {
                             feedAdapter.findModel(it.position)?.setOnlineStatus(it.onlineStatus)
@@ -147,7 +147,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         peerImageId = image?.id ?: DomainUtil.BAD_ID,
                         peerImageUri = image?.uri,
                         peerThumbnailUri = image?.thumbnailUri,
-                        sourceFeed = getSourceFeed())  // TODO: to be removed
+                        sourceFeed = getSourceFeed().slice(),  // compatibility mode
+                        sourceFeedCompat = getSourceFeed())
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }

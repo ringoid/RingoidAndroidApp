@@ -8,6 +8,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IEssence
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.origin.view.main.LmmNavTab
 
 data class ChatPayload(
     @Expose @SerializedName(COLUMN_POSITION) val position: Int = DomainUtil.BAD_POSITION,
@@ -17,7 +18,8 @@ data class ChatPayload(
     @Expose @SerializedName(COLUMN_PEER_THUMB_URI) val peerThumbnailUri: String? = null,
     @Expose @SerializedName(COLUMN_FLAG_CHAT_EMPTY) var isChatEmpty: Boolean = true,
     @Expose @SerializedName(COLUMN_ONLINE_STATUS) var onlineStatus: OnlineStatus? = null,
-    @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LcNavTab = LcNavTab.MESSAGES)
+    @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LcNavTab = LcNavTab.MESSAGES,
+    @Expose @SerializedName(COLUMN_SOURCE_FEED_COMPAT) val sourceFeedCompat: LmmNavTab = LmmNavTab.MESSAGES)
     : IEssence, Parcelable {
 
     private constructor(source: Parcel): this(
@@ -28,7 +30,8 @@ data class ChatPayload(
         peerThumbnailUri = source.readString(),
         isChatEmpty = source.readInt() != 0,
         onlineStatus = source.readSerializable() as? OnlineStatus,
-        sourceFeed = source.readSerializable() as? LcNavTab ?: LcNavTab.MESSAGES)
+        sourceFeed = source.readSerializable() as? LcNavTab ?: LcNavTab.MESSAGES,
+        sourceFeedCompat = source.readSerializable() as? LmmNavTab ?: LmmNavTab.MESSAGES)
 
     override fun describeContents(): Int = 0
 
@@ -42,6 +45,7 @@ data class ChatPayload(
             writeInt(if (isChatEmpty) 1 else 0)
             writeSerializable(onlineStatus)
             writeSerializable(sourceFeed)
+            writeSerializable(sourceFeedCompat)
         }
     }
 
@@ -54,6 +58,7 @@ data class ChatPayload(
         const val COLUMN_FLAG_CHAT_EMPTY = "isChatEmpty"
         const val COLUMN_ONLINE_STATUS = "onlineStatus"
         const val COLUMN_SOURCE_FEED = "sourceFeed"
+        const val COLUMN_SOURCE_FEED_COMPAT = "sourceFeedCompat"
 
         @JvmField
         val CREATOR = object : Parcelable.Creator<ChatPayload> {

@@ -61,6 +61,12 @@ enum class LmmNavTab(val feedName: String) {
 
     fun page(): Int = ordinal
 
+    fun slice(): LcNavTab =
+        when (this) {
+            LIKES -> LcNavTab.LIKES
+            else -> LcNavTab.MESSAGES
+        }
+
     companion object {
         val values: Array<LmmNavTab> = values()
 
