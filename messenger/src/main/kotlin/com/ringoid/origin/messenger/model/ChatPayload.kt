@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IEssence
 import com.ringoid.origin.model.OnlineStatus
-import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.main.LcNavTab
 
 data class ChatPayload(
     @Expose @SerializedName(COLUMN_POSITION) val position: Int = DomainUtil.BAD_POSITION,
@@ -17,7 +17,7 @@ data class ChatPayload(
     @Expose @SerializedName(COLUMN_PEER_THUMB_URI) val peerThumbnailUri: String? = null,
     @Expose @SerializedName(COLUMN_FLAG_CHAT_EMPTY) var isChatEmpty: Boolean = true,
     @Expose @SerializedName(COLUMN_ONLINE_STATUS) var onlineStatus: OnlineStatus? = null,
-    @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LmmNavTab = LmmNavTab.MESSAGES)
+    @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LcNavTab = LcNavTab.MESSAGES)
     : IEssence, Parcelable {
 
     private constructor(source: Parcel): this(
@@ -28,7 +28,7 @@ data class ChatPayload(
         peerThumbnailUri = source.readString(),
         isChatEmpty = source.readInt() != 0,
         onlineStatus = source.readSerializable() as? OnlineStatus,
-        sourceFeed = source.readSerializable() as? LmmNavTab ?: LmmNavTab.MESSAGES)
+        sourceFeed = source.readSerializable() as? LcNavTab ?: LcNavTab.MESSAGES)
 
     override fun describeContents(): Int = 0
 

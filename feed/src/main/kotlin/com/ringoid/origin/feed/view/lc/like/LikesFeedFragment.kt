@@ -8,7 +8,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
-import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.image.ImageRequest
 
 class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
@@ -37,7 +37,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
             else -> null
         }
 
-    override fun getSourceFeed(): LmmNavTab = LmmNavTab.LIKES
+    override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
 
     // --------------------------------------------------------------------------------------------
 }

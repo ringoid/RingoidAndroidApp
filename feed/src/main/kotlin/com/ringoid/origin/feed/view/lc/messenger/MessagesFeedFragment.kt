@@ -15,7 +15,7 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
-import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.image.ImageRequest
 
 class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
@@ -43,7 +43,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
             else -> null
         }
 
-    override fun getSourceFeed(): LmmNavTab = LmmNavTab.MESSAGES
+    override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
 
     // --------------------------------------------------------------------------------------------
     private fun openChat(position: Int, peerId: String, image: IImage? = null, tag: String = ChatFragment.TAG) {

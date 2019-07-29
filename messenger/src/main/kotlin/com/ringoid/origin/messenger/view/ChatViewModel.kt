@@ -21,6 +21,7 @@ import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
+import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Flowable
@@ -90,7 +91,7 @@ class ChatViewModel @Inject constructor(
 
     @Suppress("CheckResult")
     fun sendMessage(peerId: String, imageId: String = DomainUtil.BAD_ID, text: String?,
-                    sourceFeed: LmmNavTab = LmmNavTab.MESSAGES) {
+                    sourceFeed: LcNavTab = LcNavTab.MESSAGES) {
         if (text.isNullOrBlank()) {
             return  // don't send empty text
         }
@@ -106,6 +107,7 @@ class ChatViewModel @Inject constructor(
             .subscribe({
                 sentMessage.value = it
 
+                // TODO: refactor LMM -> LC
                 // analytics
                 with (analyticsManager) {
                     fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed.feedName)
