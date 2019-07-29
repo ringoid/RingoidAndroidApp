@@ -17,12 +17,12 @@
             android:id="@+id/iv_item_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginEnd="@dimen/std_margin_8"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_explore_white_36dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -39,7 +39,6 @@
             android:id="@+id/iv_item_likes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -86,7 +85,6 @@
             android:id="@+id/iv_item_messages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -133,13 +131,12 @@
             android:id="@+id/iv_item_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/std_margin_8"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_profile_outline_white_36dp"/>
 
         <ImageView
