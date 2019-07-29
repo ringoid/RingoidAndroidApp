@@ -17,7 +17,6 @@
             android:id="@+id/iv_item_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/std_margin_8"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintTop_toTopOf="parent"
