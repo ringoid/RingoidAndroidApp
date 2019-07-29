@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lc.base
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -59,7 +60,15 @@ abstract class BaseLcFeedViewModel(
             .subscribe({}, Timber::e)
     }
 
-    // ------------------------------------------
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // TODO: restore feeds if savedInstanceState != null
+        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+    }
+
+    // --------------------------------------------------------------------------------------------
     protected abstract fun getFeedFlag(): Int
     protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
     protected abstract fun sourceBadge(): Observable<Boolean>
