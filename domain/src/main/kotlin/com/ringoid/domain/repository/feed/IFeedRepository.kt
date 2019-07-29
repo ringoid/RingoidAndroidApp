@@ -49,8 +49,10 @@ interface IFeedRepository {
     // internal control properties
     val profileBlocked: PublishSubject<Int>  // notify when profile has been blocked
 
+    @Deprecated("LMM -> LC")
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
 
+    @Deprecated("LMM -> LC")
     fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm>
 
     /**

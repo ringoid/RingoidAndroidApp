@@ -115,6 +115,7 @@ open class FeedRepository @Inject constructor(
 
     /* New Faces */
     // ------------------------------------------
+    @Deprecated("LMM -> LC")
     override fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed> {
         val trace = FirebasePerformance.getInstance().newTrace("refresh_new_faces")
         return aObjPool
@@ -124,6 +125,7 @@ open class FeedRepository @Inject constructor(
             .doFinally { trace.stop() }
     }
 
+    @Deprecated("LMM -> LC")
     private fun getNewFacesOnly(resolution: ImageResolution, limit: Int?, lastActionTime: Long,
                                 extraTraces: Collection<Trace> = emptyList()): Single<Feed> =
         spm.accessSingle {
@@ -140,6 +142,7 @@ open class FeedRepository @Inject constructor(
 
     /* LMM */
     // ------------------------------------------
+    @Deprecated("LMM -> LC")
     override fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm> {
         val trace = FirebasePerformance.getInstance().newTrace("refresh_lmm")
         return aObjPool
@@ -153,6 +156,7 @@ open class FeedRepository @Inject constructor(
             .doFinally { trace.stop() }
     }
 
+    @Deprecated("LMM -> LC")
     private fun getLmmOnly(resolution: ImageResolution, source: String?, lastActionTime: Long,
                            extraTraces: Collection<Trace> = emptyList()): Single<Lmm> =
         spm.accessSingle {
@@ -177,6 +181,7 @@ open class FeedRepository @Inject constructor(
 
     override fun getLmmProfileIds(): Single<List<String>> = local.feedItemIds()
 
+    @Deprecated("LMM -> LC")
     private fun getCachedLmm(): Single<Lmm> =
         getCachedLmmOnly()
             .dropLmmStatsOnSubscribe()
@@ -188,6 +193,7 @@ open class FeedRepository @Inject constructor(
             .checkForNewMatches()
             .checkForNewMessages()
 
+    @Deprecated("LMM -> LC")
     private fun getCachedLmmOnly(): Single<Lmm> =
         Single.zip(
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES).map { it.mapList() },
