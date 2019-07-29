@@ -1,12 +1,19 @@
 package com.ringoid.origin.feed.view.lc.messenger
 
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
+import com.ringoid.origin.messenger.model.ChatPayload
+import com.ringoid.origin.messenger.view.ChatFragment
+import com.ringoid.origin.navigation.RequestCode
+import com.ringoid.origin.navigation.navigate
+import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.image.ImageRequest
@@ -39,4 +46,25 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
     override fun getSourceFeed(): LmmNavTab = LmmNavTab.MESSAGES
 
     // --------------------------------------------------------------------------------------------
+    private fun openChat(position: Int, peerId: String, image: IImage? = null, tag: String = ChatFragment.TAG) {
+        if (!connectionManager.isNetworkAvailable()) {
+            noConnection(this)
+            return
+        }
+
+        childFragmentManager.let {
+            it.findFragmentByTag(tag)
+                ?: run {
+                    val payload = ChatPayload(
+                        position = position,
+                        peerId = peerId,
+                        peerImageId = image?.id ?: DomainUtil.BAD_ID,
+                        peerImageUri = image?.uri,
+                        peerThumbnailUri = image?.thumbnailUri,
+                        sourceFeed = getSourceFeed())
+                    vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
+                    navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
+                }
+        }
+    }
 }
