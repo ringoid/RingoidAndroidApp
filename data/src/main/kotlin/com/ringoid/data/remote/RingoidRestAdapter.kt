@@ -65,6 +65,9 @@ interface RingoidRestAdapter {
                 @Query("userId") peerId: String?,
                 @Query("lastActionTime") lastActionTime: Long = 0L): Single<ChatResponse>
 
+    @GET("feeds/discover")
+    fun getDiscover(@Body body: RequestBody): Single<FeedResponse>
+
     @Deprecated("LMM -> LC")
     @GET("feeds/get_new_faces")
     fun getNewFaces(@Query("accessToken") accessToken: String,
