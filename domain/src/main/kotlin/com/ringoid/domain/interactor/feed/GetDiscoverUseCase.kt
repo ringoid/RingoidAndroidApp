@@ -6,21 +6,22 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.essence.feed.FilterEssence
+import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
-@Deprecated("LMM -> LC")
-class GetLmmUseCase @Inject constructor(val repository: IFeedRepository,
+class GetDiscoverUseCase @Inject constructor(val repository: IFeedRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
-    : SingleUseCase<Lmm>(threadExecutor, postExecutor) {
+    : SingleUseCase<Feed>(threadExecutor, postExecutor) {
 
-    override fun sourceImpl(params: Params): Single<Lmm> {
-        val source = params.get<String>("source")
+    override fun sourceImpl(params: Params): Single<Feed> {
+        val limit = params.get<Int>("limit")
+        val filter = params.get(FilterEssence::class.java)
 
         return params.processSingle(ImageResolution::class.java) {
-            repository.getLmm(it, source = source)
+            repository.getDiscover(resolution = it, limit = limit, filter = filter)
         }
     }
 }
