@@ -13,6 +13,7 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.essence.feed.FilterEssence
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
@@ -59,6 +60,8 @@ abstract class BaseLcFeedViewModel(
     }
 
     // ------------------------------------------
+    protected abstract fun getFeedFlag(): Int
+    protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
     protected abstract fun sourceBadge(): Observable<Boolean>
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
 
@@ -69,6 +72,10 @@ abstract class BaseLcFeedViewModel(
                              .put("source", getFeedName())
 
         getLcUseCase.source(params = params)
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
     }
 
     private fun setLcItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
