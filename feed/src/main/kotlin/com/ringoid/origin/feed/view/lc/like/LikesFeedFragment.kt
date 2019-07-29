@@ -19,7 +19,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
 
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
 
-    override fun instantiateFeedAdapter(): BaseLmmAdapter =
+    override fun createFeedAdapter(): BaseLmmAdapter =
         LikeFeedAdapter(ImageRequest(context!!)).apply {
             onLikeImageListener = { model: ProfileImageVO, _ /** feed item position */: Int ->
                 if (!connectionManager.isNetworkAvailable()) {

@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lc.messenger
 
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
@@ -18,8 +19,11 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
 
     override fun getVmClass(): Class<MessagesFeedViewModel> = MessagesFeedViewModel::class.java
 
-    override fun instantiateFeedAdapter(): BaseLmmAdapter =
+    override fun createFeedAdapter(): BaseLmmAdapter =
         MessengerFeedAdapter(ImageRequest(context!!)).apply {
+            messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
+                openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
+            }
             onImageToOpenChatClickListener = { model: ProfileImageVO, feedItemPosition: Int ->
                 openChat(position = feedItemPosition, peerId = model.profileId, image = model.image)
             }

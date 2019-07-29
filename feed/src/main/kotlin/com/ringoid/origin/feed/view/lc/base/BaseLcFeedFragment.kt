@@ -1,10 +1,8 @@
 package com.ringoid.origin.feed.view.lc.base
 
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
@@ -14,15 +12,6 @@ import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.main.LmmNavTab
 
 abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>() {
-
-    abstract fun instantiateFeedAdapter(): BaseLmmAdapter
-
-    override fun createFeedAdapter(): BaseLmmAdapter =
-        instantiateFeedAdapter().apply {
-            messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
-                openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
-            }
-        }
 
     protected abstract fun getSourceFeed(): LmmNavTab
 
