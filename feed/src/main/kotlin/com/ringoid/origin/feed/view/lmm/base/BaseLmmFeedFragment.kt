@@ -33,7 +33,6 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
-import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
@@ -64,7 +63,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is DISCARD_PROFILE -> {
-                        communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
+                        // Deprecated, method 'decrementCountOnLmm()' was removed
+                        // communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
                         communicator(ILmmFragment::class.java)?.changeCountOnTopTab(tab = getSourceFeed(), delta = -1)
                     }
                     /**

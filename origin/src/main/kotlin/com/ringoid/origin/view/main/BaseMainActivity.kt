@@ -32,7 +32,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     companion object {
         private const val BUNDLE_KEY_CURRENT_TAB = "bundle_key_current_tab"
-        const val BUNDLE_KEY_CURRENT_LMM_TAB = "bundle_key_current_lmm_tab"
     }
 
     @Inject lateinit var particleAnimator: ParticleAnimator
@@ -123,9 +122,25 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             openTabByName(tabName = NavigateFrom.MAIN_TAB_EXPLORE)
         }
 
-        fun openLmmTab(lmmTab: LmmNavTab? = null) {
-            tabPayload = lmmTab?.feedName
-            openTabByName(tabName = NavigateFrom.MAIN_TAB_LMM)
+        fun openLikesTab() {
+            tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
+            openTabByName(tabName = NavigateFrom.MAIN_TAB_LIKES)
+        }
+
+        fun openMessagesTab() {
+            tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
+            openTabByName(tabName = NavigateFrom.MAIN_TAB_MESSAGES)
+        }
+
+        fun openLcTab(lcTab: LcNavTab? = null) {
+            lcTab?.let {
+                tabPayload = it.feedName
+                val tabName = when (it) {
+                    LcNavTab.LIKES -> NavigateFrom.MAIN_TAB_LIKES
+                    LcNavTab.MESSAGES -> NavigateFrom.MAIN_TAB_MESSAGES
+                }
+                openTabByName(tabName = tabName)
+            }
         }
 
         fun openProfileTab() {
@@ -137,7 +152,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                 ?.let {
                     when (it) {
                         NavTab.EXPLORE -> openExploreTab()
-                        NavTab.LMM -> openLmmTab(lmmTab = savedInstanceState.getSerializable(BUNDLE_KEY_CURRENT_LMM_TAB) as? LmmNavTab)
+                        NavTab.LIKES -> openLikesTab()
+                        NavTab.MESSAGES -> openMessagesTab()
                         NavTab.PROFILE -> openProfileTab()
                     }
                 }
@@ -155,8 +171,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             ?: getString("type")?.let { type ->
                 Timber.v("Push extras: $type")
                 vm.onPushOpen()
-                LmmNavTab.fromPushType(pushType = type)
-                    ?.let { openLmmTab(lmmTab = it) }
+                LcNavTab.fromPushType(pushType = type)
+                    ?.let { openLcTab(lcTab = it) }
                     ?: run { openInitialTab() }
             }
             ?: run { openInitialTab() }
@@ -188,20 +204,32 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun decrementCountOnLmm(decrementBy: Int) {
-        bottom_bar.decrementCountOnLmm(decrementBy)
+    override fun decrementCountOnLikes(decrementBy: Int) {
+        bottom_bar.decrementCountOnLikes(decrementBy)
     }
 
-    override fun showBadgeOnLmm(isVisible: Boolean) {
-        bottom_bar.showBadgeOnLmm(isVisible)
+    override fun decrementCountOnMessages(decrementBy: Int) {
+        bottom_bar.decrementCountOnMessages(decrementBy)
+    }
+
+    override fun showBadgeOnLikes(isVisible: Boolean) {
+        bottom_bar.showBadgeOnLikes(isVisible)
+    }
+
+    override fun showBadgeOnMessages(isVisible: Boolean) {
+        bottom_bar.showBadgeOnMessages(isVisible)
     }
 
     override fun showBadgeWarningOnProfile(isVisible: Boolean) {
         bottom_bar.showWarningOnProfile(isVisible)
     }
 
-    override fun showCountOnLmm(count: Int) {
-        bottom_bar.showCountOnLmm(count)
+    override fun showCountOnLikes(count: Int) {
+        bottom_bar.showCountOnLikes(count)
+    }
+
+    override fun showCountOnMessages(count: Int) {
+        bottom_bar.showCountOnMessages(count)
     }
 
     override fun showParticleAnimation(id: String, count: Int) {

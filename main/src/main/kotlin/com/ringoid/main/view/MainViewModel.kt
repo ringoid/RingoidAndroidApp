@@ -10,7 +10,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLmmUseCase
+import com.ringoid.domain.interactor.feed.GetLcUseCase
 import com.ringoid.domain.interactor.image.GetUserImagesUseCase
 import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
 import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
@@ -30,49 +30,65 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    getLmmUseCase: GetLmmUseCase, getUserImagesUseCase: GetUserImagesUseCase,
+    getLcUseCase: GetLcUseCase, getUserImagesUseCase: GetUserImagesUseCase,
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
     private val updatePushTokenUseCase: UpdatePushTokenUseCase,
     private val updateUserSettingsUseCase: UpdateUserSettingsUseCase, app: Application)
     : BaseMainViewModel(app) {
 
-    val badgeLmm by lazy { MutableLiveData<Boolean>() }
+    val badgeLikes by lazy { MutableLiveData<Boolean>() }
+    val badgeMessages by lazy { MutableLiveData<Boolean>() }
     val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
-    val countLmm by lazy { MutableLiveData<Int>() }
+    val countLikes by lazy { MutableLiveData<Int>() }
+    val countMessages by lazy { MutableLiveData<Int>() }
     val newLikesCount by lazy { MutableLiveData<Int>() }
     val newMatchesCount by lazy { MutableLiveData<Int>() }
     val newMessagesCount by lazy { MutableLiveData<Int>() }
 
     init {
-        getLmmUseCase.repository.lmmChanged
+        getLcUseCase.repository.badgeLikes
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ badgeLmm.value = it }, Timber::e)
+            .subscribe({ badgeLikes.value = it }, Timber::e)
 
-        getLmmUseCase.repository.lmmLoadFinish
+        getLcUseCase.repository.badgeMessenger
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({
-                HandledPushDataInMemory.dropCountsOfHandledPush()
-                countLmm.value = it
-            }, Timber::e)
+            .subscribe({ badgeMessages.value = it }, Timber::e)
 
-        getLmmUseCase.repository.newLikesCount
+        getLcUseCase.repository.feedLikes
+            .map { it.size }
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ countLikes.value = it }, Timber::e)
+
+        getLcUseCase.repository.feedMessages
+            .map { it.size }
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ countMessages.value = it }, Timber::e)
+
+        getLcUseCase.repository.lmmLoadFinish
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ HandledPushDataInMemory.dropCountsOfHandledPush() }, Timber::e)
+
+        getLcUseCase.repository.newLikesCount
             .observeOn(AndroidSchedulers.mainThread())
             .map { it - HandledPushDataInMemory.getCountOfHandledPushLikes() }
             .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newLikesCount.value = it }, Timber::e)
 
-        getLmmUseCase.repository.newMatchesCount
+        getLcUseCase.repository.newMatchesCount
             .observeOn(AndroidSchedulers.mainThread())
             .map { it - HandledPushDataInMemory.getCountOfHandledPushMatches() }
             .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newMatchesCount.value = it }, Timber::e)
 
-        getLmmUseCase.repository.newMessagesCount
+        getLcUseCase.repository.newMessagesCount
             .observeOn(AndroidSchedulers.mainThread())
             .map { it - HandledPushDataInMemory.getCountOfHandledPushMessages() }
             .filter { it > 0 }
