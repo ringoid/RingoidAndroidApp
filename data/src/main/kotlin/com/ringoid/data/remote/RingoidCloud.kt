@@ -146,6 +146,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logRequest("getChat", "lastActionTime" to "$lastActionTime", "peerId" to peerId)
             .logResponse("Chat")
 
+    @Deprecated("LMM -> LC")
     fun getNewFaces(accessToken: String, resolution: ImageResolution, limit: Int?, lastActionTime: Long = 0L) =
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getNewFaces", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
@@ -155,6 +156,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logRequest("getNewFaces", "lastActionTime" to "$lastActionTime")
             .logResponse("NewFaces")
 
+    @Deprecated("LMM -> LC")
     fun getLmm(accessToken: String, resolution: ImageResolution, source: String?, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, source = source, lastActionTime = lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getLmm", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
