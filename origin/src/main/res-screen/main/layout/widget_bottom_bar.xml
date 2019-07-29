@@ -29,9 +29,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fl_item_likes"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.4"
+        android:layout_weight="1"
         android:background="?selectableItemBackground"
         android:paddingTop="4dp">
 
@@ -76,9 +76,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fl_item_messages"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.4"
+        android:layout_weight="1"
         android:background="?selectableItemBackground"
         android:paddingTop="4dp">
 
