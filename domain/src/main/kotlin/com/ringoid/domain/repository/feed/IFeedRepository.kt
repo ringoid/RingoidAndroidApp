@@ -47,9 +47,6 @@ interface IFeedRepository {
     val newMatchesCount: PublishSubject<Int>  // for particle animation
     val newMessagesCount: PublishSubject<Int>  // for particle animation
 
-    // internal control properties
-    val profileBlocked: PublishSubject<Int>  // notify when profile has been blocked
-
     fun getDiscover(resolution: ImageResolution, limit: Int?, filter: FilterEssence?): Single<Feed>
 
     @Deprecated("LMM -> LC")

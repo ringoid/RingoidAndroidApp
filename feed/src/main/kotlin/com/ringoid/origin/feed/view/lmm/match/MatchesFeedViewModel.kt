@@ -8,7 +8,6 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
 import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
@@ -41,13 +40,11 @@ class MatchesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseMatchesFeedViewModel(
         getChatUseCase,
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
-        notifyLmmProfileBlockedUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,

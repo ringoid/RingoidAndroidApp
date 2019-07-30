@@ -15,7 +15,6 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
 import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
@@ -45,7 +44,6 @@ import java.util.concurrent.ConcurrentHashMap
 abstract class BaseLmmFeedViewModel(
     protected val getLmmUseCase: GetLmmUseCase,
     private val getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    private val notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     private val transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -240,10 +238,6 @@ abstract class BaseLmmFeedViewModel(
     override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
         super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
         markFeedItemAsSeen(feedItemId = profileId)
-
-        notifyLmmProfileBlockedUseCase.source()  // notify listeners that profile has been blocked
-            .autoDisposable(this)
-            .subscribe({}, Timber::e)
     }
 
     override fun onDiscardProfile(profileId: String) {

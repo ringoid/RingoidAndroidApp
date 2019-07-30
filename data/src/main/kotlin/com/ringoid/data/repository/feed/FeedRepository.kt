@@ -111,9 +111,6 @@ open class FeedRepository @Inject constructor(
     override val newMatchesCount = PublishSubject.create<Int>()
     override val newMessagesCount = PublishSubject.create<Int>()
 
-    // internal control properties
-    override val profileBlocked = PublishSubject.create<Int>()
-
     /* Discover (former New Faces) */
     // ------------------------------------------
     override fun getDiscover(resolution: ImageResolution, limit: Int?, filter: FilterEssence?): Single<Feed> {
