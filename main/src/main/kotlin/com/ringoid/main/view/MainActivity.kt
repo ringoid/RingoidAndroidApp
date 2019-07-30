@@ -94,6 +94,11 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     }
 
     // ------------------------------------------
+    override fun transferProfile(profileId: String, payload: Bundle?) {
+        // TODO: transferProfile
+    }
+
+    // ------------------------------------------
     @DebugOnly
     private fun askToCloseDebugView() {
         Dialogs.showTextDialog(this, titleResId = OriginR_string.dialog_debug_view_close_title,

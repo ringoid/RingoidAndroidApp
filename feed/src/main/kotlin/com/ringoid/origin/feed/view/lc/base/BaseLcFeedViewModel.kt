@@ -1,8 +1,10 @@
 package com.ringoid.origin.feed.view.lc.base
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -21,9 +23,11 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -55,6 +59,7 @@ abstract class BaseLcFeedViewModel(
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
+    // TODO: private val discardedFeedItemIds = mutableSetOf<String>()
     private val notSeenFeedItemIds = Collections.newSetFromMap<String>(ConcurrentHashMap())
 
     protected abstract fun getSourceFeed(): LcNavTab
@@ -68,7 +73,20 @@ abstract class BaseLcFeedViewModel(
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLcItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
-            // TODO: analyze for the first reply in messages only once per user session
+            .doAfterNext {
+                // analyze for the first reply in messages only once per user session
+                if (!analyticsManager.hasFiredOnce(Analytics.AHA_FIRST_REPLY_RECEIVED)) {
+                    for (i in 0 until it.size) {
+                        if (it[i].countOfUserMessages() > 0) {
+                            val userMessageIndex = it[i].messages.indexOfFirst { it.isUserMessage() }
+                            val peerMessageIndex = it[i].messages.indexOfLast { it.isPeerMessage() }
+                            if (peerMessageIndex > userMessageIndex) {
+                                analyticsManager.fireOnce(Analytics.AHA_FIRST_REPLY_RECEIVED, "sourceFeed" to getFeedName())
+                            }
+                        }
+                    }
+                }
+            }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
     }
@@ -98,6 +116,35 @@ abstract class BaseLcFeedViewModel(
         // TODO
     }
 
+    fun prependProfileOnTransfer(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {
+        // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
+        transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed.feedName))
+            .andThen(getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId)))
+            .doOnSuccess { feedItem ->
+                val list = mutableListOf<FeedItemVO>().apply {
+                    val item = FeedItemVO(feedItem).apply {
+                        payload?.getInt("positionOfImage", DomainUtil.BAD_POSITION)
+                            ?.takeIf { it != DomainUtil.BAD_POSITION }
+                            ?.let { this.positionOfImage = it }
+                    }
+                    Timber.v("Transfer profile [${getSourceFeed().feedName}]: $profileId")
+                    add(item)  // prepend transitioned item
+                    /**
+                     * Add the rest items, but remove previously discarded items, if any.
+                     */
+                    feed.value  // current list prior to prepending transitioned item
+                        ?.toMutableList()
+                        ?.let { list -> list.removeAll { it.id in discardedFeedItemIds }; list }
+                        ?.let { list -> addAll(list) }
+                        ?.also { discardedFeedItemIds.clear() }
+                }
+                Timber.v("Feed [${getSourceFeed().feedName}] after transfer: ${list.joinToString("\n\t\t", "\n\t\t", transform = { it.id })}")
+                feed.value = list  // prepended list
+            }
+            .autoDisposable(this)
+            .subscribe({ action?.invoke() }, Timber::e)
+    }
+
     private fun setLcItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
         // TODO: clear discardedFeedItemIds
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
@@ -112,6 +159,18 @@ abstract class BaseLcFeedViewModel(
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
         }
+    }
+
+    // ------------------------------------------
+    override fun onRefresh() {
+        super.onRefresh()
+        refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
+    }
+
+    internal fun onTapToRefreshClick() {
+        analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
+        refreshOnPush.value = false  // drop value on each Lmm feed, when user taps on 'tap to refresh' popup on any Lmm feed
+        viewState.value = ViewState.DONE(REFRESH)
     }
 
     // ------------------------------------------
@@ -165,6 +224,12 @@ abstract class BaseLcFeedViewModel(
     override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
         super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
         markFeedItemAsSeen(feedItemId = profileId)
+    }
+
+    override fun onDiscardProfile(profileId: String) {
+        super.onDiscardProfile(profileId)
+        Timber.v("Discard profile [${getSourceFeed().feedName}]: $profileId")
+        // TODO: discardedFeedItemIds.add(profileId)
     }
 
     /* Event Bus */

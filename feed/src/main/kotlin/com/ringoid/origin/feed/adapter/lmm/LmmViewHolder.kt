@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
@@ -22,14 +23,14 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
 
     override fun bind(model: FeedItemVO) {
         super.bind(model)
-        showUnreadIcon(model)  // apply updates, if any
+        setMessengerIcon(model)  // apply updates, if any
 
         itemView.tv_seen_status.text = if (model.isNotSeen) "Not Seen" else "Seen"
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
         super.bind(model, payloads)
-        showUnreadIcon(model)  // apply updates, if any
+        setMessengerIcon(model)  // apply updates, if any
 
         // scroll affected
         if (payloads.contains(FeedViewHolderHideChatBtnOnScroll)) {
@@ -52,16 +53,22 @@ open class LmmViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = 
     }
 
     // ------------------------------------------
-    private fun showUnreadIcon(model: FeedItemVO) {
-        val isVisible = if (model.messages.isNotEmpty()) {
+    private fun setMessengerIcon(model: FeedItemVO) {
+        val iconResId = if (model.messages.isEmpty()) {
+            R.drawable.ic_chat_bubble_outline_white
+        } else {
             val peerMessagesCount = model.countOfPeerMessages()
             if (peerMessagesCount > 0) {
-                peerMessagesCount > ChatInMemoryCache.getPeerMessagesCount(model.id)
-            } else {
-                false
+                if (peerMessagesCount == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
+                        R.drawable.ic_messenger_outline_white
+                    } else {  // has unread messages from peer
+                        R.drawable.ic_messenger_fill_lgreen
+                    }
+            } else {  // contains only current user's messages
+                R.drawable.ic_chat_bubble_white
             }
-        } else false
-        itemView.iv_message.alpha = if (isVisible) 1f else 0f
+        }
+        itemView.iv_message.setImageResource(iconResId)
     }
 }
 

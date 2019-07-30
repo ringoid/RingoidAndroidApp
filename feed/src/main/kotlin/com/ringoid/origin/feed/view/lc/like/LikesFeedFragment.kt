@@ -8,6 +8,7 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
+import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
@@ -43,6 +44,28 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         }
 
     override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
+
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is TRANSFER_PROFILE -> {
+                        val profileId = (newState.residual as TRANSFER_PROFILE).profileId
+                        onDiscardProfileState(profileId)?.let { discarded ->
+                            communicator(IBaseMainActivity::class.java)?.let {
+                                val payload = Bundle().apply { putInt("positionOfImage", discarded.positionOfImage) }
+                                it.decrementCountOnLikes()  // decrement count
+                                it.decrementCountOnMessages(decrementBy = -1)  // increment count
+                                it.transferProfile(profileId = discarded.id, payload = payload)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

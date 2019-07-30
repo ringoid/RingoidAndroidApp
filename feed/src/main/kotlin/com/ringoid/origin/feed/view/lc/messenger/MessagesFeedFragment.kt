@@ -1,6 +1,9 @@
 package com.ringoid.origin.feed.view.lc.messenger
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -16,18 +19,21 @@ import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
+import com.ringoid.origin.messenger.view.IChatHost
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
+import timber.log.Timber
 
-class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
+class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatHost, IDialogCallback {
 
     companion object {
         fun newInstance(): MessagesFeedFragment = MessagesFeedFragment()
@@ -83,7 +89,64 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            RequestCode.RC_CHAT -> {
+                if (resultCode != Activity.RESULT_OK) {
+                    return
+                }
+
+                if (data == null) {
+                    val e = NullPointerException("No output from Chat dialog - this is an error!")
+                    Timber.e(e); throw e
+                }
+
+                val tag = data.getStringExtra("tag")
+                val payload = data.getParcelableExtra<ChatPayload>("payload")
+                when (data.getStringExtra("action")) {
+                    "block" -> onBlockFromChat(tag = tag, payload = payload)
+                    "report" -> onReportFromChat(tag = tag, payload = payload, reasonNumber = data.getIntExtra("reason", 0))
+                    else -> onDialogDismiss(tag = tag, payload = payload)
+                }
+
+                payload?.let {
+                    vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
+                }
+            }
+        }
+    }
+
     // --------------------------------------------------------------------------------------------
+    override fun onBlockFromChat(tag: String, payload: ChatPayload) {
+        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeedCompat.feedName, fromChat = true)
+    }
+
+    override fun onReportFromChat(tag: String, payload: ChatPayload, reasonNumber: Int) {
+        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeedCompat.feedName, fromChat = true)
+    }
+
+    override fun onDialogDismiss(tag: String, payload: Parcelable?) {
+        (payload as? ChatPayload)
+            ?.let {
+                if (it.position == DomainUtil.BAD_POSITION) {
+                    return
+                }
+
+                when (tag) {
+                    ChatFragment.TAG -> {
+                        // TODO: supply firstUserMessage to change appearance
+                        feedAdapter.findModel(it.position)?.setOnlineStatus(it.onlineStatus)
+                        getRecyclerView().post {
+                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                            trackScrollOffsetForPosition(it.position)
+                        }
+                    }
+                }
+                true  // no-op value
+            }
+    }
+
     private fun openChat(position: Int, peerId: String, image: IImage? = null, tag: String = ChatFragment.TAG) {
         if (!connectionManager.isNetworkAvailable()) {
             noConnection(this)
