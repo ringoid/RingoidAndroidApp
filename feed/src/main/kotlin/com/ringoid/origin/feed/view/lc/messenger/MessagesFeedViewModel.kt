@@ -13,7 +13,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
-import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.main.LcNavTab
 import io.reactivex.Observable
 import javax.inject.Inject
 
@@ -36,7 +36,7 @@ class MessagesFeedViewModel @Inject constructor(
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.messages
 
-    override fun getSourceFeed(): LmmNavTab = LmmNavTab.MESSAGES
+    override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
 
@@ -54,7 +54,7 @@ class MessagesFeedViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun handleUserVisibleHint(isVisibleToUser: Boolean) {
         super.handleUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser /** switched to this Lmm tab */ && badgeIsOn /** has new feed items */) {
+        if (isVisibleToUser /** switched to this LC tab */ && badgeIsOn /** has new feed items */) {
             analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
         }
     }

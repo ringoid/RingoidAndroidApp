@@ -17,7 +17,7 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
-import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.main.LcNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,7 +43,7 @@ abstract class BaseLcFeedViewModel(
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
 
-    protected abstract fun getSourceFeed(): LmmNavTab
+    protected abstract fun getSourceFeed(): LcNavTab
 
     init {
         sourceBadge()
