@@ -6,6 +6,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
+import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -19,6 +20,7 @@ import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(
     getLcUseCase: GetLcUseCase,
+    updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -26,12 +28,18 @@ class LikesFeedViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLcFeedViewModel(
         getLcUseCase,
+        updateFeedItemAsSeenUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
+    // ------------------------------------------
+    override fun countNotSeen(feed: List<FeedItem>): List<String> =
+        feed.filter { it.isNotSeen }.map { it.id }
+
+    // ------------------------------------------
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes

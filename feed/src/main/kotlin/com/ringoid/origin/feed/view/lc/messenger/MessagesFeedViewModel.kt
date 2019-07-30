@@ -6,8 +6,10 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
+import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
@@ -19,6 +21,7 @@ import javax.inject.Inject
 
 class MessagesFeedViewModel @Inject constructor(
     getLcUseCase: GetLcUseCase,
+    updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -26,12 +29,24 @@ class MessagesFeedViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLcFeedViewModel(
         getLcUseCase,
+        updateFeedItemAsSeenUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
+    // ------------------------------------------
+    override fun countNotSeen(feed: List<FeedItem>): List<String> =
+        feed.takeIf { it.isNotEmpty() }
+            ?.let { items ->
+                items.map { it.id to it.countOfPeerMessages() }
+                     .filter { it.second > 0 }
+                     .filter { it.second > ChatInMemoryCache.getPeerMessagesCount(it.first) }
+                     .map { it.first }
+            } ?: emptyList()
+
+    // ------------------------------------------
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER
 
     override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.messages
