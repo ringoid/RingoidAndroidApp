@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.lc.base
 
 import android.os.Bundle
 import com.ringoid.base.observe
+import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.view.main.LcNavTab
@@ -25,5 +26,6 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             }
             observe(vm.refreshOnPush) { showRefreshPopup(isVisible = it) }
         }
+        vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // LC feed is initially purged
     }
 }

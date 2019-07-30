@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view.lc.base
 
 import android.app.Application
-import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -58,14 +57,6 @@ abstract class BaseLcFeedViewModel(
             // TODO: analyze for the first reply in messages only once per user session
             .autoDisposable(this)
             .subscribe({}, Timber::e)
-    }
-
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // TODO: restore feeds if savedInstanceState != null
-        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 
     // --------------------------------------------------------------------------------------------
