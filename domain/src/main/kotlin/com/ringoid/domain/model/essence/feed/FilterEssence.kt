@@ -23,7 +23,7 @@ class FilterEssence private constructor(
         const val COLUMN_MAX_DISTANCE = "maxDistance"
 
         fun create(minAge: Int = DomainUtil.FILTER_MIN_AGE, maxAge: Int = DomainUtil.FILTER_MAX_AGE,
-                   maxDistance: Int = DomainUtil.FILTER_MIN_DISTANCE): FilterEssence {
+                   maxDistance: Int = DomainUtil.FILTER_MAX_DISTANCE): FilterEssence {
             val essence = FilterEssence(
                 minAge = maxOf(minAge, DomainUtil.FILTER_MIN_AGE),
                 maxAge = maxOf(maxAge, DomainUtil.FILTER_MIN_AGE),
