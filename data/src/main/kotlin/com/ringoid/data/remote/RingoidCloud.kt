@@ -200,7 +200,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             add("\"lastActionTime\":$lastActionTime")
             filter?.let { add("\"filter\":${filter.toJson()}") }
             limit?.takeIf { it > 0 }?.let { add("\"limit\":$limit") }
-            source?.let { add("\"source\":$source") }
+            source?.let { add("\"source\":\"$source\"") }
         }
         val content = contentList.joinToString(",", "{", "}")
         return RequestBody.create(MediaType.parse("application/json"), content)
