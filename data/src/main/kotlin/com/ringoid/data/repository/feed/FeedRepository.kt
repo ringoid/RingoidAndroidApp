@@ -175,6 +175,7 @@ open class FeedRepository @Inject constructor(
             .doOnSubscribe { trace.start() }
             .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
+                Timber.e(it)
                 SentryUtil.capture(it, message = "Fallback to get cached Lmm", level = Event.Level.WARNING)
                 getCachedLmm()
             }
@@ -243,6 +244,7 @@ open class FeedRepository @Inject constructor(
             .doOnSubscribe { trace.start() }
             .flatMap { getLcOnly(resolution, limit, filter, source = source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
+                Timber.e(it)
                 SentryUtil.capture(it, message = "Fallback to get cached LC", level = Event.Level.WARNING)
                 getCachedLc()
             }

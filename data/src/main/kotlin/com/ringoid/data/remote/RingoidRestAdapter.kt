@@ -65,7 +65,7 @@ interface RingoidRestAdapter {
                 @Query("userId") peerId: String?,
                 @Query("lastActionTime") lastActionTime: Long = 0L): Single<ChatResponse>
 
-    @GET("feeds/discover")
+    @POST("feeds/discover")
     fun getDiscover(@Body body: RequestBody): Single<FeedResponse>
 
     @Deprecated("LMM -> LC")
@@ -82,7 +82,7 @@ interface RingoidRestAdapter {
                @Query("source") source: String?,
                @Query("lastActionTime") lastActionTime: Long = 0L): Single<LmmResponse>
 
-    @GET("feeds/get_lc")
+    @POST("feeds/get_lc")
     fun getLc(@Body body: RequestBody): Single<LmmResponse>
 
     /* Push */
