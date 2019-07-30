@@ -124,7 +124,7 @@ abstract class FeedViewModel(
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
+    open fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
         // deleting all images on Profile screen leads any Feed screen to purge it's content

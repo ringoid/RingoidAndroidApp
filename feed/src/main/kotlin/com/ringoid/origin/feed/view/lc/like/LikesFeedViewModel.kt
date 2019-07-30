@@ -1,19 +1,23 @@
 package com.ringoid.origin.feed.view.lc.like
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
+import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
@@ -32,6 +36,7 @@ import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(
     getLcUseCase: GetLcUseCase,
+    dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
@@ -40,6 +45,7 @@ class LikesFeedViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLcFeedViewModel(
         getLcUseCase,
+        dropLmmChangedStatusUseCase,
         updateFeedItemAsSeenUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
@@ -48,6 +54,7 @@ class LikesFeedViewModel @Inject constructor(
         userInMemoryCache, app) {
 
     private val incomingPushLike = PublishSubject.create<BusEvent>()
+    internal val pushNewLike by lazy { MutableLiveData<Long>() }
 
     init {
         // show 'tap-to-refresh' popup on Feed screen
@@ -111,9 +118,14 @@ class LikesFeedViewModel @Inject constructor(
         markFeedItemAsSeen(profileId)
     }
 
+    /* Event Bus */
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
-        incomingPushLike.onNext(event)
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        HandledPushDataInMemory.incrementCountOfHandledPushLikes()
+        pushNewLike.value = 0L  // for particle animation
+        incomingPushLike.onNext(event)  // for 'tap-to-refresh' popup
     }
 }

@@ -2,16 +2,19 @@ package com.ringoid.origin.feed.view.lc.base
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
+import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.essence.feed.FilterEssence
 import com.ringoid.domain.model.feed.FeedItem
@@ -25,12 +28,15 @@ import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 abstract class BaseLcFeedViewModel(
     protected val getLcUseCase: GetLcUseCase,
+    private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
@@ -86,6 +92,10 @@ abstract class BaseLcFeedViewModel(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
+    }
+
+    private fun refresh() {
+        // TODO
     }
 
     private fun setLcItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
@@ -155,5 +165,52 @@ abstract class BaseLcFeedViewModel(
     override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
         super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
         markFeedItemAsSeen(feedItemId = profileId)
+    }
+
+    /* Event Bus */
+    // --------------------------------------------------------------------------------------------
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    override fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        dropLmmChangedStatusUseCase.source()  // drop changed status (red dot badges)
+            .autoDisposable(this)
+            .subscribe({ Timber.d("Badges on Lmm have been dropped because no images in user's profile") }, Timber::e)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        // refresh on Explore Feed screen leads Lmm screen to refresh as well
+        DebugLogUtil.i("Get LC on refresh Explore Feed [${getFeedName()}]")
+        refresh()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        // refresh on Profile screen leads Lmm screen to refresh as well
+        DebugLogUtil.i("Get LC on refresh Profile [${getFeedName()}]")
+        refresh()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        DebugLogUtil.i("Get LC on Application reopen [${getFeedName()}]")
+        refresh()  // app reopen leads LC screen to refresh as well
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        if (event.msElapsed in 300000L..1557989300340L) {
+            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC [${getFeedName()}]")
+            refresh()  // app reopen leads LC screen to refresh as well
+        }
     }
 }

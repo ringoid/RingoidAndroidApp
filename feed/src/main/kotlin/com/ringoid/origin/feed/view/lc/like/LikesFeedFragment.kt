@@ -12,6 +12,7 @@ import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
 
@@ -49,6 +50,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.count) { communicator(IBaseMainActivity::class.java)?.showCountOnLikes(count = it) }
+            observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
         }
     }
 }

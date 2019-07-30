@@ -7,10 +7,13 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
+import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
+import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.navigation.RequestCode
@@ -19,6 +22,8 @@ import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
+import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
 
@@ -49,12 +54,32 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>() {
 
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
 
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        super.onViewStateChange(newState)
+        when (newState) {
+            is ViewState.DONE -> {
+                when (newState.residual) {
+                    is PUSH_NEW_MESSAGES -> {
+                        val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
+                        feedAdapter.findPosition { it.id == profileId }
+                            .takeIf { it != DomainUtil.BAD_POSITION }
+                            ?.let { feedAdapter.notifyItemChanged(it, FeedViewHolderShowControls) }
+                    }
+                    is PUSH_NEW_MESSAGES_TOTAL -> communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = true)
+                }
+            }
+        }
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.count) { communicator(IBaseMainActivity::class.java)?.showCountOnMessages(count = it) }
+            observe(vm.pushNewMatch) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
+            observe(vm.pushNewMessage) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
         }
     }
 
