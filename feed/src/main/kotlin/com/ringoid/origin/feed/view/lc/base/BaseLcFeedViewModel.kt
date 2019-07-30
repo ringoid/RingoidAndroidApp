@@ -138,26 +138,22 @@ abstract class BaseLcFeedViewModel(
                 }
             }
         }
+    }
 
-        /* Action Objects */
-        // --------------------------------------------------------------------------------------------
-        override fun onLike(profileId: String, imageId: String) {
-            super.onLike(profileId, imageId)
-            markFeedItemAsSeen(feedItemId = profileId)
-        }
+    /* Action Objects */
+    // --------------------------------------------------------------------------------------------
+    override fun onLike(profileId: String, imageId: String) {
+        super.onLike(profileId, imageId)
+        markFeedItemAsSeen(feedItemId = profileId)
+    }
 
-        override fun onBlock(profileId: String, imageId: String, sourceFeed: String, fromChat: Boolean) {
-            super.onBlock(profileId, imageId, sourceFeed, fromChat)
-            markFeedItemAsSeen(feedItemId = profileId)
-        }
+    override fun onBlock(profileId: String, imageId: String, sourceFeed: String, fromChat: Boolean) {
+        super.onBlock(profileId, imageId, sourceFeed, fromChat)
+        markFeedItemAsSeen(feedItemId = profileId)
+    }
 
-        override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
-            super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
-            markFeedItemAsSeen(feedItemId = profileId)
-
-            notifyLmmProfileBlockedUseCase.source()  // notify listeners that profile has been blocked
-                .autoDisposable(this)
-                .subscribe({}, Timber::e)
-        }
+    override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
+        super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
+        markFeedItemAsSeen(feedItemId = profileId)
     }
 }
