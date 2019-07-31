@@ -138,8 +138,9 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 when (tag) {
                     ChatFragment.TAG -> {
                         // TODO: supply firstUserMessage to change appearance
-                        feedAdapter.findModel(it.position)?.setOnlineStatus(it.onlineStatus)
+                        scrollToTopOfItemAtPosition(it.position)
                         getRecyclerView().post {
+                            feedAdapter.findModel(it.position)?.setOnlineStatus(it.onlineStatus)
                             feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
                             trackScrollOffsetForPosition(it.position)
                         }
