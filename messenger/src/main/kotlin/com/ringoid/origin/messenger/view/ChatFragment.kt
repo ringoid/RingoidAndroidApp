@@ -78,18 +78,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is CHAT_MESSAGE_SENT -> {
-                        onIdleState()
-                        if (chatAdapter.isEmpty()) {  // quick reply mode
-                            // user has just sent her first message to peer
-                            payload?.isChatEmpty = false
-                            closeChat()
-                        }
-                    }
-                }
-            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_chat.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)

@@ -16,10 +16,10 @@ data class ChatPayload(
     @Expose @SerializedName(COLUMN_PEER_IMAGE_ID) val peerImageId: String = DomainUtil.BAD_ID,
     @Expose @SerializedName(COLUMN_PEER_IMAGE_URI) val peerImageUri: String? = null,
     @Expose @SerializedName(COLUMN_PEER_THUMB_URI) val peerThumbnailUri: String? = null,
-    @Expose @SerializedName(COLUMN_FLAG_CHAT_EMPTY) var isChatEmpty: Boolean = true,
+    @Deprecated("LMM -> LC") @Expose @SerializedName(COLUMN_FLAG_CHAT_EMPTY) var isChatEmpty: Boolean = true,  // TODO: remove field
     @Expose @SerializedName(COLUMN_ONLINE_STATUS) var onlineStatus: OnlineStatus? = null,
     @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LcNavTab = LcNavTab.MESSAGES,
-    @Expose @SerializedName(COLUMN_SOURCE_FEED_COMPAT) val sourceFeedCompat: LmmNavTab = LmmNavTab.MESSAGES)
+    @Deprecated("LMM -> LC") @Expose @SerializedName(COLUMN_SOURCE_FEED_COMPAT) val sourceFeedCompat: LmmNavTab = LmmNavTab.MESSAGES)  // TODO: remove field
     : IEssence, Parcelable {
 
     private constructor(source: Parcel): this(
