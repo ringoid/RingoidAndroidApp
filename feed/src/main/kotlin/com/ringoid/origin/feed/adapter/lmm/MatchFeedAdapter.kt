@@ -4,7 +4,9 @@ import android.view.ViewGroup
 import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.image.ImageRequest
+import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 open class MatchFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoader) {
 
@@ -16,8 +18,9 @@ open class MatchFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoa
             .takeIf { viewType == VIEW_TYPE_NORMAL }
             ?.let { it as? BaseFeedViewHolder }
             ?.also { vh ->
+                vh.itemView.ibtn_like.changeVisibility(isVisible = false)
                 vh.profileImageAdapter.also { adapter ->
-                    adapter.isLikeEnabled = false  // hide like button on matches feed items
+                    adapter.isLikeEnabled = false  // avoid like action by double click on profile image
                     adapter.itemClickListener = wrapOnImageClickListenerByFeedItem(vh, onImageToOpenChatClickListener)
                 }
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders

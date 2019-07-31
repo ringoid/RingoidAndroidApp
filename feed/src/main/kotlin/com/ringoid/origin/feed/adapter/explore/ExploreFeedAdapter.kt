@@ -1,12 +1,16 @@
 package com.ringoid.origin.feed.adapter.explore
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.model.EmptyFeedItemVO
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.image.ImageRequest
+import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoader, FeedItemVODiffCallback()) {
 
@@ -17,6 +21,15 @@ class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoade
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder =
         FeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
             .also { vh ->
+                vh.itemView.ibtn_like.clicks().compose(clickDebounce())
+                    .subscribe { _ /** feedItemPosition */ ->
+                        vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                            ?.let {
+                                val imagePosition = vh.getCurrentImagePosition()
+                                val image = vh.profileImageAdapter.getModel(imagePosition)
+                                onLikeImageListener?.invoke(image, imagePosition)
+                            }
+                    }
                 vh.profileImageAdapter.itemDoubleClickListener = { model, position ->
                     onLikeImageListener?.invoke(model, position)
                 }
