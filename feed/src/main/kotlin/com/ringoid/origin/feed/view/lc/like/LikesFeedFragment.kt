@@ -9,6 +9,7 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.navigation.noConnection
@@ -53,6 +54,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is DISCARD_PROFILE -> communicator(IBaseMainActivity::class.java)?.decrementCountOnLikes()
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         onDiscardProfileState(profileId)?.let { discarded ->
