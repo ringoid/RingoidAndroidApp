@@ -13,6 +13,8 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
+import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
@@ -27,7 +29,6 @@ import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
-import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -40,8 +41,10 @@ import java.util.concurrent.ConcurrentHashMap
 
 abstract class BaseLcFeedViewModel(
     protected val getLcUseCase: GetLcUseCase,
+    private val getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
+    private val transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -59,7 +62,7 @@ abstract class BaseLcFeedViewModel(
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
-    // TODO: private val discardedFeedItemIds = mutableSetOf<String>()
+    private val discardedFeedItemIds = mutableSetOf<String>()
     private val notSeenFeedItemIds = Collections.newSetFromMap<String>(ConcurrentHashMap())
 
     protected abstract fun getSourceFeed(): LcNavTab
@@ -113,10 +116,10 @@ abstract class BaseLcFeedViewModel(
     }
 
     private fun refresh() {
-        // TODO
+        viewState.value = ViewState.DONE(REFRESH)
     }
 
-    fun prependProfileOnTransfer(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {
+    private fun prependProfileOnTransfer(profileId: String, destinationFeed: LcNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {
         // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
         transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed.feedName))
             .andThen(getCachedFeedItemByIdUseCase.source(Params().put("profileId", profileId)))
@@ -146,7 +149,7 @@ abstract class BaseLcFeedViewModel(
     }
 
     private fun setLcItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
-        // TODO: clear discardedFeedItemIds
+        discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
         count.value = items.size
@@ -169,7 +172,7 @@ abstract class BaseLcFeedViewModel(
 
     internal fun onTapToRefreshClick() {
         analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
-        refreshOnPush.value = false  // drop value on each Lmm feed, when user taps on 'tap to refresh' popup on any Lmm feed
+        refreshOnPush.value = false  // drop value on each LC feed, when user taps on 'tap to refresh' popup on any Lmm feed
         viewState.value = ViewState.DONE(REFRESH)
     }
 
@@ -229,7 +232,7 @@ abstract class BaseLcFeedViewModel(
     override fun onDiscardProfile(profileId: String) {
         super.onDiscardProfile(profileId)
         Timber.v("Discard profile [${getSourceFeed().feedName}]: $profileId")
-        // TODO: discardedFeedItemIds.add(profileId)
+        discardedFeedItemIds.add(profileId)
     }
 
     /* Event Bus */
@@ -276,6 +279,16 @@ abstract class BaseLcFeedViewModel(
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC [${getFeedName()}]")
             refresh()  // app reopen leads LC screen to refresh as well
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventTransferProfile(event: BusEvent.TransferProfile) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        val destinationFeed = event.payload.getSerializable("destinationFeed") as LcNavTab
+        if (destinationFeed == getSourceFeed()) {
+            prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload)
         }
     }
 }

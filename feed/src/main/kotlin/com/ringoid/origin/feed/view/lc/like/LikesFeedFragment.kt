@@ -1,6 +1,8 @@
 package com.ringoid.origin.feed.view.lc.like
 
 import android.os.Bundle
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
@@ -55,10 +57,14 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         onDiscardProfileState(profileId)?.let { discarded ->
                             communicator(IBaseMainActivity::class.java)?.let {
-                                val payload = Bundle().apply { putInt("positionOfImage", discarded.positionOfImage) }
                                 it.decrementCountOnLikes()  // decrement count
                                 it.decrementCountOnMessages(decrementBy = -1)  // increment count
-                                it.transferProfile(profileId = discarded.id, payload = payload)
+
+                                val payload = Bundle().apply {
+                                    putInt("positionOfImage", discarded.positionOfImage)
+                                    putSerializable("destinationFeed", LcNavTab.MESSAGES)
+                                }
+                                Bus.post(BusEvent.TransferProfile(profileId = discarded.id, payload = payload))
                             }
                         }
                     }

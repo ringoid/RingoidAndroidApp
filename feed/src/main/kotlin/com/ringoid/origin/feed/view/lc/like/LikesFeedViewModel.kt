@@ -10,6 +10,8 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
+import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
@@ -36,8 +38,10 @@ import javax.inject.Inject
 
 class LikesFeedViewModel @Inject constructor(
     getLcUseCase: GetLcUseCase,
+    getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
+    transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
@@ -45,8 +49,10 @@ class LikesFeedViewModel @Inject constructor(
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLcFeedViewModel(
         getLcUseCase,
+        getCachedFeedItemByIdUseCase,
         dropLmmChangedStatusUseCase,
         updateFeedItemAsSeenUseCase,
+        transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,

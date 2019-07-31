@@ -1,5 +1,6 @@
 package com.ringoid.base.eventbus
 
+import android.os.Bundle
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import org.greenrobot.eventbus.EventBus
@@ -44,4 +45,6 @@ sealed class BusEvent {
     data class PushNewLike(val peerId: String) : BusEvent()
     data class PushNewMatch(val peerId: String) : BusEvent()
     data class PushNewMessage(val peerId: String) : BusEvent()
+
+    data class TransferProfile(val profileId: String, val payload: Bundle)
 }
