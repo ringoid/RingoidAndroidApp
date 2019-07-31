@@ -327,7 +327,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     // --------------------------------------------------------------------------------------------
-    protected open fun onRefresh() {
+    private fun onRefresh() {
         if (!connectionManager.isNetworkAvailable()) {
             showLoading(isVisible = false)
             noConnection(this@FeedFragment)

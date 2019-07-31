@@ -73,11 +73,6 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         // don't call 'super', completely overridden method
     }
 
-    override fun onRefresh() {
-        super.onRefresh()
-        Bus.post(event = BusEvent.RefreshOnExplore)
-    }
-
     // ------------------------------------------
     private var postponedTabTransaction = false
 

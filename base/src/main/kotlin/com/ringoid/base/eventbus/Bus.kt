@@ -37,6 +37,7 @@ sealed class BusEvent {
     object Stub : BusEvent()
     object NoImagesOnProfile : BusEvent()
     object RefreshOnExplore : BusEvent()
+    @Deprecated("LMM -> LC")
     data class RefreshOnLmm(val lmmSourceFeed: String) : BusEvent()
     object RefreshOnProfile : BusEvent()
     object ReOpenApp: BusEvent()

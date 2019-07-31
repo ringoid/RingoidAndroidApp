@@ -8,8 +8,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.eventbus.Bus
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -159,11 +157,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     internal fun clearScreen(mode: Int) {
         invalidateScrollCaches()  // clear cached positions in offset scrolls strategies on clear feed
         vm.clearScreen(mode)
-    }
-
-    override fun onRefresh() {
-        super.onRefresh()
-        Bus.post(event = BusEvent.RefreshOnLmm(lmmSourceFeed = getSourceFeed().feedName))
     }
 
     internal fun transferProfile(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null) {
