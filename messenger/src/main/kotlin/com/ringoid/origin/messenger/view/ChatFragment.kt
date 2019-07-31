@@ -279,7 +279,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     // --------------------------------------------------------------------------------------------
     private val gestureDetector = GestureDetectorCompat(context, ListTouchCallback())
 
-    private inner class ListTouchCallback :  GestureDetector.SimpleOnGestureListener() {
+    private inner class ListTouchCallback : GestureDetector.SimpleOnGestureListener() {
 
         override fun onDoubleTapEvent(event: MotionEvent): Boolean {
             if (event.action == MotionEvent.ACTION_UP) {
