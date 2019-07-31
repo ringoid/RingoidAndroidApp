@@ -32,6 +32,14 @@ abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
         itemView.apply {
             isClickable = l != null
             clicks().compose(clickDebounce()).subscribe { l?.onClick(this) }
+
+            // detect touch on viewHolder and call visual effect at touch point
+            setOnTouchListener { view, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    view.tag = event
+                }
+                false
+            }
         }
     }
 
@@ -46,6 +54,11 @@ abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
             }
         }
         val gestureDetector = GestureDetectorCompat(itemView.context, cb)
-        itemView.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+        itemView.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                view.tag = event
+            }
+            gestureDetector.onTouchEvent(event)
+        }
     }
 }
