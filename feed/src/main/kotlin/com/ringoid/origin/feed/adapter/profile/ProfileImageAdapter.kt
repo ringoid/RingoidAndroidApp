@@ -30,11 +30,13 @@ class ProfileImageAdapter(private val imageLoader: ImageRequest)
 
     override fun onBindViewHolder(holder: BaseProfileImageViewHolder, position: Int) {
         holder.setOnClickListener(getOnItemClickListener(holder))
+        holder.setOnDoubleClickListener(getOnItemDoubleClickListener(holder))
         super.onBindViewHolder(holder, position)
     }
 
     override fun onBindViewHolder(holder: BaseProfileImageViewHolder, position: Int, payloads: List<Any>) {
         holder.setOnClickListener(getOnItemClickListener(holder))
+        holder.setOnDoubleClickListener(getOnItemDoubleClickListener(holder))
         super.onBindViewHolder(holder, position, payloads)
     }
 
