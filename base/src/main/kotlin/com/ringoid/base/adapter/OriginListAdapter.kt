@@ -96,9 +96,11 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
 
     // --------------------------------------------------------------------------------------------
     var itemClickListener: ((model: T, position: Int) -> Unit)? = null
+    var itemDoubleClickListener: ((model: T, position: Int) -> Unit)? = null
 
     protected open fun getOnItemClickListener(vh: VH) = wrapOnItemClickListener(vh, itemClickListener)
-    protected open fun wrapOnItemClickListener(vh: VH, l: ((model: T, position: Int) -> Unit)?) =
+    protected open fun getOnItemDoubleClickListener(vh: VH) = wrapOnItemClickListener(vh, itemDoubleClickListener)
+    protected fun wrapOnItemClickListener(vh: VH, l: ((model: T, position: Int) -> Unit)?) =
         View.OnClickListener { vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(getItem(it), it) } }
 
     /* Data Access */

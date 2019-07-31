@@ -554,7 +554,7 @@ ext {
     utilityDependencies = [
         [configuration: "implementation", dependency: d_libs.jodaTime],
     ]
-    utilityDependencies += android + kotlin + image + log + rx
+    utilityDependencies += android + kotlin + image + log + rx + rxBind
     testUtilityDependencies = test
 
     utilityPlugins = [

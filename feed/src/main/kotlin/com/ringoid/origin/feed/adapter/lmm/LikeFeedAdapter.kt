@@ -11,7 +11,7 @@ class LikeFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoader) {
     override fun instantiateViewHolder(view: View): LmmViewHolder =
         LikeFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
             .also { vh ->
-                vh.profileImageAdapter.itemClickListener = { model, position ->
+                vh.profileImageAdapter.itemDoubleClickListener = { model, position ->
                     wrapOnImageClickListenerByFeedItem(vh, onLikeImageListener)?.invoke(model, position)
                 }
             }

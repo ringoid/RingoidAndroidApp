@@ -2,15 +2,12 @@ package com.ringoid.origin.messenger.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.EmptyMessage
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.messenger.R
-import com.ringoid.utility.clickDebounce
-import kotlinx.android.synthetic.main.rv_item_chat_item.view.*
 import timber.log.Timber
 
 class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCallback()) {
@@ -31,7 +28,10 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
 
         val view = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
         val viewHolder = when (viewType) {
-            VIEW_TYPE_FOOTER -> HeaderChatViewHolder(view).also { it.setOnClickListener(getOnItemClickListener(it)) }
+            VIEW_TYPE_FOOTER -> HeaderChatViewHolder(view).also {
+                it.setOnClickListener(getOnItemClickListener(it))
+                it.setOnDoubleClickListener(getOnItemDoubleClickListener(it))
+            }
             VIEW_TYPE_NORMAL -> if (BuildConfig.IS_STAGING) DebugPeerChatViewHolder(view) else PeerChatViewHolder(view)
             VIEW_TYPE_NORMAL_MY -> if (BuildConfig.IS_STAGING) DebugMyChatViewHolder(view) else MyChatViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
@@ -41,9 +41,7 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
             .takeIf { viewType == VIEW_TYPE_NORMAL || viewType == VIEW_TYPE_NORMAL_MY }
             ?.also { vh->
                 vh.setOnClickListener(getOnItemClickListener(vh))
-                vh.itemView.tv_chat_message.also { view ->
-                    view.clicks().compose(clickDebounce()).subscribe { getOnItemClickListener(vh).onClick(view) }
-                }
+                vh.setOnDoubleClickListener(getOnItemDoubleClickListener(vh))
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 

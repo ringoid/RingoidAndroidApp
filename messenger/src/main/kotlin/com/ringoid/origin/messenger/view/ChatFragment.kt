@@ -93,7 +93,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ChatInMemoryCache.addProfileIfNotExists(profileId = peerId)
 
         chatAdapter = ChatAdapter().apply {
-            itemClickListener = { _, _ -> closeChat() }
+            itemDoubleClickListener = { _, _ -> closeChat() }
             onMessageInsertListener = { _ -> scrollToLastItem() }
         }
     }
@@ -281,8 +281,10 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     private inner class ListTouchCallback :  GestureDetector.SimpleOnGestureListener() {
 
-        override fun onSingleTapUp(e: MotionEvent): Boolean {
-            closeChat()
+        override fun onDoubleTapEvent(event: MotionEvent): Boolean {
+            if (event.action == MotionEvent.ACTION_UP) {
+                closeChat()
+            }
             return true
         }
     }

@@ -1,10 +1,10 @@
 package com.ringoid.utility
 
 import android.os.Looper
-import io.reactivex.ObservableTransformer
-import io.reactivex.Observer
-import io.reactivex.Scheduler
-import io.reactivex.Single
+import android.view.View
+import android.view.ViewConfiguration
+import com.jakewharton.rxbinding3.view.clicks
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
@@ -53,3 +53,10 @@ fun thread(runnable: () -> Unit) {
 fun thread(delay: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLISECONDS, runnable: () -> Unit) {
     thread { delay(delay = delay, units = units, scheduler = Schedulers.trampoline(), body = runnable) }
 }
+
+// ------------------------------------------------------------------------------------------------
+fun View.doubleClicks(): Observable<Unit> =
+    clicks()
+        .buffer(ViewConfiguration.getDoubleTapTimeout().toLong(), TimeUnit.MILLISECONDS, 2)
+        .filter { it.size == 2 }
+        .map { Unit }

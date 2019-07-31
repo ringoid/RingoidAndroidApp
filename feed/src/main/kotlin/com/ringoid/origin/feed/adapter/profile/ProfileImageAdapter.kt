@@ -67,28 +67,30 @@ class ProfileImageAdapter(private val imageLoader: ImageRequest)
     override fun getPreloadRequestBuilder(item: ProfileImageVO): RequestBuilder<*>? =
         ImageLoader.simpleLoadRequest(imageLoader = imageLoader, uri = item.image.thumbnailUri)
 
-    override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
+    override fun getOnItemDoubleClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
         val clickListener = if (!isLikeEnabled) {
-            super.getOnItemClickListener(vh)
+            super.getOnItemDoubleClickListener(vh)
         } else {
             wrapOnItemClickListener(vh, getLikeClickListener(vh))
         }
         // detect touch on image item and call visual effect at touch point
         vh.itemView.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                view.tag =  event
+                view.tag = event
             }
             false
         }
         return clickListener
     }
 
+    // TODO: add like btn click listener - single
+
     private fun getLikeClickListener(vh: BaseProfileImageViewHolder)
         : ((model: ProfileImageVO, position: Int) -> Unit)? =
             { model: ProfileImageVO, position: Int ->
                 if (onBeforeLikeListener?.invoke() != false) {
                     notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
-                    itemClickListener?.invoke(model, position)
+                    itemDoubleClickListener?.invoke(model, position)
                     vh.itemView.tag
                         ?.let { it as MotionEvent }
                         ?.let { onImageTouchListener?.invoke(it.x, it.y) }

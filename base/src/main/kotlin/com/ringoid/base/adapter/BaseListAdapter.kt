@@ -37,7 +37,10 @@ abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: B
             VIEW_TYPE_FOOTER -> instantiateFooterViewHolder(view)
             VIEW_TYPE_LOADING -> instantiateLoadingViewHolder(view).apply { itemView.pb_item_loading.changeVisibility(isVisible = BuildConfig.IS_STAGING, soft = true) }
             VIEW_TYPE_ERROR -> instantiateErrorViewHolder(view)
-            else -> instantiateViewHolder(view).apply { setOnClickListener(getOnItemClickListener(this)) }
+            else -> instantiateViewHolder(view).apply {
+                setOnClickListener(getOnItemClickListener(this))
+                setOnDoubleClickListener(getOnItemDoubleClickListener(this))
+            }
         }
     }
 }

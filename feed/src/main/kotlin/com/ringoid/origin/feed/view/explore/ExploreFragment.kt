@@ -1,13 +1,11 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
-import com.ringoid.base.eventbus.Bus
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.FeedAdapter
+import com.ringoid.origin.feed.adapter.explore.ExploreFeedAdapter
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -26,7 +24,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     }
 
     override fun createFeedAdapter(): BaseFeedAdapter =
-        FeedAdapter(ImageRequest(context!!)).apply {
+        ExploreFeedAdapter(ImageRequest(context!!)).apply {
             onLikeImageListener = { model: ProfileImageVO, _ /** image position */ ->
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@ExploreFragment)

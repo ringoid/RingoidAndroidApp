@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.utility.clickDebounce
+import com.ringoid.utility.doubleClicks
 import timber.log.Timber
 
 abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,10 +26,15 @@ abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     @Suppress("CheckResult")
-    open fun setOnClickListener(l: View.OnClickListener?) {
+    fun setOnClickListener(l: View.OnClickListener?) {
         itemView.apply {
             isClickable = l != null
             clicks().compose(clickDebounce()).subscribe { l?.onClick(this) }
         }
+    }
+
+    @Suppress("CheckResult")
+    fun setOnDoubleClickListener(l: View.OnClickListener?) {
+        itemView.doubleClicks().compose(clickDebounce()).subscribe { l?.onClick(itemView) }
     }
 }
