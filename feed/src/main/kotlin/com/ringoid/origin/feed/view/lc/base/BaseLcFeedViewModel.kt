@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lc.base
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -114,6 +115,8 @@ abstract class BaseLcFeedViewModel(
     }
 
     private fun refresh() {
+        viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_DEFAULT)
+        viewState.value = ViewState.LOADING
         viewState.value = ViewState.DONE(REFRESH)
     }
 
@@ -165,6 +168,7 @@ abstract class BaseLcFeedViewModel(
     // ------------------------------------------
     override fun onRefresh() {
         super.onRefresh()
+        Bus.post(event = BusEvent.RefreshOnLc(lcSourceFeed = getSourceFeed().feedName))
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
     }
 
@@ -239,16 +243,26 @@ abstract class BaseLcFeedViewModel(
     fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Explore Feed screen leads Lmm screen to refresh as well
+        // refresh on Explore Feed screen leads LC screen to refresh as well
         DebugLogUtil.i("Get LC on refresh Explore Feed [${getFeedName()}]")
         refresh()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRefreshOnLc(event: BusEvent.RefreshOnLc) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        // refresh on some of LC screens leads another LC screen to refresh as well
+        if (LcNavTab.from(event.lcSourceFeed) != getSourceFeed()) {
+            refresh()
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Profile screen leads Lmm screen to refresh as well
+        // refresh on Profile screen leads LC screen to refresh as well
         DebugLogUtil.i("Get LC on refresh Profile [${getFeedName()}]")
         refresh()
     }
