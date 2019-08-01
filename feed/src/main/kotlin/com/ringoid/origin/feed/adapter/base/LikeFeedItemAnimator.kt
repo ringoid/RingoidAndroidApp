@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 class LikeFeedItemAnimator : FeedItemAnimator() {
 
     private val animationsMapLikeButton: MutableMap<RecyclerView.ViewHolder, AnimationSet> = mutableMapOf()
-    private val animationsMapLikeImage: MutableMap<RecyclerView.ViewHolder, AnimationSet> = mutableMapOf()
 
     override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean = true
 
@@ -35,11 +34,10 @@ class LikeFeedItemAnimator : FeedItemAnimator() {
                 animateButtonLike(newHolder)
             }
         }
-        return false
+        return super.animateChange(oldHolder, newHolder, preInfo, postInfo)
     }
 
     private fun cancelCurrentAnimationIfExists(item: RecyclerView.ViewHolder) {
-        animationsMapLikeImage[item]?.cancel()
         animationsMapLikeButton[item]?.cancel()
     }
 
@@ -62,7 +60,7 @@ class LikeFeedItemAnimator : FeedItemAnimator() {
     }
 
     private fun dispatchChangeFinishedIfAllAnimationsEnded(holder: RecyclerView.ViewHolder) {
-        if (animationsMapLikeButton.containsKey(holder) || animationsMapLikeImage.containsKey(holder)) {
+        if (animationsMapLikeButton.containsKey(holder)) {
             return
         }
 
@@ -76,7 +74,7 @@ class LikeFeedItemAnimator : FeedItemAnimator() {
 
     override fun endAnimations() {
         super.endAnimations()
-        for (animatorSet in animationsMapLikeImage.values) {
+        for (animatorSet in animationsMapLikeButton.values) {
             animatorSet.cancel()
         }
     }
