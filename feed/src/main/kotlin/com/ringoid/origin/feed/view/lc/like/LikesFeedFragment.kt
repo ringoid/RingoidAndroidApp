@@ -5,9 +5,13 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
+import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
@@ -84,4 +88,13 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
             observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
         }
     }
+
+    /* Scroll listeners */
+    // --------------------------------------------------------------------------------------------
+    override fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
+        mutableListOf<OffsetScrollStrategy>()
+            .apply {
+                addAll(super.getOffsetScrollStrategies())
+                add(OffsetScrollStrategy(tag = "like btn bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_BOTTOM, hide = FeedViewHolderHideLikeBtnOnScroll, show = FeedViewHolderShowLikeBtnOnScroll))
+            }
 }

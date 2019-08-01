@@ -9,10 +9,14 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
+import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
@@ -171,4 +175,13 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 }
         }
     }
+
+    /* Scroll listeners */
+    // --------------------------------------------------------------------------------------------
+    override fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
+        mutableListOf<OffsetScrollStrategy>()
+            .apply {
+                addAll(super.getOffsetScrollStrategies())
+                add(OffsetScrollStrategy(tag = "chat btn bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_BOTTOM, hide = FeedViewHolderHideChatBtnOnScroll, show = FeedViewHolderShowChatBtnOnScroll))
+            }
 }

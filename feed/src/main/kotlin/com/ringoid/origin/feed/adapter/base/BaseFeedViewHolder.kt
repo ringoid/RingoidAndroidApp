@@ -441,9 +441,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 }
 
 // ------------------------------------------------------------------------------------------------
-class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
-    : BaseFeedViewHolder(view, viewPool, imageLoader)
-
 class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
 
     override fun bind(model: FeedItemVO) {

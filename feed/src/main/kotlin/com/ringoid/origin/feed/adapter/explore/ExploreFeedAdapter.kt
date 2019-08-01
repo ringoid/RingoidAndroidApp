@@ -19,7 +19,7 @@ class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoade
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder =
-        FeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
+        ExploreFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
             .also { vh ->
                 vh.itemView.ibtn_like.clicks().compose(clickDebounce())
                     .subscribe { _ /** feedItemPosition */ ->

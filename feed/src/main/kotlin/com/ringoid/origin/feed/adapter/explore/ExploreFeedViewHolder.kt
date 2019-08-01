@@ -1,7 +1,8 @@
-package com.ringoid.origin.feed.adapter.lmm
+package com.ringoid.origin.feed.adapter.explore
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.ringoid.origin.feed.adapter.base.BaseFeedViewHolder
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -9,8 +10,8 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
-class LikeFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
-    : LmmViewHolder(view, viewPool, imageLoader) {
+class ExploreFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
+    : BaseFeedViewHolder(view, viewPool, imageLoader) {
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
         super.bind(model, payloads)
