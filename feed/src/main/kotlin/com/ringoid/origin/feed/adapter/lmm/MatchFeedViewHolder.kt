@@ -50,7 +50,7 @@ class MatchFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
         } else {
             val peerMessagesCount = model.countOfPeerMessages()
             if (peerMessagesCount > 0) {
-                if (peerMessagesCount == ChatInMemoryCache.getPeerMessagesCount(model.id)) {
+                if (peerMessagesCount <= ChatInMemoryCache.getPeerMessagesCount(model.id)) {
                     R.drawable.ic_messenger_outline_white
                 } else {  // has unread messages from peer
                     R.drawable.ic_messenger_fill_lgreen
