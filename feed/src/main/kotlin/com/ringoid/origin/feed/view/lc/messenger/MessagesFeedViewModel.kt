@@ -75,7 +75,7 @@ class MessagesFeedViewModel @Inject constructor(
         incomingPushMatch
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ refreshOnPush.value = feed.value?.isNotEmpty() == true }, Timber::e)
+            .subscribe({ refreshOnPush.value = true }, Timber::e)
 
         incomingPushMessages
             .subscribeOn(Schedulers.computation())
@@ -118,7 +118,7 @@ class MessagesFeedViewModel @Inject constructor(
         // show badge on Messages LC tab
         viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
         // show 'tap-to-refresh' popup on Feed screen
-        refreshOnPush.value = feed.value?.isNotEmpty() == true
+        refreshOnPush.value = true
     }
 
     // ------------------------------------------

@@ -64,7 +64,7 @@ class LikesFeedViewModel @Inject constructor(
         incomingPushLike
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ refreshOnPush.value = feed.value?.isNotEmpty() == true }, Timber::e)
+            .subscribe({ refreshOnPush.value = true }, Timber::e)
     }
 
     // ------------------------------------------
