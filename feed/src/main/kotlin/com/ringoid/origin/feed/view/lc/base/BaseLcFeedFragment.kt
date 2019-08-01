@@ -9,6 +9,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
@@ -29,6 +30,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is NO_IMAGES_IN_PROFILE -> vm.onNoImagesInProfile()
                     /**
                      * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
                      * have been seen by user, so it's time to hide red badge on a corresponding Lmm tab.

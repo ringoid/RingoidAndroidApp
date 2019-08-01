@@ -114,8 +114,6 @@ abstract class BaseLcFeedViewModel(
     }
 
     private fun refresh() {
-        viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_DEFAULT)
-        viewState.value = ViewState.LOADING
         viewState.value = ViewState.DONE(REFRESH)
     }
 
@@ -165,6 +163,14 @@ abstract class BaseLcFeedViewModel(
     }
 
     // ------------------------------------------
+    /**
+     * Since on refresh on some of LC feeds leads another LC feed to refresh as well,
+     * such refreshing should be interrupted if there is no images in user's profile.
+     */
+    internal fun onNoImagesInProfile() {
+        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+    }
+
     override fun onRefresh() {
         super.onRefresh()
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
