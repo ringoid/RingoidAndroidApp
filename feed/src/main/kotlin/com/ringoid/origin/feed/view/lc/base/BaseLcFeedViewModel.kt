@@ -170,7 +170,7 @@ abstract class BaseLcFeedViewModel(
 
     internal fun onTapToRefreshClick() {
         analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
-        refreshOnPush.value = false  // drop value on each LC feed, when user taps on 'tap to refresh' popup on any Lmm feed
+        refreshOnPush.value = false  // drop value on each LC feed, when user taps on 'tap to refresh' popup on any LC feed
         viewState.value = ViewState.DONE(REFRESH)
     }
 
