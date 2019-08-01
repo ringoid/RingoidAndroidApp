@@ -25,10 +25,12 @@ class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoade
                     .subscribe { _ /** feedItemPosition */ ->
                         vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
                             ?.let {
-                                val imagePosition = vh.getCurrentImagePosition()
-                                val image = vh.profileImageAdapter.getModel(imagePosition)
-                                onLikeImageListener?.invoke(image, imagePosition)
-                                notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
+                                if (onBeforeLikeListener?.invoke() != false) {
+                                    val imagePosition = vh.getCurrentImagePosition()
+                                    val image = vh.profileImageAdapter.getModel(imagePosition)
+                                    onLikeImageListener?.invoke(image, imagePosition)
+                                    notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
+                                }
                             }
                     }
                 vh.profileImageAdapter.itemDoubleClickListener = { model, position ->

@@ -22,10 +22,12 @@ class LikeFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoader) {
                     .subscribe {
                         vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
                             ?.let { feedItemPosition ->
-                                val imagePosition = vh.getCurrentImagePosition()
-                                val image = vh.profileImageAdapter.getModel(imagePosition)
-                                onLikeImageListener?.invoke(image, feedItemPosition)
-                                notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
+                                if (onBeforeLikeListener?.invoke() != false) {
+                                    val imagePosition = vh.getCurrentImagePosition()
+                                    val image = vh.profileImageAdapter.getModel(imagePosition)
+                                    onLikeImageListener?.invoke(image, feedItemPosition)
+                                    notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
+                                }
                             }
                     }
                 vh.itemView.iv_message.changeVisibility(isVisible = false)
