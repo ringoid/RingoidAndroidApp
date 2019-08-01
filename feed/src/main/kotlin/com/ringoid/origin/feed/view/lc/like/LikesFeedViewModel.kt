@@ -22,6 +22,7 @@ import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
+import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.ringoid.origin.view.main.LcNavTab
@@ -64,7 +65,12 @@ class LikesFeedViewModel @Inject constructor(
         incomingPushLike
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ refreshOnPush.value = true }, Timber::e)
+            .subscribe({
+                // show badge on Likes LC tab
+                viewState.value = ViewState.DONE(PUSH_NEW_LIKES_TOTAL)
+                // show 'tap-to-refresh' popup on Feed screen
+                refreshOnPush.value = true
+            }, Timber::e)
     }
 
     // ------------------------------------------

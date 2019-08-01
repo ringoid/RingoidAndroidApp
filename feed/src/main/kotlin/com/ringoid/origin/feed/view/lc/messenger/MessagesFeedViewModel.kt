@@ -25,6 +25,7 @@ import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MATCHES_TOTAL
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.utils.ScreenHelper
@@ -75,7 +76,12 @@ class MessagesFeedViewModel @Inject constructor(
         incomingPushMatch
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ refreshOnPush.value = true }, Timber::e)
+            .subscribe({
+                // show badge on Messages LC tab (as being for new Matches)
+                viewState.value = ViewState.DONE(PUSH_NEW_MATCHES_TOTAL)
+                // show 'tap-to-refresh' popup on Feed screen
+                refreshOnPush.value = true
+            }, Timber::e)
 
         incomingPushMessages
             .subscribeOn(Schedulers.computation())
@@ -101,7 +107,12 @@ class MessagesFeedViewModel @Inject constructor(
             }
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe(::handlePushMessage, Timber::e)
+            .subscribe({
+                // show badge on Messages LC tab
+                viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
+                // show 'tap-to-refresh' popup on Feed screen
+                refreshOnPush.value = true
+            }, Timber::e)
     }
 
     // ------------------------------------------
@@ -113,13 +124,6 @@ class MessagesFeedViewModel @Inject constructor(
                      .filter { it.second > ChatInMemoryCache.getPeerMessagesCount(it.first) }
                      .map { it.first }
             } ?: emptyList()
-
-    private fun handlePushMessage(peerId: String) {
-        // show badge on Messages LC tab
-        viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
-        // show 'tap-to-refresh' popup on Feed screen
-        refreshOnPush.value = true
-    }
 
     // ------------------------------------------
     private var compareFlag = AtomicBoolean(true)

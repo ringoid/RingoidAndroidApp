@@ -20,6 +20,7 @@ import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
+import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MATCHES_TOTAL
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.messenger.model.ChatPayload
@@ -78,6 +79,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                             .takeIf { it != DomainUtil.BAD_POSITION }
                             ?.let { feedAdapter.notifyItemChanged(it, FeedViewHolderShowControls) }
                     }
+                    is PUSH_NEW_MATCHES_TOTAL,
                     is PUSH_NEW_MESSAGES_TOTAL -> communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = true)
                 }
             }

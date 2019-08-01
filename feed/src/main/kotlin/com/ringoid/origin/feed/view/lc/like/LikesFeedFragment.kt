@@ -16,6 +16,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
+import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
@@ -74,6 +75,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                             }
                         }
                     }
+                    is PUSH_NEW_LIKES_TOTAL -> communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(isVisible = true)
                 }
             }
         }
