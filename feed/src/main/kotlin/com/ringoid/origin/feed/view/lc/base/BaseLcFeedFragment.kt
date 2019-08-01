@@ -3,6 +3,8 @@ package com.ringoid.origin.feed.view.lc.base
 import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
@@ -44,6 +46,10 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
                     }
             }
         }
+    }
+
+    override fun onRefreshGesture() {
+        Bus.post(event = BusEvent.RefreshOnLc(lcSourceFeed = getSourceFeed().feedName))
     }
 
     /* Lifecycle */

@@ -2,7 +2,6 @@ package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
@@ -151,8 +150,6 @@ class ExploreViewModel @Inject constructor(
     // ------------------------------------------
     override fun onRefresh() {
         super.onRefresh()
-        Bus.post(event = BusEvent.RefreshOnExplore)
-
         nextPage = 0
         debugGetNewFacesDropFlagsUseCase.source()
             .autoDisposable(this)

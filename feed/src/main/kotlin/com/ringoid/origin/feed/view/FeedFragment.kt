@@ -282,7 +282,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
-            refreshes().compose(clickDebounce()).subscribe { onRefresh() }
+            refreshes().compose(clickDebounce()).subscribe {
+                if (onRefresh()) {
+                    onRefreshGesture()  // refresh checks have passed
+                }
+            }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         scroll_fab.clicks().compose(clickDebounce()).subscribe {
@@ -327,10 +331,15 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun onRefresh() {
+    protected open fun onRefreshGesture() {
+        // override in subclasses
+    }
+
+    private fun onRefresh(): Boolean =
         if (!connectionManager.isNetworkAvailable()) {
             showLoading(isVisible = false)
             noConnection(this@FeedFragment)
+            false
         } else {
             feedTrackingBus.allowSingleUnchanged()
             invalidateScrollCaches()
@@ -341,8 +350,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
                 onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
             }
+            true
         }
-    }
 
     // ------------------------------------------
     private var wasFabVisible: Boolean = false

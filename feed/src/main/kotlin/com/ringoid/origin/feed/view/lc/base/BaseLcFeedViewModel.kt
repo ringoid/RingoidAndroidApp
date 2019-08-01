@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.view.lc.base
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -168,7 +167,6 @@ abstract class BaseLcFeedViewModel(
     // ------------------------------------------
     override fun onRefresh() {
         super.onRefresh()
-        Bus.post(event = BusEvent.RefreshOnLc(lcSourceFeed = getSourceFeed().feedName))
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
     }
 
