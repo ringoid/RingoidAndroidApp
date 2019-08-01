@@ -76,13 +76,10 @@ class ProfileImageAdapter(private val imageLoader: ImageRequest)
             wrapOnItemClickListener(vh, getLikeClickListener(vh))
         }
 
-    // TODO: add like btn click listener - single
-
     private fun getLikeClickListener(vh: BaseProfileImageViewHolder)
         : ((model: ProfileImageVO, position: Int) -> Unit)? =
             { model: ProfileImageVO, position: Int ->
                 if (onBeforeLikeListener?.invoke() != false) {
-                    notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
                     itemDoubleClickListener?.invoke(model, position)
                     vh.itemView.tag
                         ?.let { it as MotionEvent }

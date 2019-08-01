@@ -28,6 +28,7 @@ class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoade
                                 val imagePosition = vh.getCurrentImagePosition()
                                 val image = vh.profileImageAdapter.getModel(imagePosition)
                                 onLikeImageListener?.invoke(image, imagePosition)
+                                notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
                             }
                     }
                 vh.profileImageAdapter.itemDoubleClickListener = { model, position ->

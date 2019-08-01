@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.adapter.lmm
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.origin.feed.adapter.base.FeedItemViewHolderAnimateLike
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -24,6 +25,7 @@ class LikeFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoader) {
                                 val imagePosition = vh.getCurrentImagePosition()
                                 val image = vh.profileImageAdapter.getModel(imagePosition)
                                 onLikeImageListener?.invoke(image, feedItemPosition)
+                                notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
                             }
                     }
                 vh.itemView.iv_message.changeVisibility(isVisible = false)
