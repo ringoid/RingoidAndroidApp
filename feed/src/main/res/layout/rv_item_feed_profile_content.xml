@@ -90,28 +90,20 @@
         style="@style/StdText.Primary"/>
 
     <LinearLayout
-        android:id="@+id/ll_right_section"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/std_margin_32"
-        android:layout_marginEnd="@dimen/std_margin_16"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <LinearLayout
         android:id="@+id/ll_left_container"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/std_margin_16"
         android:layout_marginEnd="@dimen/std_margin_8"
         android:orientation="vertical"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintBottom_toTopOf="@id/tv_about"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ll_right_section">
+        app:layout_constraintEnd_toStartOf="@+id/ll_right_container">
 
         <TextView
             android:id="@+id/tv_name_age"
+            android:ellipsize="end"
             android:shadowColor="@color/text_shadow"
             android:shadowRadius="6"
             android:textSize="@dimen/std_text_22"
@@ -121,6 +113,31 @@
 
         <LinearLayout
             android:id="@+id/ll_left_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_right_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginStart="@dimen/std_margin_8"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ll_left_container"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:id="@+id/ll_right_section"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
