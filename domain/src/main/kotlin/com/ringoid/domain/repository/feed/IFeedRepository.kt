@@ -65,6 +65,4 @@ interface IFeedRepository {
     fun getLmmTotalCount(source: String): Single<Int>
 
     fun getLmmProfileIds(): Single<List<String>>
-
-    fun dropLmmChangedStatus(): Completable
 }

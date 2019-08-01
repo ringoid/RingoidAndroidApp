@@ -224,14 +224,6 @@ open class FeedRepository @Inject constructor(
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES).map { it.mapList() },
             Function3 { likes, matches, messages -> Lmm(likes, matches, messages) })
 
-    override fun dropLmmChangedStatus(): Completable =
-        Completable.fromCallable {
-            badgeLikes.onNext(false)
-            badgeMatches.onNext(false)
-            badgeMessenger.onNext(false)
-            lmmChanged.onNext(false)
-        }
-
     /* LC (replacing LMM) */
     // ------------------------------------------
     override fun getLc(resolution: ImageResolution, limit: Int?, filter: FilterEssence?, source: String?): Single<Lmm> {

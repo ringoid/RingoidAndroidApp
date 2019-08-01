@@ -8,7 +8,6 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
 import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
 import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
@@ -39,7 +38,6 @@ import javax.inject.Inject
 class LikesFeedViewModel @Inject constructor(
     getLcUseCase: GetLcUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -50,7 +48,6 @@ class LikesFeedViewModel @Inject constructor(
     : BaseLcFeedViewModel(
         getLcUseCase,
         getCachedFeedItemByIdUseCase,
-        dropLmmChangedStatusUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,

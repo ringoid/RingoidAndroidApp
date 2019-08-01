@@ -11,7 +11,6 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
 import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
 import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
@@ -42,7 +41,6 @@ import java.util.concurrent.ConcurrentHashMap
 abstract class BaseLcFeedViewModel(
     protected val getLcUseCase: GetLcUseCase,
     private val getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
     private val updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     private val transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -237,15 +235,6 @@ abstract class BaseLcFeedViewModel(
 
     /* Event Bus */
     // --------------------------------------------------------------------------------------------
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    override fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        dropLmmChangedStatusUseCase.source()  // drop changed status (red dot badges)
-            .autoDisposable(this)
-            .subscribe({ Timber.d("Badges on Lmm have been dropped because no images in user's profile") }, Timber::e)
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
         Timber.d("Received bus event: $event")

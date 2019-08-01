@@ -9,7 +9,6 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
 import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
 import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
@@ -48,7 +47,6 @@ class MessagesFeedViewModel @Inject constructor(
     private val getChatUseCase: GetChatUseCase,
     getLcUseCase: GetLcUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
-    dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
     transferFeedItemUseCase: TransferFeedItemUseCase,
     clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
@@ -59,7 +57,6 @@ class MessagesFeedViewModel @Inject constructor(
     : BaseLcFeedViewModel(
         getLcUseCase,
         getCachedFeedItemByIdUseCase,
-        dropLmmChangedStatusUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,
