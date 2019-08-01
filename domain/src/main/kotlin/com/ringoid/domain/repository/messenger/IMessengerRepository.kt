@@ -12,6 +12,8 @@ interface IMessengerRepository {
 
     fun getChat(chatId: String, resolution: ImageResolution): Single<Chat>
 
+    fun getChatOnly(chatId: String, resolution: ImageResolution): Single<Chat>
+
     fun getChatNew(chatId: String, resolution: ImageResolution): Single<Chat>
 
     fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat>

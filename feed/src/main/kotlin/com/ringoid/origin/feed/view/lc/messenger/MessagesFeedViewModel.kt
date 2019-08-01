@@ -15,6 +15,7 @@ import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.interactor.messenger.GetChatOnlyUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
@@ -46,6 +47,7 @@ import javax.inject.Inject
 
 class MessagesFeedViewModel @Inject constructor(
     private val getChatUseCase: GetChatUseCase,
+    private val getChatOnlyUseCase: GetChatOnlyUseCase,
     getLcUseCase: GetLcUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
