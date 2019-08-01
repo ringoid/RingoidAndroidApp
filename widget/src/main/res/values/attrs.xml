@@ -59,6 +59,7 @@
     <declare-styleable name="LabelView">
         <attr name="label_icon" format="reference"/>
         <attr name="label_icon_size" format="reference"/>
+        <attr name="label_min_height" format="reference"/>
         <attr name="label_text" format="reference"/>
         <attr name="label_text_gravity">
             <flag name="bottom" value="80"/>

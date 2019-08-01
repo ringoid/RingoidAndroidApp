@@ -20,7 +20,7 @@
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
-        android:textSize="@dimen/std_text_18"
+        android:textSize="@dimen/std_text_14"
         tools:text="Online"
         style="@style/StdText.White"/>
 </merge>

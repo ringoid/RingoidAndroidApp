@@ -100,7 +100,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:label_icon="@drawable/online_status_oval"
         app:label_icon_size="@dimen/std_icon_12"
-        app:label_text="@string/common_online"/>
+        app:label_min_height="@dimen/std_icon_36"
+        app:label_text="@string/common_online"
+        app:label_text_size="@dimen/std_text_18"/>
 
     <View
         android:id="@+id/anchor"
@@ -120,6 +122,7 @@
         android:maxLines="3"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
+        android:textSize="@dimen/std_text_14"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In maximus, magna non finibus ultrices, nunc lacus facilisis ligula, vitae placerat ex ante id lorem. Maecenas ornare malesuada tincidunt. Nullam pulvinar nisi in lorem dictum imperdiet. Donec tincidunt lacus a tincidunt imperdiet."
         app:layout_constraintBottom_toTopOf="@id/anchor"
         app:layout_constraintStart_toStartOf="parent"
