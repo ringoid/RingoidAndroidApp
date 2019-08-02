@@ -17,6 +17,7 @@ data class ChatPayload(
     @Expose @SerializedName(COLUMN_PEER_IMAGE_URI) val peerImageUri: String? = null,
     @Expose @SerializedName(COLUMN_PEER_THUMB_URI) val peerThumbnailUri: String? = null,
     @Deprecated("LMM -> LC") @Expose @SerializedName(COLUMN_FLAG_CHAT_EMPTY) var isChatEmpty: Boolean = true,  // TODO: remove field
+    @Expose @SerializedName(COLUMN_FLAG_CHAT_FIRST_USER_MESSAGES_ONLY) var isChatFirstUserMessagesOnly: Boolean = false,
     @Expose @SerializedName(COLUMN_ONLINE_STATUS) var onlineStatus: OnlineStatus? = null,
     @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: LcNavTab = LcNavTab.MESSAGES,
     @Deprecated("LMM -> LC") @Expose @SerializedName(COLUMN_SOURCE_FEED_COMPAT) val sourceFeedCompat: LmmNavTab = LmmNavTab.MESSAGES)  // TODO: remove field
@@ -29,6 +30,7 @@ data class ChatPayload(
         peerImageUri = source.readString(),
         peerThumbnailUri = source.readString(),
         isChatEmpty = source.readInt() != 0,
+        isChatFirstUserMessagesOnly = source.readInt() != 0,
         onlineStatus = source.readSerializable() as? OnlineStatus,
         sourceFeed = source.readSerializable() as? LcNavTab ?: LcNavTab.MESSAGES,
         sourceFeedCompat = source.readSerializable() as? LmmNavTab ?: LmmNavTab.MESSAGES)
@@ -43,6 +45,7 @@ data class ChatPayload(
             writeString(peerImageUri)
             writeString(peerThumbnailUri)
             writeInt(if (isChatEmpty) 1 else 0)
+            writeInt(if (isChatFirstUserMessagesOnly) 1 else 0)
             writeSerializable(onlineStatus)
             writeSerializable(sourceFeed)
             writeSerializable(sourceFeedCompat)
@@ -56,6 +59,7 @@ data class ChatPayload(
         const val COLUMN_PEER_IMAGE_URI = "peerImageUri"
         const val COLUMN_PEER_THUMB_URI = "peerThumbUri"
         const val COLUMN_FLAG_CHAT_EMPTY = "isChatEmpty"
+        const val COLUMN_FLAG_CHAT_FIRST_USER_MESSAGES_ONLY = "isChatFirstUserMessagesOnly"
         const val COLUMN_ONLINE_STATUS = "onlineStatus"
         const val COLUMN_SOURCE_FEED = "sourceFeed"
         const val COLUMN_SOURCE_FEED_COMPAT = "sourceFeedCompat"

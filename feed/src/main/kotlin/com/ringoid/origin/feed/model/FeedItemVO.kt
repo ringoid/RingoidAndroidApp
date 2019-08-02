@@ -15,6 +15,7 @@ data class FeedItemVO(
     override val distanceText: String? = null,
     override val images: List<IImage>,
     override val messages: List<Message> = emptyList(),
+    var hasOnlyUserMessages: Boolean = false,  // helper flag
     var lastOnlineStatusX: OnlineStatus = OnlineStatus.UNKNOWN,
     override var lastOnlineStatus: String? = null,
     override var lastOnlineText: String? = null,

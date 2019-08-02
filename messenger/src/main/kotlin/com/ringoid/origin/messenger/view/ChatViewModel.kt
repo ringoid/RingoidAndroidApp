@@ -100,7 +100,7 @@ class ChatViewModel @Inject constructor(
 
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSuccess { viewState.value = ViewState.DONE(FIRST_USER_MESSAGES_ONLY) }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
@@ -154,5 +154,7 @@ class ChatViewModel @Inject constructor(
         messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
         onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)
         peerName.value = chat.name() ?: AppInMemory.genderString(chat.gender, default = AppRes.SEX_MALE)
+        viewState.value = if (peerMessagesCount == 0) ViewState.DONE(FIRST_USER_MESSAGES_ONLY)
+                          else ViewState.IDLE
     }
 }
