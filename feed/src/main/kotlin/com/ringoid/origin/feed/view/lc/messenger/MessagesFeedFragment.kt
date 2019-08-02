@@ -15,7 +15,7 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
-import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
@@ -48,7 +48,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun getVmClass(): Class<MessagesFeedViewModel> = MessagesFeedViewModel::class.java
 
     override fun createFeedAdapter(): BaseLmmAdapter =
-        MessengerFeedAdapter(ImageRequest(context!!)).apply {
+        MessagesFeedAdapter(ImageRequest(context!!)).apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
                 openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
             }

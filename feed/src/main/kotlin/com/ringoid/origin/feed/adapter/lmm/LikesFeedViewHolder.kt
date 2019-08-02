@@ -9,7 +9,7 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
-class LikeFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
+class LikesFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
     : LmmViewHolder(view, viewPool, imageLoader) {
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {

@@ -11,7 +11,7 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-class MatchFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
+class MessagesFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
     : LmmViewHolder(view, viewPool, imageLoader) {
 
     override fun bind(model: FeedItemVO) {

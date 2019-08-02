@@ -16,7 +16,7 @@ class LikeFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoader) {
     var onLikeImageListener: ((model: ProfileImageVO, feedItemPosition: Int) -> Unit)? = null
 
     override fun instantiateViewHolder(view: View): LmmViewHolder =
-        LikeFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
+        LikesFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
             .also { vh ->
                 vh.itemView.ibtn_like.clicks().compose(clickDebounce())
                     .subscribe {

@@ -3,7 +3,7 @@ package com.ringoid.origin.feed.view.lmm.messenger
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
-import com.ringoid.origin.feed.adapter.lmm.MessengerFeedAdapter
+import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
@@ -23,7 +23,7 @@ class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
     override fun getVmClass(): Class<MessagesFeedViewModel> = MessagesFeedViewModel::class.java
 
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
-        MessengerFeedAdapter(ImageRequest(context!!)).apply {
+        MessagesFeedAdapter(ImageRequest(context!!)).apply {
             onImageToOpenChatClickListener = { model: ProfileImageVO, feedItemPosition: Int ->
                 openChat(position = feedItemPosition, peerId = model.profileId, image = model.image)
             }

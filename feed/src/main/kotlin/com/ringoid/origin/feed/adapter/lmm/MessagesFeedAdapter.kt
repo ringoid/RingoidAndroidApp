@@ -6,12 +6,12 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
-open class MatchFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoader) {
+open class MessagesFeedAdapter(imageLoader: ImageRequest) : BaseLmmAdapter(imageLoader) {
 
     var onImageToOpenChatClickListener: ((model: ProfileImageVO, feedItemPosition: Int) -> Unit)? = null
 
     override fun instantiateViewHolder(view: View): LmmViewHolder =
-        MatchFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
+        MessagesFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
             .also { vh ->
                 vh.itemView.ibtn_like.changeVisibility(isVisible = false)
                 vh.profileImageAdapter.also { adapter ->
