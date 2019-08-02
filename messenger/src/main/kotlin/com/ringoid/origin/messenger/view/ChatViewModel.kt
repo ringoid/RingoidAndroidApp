@@ -22,7 +22,6 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
-import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Flowable
 import io.reactivex.subjects.PublishSubject
@@ -107,15 +106,13 @@ class ChatViewModel @Inject constructor(
             .subscribe({
                 sentMessage.value = it
 
-                // TODO: refactor LMM -> LC
                 // analytics
                 with (analyticsManager) {
                     fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed.feedName)
                     fireOnce(Analytics.AHA_FIRST_MESSAGE_SENT, "sourceFeed" to sourceFeed.feedName)
                     when (sourceFeed) {
-                        LmmNavTab.LIKES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_LIKES)
-                        LmmNavTab.MATCHES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MATCHES)
-                        LmmNavTab.MESSAGES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MESSAGES)
+                        LcNavTab.LIKES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_LIKES)
+                        LcNavTab.MESSAGES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MESSAGES)
                     }
                 }
             }, Timber::e)
