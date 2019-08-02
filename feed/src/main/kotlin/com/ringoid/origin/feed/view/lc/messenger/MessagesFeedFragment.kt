@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -78,9 +79,19 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                     is DISCARD_PROFILE -> communicator(IBaseMainActivity::class.java)?.decrementCountOnMessages()
                     is PUSH_NEW_MESSAGES -> {
                         val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
-                        feedAdapter.findPosition { it.id == profileId }
-                            .takeIf { it != DomainUtil.BAD_POSITION }
-                            ?.let { feedAdapter.notifyItemChanged(it, FeedViewHolderShowControls) }
+
+                        feedAdapter.findModelAndPosition { it.id == profileId }?.let { (position, feedItem) ->
+                            with (feedItem.messagesReflection) {
+                                /**
+                                * New messages have been received from push notification for profile with id [BusEvent.PushNewMessage.peerId],
+                                * so need to update corresponding feed item, if any, to visually reflect change in unread messages count.
+                                 * It's enough to achieve peer messages count to be greater than count in cache.
+                                */
+                                ChatInMemoryCache.setPeerMessagesCount(profileId = profileId, count = 0)
+                                add(peerMessage(chatId = profileId))
+                            }
+                            feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+                        }
                     }
                     is PUSH_NEW_MATCHES_TOTAL,
                     is PUSH_NEW_MESSAGES_TOTAL -> communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = true)

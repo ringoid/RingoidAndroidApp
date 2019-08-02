@@ -99,14 +99,7 @@ class MessagesFeedViewModel @Inject constructor(
                     .onErrorResumeNext { Single.just(EmptyChat) }
                     .map { peerId }
             }  // use case will deliver it's result to Main thread
-            .doOnNext { peerId ->
-                /**
-                 * New messages have been received from push notification for profile with id [BusEvent.PushNewMessage.peerId],
-                 * so need to update corresponding feed item, if any, to visually reflect change in unread messages count.
-                 */
-                ChatInMemoryCache.setPeerMessagesCount(profileId = peerId, count = 0)
-                viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES(profileId = peerId))
-            }
+            .doOnNext { viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES(profileId = it)) }
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({
