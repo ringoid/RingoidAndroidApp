@@ -45,10 +45,10 @@ class MessagesFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool
 
     // ------------------------------------------
     private fun setMessengerIcon(model: FeedItemVO) {
-        val iconResId = if (model.messages.isEmpty() && !model.hasOnlyUserMessages) {
+        val iconResId = if (model.messagesReflection.isEmpty()) {
             R.drawable.ic_chat_bubble_outline_white
         } else {
-            val peerMessagesCount = model.countOfPeerMessages()
+            val peerMessagesCount = model.countOfPeerMessages(messages = model.messagesReflection)
             if (peerMessagesCount > 0) {
                 if (peerMessagesCount <= ChatInMemoryCache.getPeerMessagesCount(model.id)) {
                     R.drawable.ic_messenger_outline_white

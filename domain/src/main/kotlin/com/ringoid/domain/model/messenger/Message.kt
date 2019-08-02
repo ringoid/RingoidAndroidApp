@@ -70,6 +70,10 @@ data class Message(
 val EmptyMessage = Message(id = randomString(), chatId = DomainUtil.BAD_ID, clientId = DomainUtil.BAD_ID,
                            peerId = DomainUtil.BAD_ID, text = "", ts = 0L)
 
+fun peerMessage(chatId: String): Message =
+    Message(id = randomString(), chatId = chatId, clientId = DomainUtil.BAD_ID,
+            peerId = chatId, text = "", ts = 0L)
+
 fun userMessage(chatId: String): Message =
     Message(id = randomString(), chatId = chatId, clientId = DomainUtil.BAD_ID,
             peerId = DomainUtil.CURRENT_USER_ID, text = "", ts = 0L)

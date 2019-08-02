@@ -7,8 +7,11 @@ import android.os.Parcelable
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
+import com.ringoid.domain.model.messenger.peerMessage
+import com.ringoid.domain.model.messenger.userMessage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
@@ -146,7 +149,13 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                         scrollToTopOfItemAtPosition(it.position)
                         getRecyclerView().post {
                             feedAdapter.findModel(it.position)?.let { feedItem ->
-                                feedItem.hasOnlyUserMessages = it.isChatFirstUserMessagesOnly
+                                with (feedItem.messagesReflection) {
+                                    clear()
+                                    val peerMessagesCount = ChatInMemoryCache.getPeerMessagesCount(profileId = feedItem.id)
+                                    val userMessagesCount = ChatInMemoryCache.getUserMessagesCount(chatId = feedItem.id)
+                                    addAll(Array(peerMessagesCount) { peerMessage(chatId = feedItem.id) })
+                                    addAll(Array(userMessagesCount) { userMessage(chatId = feedItem.id) })
+                                }
                                 feedItem.setOnlineStatus(it.onlineStatus)
                             }
                             feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)

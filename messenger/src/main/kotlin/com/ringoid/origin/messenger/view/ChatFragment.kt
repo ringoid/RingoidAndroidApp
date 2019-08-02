@@ -73,17 +73,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
         fun onIdleState() {
-            payload?.isChatFirstUserMessagesOnly = false
             pb_chat.changeVisibility(isVisible = false, soft = true)
         }
 
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    FIRST_USER_MESSAGES_ONLY -> payload?.isChatFirstUserMessagesOnly = true
-                }
-            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_chat.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)

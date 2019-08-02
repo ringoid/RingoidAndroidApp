@@ -12,4 +12,6 @@ interface IFeedItem : IProfile {
 
     fun countOfPeerMessages(): Int = messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
     fun countOfUserMessages(): Int = messages.count { it.peerId == DomainUtil.CURRENT_USER_ID }
+    fun countOfPeerMessages(messages: List<Message>): Int = messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
+    fun countOfUserMessages(messages: List<Message>): Int = messages.count { it.peerId == DomainUtil.CURRENT_USER_ID }
 }
