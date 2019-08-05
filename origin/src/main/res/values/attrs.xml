@@ -3,14 +3,12 @@
     <declare-styleable name="Drawables">
         <attr name="refDrawableBottomBarExplore" format="reference"/>
         <attr name="refDrawableBottomBarExplorePressed" format="reference"/>
-        <attr name="refDrawableBottomBarLmm" format="reference"/>
-        <attr name="refDrawableBottomBarLmmPressed" format="reference"/>
-        <attr name="refDrawableBottomBarMessenger" format="reference"/>
-        <attr name="refDrawableBottomBarMessengerPressed" format="reference"/>
+        <attr name="refDrawableBottomBarLikes" format="reference"/>
+        <attr name="refDrawableBottomBarLikesPressed" format="reference"/>
+        <attr name="refDrawableBottomBarMessages" format="reference"/>
+        <attr name="refDrawableBottomBarMessagesPressed" format="reference"/>
         <attr name="refDrawableBottomBarProfile" format="reference"/>
         <attr name="refDrawableBottomBarProfilePressed" format="reference"/>
-        <attr name="refDrawableFabScrollBg" format="reference"/>
-        <attr name="refDrawableFabScrollIcon" format="reference"/>
         <attr name="refDrawableDebug" format="reference"/>
         <attr name="refDrawableMenuCheck" format="reference"/>
         <attr name="refDrawableMenuInternet" format="reference"/>

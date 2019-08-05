@@ -8,6 +8,7 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 
+@Deprecated("LMM -> LC")
 abstract class BaseMatchesFeedFragment<VM : BaseLmmFeedViewModel> : BaseLmmFeedFragment<VM>() {
 
     // --------------------------------------------------------------------------------------------

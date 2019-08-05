@@ -6,9 +6,13 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.exception.ThresholdExceededException
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
-import com.ringoid.origin.feed.adapter.FeedAdapter
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
+import com.ringoid.origin.feed.adapter.explore.ExploreFeedAdapter
+import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.DISCARD_PROFILES
@@ -26,7 +30,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     }
 
     override fun createFeedAdapter(): BaseFeedAdapter =
-        FeedAdapter(ImageRequest(context!!)).apply {
+        ExploreFeedAdapter(ImageRequest(context!!)).apply {
             onLikeImageListener = { model: ProfileImageVO, _ /** image position */ ->
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@ExploreFragment)
@@ -73,8 +77,8 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         // don't call 'super', completely overridden method
     }
 
-    override fun onRefresh() {
-        super.onRefresh()
+    override fun onRefreshGesture() {
+        super.onRefreshGesture()
         Bus.post(event = BusEvent.RefreshOnExplore)
     }
 
@@ -108,4 +112,13 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
             postponedTabTransaction = false
         }
     }
+
+    /* Scroll listeners */
+    // --------------------------------------------------------------------------------------------
+    override fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
+        mutableListOf<OffsetScrollStrategy>()
+            .apply {
+                addAll(super.getOffsetScrollStrategies())
+                add(OffsetScrollStrategy(tag = "like btn bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_BOTTOM, hide = FeedViewHolderHideLikeBtnOnScroll, show = FeedViewHolderShowLikeBtnOnScroll))
+            }
 }

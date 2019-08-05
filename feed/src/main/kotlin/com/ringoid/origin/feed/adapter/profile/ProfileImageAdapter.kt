@@ -30,11 +30,13 @@ class ProfileImageAdapter(private val imageLoader: ImageRequest)
 
     override fun onBindViewHolder(holder: BaseProfileImageViewHolder, position: Int) {
         holder.setOnClickListener(getOnItemClickListener(holder))
+        holder.setOnDoubleClickListener(getOnItemDoubleClickListener(holder))
         super.onBindViewHolder(holder, position)
     }
 
     override fun onBindViewHolder(holder: BaseProfileImageViewHolder, position: Int, payloads: List<Any>) {
         holder.setOnClickListener(getOnItemClickListener(holder))
+        holder.setOnDoubleClickListener(getOnItemDoubleClickListener(holder))
         super.onBindViewHolder(holder, position, payloads)
     }
 
@@ -67,31 +69,21 @@ class ProfileImageAdapter(private val imageLoader: ImageRequest)
     override fun getPreloadRequestBuilder(item: ProfileImageVO): RequestBuilder<*>? =
         ImageLoader.simpleLoadRequest(imageLoader = imageLoader, uri = item.image.thumbnailUri)
 
-    override fun getOnItemClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener {
-        val clickListener = if (!isLikeEnabled) {
-            super.getOnItemClickListener(vh)
+    override fun getOnItemDoubleClickListener(vh: BaseProfileImageViewHolder): View.OnClickListener =
+        if (!isLikeEnabled) {
+            super.getOnItemDoubleClickListener(vh)
         } else {
             wrapOnItemClickListener(vh, getLikeClickListener(vh))
         }
-        // detect touch on image item and call visual effect at touch point
-        vh.itemView.setOnTouchListener { view, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                view.tag =  event
-            }
-            false
-        }
-        return clickListener
-    }
 
     private fun getLikeClickListener(vh: BaseProfileImageViewHolder)
         : ((model: ProfileImageVO, position: Int) -> Unit)? =
             { model: ProfileImageVO, position: Int ->
                 if (onBeforeLikeListener?.invoke() != false) {
-                    notifyItemChanged(vh.adapterPosition, ProfileImageViewHolderAnimateLike)
-                    itemClickListener?.invoke(model, position)
+                    itemDoubleClickListener?.invoke(model, position)
                     vh.itemView.tag
                         ?.let { it as MotionEvent }
-                        ?.let { onImageTouchListener?.invoke(it.x, it.y) }
+                        ?.let { onImageTouchListener?.invoke(it.rawX, it.rawY) }
                 }
             }
 }

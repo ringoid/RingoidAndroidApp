@@ -66,6 +66,9 @@ class MessengerRepository @Inject constructor(
     override fun getChat(chatId: String, resolution: ImageResolution): Single<Chat> =
         aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it) }
 
+    override fun getChatOnly(chatId: String, resolution: ImageResolution): Single<Chat> =
+        getChatOnly(chatId, resolution, aObjPool.lastActionTime())
+
     override fun getChatNew(chatId: String, resolution: ImageResolution): Single<Chat> =
         aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it) }
 

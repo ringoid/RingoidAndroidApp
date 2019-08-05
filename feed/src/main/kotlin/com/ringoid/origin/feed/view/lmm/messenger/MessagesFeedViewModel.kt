@@ -8,7 +8,6 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.property.NotifyProfileBlockedUseCase
 import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
@@ -25,6 +24,7 @@ import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
 import javax.inject.Inject
 
+@Deprecated("LMM -> LC")
 class MessagesFeedViewModel @Inject constructor(
     getChatUseCase: GetChatUseCase,
     getLmmUseCase: GetLmmUseCase,
@@ -35,13 +35,11 @@ class MessagesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    notifyLmmProfileBlockedUseCase: NotifyProfileBlockedUseCase,
     userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseMatchesFeedViewModel(
         getChatUseCase,
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
-        notifyLmmProfileBlockedUseCase,
         updateFeedItemAsSeenUseCase,
         transferFeedItemUseCase,
         clearCachedAlreadySeenProfileIdsUseCase,

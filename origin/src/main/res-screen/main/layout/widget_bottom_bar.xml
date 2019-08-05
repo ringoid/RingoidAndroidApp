@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -17,61 +16,77 @@
             android:id="@+id/iv_item_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginEnd="@dimen/std_margin_8"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_explore_white_36dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fl_item_lmm"
-        android:layout_width="wrap_content"
+        android:id="@+id/fl_item_likes"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.4"
+        android:layout_weight="1"
         android:background="?selectableItemBackground"
         android:paddingTop="4dp">
 
         <ImageView
-            android:id="@+id/iv_item_lmm"
+            android:id="@+id/iv_item_likes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_lmm_count"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_favorite_white_outline_36dp"/>
 
         <ImageView
-            android:id="@+id/iv_item_badge_lmm"
+            android:id="@+id/iv_item_badge_likes"
             android:layout_width="6dp"
             android:layout_height="6dp"
             android:contentDescription="@null"
             android:src="@drawable/red_circle"
             android:visibility="invisible"
-            app:layout_constraintTop_toTopOf="@id/iv_item_lmm"
-            app:layout_constraintEnd_toEndOf="@id/iv_item_lmm"/>
+            app:layout_constraintTop_toTopOf="@id/iv_item_likes"
+            app:layout_constraintEnd_toEndOf="@id/iv_item_likes"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/tv_lmm_count"
-            android:gravity="center"
-            android:shadowColor="@color/text_shadow"
-            android:shadowRadius="6"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/std_text_18"
-            app:layout_constraintTop_toTopOf="@id/iv_item_lmm"
-            app:layout_constraintBottom_toBottomOf="@id/iv_item_lmm"
-            app:layout_constraintStart_toEndOf="@id/iv_item_lmm"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fl_item_messages"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="?selectableItemBackground"
+        android:paddingTop="4dp">
+
+        <ImageView
+            android:id="@+id/iv_item_messages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:tint="@drawable/main_bottom_bar_items_selector"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text=" 123"
-            style="@style/StdText.Primary"/>
+            app:srcCompat="@drawable/ic_menu_messages_white_outline_36dp"/>
+
+        <ImageView
+            android:id="@+id/iv_item_badge_messages"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:contentDescription="@null"
+            android:src="@drawable/red_circle"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="@id/iv_item_messages"
+            app:layout_constraintEnd_toEndOf="@id/iv_item_messages"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -86,13 +101,12 @@
             android:id="@+id/iv_item_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"
-            android:layout_marginStart="@dimen/std_margin_8"
             android:contentDescription="@null"
             android:tint="@drawable/main_bottom_bar_items_selector"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_profile_outline_white_36dp"/>
 
         <ImageView

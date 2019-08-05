@@ -17,7 +17,8 @@ import kotlinx.android.synthetic.main.widget_bottom_bar.view.*
 class BottomBar : LinearLayout {
 
     private lateinit var ivItemFeed: ImageView
-    private lateinit var ivItemLmm: ImageView
+    private lateinit var ivItemLikes: ImageView
+    private lateinit var ivItemMessages: ImageView
     private lateinit var ivItemProfile: ImageView
 
     var prevSelectedItem: NavTab? = null
@@ -43,12 +44,12 @@ class BottomBar : LinearLayout {
 
     private var feedIcon: Drawable? = null
     private var feedSelectIcon: Drawable? = null
-    private var lmmIcon: Drawable? = null
-    private var lmmSelectIcon: Drawable? = null
+    private var likesIcon: Drawable? = null
+    private var likesSelectIcon: Drawable? = null
+    private var messagesIcon: Drawable? = null
+    private var messagesSelectIcon: Drawable? = null
     private var profileIcon: Drawable? = null
     private var profileSelectIcon: Drawable? = null
-
-    private var countOnLmm: Int = 0
 
     constructor(context: Context): this(context, null)
 
@@ -63,8 +64,10 @@ class BottomBar : LinearLayout {
     private fun init(context: Context) {
         feedIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarExplore)
         feedSelectIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarExplorePressed)
-        lmmIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarLmm)
-        lmmSelectIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarLmmPressed)
+        likesIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarLikes)
+        likesSelectIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarLikesPressed)
+        messagesIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarMessages)
+        messagesSelectIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarMessagesPressed)
         profileIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarProfile)
         profileSelectIcon = context.getAttributeDrawable(R.attr.refDrawableBottomBarProfilePressed)
 
@@ -72,21 +75,18 @@ class BottomBar : LinearLayout {
         orientation = HORIZONTAL
         LayoutInflater.from(context).inflate(R.layout.widget_bottom_bar, this, true)
         fl_item_feed.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.EXPLORE }
-        fl_item_lmm.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.LMM }
+        fl_item_likes.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.LIKES }
+        fl_item_messages.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.MESSAGES }
         fl_item_profile.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.PROFILE }
 
-        ivItemLmm = findViewById(R.id.iv_item_lmm)
-        ivItemProfile = findViewById(R.id.iv_item_profile)
         ivItemFeed = findViewById(R.id.iv_item_feed)
+        ivItemLikes = findViewById(R.id.iv_item_likes)
+        ivItemMessages = findViewById(R.id.iv_item_messages)
+        ivItemProfile = findViewById(R.id.iv_item_profile)
     }
 
     /* API */
     // --------------------------------------------------------------------------------------------
-    fun decrementCountOnLmm(decrementBy: Int) {
-        countOnLmm -= decrementBy
-        showCountOnLmm(countOnLmm)
-    }
-
     fun setOnNavigationItemSelectedListener(l: ((item: NavTab) -> Unit)?) {
         selectListener = l
     }
@@ -95,13 +95,12 @@ class BottomBar : LinearLayout {
         reSelectListener = l
     }
 
-    fun showBadgeOnLmm(isVisible: Boolean) {
-        iv_item_badge_lmm.changeVisibility(isVisible, soft = true)
+    fun showBadgeOnLikes(isVisible: Boolean) {
+        iv_item_badge_likes.changeVisibility(isVisible, soft = true)
     }
 
-    fun showCountOnLmm(count: Int) {
-        countOnLmm = maxOf(count, 0)  // omit negative values
-        tv_lmm_count.text = if (count > 0) " $count" else ""
+    fun showBadgeOnMessages(isVisible: Boolean) {
+        iv_item_badge_messages.changeVisibility(isVisible, soft = true)
     }
 
     fun showWarningOnProfile(isVisible: Boolean) {
@@ -112,16 +111,20 @@ class BottomBar : LinearLayout {
     private fun changeItemAppearance() {
         when (prevSelectedItem) {
             NavTab.EXPLORE -> ivItemFeed.apply { setImageDrawable(feedIcon) }
-            NavTab.LMM -> ivItemLmm.apply { setImageDrawable(lmmIcon) }
+            NavTab.LIKES -> ivItemLikes.apply { setImageDrawable(likesIcon) }
+            NavTab.MESSAGES -> ivItemMessages.apply { setImageDrawable(messagesIcon) }
             NavTab.PROFILE -> ivItemProfile.apply { setImageDrawable(profileIcon) }
             else -> null
-        }?.also { it.isSelected = false }
+        }
+        ?.also { it.isSelected = false }
 
         when (selectedItem) {
             NavTab.EXPLORE -> ivItemFeed.apply { setImageDrawable(feedSelectIcon) }
-            NavTab.LMM -> ivItemLmm.apply { setImageDrawable(lmmSelectIcon) }
+            NavTab.LIKES -> ivItemLikes.apply { setImageDrawable(likesSelectIcon) }
+            NavTab.MESSAGES -> ivItemMessages.apply { setImageDrawable(messagesSelectIcon) }
             NavTab.PROFILE -> ivItemProfile.apply { setImageDrawable(profileSelectIcon) }
             else -> null
-        }?.also { it.isSelected = true }
+        }
+        ?.also { it.isSelected = true }
     }
 }

@@ -3,7 +3,8 @@ package com.ringoid.origin.navigation
 object NavigateFrom {
 
     const val MAIN_TAB_EXPLORE = "explore"
-    const val MAIN_TAB_LMM = "lmm"
+    const val MAIN_TAB_LIKES = "likes"
+    const val MAIN_TAB_MESSAGES = "messages"
     const val MAIN_TAB_PROFILE = "profile"
 
     const val SCREEN_LOGIN = "login"

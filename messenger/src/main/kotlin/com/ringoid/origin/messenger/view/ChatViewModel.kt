@@ -21,7 +21,7 @@ import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
-import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.main.LcNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Flowable
 import io.reactivex.subjects.PublishSubject
@@ -66,6 +66,12 @@ class ChatViewModel @Inject constructor(
             .subscribe(::handleChatUpdate, Timber::e)
     }
 
+    private fun countPeerMessages(messages: List<Message>): Int =
+        messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
+
+    private fun countUserMessages(messages: List<Message>): Int =
+        messages.count { it.peerId == DomainUtil.CURRENT_USER_ID }
+
     // --------------------------------------------------------------------------------------------
     /**
      * Get chat messages from the local storage. Those messages had been stored locally
@@ -80,8 +86,8 @@ class ChatViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ msgs ->
-                val peerMessagesCount = msgs.count { it.peerId != DomainUtil.CURRENT_USER_ID }
-                ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = peerMessagesCount)
+                ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = countPeerMessages(msgs))
+                ChatInMemoryCache.setUserMessagesCountIfChanged(chatId = profileId, count = countUserMessages(msgs))
                 currentMessageList = msgs.toMutableList().apply { removeAll { it.isLocal() } }
                 messages.value = msgs
                 startPollingChat(profileId = profileId, delay = 50L)
@@ -90,7 +96,7 @@ class ChatViewModel @Inject constructor(
 
     @Suppress("CheckResult")
     fun sendMessage(peerId: String, imageId: String = DomainUtil.BAD_ID, text: String?,
-                    sourceFeed: LmmNavTab = LmmNavTab.MESSAGES) {
+                    sourceFeed: LcNavTab = LcNavTab.MESSAGES) {
         if (text.isNullOrBlank()) {
             return  // don't send empty text
         }
@@ -100,10 +106,11 @@ class ChatViewModel @Inject constructor(
 
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.DONE(CHAT_MESSAGE_SENT) }
+            .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
+                ChatInMemoryCache.addUserMessagesCount(chatId = peerId, count = 1)
                 sentMessage.value = it
 
                 // analytics
@@ -111,9 +118,8 @@ class ChatViewModel @Inject constructor(
                     fire(Analytics.ACTION_USER_MESSAGE, "sourceFeed" to sourceFeed.feedName)
                     fireOnce(Analytics.AHA_FIRST_MESSAGE_SENT, "sourceFeed" to sourceFeed.feedName)
                     when (sourceFeed) {
-                        LmmNavTab.LIKES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_LIKES)
-                        LmmNavTab.MATCHES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MATCHES)
-                        LmmNavTab.MESSAGES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MESSAGES)
+                        LcNavTab.LIKES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_LIKES)
+                        LcNavTab.MESSAGES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MESSAGES)
                     }
                 }
             }, Timber::e)
@@ -143,8 +149,8 @@ class ChatViewModel @Inject constructor(
                 .put("chatId", profileId)
 
     private fun handleChatUpdate(chat: Chat) {
-        val peerMessagesCount = chat.messages.count { it.peerId != DomainUtil.CURRENT_USER_ID }
-        ChatInMemoryCache.addPeerMessagesCount(profileId = chat.id, count = peerMessagesCount)
+        ChatInMemoryCache.addPeerMessagesCount(profileId = chat.id, count = countPeerMessages(chat.messages))
+        ChatInMemoryCache.addUserMessagesCount(chatId = chat.id, count = countUserMessages(chat.messages))
 
         val list = mutableListOf<Message>()
             .apply {

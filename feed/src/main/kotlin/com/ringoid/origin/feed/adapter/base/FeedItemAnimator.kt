@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.subjects.PublishSubject
 
-class FeedItemAnimator : DefaultItemAnimator() {
+open class FeedItemAnimator : DefaultItemAnimator() {
 
     private var removed = false
 

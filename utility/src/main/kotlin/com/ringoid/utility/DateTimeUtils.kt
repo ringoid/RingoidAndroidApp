@@ -4,7 +4,7 @@ import org.joda.time.DateTime
 import org.joda.time.Days
 import java.util.*
 
-fun isAdultAge(yearOfBirth: Int, calendar: Calendar, adultThreshold: Int = 0): Boolean =
+fun isAdultAge(yearOfBirth: Int, calendar: Calendar, adultThreshold: Int = 18): Boolean =
     yearOfBirth in 1919..(calendar.get(Calendar.YEAR) - adultThreshold)
 
 fun Date.date(): String = "${1900 + year}.${wrapTimeUnit(month + 1)}.${wrapTimeUnit(date)}"

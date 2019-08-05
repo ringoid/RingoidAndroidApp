@@ -15,12 +15,18 @@ object DomainUtil {
     const val CURRENT_USER_ID: String = "currentUserId"
     const val DEBOUNCE_NET = 400L
     const val DEBOUNCE_PUSH = 300L
-    const val LIMIT_PER_PAGE = 100
+    const val LIMIT_PER_PAGE = 40
+    const val LIMIT_PER_PAGE_LMM = 5
     const val LOAD_MORE_THRESHOLD = 10  // items left to end
 
     const val CLIPBOARD_KEY_CHAT_MESSAGE = "chatMessage"
     const val CLIPBOARD_KEY_CUSTOMER_ID = "customerId"
     const val CLIPBOARD_KEY_DEBUG = "debug"
+
+    const val FILTER_MIN_AGE = 18
+    const val FILTER_MAX_AGE = 56
+    const val FILTER_MIN_DISTANCE = 1000
+    const val FILTER_MAX_DISTANCE = 150_001
 
     const val SOURCE_FEED_EXPLORE = "new_faces"
     const val SOURCE_FEED_LIKES = "who_liked_me"

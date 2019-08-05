@@ -39,6 +39,9 @@ class LabelView : LinearLayout {
                 getResourceId(R.styleable.LabelView_label_icon_size, 0)
                     .takeIf { it != 0 }?.let { setIconSize(resId = it) }
 
+                getResourceId(R.styleable.LabelView_label_min_height, R.dimen.std_icon_24)
+                    .takeIf { it != 0 }?.let { minimumHeight = resources.getDimensionPixelSize(it) }
+
                 getResourceId(R.styleable.LabelView_label_text_size, 0)
                     .takeIf { it != 0 }?.let { tv_text.changeTypeface(textSize = resources.getDimensionPixelSize(it)) }
 

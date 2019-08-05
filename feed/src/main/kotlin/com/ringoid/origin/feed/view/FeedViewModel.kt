@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.view
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
@@ -14,7 +13,6 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.BlockActionObject
@@ -28,8 +26,6 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 
 abstract class FeedViewModel(
@@ -118,17 +114,6 @@ abstract class FeedViewModel(
         super.onCleared()
         advanceAndPushViewObjects()
         actionObjectPool.trigger()
-    }
-
-    /* Event Bus */
-    // --------------------------------------------------------------------------------------------
-    @Suppress("CheckResult")
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // deleting all images on Profile screen leads any Feed screen to purge it's content
-        clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
     }
 
     /* Feed */

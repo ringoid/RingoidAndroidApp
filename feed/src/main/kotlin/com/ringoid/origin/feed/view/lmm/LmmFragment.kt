@@ -11,7 +11,6 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
-import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
@@ -22,6 +21,7 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.fragment_lmm.*
 
+@Deprecated("LMM -> LC")
 class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     companion object {
@@ -91,17 +91,17 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
 
     override fun showBadgeOnLikes(isVisible: Boolean) {
         btn_tab_likes.showBadge(isVisible)
-        hasAnyBadgeShown()
+        communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(isVisible = btn_tab_likes.isBadgeVisible())
     }
 
     override fun showBadgeOnMatches(isVisible: Boolean) {
         btn_tab_matches.showBadge(isVisible)
-        hasAnyBadgeShown()
+        communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = btn_tab_matches.isBadgeVisible())
     }
 
     override fun showBadgeOnMessenger(isVisible: Boolean) {
         btn_tab_messenger.showBadge(isVisible)
-        hasAnyBadgeShown()
+        communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = btn_tab_messenger.isBadgeVisible())
     }
 
     override fun showCountOnTopTab(tab: LmmNavTab, count: Int) {
@@ -136,11 +136,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
     // ------------------------------------------
     private fun clearAllFeeds(mode: Int) {
         lmmPagesAdapter.doForEachItem { (it as? BaseLmmFeedFragment<*>)?.clearScreen(mode) }
-    }
-
-    private fun hasAnyBadgeShown() {
-        communicator(IBaseMainActivity::class.java)
-            ?.showBadgeOnLmm(isVisible = btn_tab_likes.isBadgeVisible() || btn_tab_matches.isBadgeVisible() || btn_tab_messenger.isBadgeVisible())
     }
 
     // ------------------------------------------
@@ -197,13 +192,6 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
         if (postponedTabTransaction) {
             doPostponedTabTransaction()
             postponedTabTransaction = false
-        }
-    }
-
-    override fun onActivitySaveInstanceState(outState: Bundle) {
-        super.onActivitySaveInstanceState(outState)
-        vp_pages?.currentItem?.let { position ->
-            outState.putSerializable(BaseMainActivity.BUNDLE_KEY_CURRENT_LMM_TAB, LmmNavTab.get(position))
         }
     }
 

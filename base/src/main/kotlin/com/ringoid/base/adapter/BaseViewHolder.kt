@@ -1,6 +1,9 @@
 package com.ringoid.base.adapter
 
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.utility.clickDebounce
@@ -25,10 +28,37 @@ abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     @Suppress("CheckResult")
-    open fun setOnClickListener(l: View.OnClickListener?) {
+    fun setOnClickListener(l: View.OnClickListener?) {
         itemView.apply {
             isClickable = l != null
             clicks().compose(clickDebounce()).subscribe { l?.onClick(this) }
+
+            // detect touch on viewHolder and call visual effect at touch point
+            setOnTouchListener { view, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    view.tag = event
+                }
+                false
+            }
+        }
+    }
+
+    @Suppress("CheckResult")
+    fun setOnDoubleClickListener(l: View.OnClickListener?) {
+        val cb = object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTapEvent(event: MotionEvent): Boolean {
+                if (event.action == MotionEvent.ACTION_UP) {
+                    l?.onClick(itemView)
+                }
+                return true
+            }
+        }
+        val gestureDetector = GestureDetectorCompat(itemView.context, cb)
+        itemView.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                view.tag = event
+            }
+            gestureDetector.onTouchEvent(event)
         }
     }
 }

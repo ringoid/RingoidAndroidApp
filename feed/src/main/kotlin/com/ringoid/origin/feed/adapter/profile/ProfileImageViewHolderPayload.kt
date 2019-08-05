@@ -1,7 +1,0 @@
-package com.ringoid.origin.feed.adapter.profile
-
-sealed class ProfileImageViewHolderPayload
-
-object ProfileImageViewHolderAnimateLike : ProfileImageViewHolderPayload()
-object ProfileImageViewHolderAnimateLikeButton : ProfileImageViewHolderPayload()
-object ProfileImageViewHolderAnimateUnLikeButton : ProfileImageViewHolderPayload()

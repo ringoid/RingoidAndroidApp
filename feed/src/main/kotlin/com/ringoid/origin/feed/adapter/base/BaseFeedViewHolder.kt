@@ -289,7 +289,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             ibtn_settings.changeVisibility(isVisible = false)
             label_online_status.changeVisibility(isVisible = false)
             ll_left_container.changeVisibility(isVisible = false)
-            ll_right_section.changeVisibility(isVisible = false)
+            ll_right_container.changeVisibility(isVisible = false)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
     }
@@ -300,7 +300,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             ibtn_settings.changeVisibility(isVisible = true)
             label_online_status.changeVisibility(isVisible = true)
             ll_left_container.changeVisibility(isVisible = true)
-            ll_right_section.changeVisibility(isVisible = true)
+            ll_right_container.changeVisibility(isVisible = true)
         }
         profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
     }
@@ -441,9 +441,6 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 }
 
 // ------------------------------------------------------------------------------------------------
-class FeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
-    : BaseFeedViewHolder(view, viewPool, imageLoader)
-
 class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
 
     override fun bind(model: FeedItemVO) {

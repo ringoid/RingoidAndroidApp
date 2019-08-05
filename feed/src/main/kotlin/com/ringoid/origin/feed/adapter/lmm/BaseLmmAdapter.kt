@@ -9,7 +9,7 @@ import com.ringoid.origin.feed.model.EmptyFeedItemVO
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.utility.image.ImageRequest
 
-abstract class BaseLmmAdapter(imageLoader: ImageRequest, headerRows: Int = 1)
+abstract class BaseLmmAdapter(imageLoader: ImageRequest, headerRows: Int = 0)
     : BaseFeedAdapter(imageLoader, FeedItemVODiffCallback(), headerRows = headerRows) {
 
     var messageClickListener: ((model: FeedItem, position: Int, positionOfImage: Int) -> Unit)? = null

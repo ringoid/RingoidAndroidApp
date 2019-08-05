@@ -1,5 +1,6 @@
 package com.ringoid.base.eventbus
 
+import android.os.Bundle
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import org.greenrobot.eventbus.EventBus
@@ -34,15 +35,19 @@ sealed class BusEvent {
     @DebugOnly object SimulateError : BusEvent()
 
     object Stub : BusEvent()
+    object AppFreshStart : BusEvent()
     object NoImagesOnProfile : BusEvent()
     object RefreshOnExplore : BusEvent()
+    data class RefreshOnLc(val lcSourceFeed: String) : BusEvent()
+    @Deprecated("LMM -> LC")
     data class RefreshOnLmm(val lmmSourceFeed: String) : BusEvent()
     object RefreshOnProfile : BusEvent()
-    object RefreshOnPush : BusEvent()
     object ReOpenApp: BusEvent()
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
 
     data class PushNewLike(val peerId: String) : BusEvent()
     data class PushNewMatch(val peerId: String) : BusEvent()
     data class PushNewMessage(val peerId: String) : BusEvent()
+
+    data class TransferProfile(val profileId: String, val payload: Bundle)
 }

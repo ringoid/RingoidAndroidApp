@@ -337,6 +337,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 navigate(this@UserProfileFragment, path = "/delete_image?imageId=${image.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
             }
         }
+        ibtn_profile_edit.clicks().compose(clickDebounce()).subscribe { navigate(this@UserProfileFragment, path = "/settings_profile") }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
@@ -567,6 +568,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     private fun showImageControls(isVisible: Boolean) {
         ibtn_delete_image.changeVisibility(isVisible = isVisible)
+        ibtn_profile_edit.changeVisibility(isVisible = isVisible)
         label_online_status.changeVisibility(isVisible = isVisible)
         ll_left_container.changeVisibility(isVisible = isVisible)
         ll_right_section.changeVisibility(isVisible = isVisible)
@@ -584,12 +586,9 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         if (density <= 3.0f) {
             val margin8 = (AppRes.STD_MARGIN_8 * density / 4.5f).toInt()
             val margin16 = (AppRes.STD_MARGIN_16 * density / 4.5f).toInt()
-            with (ibtn_add_image) {
-                setPadding(margin16, margin8, margin16, margin8)
-            }
-            with (ibtn_settings) {
-                setPadding(margin16, margin8, margin16, margin8)
-            }
+            ibtn_add_image.setPadding(margin16, margin8, margin16, margin8)
+            ibtn_profile_edit.setPadding(margin16, margin8, margin16, margin8)
+            ibtn_settings.setPadding(margin16, margin8, margin16, margin8)
         }
     }
 

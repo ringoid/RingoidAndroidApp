@@ -8,7 +8,6 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.DropLmmChangedStatusUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearSentMessagesUseCase
@@ -26,11 +25,11 @@ import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
+@Deprecated("LMM -> LC")
 class LmmViewModel @Inject constructor(
     val getLmmUseCase: GetLmmUseCase,
     private val clearSentMessagesUseCase: ClearSentMessagesUseCase,
-    private val countUserImagesUseCase: CountUserImagesUseCase,
-    private val dropLmmChangedStatusUseCase: DropLmmChangedStatusUseCase, app: Application)
+    private val countUserImagesUseCase: CountUserImagesUseCase, app: Application)
     : BaseViewModel(app) {
 
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
@@ -78,15 +77,6 @@ class LmmViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventNoImagesOnProfile(event: BusEvent.NoImagesOnProfile) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        dropLmmChangedStatusUseCase.source()  // drop changed status (red dot badges)
-            .autoDisposable(this)
-            .subscribe({ Timber.d("Badges on Lmm have been dropped because no images in user's profile") }, Timber::e)
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
         Timber.d("Received bus event: $event")

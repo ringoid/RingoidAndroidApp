@@ -1,23 +1,20 @@
-package com.ringoid.origin.feed.adapter
+package com.ringoid.origin.feed.adapter.explore
 
 import android.view.View
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.model.EmptyFeedItemVO
 import com.ringoid.origin.feed.model.FeedItemVO
-import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.image.ImageRequest
 
-class FeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoader, FeedItemVODiffCallback()) {
-
-    var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
+class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoader, FeedItemVODiffCallback()) {
 
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder =
-        FeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
+        ExploreFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
             .also { vh ->
-                vh.profileImageAdapter.itemClickListener = { model, position ->
+                vh.profileImageAdapter.itemDoubleClickListener = { model, position ->
                     onLikeImageListener?.invoke(model, position)
                 }
             }

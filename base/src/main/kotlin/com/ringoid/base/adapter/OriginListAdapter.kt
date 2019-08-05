@@ -96,9 +96,11 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
 
     // --------------------------------------------------------------------------------------------
     var itemClickListener: ((model: T, position: Int) -> Unit)? = null
+    var itemDoubleClickListener: ((model: T, position: Int) -> Unit)? = null
 
     protected open fun getOnItemClickListener(vh: VH) = wrapOnItemClickListener(vh, itemClickListener)
-    protected open fun wrapOnItemClickListener(vh: VH, l: ((model: T, position: Int) -> Unit)?) =
+    protected open fun getOnItemDoubleClickListener(vh: VH) = wrapOnItemClickListener(vh, itemDoubleClickListener)
+    protected fun wrapOnItemClickListener(vh: VH, l: ((model: T, position: Int) -> Unit)?) =
         View.OnClickListener { vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(getItem(it), it) } }
 
     /* Data Access */
@@ -210,7 +212,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     fun findModel(predicate: (item: T) -> Boolean): T? = helper.currentList.find(predicate)
     fun findModelAndPosition(predicate: (item: T) -> Boolean): Pair<Int, T>? {
         val position = helper.currentList.indexOfFirst(predicate)
-        return if (position > DomainUtil.BAD_POSITION) position to helper.currentList[position]
+        return if (position != DomainUtil.BAD_POSITION) position to helper.currentList[position]
                else null
     }
     fun findPosition(predicate: (item: T) -> Boolean): Int = helper.currentList.indexOfFirst(predicate)

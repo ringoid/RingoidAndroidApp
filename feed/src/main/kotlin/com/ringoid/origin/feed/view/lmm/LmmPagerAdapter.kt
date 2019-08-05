@@ -11,6 +11,7 @@ import com.ringoid.origin.feed.view.lmm.messenger.MessagesFeedFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import java.lang.ref.WeakReference
 
+@Deprecated("LMM -> LC")
 class LmmPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     private val map = SparseArray<WeakReference<Fragment>>()

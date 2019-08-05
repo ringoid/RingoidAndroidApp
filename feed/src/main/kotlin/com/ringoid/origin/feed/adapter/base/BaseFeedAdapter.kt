@@ -1,8 +1,10 @@
 package com.ringoid.origin.feed.adapter.base
 
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.feed.R
@@ -19,6 +21,7 @@ abstract class BaseFeedAdapter(protected val imageLoader: ImageRequest, diffCb: 
 
     var onBeforeLikeListener: (() -> Boolean)? = null
     var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
+    var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
     var onScrollHorizontalListener: (() -> Unit)? = null
     var settingsClickListener: ((model: FeedItemVO, position: Int, positionOfImage: Int) -> Unit)? = null
     internal var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
@@ -26,6 +29,19 @@ abstract class BaseFeedAdapter(protected val imageLoader: ImageRequest, diffCb: 
     protected var imagesViewPool = RecyclerView.RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder {
+        fun onLike(vh: BaseFeedViewHolder): Boolean =
+            vh.adapterPosition
+                .takeIf { it != RecyclerView.NO_POSITION }
+                ?.let {
+                    if (onBeforeLikeListener?.invoke() != false) {
+                        val imagePosition = vh.getCurrentImagePosition()
+                        val image = vh.profileImageAdapter.getModel(imagePosition)
+                        onLikeImageListener?.invoke(image, imagePosition)
+                        notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
+                        true
+                    } else false
+                } ?: false
+
         val viewHolder = super.onCreateViewHolder(parent, viewType)
         return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
             .takeIf { viewType == VIEW_TYPE_NORMAL }
@@ -44,6 +60,16 @@ abstract class BaseFeedAdapter(protected val imageLoader: ImageRequest, diffCb: 
                 vh.itemView.ibtn_settings.clicks().compose(clickDebounce())
                     .subscribe { wrapOnItemClickListener(vh, wrapSettingsClickListener).onClick(vh.itemView.ibtn_settings) }
                 vh.setOnClickListener(null)  // clicks on the whole feed's item is no-op
+            }
+            ?.takeIf { it is BaseFeedViewHolder }
+            ?.let { it as BaseFeedViewHolder }
+            ?.also { vh ->
+                with (vh.itemView.ibtn_like) {
+                    clicks().compose(clickDebounce()).subscribe { onLike(vh) }
+                    touches().filter { it.action == MotionEvent.ACTION_DOWN }
+                             .compose(clickDebounce())
+                             .subscribe { if (onLike(vh)) { onImageTouchListener?.invoke(it.rawX, it.rawY) } }
+                }
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 

@@ -15,6 +15,7 @@ object ChatInMemoryCache {
 
     private val chatInputMessage = mutableMapOf<String, CharSequence>()
     private val chatPeerMessagesCount = mutableMapOf<String, Int>()
+    private val chatUserMessagesCount = mutableMapOf<String, Int>()
     private val chatScrollPosition = mutableMapOf<String, Pair<Int, Int>>()
 
     // ------------------------------------------
@@ -48,14 +49,28 @@ object ChatInMemoryCache {
         setPeerMessagesCount(profileId, getPeerMessagesCount(profileId) + count)
     }
 
+    @Synchronized
+    fun addUserMessagesCount(chatId: String, count: Int) {
+        setUserMessagesCount(chatId, getUserMessagesCount(chatId) + count)
+    }
+
     fun getPeerMessagesCount(profileId: String): Int = chatPeerMessagesCount[profileId] ?: 0
+
+    fun getUserMessagesCount(chatId: String): Int = chatUserMessagesCount[chatId] ?: 0
 
     @Synchronized
     fun setPeerMessagesCount(profileId: String, count: Int) {
         if (hasProfile(profileId)) {
             chatPeerMessagesCount[profileId] = count
             dropPositionForProfile(profileId)
-            Timber.v("Update peer [$profileId] messages count: $count")
+        }
+    }
+
+    @Synchronized
+    fun setUserMessagesCount(chatId: String, count: Int) {
+        if (hasProfile(chatId)) {
+            chatUserMessagesCount[chatId] = count
+            dropPositionForProfile(chatId)
         }
     }
 
@@ -67,7 +82,17 @@ object ChatInMemoryCache {
 
         chatPeerMessagesCount[profileId] = count
         dropPositionForProfile(profileId)
-        Timber.v("Update peer [$profileId] messages count: $count")
+        return true  // count has changed
+    }
+
+    @Synchronized
+    fun setUserMessagesCountIfChanged(chatId: String, count: Int): Boolean {
+        if (!hasProfile(chatId) || getUserMessagesCount(chatId) == count) {
+            return false
+        }
+
+        chatUserMessagesCount[chatId] = count
+        dropPositionForProfile(chatId)
         return true  // count has changed
     }
 
@@ -106,6 +131,7 @@ object ChatInMemoryCache {
     fun deleteProfile(profileId: String) {
         chatInputMessage.remove(profileId)
         chatPeerMessagesCount.remove(profileId)
+        chatUserMessagesCount.remove(profileId)
         chatScrollPosition.remove(profileId)
     }
 
@@ -123,6 +149,7 @@ object ChatInMemoryCache {
     fun clear() {
         chatInputMessage.clear()
         chatPeerMessagesCount.clear()
+        chatUserMessagesCount.clear()
         chatScrollPosition.clear()
     }
 
@@ -176,6 +203,14 @@ object ChatInMemoryCache {
                     }
                 }
             }
+            json.optJSONArray("chatUserMessagesCount")?.let {
+                val length = it.length()
+                for (i in 0 until length) {
+                    it.optJSONObject(i)?.let { json ->
+                        json.keys().forEach { key -> chatUserMessagesCount[key] = json.optInt(key) }
+                    }
+                }
+            }
             json.optJSONArray("chatScrollPosition")?.let {
                 val length = it.length()
                 for (i in 0 until length) {
@@ -200,5 +235,6 @@ object ChatInMemoryCache {
     private fun toJson(): String =
         "{\"chatInputMessage\":${chatInputMessage.entries.joinToString(",", "[", "]", transform = { "{\"${it.key}\":\"${it.value}\"}" })}," +
          "\"chatPeerMessagesCount\":${chatPeerMessagesCount.entries.joinToString(",", "[", "]", transform = { "{\"${it.key}\":${it.value}}" })}," +
+         "\"chatUserMessagesCount\":${chatUserMessagesCount.entries.joinToString(",", "[", "]", transform = { "{\"${it.key}\":${it.value}}" })}," +
          "\"chatScrollPosition\":${chatScrollPosition.entries.joinToString(",", "[", "]", transform = { "{\"${it.key}\":[${it.value.first},${it.value.second}]}" })}}"
 }

@@ -9,12 +9,14 @@ import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.model.*
+import java.util.*
 
 data class FeedItemVO(
     override val id: String,
     override val distanceText: String? = null,
     override val images: List<IImage>,
     override val messages: List<Message> = emptyList(),
+    var messagesReflection: MutableList<Message> = mutableListOf(),
     var lastOnlineStatusX: OnlineStatus = OnlineStatus.UNKNOWN,
     override var lastOnlineStatus: String? = null,
     override var lastOnlineText: String? = null,
@@ -45,6 +47,7 @@ data class FeedItemVO(
         distanceText = feedItem.distanceText,
         images = feedItem.images,
         messages = feedItem.messages,
+        messagesReflection = ArrayList(feedItem.messages),
         lastOnlineStatusX = OnlineStatus.from(feedItem.lastOnlineStatus, label = feedItem.lastOnlineText),
         lastOnlineStatus = feedItem.lastOnlineStatus,
         lastOnlineText = feedItem.lastOnlineText,

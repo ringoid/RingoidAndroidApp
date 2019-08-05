@@ -33,7 +33,6 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
-import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
@@ -41,6 +40,7 @@ import com.ringoid.utility.runOnUiThread
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
+@Deprecated("LMM -> LC")
 abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>(), IChatHost, IDialogCallback  {
 
     abstract fun instantiateFeedAdapter(): BaseLmmAdapter
@@ -63,7 +63,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is DISCARD_PROFILE -> {
-                        communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
+                        // Deprecated, method 'decrementCountOnLmm()' was removed
+                        // communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
                         communicator(ILmmFragment::class.java)?.changeCountOnTopTab(tab = getSourceFeed(), delta = -1)
                     }
                     /**
@@ -100,11 +101,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(tag: String, payload: ChatPayload) {
-        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
+        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeedCompat.feedName, fromChat = true)
     }
 
     override fun onReportFromChat(tag: String, payload: ChatPayload, reasonNumber: Int) {
-        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
+        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeedCompat.feedName, fromChat = true)
     }
 
     override fun onDialogDismiss(tag: String, payload: Parcelable?) {
@@ -116,7 +117,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
 
                 when (tag) {
                     ChatFragment.TAG -> {
-                        if (!it.isChatEmpty && it.sourceFeed == LmmNavTab.MATCHES) {
+                        if (!it.isChatEmpty && it.sourceFeedCompat == LmmNavTab.MATCHES) {
                             vm.transferProfile(profileId = it.peerId)
                         } else {
                             feedAdapter.findModel(it.position)?.setOnlineStatus(it.onlineStatus)
@@ -129,6 +130,10 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 }
                 true  // no-op value
             }
+    }
+
+    override fun onRefreshGesture() {
+        Bus.post(event = BusEvent.RefreshOnLmm(lmmSourceFeed = getSourceFeed().feedName))
     }
 
     protected fun openChat(position: Int, peerId: String, image: IImage? = null, tag: String = ChatFragment.TAG) {
@@ -146,8 +151,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                         peerImageId = image?.id ?: DomainUtil.BAD_ID,
                         peerImageUri = image?.uri,
                         peerThumbnailUri = image?.thumbnailUri,
-                        sourceFeed = getSourceFeed()
-                    )
+                        sourceFeed = getSourceFeed().slice(),  // compatibility mode
+                        sourceFeedCompat = getSourceFeed())
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
@@ -158,11 +163,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     internal fun clearScreen(mode: Int) {
         invalidateScrollCaches()  // clear cached positions in offset scrolls strategies on clear feed
         vm.clearScreen(mode)
-    }
-
-    override fun onRefresh() {
-        super.onRefresh()
-        Bus.post(event = BusEvent.RefreshOnLmm(lmmSourceFeed = getSourceFeed().feedName))
     }
 
     internal fun transferProfile(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null) {

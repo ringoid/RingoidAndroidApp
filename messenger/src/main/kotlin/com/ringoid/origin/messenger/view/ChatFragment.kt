@@ -34,7 +34,7 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
-import com.ringoid.origin.view.main.LmmNavTab
+import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.*
 import com.uber.autodispose.lifecycle.autoDisposable
 import kotlinx.android.synthetic.main.fragment_chat.*
@@ -78,18 +78,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is CHAT_MESSAGE_SENT -> {
-                        onIdleState()
-                        if (chatAdapter.isEmpty()) {  // quick reply mode
-                            // user has just sent her first message to peer
-                            payload?.isChatEmpty = false
-                            closeChat()
-                        }
-                    }
-                }
-            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_chat.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
@@ -105,7 +93,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         ChatInMemoryCache.addProfileIfNotExists(profileId = peerId)
 
         chatAdapter = ChatAdapter().apply {
-            itemClickListener = { _, _ -> closeChat() }
+            itemDoubleClickListener = { _, _ -> closeChat() }
             onMessageInsertListener = { _ -> scrollToLastItem() }
         }
     }
@@ -174,7 +162,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
             val imageId = payload?.peerImageId ?: BAD_ID
             vm.sendMessage(peerId = peerId, imageId = imageId, text = et_message.text.toString(),
-                           sourceFeed = payload?.sourceFeed ?: LmmNavTab.MESSAGES)
+                           sourceFeed = payload?.sourceFeed ?: LcNavTab.MESSAGES)
             clearEditText()
         }
         ibtn_chat_close.clicks().compose(clickDebounce()).subscribe { closeChat() }
@@ -184,6 +172,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             navigate(this@ChatFragment, path = "/block_dialog?payload=${blockPayload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
             rv_chat_messages.apply { setPadding(paddingLeft, paddingTop, paddingRight, AppRes.BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT) }
         }
+        ll_status_container.clicks().compose(clickDebounce()).subscribe { closeChat() }
         rv_chat_messages.apply {
             adapter = chatAdapter
             layoutManager = LinearLayoutManager(context)
@@ -291,10 +280,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     // --------------------------------------------------------------------------------------------
     private val gestureDetector = GestureDetectorCompat(context, ListTouchCallback())
 
-    private inner class ListTouchCallback :  GestureDetector.SimpleOnGestureListener() {
+    private inner class ListTouchCallback : GestureDetector.SimpleOnGestureListener() {
 
-        override fun onSingleTapUp(e: MotionEvent): Boolean {
-            closeChat()
+        override fun onDoubleTapEvent(event: MotionEvent): Boolean {
+            if (event.action == MotionEvent.ACTION_UP) {
+                closeChat()
+            }
             return true
         }
     }
