@@ -40,6 +40,8 @@ import com.ringoid.origin.view.dialog.di.BigEditTextDialogModule
 import com.ringoid.origin.view.dialog.di.StatusDialogModule
 import com.ringoid.origin.view.error.di.NoNetworkConnectionActivityModule
 import com.ringoid.origin.view.error.di.OldAppVersionActivityModule
+import com.ringoid.origin.view.filters.di.FiltersActivityModule
+import com.ringoid.origin.view.filters.di.FiltersFragmentModule
 import com.ringoid.origin.view.splash.di.SplashActivityModule
 import com.ringoid.origin.view.web.di.WebPageActivityModule
 import com.ringoid.origin.view.web.di.WebPageFragmentModule
@@ -57,6 +59,7 @@ import javax.inject.Singleton
                       DeleteUserProfileImageActivityModule::class, DeleteUserProfileImageDialogModule::class,
                       ReportBottomSheetDialogModule::class, ChatHostActivityModule::class, ChatFragmentModule::class,
                       DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
+                      FiltersActivityModule::class, FiltersFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       LikesFeedFragmentModule::class, LoginActivityModule::class,
                       MainActivityModule::class, MessagesFeedFragmentModule::class,
