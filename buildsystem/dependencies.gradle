@@ -560,6 +560,7 @@ ext {
     utilityPlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
     ]
 
     /* Widget */
