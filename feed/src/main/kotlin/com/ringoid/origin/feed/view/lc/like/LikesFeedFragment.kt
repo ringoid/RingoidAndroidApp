@@ -13,7 +13,6 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_LIKES_TOTAL
@@ -59,14 +58,10 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is DISCARD_PROFILE -> communicator(IBaseMainActivity::class.java)?.decrementCountOnLikes()
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         onDiscardProfileState(profileId)?.let { discarded ->
                             communicator(IBaseMainActivity::class.java)?.let {
-                                it.decrementCountOnLikes()  // decrement count
-                                it.decrementCountOnMessages(decrementBy = -1)  // increment count
-
                                 val payload = Bundle().apply {
                                     putInt("positionOfImage", discarded.positionOfImage)
                                     putSerializable("destinationFeed", LcNavTab.MESSAGES)
@@ -86,7 +81,6 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.count) { communicator(IBaseMainActivity::class.java)?.showCountOnLikes(count = it) }
             observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
         }
     }

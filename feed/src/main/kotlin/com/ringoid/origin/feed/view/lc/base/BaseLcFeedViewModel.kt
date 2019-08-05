@@ -55,7 +55,6 @@ abstract class BaseLcFeedViewModel(
         countUserImagesUseCase,
         userInMemoryCache, app) {
 
-    val count by lazy { MutableLiveData<Int>() }
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
@@ -150,7 +149,6 @@ abstract class BaseLcFeedViewModel(
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
-        count.value = items.size
         if (items.isEmpty()) {
             feed.value = emptyList()
             viewState.value = ViewState.CLEAR(mode = clearMode)

@@ -51,9 +51,6 @@ class BottomBar : LinearLayout {
     private var profileIcon: Drawable? = null
     private var profileSelectIcon: Drawable? = null
 
-    private var countOnLikes: Int = 0
-    private var countOnMessages: Int = 0
-
     constructor(context: Context): this(context, null)
 
     constructor(context: Context, attributes: AttributeSet?): this(context, attributes, 0)
@@ -90,16 +87,6 @@ class BottomBar : LinearLayout {
 
     /* API */
     // --------------------------------------------------------------------------------------------
-    fun decrementCountOnLikes(decrementBy: Int) {
-        countOnLikes -= decrementBy
-        showCountOnLikes(countOnLikes)
-    }
-
-    fun decrementCountOnMessages(decrementBy: Int) {
-        countOnMessages -= decrementBy
-        showCountOnMessages(countOnMessages)
-    }
-
     fun setOnNavigationItemSelectedListener(l: ((item: NavTab) -> Unit)?) {
         selectListener = l
     }
@@ -114,16 +101,6 @@ class BottomBar : LinearLayout {
 
     fun showBadgeOnMessages(isVisible: Boolean) {
         iv_item_badge_messages.changeVisibility(isVisible, soft = true)
-    }
-
-    fun showCountOnLikes(count: Int) {
-        countOnLikes = maxOf(count, 0)  // omit negative values
-        tv_likes_count.text = if (count > 0) " $count" else ""
-    }
-
-    fun showCountOnMessages(count: Int) {
-        countOnMessages = maxOf(count, 0)  // omit negative values
-        tv_messages_count.text = if (count > 0) " $count" else ""
     }
 
     fun showWarningOnProfile(isVisible: Boolean) {

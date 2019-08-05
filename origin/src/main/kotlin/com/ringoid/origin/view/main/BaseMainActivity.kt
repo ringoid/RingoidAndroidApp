@@ -204,14 +204,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun decrementCountOnLikes(decrementBy: Int) {
-        bottom_bar.decrementCountOnLikes(decrementBy)
-    }
-
-    override fun decrementCountOnMessages(decrementBy: Int) {
-        bottom_bar.decrementCountOnMessages(decrementBy)
-    }
-
     override fun showBadgeOnLikes(isVisible: Boolean) {
         bottom_bar.showBadgeOnLikes(isVisible)
     }
@@ -222,14 +214,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     override fun showBadgeWarningOnProfile(isVisible: Boolean) {
         bottom_bar.showWarningOnProfile(isVisible)
-    }
-
-    override fun showCountOnLikes(count: Int) {
-        bottom_bar.showCountOnLikes(count)
-    }
-
-    override fun showCountOnMessages(count: Int) {
-        bottom_bar.showCountOnMessages(count)
     }
 
     override fun showParticleAnimation(id: String, count: Int) {

@@ -22,7 +22,6 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MATCHES_TOTAL
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
@@ -76,7 +75,6 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is DISCARD_PROFILE -> communicator(IBaseMainActivity::class.java)?.decrementCountOnMessages()
                     is PUSH_NEW_MESSAGES -> {
                         val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
 
@@ -105,7 +103,6 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.count) { communicator(IBaseMainActivity::class.java)?.showCountOnMessages(count = it) }
             observe(vm.pushNewMatch) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
             observe(vm.pushNewMessage) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
         }

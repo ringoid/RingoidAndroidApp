@@ -48,8 +48,6 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         observe(vm.badgeLikes, ::showBadgeOnLikes)
         observe(vm.badgeMessages, ::showBadgeOnMessages)
         observe(vm.badgeWarningProfile, ::showBadgeWarningOnProfile)
-        observe(vm.countLikes, ::showCountOnLikes)
-        observe(vm.countMessages, ::showCountOnMessages)
         observe(vm.newLikesCount) { showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = it) }
         observe(vm.newMatchesCount) { showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = it) }
         observe(vm.newMessagesCount) { showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = it) }

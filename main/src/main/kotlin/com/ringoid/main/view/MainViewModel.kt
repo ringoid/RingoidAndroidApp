@@ -40,8 +40,6 @@ class MainViewModel @Inject constructor(
     val badgeLikes by lazy { MutableLiveData<Boolean>() }
     val badgeMessages by lazy { MutableLiveData<Boolean>() }
     val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
-    val countLikes by lazy { MutableLiveData<Int>() }
-    val countMessages by lazy { MutableLiveData<Int>() }
     val newLikesCount by lazy { MutableLiveData<Int>() }
     val newMatchesCount by lazy { MutableLiveData<Int>() }
     val newMessagesCount by lazy { MutableLiveData<Int>() }
@@ -56,18 +54,6 @@ class MainViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeMessages.value = it }, Timber::e)
-
-        getLcUseCase.repository.feedLikes
-            .map { it.size }
-            .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(this)
-            .subscribe({ countLikes.value = it }, Timber::e)
-
-        getLcUseCase.repository.feedMessages
-            .map { it.size }
-            .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(this)
-            .subscribe({ countMessages.value = it }, Timber::e)
 
         getLcUseCase.repository.lmmLoadFinish
             .observeOn(AndroidSchedulers.mainThread())

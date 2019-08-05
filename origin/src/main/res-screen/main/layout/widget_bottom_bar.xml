@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -44,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_likes_count"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_favorite_white_outline_36dp"/>
 
         <ImageView
@@ -56,20 +55,6 @@
             android:visibility="invisible"
             app:layout_constraintTop_toTopOf="@id/iv_item_likes"
             app:layout_constraintEnd_toEndOf="@id/iv_item_likes"/>
-
-        <TextView
-            android:id="@+id/tv_likes_count"
-            android:gravity="center"
-            android:shadowColor="@color/text_shadow"
-            android:shadowRadius="6"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/std_text_18"
-            app:layout_constraintTop_toTopOf="@id/iv_item_likes"
-            app:layout_constraintBottom_toBottomOf="@id/iv_item_likes"
-            app:layout_constraintStart_toEndOf="@id/iv_item_likes"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text=" 123"
-            style="@style/StdText.Primary"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,7 +75,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_messages_count"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_menu_messages_white_outline_36dp"/>
 
         <ImageView
@@ -102,20 +87,6 @@
             android:visibility="invisible"
             app:layout_constraintTop_toTopOf="@id/iv_item_messages"
             app:layout_constraintEnd_toEndOf="@id/iv_item_messages"/>
-
-        <TextView
-            android:id="@+id/tv_messages_count"
-            android:gravity="center"
-            android:shadowColor="@color/text_shadow"
-            android:shadowRadius="6"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/std_text_18"
-            app:layout_constraintTop_toTopOf="@id/iv_item_messages"
-            app:layout_constraintBottom_toBottomOf="@id/iv_item_messages"
-            app:layout_constraintStart_toEndOf="@id/iv_item_messages"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text=" 123"
-            style="@style/StdText.Primary"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
