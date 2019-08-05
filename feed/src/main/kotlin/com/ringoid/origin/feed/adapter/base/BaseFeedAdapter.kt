@@ -29,6 +29,19 @@ abstract class BaseFeedAdapter(protected val imageLoader: ImageRequest, diffCb: 
     protected var imagesViewPool = RecyclerView.RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginFeedViewHolder {
+        fun onLike(vh: BaseFeedViewHolder): Boolean =
+            vh.adapterPosition
+                .takeIf { it != RecyclerView.NO_POSITION }
+                ?.let {
+                    if (onBeforeLikeListener?.invoke() != false) {
+                        val imagePosition = vh.getCurrentImagePosition()
+                        val image = vh.profileImageAdapter.getModel(imagePosition)
+                        onLikeImageListener?.invoke(image, imagePosition)
+                        notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
+                        true
+                    } else false
+                } ?: false
+
         val viewHolder = super.onCreateViewHolder(parent, viewType)
         return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
             .takeIf { viewType == VIEW_TYPE_NORMAL }
@@ -52,22 +65,10 @@ abstract class BaseFeedAdapter(protected val imageLoader: ImageRequest, diffCb: 
             ?.let { it as BaseFeedViewHolder }
             ?.also { vh ->
                 with (vh.itemView.ibtn_like) {
-                    clicks()
-                        .compose(clickDebounce())
-                        .subscribe { _ /** feedItemPosition */ ->
-                            vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
-                                ?.let {
-                                    if (onBeforeLikeListener?.invoke() != false) {
-                                        val imagePosition = vh.getCurrentImagePosition()
-                                        val image = vh.profileImageAdapter.getModel(imagePosition)
-                                        onLikeImageListener?.invoke(image, imagePosition)
-                                        notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
-                                    }
-                                }
-                        }
+                    clicks().compose(clickDebounce()).subscribe { onLike(vh) }
                     touches().filter { it.action == MotionEvent.ACTION_DOWN }
                              .compose(clickDebounce())
-                             .subscribe { onImageTouchListener?.invoke(it.rawX, it.rawY) }
+                             .subscribe { if (onLike(vh)) { onImageTouchListener?.invoke(it.rawX, it.rawY) } }
                 }
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
