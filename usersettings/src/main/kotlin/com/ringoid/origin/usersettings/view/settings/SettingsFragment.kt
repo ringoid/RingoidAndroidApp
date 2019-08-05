@@ -73,6 +73,7 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
         }
 
         item_delete_account.clicks().compose(clickDebounce()).subscribe { openDeleteAccountDialog() }
+        item_filters.clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsFragment, path = "/settings_filters") }
         item_language.apply {
             clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsFragment, path = "/settings_lang", rc = RequestCode.RC_SETTINGS_LANG) }
 //            setLabel(LocaleUtils.getLangById(context, app?.localeManager?.getLang() ?: LocaleManager.LANG_RU))
