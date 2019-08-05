@@ -242,6 +242,13 @@ abstract class BaseLcFeedViewModel(
     /* Event Bus */
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventAppFreshStart(event: BusEvent.AppFreshStart) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        refresh()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event", "event" to "$event")

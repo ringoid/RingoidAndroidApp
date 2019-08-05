@@ -20,6 +20,7 @@ abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app
     // --------------------------------------------------------------------------------------------
     override fun onFreshStart() {
         super.onFreshStart()
+        Bus.post(event = BusEvent.AppFreshStart)
         AppInMemory.setUserGender(spm.currentUserGender())
     }
 

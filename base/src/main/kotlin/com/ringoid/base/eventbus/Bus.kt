@@ -35,6 +35,7 @@ sealed class BusEvent {
     @DebugOnly object SimulateError : BusEvent()
 
     object Stub : BusEvent()
+    object AppFreshStart : BusEvent()
     object NoImagesOnProfile : BusEvent()
     object RefreshOnExplore : BusEvent()
     data class RefreshOnLc(val lcSourceFeed: String) : BusEvent()
