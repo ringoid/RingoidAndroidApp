@@ -55,6 +55,7 @@ buildscript {
         dotsIndicatorVersion = '2.1.0'
         dotsIndicatorFixVersion = '1.0.0'
         overscrollVersion = '1.0.4'
+        rangeSeekbarVersion = '1.0.6'
         rvAnimVersion = '3.0.0'
         rvItemAnimVersion = '1.1.0'
 
