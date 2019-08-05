@@ -172,6 +172,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             navigate(this@ChatFragment, path = "/block_dialog?payload=${blockPayload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
             rv_chat_messages.apply { setPadding(paddingLeft, paddingTop, paddingRight, AppRes.BLOCK_BOTTOM_SHEET_DIALOG_HEIGHT) }
         }
+        ll_status_container.clicks().compose(clickDebounce()).subscribe { closeChat() }
         rv_chat_messages.apply {
             adapter = chatAdapter
             layoutManager = LinearLayoutManager(context)
