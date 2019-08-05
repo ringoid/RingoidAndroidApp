@@ -2,23 +2,18 @@ package com.ringoid.widget.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.GestureDetector
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getSelectableItemBgBorderless
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_extend_image_button.view.*
 
 class ExtendImageButton : FrameLayout {
-
-    private var btnClickable: Boolean = true
-    private val detector = GestureDetector(context, HorizontalSwipeGestureRecognizer())
-    private var flingListener: ((direction: Direction) -> Unit)? = null
 
     constructor(context: Context) : this(context, null)
 
@@ -37,7 +32,6 @@ class ExtendImageButton : FrameLayout {
 
         context.obtainStyledAttributes(attributes, R.styleable.ExtendImageButton, defStyleAttr, 0)
             .apply {
-                setClickability(getBoolean(R.styleable.ExtendImageButton_xbtnClickable, true))
                 setImageSize(resId = getResourceId(R.styleable.ExtendImageButton_xbtnInnerSize, 0))
                 setImageBgResource(resId = getResourceId(R.styleable.ExtendImageButton_xbtnBg, 0))
                 setImageSrcResource(resId = getResourceId(R.styleable.ExtendImageButton_xbtnSrc, 0))
@@ -68,42 +62,9 @@ class ExtendImageButton : FrameLayout {
         ibtn.clicks().compose(clickDebounce()).subscribe { l?.onClick(ibtn) }
     }
 
-    fun setOnFlingListener(l: ((direction: Direction) -> Unit)?) {
-        flingListener = l
+    @Suppress("CheckResult")
+    override fun setOnTouchListener(l: OnTouchListener?) {
+        super.setOnTouchListener(l)
+        ibtn.touches().compose(clickDebounce()).subscribe { l?.onTouch(ibtn, it) }
     }
-
-    // --------------------------------------------------------------------------------------------
-    inner class HorizontalSwipeGestureRecognizer : SwipeGestureRecognizer() {
-
-        override fun onSwipe(direction: Direction): Boolean {
-            flingListener?.invoke(direction)
-            return super.onSwipe(direction)
-        }
-    }
-
-    private fun setClickability(btnClickable: Boolean) {
-        this.btnClickable = btnClickable
-
-        isClickable = btnClickable
-        isFocusable = btnClickable
-        setOnTouchListener { _, event ->
-            if (btnClickable) {
-                detector.onTouchEvent(event)
-            } else {
-                false
-            }
-        }
-        with (ibtn) {
-            isClickable = btnClickable
-            isFocusable = btnClickable
-            if (!btnClickable) {
-                background = null
-                setOnTouchListener { _, _ -> false }
-            }
-        }
-    }
-
-    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean =
-        if (!btnClickable) true
-        else super.onInterceptTouchEvent(ev)
 }
