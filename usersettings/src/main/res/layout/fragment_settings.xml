@@ -15,7 +15,6 @@
 
     <com.ringoid.widget.view.item_view.SwitchIconItemView
         android:id="@+id/item_filters"
-        android:visibility="gone"
         app:icon_item_icon="?attr/refDrawableSettingsFilters"
         app:icon_item_text="@string/settings_filters"
         style="?attr/iconItemView"/>
