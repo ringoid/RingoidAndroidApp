@@ -25,6 +25,8 @@ import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageDialogModule
 import com.ringoid.origin.profile.view.di.UserProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
+import com.ringoid.origin.usersettings.view.filters.di.SettingsFiltersActivityModule
+import com.ringoid.origin.usersettings.view.filters.di.SettingsFiltersFragmentModule
 import com.ringoid.origin.usersettings.view.info.di.AboutDialogModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoActivityModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoFragmentModule
@@ -67,6 +69,7 @@ import javax.inject.Singleton
                       OldAppVersionActivityModule::class, UserProfileFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
+                      SettingsFiltersActivityModule::class, SettingsFiltersFragmentModule::class,
                       SettingsLangActivityModule::class, SettingsLangFragmentModule::class,
                       SettingsProfileActivityModule::class, SettingsProfileFragmentModule::class,
                       SettingsPushActivityModule::class, SettingsPushFragmentModule::class,

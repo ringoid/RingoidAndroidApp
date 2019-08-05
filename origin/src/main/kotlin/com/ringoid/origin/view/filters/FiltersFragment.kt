@@ -2,19 +2,17 @@ package com.ringoid.origin.view.filters
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import com.innovattic.rangeseekbar.RangeSeekBar
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import kotlinx.android.synthetic.main.filters_content.*
-import kotlinx.android.synthetic.main.fragment_filters.*
 
 class FiltersFragment : BaseFragment<FiltersViewModel>() {
 
     companion object {
-        internal const val TAG = "FiltersFragment_tag"
+        const val TAG = "FiltersFragment_tag"
 
         fun newInstance(): FiltersFragment = FiltersFragment()
     }
@@ -28,11 +26,6 @@ class FiltersFragment : BaseFragment<FiltersViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (toolbar as Toolbar).apply {
-            setNavigationOnClickListener { activity?.onBackPressed() }
-            setTitle(R.string.settings_filters)
-        }
-
         with (seekbar_age) {
             minRange = 4
             max = DomainUtil.FILTER_MAX_AGE - DomainUtil.FILTER_MIN_AGE
