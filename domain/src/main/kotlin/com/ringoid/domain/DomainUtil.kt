@@ -24,7 +24,7 @@ object DomainUtil {
     const val CLIPBOARD_KEY_DEBUG = "debug"
 
     const val FILTER_MIN_AGE = 18
-    const val FILTER_MAX_AGE = 56
+    const val FILTER_MAX_AGE = 55
     const val FILTER_MIN_DISTANCE = 1000
     const val FILTER_MAX_DISTANCE = 150_001
 
