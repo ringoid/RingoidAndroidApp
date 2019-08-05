@@ -9,8 +9,6 @@
         <attr name="refDrawableBottomBarMessagesPressed" format="reference"/>
         <attr name="refDrawableBottomBarProfile" format="reference"/>
         <attr name="refDrawableBottomBarProfilePressed" format="reference"/>
-        <attr name="refDrawableFabScrollBg" format="reference"/>
-        <attr name="refDrawableFabScrollIcon" format="reference"/>
         <attr name="refDrawableDebug" format="reference"/>
         <attr name="refDrawableMenuCheck" format="reference"/>
         <attr name="refDrawableMenuInternet" format="reference"/>

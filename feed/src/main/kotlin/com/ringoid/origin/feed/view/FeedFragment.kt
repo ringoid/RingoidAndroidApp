@@ -8,7 +8,6 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
-import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -220,10 +219,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         feedAdapter = createFeedAdapter().apply {
             onBeforeLikeListener = { vm.onBeforeLike() }
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
-            onScrollHorizontalListener = {
-                showRefreshPopup(isVisible = false)
-                showScrollFab(isVisible = false)
-            }
+            onScrollHorizontalListener = { showRefreshPopup(isVisible = false) }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 vm.onSettingsClick(model.id)
                 val image = model.images[positionOfImage]
@@ -293,10 +289,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
-        scroll_fab.clicks().compose(clickDebounce()).subscribe {
-            showScrollFab(isVisible = false)
-            scrollToTopOfItemAtPosition(position = 0)
-        }
     }
 
     override fun onResume() {
@@ -358,24 +350,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
 
     // ------------------------------------------
-    private var wasFabVisible: Boolean = false
-
     protected fun showRefreshPopup(isVisible: Boolean) {
         btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.refreshOnPush.value == true)
-    }
-
-    protected fun showScrollFab(isVisible: Boolean, restoreVisibility: Boolean = false) {
-        val xIsVisible = if (restoreVisibility) {
-            wasFabVisible = scroll_fab.isVisible()
-            isVisible && wasFabVisible
-        } else isVisible
-        scroll_fab.changeVisibility(isVisible = xIsVisible)
-    }
-
-    // ------------------------------------------
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        rv_items?.scrollBy(0, -1)
     }
 
     /* Scroll listeners */
@@ -388,22 +364,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     if (btn_refresh_popup.isVisible()) {
                         showRefreshPopup(isVisible = false)
                     }
-                    if (scroll_fab.isVisible()) {
-                        showScrollFab(isVisible = false)
-                    }
                 } else {  // scroll list up - to see previous items
-                    val offset = rv.computeVerticalScrollOffset()
                     if (!btn_refresh_popup.isVisible()) {
                         showRefreshPopup(isVisible = true)
-                    }
-                    if (scroll_fab.isVisible()) {
-                        if (offset <= 0) {
-                            showScrollFab(isVisible = false)
-                        }
-                    } else {
-                        if (offset > 0) {
-                            showScrollFab(isVisible = true)
-                        }
                     }
                 }
             }
