@@ -1,8 +1,10 @@
 package com.ringoid.origin.feed.adapter.explore
 
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.model.EmptyFeedItemVO
@@ -21,18 +23,24 @@ class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoade
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder =
         ExploreFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
             .also { vh ->
-                vh.itemView.ibtn_like.clicks().compose(clickDebounce())
-                    .subscribe { _ /** feedItemPosition */ ->
-                        vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
-                            ?.let {
-                                if (onBeforeLikeListener?.invoke() != false) {
-                                    val imagePosition = vh.getCurrentImagePosition()
-                                    val image = vh.profileImageAdapter.getModel(imagePosition)
-                                    onLikeImageListener?.invoke(image, imagePosition)
-                                    notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
+                with (vh.itemView.ibtn_like) {
+                    clicks()
+                        .compose(clickDebounce())
+                        .subscribe { _ /** feedItemPosition */ ->
+                            vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                                ?.let {
+                                    if (onBeforeLikeListener?.invoke() != false) {
+                                        val imagePosition = vh.getCurrentImagePosition()
+                                        val image = vh.profileImageAdapter.getModel(imagePosition)
+                                        onLikeImageListener?.invoke(image, imagePosition)
+                                        notifyItemChanged(vh.adapterPosition, FeedItemViewHolderAnimateLike)
+                                    }
                                 }
-                            }
-                    }
+                        }
+                    touches().filter { it.action == MotionEvent.ACTION_DOWN }
+                             .compose(clickDebounce())
+                             .subscribe { onImageTouchListener?.invoke(it.rawX, it.rawY) }
+                }
                 vh.profileImageAdapter.itemDoubleClickListener = { model, position ->
                     onLikeImageListener?.invoke(model, position)
                 }
