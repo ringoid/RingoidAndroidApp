@@ -9,7 +9,7 @@
         android:id="@+id/seekbar_age"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sidePadding="@dimen/std_margin_16"
+        app:rsb_sidePadding="@dimen/std_margin_16"
         app:rsb_trackColor="?refTextColorSecondary"
         app:rsb_trackSelectedColor="?refTextColorPrimary"/>
 </LinearLayout>
