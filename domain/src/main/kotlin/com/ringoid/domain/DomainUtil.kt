@@ -26,7 +26,7 @@ object DomainUtil {
     const val FILTER_MIN_AGE = 18
     const val FILTER_MAX_AGE = 55
     const val FILTER_MIN_DISTANCE = 1000
-    const val FILTER_MAX_DISTANCE = 150_001
+    const val FILTER_MAX_DISTANCE = 150_000
 
     const val SOURCE_FEED_EXPLORE = "new_faces"
     const val SOURCE_FEED_LIKES = "who_liked_me"
