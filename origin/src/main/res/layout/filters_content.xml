@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/std_margin_20"
+        android:layout_marginEnd="@dimen/std_margin_20">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:text="@string/settings_filters_distance_title"
+            style="@style/StdText.Primary"/>
+
+        <TextView
+            android:id="@+id/tv_distance"
+            android:gravity="center_vertical|end"
+            android:textStyle="bold"
+            style="@style/StdText.Primary"/>
+    </LinearLayout>
+
+    <com.warkiz.widget.IndicatorSeekBar
+        android:id="@+id/seekbar_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_20"
+        app:isb_show_indicator="none"
+        app:isb_thumb_drawable="?refDrawableSettingsFiltersThumb"
+        app:isb_track_background_color="?refTextColorSecondary"
+        app:isb_track_progress_color="?refTextColorPrimary"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_20"
+        android:layout_marginEnd="@dimen/std_margin_20">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:text="@string/settings_filters_age_title"
+            style="@style/StdText.Primary"/>
+
+        <TextView
+            android:id="@+id/tv_age"
+            android:gravity="center_vertical|end"
+            android:textStyle="bold"
+            style="@style/StdText.Primary"/>
+    </LinearLayout>
+
+    <com.innovattic.rangeseekbar.RangeSeekBar
+        android:id="@+id/seekbar_age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_8"
+        app:rsb_minThumbDrawable="?refDrawableSettingsFiltersThumb"
+        app:rsb_minThumbOffsetHorizontal="-4dp"
+        app:rsb_maxThumbDrawable="?refDrawableSettingsFiltersThumb"
+        app:rsb_maxThumbOffsetHorizontal="4dp"
+        app:rsb_sidePadding="@dimen/std_margin_16"
+        app:rsb_trackColor="?refTextColorSecondary"
+        app:rsb_trackSelectedColor="?refTextColorPrimary"/>
+</merge>

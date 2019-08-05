@@ -14,6 +14,7 @@
     <string name="common_choose_image">Choose Photo</string>
     <string name="common_clipboard">Copied to clipboard</string>
     <string name="common_compose_email">Send Email</string>
+    <string name="common_distance_km">%d km</string>
     <string name="common_online">Online</string>
     <string name="common_pull_to_refresh">Pull to refresh</string>
     <string name="common_sex_male">Male</string>
@@ -127,6 +128,10 @@
     <string name="settings_support_rationale">If you have suggestions how to improve Ringoid, please email support@ringoid.com</string>
     <string name="settings_title">Settings</string>
     <string name="settings_theme_dark">Night Mode</string>
+
+    <!-- Settings Filters screen -->
+    <string name="settings_filters_age_title">Age</string>
+    <string name="settings_filters_distance_title">Maximum distance</string>
 
     <!-- Settings Info screen -->
     <string name="settings_info_about">About</string>

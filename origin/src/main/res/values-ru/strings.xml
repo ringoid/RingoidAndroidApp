@@ -14,6 +14,7 @@
     <string name="common_choose_image">Выбери фото</string>
     <string name="common_clipboard">Скопировано в буфер</string>
     <string name="common_compose_email">Отправить Email</string>
+    <string name="common_distance_km">%d км</string>
     <string name="common_online">Онлайн</string>
     <string name="common_pull_to_refresh">Потяни, чтобы обновить</string>
     <string name="common_sex_male">Мужчина</string>
@@ -122,6 +123,10 @@
     <string name="settings_support_rationale">Если у вас есть предложения, как улучшить Ringoid, пожалуйста, напишите на \nsupport@ringoid.com</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_theme_dark">Ночной режим</string>
+
+    <!-- Settings Filters screen -->
+    <string name="settings_filters_age_title">Возраст</string>
+    <string name="settings_filters_distance_title">Максимальная дистанция</string>
 
     <!-- Settings Info screen -->
     <string name="settings_info_about">О приложении</string>

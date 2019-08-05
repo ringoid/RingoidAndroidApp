@@ -1,7 +1,11 @@
 package com.ringoid.origin.view.filters
 
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.R
+import kotlinx.android.synthetic.main.fragment_filters.*
 
 class FiltersFragment : BaseFragment<FiltersViewModel>() {
 
@@ -17,4 +21,12 @@ class FiltersFragment : BaseFragment<FiltersViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    @Suppress("CheckResult", "AutoDispose")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (toolbar as Toolbar).apply {
+            setNavigationOnClickListener { activity?.onBackPressed() }
+            setTitle(R.string.settings_filters)
+        }
+    }
 }

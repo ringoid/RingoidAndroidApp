@@ -57,6 +57,7 @@
         <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_black_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_black_24dp</item>
         <item name="refDrawableSettingsFilters">@drawable/ic_filter_black_24dp</item>
+        <item name="refDrawableSettingsFiltersThumb">@drawable/ic_seekbar_thumb_black_18dp</item>
         <item name="refDrawableSettingsProfile">@drawable/ic_person_black_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_24dp</item>
@@ -95,6 +96,7 @@
         <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_white_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_white_24dp</item>
         <item name="refDrawableSettingsFilters">@drawable/ic_filter_white_24dp</item>
+        <item name="refDrawableSettingsFiltersThumb">@drawable/ic_seekbar_thumb_white_18dp</item>
         <item name="refDrawableSettingsProfile">@drawable/ic_person_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_white_24dp</item>

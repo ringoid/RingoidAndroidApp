@@ -130,6 +130,7 @@ ext {
             dotsIndicator:    "me.relex:circleindicator:${dotsIndicatorVersion}",
             dotsIndicatorFix: "com.afollestad:viewpagerdots:${dotsIndicatorFixVersion}",
             overscroll:       "me.everything:overscroll-decor-android:${overscrollVersion}",
+            seekbar:          "com.github.warkiz.widget:indicatorseekbar:${seekbarVersion}",
             rangeSeekbar:     "com.github.Innovattic:range-seek-bar:${rangeSeekbarVersion}",
             rvAnim:           "jp.wasabeef:recyclerview-animators:${rvAnimVersion}",
             rvItemAnim:       "com.mikepenz:itemanimators:${rvItemAnimVersion}",
@@ -479,6 +480,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebaseReferral],
         [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
+        [configuration: "implementation", dependency: d_view.seekbar],
     ]
     originDependencies += develop + android + arch + dagger + deeplink + kotlin + image + log + fragnav + rx + rxBind +
                           support + view

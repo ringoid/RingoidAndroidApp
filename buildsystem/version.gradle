@@ -58,6 +58,7 @@ buildscript {
         rangeSeekbarVersion = '1.0.6'
         rvAnimVersion = '3.0.0'
         rvItemAnimVersion = '1.1.0'
+        seekbarVersion = '2.1.2'
 
         logInterceptorVersion = '3.0.0'
         okHttpVersion = '3.14.2'

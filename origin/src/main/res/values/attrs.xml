@@ -29,6 +29,7 @@
         <attr name="refDrawableProfilePropertyTikTok" format="reference"/>
         <attr name="refDrawableProfilePropertyTransport" format="reference"/>
         <attr name="refDrawableSettingsFilters" format="reference"/>
+        <attr name="refDrawableSettingsFiltersThumb" format="reference"/>
         <attr name="refDrawableSettingsProfile" format="reference"/>
         <attr name="refDrawableThemeSwitch" format="reference"/>
     </declare-styleable>
