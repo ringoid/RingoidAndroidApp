@@ -362,7 +362,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     // ------------------------------------------
     private fun showFiltersPopup() {
-        TopSheetDialog(activity).apply {
+        TopSheetDialog(context!!).apply {
             setContentView(R.layout.dialog_filters_explore)
         }.show()
     }
