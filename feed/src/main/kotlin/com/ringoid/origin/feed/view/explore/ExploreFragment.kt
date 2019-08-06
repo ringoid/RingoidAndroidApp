@@ -51,6 +51,8 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     override fun getAddPhotoDialogDescriptionResId(): Int = OriginR_string.feed_explore_dialog_no_user_photo_description
 
+    override fun getToolbarTitleResId(): Int = OriginR_string.feed_explore_title
+
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         when (newState) {

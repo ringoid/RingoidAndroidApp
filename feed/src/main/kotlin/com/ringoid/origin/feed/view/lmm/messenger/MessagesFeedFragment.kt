@@ -38,6 +38,8 @@ class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
 
     override fun getSourceFeed(): LmmNavTab = LmmNavTab.MESSAGES
 
+    override fun getToolbarTitleResId(): Int = OriginR_string.feed_messages_title
+
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)

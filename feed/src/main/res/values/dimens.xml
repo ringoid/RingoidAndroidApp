@@ -3,6 +3,7 @@
     <dimen name="feed_item_footer_height">160dp</dimen>
     <dimen name="feed_swipe_refresh_layout_spinner_end_offset">78dp</dimen>
     <dimen name="feed_tab_layout_height">10dp</dimen>
+    <dimen name="feed_toolbar_height">47dp</dimen>
 
     <dimen name="lmm_top_gradient_height">62dp</dimen>
 </resources>

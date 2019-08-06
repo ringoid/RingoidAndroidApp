@@ -52,6 +52,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     protected abstract fun createFeedAdapter(): BaseFeedAdapter
     @StringRes protected abstract fun getAddPhotoDialogDescriptionResId(): Int
+    @StringRes protected abstract fun getToolbarTitleResId(): Int
 
     protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
 
@@ -267,7 +268,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        rv_items.apply {
+        with (rv_items) {
             adapter = feedAdapter
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
@@ -279,7 +280,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             addOnScrollListener(topScrollListener)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
-        swipe_refresh_layout.apply {
+        with (swipe_refresh_layout) {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
             refreshes().compose(clickDebounce()).subscribe {
@@ -288,6 +289,16 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 }
             }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
+        }
+        with (toolbar) {
+            setTitle(getToolbarTitleResId())
+            inflateMenu(R.menu.feed_toolbar_menu)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.filters -> true  // TODO: show filters popup
+                    else -> false
+                }
+            }
         }
     }
 

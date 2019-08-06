@@ -69,6 +69,8 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
 
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
 
+    override fun getToolbarTitleResId(): Int = OriginR_string.feed_messages_title
+
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)

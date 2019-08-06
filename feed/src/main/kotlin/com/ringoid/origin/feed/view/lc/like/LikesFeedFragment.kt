@@ -52,6 +52,8 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
 
     override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
 
+    override fun getToolbarTitleResId(): Int = OriginR_string.feed_likes_you_title
+
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
