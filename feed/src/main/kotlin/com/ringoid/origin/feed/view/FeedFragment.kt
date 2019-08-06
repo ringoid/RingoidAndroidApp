@@ -7,6 +7,7 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.techisfun.android.topsheet.TopSheetDialog
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
@@ -294,7 +295,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             inflateMenu(R.menu.feed_toolbar_menu)
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.filters -> true  // TODO: show filters popup
+                    R.id.filters -> { showFiltersPopup(); true }
                     else -> false
                 }
             }
@@ -360,6 +361,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
 
     // ------------------------------------------
+    private fun showFiltersPopup() {
+        TopSheetDialog(activity).apply {
+            setContentView(R.layout.dialog_filters_explore)
+        }.show()
+    }
+
     protected fun showRefreshPopup(isVisible: Boolean) {
         btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.refreshOnPush.value == true)
     }

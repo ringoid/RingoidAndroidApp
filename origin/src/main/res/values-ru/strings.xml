@@ -6,10 +6,13 @@
     <string name="button_cancel">Отмена</string>
     <string name="button_close">Закрыть</string>
     <string name="button_delete">Удалить</string>
+    <string name="button_discover">Искать</string>
     <string name="button_done">Готово</string>
+    <string name="button_filter">Фильтровать (%s)</string>
     <string name="button_later">Не сейчас</string>
     <string name="button_ok">ОК</string>
     <string name="button_settings">Настройки</string>
+    <string name="button_show_all">Показать все (%s)</string>
 
     <string name="common_choose_image">Выбери фото</string>
     <string name="common_clipboard">Скопировано в буфер</string>
