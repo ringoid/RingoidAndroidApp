@@ -7,7 +7,7 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.techisfun.android.topsheet.TopSheetDialog
+import com.github.techisfun.android.topsheet.TopSheetBehavior
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
@@ -38,6 +38,7 @@ import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.functions.Consumer
+import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
@@ -362,9 +363,20 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     // ------------------------------------------
     private fun showFiltersPopup() {
-        TopSheetDialog(context!!).apply {
-            setContentView(R.layout.dialog_filters_explore)
-        }.show()
+        with (TopSheetBehavior.from(ll_top_sheet)) {
+            setTopSheetCallback(object: TopSheetBehavior.TopSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        TopSheetBehavior.STATE_EXPANDED -> appbar.setExpanded(false)
+                        TopSheetBehavior.STATE_HIDDEN -> appbar.setExpanded(true)
+                        else -> { /* no-op */ }
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            })
+            state = TopSheetBehavior.STATE_EXPANDED
+        }
     }
 
     protected fun showRefreshPopup(isVisible: Boolean) {

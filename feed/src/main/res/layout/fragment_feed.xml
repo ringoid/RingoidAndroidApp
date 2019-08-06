@@ -22,6 +22,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="?refColorBgSemi"
             app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextColor="?refTextColorPrimary"/>
     </com.google.android.material.appbar.AppBarLayout>
@@ -44,6 +45,8 @@
         android:id="@+id/visual_effect_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <include layout="@layout/dialog_filters"/>
     
     <Button
         android:id="@+id/btn_refresh_popup"
