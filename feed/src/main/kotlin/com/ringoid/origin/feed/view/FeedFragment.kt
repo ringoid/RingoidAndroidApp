@@ -3,8 +3,11 @@ package com.ringoid.origin.feed.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.techisfun.android.topsheet.TopSheetBehavior
@@ -301,6 +304,38 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 }
             }
         }
+
+        // top sheet
+        with (overlay) {
+            val gestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                    TopSheetBehavior.from(ll_top_sheet).state = TopSheetBehavior.STATE_HIDDEN
+                    return true
+                }
+            })
+            setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+        }
+        with (TopSheetBehavior.from(ll_top_sheet)) {
+            isHideable = true  // allow [TopSheetBehavior.STATE_HIDDEN]
+            setTopSheetCallback(object: TopSheetBehavior.TopSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        TopSheetBehavior.STATE_EXPANDED -> {
+                            appbar.setExpanded(false)
+                            overlay.changeVisibility(isVisible = true)
+                        }
+                        TopSheetBehavior.STATE_COLLAPSED,
+                        TopSheetBehavior.STATE_HIDDEN -> {
+                            appbar.setExpanded(true)
+                            overlay.changeVisibility(isVisible = false)
+                        }
+                        else -> { /* no-op */ }
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            })
+        }
     }
 
     override fun onResume() {
@@ -363,20 +398,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     // ------------------------------------------
     private fun showFiltersPopup() {
-        with (TopSheetBehavior.from(ll_top_sheet)) {
-            setTopSheetCallback(object: TopSheetBehavior.TopSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    when (newState) {
-                        TopSheetBehavior.STATE_EXPANDED -> appbar.setExpanded(false)
-                        TopSheetBehavior.STATE_HIDDEN -> appbar.setExpanded(true)
-                        else -> { /* no-op */ }
-                    }
-                }
-
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-            })
-            state = TopSheetBehavior.STATE_EXPANDED
-        }
+        TopSheetBehavior.from(ll_top_sheet).state = TopSheetBehavior.STATE_EXPANDED
     }
 
     protected fun showRefreshPopup(isVisible: Boolean) {
