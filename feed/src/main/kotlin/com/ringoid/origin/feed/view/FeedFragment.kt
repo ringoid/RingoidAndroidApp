@@ -3,11 +3,8 @@ package com.ringoid.origin.feed.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.techisfun.android.topsheet.TopSheetBehavior
@@ -307,19 +304,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
         // top sheet
         with (overlay) {
-            val gestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onSingleTapUp(e: MotionEvent?): Boolean {
-                    TopSheetBehavior.from(ll_top_sheet).state = TopSheetBehavior.STATE_HIDDEN
-                    return true
-                }
-            })
-            setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+            setOnTouchListener { _, _ -> TopSheetBehavior.from(ll_top_sheet).state = TopSheetBehavior.STATE_HIDDEN ; true }
         }
         with (TopSheetBehavior.from(ll_top_sheet)) {
             isHideable = true  // allow [TopSheetBehavior.STATE_HIDDEN]
             setTopSheetCallback(object: TopSheetBehavior.TopSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
+                        TopSheetBehavior.STATE_SETTLING,
                         TopSheetBehavior.STATE_EXPANDED -> {
                             appbar.changeVisibility(isVisible = false, soft = true)
                             overlay.changeVisibility(isVisible = true)
