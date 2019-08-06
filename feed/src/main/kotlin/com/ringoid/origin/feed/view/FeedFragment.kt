@@ -304,8 +304,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
         // top sheet
         with (overlay) {
-            setOnTouchListener { _, _ -> TopSheetBehavior.from(ll_top_sheet).state = TopSheetBehavior.STATE_HIDDEN ; true }
+            setOnTouchListener { _, _ ->
+                TopSheetBehavior.from(ll_top_sheet).state = TopSheetBehavior.STATE_HIDDEN
+                true
+            }
         }
+        with (ll_top_sheet) { setOnTouchListener { _, _ -> true } }
         with (TopSheetBehavior.from(ll_top_sheet)) {
             isHideable = true  // allow [TopSheetBehavior.STATE_HIDDEN]
             setTopSheetCallback(object: TopSheetBehavior.TopSheetCallback() {
