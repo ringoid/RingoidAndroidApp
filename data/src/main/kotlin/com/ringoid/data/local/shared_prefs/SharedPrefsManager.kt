@@ -3,6 +3,7 @@ package com.ringoid.data.local.shared_prefs
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StyleRes
+import com.google.gson.Gson
 import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
@@ -13,6 +14,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.misc.UserProfilePropertiesRaw
+import com.ringoid.domain.model.essence.feed.FilterEssence
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
@@ -59,6 +61,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_AUTH_USER_GENDER = "sp_key_auth_user_gender"
         const val SP_KEY_AUTH_USER_YEAR_OF_BIRTH = "sp_key_auth_user_year_of_birth"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
+
+        /* Filters */
+        // --------------------------------------
+        const val SP_KEY_FILTERS = "sp_key_filters"
 
         /* Location */
         // --------------------------------------
@@ -231,6 +237,16 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .remove(SP_KEY_AUTH_USER_YEAR_OF_BIRTH)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
             .apply()
+    }
+
+    /* Filters */
+    // --------------------------------------------------------------------------------------------
+    override fun getFilters(): FilterEssence? =
+        sharedPreferences.getString(SP_KEY_FILTERS, null)
+            ?.let { Gson().fromJson(it, FilterEssence::class.java) }
+
+    override fun setFilters(filters: FilterEssence) {
+        sharedPreferences.edit().putString(SP_KEY_FILTERS, filters.toJson()).apply()
     }
 
     /* Location */

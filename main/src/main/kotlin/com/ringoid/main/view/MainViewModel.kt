@@ -17,6 +17,7 @@ import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
@@ -102,6 +103,7 @@ class MainViewModel @Inject constructor(
             }
 
         analyticsManager.setUser(spm)
+        FiltersInMemoryCache.restore(spm)
         SentryUtil.setUser(spm)
     }
 
@@ -129,6 +131,7 @@ class MainViewModel @Inject constructor(
         super.onStop()
         analyticsManager.persist(spm)
         ChatInMemoryCache.persist(spm)
+        FiltersInMemoryCache.persist(spm)
         actionObjectPool.trigger()
     }
 
