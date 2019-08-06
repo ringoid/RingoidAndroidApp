@@ -165,7 +165,8 @@ ext {
             widget:  ':widget',
 
             // 3rd-party submodules
-            cropiwa: ':cropiwa',
+            cropiwa:  ':cropiwa',
+            topsheet: ':topsheet',
     ]
 
     def module_auth = [[configuration: "implementation", dependency: project(modules.auth)]]
@@ -407,6 +408,7 @@ ext {
     /* Feature Feed */
     // ------------------------------------------
     feedDependencies = [
+        [configuration: "api", dependency: project(modules.topsheet)],
         [configuration: "implementation", dependency: d_libs.gson]
     ]
     feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink +
