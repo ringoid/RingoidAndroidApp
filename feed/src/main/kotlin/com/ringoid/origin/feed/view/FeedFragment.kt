@@ -321,12 +321,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         TopSheetBehavior.STATE_EXPANDED -> {
-                            appbar.setExpanded(false)
+                            appbar.changeVisibility(isVisible = false, soft = true)
                             overlay.changeVisibility(isVisible = true)
                         }
                         TopSheetBehavior.STATE_COLLAPSED,
                         TopSheetBehavior.STATE_HIDDEN -> {
-                            appbar.setExpanded(true)
+                            appbar.changeVisibility(isVisible = true)
                             overlay.changeVisibility(isVisible = false)
                         }
                         else -> { /* no-op */ }
