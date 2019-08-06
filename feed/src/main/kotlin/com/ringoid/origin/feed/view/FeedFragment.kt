@@ -270,7 +270,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         super.onViewCreated(view, savedInstanceState)
         with (rv_items) {
             adapter = feedAdapter
-            isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
             itemAnimator = FeedItemAnimator()
             setHasFixedSize(true)
