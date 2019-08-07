@@ -17,6 +17,7 @@ import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import com.ringoid.utility.runOnUiThread
+import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>() {
@@ -76,5 +77,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         super.onViewCreated(view, savedInstanceState)
         // refresh by click on 'tap to refresh' popup
         btn_refresh_popup.clicks().compose(clickDebounce()).subscribe { vm.onTapToRefreshClick() }
+        btn_show_all.clicks().compose(clickDebounce()).subscribe { vm.onShowAllWithoutFilters() }
+        btn_apply_filters.clicks().compose(clickDebounce()).subscribe { vm.onApplyFilters() }
     }
 }
