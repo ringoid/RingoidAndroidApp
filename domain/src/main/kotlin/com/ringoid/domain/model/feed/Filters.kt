@@ -20,3 +20,7 @@ data class Filters(
 val DefaultFilters = Filters(minAge = DomainUtil.FILTER_MIN_AGE,
                              maxAge = DomainUtil.FILTER_MAX_AGE,
                              maxDistance = DomainUtil.FILTER_MAX_DISTANCE)
+
+val EmptyFilters = Filters(minAge = DomainUtil.FILTER_MAX_AGE,
+                           maxAge = DomainUtil.FILTER_MAX_AGE,
+                           maxDistance = DomainUtil.FILTER_MAX_DISTANCE)
