@@ -13,6 +13,8 @@ open class BaseFiltersViewModel @Inject constructor(
 
     val filters by lazy { MutableLiveData<Filters>() }
 
+    protected open fun onFilterChange() {}
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
@@ -38,11 +40,13 @@ open class BaseFiltersViewModel @Inject constructor(
         filtersSource.getFilters().let {
             filtersSource.setFilters(Filters(minAge = minAge, maxAge = maxAge, maxDistance = it.maxDistance))
         }
+        onFilterChange()
     }
 
     fun setDistance(distance: Int) {
         filtersSource.getFilters().let {
             filtersSource.setFilters(Filters(minAge = it.minAge, maxAge = it.maxAge, maxDistance = distance))
         }
+        onFilterChange()
     }
 }
