@@ -18,8 +18,10 @@ class FiltersFragment : BaseFragment<FiltersViewModel>() {
 
     companion object {
         const val TAG = "FiltersFragment_tag"
+
+        const val MIN_AGE_RANGE = 4
         const val STEP_AGE = 1
-        const val STEP_DISTANCE = 1
+        const val STEP_DISTANCE = 1000
 
         fun newInstance(): FiltersFragment = FiltersFragment()
     }
@@ -41,8 +43,8 @@ class FiltersFragment : BaseFragment<FiltersViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with (seekbar_age) {
-            minRange = 4
-            max = DomainUtil.FILTER_MAX_AGE - DomainUtil.FILTER_MIN_AGE
+            minRange = MIN_AGE_RANGE / STEP_AGE
+            max = (DomainUtil.FILTER_MAX_AGE - DomainUtil.FILTER_MIN_AGE) / STEP_AGE
             seekBarChangeListener = object : RangeSeekBar.SeekBarChangeListener {
                 override fun onStartedSeeking() {}
                 override fun onStoppedSeeking() {}
@@ -55,8 +57,8 @@ class FiltersFragment : BaseFragment<FiltersViewModel>() {
         }
 
         with (seekbar_distance) {
-            min = DomainUtil.FILTER_MIN_DISTANCE / 1000f
-            max = DomainUtil.FILTER_MAX_DISTANCE / 1000f
+            min = DomainUtil.FILTER_MIN_DISTANCE / STEP_DISTANCE.toFloat()
+            max = DomainUtil.FILTER_MAX_DISTANCE / STEP_DISTANCE.toFloat()
             onSeekChangeListener = object : OnSeekChangeListener {
                 override fun onStartTrackingTouch(seekBar: IndicatorSeekBar) {}
                 override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {}
@@ -86,12 +88,15 @@ class FiltersFragment : BaseFragment<FiltersViewModel>() {
     }
 
     private fun displayMinMaxAgeRange(minThumbValue: Int, maxThumbValue: Int) {
-        val valueStr = String.format(AppRes.FILTER_AGE, minThumbValue + DomainUtil.FILTER_MIN_AGE, maxThumbValue + DomainUtil.FILTER_MIN_AGE)
+        val minAgeValue = minThumbValue * STEP_AGE
+        val maxAgeValue = maxThumbValue * STEP_AGE
+        val valueStr = String.format(AppRes.FILTER_AGE, minAgeValue + DomainUtil.FILTER_MIN_AGE, maxAgeValue + DomainUtil.FILTER_MIN_AGE)
         tv_age.text = if (maxThumbValue >= seekbar_age.max) "$valueStr+" else valueStr
     }
 
     private fun displayDistance(thumbValue: Int) {
-        val valueStr = String.format(AppRes.FILTER_DISTANCE_KM, thumbValue)
+        val distanceValue = thumbValue * STEP_DISTANCE
+        val valueStr = String.format(AppRes.FILTER_DISTANCE_KM, distanceValue / 1000)  // display in kilometers
         tv_distance.text = if (thumbValue >= seekbar_distance.max) "$valueStr+" else valueStr
     }
 }

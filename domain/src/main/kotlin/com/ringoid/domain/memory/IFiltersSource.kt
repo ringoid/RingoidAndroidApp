@@ -7,4 +7,6 @@ interface IFiltersSource  {
     fun getFilters(): FilterEssence?
 
     fun setFilters(filters: FilterEssence)
+
+    fun dropFilters()
 }

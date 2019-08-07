@@ -22,6 +22,16 @@ class FiltersViewModel @Inject constructor(
         return super.setUserVisibleHint(isVisibleToUser)
     }
 
+    override fun onStart() {
+        super.onStart()
+        setUserVisibleHint(isVisibleToUser = true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        setUserVisibleHint(isVisibleToUser = false)
+    }
+
     // --------------------------------------------------------------------------------------------
     fun setMinMaxAge(minAge: Int, maxAge: Int) {
         filtersSource.getFilters()?.let {

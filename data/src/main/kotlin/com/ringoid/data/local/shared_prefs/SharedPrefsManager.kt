@@ -249,6 +249,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         sharedPreferences.edit().putString(SP_KEY_FILTERS, filters.toJson()).apply()
     }
 
+    override fun dropFilters() {
+        sharedPreferences.edit().remove(SP_KEY_FILTERS).apply()
+    }
+
     /* Location */
     // --------------------------------------------------------------------------------------------
     override fun getLocation(): GpsLocation? {

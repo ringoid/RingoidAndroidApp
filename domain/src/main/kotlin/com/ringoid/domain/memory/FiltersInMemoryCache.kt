@@ -13,6 +13,10 @@ object FiltersInMemoryCache : IFiltersSource {
         this.filters = filters
     }
 
+    override fun dropFilters() {
+        filters = null
+    }
+
     @Synchronized
     fun persist(spm: ISharedPrefsManager) {
         filters?.let { spm.setFilters(it) }
