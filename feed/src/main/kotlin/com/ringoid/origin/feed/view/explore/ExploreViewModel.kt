@@ -89,8 +89,11 @@ class ExploreViewModel @Inject constructor(
         getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
-                viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
-                                  else ViewState.IDLE
+                viewState.value = if (it.isEmpty()) {
+                    if (filtersSource.hasFiltersApplied()) {
+                        ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)
+                    } else ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
+                } else ViewState.IDLE
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)

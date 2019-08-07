@@ -76,7 +76,10 @@ abstract class BaseLcFeedViewModel(
 
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { setLcItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
+            .doOnNext {
+                setLcItems(items = it, clearMode = if (filtersSource.hasFiltersApplied()) ViewState.CLEAR.MODE_CHANGE_FILTERS
+                                                   else ViewState.CLEAR.MODE_EMPTY_DATA)
+            }
             .doAfterNext {
                 // analyze for the first reply in messages only once per user session
                 if (!analyticsManager.hasFiredOnce(Analytics.AHA_FIRST_REPLY_RECEIVED)) {
