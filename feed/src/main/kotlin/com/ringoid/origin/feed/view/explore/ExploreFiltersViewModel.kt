@@ -6,6 +6,4 @@ import com.ringoid.origin.view.filters.BaseFiltersViewModel
 import javax.inject.Inject
 
 class ExploreFiltersViewModel @Inject constructor(filtersSource: IFiltersSource, app: Application)
-    : BaseFiltersViewModel(filtersSource, app) {
-    //
-}
+    : BaseFiltersViewModel(filtersSource, app)
