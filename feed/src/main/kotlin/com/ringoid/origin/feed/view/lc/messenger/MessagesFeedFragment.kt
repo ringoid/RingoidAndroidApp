@@ -34,12 +34,14 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.IDialogCallback
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
+import kotlinx.android.synthetic.main.dialog_filters.*
 import timber.log.Timber
 
 class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatHost, IDialogCallback {
@@ -59,6 +61,8 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 openChat(position = feedItemPosition, peerId = model.profileId, image = model.image)
             }
         }
+
+    override fun createFiltersFragment(): BaseFiltersFragment<*> = MessagesFeedFiltersFragment.newInstance()
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {
@@ -99,6 +103,15 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 }
             }
         }
+    }
+
+    // ------------------------------------------
+    override fun setCountOfFilteredFeedItems(count: Int) {
+        btn_show_all.text = String.format(AppRes.FILTER_BUTTON_APPLY, count)
+    }
+
+    override fun setTotalNotFilteredFeedItems(count: Int) {
+        btn_apply_filters.text = String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count)
     }
 
     /* Lifecycle */

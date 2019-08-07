@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.model.feed.Filters
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -12,8 +13,7 @@ open class BaseFiltersViewModel @Inject constructor(
     private val filtersSource: IFiltersSource, app: Application) : BaseViewModel(app) {
 
     val filters by lazy { MutableLiveData<Filters>() }
-
-    protected open fun onFilterChange() {}
+    protected val filtersChanged = PublishSubject.create<Boolean>()
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -40,13 +40,13 @@ open class BaseFiltersViewModel @Inject constructor(
         filtersSource.getFilters().let {
             filtersSource.setFilters(Filters(minAge = minAge, maxAge = maxAge, maxDistance = it.maxDistance))
         }
-        onFilterChange()
+        filtersChanged.onNext(true)
     }
 
     fun setDistance(distance: Int) {
         filtersSource.getFilters().let {
             filtersSource.setFilters(Filters(minAge = it.minAge, maxAge = it.maxAge, maxDistance = distance))
         }
-        onFilterChange()
+        filtersChanged.onNext(true)
     }
 }

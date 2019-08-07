@@ -18,11 +18,13 @@ import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
+import kotlinx.android.synthetic.main.dialog_filters.*
 
 class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
 
@@ -42,6 +44,8 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                 }
             }
         }
+
+    override fun createFiltersFragment(): BaseFiltersFragment<*> = LikesFeedFiltersFragment.newInstance()
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {
@@ -77,6 +81,15 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                 }
             }
         }
+    }
+
+    // ------------------------------------------
+    override fun setCountOfFilteredFeedItems(count: Int) {
+        btn_show_all.text = String.format(AppRes.FILTER_BUTTON_APPLY, count)
+    }
+
+    override fun setTotalNotFilteredFeedItems(count: Int) {
+        btn_apply_filters.text = String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count)
     }
 
     /* Lifecycle */

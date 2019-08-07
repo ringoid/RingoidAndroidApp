@@ -1,17 +1,39 @@
 package com.ringoid.origin.feed.view.lc.base
 
 import android.app.Application
+import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetLcUseCase
 import com.ringoid.domain.memory.IFiltersSource
+import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.filters.BaseFiltersViewModel
-import javax.inject.Inject
+import com.ringoid.origin.view.filters.LC_COUNTS
+import com.ringoid.utility.inputDebounce
+import com.uber.autodispose.lifecycle.autoDisposable
+import timber.log.Timber
 
-class LcFeedFiltersViewModel @Inject constructor(
-    private val getLcUseCase: GetLcUseCase,
+abstract class LcFeedFiltersViewModel(private val getLcUseCase: GetLcUseCase,
     filtersSource: IFiltersSource, app: Application)
     : BaseFiltersViewModel(filtersSource, app) {
 
-    override fun onFilterChange() {
-        super.onFilterChange()
+    abstract fun getFeedName(): String
+
+    init {
+        filtersChanged
+            .compose(inputDebounce())
+            .map {
+                Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+                        .put("limit", DomainUtil.LIMIT_PER_PAGE)
+                        .put("source", getFeedName())
+                        .put(filtersSource.getFilters())
+            }
+            .flatMapSingle { getLcUseCase.source(params = it) }
+            .autoDisposable(this)
+            .subscribe({
+                viewState.value = ViewState.DONE(LC_COUNTS(countLikes = it.likes.size, countMessages = it.messages.size,
+                                                           totalNotFilteredLikes = it.totalNotFilteredLikes,
+                                                           totalNotFilteredMessages = it.totalNotFilteredMessages))
+            }, Timber::e)
     }
 }
