@@ -6,11 +6,6 @@
 
     <application>
         <activity
-            android:name=".view.filters.FiltersActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark"/>
-
-        <activity
             android:name=".view.error.NoNetworkConnectionActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

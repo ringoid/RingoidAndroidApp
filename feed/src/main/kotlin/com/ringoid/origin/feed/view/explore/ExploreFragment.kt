@@ -20,6 +20,7 @@ import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.image.ImageRequest
 
@@ -39,6 +40,8 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
                 }
             }
         }
+
+    override fun createFiltersFragment(): BaseFiltersFragment<*> = ExploreFiltersFragment.newInstance()
 
     override fun getVmClass(): Class<ExploreViewModel> = ExploreViewModel::class.java
 

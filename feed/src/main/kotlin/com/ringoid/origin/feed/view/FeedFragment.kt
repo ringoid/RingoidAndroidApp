@@ -30,6 +30,7 @@ import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
@@ -53,6 +54,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     override fun getRecyclerView(): RecyclerView = rv_items
 
     protected abstract fun createFeedAdapter(): BaseFeedAdapter
+    protected abstract fun createFiltersFragment(): BaseFiltersFragment<*>
     @StringRes protected abstract fun getAddPhotoDialogDescriptionResId(): Int
     @StringRes protected abstract fun getToolbarTitleResId(): Int
 
@@ -319,13 +321,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                         TopSheetBehavior.STATE_EXPANDED -> {
                             appbar.changeVisibility(isVisible = false, soft = true)
                             overlay.changeVisibility(isVisible = true)
-                            childFragmentManager.findFragmentById(R.id.content)?.userVisibleHint = true
+                            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
                         }
                         TopSheetBehavior.STATE_COLLAPSED,
                         TopSheetBehavior.STATE_HIDDEN -> {
                             appbar.changeVisibility(isVisible = true)
                             overlay.changeVisibility(isVisible = false)
-                            childFragmentManager.findFragmentById(R.id.content)?.userVisibleHint = false
+                            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
                         }
                         else -> { /* no-op */ }
                     }
@@ -334,6 +336,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
+        childFragmentManager
+            .beginTransaction()
+            .replace(R.id.fl_content, createFiltersFragment(), BaseFiltersFragment.TAG)
+            .commitNowAllowingStateLoss()
     }
 
     override fun onResume() {

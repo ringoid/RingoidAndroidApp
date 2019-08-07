@@ -9,11 +9,10 @@
     android:paddingTop="@dimen/std_margin_48"
     app:layout_behavior="com.github.techisfun.android.topsheet.TopSheetBehavior">
 
-    <fragment
-        android:id="@+id/content"
+    <FrameLayout
+        android:id="@+id/fl_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.ringoid.origin.view.filters.FiltersFragment"/>
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:layout_width="match_parent"

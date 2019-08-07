@@ -33,6 +33,7 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
@@ -51,6 +52,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
             }
         }
+
+    override fun createFiltersFragment(): BaseFiltersFragment<*> = LmmFeedFiltersFragment.newInstance()
 
     protected abstract fun getSourceFeed(): LmmNavTab
 

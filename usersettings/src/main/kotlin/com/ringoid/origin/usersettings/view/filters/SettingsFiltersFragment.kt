@@ -7,6 +7,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.filters.FiltersFragment
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings_filters.*
@@ -38,7 +39,7 @@ class SettingsFiltersFragment : BaseSettingsFragment<SettingsFiltersViewModel>()
         if (savedInstanceState == null) {
             childFragmentManager
                 .beginTransaction()
-                .replace(R.id.fl_container, FiltersFragment.newInstance(), FiltersFragment.TAG)
+                .replace(R.id.fl_container, FiltersFragment.newInstance(), BaseFiltersFragment.TAG)
                 .commitNowAllowingStateLoss()
         }
     }
