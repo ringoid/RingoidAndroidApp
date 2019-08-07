@@ -1,6 +1,8 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.os.Bundle
+import android.view.View
+import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
@@ -21,8 +23,11 @@ import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
+import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.image.ImageRequest
+import kotlinx.android.synthetic.main.dialog_filters.*
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
@@ -49,6 +54,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         when (mode) {
             ViewState.CLEAR.MODE_EMPTY_DATA -> EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.feed_explore_empty_title, emptyTextResId = OriginR_string.feed_explore_empty_no_data)
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.feed_explore_empty_title, emptyTextResId = OriginR_string.common_pull_to_refresh)
+            ViewState.CLEAR.MODE_CHANGE_FILTERS -> EmptyFragment.Companion.Input(emptyTitleResId = OriginR_string.feed_explore_empty_title, emptyTextResId = OriginR_string.feed_empty_no_data_filters)
             else -> null
         }
 
@@ -116,6 +122,13 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
             doPostponedTabTransaction()
             postponedTabTransaction = false
         }
+    }
+
+    @Suppress("CheckResult", "AutoDispose")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        btn_show_all.changeVisibility(isVisible = false)
+        btn_apply_filters.clicks().compose(clickDebounce()).subscribe { vm.onApplyFilters() }
     }
 
     /* Scroll listeners */

@@ -17,6 +17,7 @@ import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
@@ -45,13 +46,13 @@ abstract class BaseLmmFeedViewModel(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     val count by lazy { MutableLiveData<Int>() }
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }

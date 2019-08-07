@@ -102,6 +102,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 when (newState.mode) {
                     ViewState.CLEAR.MODE_EMPTY_DATA -> showEmptyStub(true)
                     ViewState.CLEAR.MODE_NEED_REFRESH -> showErrorStub(true)
+                    ViewState.CLEAR.MODE_CHANGE_FILTERS -> showEmptyStub(true)
                 }
             }
             is ViewState.DONE -> {

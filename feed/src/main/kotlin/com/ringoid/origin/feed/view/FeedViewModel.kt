@@ -14,6 +14,7 @@ import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCas
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
@@ -33,6 +34,7 @@ abstract class FeedViewModel(
     private val clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     private val countUserImagesUseCase: CountUserImagesUseCase,
+    protected val filtersSource: IFiltersSource,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 

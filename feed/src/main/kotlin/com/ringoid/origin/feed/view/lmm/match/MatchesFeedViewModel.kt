@@ -13,6 +13,7 @@ import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
@@ -40,7 +41,7 @@ class MatchesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseMatchesFeedViewModel(
         getChatUseCase,
         getLmmUseCase,
@@ -51,7 +52,7 @@ class MatchesFeedViewModel @Inject constructor(
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     private val incomingPushMatch = PublishSubject.create<BusEvent>()
 

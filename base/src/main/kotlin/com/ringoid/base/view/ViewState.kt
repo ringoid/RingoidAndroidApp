@@ -20,6 +20,7 @@ sealed class ViewState {
             const val MODE_DEFAULT = 0
             const val MODE_EMPTY_DATA = 1
             const val MODE_NEED_REFRESH = 2
+            const val MODE_CHANGE_FILTERS = 3
         }
     }
     data class DONE(val residual: IResidual) : ViewState()

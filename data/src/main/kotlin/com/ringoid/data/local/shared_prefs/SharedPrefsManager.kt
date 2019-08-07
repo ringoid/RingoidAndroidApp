@@ -14,6 +14,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.misc.UserProfilePropertiesRaw
+import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
@@ -241,10 +242,12 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     /* Filters */
     // --------------------------------------------------------------------------------------------
+    override fun hasFiltersApplied(): Boolean = getFilters() != DefaultFilters
+
     override fun getFilters(): Filters =
         sharedPreferences.getString(SP_KEY_FILTERS, null)
             ?.let { Gson().fromJson(it, Filters::class.java) }
-            ?: Filters()
+            ?: DefaultFilters
 
     override fun setFilters(filters: Filters) {
         sharedPreferences.edit().putString(SP_KEY_FILTERS, filters.toJson()).apply()

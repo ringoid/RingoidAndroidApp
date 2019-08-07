@@ -16,11 +16,13 @@ import com.ringoid.domain.interactor.feed.property.GetCachedLmmFeedItemIdsUseCas
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedViewModel
+import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
@@ -32,7 +34,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-    private val getNewFacesUseCase: GetNewFacesUseCase,
+    private val getDiscoverUseCase: GetDiscoverUseCase,
     private val getCachedLmmFeedItemIdsUseCase: GetCachedLmmFeedItemIdsUseCase,
     @DebugOnly private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
     @DebugOnly private val debugGetNewFacesDropFlagsUseCase: DebugGetNewFacesDropFlagsUseCase,
@@ -44,13 +46,13 @@ class ExploreViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app), IListScrollCallback {
+        filtersSource, userInMemoryCache, app), IListScrollCallback {
 
     val feed by lazy { MutableLiveData<Feed>() }
     private var isLoadingMore: Boolean = false
@@ -60,7 +62,7 @@ class ExploreViewModel @Inject constructor(
 
     init {
         // discard profiles that appear in Lmm from Explore feed
-        getNewFacesUseCase.repository.lmmLoadFinish
+        getDiscoverUseCase.repository.lmmLoadFinish
             .flatMap { getCachedLmmFeedItemIdsUseCase.source().toObservable() }
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
@@ -84,7 +86,7 @@ class ExploreViewModel @Inject constructor(
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 0))
-        getNewFacesUseCase.source(params = prepareFeedParams())
+        getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
                 viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
@@ -100,7 +102,7 @@ class ExploreViewModel @Inject constructor(
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 2))
-        getNewFacesUseCase.source(params = prepareFeedParams())
+        getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError {
@@ -119,6 +121,7 @@ class ExploreViewModel @Inject constructor(
     private fun prepareFeedParams(): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
+                .put(filtersSource.getFilters())
 
     @DebugOnly
     private fun prepareDebugFeedParams(): Params = Params().put("page", nextPage++)
@@ -141,6 +144,11 @@ class ExploreViewModel @Inject constructor(
                 .put("failPage", failPage)
 
     // --------------------------------------------------------------------------------------------
+    internal fun onApplyFilters() {
+        viewState.value = ViewState.DONE(REFRESH)
+    }
+
+    // ------------------------------------------
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
         // discard profile from feed after like

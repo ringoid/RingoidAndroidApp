@@ -18,6 +18,7 @@ import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
@@ -46,13 +47,13 @@ abstract class BaseLcFeedViewModel(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
 
@@ -101,7 +102,7 @@ abstract class BaseLcFeedViewModel(
     override fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                              .put("limit", DomainUtil.LIMIT_PER_PAGE)
-                             .put(spm.getFilters())  // TODO: check filters from In-Memory object
+                             .put(filtersSource.getFilters())
                              .put("source", getFeedName())
 
         getLcUseCase.source(params = params)

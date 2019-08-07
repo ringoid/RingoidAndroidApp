@@ -8,7 +8,7 @@ import com.ringoid.domain.model.IEssence
 data class Filters(
     @Expose @SerializedName(COLUMN_MIN_AGE) val minAge: Int = DomainUtil.FILTER_MIN_AGE,
     @Expose @SerializedName(COLUMN_MAX_AGE) val maxAge: Int = DomainUtil.FILTER_MAX_AGE,
-    @Expose @SerializedName(COLUMN_MAX_DISTANCE) val maxDistance: Int = DomainUtil.FILTER_MIN_DISTANCE) : IEssence {
+    @Expose @SerializedName(COLUMN_MAX_DISTANCE) val maxDistance: Int = DomainUtil.FILTER_MAX_DISTANCE) : IEssence {
 
     companion object {
         const val COLUMN_MIN_AGE = "minAge"
@@ -16,3 +16,7 @@ data class Filters(
         const val COLUMN_MAX_DISTANCE = "maxDistance"
     }
 }
+
+val DefaultFilters = Filters(minAge = DomainUtil.FILTER_MIN_AGE,
+                             maxAge = DomainUtil.FILTER_MAX_AGE,
+                             maxDistance = DomainUtil.FILTER_MAX_DISTANCE)

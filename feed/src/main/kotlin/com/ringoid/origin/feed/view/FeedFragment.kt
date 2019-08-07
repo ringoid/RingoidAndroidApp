@@ -83,6 +83,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                     }
                     is REFRESH -> {
                         onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
+                        showFiltersPopup(isVisible = false)
                         showLoading(isVisible = true)
                         onRefresh()
                     }
@@ -298,7 +299,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             inflateMenu(R.menu.feed_toolbar_menu)
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.filters -> { showFiltersPopup(); true }
+                    R.id.filters -> { showFiltersPopup(isVisible = true); true }
                     else -> false
                 }
             }
@@ -306,10 +307,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
         // top sheet
         with (overlay) {
-            setOnTouchListener { _, _ ->
-                TopSheetBehavior.from(ll_top_sheet).state = TopSheetBehavior.STATE_HIDDEN
-                true
-            }
+            setOnTouchListener { _, _ -> showFiltersPopup(isVisible = false); true }
         }
         with (ll_top_sheet) { setOnTouchListener { _, _ -> true } }
         with (TopSheetBehavior.from(ll_top_sheet)) {
@@ -401,8 +399,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
 
     // ------------------------------------------
-    private fun showFiltersPopup() {
-        TopSheetBehavior.from(ll_top_sheet).state = TopSheetBehavior.STATE_EXPANDED
+    private fun showFiltersPopup(isVisible: Boolean) {
+        TopSheetBehavior.from(ll_top_sheet).state = if (isVisible) TopSheetBehavior.STATE_EXPANDED
+                                                    else TopSheetBehavior.STATE_HIDDEN
     }
 
     protected fun showRefreshPopup(isVisible: Boolean) {
