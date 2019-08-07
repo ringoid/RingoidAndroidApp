@@ -1,25 +1,29 @@
 package com.ringoid.domain.memory
 
 import com.ringoid.domain.manager.ISharedPrefsManager
-import com.ringoid.domain.model.essence.feed.FilterEssence
+import com.ringoid.domain.model.feed.Filters
 
 object FiltersInMemoryCache : IFiltersSource {
 
-    private var filters: FilterEssence? = null
+    private var filters: Filters = Filters()
 
-    override fun getFilters(): FilterEssence? = filters
+    override fun getFilters(): Filters = filters
 
-    override fun setFilters(filters: FilterEssence) {
+    override fun setFilters(filters: Filters) {
         this.filters = filters
     }
 
     override fun dropFilters() {
-        filters = null
+        filters = Filters()
+    }
+
+    fun clear() {
+        dropFilters()
     }
 
     @Synchronized
     fun persist(spm: ISharedPrefsManager) {
-        filters?.let { spm.setFilters(it) }
+        filters.let { spm.setFilters(it) }
     }
 
     @Synchronized

@@ -6,7 +6,7 @@ import com.innovattic.rangeseekbar.RangeSeekBar
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.model.essence.feed.FilterEssence
+import com.ringoid.domain.model.feed.Filters
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.warkiz.widget.IndicatorSeekBar
@@ -49,11 +49,11 @@ class FiltersFragment : BaseFragment<FiltersViewModel>() {
                 override fun onStartedSeeking() {}
                 override fun onStoppedSeeking() {}
                 override fun onValueChanged(minThumbValue: Int, maxThumbValue: Int) {
-                    vm.setMinMaxAge(minAge = minThumbValue * STEP_AGE, maxAge = maxThumbValue * STEP_AGE)
+                    vm.setMinMaxAge(minAge = minThumbValue * STEP_AGE + DomainUtil.FILTER_MIN_AGE,
+                                    maxAge = maxThumbValue * STEP_AGE + DomainUtil.FILTER_MIN_AGE)
                     displayMinMaxAgeRange(minThumbValue, maxThumbValue)
                 }
             }
-            displayMinMaxAgeRange(0, max)  // initialize counters
         }
 
         with (seekbar_distance) {
@@ -67,14 +67,13 @@ class FiltersFragment : BaseFragment<FiltersViewModel>() {
                     displayDistance(seekParams.progress)
                 }
             }
-            displayDistance(min.toInt())
         }
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun displayFilters(filters: FilterEssence) {
-        val minAgeThumbValue = filters.minAge / STEP_AGE
-        val maxAgeThumbValue = filters.maxAge / STEP_AGE
+    private fun displayFilters(filters: Filters) {
+        val minAgeThumbValue = (filters.minAge - DomainUtil.FILTER_MIN_AGE) / STEP_AGE
+        val maxAgeThumbValue = (filters.maxAge - DomainUtil.FILTER_MIN_AGE) / STEP_AGE
         val maxDistance = filters.maxDistance / STEP_DISTANCE
 
         seekbar_age?.let {

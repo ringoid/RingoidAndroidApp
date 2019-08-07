@@ -26,9 +26,10 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.essence.feed.FilterEssence
+import com.ringoid.data.repository.model.FilterEssence
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.feed.IFeedRepository
@@ -113,7 +114,7 @@ open class FeedRepository @Inject constructor(
 
     /* Discover (former New Faces) */
     // ------------------------------------------
-    override fun getDiscover(resolution: ImageResolution, limit: Int?, filter: FilterEssence?): Single<Feed> {
+    override fun getDiscover(resolution: ImageResolution, limit: Int?, filter: Filters?): Single<Feed> {
         val trace = FirebasePerformance.getInstance().newTrace("refresh_discover")
         return aObjPool
             .triggerSource()
@@ -122,7 +123,7 @@ open class FeedRepository @Inject constructor(
             .doFinally { trace.stop() }
     }
 
-    private fun getDiscoverOnly(resolution: ImageResolution, limit: Int?, filter: FilterEssence?,
+    private fun getDiscoverOnly(resolution: ImageResolution, limit: Int?, filter: Filters?,
                                 lastActionTime: Long, extraTraces: Collection<Trace> = emptyList()): Single<Feed> =
         spm.accessSingle {
             cloud.getDiscover(it.accessToken, resolution, limit, filter, lastActionTime)
@@ -226,7 +227,7 @@ open class FeedRepository @Inject constructor(
 
     /* LC (replacing LMM) */
     // ------------------------------------------
-    override fun getLc(resolution: ImageResolution, limit: Int?, filter: FilterEssence?, source: String?): Single<Lmm> {
+    override fun getLc(resolution: ImageResolution, limit: Int?, filter: Filters?, source: String?): Single<Lmm> {
         val trace = FirebasePerformance.getInstance().newTrace("refresh_lc")
         return aObjPool
             .triggerSource()
@@ -240,7 +241,7 @@ open class FeedRepository @Inject constructor(
             .doFinally { trace.stop() }
     }
 
-    private fun getLcOnly(resolution: ImageResolution, limit: Int?, filter: FilterEssence?,
+    private fun getLcOnly(resolution: ImageResolution, limit: Int?, filter: Filters?,
                           source: String?, lastActionTime: Long,
                           extraTraces: Collection<Trace> = emptyList()): Single<Lmm> =
         spm.accessSingle {

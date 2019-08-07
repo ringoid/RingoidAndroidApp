@@ -19,7 +19,6 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IUserInMemoryCache
-import com.ringoid.domain.model.essence.feed.FilterEssence
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -102,7 +101,7 @@ abstract class BaseLcFeedViewModel(
     override fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                              .put("limit", DomainUtil.LIMIT_PER_PAGE)
-                             .put(FilterEssence.create())  // TODO: prepare global filters
+                             .put(spm.getFilters())  // TODO: check filters from In-Memory object
                              .put("source", getFeedName())
 
         getLcUseCase.source(params = params)

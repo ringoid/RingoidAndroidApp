@@ -17,8 +17,8 @@ import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
 import com.ringoid.domain.manager.IConnectionManager
-import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.domain.model.user.AccessToken
 import com.uber.autodispose.lifecycle.autoDisposable
 import leakcanary.LeakSentry
 import org.greenrobot.eventbus.Subscribe

@@ -11,12 +11,12 @@ import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
+import com.ringoid.data.repository.model.FilterEssence
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
-import com.ringoid.domain.model.essence.feed.FilterEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.essence.push.PushTokenEssence
@@ -24,6 +24,7 @@ import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.essence.user.ReferralCodeEssence
 import com.ringoid.domain.model.essence.user.UpdateUserProfileEssence
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssence
+import com.ringoid.domain.model.feed.Filters
 import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.MediaType
@@ -148,7 +149,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logRequest("getChat", "lastActionTime" to "$lastActionTime", "peerId" to peerId)
             .logResponse("Chat")
 
-    fun getDiscover(accessToken: String, resolution: ImageResolution, limit: Int?, filter: FilterEssence?,
+    fun getDiscover(accessToken: String, resolution: ImageResolution, limit: Int?, filter: Filters?,
                     lastActionTime: Long = 0L): Single<FeedResponse> {
         val body = prepareFeedRequestBody(accessToken, resolution, limit, filter, source = DomainUtil.SOURCE_FEED_EXPLORE, lastActionTime = lastActionTime)
         return restAdapter.getDiscover(body)
@@ -180,7 +181,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logRequest("getLmm", "lastActionTime" to "$lastActionTime")
             .logResponse("LMM")
 
-    fun getLc(accessToken: String, resolution: ImageResolution, limit: Int?, filter: FilterEssence?,
+    fun getLc(accessToken: String, resolution: ImageResolution, limit: Int?, filter: Filters?,
               source: String?, lastActionTime: Long = 0L): Single<LmmResponse> {
         val body = prepareFeedRequestBody(accessToken, resolution, limit, filter, source, lastActionTime)
         return restAdapter.getLc(body)
@@ -192,19 +193,22 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logResponse("LC")
     }
 
-    private fun prepareFeedRequestBody(accessToken: String, resolution: ImageResolution, limit: Int?, filter: FilterEssence?,
+    private fun prepareFeedRequestBody(accessToken: String, resolution: ImageResolution, limit: Int?, filter: Filters?,
                                        source: String?, lastActionTime: Long): RequestBody {
         val contentList = mutableListOf<String>().apply {
             add("\"accessToken\":\"$accessToken\"")
             add("\"resolution\":\"$resolution\"")
             add("\"lastActionTime\":$lastActionTime")
-            filter?.let { add("\"filter\":${filter.toJson()}") }
+            filter?.let { add("\"filter\":${prepareFilters(inputFilters = filter).toJson()}") }
             limit?.takeIf { it > 0 }?.let { add("\"limit\":$limit") }
             source?.let { add("\"source\":\"$source\"") }
         }
         val content = contentList.joinToString(",", "{", "}")
         return RequestBody.create(MediaType.parse("application/json"), content)
     }
+
+    private fun prepareFilters(inputFilters: Filters): FilterEssence =
+        FilterEssence.createEntity(minAge = inputFilters.minAge, maxAge = inputFilters.maxAge, maxDistance = inputFilters.maxDistance)
 
     /* Push */
     // --------------------------------------------------------------------------------------------

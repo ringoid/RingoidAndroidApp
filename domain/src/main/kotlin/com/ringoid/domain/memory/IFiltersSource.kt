@@ -1,12 +1,12 @@
 package com.ringoid.domain.memory
 
-import com.ringoid.domain.model.essence.feed.FilterEssence
+import com.ringoid.domain.model.feed.Filters
 
 interface IFiltersSource  {
 
-    fun getFilters(): FilterEssence?
+    fun getFilters(): Filters
 
-    fun setFilters(filters: FilterEssence)
+    fun setFilters(filters: Filters)
 
     fun dropFilters()
 }

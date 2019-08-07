@@ -19,6 +19,7 @@ import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
@@ -110,6 +111,7 @@ class LoginViewModel @Inject constructor(
             .doOnSubscribe {
                 ChatInMemoryCache.clear()
                 DebugLogUtil.clear()
+                FiltersInMemoryCache.clear()
                 SentryUtil.clear()
                 spm.deleteLocation()  // forget saved location on logout
                 spm.dropBigEditText()  // forget saved input text for dialog
