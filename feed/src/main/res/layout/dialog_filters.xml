@@ -34,6 +34,8 @@
 
         <Button
             android:id="@+id/btn_apply_filters"
+            android:paddingStart="@dimen/std_margin_16"
+            android:paddingEnd="@dimen/std_margin_16"
             android:text="@string/button_discover"
             android:textStyle="bold"
             style="@style/FlatButton.Primary"/>
