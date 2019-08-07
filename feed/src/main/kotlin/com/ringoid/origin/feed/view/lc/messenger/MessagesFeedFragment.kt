@@ -107,11 +107,11 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
 
     // ------------------------------------------
     override fun setCountOfFilteredFeedItems(count: Int) {
-        btn_show_all.text = String.format(AppRes.FILTER_BUTTON_APPLY, count)
+        btn_apply_filters.text = String.format(AppRes.FILTER_BUTTON_APPLY, count)
     }
 
     override fun setTotalNotFilteredFeedItems(count: Int) {
-        btn_apply_filters.text = String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count)
+        btn_show_all.text = String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count)
     }
 
     /* Lifecycle */
