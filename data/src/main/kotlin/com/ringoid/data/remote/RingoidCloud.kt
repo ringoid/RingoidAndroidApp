@@ -189,7 +189,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .keepResultForDebug(cloudDebug)
             .breadcrumb("getLc", "accessToken" to "",
                         "resolution" to "$resolution", "source" to "$source", "lastActionTime" to "$lastActionTime")
-            .logRequest("getLmm", "lastActionTime" to "$lastActionTime")
+            .logRequest("getLc", "lastActionTime" to "$lastActionTime")
             .logResponse("LC")
     }
 
