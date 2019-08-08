@@ -69,8 +69,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                 when (newState.residual) {
                     is LC_FEED_COUNTS ->
                         (newState.residual as LC_FEED_COUNTS).let {
-                            toolbar.title = if (it.hidden > 0) String.format(AppRes.LC_TITLE_LIKES_HIDDEN, it.show, it.hidden)
-                                            else String.format(AppRes.LC_TITLE_LIKES, it.show)
+                            setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
                         }
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
@@ -88,6 +87,12 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                 }
             }
         }
+    }
+
+    override fun setToolbarTitleWithLcCounts(show: Int, hidden: Int) {
+        super.setToolbarTitleWithLcCounts(show, hidden)
+        toolbar.title = if (hidden > 0) String.format(AppRes.LC_TITLE_LIKES_HIDDEN, show, hidden)
+                        else String.format(AppRes.LC_TITLE_LIKES, show)
     }
 
     // ------------------------------------------

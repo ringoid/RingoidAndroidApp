@@ -29,6 +29,7 @@ import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.base.ON_TRANSFER_PROFILE_COMPLETE
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.runOnUiThread
@@ -311,7 +312,9 @@ abstract class BaseLcFeedViewModel(
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         val destinationFeed = event.payload.getSerializable("destinationFeed") as LcNavTab
         if (destinationFeed == getSourceFeed()) {
-            prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload)
+            prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload) {
+                viewState.value = ViewState.DONE(ON_TRANSFER_PROFILE_COMPLETE)
+            }
         }
     }
 }

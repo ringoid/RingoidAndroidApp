@@ -151,7 +151,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             }
     }
 
-    protected fun onDiscardProfileState(profileId: String): FeedItemVO? =
+    protected open fun onDiscardProfileState(profileId: String): FeedItemVO? =
         feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
                 val count = feedAdapter.getModelsCount()

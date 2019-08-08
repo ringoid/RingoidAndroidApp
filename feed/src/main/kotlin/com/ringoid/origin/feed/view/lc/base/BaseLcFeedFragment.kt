@@ -6,6 +6,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
 import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
@@ -19,6 +20,9 @@ import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>(), ILcFeedFiltersHost {
+
+    protected var lcCountHidden: Int = 0
+    protected var lcCountShow: Int = 0
 
     protected abstract fun getSourceFeed(): LcNavTab
 
@@ -57,6 +61,16 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
 
     override fun onRefreshGesture() {
 //        Bus.post(event = BusEvent.RefreshOnLc(lcSourceFeed = getSourceFeed().feedName))
+    }
+
+    override fun onDiscardProfileState(profileId: String): FeedItemVO? =
+        super.onDiscardProfileState(profileId)?.also { _ ->
+            setToolbarTitleWithLcCounts(--lcCountShow, lcCountHidden)
+        }
+
+    protected open fun setToolbarTitleWithLcCounts(show: Int, hidden: Int) {
+        lcCountShow = show
+        lcCountHidden = hidden
     }
 
     /* Lifecycle */

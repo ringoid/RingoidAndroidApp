@@ -24,6 +24,7 @@ import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
+import com.ringoid.origin.feed.view.lmm.base.ON_TRANSFER_PROFILE_COMPLETE
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MATCHES_TOTAL
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
@@ -86,9 +87,9 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 when (newState.residual) {
                     is LC_FEED_COUNTS ->
                         (newState.residual as LC_FEED_COUNTS).let {
-                            toolbar.title = if (it.hidden > 0) String.format(AppRes.LC_TITLE_MESSAGES_HIDDEN, it.show, it.hidden)
-                                            else String.format(AppRes.LC_TITLE_MESSAGES, it.show)
+                            setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
                         }
+                    is ON_TRANSFER_PROFILE_COMPLETE -> setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
                     is PUSH_NEW_MESSAGES -> {
                         val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
 
@@ -110,6 +111,12 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 }
             }
         }
+    }
+
+    override fun setToolbarTitleWithLcCounts(show: Int, hidden: Int) {
+        super.setToolbarTitleWithLcCounts(show, hidden)
+        toolbar.title = if (hidden > 0) String.format(AppRes.LC_TITLE_MESSAGES_HIDDEN, show, hidden)
+                        else String.format(AppRes.LC_TITLE_MESSAGES, show)
     }
 
     // ------------------------------------------
