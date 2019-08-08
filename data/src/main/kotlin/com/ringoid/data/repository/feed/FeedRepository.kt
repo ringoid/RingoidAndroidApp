@@ -55,6 +55,8 @@ open class FeedRepository @Inject constructor(
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
+    private var lmmInMemory: Pair<Lmm, Long>? = null  // Lmm + it's lastActionTime
+
     // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.cacheNewFacesAsAlreadySeen(): Single<FeedResponse> =
         doOnSuccess { alreadySeenProfilesCache.addProfileIds(it.profiles.map { ProfileIdDbo(it.id) }) }
@@ -231,7 +233,14 @@ open class FeedRepository @Inject constructor(
         return aObjPool
             .triggerSource()
             .doOnSubscribe { trace.start() }
-            .flatMap { getLcOnly(resolution, limit, filter, source = source, lastActionTime = it, extraTraces = listOf(trace)) }
+            .flatMap { lastActionTime ->
+                if (lmmInMemory != null && lmmInMemory!!.second >= lastActionTime) {
+                    DebugLogUtil.i("Use LC that has been filtered recently from the memory cache")
+                    Single.just(lmmInMemory!!.first)  // use lmm in memory being recently filtered
+                } else {
+                    getLcOnly(resolution, limit, filter, source, lastActionTime, extraTraces = listOf(trace))
+                }
+            }
             .onErrorResumeNext {
                 Timber.e(it)
                 SentryUtil.capture(it, message = "Fallback to get cached LC", level = Event.Level.WARNING)
@@ -248,6 +257,7 @@ open class FeedRepository @Inject constructor(
                         .filterOutDuplicateProfilesLmmResponse()
                         .filterOutBlockedProfilesLmmResponse()
                         .map { it.map() }
+                        .keepLmmInMemory()
                 }
 //            }
 
@@ -412,6 +422,8 @@ open class FeedRepository @Inject constructor(
                 }
                 .flatMap { Single.just(lmm) }
         }
+
+    private fun Single<Lmm>.keepLmmInMemory(): Single<Lmm> = doAfterSuccess { lmmInMemory = it to aObjPool.lastActionTime() }
 
     // ------------------------------------------
     private fun Single<Lmm>.checkForNewFeedItems(): Single<Lmm> =
