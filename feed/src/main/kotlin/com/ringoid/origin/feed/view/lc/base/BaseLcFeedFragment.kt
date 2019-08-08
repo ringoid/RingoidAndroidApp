@@ -59,10 +59,6 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         }
     }
 
-    override fun onRefreshGesture() {
-//        Bus.post(event = BusEvent.RefreshOnLc(lcSourceFeed = getSourceFeed().feedName))
-    }
-
     override fun onDiscardProfileState(profileId: String): FeedItemVO? =
         super.onDiscardProfileState(profileId)?.also { _ ->
             setToolbarTitleWithLcCounts(--lcCountShow, lcCountHidden)
