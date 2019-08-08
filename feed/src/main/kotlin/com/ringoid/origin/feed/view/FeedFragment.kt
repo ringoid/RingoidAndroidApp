@@ -287,11 +287,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         with (swipe_refresh_layout) {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
-            refreshes().compose(clickDebounce()).subscribe {
-                if (onRefresh()) {
-                    onRefreshGesture()  // refresh checks have passed
-                }
-            }
+            refreshes().compose(clickDebounce()).subscribe { onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         with (toolbar) {
@@ -378,10 +374,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     }
 
     // --------------------------------------------------------------------------------------------
-    protected open fun onRefreshGesture() {
-        // override in subclasses
-    }
-
     private fun onRefresh(): Boolean =
         if (!connectionManager.isNetworkAvailable()) {
             showLoading(isVisible = false)

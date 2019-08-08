@@ -15,8 +15,6 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
-import com.ringoid.base.eventbus.Bus
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
@@ -394,7 +392,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     // --------------------------------------------------------------------------------------------
     private fun onRefresh() {
-        Bus.post(event = BusEvent.RefreshOnProfile)
         if (!connectionManager.isNetworkAvailable()) {
             swipe_refresh_layout.isRefreshing = false
             noConnection(this@UserProfileFragment)

@@ -39,11 +39,6 @@ sealed class BusEvent {
     object ReOpenApp: BusEvent()
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
 
-    object RefreshOnExplore : BusEvent()
-    @Deprecated("LMM -> LC")
-    data class RefreshOnLmm(val lmmSourceFeed: String) : BusEvent()
-    object RefreshOnProfile : BusEvent()
-
     data class PushNewLike(val peerId: String) : BusEvent()
     data class PushNewMatch(val peerId: String) : BusEvent()
     data class PushNewMessage(val peerId: String) : BusEvent()

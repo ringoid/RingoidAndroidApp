@@ -73,22 +73,6 @@ class UserProfileFragmentViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        // refresh on Explore Feed screen leads Profile screen to refresh as well
-        getUserImages()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        // refresh on Lmm screen leads Profile screen to refresh as well
-        getUserImages()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
