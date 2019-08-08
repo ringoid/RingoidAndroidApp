@@ -14,6 +14,7 @@ import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
+import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
@@ -270,7 +271,7 @@ open class FeedRepository @Inject constructor(
         .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
         .checkForNewLikes()
         .checkForNewMessages()
-        .cacheLmm()  // cache new Lmm data fetched from the Server
+        .cacheLmm()  // cache new LC data fetched from the Server
         .cacheMessagesFromLmm()
         .doOnSuccess { lmm -> lmmLoadFinish.onNext(lmm.totalCount()) }
 
@@ -286,7 +287,13 @@ open class FeedRepository @Inject constructor(
         Single.zip(
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES).map { it.mapList() },
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES).map { it.mapList() },
-            BiFunction { likes, messages -> Lmm(likes, matches = emptyList(), messages = messages) })
+            BiFunction { likes, messages ->
+                val totalNotFilteredLikes = (spm as? SharedPrefsManager)?.getTotalNotFilteredLikes() ?: DomainUtil.BAD_VALUE
+                val totalNotFilteredMessages = (spm as? SharedPrefsManager)?.getTotalNotFilteredMessages() ?: DomainUtil.BAD_VALUE
+                Lmm(likes = likes, matches = emptyList(), messages = messages,
+                    totalNotFilteredLikes = totalNotFilteredLikes,
+                    totalNotFilteredMessages = totalNotFilteredMessages)
+            })
 
     // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.filterOutAlreadySeenProfilesFeed(): Single<FeedResponse> =
@@ -396,6 +403,12 @@ open class FeedRepository @Inject constructor(
         flatMap { lmm ->
             Single.fromCallable { local.deleteFeedItems() }  // clear old cache before inserting new data
                 .flatMap { Single.fromCallable { imagesLocal.deleteImages() } }
+                .doOnSuccess {
+                    (spm as? SharedPrefsManager)?.let {
+                        it.setTotalNotFilteredLikes(lmm.totalNotFilteredLikes)
+                        it.setTotalNotFilteredMessages(lmm.totalNotFilteredMessages)
+                    }
+                }
                 .flatMap {
                     val feedItems = mutableListOf<FeedItemDbo>()
                         .apply {

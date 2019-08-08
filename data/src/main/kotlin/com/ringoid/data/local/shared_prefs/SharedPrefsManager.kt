@@ -110,6 +110,11 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         /* Misc */
         // --------------------------------------
         const val SP_KEY_BIG_EDIT_TEXT = "sp_key_big_edit_text"
+
+        /* Specific */
+        // --------------------------------------
+        private const val SP_KEY_TOTAL_NOT_FILTERED_LIKES_COUNT = "sp_key_total_not_filtered_likes_count"
+        private const val SP_KET_TOTAL_NOT_FILTERED_MESSAGES_COUNT = "sp_ket_total_not_filtered_messages_count"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -430,6 +435,22 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun dropBigEditText() {
         sharedPreferences.edit().remove(SP_KEY_BIG_EDIT_TEXT).apply()
+    }
+
+    /* Specific */
+    // --------------------------------------------------------------------------------------------
+    internal fun getTotalNotFilteredLikes(): Int =
+        sharedPreferences.getInt(SP_KEY_TOTAL_NOT_FILTERED_LIKES_COUNT, DomainUtil.BAD_VALUE)
+
+    internal fun getTotalNotFilteredMessages(): Int =
+        sharedPreferences.getInt(SP_KET_TOTAL_NOT_FILTERED_MESSAGES_COUNT, DomainUtil.BAD_VALUE)
+
+    internal fun setTotalNotFilteredLikes(count: Int) {
+        sharedPreferences.edit().putInt(SP_KEY_TOTAL_NOT_FILTERED_LIKES_COUNT, count).apply()
+    }
+
+    internal fun setTotalNotFilteredMessages(count: Int) {
+        sharedPreferences.edit().putInt(SP_KET_TOTAL_NOT_FILTERED_MESSAGES_COUNT, count).apply()
     }
 }
 
