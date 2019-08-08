@@ -265,14 +265,14 @@ abstract class BaseLcFeedViewModel(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventAppFreshStart(event: BusEvent.AppFreshStart) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         refresh()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         // refresh on Explore Feed screen leads LC screen to refresh as well
         DebugLogUtil.i("Get LC on refresh Explore Feed [${getFeedName()}]")
         refresh()
@@ -281,7 +281,7 @@ abstract class BaseLcFeedViewModel(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnLc(event: BusEvent.RefreshOnLc) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         // refresh on some of LC screens leads another LC screen to refresh as well
         if (LcNavTab.from(event.lcSourceFeed) != getSourceFeed()) {
             refresh()
@@ -291,7 +291,7 @@ abstract class BaseLcFeedViewModel(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         // refresh on Profile screen leads LC screen to refresh as well
         DebugLogUtil.i("Get LC on refresh Profile [${getFeedName()}]")
         refresh()
@@ -300,7 +300,7 @@ abstract class BaseLcFeedViewModel(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application reopen [${getFeedName()}]")
         refresh()  // app reopen leads LC screen to refresh as well
     }
@@ -308,7 +308,7 @@ abstract class BaseLcFeedViewModel(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC [${getFeedName()}]")
             refresh()  // app reopen leads LC screen to refresh as well
@@ -318,7 +318,7 @@ abstract class BaseLcFeedViewModel(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventTransferProfile(event: BusEvent.TransferProfile) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         val destinationFeed = event.payload.getSerializable("destinationFeed") as LcNavTab
         if (destinationFeed == getSourceFeed()) {
             prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload)

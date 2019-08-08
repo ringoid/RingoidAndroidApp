@@ -192,14 +192,14 @@ class ExploreViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         onRefresh()  // app reopen leads Explore screen to refresh as well
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Explore...")
             onRefresh()  // app reopen leads Explore screen to refresh as well

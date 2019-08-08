@@ -140,7 +140,7 @@ class MainViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventCloseDebugView(event: BusEvent.CloseDebugView) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         viewState.value = ViewState.DONE(CLOSE_DEBUG_VIEW)
     }
 

@@ -139,7 +139,7 @@ class LikesFeedViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushLikes()
         pushNewLike.value = 0L  // for particle animation
         incomingPushLike.onNext(event)  // for 'tap-to-refresh' popup
