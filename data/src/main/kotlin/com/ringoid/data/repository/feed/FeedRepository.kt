@@ -26,10 +26,7 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.feed.Feed
-import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Filters
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.*
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
@@ -104,9 +101,9 @@ open class FeedRepository @Inject constructor(
     override val badgeLikes = PublishSubject.create<Boolean>()
     override val badgeMatches = PublishSubject.create<Boolean>()
     override val badgeMessenger = PublishSubject.create<Boolean>()
-    override val feedLikes = PublishSubject.create<List<FeedItem>>()
-    override val feedMatches = PublishSubject.create<List<FeedItem>>()
-    override val feedMessages = PublishSubject.create<List<FeedItem>>()
+    override val feedLikes = PublishSubject.create<LmmSlice>()
+    override val feedMatches = PublishSubject.create<LmmSlice>()
+    override val feedMessages = PublishSubject.create<LmmSlice>()
     override val lmmChanged = PublishSubject.create<Boolean>()
     override val lmmLoadFinish = PublishSubject.create<Int>()
     override val newLikesCount = PublishSubject.create<Int>()
@@ -430,7 +427,7 @@ open class FeedRepository @Inject constructor(
     private fun Single<Lmm>.checkForNewLikes(): Single<Lmm> =
         doOnSuccess {
             badgeLikes.onNext(it.notSeenLikesCount() > 0)
-            feedLikes.onNext(it.likes)
+            feedLikes.onNext(LmmSlice(items = it.likes, totalNotFilteredCount = it.totalNotFilteredLikes))
         }
         .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
@@ -448,7 +445,7 @@ open class FeedRepository @Inject constructor(
     private fun Single<Lmm>.checkForNewMatches(): Single<Lmm> =
         doOnSuccess {
             badgeMatches.onNext(it.notSeenMatchesCount() > 0)
-            feedMatches.onNext(it.matches)
+            feedMatches.onNext(LmmSlice(items = it.matches, totalNotFilteredCount = DomainUtil.BAD_VALUE))  // count not supported as 'matches' are deprecated
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
@@ -464,7 +461,7 @@ open class FeedRepository @Inject constructor(
             })
 
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
-        doOnSuccess { feedMessages.onNext(it.messages) }
+        doOnSuccess { feedMessages.onNext(LmmSlice(items = it.messages, totalNotFilteredCount = it.totalNotFilteredMessages)) }
         .zipWith(messengerLocal.countUnreadMessages(),
             BiFunction { lmm: Lmm, count: Int ->
                 if (count > 0) {

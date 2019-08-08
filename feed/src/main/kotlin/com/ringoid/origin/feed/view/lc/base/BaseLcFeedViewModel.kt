@@ -23,7 +23,7 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Filters
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.REFRESH
@@ -78,9 +78,11 @@ abstract class BaseLcFeedViewModel(
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
-                setLcItems(items = it, clearMode = if (filtersSource.hasFiltersApplied()) ViewState.CLEAR.MODE_CHANGE_FILTERS
-                                                   else ViewState.CLEAR.MODE_EMPTY_DATA)
+                setLcItems(items = it.items, totalNotFilteredCount = it.totalNotFilteredCount,
+                           clearMode = if (filtersSource.hasFiltersApplied()) ViewState.CLEAR.MODE_CHANGE_FILTERS
+                                       else ViewState.CLEAR.MODE_EMPTY_DATA)
             }
+            .map { it.items }
             .doAfterNext {
                 // analyze for the first reply in messages only once per user session
                 if (!analyticsManager.hasFiredOnce(Analytics.AHA_FIRST_REPLY_RECEIVED)) {
@@ -103,10 +105,8 @@ abstract class BaseLcFeedViewModel(
     protected abstract fun countNotSeen(feed: List<FeedItem>): List<String>
 
     protected abstract fun getFeedFlag(): Int
-    protected abstract fun getTotalNotFilteredFeedItemsCount(): Int
-    protected abstract fun onLcLoaded(lmm: Lmm)
     protected abstract fun sourceBadge(): Observable<Boolean>
-    protected abstract fun sourceFeed(): Observable<List<FeedItem>>
+    protected abstract fun sourceFeed(): Observable<LmmSlice>
 
     override fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
@@ -118,7 +118,7 @@ abstract class BaseLcFeedViewModel(
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe(::onLcLoaded, Timber::e)
+            .subscribe({}, Timber::e)
     }
 
     private fun refresh() {
@@ -154,11 +154,11 @@ abstract class BaseLcFeedViewModel(
             .subscribe({ action?.invoke() }, Timber::e)
     }
 
-    private fun setLcItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
+    private fun setLcItems(items: List<FeedItem>, totalNotFilteredCount: Int, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
-        viewState.value = ViewState.DONE(LC_FEED_COUNTS(show = items.size, hidden = getTotalNotFilteredFeedItemsCount() - items.size))
+        viewState.value = ViewState.DONE(LC_FEED_COUNTS(show = items.size, hidden = totalNotFilteredCount - items.size))
 
         if (items.isEmpty()) {
             feed.value = emptyList()

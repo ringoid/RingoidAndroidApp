@@ -17,6 +17,7 @@ import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
 import com.ringoid.origin.view.main.LmmNavTab
@@ -78,7 +79,7 @@ class MatchesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMatches
+    override fun sourceFeed(): Observable<LmmSlice> = getLmmUseCase.repository.feedMatches
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MATCHES
 

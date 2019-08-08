@@ -22,7 +22,7 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
@@ -73,8 +73,6 @@ class MessagesFeedViewModel @Inject constructor(
     private val incomingPushMessages = PublishSubject.create<BusEvent>()
     internal val pushNewMatch by lazy { MutableLiveData<Long>() }
     internal val pushNewMessage by lazy { MutableLiveData<Long>() }
-
-    private var totalNotFilteredMessages: Int = DomainUtil.BAD_VALUE
 
     init {
         // show 'tap-to-refresh' popup on Feed screen
@@ -139,12 +137,6 @@ class MessagesFeedViewModel @Inject constructor(
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
 
-    override fun getTotalNotFilteredFeedItemsCount(): Int = totalNotFilteredMessages
-
-    override fun onLcLoaded(lmm: Lmm) {
-        totalNotFilteredMessages = lmm.totalNotFilteredMessages
-    }
-
     override fun sourceBadge(): Observable<Boolean> =
         getLcUseCase.repository.badgeMessenger
             .doAfterNext {
@@ -153,7 +145,7 @@ class MessagesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLcUseCase.repository.feedMessages
+    override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedMessages
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

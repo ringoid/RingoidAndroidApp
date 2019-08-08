@@ -18,6 +18,7 @@ import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
@@ -72,7 +73,7 @@ class MessagesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMessages
+    override fun sourceFeed(): Observable<LmmSlice> = getLmmUseCase.repository.feedMessages
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
 

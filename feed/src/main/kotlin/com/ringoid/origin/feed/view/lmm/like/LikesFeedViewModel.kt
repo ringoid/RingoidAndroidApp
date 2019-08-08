@@ -17,6 +17,7 @@ import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
@@ -79,7 +80,7 @@ class LikesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedLikes
+    override fun sourceFeed(): Observable<LmmSlice> = getLmmUseCase.repository.feedLikes
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
 

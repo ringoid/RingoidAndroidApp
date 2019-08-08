@@ -18,7 +18,7 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
@@ -61,8 +61,6 @@ class LikesFeedViewModel @Inject constructor(
     private val incomingPushLike = PublishSubject.create<BusEvent>()
     internal val pushNewLike by lazy { MutableLiveData<Long>() }
 
-    private var totalNotFilteredLikes: Int = DomainUtil.BAD_VALUE
-
     init {
         // show 'tap-to-refresh' popup on Feed screen
         incomingPushLike
@@ -87,12 +85,6 @@ class LikesFeedViewModel @Inject constructor(
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
 
-    override fun getTotalNotFilteredFeedItemsCount(): Int = totalNotFilteredLikes
-
-    override fun onLcLoaded(lmm: Lmm) {
-        totalNotFilteredLikes = lmm.totalNotFilteredLikes
-    }
-
     override fun sourceBadge(): Observable<Boolean> =
         getLcUseCase.repository.badgeLikes
             .doAfterNext {
@@ -101,7 +93,7 @@ class LikesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLcUseCase.repository.feedLikes
+    override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedLikes
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
