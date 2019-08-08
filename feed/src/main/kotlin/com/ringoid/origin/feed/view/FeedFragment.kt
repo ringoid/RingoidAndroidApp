@@ -334,10 +334,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
-        childFragmentManager
-            .beginTransaction()
-            .replace(R.id.fl_content, createFiltersFragment(), BaseFiltersFragment.TAG)
-            .commitNowAllowingStateLoss()
+        if (savedInstanceState == null) {
+            childFragmentManager
+                .beginTransaction()
+                .replace(R.id.fl_content, createFiltersFragment(), BaseFiltersFragment.TAG)
+                .commitNow()
+        }
     }
 
     override fun onResume() {
