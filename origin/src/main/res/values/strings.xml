@@ -70,10 +70,14 @@
     <string name="feed_lmm_dialog_no_user_photo_description">Add photo to receive likes</string>
     <string name="feed_likes_you_empty_no_data">No likes yet</string>
     <string name="feed_likes_you_title">Likes You</string>
+    <string name="feed_likes_you_title_count">%d likes</string>
+    <string name="feed_likes_you_title_count_hidden">%$1d likes (%$2d hidden)</string>
     <string name="feed_matches_empty_no_data">No mutual likes yet</string>
     <string name="feed_matches_title">Matches</string>
     <string name="feed_messages_empty_no_data">No messages yet</string>
     <string name="feed_messages_title">Chats</string>
+    <string name="feed_messages_title_count">%d chats</string>
+    <string name="feed_messages_title_count_hidden">%$1d chats (%$2d hidden)</string>
 
     <!-- Image Preview screen -->
 

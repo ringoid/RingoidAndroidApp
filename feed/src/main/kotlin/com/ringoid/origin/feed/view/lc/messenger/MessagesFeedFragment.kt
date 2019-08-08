@@ -23,6 +23,7 @@ import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
+import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MATCHES_TOTAL
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
@@ -42,6 +43,7 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.dialog_filters.*
+import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
 class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatHost, IDialogCallback {
@@ -82,6 +84,11 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is LC_FEED_COUNTS ->
+                        (newState.residual as LC_FEED_COUNTS).let {
+                            toolbar.title = if (it.hidden > 0) String.format(AppRes.LC_TITLE_MESSAGES_HIDDEN, it.show, it.hidden)
+                                            else String.format(AppRes.LC_TITLE_MESSAGES, it.show)
+                        }
                     is PUSH_NEW_MESSAGES -> {
                         val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
 

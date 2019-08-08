@@ -61,6 +61,8 @@ class LikesFeedViewModel @Inject constructor(
     private val incomingPushLike = PublishSubject.create<BusEvent>()
     internal val pushNewLike by lazy { MutableLiveData<Long>() }
 
+    private var totalNotFilteredLikes: Int = DomainUtil.BAD_VALUE
+
     init {
         // show 'tap-to-refresh' popup on Feed screen
         incomingPushLike
@@ -81,11 +83,15 @@ class LikesFeedViewModel @Inject constructor(
     // ------------------------------------------
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
-    override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
-
     override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
+
+    override fun getTotalNotFilteredFeedItemsCount(): Int = totalNotFilteredLikes
+
+    override fun onLcLoaded(lmm: Lmm) {
+        totalNotFilteredLikes = lmm.totalNotFilteredLikes
+    }
 
     override fun sourceBadge(): Observable<Boolean> =
         getLcUseCase.repository.badgeLikes

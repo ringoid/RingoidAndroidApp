@@ -14,6 +14,7 @@ import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
+import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.navigation.noConnection
@@ -25,6 +26,7 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.dialog_filters.*
+import kotlinx.android.synthetic.main.fragment_feed.*
 
 class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
 
@@ -65,6 +67,11 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is LC_FEED_COUNTS ->
+                        (newState.residual as LC_FEED_COUNTS).let {
+                            toolbar.title = if (it.hidden > 0) String.format(AppRes.LC_TITLE_LIKES_HIDDEN, it.show, it.hidden)
+                                            else String.format(AppRes.LC_TITLE_LIKES, it.show)
+                        }
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
                         onDiscardProfileState(profileId)?.let { discarded ->

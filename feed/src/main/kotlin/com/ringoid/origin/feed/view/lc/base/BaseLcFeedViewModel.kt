@@ -27,6 +27,7 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.REFRESH
+import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
@@ -102,7 +103,8 @@ abstract class BaseLcFeedViewModel(
     protected abstract fun countNotSeen(feed: List<FeedItem>): List<String>
 
     protected abstract fun getFeedFlag(): Int
-    protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
+    protected abstract fun getTotalNotFilteredFeedItemsCount(): Int
+    protected abstract fun onLcLoaded(lmm: Lmm)
     protected abstract fun sourceBadge(): Observable<Boolean>
     protected abstract fun sourceFeed(): Observable<List<FeedItem>>
 
@@ -116,7 +118,7 @@ abstract class BaseLcFeedViewModel(
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe(::onLcLoaded, Timber::e)
     }
 
     private fun refresh() {
@@ -155,6 +157,8 @@ abstract class BaseLcFeedViewModel(
     private fun setLcItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
+
+        viewState.value = ViewState.DONE(LC_FEED_COUNTS(show = items.size, hidden = getTotalNotFilteredFeedItemsCount() - items.size))
 
         if (items.isEmpty()) {
             feed.value = emptyList()

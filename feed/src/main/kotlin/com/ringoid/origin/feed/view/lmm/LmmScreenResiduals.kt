@@ -8,6 +8,8 @@ import com.ringoid.origin.view.main.LmmNavTab
 @Deprecated("LMM -> LC")
 data class CLEAR_AND_REFRESH_EXCEPT(val exceptLmmTab: LmmNavTab?) : Residual()
 
+data class LC_FEED_COUNTS(val show: Int, val hidden: Int) : Residual()
+
 data class SEEN_ALL_FEED(val sourceFeed: Int) : Residual() {
     companion object {
         const val FEED_LIKES = 0

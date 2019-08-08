@@ -74,6 +74,8 @@ class MessagesFeedViewModel @Inject constructor(
     internal val pushNewMatch by lazy { MutableLiveData<Long>() }
     internal val pushNewMessage by lazy { MutableLiveData<Long>() }
 
+    private var totalNotFilteredMessages: Int = DomainUtil.BAD_VALUE
+
     init {
         // show 'tap-to-refresh' popup on Feed screen
         incomingPushMatch
@@ -133,11 +135,15 @@ class MessagesFeedViewModel @Inject constructor(
     // ------------------------------------------
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER
 
-    override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.messages
-
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
+
+    override fun getTotalNotFilteredFeedItemsCount(): Int = totalNotFilteredMessages
+
+    override fun onLcLoaded(lmm: Lmm) {
+        totalNotFilteredMessages = lmm.totalNotFilteredMessages
+    }
 
     override fun sourceBadge(): Observable<Boolean> =
         getLcUseCase.repository.badgeMessenger

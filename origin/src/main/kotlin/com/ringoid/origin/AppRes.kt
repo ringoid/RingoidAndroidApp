@@ -126,6 +126,14 @@ object AppRes {
         private set
     var LENGTH_CM = ""
         private set
+    var LC_TITLE_LIKES = ""
+        private set
+    var LC_TITLE_LIKES_HIDDEN = ""
+        private set
+    var LC_TITLE_MESSAGES = ""
+        private set
+    var LC_TITLE_MESSAGES_HIDDEN = ""
+        private set
     var LMM_TOP_TAB_LABEL_LIKES_N = ""
         private set
     var LMM_TOP_TAB_LABEL_MATCHES_N = ""
@@ -231,6 +239,10 @@ object AppRes {
             FILTER_BUTTON_APPLY = getString(R.string.button_filter)
             FILTER_BUTTON_SHOW_ALL = getString(R.string.button_show_all)
             LENGTH_CM = getString(R.string.value_cm)
+            LC_TITLE_LIKES = getString(R.string.feed_likes_you_title_count)
+            LC_TITLE_LIKES_HIDDEN = getString(R.string.feed_likes_you_title_count_hidden)
+            LC_TITLE_MESSAGES = getString(R.string.feed_messages_title_count)
+            LC_TITLE_MESSAGES_HIDDEN = getString(R.string.feed_messages_title_count_hidden)
             LMM_TOP_TAB_LABEL_LIKES_N = getString(R.string.lmm_tab_likes_n)
             LMM_TOP_TAB_LABEL_MATCHES_N = getString(R.string.lmm_tab_matches_n)
             LMM_TOP_TAB_LABEL_MESSAGES_N = getString(R.string.lmm_tab_messenger_n)
