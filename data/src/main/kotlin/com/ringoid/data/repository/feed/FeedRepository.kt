@@ -26,7 +26,6 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.data.repository.model.FilterEssence
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Filters
@@ -240,6 +239,17 @@ open class FeedRepository @Inject constructor(
             }
             .doFinally { trace.stop() }
     }
+
+    override fun getLcCounters(resolution: ImageResolution, limit: Int?, filter: Filters?, source: String?): Single<Lmm> =
+//        aObjPool.triggerSource()
+//            .flatMap { lastActionTime ->
+                spm.accessSingle {
+                    cloud.getLc(it.accessToken, resolution, limit, filter, source, aObjPool.lastActionTime())
+                        .filterOutDuplicateProfilesLmmResponse()
+                        .filterOutBlockedProfilesLmmResponse()
+                        .map { it.map() }
+                }
+//            }
 
     private fun getLcOnly(resolution: ImageResolution, limit: Int?, filter: Filters?,
                           source: String?, lastActionTime: Long,

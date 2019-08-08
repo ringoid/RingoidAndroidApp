@@ -56,6 +56,7 @@ interface IFeedRepository {
     fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm>
 
     fun getLc(resolution: ImageResolution, limit: Int?, filter: Filters?, source: String?): Single<Lmm>
+    fun getLcCounters(resolution: ImageResolution, limit: Int?, filter: Filters?, source: String?): Single<Lmm>
 
     /**
      * The following methods operate with cached Lmm, which could contain already blocked profiles.
