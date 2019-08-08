@@ -18,6 +18,7 @@ import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.DefaultFilters
@@ -175,11 +176,13 @@ abstract class BaseLcFeedViewModel(
     // ------------------------------------------
     internal fun onApplyFilters() {
         filters = filtersSource.getFilters()
+        FiltersInMemoryCache.isFiltersAppliedOnLc = true
         viewState.value = ViewState.DONE(REFRESH)
     }
 
     internal fun onShowAllWithoutFilters() {
         filters = DefaultFilters
+        FiltersInMemoryCache.isFiltersAppliedOnLc = false
         viewState.value = ViewState.DONE(REFRESH)
     }
 
@@ -193,6 +196,7 @@ abstract class BaseLcFeedViewModel(
 
     override fun onRefresh() {
         filters = DefaultFilters  // manual refresh acts as 'show all', but selected filters remain, though not applied
+        FiltersInMemoryCache.isFiltersAppliedOnLc = false
         super.onRefresh()
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
     }

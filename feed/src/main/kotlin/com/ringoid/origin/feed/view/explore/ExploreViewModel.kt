@@ -16,6 +16,7 @@ import com.ringoid.domain.interactor.feed.property.GetCachedLmmFeedItemIdsUseCas
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.DefaultFilters
@@ -153,6 +154,7 @@ class ExploreViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     internal fun onApplyFilters() {
         filters = filtersSource.getFilters()
+        FiltersInMemoryCache.isFiltersAppliedOnExplore = true
         viewState.value = ViewState.DONE(REFRESH)
     }
 
@@ -166,6 +168,7 @@ class ExploreViewModel @Inject constructor(
     // ------------------------------------------
     override fun onRefresh() {
         filters = DefaultFilters  // manual refresh acts as 'show all', but selected filters remain, though not applied
+        FiltersInMemoryCache.isFiltersAppliedOnExplore = false
         super.onRefresh()
         nextPage = 0
         debugGetNewFacesDropFlagsUseCase.source()
