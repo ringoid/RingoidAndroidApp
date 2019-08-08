@@ -389,7 +389,6 @@ open class FeedRepository @Inject constructor(
             lmm.matches.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
             lmm.messages.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
             Completable.fromCallable { messengerLocal.insertMessages(messages) }  // cache new messages
-                       .doOnComplete { Timber.v("Cached messages from Lmm: ${messages.joinToString { it.text }}") }
                        .toSingleDefault(lmm)
         }
 
