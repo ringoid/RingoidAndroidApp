@@ -233,14 +233,7 @@ open class FeedRepository @Inject constructor(
         return aObjPool
             .triggerSource()
             .doOnSubscribe { trace.start() }
-            .flatMap { lastActionTime ->
-                if (lmmInMemory != null && lmmInMemory!!.second >= lastActionTime) {
-                    DebugLogUtil.i("Use LC that has been filtered recently from the memory cache")
-                    Single.just(lmmInMemory!!.first)  // use lmm in memory being recently filtered
-                } else {
-                    getLcOnly(resolution, limit, filter, source, lastActionTime, extraTraces = listOf(trace))
-                }
-            }
+            .flatMap { getLcOnly(resolution, limit, filter, source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
                 SentryUtil.capture(it, message = "Fallback to get cached LC", level = Event.Level.WARNING)
@@ -264,20 +257,25 @@ open class FeedRepository @Inject constructor(
     private fun getLcOnly(resolution: ImageResolution, limit: Int?, filter: Filters?,
                           source: String?, lastActionTime: Long,
                           extraTraces: Collection<Trace> = emptyList()): Single<Lmm> =
-        spm.accessSingle {
-            cloud.getLc(it.accessToken, resolution, limit, filter, source, lastActionTime)
-                .handleError(tag = "getLc($resolution,lat=$lastActionTime", traceTag = "feeds/get_lc", extraTraces = extraTraces)
-                .dropLmmResponseStatsOnSubscribe()
-                .filterOutDuplicateProfilesLmmResponse()
-                .filterOutBlockedProfilesLmmResponse()
-                .map { it.map() }
-                .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
-                .checkForNewLikes()
-                .checkForNewMessages()
-                .cacheLmm()  // cache new Lmm data fetched from the Server
-                .cacheMessagesFromLmm()
-                .doOnSuccess { lmm -> lmmLoadFinish.onNext(lmm.totalCount()) }
+        if (lmmInMemory != null && lmmInMemory!!.second >= lastActionTime) {
+            DebugLogUtil.i("Use LC that has been filtered recently from the memory cache")
+            Single.just(lmmInMemory!!.first)  // use lmm in memory being recently filtered
+        } else {
+            spm.accessSingle {
+                cloud.getLc(it.accessToken, resolution, limit, filter, source, lastActionTime)
+                     .handleError(tag = "getLc($resolution,lat=$lastActionTime", traceTag = "feeds/get_lc", extraTraces = extraTraces)
+                     .filterOutDuplicateProfilesLmmResponse()
+                     .filterOutBlockedProfilesLmmResponse()
+                     .map { it.map() }
+            }
         }
+        .dropLmmStatsOnSubscribe()
+        .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
+        .checkForNewLikes()
+        .checkForNewMessages()
+        .cacheLmm()  // cache new Lmm data fetched from the Server
+        .cacheMessagesFromLmm()
+        .doOnSuccess { lmm -> lmmLoadFinish.onNext(lmm.totalCount()) }
 
     private fun getCachedLc(): Single<Lmm> =
         getCachedLcOnly()
