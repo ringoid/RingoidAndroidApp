@@ -66,13 +66,13 @@
     <string name="feed_likes_you_empty_no_data">Лайков ещё нет</string>
     <string name="feed_likes_you_title">Ты нравишься</string>
     <string name="feed_likes_you_title_count">%d лайков</string>
-    <string name="feed_likes_you_title_count_hidden">%$1d лайков (%$2d спрятано)</string>
+    <string name="feed_likes_you_title_count_hidden">%1$d лайков (%2$d спрятано)</string>
     <string name="feed_matches_empty_no_data">Взаимных лайков ещё нет</string>
     <string name="feed_matches_title">Взаимно</string>
     <string name="feed_messages_empty_no_data">Сообщений ещё нет</string>
     <string name="feed_messages_title">Чаты</string>
     <string name="feed_messages_title_count">%d чатов</string>
-    <string name="feed_messages_title_count_hidden">%$1d чатов (%$2d спрятано)</string>
+    <string name="feed_messages_title_count_hidden">%1$d чатов (%2$d спрятано)</string>
 
     <!-- Image Preview screen -->
 
