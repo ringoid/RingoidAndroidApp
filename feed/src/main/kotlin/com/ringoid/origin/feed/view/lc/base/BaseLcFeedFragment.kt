@@ -8,6 +8,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
+import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
@@ -29,6 +30,11 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is LC_FEED_COUNTS ->
+                        (newState.residual as LC_FEED_COUNTS).let {
+                            setCountOfFilteredFeedItems(count = it.show)
+                            setTotalNotFilteredFeedItems(count = it.show + it.hidden)
+                        }
                     is NO_IMAGES_IN_PROFILE -> vm.onNoImagesInProfile()
                     /**
                      * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
