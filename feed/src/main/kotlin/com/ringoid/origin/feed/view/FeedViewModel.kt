@@ -57,10 +57,7 @@ abstract class FeedViewModel(
         viewState.value
             .takeIf { it is ViewState.CLEAR }
             ?.let { it as ViewState.CLEAR }
-            ?.takeIf {
-                it.mode == ViewState.CLEAR.MODE_EMPTY_DATA ||
-                it.mode == ViewState.CLEAR.MODE_CHANGE_FILTERS
-            }
+            ?.takeIf { it.mode == ViewState.CLEAR.MODE_EMPTY_DATA }
             ?.let { viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_NEED_REFRESH) }
     }
 
