@@ -169,7 +169,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     val empty = imagesAdapter.isEmpty()
                     showEmptyStub(needShow = empty)
                     showDotTabs(isVisible = true)
-                    vm.onDeleteImage(empty = empty)
                 }
                 itemClickListener = { _, _ -> navigate(this@UserProfileFragment, path = "/settings_profile") }
             }

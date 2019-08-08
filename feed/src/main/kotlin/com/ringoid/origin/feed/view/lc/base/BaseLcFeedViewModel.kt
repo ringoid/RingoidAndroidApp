@@ -279,16 +279,6 @@ abstract class BaseLcFeedViewModel(
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnLc(event: BusEvent.RefreshOnLc) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        // refresh on some of LC screens leads another LC screen to refresh as well
-        if (LcNavTab.from(event.lcSourceFeed) != getSourceFeed()) {
-            refresh()
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")

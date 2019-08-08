@@ -40,7 +40,6 @@ sealed class BusEvent {
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
 
     object RefreshOnExplore : BusEvent()
-    data class RefreshOnLc(val lcSourceFeed: String) : BusEvent()
     @Deprecated("LMM -> LC")
     data class RefreshOnLmm(val lmmSourceFeed: String) : BusEvent()
     object RefreshOnProfile : BusEvent()
@@ -49,6 +48,5 @@ sealed class BusEvent {
     data class PushNewMatch(val peerId: String) : BusEvent()
     data class PushNewMessage(val peerId: String) : BusEvent()
 
-    object NoImagesOnProfile : BusEvent()
     data class TransferProfile(val profileId: String, val payload: Bundle)
 }
