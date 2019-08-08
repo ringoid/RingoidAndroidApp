@@ -12,6 +12,7 @@ import com.ringoid.origin.view.filters.BaseFiltersViewModel
 import com.ringoid.origin.view.filters.LC_COUNTS
 import com.ringoid.utility.inputDebounce
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
 abstract class LcFeedFiltersViewModel(
@@ -22,7 +23,13 @@ abstract class LcFeedFiltersViewModel(
     abstract fun getFeedName(): String
 
     init {
-        filtersChanged
+        // update filters' counts on change LC to reflect any changes, such as blocked or transferred profiles
+        getLcUseCountersCase.repository.lmmLoadFinish
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ filtersChanged.onNext(true) }, Timber::e)
+
+        filtersChanged  // performs on main thread
             .compose(inputDebounce())
             .map {
                 DebugLogUtil.d("Filters changed on [${getFeedName()}]")
