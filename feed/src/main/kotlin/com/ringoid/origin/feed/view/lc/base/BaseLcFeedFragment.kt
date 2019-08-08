@@ -11,6 +11,7 @@ import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
 import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.clickDebounce
@@ -61,12 +62,19 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
 
     override fun onDiscardProfileState(profileId: String): FeedItemVO? =
         super.onDiscardProfileState(profileId)?.also { _ ->
+            requestFiltersForUpdateOnChangeLcFeed()
             setToolbarTitleWithLcCounts(--lcCountShow, lcCountHidden)
         }
 
     protected open fun setToolbarTitleWithLcCounts(show: Int, hidden: Int) {
         lcCountShow = show
         lcCountHidden = hidden
+    }
+
+    protected fun requestFiltersForUpdateOnChangeLcFeed() {
+        childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
+            ?.let { it as? BaseFiltersFragment<*> }
+            ?.requestFiltersForUpdate()
     }
 
     /* Lifecycle */

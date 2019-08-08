@@ -89,7 +89,10 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                         (newState.residual as LC_FEED_COUNTS).let {
                             setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
                         }
-                    is ON_TRANSFER_PROFILE_COMPLETE -> setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
+                    is ON_TRANSFER_PROFILE_COMPLETE -> {
+                        requestFiltersForUpdateOnChangeLcFeed()
+                        setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
+                    }
                     is PUSH_NEW_MESSAGES -> {
                         val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
 

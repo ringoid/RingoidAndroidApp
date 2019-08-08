@@ -36,17 +36,21 @@ open class BaseFiltersViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
+    fun requestFiltersForUpdate() {
+        filtersChanged.onNext(true)
+    }
+
     fun setMinMaxAge(minAge: Int, maxAge: Int) {
         filtersSource.getFilters().let {
             filtersSource.setFilters(Filters(minAge = minAge, maxAge = maxAge, maxDistance = it.maxDistance))
         }
-        filtersChanged.onNext(true)
+        requestFiltersForUpdate()
     }
 
     fun setDistance(distance: Int) {
         filtersSource.getFilters().let {
             filtersSource.setFilters(Filters(minAge = it.minAge, maxAge = it.maxAge, maxDistance = distance))
         }
-        filtersChanged.onNext(true)
+        requestFiltersForUpdate()
     }
 }

@@ -67,6 +67,10 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
     }
 
     // --------------------------------------------------------------------------------------------
+    fun requestFiltersForUpdate() {
+        vm.requestFiltersForUpdate()
+    }
+
     private fun displayFilters(filters: Filters) {
         val minAgeThumbValue = (filters.minAge - DomainUtil.FILTER_MIN_AGE) / STEP_AGE
         val maxAgeThumbValue = (filters.maxAge - DomainUtil.FILTER_MIN_AGE) / STEP_AGE
