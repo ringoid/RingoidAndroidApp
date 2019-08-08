@@ -13,8 +13,9 @@ import com.ringoid.utility.inputDebounce
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 
-abstract class LcFeedFiltersViewModel(private val getLcUseCountersCase: GetLcCountersUseCase,
-                                      filtersSource: IFiltersSource, app: Application)
+abstract class LcFeedFiltersViewModel(
+    private val getLcUseCountersCase: GetLcCountersUseCase,
+    filtersSource: IFiltersSource, app: Application)
     : BaseFiltersViewModel(filtersSource, app) {
 
     abstract fun getFeedName(): String
