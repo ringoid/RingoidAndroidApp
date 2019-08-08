@@ -15,7 +15,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/feed_toolbar_height"
+        android:layout_height="@dimen/std_toolbar_height"
         android:background="?refColorBgSemi">
 
         <androidx.appcompat.widget.Toolbar

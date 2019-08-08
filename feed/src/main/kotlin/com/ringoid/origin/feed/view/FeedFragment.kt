@@ -401,6 +401,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
 
     // ------------------------------------------
+    private fun isToolbarVisible(): Boolean = appbar.height - appbar.bottom <= 0
+
     private fun showFiltersPopup(isVisible: Boolean) {
         TopSheetBehavior.from(ll_top_sheet).state = if (isVisible) TopSheetBehavior.STATE_EXPANDED
                                                     else TopSheetBehavior.STATE_HIDDEN
@@ -455,7 +457,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 rv.linearLayoutManager()?.let {
                     val from = it.findFirstVisibleItemPosition()
                     val to = it.findLastVisibleItemPosition()
-                    for (i in from..to) processItemView(i, it.findViewByPosition(i))
+                    val top = getTopBorderForOffsetScroll()
+                    val bottom = getBottomBorderForOffsetScroll() - (if (dy < 0) AppRes.FEED_TOOLBAR_HEIGHT else 0)
+                    for (i in from..to) {
+                        processItemView(i, it.findViewByPosition(i), top, bottom)
+                    }
                 }
             }
 
@@ -573,10 +579,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     protected open fun getTopBorderForOffsetScroll(): Int = -2000000000  // no top border by default
 
     // helper method
-    private fun processItemView(position: Int, view: View?) {
-        view?.let {
-            processItemViewControlVisibility(position, view, getTopBorderForOffsetScroll(), getBottomBorderForOffsetScroll())
-        }
+    private fun processItemView(position: Int, view: View?, top: Int, bottom: Int) {
+        view?.let { processItemViewControlVisibility(position, view, top, bottom) }
     }
 
     /**
@@ -590,7 +594,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
          */
         offsetScrollStrats.forEach { it.forgetPosition(position) }
         // apply strategies on item at position, regardless of whether that position has been affected before
-        rv_items.linearLayoutManager()?.let { processItemView(position, it.findViewByPosition(position)) }
+        rv_items.linearLayoutManager()?.let {
+            val top = getTopBorderForOffsetScroll()
+            val bottom = getBottomBorderForOffsetScroll() - (if (isToolbarVisible()) AppRes.FEED_TOOLBAR_HEIGHT else 0)
+            processItemView(position, it.findViewByPosition(position), top, bottom)
+        }
     }
 
     // ------------------------------------------

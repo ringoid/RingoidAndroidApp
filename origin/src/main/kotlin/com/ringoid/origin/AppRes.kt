@@ -87,6 +87,8 @@ object AppRes {
         private set
     var FEED_ITEM_TABS_INDICATOR_TOP2: Int = -1
         private set
+    var FEED_TOOLBAR_HEIGHT: Int = -1
+        private set
     var LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT: Int = -1
         private set
     var MAIN_BOTTOM_BAR_HEIGHT: Int = -1
@@ -212,6 +214,7 @@ object AppRes {
             FEED_ITEM_TABS_INDICATOR_TOP2 = FEED_IMAGE_HEIGHT - STD_MARGIN_32
             FEED_ITEM_TABS_INDICATOR_BOTTOM = (FEED_ITEM_TABS_INDICATOR_TOP * 1.5f).toInt()
             FEED_ITEM_TABS_INDICATOR_BOTTOM2 = FEED_IMAGE_HEIGHT - STD_MARGIN_16
+            FEED_TOOLBAR_HEIGHT = getDimensionPixelSize(R.dimen.std_toolbar_height)
             LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT = (BUTTON_HEIGHT_NARROW * 0.67f).toInt()
             MAIN_BOTTOM_BAR_HEIGHT = getDimensionPixelSize(R.dimen.main_bottom_bar_height)
             MAIN_BOTTOM_BAR_HEIGHT_HALF = getDimensionPixelSize(R.dimen.main_bottom_bar_height_half)

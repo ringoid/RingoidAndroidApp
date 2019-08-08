@@ -36,6 +36,7 @@
     <dimen name="std_text_22">17sp</dimen>
     <dimen name="std_text_30">23sp</dimen>
     <dimen name="std_text_36">28sp</dimen>
+    <dimen name="std_toolbar_height">47dp</dimen>
 
     <!-- Widget -->
     <dimen name="icon_item_view_height">47dp</dimen>
