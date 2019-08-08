@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lc.base
 import android.app.Application
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.GetLcCountersUseCase
 import com.ringoid.domain.memory.IFiltersSource
@@ -24,6 +25,7 @@ abstract class LcFeedFiltersViewModel(
         filtersChanged
             .compose(inputDebounce())
             .map {
+                DebugLogUtil.d("Filters changed on [${getFeedName()}]")
                 Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                         .put("limit", DomainUtil.LIMIT_PER_PAGE)
                         .put("source", getFeedName())
