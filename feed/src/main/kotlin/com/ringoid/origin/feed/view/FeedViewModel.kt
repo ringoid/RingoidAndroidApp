@@ -176,9 +176,13 @@ abstract class FeedViewModel(
         viewState.value = ViewState.DONE(REFRESH)
     }
 
-    open fun onApplyFilters() {
+    protected fun refreshWithFilters() {
         filters = filtersSource.getFilters()
         refresh()
+    }
+
+    open fun onApplyFilters() {
+        refreshWithFilters()
     }
 
     /* Event Bus */
@@ -188,7 +192,7 @@ abstract class FeedViewModel(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (getFeedName() == event.destinationFeed) {
-            refresh()
+            refreshWithFilters()
         }
     }
 
