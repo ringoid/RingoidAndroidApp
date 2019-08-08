@@ -18,7 +18,9 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
+import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.Feed
+import com.ringoid.domain.model.feed.Filters
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedViewModel
@@ -55,6 +57,8 @@ class ExploreViewModel @Inject constructor(
         filtersSource, userInMemoryCache, app), IListScrollCallback {
 
     val feed by lazy { MutableLiveData<Feed>() }
+
+    private var filters: Filters = DefaultFilters
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
 
@@ -124,7 +128,7 @@ class ExploreViewModel @Inject constructor(
     private fun prepareFeedParams(): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
-                .put(filtersSource.getFilters())
+                .put(filters)
 
     @DebugOnly
     private fun prepareDebugFeedParams(): Params = Params().put("page", nextPage++)
@@ -148,6 +152,7 @@ class ExploreViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     internal fun onApplyFilters() {
+        filters = filtersSource.getFilters()
         viewState.value = ViewState.DONE(REFRESH)
     }
 
@@ -160,6 +165,7 @@ class ExploreViewModel @Inject constructor(
 
     // ------------------------------------------
     override fun onRefresh() {
+        filters = DefaultFilters  // manual refresh acts as 'show all', but selected filters remain, though not applied
         super.onRefresh()
         nextPage = 0
         debugGetNewFacesDropFlagsUseCase.source()

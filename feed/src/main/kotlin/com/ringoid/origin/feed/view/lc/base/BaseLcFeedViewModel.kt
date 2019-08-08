@@ -192,6 +192,7 @@ abstract class BaseLcFeedViewModel(
     }
 
     override fun onRefresh() {
+        filters = DefaultFilters  // manual refresh acts as 'show all', but selected filters remain, though not applied
         super.onRefresh()
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
     }
