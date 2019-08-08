@@ -43,5 +43,7 @@ sealed class BusEvent {
     data class PushNewMatch(val peerId: String) : BusEvent()
     data class PushNewMessage(val peerId: String) : BusEvent()
 
+    data class RefreshFeed(val destinationFeed: String) : BusEvent()
+
     data class TransferProfile(val profileId: String, val payload: Bundle)
 }

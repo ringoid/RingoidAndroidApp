@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
@@ -21,11 +22,9 @@ import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.Feed
-import com.ringoid.domain.model.feed.Filters
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
@@ -59,7 +58,6 @@ class ExploreViewModel @Inject constructor(
 
     val feed by lazy { MutableLiveData<Feed>() }
 
-    private var filters: Filters = DefaultFilters
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
 
@@ -152,10 +150,9 @@ class ExploreViewModel @Inject constructor(
                 .put("failPage", failPage)
 
     // --------------------------------------------------------------------------------------------
-    internal fun onApplyFilters() {
-        filters = filtersSource.getFilters()
+    override fun onApplyFilters() {
         FiltersInMemoryCache.isFiltersAppliedOnExplore = true
-        viewState.value = ViewState.DONE(REFRESH)
+        super.onApplyFilters()
     }
 
     // ------------------------------------------
@@ -167,6 +164,10 @@ class ExploreViewModel @Inject constructor(
 
     // ------------------------------------------
     override fun onRefresh() {
+        if (FiltersInMemoryCache.isFiltersAppliedOnExplore) {
+            // refresh LC feeds with filters as well
+            Bus.post(BusEvent.RefreshFeed(destinationFeed = DomainUtil.SOURCE_FEED_LIKES))
+        }
         filters = DefaultFilters  // manual refresh acts as 'show all', but selected filters remain, though not applied
         FiltersInMemoryCache.isFiltersAppliedOnExplore = false
         super.onRefresh()

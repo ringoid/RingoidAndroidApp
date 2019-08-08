@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.lc.base
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -23,7 +24,6 @@ import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
@@ -64,7 +64,6 @@ abstract class BaseLcFeedViewModel(
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
-    private var filters: Filters = DefaultFilters
 
     private val discardedFeedItemIds = mutableSetOf<String>()
     private val notSeenFeedItemIds = Collections.newSetFromMap<String>(ConcurrentHashMap())
@@ -123,10 +122,6 @@ abstract class BaseLcFeedViewModel(
             .subscribe({}, Timber::e)
     }
 
-    private fun refresh() {
-        viewState.value = ViewState.DONE(REFRESH)
-    }
-
     private fun prependProfileOnTransfer(profileId: String, destinationFeed: LcNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {
         // update 'sourceFeed' for feed item (given by 'profileId') in cache to reflect changes locally
         transferFeedItemUseCase.source(Params().put("profileId", profileId).put("destinationFeed", destinationFeed.feedName))
@@ -174,10 +169,9 @@ abstract class BaseLcFeedViewModel(
     }
 
     // ------------------------------------------
-    internal fun onApplyFilters() {
-        filters = filtersSource.getFilters()
+    override fun onApplyFilters() {
         FiltersInMemoryCache.isFiltersAppliedOnLc = true
-        viewState.value = ViewState.DONE(REFRESH)
+        super.onApplyFilters()
     }
 
     internal fun onShowAllWithoutFilters() {
@@ -195,6 +189,10 @@ abstract class BaseLcFeedViewModel(
     }
 
     override fun onRefresh() {
+        if (FiltersInMemoryCache.isFiltersAppliedOnLc) {
+            // refresh Explore feed with filters as well
+            Bus.post(BusEvent.RefreshFeed(destinationFeed = DomainUtil.SOURCE_FEED_EXPLORE))
+        }
         filters = DefaultFilters  // manual refresh acts as 'show all', but selected filters remain, though not applied
         FiltersInMemoryCache.isFiltersAppliedOnLc = false
         super.onRefresh()
