@@ -61,13 +61,12 @@
     <string name="report_profile_button_6">Harassment or threats, Abuse</string>
     <string name="report_profile_dialog_description">Report reason: %s.</string>
 
-    <string name="feed_explore_empty_title">Discover</string>
-    <string name="feed_footer_item_label">No more new</string>
-
-    <string name="feed_empty_no_data_filters">Никого рядом нет\nРасширь фильтры</string>
     <string name="feed_explore_dialog_no_user_photo_description">Add photo to send likes</string>
     <string name="feed_explore_empty_no_data">No one new around</string>
+    <string name="feed_explore_empty_title">Discover</string>
     <string name="feed_explore_title">Discover</string>
+    <string name="feed_empty_no_data_filters">Никого рядом нет\nРасширь фильтры</string>
+    <string name="feed_footer_item_label">No more new</string>
     <string name="feed_lmm_dialog_no_user_photo_description">Add photo to receive likes</string>
     <string name="feed_likes_you_empty_no_data">No likes yet</string>
     <string name="feed_likes_you_title">Likes You</string>
