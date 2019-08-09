@@ -18,11 +18,11 @@ class GetLcCountersUseCase @Inject constructor(val repository: IFeedRepository,
 
     override fun sourceImpl(params: Params): Single<Lmm> {
         val limit = params.get<Int>("limit")
-        val filter = params.get(Filters::class.java)
+        val filters = params.get(Filters::class.java)
         val source = params.get<String>("source")
 
         return params.processSingle(ImageResolution::class.java) {
-            repository.getLcCounters(it, limit, filter, source)
+            repository.getLcCounters(it, limit, filters, source)
         }
     }
 }

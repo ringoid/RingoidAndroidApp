@@ -18,10 +18,10 @@ class GetDiscoverUseCase @Inject constructor(val repository: IFeedRepository,
 
     override fun sourceImpl(params: Params): Single<Feed> {
         val limit = params.get<Int>("limit")
-        val filter = params.get(Filters::class.java)
+        val filters = params.get(Filters::class.java)
 
         return params.processSingle(ImageResolution::class.java) {
-            repository.getDiscover(resolution = it, limit = limit, filter = filter)
+            repository.getDiscover(resolution = it, limit = limit, filters = filters)
         }
     }
 }

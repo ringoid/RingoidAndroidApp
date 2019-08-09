@@ -45,7 +45,7 @@ interface IFeedRepository {
     val newMatchesCount: PublishSubject<Int>  // for particle animation
     val newMessagesCount: PublishSubject<Int>  // for particle animation
 
-    fun getDiscover(resolution: ImageResolution, limit: Int?, filter: Filters?): Single<Feed>
+    fun getDiscover(resolution: ImageResolution, limit: Int?, filters: Filters?): Single<Feed>
 
     @Deprecated("LMM -> LC")
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
@@ -53,8 +53,8 @@ interface IFeedRepository {
     @Deprecated("LMM -> LC")
     fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm>
 
-    fun getLc(resolution: ImageResolution, limit: Int?, filter: Filters?, source: String?): Single<Lmm>
-    fun getLcCounters(resolution: ImageResolution, limit: Int?, filter: Filters?, source: String?): Single<Lmm>
+    fun getLc(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm>
+    fun getLcCounters(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm>
 
     /**
      * The following methods operate with cached Lmm, which could contain already blocked profiles.

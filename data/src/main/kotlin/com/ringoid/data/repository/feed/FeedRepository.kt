@@ -113,19 +113,19 @@ open class FeedRepository @Inject constructor(
 
     /* Discover (former New Faces) */
     // ------------------------------------------
-    override fun getDiscover(resolution: ImageResolution, limit: Int?, filter: Filters?): Single<Feed> {
+    override fun getDiscover(resolution: ImageResolution, limit: Int?, filters: Filters?): Single<Feed> {
         val trace = FirebasePerformance.getInstance().newTrace("refresh_discover")
         return aObjPool
             .triggerSource()
             .doOnSubscribe { trace.start() }
-            .flatMap { getDiscoverOnly(resolution, limit, filter, lastActionTime = it) }
+            .flatMap { getDiscoverOnly(resolution, limit, filters, lastActionTime = it) }
             .doFinally { trace.stop() }
     }
 
-    private fun getDiscoverOnly(resolution: ImageResolution, limit: Int?, filter: Filters?,
+    private fun getDiscoverOnly(resolution: ImageResolution, limit: Int?, filters: Filters?,
                                 lastActionTime: Long, extraTraces: Collection<Trace> = emptyList()): Single<Feed> =
         spm.accessSingle {
-            cloud.getDiscover(it.accessToken, resolution, limit, filter, lastActionTime)
+            cloud.getDiscover(it.accessToken, resolution, limit, filters, lastActionTime)
                 .handleError(tag = "getDiscover($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/discover", extraTraces = extraTraces)
                 .doOnSuccess { if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for Discover") }
                 .filterOutDuplicateProfilesFeed()
@@ -226,12 +226,12 @@ open class FeedRepository @Inject constructor(
 
     /* LC (replacing LMM) */
     // ------------------------------------------
-    override fun getLc(resolution: ImageResolution, limit: Int?, filter: Filters?, source: String?): Single<Lmm> {
+    override fun getLc(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm> {
         val trace = FirebasePerformance.getInstance().newTrace("refresh_lc")
         return aObjPool
             .triggerSource()
             .doOnSubscribe { trace.start() }
-            .flatMap { getLcOnly(resolution, limit, filter, source, lastActionTime = it, extraTraces = listOf(trace)) }
+            .flatMap { getLcOnly(resolution, limit, filters, source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
                 SentryUtil.capture(it, message = "Fallback to get cached LC", level = Event.Level.WARNING)
@@ -240,11 +240,11 @@ open class FeedRepository @Inject constructor(
             .doFinally { trace.stop() }
     }
 
-    override fun getLcCounters(resolution: ImageResolution, limit: Int?, filter: Filters?, source: String?): Single<Lmm> =
+    override fun getLcCounters(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm> =
 //        aObjPool.triggerSource()
 //            .flatMap { lastActionTime ->
                 spm.accessSingle {
-                    cloud.getLc(it.accessToken, resolution, limit, filter, source, aObjPool.lastActionTime())
+                    cloud.getLc(it.accessToken, resolution, limit, filters, source, aObjPool.lastActionTime())
                         .filterOutDuplicateProfilesLmmResponse()
                         .filterOutBlockedProfilesLmmResponse()
                         .map { it.map() }
@@ -252,7 +252,7 @@ open class FeedRepository @Inject constructor(
                 }
 //            }
 
-    private fun getLcOnly(resolution: ImageResolution, limit: Int?, filter: Filters?,
+    private fun getLcOnly(resolution: ImageResolution, limit: Int?, filters: Filters?,
                           source: String?, lastActionTime: Long,
                           extraTraces: Collection<Trace> = emptyList()): Single<Lmm> =
         if (lmmInMemory != null && lmmInMemory!!.lastActionTime >= lastActionTime &&
@@ -261,7 +261,7 @@ open class FeedRepository @Inject constructor(
             Single.just(lmmInMemory!!.lmm)  // use LC in memory being recently filtered
         } else {
             spm.accessSingle {
-                cloud.getLc(it.accessToken, resolution, limit, filter, source, lastActionTime)
+                cloud.getLc(it.accessToken, resolution, limit, filters, source, lastActionTime)
                      .handleError(tag = "getLc($resolution,lat=$lastActionTime", traceTag = "feeds/get_lc", extraTraces = extraTraces)
                      .filterOutDuplicateProfilesLmmResponse()
                      .filterOutBlockedProfilesLmmResponse()
