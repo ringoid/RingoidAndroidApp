@@ -227,7 +227,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     // --------------------------------------------------------------------------------------------
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
-        showFiltersPopup(isVisible = true)  // switch back on any Feed should show filters popup, if was hide
+        showToolbar()  // switch back on any Feed should show toolbar, if was hide
     }
 
     /* Lifecycle */
@@ -410,6 +410,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     // ------------------------------------------
     private fun isToolbarVisible(): Boolean = appbar.height - appbar.bottom <= 0
+
+    private fun showToolbar() {
+        appbar?.setExpanded(true)
+    }
 
     private fun showFiltersPopup(isVisible: Boolean) {
         ll_top_sheet?.let {
