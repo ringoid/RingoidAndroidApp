@@ -14,7 +14,7 @@ import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
-import com.ringoid.data.local.shared_prefs.SharedPrefsManager
+import com.ringoid.data.local.shared_prefs.FeedSharedPrefs
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
@@ -46,6 +46,7 @@ open class FeedRepository @Inject constructor(
     private val local: FeedDao,
     private val imagesLocal: ImageDao,
     private val messengerLocal: MessageDao,
+    private val feedSharedPrefs: FeedSharedPrefs,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
     @PerBlock private val blockedProfilesCache: UserFeedDao,
     @PerLmmLikes private val newLikesProfilesCache: UserFeedDao,
@@ -289,8 +290,8 @@ open class FeedRepository @Inject constructor(
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES).map { it.mapList() },
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES).map { it.mapList() },
             BiFunction { likes, messages ->
-                val totalNotFilteredLikes = (spm as? SharedPrefsManager)?.getTotalNotFilteredLikes() ?: DomainUtil.BAD_VALUE
-                val totalNotFilteredMessages = (spm as? SharedPrefsManager)?.getTotalNotFilteredMessages() ?: DomainUtil.BAD_VALUE
+                val totalNotFilteredLikes = feedSharedPrefs.getTotalNotFilteredLikes()
+                val totalNotFilteredMessages = feedSharedPrefs.getTotalNotFilteredMessages()
                 Lmm(likes = likes, matches = emptyList(), messages = messages,
                     totalNotFilteredLikes = totalNotFilteredLikes,
                     totalNotFilteredMessages = totalNotFilteredMessages)
@@ -405,10 +406,8 @@ open class FeedRepository @Inject constructor(
             Single.fromCallable { local.deleteFeedItems() }  // clear old cache before inserting new data
                 .flatMap { Single.fromCallable { imagesLocal.deleteImages() } }
                 .doOnSuccess {
-                    (spm as? SharedPrefsManager)?.let {
-                        it.setTotalNotFilteredLikes(lmm.totalNotFilteredLikes)
-                        it.setTotalNotFilteredMessages(lmm.totalNotFilteredMessages)
-                    }
+                    feedSharedPrefs.setTotalNotFilteredLikes(lmm.totalNotFilteredLikes)
+                    feedSharedPrefs.setTotalNotFilteredMessages(lmm.totalNotFilteredMessages)
                 }
                 .flatMap {
                     val feedItems = mutableListOf<FeedItemDbo>()
