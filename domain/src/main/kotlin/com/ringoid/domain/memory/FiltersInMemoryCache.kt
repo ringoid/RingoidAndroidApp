@@ -6,9 +6,6 @@ import com.ringoid.domain.model.feed.Filters
 
 object FiltersInMemoryCache : IFiltersSource {
 
-    var isFiltersAppliedOnExplore: Boolean = false
-    var isFiltersAppliedOnLc: Boolean = false
-
     private var filters: Filters = DefaultFilters
 
     override fun hasFiltersApplied(): Boolean = filters != DefaultFilters

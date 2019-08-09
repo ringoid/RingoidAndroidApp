@@ -3,13 +3,9 @@ package com.ringoid.origin.feed.view.explore
 import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.eventbus.Bus
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.exception.ThresholdExceededException
-import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
@@ -88,16 +84,6 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     override fun onHiddenChanged(hidden: Boolean) {
         // don't call 'super', completely overridden method
-    }
-
-    override fun onRefreshGesture() {
-        if (FiltersInMemoryCache.isFiltersAppliedOnExplore) {
-            // refresh LC feeds with filters as well
-            Bus.post(BusEvent.RefreshFeed(destinationFeed = DomainUtil.SOURCE_FEED_LIKES))
-        }
-        vm.dropFilters()  // manual refresh acts as 'show all', but selected filters remain, though not applied
-        FiltersInMemoryCache.isFiltersAppliedOnExplore = false
-        super.onRefreshGesture()
     }
 
     // ------------------------------------------

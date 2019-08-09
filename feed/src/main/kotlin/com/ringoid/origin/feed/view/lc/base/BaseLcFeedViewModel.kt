@@ -18,10 +18,11 @@ import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
-import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
+import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.FeedItem
+import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
@@ -62,6 +63,7 @@ abstract class BaseLcFeedViewModel(
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
+    protected var filters: Filters = DefaultFilters
 
     private val discardedFeedItemIds = mutableSetOf<String>()
     private val notSeenFeedItemIds = Collections.newSetFromMap<String>(ConcurrentHashMap())
@@ -167,15 +169,18 @@ abstract class BaseLcFeedViewModel(
     }
 
     // ------------------------------------------
-    override fun onApplyFilters() {
-        FiltersInMemoryCache.isFiltersAppliedOnLc = true
-        super.onApplyFilters()
+    internal fun onApplyFilters() {
+        filters = filtersSource.getFilters()
+        refresh()  // apply filters and refresh
+    }
+
+    internal fun dropFilters() {
+        filters = DefaultFilters
     }
 
     internal fun onShowAllWithoutFilters() {
         dropFilters()
-        FiltersInMemoryCache.isFiltersAppliedOnLc = false
-        viewState.value = ViewState.DONE(REFRESH)
+        refresh()  // refresh without any filters
     }
 
     /**
@@ -262,6 +267,7 @@ abstract class BaseLcFeedViewModel(
     fun onEventAppFreshStart(event: BusEvent.AppFreshStart) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        dropFilters()
         refresh()
     }
 
@@ -270,6 +276,7 @@ abstract class BaseLcFeedViewModel(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application reopen [${getFeedName()}]")
+        dropFilters()
         refresh()  // app reopen leads LC screen to refresh as well
     }
 
@@ -279,6 +286,7 @@ abstract class BaseLcFeedViewModel(
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC [${getFeedName()}]")
+            dropFilters()
             refresh()  // app reopen leads LC screen to refresh as well
         }
     }

@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.view
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
@@ -14,7 +13,6 @@ import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -22,17 +20,13 @@ import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
 import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.domain.model.actions.ViewChatActionObject
-import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 
 abstract class FeedViewModel(
@@ -53,8 +47,6 @@ abstract class FeedViewModel(
 
     private val openChatTimers = mutableMapOf<Pair<String, String>, Long>()
     private var willRestart: Boolean = false
-
-    protected var filters: Filters = DefaultFilters
 
     abstract fun getFeed()
     abstract fun getFeedName(): String
@@ -174,30 +166,6 @@ abstract class FeedViewModel(
 
     protected fun refresh() {
         viewState.value = ViewState.DONE(REFRESH)
-    }
-
-    private fun refreshWithFilters() {
-        filters = filtersSource.getFilters()
-        refresh()
-    }
-
-    fun dropFilters() {
-        filters = DefaultFilters
-    }
-
-    open fun onApplyFilters() {
-        refreshWithFilters()
-    }
-
-    /* Event Bus */
-    // --------------------------------------------------------------------------------------------
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshFeed(event: BusEvent.RefreshFeed) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        if (getFeedName() == event.destinationFeed) {
-            refreshWithFilters()
-        }
     }
 
     /* Action Objects */

@@ -3,12 +3,8 @@ package com.ringoid.origin.feed.view.lc.base
 import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.eventbus.Bus
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
@@ -65,12 +61,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
     }
 
     override fun onRefreshGesture() {
-        if (FiltersInMemoryCache.isFiltersAppliedOnLc) {
-            // refresh Explore feed with filters as well
-            Bus.post(BusEvent.RefreshFeed(destinationFeed = DomainUtil.SOURCE_FEED_EXPLORE))
-        }
         vm.dropFilters()  // manual refresh acts as 'show all', but selected filters remain, though not applied
-        FiltersInMemoryCache.isFiltersAppliedOnLc = false
         super.onRefreshGesture()
     }
 

@@ -16,7 +16,6 @@ import com.ringoid.domain.interactor.feed.property.GetCachedLmmFeedItemIdsUseCas
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
-import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
@@ -122,10 +121,14 @@ class ExploreViewModel @Inject constructor(
     }
 
     // ------------------------------------------
+    internal fun onApplyFilters() {
+        refresh()  // just refresh, filters are always applied on Explore feed
+    }
+
     private fun prepareFeedParams(): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
-                .put(filters)
+                .put(filtersSource.getFilters())
 
     @DebugOnly
     private fun prepareDebugFeedParams(): Params = Params().put("page", nextPage++)
@@ -148,12 +151,6 @@ class ExploreViewModel @Inject constructor(
                 .put("failPage", failPage)
 
     // --------------------------------------------------------------------------------------------
-    override fun onApplyFilters() {
-        FiltersInMemoryCache.isFiltersAppliedOnExplore = true
-        super.onApplyFilters()
-    }
-
-    // ------------------------------------------
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
         // discard profile from feed after like
@@ -195,7 +192,7 @@ class ExploreViewModel @Inject constructor(
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        onRefresh()  // app reopen leads Explore screen to refresh as well
+        refresh()  // app reopen leads Explore screen to refresh as well
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -204,7 +201,7 @@ class ExploreViewModel @Inject constructor(
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Explore...")
-            onRefresh()  // app reopen leads Explore screen to refresh as well
+            refresh()  // app reopen leads Explore screen to refresh as well
         }
     }
 }
