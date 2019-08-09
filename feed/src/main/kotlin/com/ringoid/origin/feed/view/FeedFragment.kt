@@ -400,8 +400,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     private fun isToolbarVisible(): Boolean = appbar.height - appbar.bottom <= 0
 
     private fun showFiltersPopup(isVisible: Boolean) {
-        TopSheetBehavior.from(ll_top_sheet).state = if (isVisible) TopSheetBehavior.STATE_EXPANDED
-                                                    else TopSheetBehavior.STATE_HIDDEN
+        TopSheetBehavior.from(ll_top_sheet).state =
+            if (isVisible) {
+                childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
+                    ?.let { it as? BaseFiltersFragment<*> }
+                    ?.requestFiltersForUpdate()
+
+                TopSheetBehavior.STATE_EXPANDED
+            } else TopSheetBehavior.STATE_HIDDEN
     }
 
     protected fun showRefreshPopup(isVisible: Boolean) {
