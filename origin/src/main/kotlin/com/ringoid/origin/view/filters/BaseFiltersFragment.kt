@@ -9,6 +9,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
+import com.ringoid.utility.communicator
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
@@ -32,6 +33,7 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.filters, ::displayFilters)
+            observe(vm.oneShot) { communicator(IFiltersHost::class.java)?.onFiltersChange() }
         }
     }
 
