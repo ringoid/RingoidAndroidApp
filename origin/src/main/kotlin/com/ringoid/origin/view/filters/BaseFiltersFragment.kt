@@ -70,7 +70,9 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
 
     // --------------------------------------------------------------------------------------------
     fun requestFiltersForUpdate() {
-        vm.requestFiltersForUpdate()
+        if (isViewModelInitialized) {
+            vm.requestFiltersForUpdate()
+        }
     }
 
     private fun displayFilters(filters: Filters) {
