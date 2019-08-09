@@ -53,7 +53,7 @@ open class FeedRepository @Inject constructor(
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
-    private var lmmInMemory: Pair<Lmm, Long>? = null  // Lmm + it's lastActionTime
+    private var lmmInMemory: LcInMemory? = null  // Lmm + it's lastActionTime + corresponding filters
 
     // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.cacheNewFacesAsAlreadySeen(): Single<FeedResponse> =
@@ -248,16 +248,17 @@ open class FeedRepository @Inject constructor(
                         .filterOutDuplicateProfilesLmmResponse()
                         .filterOutBlockedProfilesLmmResponse()
                         .map { it.map() }
-                        .keepLmmInMemory()
+                        .keepLmmInMemory(filters)
                 }
 //            }
 
     private fun getLcOnly(resolution: ImageResolution, limit: Int?, filter: Filters?,
                           source: String?, lastActionTime: Long,
                           extraTraces: Collection<Trace> = emptyList()): Single<Lmm> =
-        if (lmmInMemory != null && lmmInMemory!!.second >= lastActionTime) {
+        if (lmmInMemory != null && lmmInMemory!!.lastActionTime >= lastActionTime &&
+            lmmInMemory!!.filters == filters) {  // use in-memory data only if all criteria fulfill
             DebugLogUtil.i("Use LC that has been filtered recently from the memory cache")
-            Single.just(lmmInMemory!!.first)  // use lmm in memory being recently filtered
+            Single.just(lmmInMemory!!.lmm)  // use LC in memory being recently filtered
         } else {
             spm.accessSingle {
                 cloud.getLc(it.accessToken, resolution, limit, filter, source, lastActionTime)
@@ -430,7 +431,8 @@ open class FeedRepository @Inject constructor(
                 .flatMap { Single.just(lmm) }
         }
 
-    private fun Single<Lmm>.keepLmmInMemory(): Single<Lmm> = doAfterSuccess { lmmInMemory = it to aObjPool.lastActionTime() }
+    private fun Single<Lmm>.keepLmmInMemory(filters: Filters?): Single<Lmm> =
+        doAfterSuccess { lmmInMemory = LcInMemory(it, aObjPool.lastActionTime(), filters) }
 
     // ------------------------------------------
     private fun Single<Lmm>.checkForNewFeedItems(): Single<Lmm> =
