@@ -336,12 +336,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
                         }
                         TopSheetBehavior.STATE_COLLAPSED,
+                        TopSheetBehavior.STATE_DRAGGING,
                         TopSheetBehavior.STATE_HIDDEN -> {
                             appbar.changeVisibility(isVisible = true)
                             overlay.changeVisibility(isVisible = false)
                             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
                         }
-                        else -> { /* no-op */ }
                     }
                 }
 
