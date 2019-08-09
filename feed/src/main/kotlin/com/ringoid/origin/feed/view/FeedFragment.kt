@@ -290,6 +290,18 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        fun onExpandFilters() {
+            appbar.changeVisibility(isVisible = false, soft = true)
+            overlay.changeVisibility(isVisible = true)
+            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
+        }
+
+        fun onHideFilters() {
+            appbar.changeVisibility(isVisible = true)
+            overlay.changeVisibility(isVisible = false)
+            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
+        }
+
         super.onViewCreated(view, savedInstanceState)
         with (rv_items) {
             adapter = feedAdapter
@@ -330,18 +342,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         TopSheetBehavior.STATE_SETTLING,
-                        TopSheetBehavior.STATE_EXPANDED -> {
-                            appbar.changeVisibility(isVisible = false, soft = true)
-                            overlay.changeVisibility(isVisible = true)
-                            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
-                        }
+                        TopSheetBehavior.STATE_EXPANDED -> onExpandFilters()
                         TopSheetBehavior.STATE_COLLAPSED,
                         TopSheetBehavior.STATE_DRAGGING,
-                        TopSheetBehavior.STATE_HIDDEN -> {
-                            appbar.changeVisibility(isVisible = true)
-                            overlay.changeVisibility(isVisible = false)
-                            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
-                        }
+                        TopSheetBehavior.STATE_HIDDEN -> onHideFilters()
                     }
                 }
 
