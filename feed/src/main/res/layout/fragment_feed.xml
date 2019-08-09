@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?refColorBgSemi"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|snap|enterAlways"
             app:titleTextColor="?refTextColorPrimary"/>
     </com.google.android.material.appbar.AppBarLayout>
 
