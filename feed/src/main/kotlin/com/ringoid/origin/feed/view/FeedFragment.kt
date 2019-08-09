@@ -227,7 +227,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     // --------------------------------------------------------------------------------------------
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
-        showToolbar()  // switch back on any Feed should show toolbar, if was hide
+        showToolbar(isVisible = true)  // switch back on any Feed should show toolbar, if was hide
     }
 
     /* Lifecycle */
@@ -237,7 +237,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedAdapter = createFeedAdapter().apply {
             onBeforeLikeListener = { vm.onBeforeLike() }
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
-            onScrollHorizontalListener = { showRefreshPopup(isVisible = false) }
+            onScrollHorizontalListener = {
+                showRefreshPopup(isVisible = false)
+                showToolbar(isVisible = false)
+            }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 vm.onSettingsClick(model.id)
                 val image = model.images[positionOfImage]
@@ -352,7 +355,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     override fun onStart() {
         super.onStart()
-        showToolbar()
+        showToolbar(isVisible = true)
     }
 
     override fun onResume() {
@@ -416,8 +419,15 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     // ------------------------------------------
     private fun isToolbarVisible(): Boolean = appbar.height - appbar.bottom <= 0
 
-    private fun showToolbar() {
-        appbar?.setExpanded(true)
+    private fun showToolbar(isVisible: Boolean) {
+        appbar?.let {
+            if (isToolbarVisible()) {
+                if (isVisible) return
+            } else {
+                if (!isVisible) return
+            }
+            it.setExpanded(isVisible)
+        }
     }
 
     private fun showFiltersPopup(isVisible: Boolean) {
