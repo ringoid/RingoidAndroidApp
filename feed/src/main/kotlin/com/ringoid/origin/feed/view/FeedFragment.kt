@@ -217,6 +217,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     }
 
     private fun onIdleState() {
+        fl_empty_container?.changeVisibility(isVisible = false)
         showLoading(isVisible = false)
     }
 
