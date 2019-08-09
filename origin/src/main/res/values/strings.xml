@@ -65,7 +65,7 @@
     <string name="feed_explore_empty_no_data">No one new around</string>
     <string name="feed_explore_empty_title">Discover</string>
     <string name="feed_explore_title">Discover</string>
-    <string name="feed_empty_no_data_filters">Никого рядом нет\nРасширь фильтры</string>
+    <string name="feed_empty_no_data_filters">No one around\nPlease expand filters</string>
     <string name="feed_footer_item_label">No more new</string>
     <string name="feed_lmm_dialog_no_user_photo_description">Add photo to receive likes</string>
     <string name="feed_likes_you_empty_no_data">No likes yet</string>
