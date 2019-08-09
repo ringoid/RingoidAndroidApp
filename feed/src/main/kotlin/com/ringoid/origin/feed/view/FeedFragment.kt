@@ -85,7 +85,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     }
                     is REFRESH -> {
                         onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
-                        showFiltersPopup(isVisible = false)
                         showLoading(isVisible = true)
                         onRefresh()
                     }
