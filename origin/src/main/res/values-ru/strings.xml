@@ -62,6 +62,7 @@
     <string name="feed_explore_title">Поиск</string>
     <string name="feed_empty_no_data_filters">Никого рядом нет\nРасширить фильтры</string>
     <string name="feed_footer_item_label">Новых больше нет</string>
+    <string name="feed_footer_item_label_explore">Expand filters</string>
     <string name="feed_lmm_dialog_no_user_photo_description">Добавь фото, чтобы получать лайки</string>
     <string name="feed_likes_you_empty_no_data">Лайков ещё нет</string>
     <string name="feed_likes_you_title">Ты нравишься</string>
