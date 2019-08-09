@@ -350,6 +350,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        showToolbar()
+    }
+
     override fun onResume() {
         super.onResume()
         feedTrackingBus.subscribe()
