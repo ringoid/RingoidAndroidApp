@@ -457,6 +457,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
     }
 
+    protected fun hideFiltersPopup() {
+        showFiltersPopup(isVisible = false)
+    }
+
     private fun showFiltersPopup(isVisible: Boolean) {
         ll_top_sheet?.let {
             val behavior = TopSheetBehavior.from(ll_top_sheet)

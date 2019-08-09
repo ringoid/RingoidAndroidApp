@@ -111,7 +111,13 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         super.onViewCreated(view, savedInstanceState)
         // refresh by click on 'tap to refresh' popup
         btn_refresh_popup.clicks().compose(clickDebounce()).subscribe { vm.onTapToRefreshClick() }
-        btn_show_all.clicks().compose(clickDebounce()).subscribe { vm.onShowAllWithoutFilters() }
-        btn_apply_filters.clicks().compose(clickDebounce()).subscribe { vm.onApplyFilters() }
+        btn_show_all.clicks().compose(clickDebounce()).subscribe {
+            hideFiltersPopup()
+            vm.onShowAllWithoutFilters()
+        }
+        btn_apply_filters.clicks().compose(clickDebounce()).subscribe {
+            hideFiltersPopup()
+            vm.onApplyFilters()
+        }
     }
 }

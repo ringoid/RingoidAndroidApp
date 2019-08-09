@@ -135,7 +135,10 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_show_all.changeVisibility(isVisible = false)
-        btn_apply_filters.clicks().compose(clickDebounce()).subscribe { vm.onApplyFilters() }
+        btn_apply_filters.clicks().compose(clickDebounce()).subscribe {
+            hideFiltersPopup()
+            vm.onApplyFilters()
+        }
     }
 
     /* Scroll listeners */
