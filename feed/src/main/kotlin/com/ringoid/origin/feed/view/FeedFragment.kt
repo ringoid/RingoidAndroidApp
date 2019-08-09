@@ -470,7 +470,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
                     TopSheetBehavior.STATE_EXPANDED
                 } else TopSheetBehavior.STATE_HIDDEN
-        }  // ignore if view hierarch hasn't been initialized yet
+        }  // ignore if view hierarchy hasn't been initialized yet
     }
 
     protected fun showRefreshPopup(isVisible: Boolean) {
