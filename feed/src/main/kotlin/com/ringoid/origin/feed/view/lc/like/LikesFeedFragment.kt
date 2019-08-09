@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lc.like
 
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
@@ -56,9 +57,11 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         when (mode) {
             ViewState.CLEAR.MODE_EMPTY_DATA -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_likes_you_empty_no_data)
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh)
-            ViewState.CLEAR.MODE_CHANGE_FILTERS -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_empty_no_data_filters,
-                                                                                 labelTextColorResId = context?.getAttributeColor(WidgetR_attrs.refTextColorPrimary) ?: WidgetR_color.primary_text,
-                                                                                 isLabelClickable = true)
+            ViewState.CLEAR.MODE_CHANGE_FILTERS ->
+                EmptyFragment.Companion.Input(
+                    emptyTextResId = OriginR_string.feed_empty_no_data_filters,
+                    labelTextColor = context?.getAttributeColor(WidgetR_attrs.refTextColorPrimary) ?: ContextCompat.getColor(context!!, WidgetR_color.primary_text),
+                    isLabelClickable = true)
             else -> null
         }
 
