@@ -224,6 +224,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             ?.let { it.isRefreshing = isVisible }
     }
 
+    // --------------------------------------------------------------------------------------------
+    override fun onTabTransaction(payload: String?) {
+        super.onTabTransaction(payload)
+        showFiltersPopup(isVisible = true)  // switch back on any Feed should show filters popup, if was hide
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
