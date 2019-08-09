@@ -36,6 +36,7 @@ sealed class BusEvent {
 
     object Stub : BusEvent()
     object AppFreshStart : BusEvent()
+    object RecreateMainScreen : BusEvent()
     object ReOpenApp: BusEvent()
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
 

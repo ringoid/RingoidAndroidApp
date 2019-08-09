@@ -267,6 +267,16 @@ abstract class BaseLcFeedViewModel(
     fun onEventAppFreshStart(event: BusEvent.AppFreshStart) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        DebugLogUtil.i("Get LC on Application fresh start [${getFeedName()}]")
+        dropFilters()
+        refresh()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRecreateMainScreen(event: BusEvent.RecreateMainScreen) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        DebugLogUtil.i("Get LC on Application recreate while running [${getFeedName()}]")
         dropFilters()
         refresh()
     }

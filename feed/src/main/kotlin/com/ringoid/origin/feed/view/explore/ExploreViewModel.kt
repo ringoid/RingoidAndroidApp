@@ -189,6 +189,13 @@ class ExploreViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventRecreateMainScreen(event: BusEvent.RecreateMainScreen) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        refresh()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
