@@ -8,6 +8,7 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.techisfun.android.topsheet.TopSheetBehavior
+import com.google.android.material.appbar.AppBarLayout
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
@@ -110,6 +111,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
         vm.onClearScreen()
+        removeToolbarScrollFlags()  // prevent toolbar from scrolling while in CLEAR state
         getEmptyStateInput(mode)?.let {
             showEmptyStub(input = it)
             showLoading(isVisible = false)
@@ -418,6 +420,27 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     // ------------------------------------------
     private fun isToolbarVisible(): Boolean = appbar.height - appbar.bottom <= 0
+
+    private fun removeToolbarScrollFlags() {
+        toolbar?.let { v ->
+            v.layoutParams = v.layoutParams
+                ?.let { it as? AppBarLayout.LayoutParams }
+                ?.let { lp -> lp.scrollFlags = 0; lp }
+        }
+    }
+
+    protected fun restoreToolbarScrollFlags() {
+        toolbar?.let { v ->
+            v.layoutParams = v.layoutParams
+                ?.let { it as? AppBarLayout.LayoutParams }
+                ?.let { lp ->
+                    lp.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                                     AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or
+                                     AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+                    lp
+                }
+        }
+    }
 
     private fun showToolbar(isVisible: Boolean) {
         appbar?.let {

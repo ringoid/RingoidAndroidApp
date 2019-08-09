@@ -95,6 +95,9 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.feed) {
+                if (it.isNotEmpty()) {
+                    restoreToolbarScrollFlags()
+                }
                 feedAdapter.submitList(it)
                 runOnUiThread { rv_items?.let { scrollListToPosition(0) } }
             }

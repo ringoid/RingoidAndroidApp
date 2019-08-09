@@ -117,7 +117,12 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(vm.feed) { feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() } }
+        viewLifecycleOwner.observe(vm.feed) {
+            if (feedAdapter.getModelsCount() + it.profiles.size > 0) {
+                restoreToolbarScrollFlags()
+            }
+            feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
+        }
         vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // Explore feed is initially purged
 
         if (postponedTabTransaction) {
