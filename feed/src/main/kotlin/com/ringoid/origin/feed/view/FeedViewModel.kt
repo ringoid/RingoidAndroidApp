@@ -176,9 +176,13 @@ abstract class FeedViewModel(
         viewState.value = ViewState.DONE(REFRESH)
     }
 
-    protected fun refreshWithFilters() {
+    private fun refreshWithFilters() {
         filters = filtersSource.getFilters()
         refresh()
+    }
+
+    fun dropFilters() {
+        filters = DefaultFilters
     }
 
     open fun onApplyFilters() {

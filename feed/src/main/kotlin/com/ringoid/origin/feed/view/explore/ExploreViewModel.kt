@@ -2,7 +2,6 @@ package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
@@ -20,7 +19,6 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
-import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.DISCARD_PROFILES
@@ -164,12 +162,6 @@ class ExploreViewModel @Inject constructor(
 
     // ------------------------------------------
     override fun onRefresh() {
-        if (FiltersInMemoryCache.isFiltersAppliedOnExplore) {
-            // refresh LC feeds with filters as well
-            Bus.post(BusEvent.RefreshFeed(destinationFeed = DomainUtil.SOURCE_FEED_LIKES))
-        }
-        filters = DefaultFilters  // manual refresh acts as 'show all', but selected filters remain, though not applied
-        FiltersInMemoryCache.isFiltersAppliedOnExplore = false
         super.onRefresh()
         nextPage = 0
         debugGetNewFacesDropFlagsUseCase.source()

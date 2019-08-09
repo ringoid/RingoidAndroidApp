@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.view.lc.base
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -22,7 +21,6 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
-import com.ringoid.domain.model.feed.DefaultFilters
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -175,7 +173,7 @@ abstract class BaseLcFeedViewModel(
     }
 
     internal fun onShowAllWithoutFilters() {
-        filters = DefaultFilters
+        dropFilters()
         FiltersInMemoryCache.isFiltersAppliedOnLc = false
         viewState.value = ViewState.DONE(REFRESH)
     }
@@ -189,12 +187,6 @@ abstract class BaseLcFeedViewModel(
     }
 
     override fun onRefresh() {
-        if (FiltersInMemoryCache.isFiltersAppliedOnLc) {
-            // refresh Explore feed with filters as well
-            Bus.post(BusEvent.RefreshFeed(destinationFeed = DomainUtil.SOURCE_FEED_EXPLORE))
-        }
-        filters = DefaultFilters  // manual refresh acts as 'show all', but selected filters remain, though not applied
-        FiltersInMemoryCache.isFiltersAppliedOnLc = false
         super.onRefresh()
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
     }
