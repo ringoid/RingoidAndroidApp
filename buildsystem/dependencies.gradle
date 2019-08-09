@@ -157,11 +157,15 @@ ext {
             profile:      ':profile',
             userSettings: ':usersettings',
 
-            base:    ':base',
-            data:    ':data',
-            domain:  ':domain',
-            main:    ':main',
-            origin:  ':origin',
+            main:    ':main',       // -+- [ :main ]
+            origin:  ':origin',     //  ^- [ :origin ]
+            base:    ':base',       //  ^- [ :base ]
+
+            data:    ':data',                  // -+- [ :data ]
+            datainterface:  ':datainterface',  //  ^- [ :datainterface ] -+-
+            repository: ':repository',         //  |  [ :repository ] ----^
+            domain:  ':domain',                //  ^- [ :domain ]---------^
+
             utility: ':utility',
             widget:  ':widget',
 
@@ -177,11 +181,15 @@ ext {
     def module_profile = [[configuration: "implementation", dependency: project(modules.profile)]]
     def module_userSettings = [[configuration: "implementation", dependency: project(modules.userSettings)]]
 
-    def module_base = [[configuration: "implementation", dependency: project(modules.base)]]
-    def module_data = [[configuration: "implementation", dependency: project(modules.data)]]
-    def module_domain = [[configuration: "implementation", dependency: project(modules.domain)]]
     def module_main = [[configuration: "implementation", dependency: project(modules.main)]]
     def module_origin = [[configuration: "implementation", dependency: project(modules.origin)]]
+    def module_base = [[configuration: "implementation", dependency: project(modules.base)]]
+
+    def module_data = [[configuration: "implementation", dependency: project(modules.data)]]
+    def module_datainterface = [[configuration: "implementation", dependency: project(modules.datainterface)]]
+    def module_repository = [[configuration: "implementation", dependency: project(modules.repository)]]
+    def module_domain = [[configuration: "implementation", dependency: project(modules.domain)]]
+
     def module_utility = [[configuration: "implementation", dependency: project(modules.utility)]]
     def module_widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
@@ -544,6 +552,17 @@ ext {
         xPlugins.kotlinAnnotation,
     ]
 
+    /* Data Interface */
+    // ------------------------------------------
+    dataInterfaceDependencies = module_domain + kotlin + rx
+    testDataInterfaceDependencies = test
+
+    dataInterfacePlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
+    ]
+
     /* Domain */
     // ------------------------------------------
     domainDependencies = [
@@ -554,6 +573,18 @@ ext {
     testDomainDependencies = test
 
     domainPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
+    ]
+
+    /* Repository */
+    // ------------------------------------------
+    repositoryDependencies = []
+    repositoryDependencies += module_domain + kotlin + dagger + log + rx
+    testRepositoryDependencies = test
+
+    repositoryPlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAnnotation,
