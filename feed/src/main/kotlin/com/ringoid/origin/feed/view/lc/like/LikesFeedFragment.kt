@@ -7,6 +7,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.WidgetR_attrs
 import com.ringoid.origin.feed.WidgetR_color
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
@@ -25,6 +26,7 @@ import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
+import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -55,7 +57,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
             ViewState.CLEAR.MODE_EMPTY_DATA -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_likes_you_empty_no_data)
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh)
             ViewState.CLEAR.MODE_CHANGE_FILTERS -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_empty_no_data_filters,
-                                                                                 labelTextColorResId = WidgetR_color.white,
+                                                                                 labelTextColorResId = context?.getAttributeColor(WidgetR_attrs.refTextColorPrimary) ?: WidgetR_color.primary_text,
                                                                                  isLabelClickable = true)
             else -> null
         }
