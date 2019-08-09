@@ -89,6 +89,10 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         }
     }
 
+    override fun setDefaultToolbarTitle() {
+        toolbar.setTitle(OriginR_string.feed_likes_you_title)
+    }
+
     override fun setToolbarTitleWithLcCounts(show: Int, hidden: Int) {
         super.setToolbarTitleWithLcCounts(show, hidden)
         toolbar.title = if (hidden > 0) String.format(AppRes.LC_TITLE_LIKES_HIDDEN, show, hidden)
