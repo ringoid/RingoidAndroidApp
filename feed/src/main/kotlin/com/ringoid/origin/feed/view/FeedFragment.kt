@@ -28,6 +28,7 @@ import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.filters.BaseFiltersFragment
@@ -43,7 +44,7 @@ import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
-abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
+abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmptyScreenCallback {
 
     protected lateinit var feedAdapter: BaseFeedAdapter
         private set
@@ -206,6 +207,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 //
 //            remove { it.id in profileIds }
 //        }
+    }
+
+    override fun onEmptyLabelClick() {
+        // click on empty screen label should open filters popup
+        showFiltersPopup(isVisible = true)
     }
 
     private fun onIdleState() {
@@ -400,7 +406,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     private fun isToolbarVisible(): Boolean = appbar.height - appbar.bottom <= 0
 
     private fun showFiltersPopup(isVisible: Boolean) {
-        TopSheetBehavior.from(ll_top_sheet).state =
+        val behavior = TopSheetBehavior.from(ll_top_sheet)
+        when (behavior.state) {
+            TopSheetBehavior.STATE_HIDDEN -> if (!isVisible) return
+            TopSheetBehavior.STATE_EXPANDED -> if (isVisible) return
+        }
+
+        behavior.state =
             if (isVisible) {
                 childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
                     ?.let { it as? BaseFiltersFragment<*> }

@@ -7,6 +7,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.WidgetR_color
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
@@ -53,7 +54,9 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         when (mode) {
             ViewState.CLEAR.MODE_EMPTY_DATA -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_likes_you_empty_no_data)
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh)
-            ViewState.CLEAR.MODE_CHANGE_FILTERS -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_empty_no_data_filters)
+            ViewState.CLEAR.MODE_CHANGE_FILTERS -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_empty_no_data_filters,
+                                                                                 labelTextColorResId = WidgetR_color.white,
+                                                                                 isLabelClickable = true)
             else -> null
         }
 

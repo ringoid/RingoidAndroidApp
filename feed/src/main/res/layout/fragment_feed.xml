@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
-    <FrameLayout
-        android:id="@+id/fl_empty_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"/>
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -45,6 +39,12 @@
         android:id="@+id/visual_effect_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/fl_empty_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
 
     <View
         android:id="@+id/overlay"

@@ -15,6 +15,7 @@ import com.ringoid.domain.model.messenger.peerMessage
 import com.ringoid.domain.model.messenger.userMessage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.WidgetR_color
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
@@ -71,7 +72,9 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
         when (mode) {
             ViewState.CLEAR.MODE_EMPTY_DATA -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_messages_empty_no_data)
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh)
-            ViewState.CLEAR.MODE_CHANGE_FILTERS -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_empty_no_data_filters)
+            ViewState.CLEAR.MODE_CHANGE_FILTERS -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_empty_no_data_filters,
+                                                                                 labelTextColorResId = WidgetR_color.white,
+                                                                                 isLabelClickable = true)
             else -> null
         }
 
