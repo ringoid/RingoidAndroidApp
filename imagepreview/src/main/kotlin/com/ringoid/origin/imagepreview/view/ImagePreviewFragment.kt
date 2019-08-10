@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.origin.GlideApp
@@ -50,6 +51,8 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     override fun getVmClass(): Class<ImagePreviewViewModel> = ImagePreviewViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_image_preview
+
+    override fun appScreen(): AppScreen = AppScreen.IMAGE_PREVIEW
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

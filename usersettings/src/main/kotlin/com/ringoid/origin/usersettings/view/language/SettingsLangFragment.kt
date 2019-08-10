@@ -2,15 +2,12 @@ package com.ringoid.origin.usersettings.view.language
 
 import android.app.Activity
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.WidgetR_attrs
@@ -44,6 +41,8 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
     override fun getVmClass(): Class<SettingsLangViewModel> = SettingsLangViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings_language
+
+    override fun appScreen(): AppScreen = AppScreen.SETTINGS_LANGUAGE
 
     // --------------------------------------------------------------------------------------------
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

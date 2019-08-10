@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.AppRes
@@ -31,6 +32,8 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
     override fun getVmClass(): Class<SettingsAppInfoViewModel> = SettingsAppInfoViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings_app_info
+
+    override fun appScreen(): AppScreen = AppScreen.SETTINGS_INFO
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

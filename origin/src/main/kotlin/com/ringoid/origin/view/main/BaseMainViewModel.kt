@@ -4,6 +4,8 @@ import android.app.Application
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
+import com.ringoid.base.navigation.AppScreen
+import com.ringoid.base.navigation.NavigationRegistry
 import com.ringoid.origin.AppInMemory
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 
@@ -20,7 +22,9 @@ abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app
     // --------------------------------------------------------------------------------------------
     override fun onFreshStart() {
         super.onFreshStart()
-        Bus.post(event = BusEvent.AppFreshStart)
+        if (NavigationRegistry.beforeLastScreen() != AppScreen.LOGIN) {
+            Bus.post(event = BusEvent.AppFreshStart)
+        }
         AppInMemory.setUserGender(spm.currentUserGender())
     }
 

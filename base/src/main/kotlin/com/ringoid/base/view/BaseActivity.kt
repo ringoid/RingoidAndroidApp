@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.ringoid.base.IBaseRingoidApplication
+import com.ringoid.base.navigation.AppScreen
+import com.ringoid.base.navigation.NavigationRegistry
 import com.ringoid.base.observe
 import com.ringoid.base.print
 import com.ringoid.base.viewModel
@@ -61,6 +63,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
     @LayoutRes protected open fun getLayoutId(): Int? = null  // null means no layout
+
+    protected open fun appScreen(): AppScreen = AppScreen.UNKNOWN
 
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
@@ -122,6 +126,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
             vm.onFreshStart()
             isOnFreshStart = false
         }
+        NavigationRegistry.recordCurrentScreen(screen = appScreen())
         vm.onStart()
     }
 

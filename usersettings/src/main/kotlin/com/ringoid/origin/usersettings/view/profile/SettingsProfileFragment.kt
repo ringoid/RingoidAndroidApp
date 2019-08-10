@@ -5,6 +5,7 @@ import android.text.InputType
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
@@ -35,6 +36,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     override fun getVmClass(): Class<SettingsProfileViewModel> = SettingsProfileViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings_profile
+
+    override fun appScreen(): AppScreen = AppScreen.SETTINGS_PROFILE
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {

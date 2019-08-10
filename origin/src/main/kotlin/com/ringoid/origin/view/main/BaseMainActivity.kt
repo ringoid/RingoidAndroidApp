@@ -12,6 +12,7 @@ import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -46,6 +47,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     override fun getLayoutId(): Int = R.layout.activity_main
 
     protected abstract fun getListOfRootFragments(): List<Fragment>
+
+    override fun appScreen(): AppScreen = AppScreen.MAIN
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

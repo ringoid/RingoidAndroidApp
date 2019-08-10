@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.ExternalNavigator
@@ -32,6 +33,8 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
     override fun getVmClass(): Class<SettingsViewModel> = SettingsViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings
+
+    override fun appScreen(): AppScreen = AppScreen.SETTINGS
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
