@@ -295,20 +295,32 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fun onExpandFilters() {
-            appbar.changeVisibility(isVisible = false, soft = true)
+            toolbarWidget?.collapse()
             overlay.changeVisibility(isVisible = true)
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
         }
 
         fun onHideFilters() {
-            appbar.changeVisibility(isVisible = true)
+            toolbarWidget?.expand()
             overlay.changeVisibility(isVisible = false)
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
         }
 
         super.onViewCreated(view, savedInstanceState)
         filtersPopupWidget = FiltersPopupWidget(this)
-        toolbarWidget = ToolbarWidget(view)
+        toolbarWidget = ToolbarWidget(view).init { toolbar ->
+            with (toolbar) {
+                setTitle(getToolbarTitleResId())
+                inflateMenu(R.menu.feed_toolbar_menu)
+                setOnClickListener { filtersPopupWidget?.show() }
+                setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.filters -> { filtersPopupWidget?.show(); true }
+                        else -> false
+                    }
+                }
+            }
+        }
 
         with (rv_items) {
             adapter = feedAdapter
@@ -326,16 +338,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
             refreshes().compose(clickDebounce()).subscribe { onRefreshGesture() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
-        }
-        with (toolbar) {
-            setTitle(getToolbarTitleResId())
-            inflateMenu(R.menu.feed_toolbar_menu)
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.filters -> { filtersPopupWidget?.show(); true }
-                    else -> false
-                }
-            }
         }
 
         // top sheet
