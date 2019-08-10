@@ -10,13 +10,16 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/std_toolbar_height"
-        android:background="?refColorBgSemi">
+        android:background="?refColorBgSemi"
+        android:elevation="0dp"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?refColorBgSemi"
+            android:elevation="0dp"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             app:titleTextColor="?refTextColorPrimary"/>
     </com.google.android.material.appbar.AppBarLayout>
