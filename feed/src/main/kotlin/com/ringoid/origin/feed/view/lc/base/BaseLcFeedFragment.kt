@@ -96,7 +96,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         with(viewLifecycleOwner) {
             observe(vm.feed) {
                 if (it.isNotEmpty()) {
-                    restoreToolbarScrollFlags()
+                    toolbarWidget?.restoreScrollFlags()
                 }
                 feedAdapter.submitList(it)
                 runOnUiThread { rv_items?.let { scrollListToPosition(0) } }
@@ -112,11 +112,11 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         // refresh by click on 'tap to refresh' popup
         btn_refresh_popup.clicks().compose(clickDebounce()).subscribe { vm.onTapToRefreshClick() }
         btn_show_all.clicks().compose(clickDebounce()).subscribe {
-            hideFiltersPopup()
+            filtersPopupWidget?.hide()
             vm.onShowAllWithoutFilters()
         }
         btn_apply_filters.clicks().compose(clickDebounce()).subscribe {
-            hideFiltersPopup()
+            filtersPopupWidget?.hide()
             vm.onApplyFilters()
         }
     }

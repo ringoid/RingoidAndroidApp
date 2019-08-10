@@ -8,7 +8,6 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.techisfun.android.topsheet.TopSheetBehavior
-import com.google.android.material.appbar.AppBarLayout
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
@@ -24,6 +23,8 @@ import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.widget.FiltersPopupWidget
+import com.ringoid.origin.feed.view.widget.ToolbarWidget
 import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
@@ -52,6 +53,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     private lateinit var feedTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
 
+    protected var filtersPopupWidget: FiltersPopupWidget? = null
+    protected var toolbarWidget: ToolbarWidget? = null
+
+    // ------------------------------------------
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
 
@@ -110,7 +115,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
         vm.onClearScreen()
-        removeToolbarScrollFlags()  // prevent toolbar from scrolling while in CLEAR state
+        toolbarWidget?.removeScrollFlags()  // prevent toolbar from scrolling while in CLEAR state
         getEmptyStateInput(mode)?.let {
             showEmptyStub(input = it)
             showLoading(isVisible = false)
@@ -212,7 +217,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     override fun onEmptyLabelClick() {
         // click on empty screen label should open filters popup
-        showFiltersPopup(isVisible = true)
+        filtersPopupWidget?.show()
     }
 
     private fun onIdleState() {
@@ -229,7 +234,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     // --------------------------------------------------------------------------------------------
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
-        showToolbar(isVisible = true)  // switch back on any Feed should show toolbar, if was hide
+        toolbarWidget?.show(isVisible = true)  // switch back on any Feed should show toolbar, if was hide
     }
 
     /* Lifecycle */
@@ -241,7 +246,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
             onScrollHorizontalListener = {
                 showRefreshPopup(isVisible = false)
-                showToolbar(isVisible = false)
+                toolbarWidget?.show(isVisible = false)
             }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 vm.onSettingsClick(model.id)
@@ -302,6 +307,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
         super.onViewCreated(view, savedInstanceState)
+        filtersPopupWidget = FiltersPopupWidget(this)
+        toolbarWidget = ToolbarWidget(view)
+
         with (rv_items) {
             adapter = feedAdapter
             layoutManager = LinearLayoutManager(context)
@@ -324,7 +332,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             inflateMenu(R.menu.feed_toolbar_menu)
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.filters -> { showFiltersPopup(isVisible = true); true }
+                    R.id.filters -> { filtersPopupWidget?.show(); true }
                     else -> false
                 }
             }
@@ -332,7 +340,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
         // top sheet
         with (overlay) {
-            setOnTouchListener { _, _ -> showFiltersPopup(isVisible = false); true }
+            setOnTouchListener { _, _ -> filtersPopupWidget?.hide(); true }
         }
         with (ll_top_sheet) { setOnTouchListener { _, _ -> true } }
         with (TopSheetBehavior.from(ll_top_sheet)) {
@@ -361,7 +369,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     override fun onStart() {
         super.onStart()
-        showToolbar(isVisible = true)
+        toolbarWidget?.show(isVisible = true)
     }
 
     override fun onResume() {
@@ -421,64 +429,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             }
             true
         }
-
-    // ------------------------------------------
-    private fun isToolbarVisible(): Boolean = appbar.height - appbar.bottom <= 0
-
-    private fun removeToolbarScrollFlags() {
-        toolbar?.let { v ->
-            v.layoutParams = v.layoutParams
-                ?.let { it as? AppBarLayout.LayoutParams }
-                ?.let { lp -> lp.scrollFlags = 0; lp }
-        }
-    }
-
-    protected fun restoreToolbarScrollFlags() {
-        toolbar?.let { v ->
-            v.layoutParams = v.layoutParams
-                ?.let { it as? AppBarLayout.LayoutParams }
-                ?.let { lp ->
-                    lp.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                                     AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or
-                                     AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
-                    lp
-                }
-        }
-    }
-
-    private fun showToolbar(isVisible: Boolean) {
-        appbar?.let {
-            if (isToolbarVisible()) {
-                if (isVisible) return
-            } else {
-                if (!isVisible) return
-            }
-            it.setExpanded(isVisible)
-        }
-    }
-
-    protected fun hideFiltersPopup() {
-        showFiltersPopup(isVisible = false)
-    }
-
-    private fun showFiltersPopup(isVisible: Boolean) {
-        ll_top_sheet?.let {
-            val behavior = TopSheetBehavior.from(ll_top_sheet)
-            when (behavior.state) {
-                TopSheetBehavior.STATE_HIDDEN -> if (!isVisible) return
-                TopSheetBehavior.STATE_EXPANDED -> if (isVisible) return
-            }
-
-            behavior.state =
-                if (isVisible) {
-                    childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
-                        ?.let { it as? BaseFiltersFragment<*> }
-                        ?.requestFiltersForUpdate()
-
-                    TopSheetBehavior.STATE_EXPANDED
-                } else TopSheetBehavior.STATE_HIDDEN
-        }  // ignore if view hierarchy hasn't been initialized yet
-    }
 
     protected fun showRefreshPopup(isVisible: Boolean) {
         btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.refreshOnPush.value == true)
@@ -668,7 +618,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         // apply strategies on item at position, regardless of whether that position has been affected before
         rv_items.linearLayoutManager()?.let {
             val top = getTopBorderForOffsetScroll()
-            val bottom = getBottomBorderForOffsetScroll() - (if (isToolbarVisible()) AppRes.FEED_TOOLBAR_HEIGHT else 0)
+            val bottom = getBottomBorderForOffsetScroll() - (if (toolbarWidget?.isShow() == true) AppRes.FEED_TOOLBAR_HEIGHT else 0)
             processItemView(position, it.findViewByPosition(position), top, bottom)
         }
     }

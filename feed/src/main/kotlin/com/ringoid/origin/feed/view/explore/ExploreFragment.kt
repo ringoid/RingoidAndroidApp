@@ -119,7 +119,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         super.onActivityCreated(savedInstanceState)
         viewLifecycleOwner.observe(vm.feed) {
             if (feedAdapter.getModelsCount() + it.profiles.size > 0) {
-                restoreToolbarScrollFlags()
+                toolbarWidget?.restoreScrollFlags()
             }
             feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
         }
@@ -136,7 +136,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         btn_show_all.changeVisibility(isVisible = false)
         btn_apply_filters.clicks().compose(clickDebounce()).subscribe {
-            hideFiltersPopup()
+            filtersPopupWidget?.hide()
             vm.onApplyFilters()
         }
     }
