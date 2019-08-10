@@ -33,7 +33,7 @@ abstract class FeedViewModel(
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    private val countUserImagesUseCase: CountUserImagesUseCase,
+    protected val countUserImagesUseCase: CountUserImagesUseCase,
     protected val filtersSource: IFiltersSource,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {

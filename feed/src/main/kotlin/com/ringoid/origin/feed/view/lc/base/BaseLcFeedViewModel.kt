@@ -238,6 +238,17 @@ abstract class BaseLcFeedViewModel(
         }
     }
 
+    private fun refreshIfUserHasImages() {
+        countUserImagesUseCase.source()
+            .autoDisposable(this)
+            .subscribe({
+                if (it > 0) {
+                    dropFilters()
+                    refresh()
+                }
+            }, Timber::e)
+    }
+
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String) {
@@ -268,8 +279,7 @@ abstract class BaseLcFeedViewModel(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application fresh start [${getFeedName()}]")
-        dropFilters()
-        refresh()
+        refreshIfUserHasImages()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
