@@ -27,6 +27,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/app_name"
             android:textSize="@dimen/std_text_30"
             android:textStyle="bold"
