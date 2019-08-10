@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewConfiguration
+import androidx.annotation.LayoutRes
+import com.ringoid.widget.R
 import kotlin.math.abs
 
 class SwipelessExtendImageButton : ExtendImageButton {
@@ -20,40 +22,46 @@ class SwipelessExtendImageButton : ExtendImageButton {
         touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     }
 
-    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean =
-        when (ev.actionMasked) {
-            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                if (!isSwiping) {
-                    performClick()
-                }
-                isSwiping = false
-                false
-            }
-            MotionEvent.ACTION_DOWN -> {
-                xStart = ev.x
-                false
-            }
-            MotionEvent.ACTION_MOVE -> {
-                if (isSwiping) {
-                    true
-                } else {
-                    val xDiff = calculateDistanceX(ev)
-                    if (xDiff > touchSlop) {
-                        isSwiping = true
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
-            else -> false
-        }
+    @LayoutRes override fun getLayoutId(): Int = R.layout.widget_swipeless_extend_image_button
 
-    override fun onTouchEvent(event: MotionEvent): Boolean =
-        when (event.actionMasked) {
-            MotionEvent.ACTION_MOVE -> false
-            else -> super.onTouchEvent(event)
-        }
+//    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean =
+//        when (ev.actionMasked) {
+//            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+//                if (!isSwiping) {
+//                    performClick()
+//                }
+//                isSwiping = false
+//                false
+//            }
+//            MotionEvent.ACTION_DOWN -> {
+//                xStart = ev.x
+//                false
+//            }
+//            MotionEvent.ACTION_MOVE -> {
+//                if (isSwiping) {
+//                    true
+//                } else {
+//                    val xDiff = calculateDistanceX(ev)
+//                    if (xDiff > touchSlop) {
+//                        isSwiping = true
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                }
+//            }
+//            else -> false
+//        }
+//
+//    override fun onTouchEvent(event: MotionEvent): Boolean =
+//        when (event.actionMasked) {
+//            MotionEvent.ACTION_MOVE -> false
+//            else -> super.onTouchEvent(event)
+//        }
+
+    override fun touchImpl(l: OnTouchListener?) {
+        // no-op
+    }
 
     // --------------------------------------------------------------------------------------------
     private fun calculateDistanceX(event: MotionEvent): Float = abs(xStart - event.x)
