@@ -13,7 +13,7 @@ import com.ringoid.utility.getSelectableItemBgBorderless
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_extend_image_button.view.*
 
-class ExtendImageButton : FrameLayout {
+open class ExtendImageButton : FrameLayout {
 
     constructor(context: Context) : this(context, null)
 
