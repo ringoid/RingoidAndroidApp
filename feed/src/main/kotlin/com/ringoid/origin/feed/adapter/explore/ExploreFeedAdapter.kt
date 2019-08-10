@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.adapter.explore
 import android.view.View
 import android.widget.TextView
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.origin.feed.OriginR_id
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.model.EmptyFeedItemVO
@@ -27,7 +28,7 @@ class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoade
     override fun instantiateHeaderViewHolder(view: View) = HeaderFeedViewHolder(view)
     override fun instantiateFooterViewHolder(view: View) =
         FooterFeedViewHolder(view).also { vh ->
-            vh.itemView.findViewById<TextView>(R.id.tv_end_item)?.let {
+            vh.itemView.findViewById<TextView>(OriginR_id.tv_end_item)?.let {
                 it.clicks().compose(clickDebounce()).subscribe {
                     onFooterLabelClickListener?.invoke()
                 }
