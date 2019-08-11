@@ -8,7 +8,6 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EvictingQueue
 import kotlinx.android.synthetic.main.dialog_filters.view.*
-import timber.log.Timber
 
 class FiltersPopupWidget(private val rootView: View, private val onShowCallback: () -> Unit) {
 

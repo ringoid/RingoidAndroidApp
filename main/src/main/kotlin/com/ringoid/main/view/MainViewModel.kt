@@ -18,11 +18,16 @@ import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.FiltersInMemoryCache
+import com.ringoid.domain.memory.IFiltersSource
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.push.PushTokenEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
+import com.ringoid.domain.model.feed.Filters
+import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.view.main.BaseMainViewModel
+import com.ringoid.utility.age
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
@@ -32,6 +37,7 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     getLcUseCase: GetLcUseCase, getUserImagesUseCase: GetUserImagesUseCase,
+    private val filtersSource: IFiltersSource,
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
     private val updatePushTokenUseCase: UpdatePushTokenUseCase,
@@ -105,6 +111,16 @@ class MainViewModel @Inject constructor(
         analyticsManager.setUser(spm)
         FiltersInMemoryCache.restore(spm)
         SentryUtil.setUser(spm)
+
+        if (filtersSource.getFilters() == NoFilters) {
+            // filters not set, use default ones
+            val age = age(spm.currentUserYearOfBirth(), app.calendar)
+            val filters = when (spm.currentUserGender()) {
+                Gender.FEMALE -> Filters.create(minAge = age, maxAge = age + 10)
+                else -> Filters.create(minAge = age - 10, maxAge = age)
+            }
+            filtersSource.setFilters(filters)
+        }
     }
 
     override fun onFreshStart() {

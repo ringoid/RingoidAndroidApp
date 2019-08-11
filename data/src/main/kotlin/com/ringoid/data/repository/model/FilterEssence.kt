@@ -30,8 +30,7 @@ class FilterEssence private constructor(
             FilterEssence(
                 minAge = maxOf(minAge, DomainUtil.FILTER_MIN_AGE),
                 maxAge = maxOf(maxAge, DomainUtil.FILTER_MIN_AGE),
-                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE)
-            )
+                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE))
 
         /**
          * Creates [FilterEssence] with parameters that cannot be less than minimal values.

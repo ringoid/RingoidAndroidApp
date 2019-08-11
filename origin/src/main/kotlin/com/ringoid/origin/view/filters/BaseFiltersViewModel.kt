@@ -16,12 +16,17 @@ open class BaseFiltersViewModel @Inject constructor(
     val filters by lazy { MutableLiveData<Filters>() }
     protected val filtersChanged = PublishSubject.create<Boolean>()
 
+    private fun setUpFilters() {
+        val filtersValue = filtersSource.getFilters()
+        Timber.i("Filters: $filtersValue")
+        filters.value = filtersValue
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
         if (isVisibleToUser) {
-            Timber.i("Filters: ${filtersSource.getFilters()}")
-            filters.value = filtersSource.getFilters()
+            setUpFilters()
         }
         return super.setUserVisibleHint(isVisibleToUser)
     }
@@ -44,7 +49,7 @@ open class BaseFiltersViewModel @Inject constructor(
     fun setMinMaxAge(minAge: Int, maxAge: Int) {
         val oldFilters = filtersSource.getFilters()
         if (oldFilters.minAge != minAge || oldFilters.maxAge != maxAge) {
-            filtersSource.setFilters(Filters(minAge = minAge, maxAge = maxAge, maxDistance = oldFilters.maxDistance))
+            filtersSource.setFilters(Filters.create(minAge = minAge, maxAge = maxAge, maxDistance = oldFilters.maxDistance))
             requestFiltersForUpdate()
             oneShot.value = LiveEvent(true)
         }
@@ -53,7 +58,7 @@ open class BaseFiltersViewModel @Inject constructor(
     fun setDistance(distance: Int) {
         val oldFilters = filtersSource.getFilters()
         if (oldFilters.maxDistance != distance) {
-            filtersSource.setFilters(Filters(minAge = oldFilters.minAge, maxAge = oldFilters.maxAge, maxDistance = distance))
+            filtersSource.setFilters(Filters.create(minAge = oldFilters.minAge, maxAge = oldFilters.maxAge, maxDistance = distance))
             requestFiltersForUpdate()
             oneShot.value = LiveEvent(true)
         }
