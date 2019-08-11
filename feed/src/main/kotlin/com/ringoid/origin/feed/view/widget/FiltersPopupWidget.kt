@@ -73,7 +73,6 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
         TopSheetBehavior.from(rootView.ll_top_sheet)
             .setTopSheetCallback(object: TopSheetBehavior.TopSheetCallback() {
                 override fun onStateChanged(popupView: View, newState: Int) {
-                    Timber.d("STATE: $newState")
                     DebugLogUtil.d("Filters popup state: $newState")
                     stateHistory.add(newState)
                     isSliding = newState == TopSheetBehavior.STATE_SETTLING
@@ -81,7 +80,6 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
                 }
 
                 override fun onSlide(popupView: View, slideOffset: Float) {
-                    Timber.v("SLIDING[$slideCounter]: $slideOffset :: ${slideHistory.joinToString()}")
                     if (isSliding) {
                         slideHistory.add(slideOffset)
                         ++slideCounter
