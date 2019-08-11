@@ -23,7 +23,7 @@
             android:id="@+id/btn_show_all"
             android:paddingStart="@dimen/std_margin_16"
             android:paddingEnd="@dimen/std_margin_16"
-            android:text="@string/button_show_all"
+            android:text="@string/button_show_all_init"
             android:textStyle="bold"
             style="@style/FlatButton.Primary"/>
 

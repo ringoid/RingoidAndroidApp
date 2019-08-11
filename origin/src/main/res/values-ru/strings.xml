@@ -13,6 +13,7 @@
     <string name="button_ok">ОК</string>
     <string name="button_settings">Настройки</string>
     <string name="button_show_all">Показать все (%s)</string>
+    <string name="button_show_all_init">Показать все (0)</string>
 
     <string name="common_choose_image">Выбери фото</string>
     <string name="common_clipboard">Скопировано в буфер</string>
