@@ -25,7 +25,7 @@ class FiltersPopupWidget(private val fragment: Fragment) {
 
             behavior.state =
                 if (isVisible) {
-                    fragment. childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
+                    fragment.childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
                         ?.let { it as? BaseFiltersFragment<*> }
                         ?.requestFiltersForUpdate()
 
