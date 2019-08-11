@@ -20,7 +20,7 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
-import com.ringoid.domain.model.feed.DefaultFilters
+import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.LmmSlice
@@ -63,7 +63,7 @@ abstract class BaseLcFeedViewModel(
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
-    protected var filters: Filters = DefaultFilters
+    protected var filters: Filters = NoFilters
 
     private val discardedFeedItemIds = mutableSetOf<String>()
     private val notSeenFeedItemIds = Collections.newSetFromMap<String>(ConcurrentHashMap())
@@ -175,7 +175,7 @@ abstract class BaseLcFeedViewModel(
     }
 
     internal fun dropFilters() {
-        filters = DefaultFilters
+        filters = NoFilters
     }
 
     internal fun onShowAllWithoutFilters() {

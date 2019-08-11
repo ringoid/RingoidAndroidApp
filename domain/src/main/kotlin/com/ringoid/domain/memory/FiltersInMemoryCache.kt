@@ -1,14 +1,14 @@
 package com.ringoid.domain.memory
 
 import com.ringoid.domain.manager.ISharedPrefsManager
-import com.ringoid.domain.model.feed.DefaultFilters
+import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.feed.Filters
 
 object FiltersInMemoryCache : IFiltersSource {
 
-    private var filters: Filters = DefaultFilters
+    private var filters: Filters = NoFilters
 
-    override fun hasFiltersApplied(): Boolean = filters != DefaultFilters
+    override fun hasFiltersApplied(): Boolean = filters != NoFilters
 
     override fun getFilters(): Filters = filters
 
@@ -17,7 +17,7 @@ object FiltersInMemoryCache : IFiltersSource {
     }
 
     override fun dropFilters() {
-        filters = DefaultFilters
+        filters = NoFilters
     }
 
     fun clear() {
