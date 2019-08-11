@@ -312,13 +312,22 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 ?.requestFiltersForUpdate()
         }
         .apply {
+            setOnSlideUpListener(object : FiltersPopupWidget.OnSlideUpListener {
+                override fun onSlideUp(isSlidingUp: Boolean) {
+                    if (isSlidingUp) {
+                        onHideFilters()
+                    } else {
+                        onExpandFilters()
+                    }
+                }
+            })
             setOnStateChangedListener { newState ->
                 when (newState) {
-                    TopSheetBehavior.STATE_SETTLING,
                     TopSheetBehavior.STATE_EXPANDED -> onExpandFilters()
                     TopSheetBehavior.STATE_COLLAPSED,
-                    TopSheetBehavior.STATE_DRAGGING,
                     TopSheetBehavior.STATE_HIDDEN -> onHideFilters()
+                    // TopSheetBehavior.STATE_DRAGGING and
+                    // TopSheetBehavior.STATE_SETTLING handled internally
                 }
             }
         }
