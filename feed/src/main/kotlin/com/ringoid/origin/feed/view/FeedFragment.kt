@@ -307,7 +307,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
         super.onViewCreated(view, savedInstanceState)
-        filtersPopupWidget = FiltersPopupWidget(this)
+        filtersPopupWidget = FiltersPopupWidget(view) {
+            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
+                ?.let { it as? BaseFiltersFragment<*> }
+                ?.requestFiltersForUpdate()
+        }
         toolbarWidget = ToolbarWidget(view).init { toolbar ->
             with (toolbar) {
                 setTitle(getToolbarTitleResId())
