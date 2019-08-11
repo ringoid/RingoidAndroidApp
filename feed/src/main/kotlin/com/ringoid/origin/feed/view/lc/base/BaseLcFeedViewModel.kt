@@ -287,8 +287,7 @@ abstract class BaseLcFeedViewModel(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application recreate while running [${getFeedName()}]")
-        dropFilters()
-        refresh()
+        refreshIfUserHasImages()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -296,8 +295,7 @@ abstract class BaseLcFeedViewModel(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application reopen [${getFeedName()}]")
-        dropFilters()
-        refresh()  // app reopen leads LC screen to refresh as well
+        refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -306,8 +304,7 @@ abstract class BaseLcFeedViewModel(
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC [${getFeedName()}]")
-            dropFilters()
-            refresh()  // app reopen leads LC screen to refresh as well
+            refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
         }
     }
 
