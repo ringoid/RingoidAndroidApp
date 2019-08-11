@@ -85,7 +85,6 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
                         ++slideCounter
                         if (slideHistory.size >= SLIDE_NUMBER && slideCounter >= SLIDE_NUMBER) {
                             val delta = slideHistory.peekFirst() - slideHistory.peekLast()
-                            Timber.v("Call sliding listener: $delta")
                             slideListener?.onSlideUp(delta >= 0)
                         }
                     } else {
