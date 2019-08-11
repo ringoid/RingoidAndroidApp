@@ -3,7 +3,6 @@ package com.ringoid.origin.feed.view.explore
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.exception.ThresholdExceededException
@@ -24,12 +23,9 @@ import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.image.ImageRequest
-import kotlinx.android.synthetic.main.dialog_filters.*
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
@@ -134,11 +130,11 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_show_all.changeVisibility(isVisible = false)
-        btn_apply_filters.clicks().compose(clickDebounce()).subscribe {
+        filtersPopupWidget?.setOnClickListener_applyFilters {
             filtersPopupWidget?.hide()
             vm.onApplyFilters()
         }
+        filtersPopupWidget?.hideShowAllButton()
     }
 
     /* Scroll listeners */

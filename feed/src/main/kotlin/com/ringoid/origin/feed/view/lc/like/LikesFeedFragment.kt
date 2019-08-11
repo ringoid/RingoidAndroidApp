@@ -29,7 +29,6 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.image.ImageRequest
-import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
@@ -109,11 +108,11 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
 
     // ------------------------------------------
     override fun setCountOfFilteredFeedItems(count: Int) {
-        btn_apply_filters.text = String.format(AppRes.FILTER_BUTTON_APPLY, count)
+        filtersPopupWidget?.setCountOfFilteredFeedItems(String.format(AppRes.FILTER_BUTTON_APPLY, count))
     }
 
     override fun setTotalNotFilteredFeedItems(count: Int) {
-        btn_show_all.text = String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count)
+        filtersPopupWidget?.setTotalNotFilteredFeedItems(String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count))
     }
 
     /* Lifecycle */

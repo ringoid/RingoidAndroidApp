@@ -42,7 +42,6 @@ import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
@@ -312,6 +311,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 ?.let { it as? BaseFiltersFragment<*> }
                 ?.requestFiltersForUpdate()
         }
+        .apply {
+            setOnStateChangedListener { newState ->
+                when (newState) {
+                    TopSheetBehavior.STATE_SETTLING,
+                    TopSheetBehavior.STATE_EXPANDED -> onExpandFilters()
+                    TopSheetBehavior.STATE_COLLAPSED,
+                    TopSheetBehavior.STATE_DRAGGING,
+                    TopSheetBehavior.STATE_HIDDEN -> onHideFilters()
+                }
+            }
+        }
         toolbarWidget = ToolbarWidget(view).init { toolbar ->
             with (toolbar) {
                 setTitle(getToolbarTitleResId())
@@ -347,23 +357,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         // top sheet
         with (overlay) {
             setOnTouchListener { _, _ -> filtersPopupWidget?.hide(); true }
-        }
-        with (ll_top_sheet) { setOnTouchListener { _, _ -> true } }
-        with (TopSheetBehavior.from(ll_top_sheet)) {
-            isHideable = true  // allow [TopSheetBehavior.STATE_HIDDEN]
-            setTopSheetCallback(object: TopSheetBehavior.TopSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    when (newState) {
-                        TopSheetBehavior.STATE_SETTLING,
-                        TopSheetBehavior.STATE_EXPANDED -> onExpandFilters()
-                        TopSheetBehavior.STATE_COLLAPSED,
-                        TopSheetBehavior.STATE_DRAGGING,
-                        TopSheetBehavior.STATE_HIDDEN -> onHideFilters()
-                    }
-                }
-
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-            })
         }
         if (savedInstanceState == null) {
             childFragmentManager
