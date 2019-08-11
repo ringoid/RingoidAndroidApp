@@ -109,7 +109,10 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // refresh by click on 'tap to refresh' popup
-        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe { vm.onTapToRefreshClick() }
+        btn_refresh_popup.clicks().compose(clickDebounce()).subscribe {
+            filtersPopupWidget?.hide()
+            vm.onTapToRefreshClick()
+        }
 
         filtersPopupWidget?.setOnClickListener_applyFilters {
             filtersPopupWidget?.hide()
