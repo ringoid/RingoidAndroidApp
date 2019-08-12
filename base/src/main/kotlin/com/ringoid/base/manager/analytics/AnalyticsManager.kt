@@ -45,7 +45,10 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
     fun setUser(spm: ISharedPrefsManager) {
         with (spm) {
             currentUserId()?.let { setUserId(it) }
-            currentUserGender().let { setUserGender(it) }
+            setUserGender(currentUserGender())
+            if (hasUserYearOfBirth()) {
+                setUserAge(currentUserYearOfBirth())
+            }
         }
     }
 
@@ -54,6 +57,11 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
             firebase.setUserId(it)
             FlurryAgent.setUserId(it)
         }
+    }
+
+    private fun setUserAge(age: Int) {
+        firebase.setUserProperty("age", "$age")
+        FlurryAgent.setAge(age)
     }
 
     private fun setUserGender(gender: Gender) {
