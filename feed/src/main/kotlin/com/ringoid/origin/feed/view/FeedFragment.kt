@@ -234,6 +234,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun onBeforeTabSelect() {
+        super.onBeforeTabSelect()
+        filtersPopupWidget?.hide()
+    }
+
     override fun onTabTransaction(payload: String?) {
         super.onTabTransaction(payload)
         toolbarWidget?.show(isVisible = true)  // switch back on any Feed should show toolbar, if was hide
