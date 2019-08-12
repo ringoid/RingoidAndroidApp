@@ -20,7 +20,6 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
     companion object {
         const val TAG = "FiltersFragment_tag"
 
-        const val MIN_AGE_RANGE = 4
         const val STEP_AGE = 1
         const val STEP_DISTANCE = 1000
     }
@@ -41,7 +40,7 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with (seekbar_age) {
-            minRange = MIN_AGE_RANGE / STEP_AGE
+            minRange = DomainUtil.FILTER_AGE_MIN_RANGE / STEP_AGE
             max = (DomainUtil.FILTER_MAX_AGE - DomainUtil.FILTER_MIN_AGE) / STEP_AGE
             seekBarChangeListener = object : RangeSeekBar.SeekBarChangeListener {
                 override fun onStartedSeeking() {}

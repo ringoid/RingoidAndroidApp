@@ -119,8 +119,8 @@ class MainViewModel @Inject constructor(
             if (yearOfBirth != DomainUtil.UNKNOWN_VALUE) {
                 val age = age(yearOfBirth, app.calendar)
                 val filters = when (spm.currentUserGender()) {
-                    Gender.FEMALE -> Filters.create(minAge = age, maxAge = age + 10)
-                    else -> Filters.create(minAge = age - 10, maxAge = age)
+                    Gender.FEMALE -> Filters.createWithAgeRange(minAge = age, maxAge = age + 10)
+                    else -> Filters.createWithAgeRange(minAge = age - 10, maxAge = age)
                 }
                 filtersSource.setFilters(filters)
             }

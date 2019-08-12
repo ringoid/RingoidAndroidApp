@@ -25,6 +25,19 @@ data class Filters internal constructor(
 
         fun create(other: Filters): Filters =
             create(minAge = other.minAge, maxAge = other.maxAge, maxDistance = other.maxDistance)
+
+        fun createWithAgeRange(minAge: Int = DomainUtil.FILTER_MIN_AGE,
+                               maxAge: Int = DomainUtil.FILTER_MAX_AGE,
+                               maxDistance: Int = DomainUtil.FILTER_MAX_DISTANCE,
+                               ageRange: Int = DomainUtil.FILTER_AGE_MIN_RANGE): Filters {
+            val filters = create(minAge = minAge, maxAge = maxAge, maxDistance = maxDistance)
+            val ageDiff = filters.maxAge - filters.minAge
+            return if (ageDiff < ageRange) create(minAge = minAge, maxAge = maxAge + ageRange - ageDiff, maxDistance = maxDistance)
+                   else filters
+        }
+
+        fun createWithAgeRange(other: Filters, ageRange: Int = DomainUtil.FILTER_AGE_MIN_RANGE): Filters =
+            createWithAgeRange(minAge = other.minAge, maxAge = other.maxAge, maxDistance = other.maxDistance, ageRange = ageRange)
     }
 }
 

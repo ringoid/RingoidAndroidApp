@@ -247,7 +247,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         val filters = getFilters()
         filters
             .takeIf { it != NoFilters }
-            ?.let { Filters.create(it) }
+            ?.let { Filters.createWithAgeRange(it) }
             ?.takeIf { it != filters }  // filters has been fixed up to respect boundaries
             ?.let { setFilters(it) }
     }

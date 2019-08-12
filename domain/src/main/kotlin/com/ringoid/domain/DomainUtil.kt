@@ -24,6 +24,7 @@ object DomainUtil {
     const val CLIPBOARD_KEY_CUSTOMER_ID = "customerId"
     const val CLIPBOARD_KEY_DEBUG = "debug"
 
+    const val FILTER_AGE_MIN_RANGE = 4
     const val FILTER_MIN_AGE = 18
     const val FILTER_MAX_AGE = 55
     const val FILTER_MIN_DISTANCE = 1000
