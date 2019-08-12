@@ -25,6 +25,7 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
     private var isSliding: Boolean = false
     private var slideCounter: Int = 0
     private var slideListener: OnSlideUpListener? = null
+    private var slideOneShot: Boolean = true
 
     init {
         with (rootView.ll_top_sheet) {
@@ -75,6 +76,7 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
                     DebugLogUtil.d("Filters popup state: $newState")
                     stateHistory.add(newState)
                     isSliding = newState == TopSheetBehavior.STATE_SETTLING
+                    slideOneShot = isSliding
                     l?.invoke(newState)
                 }
 
@@ -82,7 +84,8 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
                     if (isSliding) {
                         slideHistory.add(slideOffset)
                         ++slideCounter
-                        if (slideHistory.size >= SLIDE_NUMBER && slideCounter >= SLIDE_NUMBER) {
+                        if (slideOneShot && slideHistory.size >= SLIDE_NUMBER && slideCounter >= SLIDE_NUMBER) {
+                            slideOneShot = false
                             val delta = slideHistory.peekFirst() - slideHistory.peekLast()
                             slideListener?.onSlideUp(delta >= 0)
                         }
