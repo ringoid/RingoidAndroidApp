@@ -35,7 +35,10 @@ abstract class BaseSettingsViewModel(
                 add("${gender.short()}")
             }
         }
-        val reportText = "*${ageGenderStr.joinToString(" ").trim()}* from `$tag`\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt ($daysAgo)"}"
+        // profile properties
+        val profile = spm.getUserProfileProperties()
+        val city = profile.whereLive.takeIf { it.isNotBlank() }?.let { " @ `$it`" } ?: ""
+        val reportText = "*${ageGenderStr.joinToString(" ").trim()}* from `$tag`$city\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt ($daysAgo)"}"
 
         val channelId = when (gender) {
             Gender.FEMALE -> "CL9ATCU3B"
