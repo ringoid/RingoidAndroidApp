@@ -14,6 +14,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.misc.UserProfilePropertiesRaw
+import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.user.AccessToken
@@ -248,8 +249,17 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         filters
             .takeIf { it != NoFilters }
             ?.let { Filters.createWithAgeRange(it) }
-            ?.takeIf { it != filters }  // filters has been fixed up to respect boundaries
-            ?.let { setFilters(it) }
+            ?.let { fixupFilters ->
+                // if filters out of bounds - use unconstrained filters
+                if (fixupFilters == EmptyFilters) {
+                    setFilters(NoFilters)
+                    return@let
+                }
+                // filters has been fixed up to respect boundaries
+                if (fixupFilters != filters) {
+                    setFilters(fixupFilters)
+                }
+            }
     }
 
     override fun hasFiltersApplied(): Boolean = getFilters() != NoFilters
