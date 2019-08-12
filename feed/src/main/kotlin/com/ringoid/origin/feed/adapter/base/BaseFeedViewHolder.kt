@@ -417,10 +417,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         withAbout = !model.about().isNullOrBlank()
 
-        (model.name() ?: AppInMemory.genderString(model.gender))
+        (model.name()?.takeIf { it.isNotBlank() } ?: AppInMemory.genderString(model.gender))
             ?.let { name ->
                 mutableListOf<String>().apply {
-                    add(name)
+                    add(name.trim())
                     model.age.takeIf { it >= 18 }?.let { age -> add("$age") }
                 }
                 .let { itemView.tv_name_age.text = it.joinToString() }

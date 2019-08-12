@@ -56,11 +56,13 @@ internal object FeedScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.COMPANY_JOB_TITLE -> {
-                if (!properties.company().isNullOrBlank() || !properties.jobTitle().isNullOrBlank()) {
+            UserProfilePropertyId.COMPANY_JOB_TITLE -> {  // custom text property
+                val company = properties.company()
+                val jobTitle = properties.jobTitle()
+                if (!company.isNullOrBlank() || !jobTitle.isNullOrBlank()) {
                     val strList = mutableListOf<String>().apply {
-                        properties.jobTitle().takeIf { !it.isNullOrBlank() }?.let { add(it) }
-                        properties.company().takeIf { !it.isNullOrBlank() }?.let { add(it) }
+                        jobTitle.takeIf { !it.isNullOrBlank() }?.let { add(it.trim()) }
+                        company.takeIf { !it.isNullOrBlank() }?.let { add(it.trim()) }
                     }
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_company_job_white_18dp)
@@ -69,7 +71,8 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.DISTANCE -> {
-                if (!properties.distanceText.isNullOrBlank() && properties.distanceText != DomainUtil.BAD_PROPERTY) {
+                if (!properties.distanceText.isNullOrBlank() &&
+                    properties.distanceText != DomainUtil.BAD_PROPERTY) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_arrow_white_18dp)
                         setText(properties.distanceText)
@@ -120,19 +123,21 @@ internal object FeedScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.SOCIAL_INSTAGRAM -> {
-                if (!properties.instagram().isNullOrBlank()) {
+            UserProfilePropertyId.SOCIAL_INSTAGRAM -> {  // custom text property
+                val instagram = properties.instagram()
+                if (!instagram.isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
-                        setText("Instagram: ${properties.instagram()}")
+                        setText("Instagram: ${instagram.trim()}")
                     }
                 } else null
             }
-            UserProfilePropertyId.SOCIAL_TIKTOK -> {
-                if (!properties.tiktok().isNullOrBlank()) {
+            UserProfilePropertyId.SOCIAL_TIKTOK -> {  // custom text property
+                val tiktok = properties.tiktok()
+                if (!tiktok.isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
-                        setText("TikTok: ${properties.tiktok()}")
+                        setText("TikTok: ${tiktok.trim()}")
                     }
                 } else null
             }
@@ -145,19 +150,21 @@ internal object FeedScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.UNIVERSITY -> {
-                if (!properties.university().isNullOrBlank()) {
+            UserProfilePropertyId.UNIVERSITY -> {  // custom text property
+                val university = properties.university()
+                if (!university.isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_education_white_18dp)
-                        setText(properties.university())
+                        setText(university.trim())
                     }
                 } else null
             }
-            UserProfilePropertyId.WHERE_LIVE -> {
-                if (!properties.whereLive().isNullOrBlank()) {
+            UserProfilePropertyId.WHERE_LIVE -> {  // custom text property
+                val whereLive = properties.whereLive()
+                if (!whereLive.isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_marker_white_18dp)
-                        setText(properties.whereLive())
+                        setText(whereLive.trim())
                     }
                 } else null
             }

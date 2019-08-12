@@ -60,11 +60,13 @@ internal object UserProfileScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.COMPANY_JOB_TITLE -> {
-                if (properties.company().isNotBlank() || properties.jobTitle().isNotBlank()) {
+            UserProfilePropertyId.COMPANY_JOB_TITLE -> {  // custom text property
+                val company = properties.company()
+                val jobTitle = properties.jobTitle()
+                if (company.isNotBlank() || jobTitle.isNotBlank()) {
                     val strList = mutableListOf<String>().apply {
-                        properties.jobTitle().takeIf { it.isNotBlank() }?.let { add(it) }
-                        properties.company().takeIf { it.isNotBlank() }?.let { add(it) }
+                        jobTitle.takeIf { it.isNotBlank() }?.let { add(it.trim()) }
+                        company.takeIf { it.isNotBlank() }?.let { add(it.trim()) }
                     }
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_company_job_white_18dp)
@@ -147,11 +149,12 @@ internal object UserProfileScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.SOCIAL_INSTAGRAM -> {
-                if (properties.instagram().isNotBlank()) {
+            UserProfilePropertyId.SOCIAL_INSTAGRAM -> {  // custom text property
+                val instagram = properties.instagram()
+                if (instagram.isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
-                        setText("Instagram: ${properties.instagram()}")
+                        setText("Instagram: ${instagram.trim()}")
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
@@ -160,11 +163,12 @@ internal object UserProfileScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.SOCIAL_TIKTOK -> {
-                if (properties.tiktok().isNotBlank()) {
+            UserProfilePropertyId.SOCIAL_TIKTOK -> {  // custom text property
+                val tiktok = properties.tiktok()
+                if (tiktok.isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
-                        setText("TikTok: ${properties.tiktok()}")
+                        setText("TikTok: ${tiktok.trim()}")
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
@@ -186,11 +190,12 @@ internal object UserProfileScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.UNIVERSITY -> {
-                if (properties.university().isNotBlank()) {
+            UserProfilePropertyId.UNIVERSITY -> {  // custom text property
+                val university = properties.university()
+                if (university.isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_education_white_18dp)
-                        setText(properties.university())
+                        setText(university.trim())
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
@@ -199,11 +204,12 @@ internal object UserProfileScreenUtils {
                     }
                 } else null
             }
-            UserProfilePropertyId.WHERE_LIVE -> {
-                if (properties.whereLive().isNotBlank()) {
+            UserProfilePropertyId.WHERE_LIVE -> {  // custom text property
+                val whereLive = properties.whereLive()
+                if (whereLive.isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_marker_white_18dp)
-                        setText(properties.whereLive())
+                        setText(whereLive.trim())
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
