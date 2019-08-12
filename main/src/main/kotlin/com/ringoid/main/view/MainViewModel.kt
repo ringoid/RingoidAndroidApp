@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
@@ -115,8 +114,8 @@ class MainViewModel @Inject constructor(
 
         // filters not set, use default ones
         if (filtersSource.getFilters() == NoFilters) {
-            val yearOfBirth = spm.currentUserYearOfBirth()
-            if (yearOfBirth != DomainUtil.UNKNOWN_VALUE) {
+            if (spm.hasUserYearOfBirth()) {
+                val yearOfBirth = spm.currentUserYearOfBirth()
                 val age = age(yearOfBirth, app.calendar)
                 val filters = when (spm.currentUserGender()) {
                     Gender.FEMALE -> Filters.createWithAgeRange(minAge = age, maxAge = age + 10)
