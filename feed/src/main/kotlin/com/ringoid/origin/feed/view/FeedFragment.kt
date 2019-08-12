@@ -94,7 +94,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     }
                 }
             }
-            is ViewState.IDLE -> onIdleState()
+            is ViewState.IDLE -> {
+                fl_empty_container?.changeVisibility(isVisible = false)
+                showLoading(isVisible = false)
+            }
             is ViewState.LOADING -> showLoading(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
@@ -220,11 +223,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onEmptyLabelClick() {
         // click on empty screen label should open filters popup
         filtersPopupWidget?.show()
-    }
-
-    private fun onIdleState() {
-        fl_empty_container?.changeVisibility(isVisible = false)
-        showLoading(isVisible = false)
     }
 
     internal fun showLoading(isVisible: Boolean) {
