@@ -14,8 +14,8 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.misc.UserProfilePropertiesRaw
-import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.feed.Filters
+import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
@@ -212,7 +212,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         Gender.from(sharedPreferences.getString(SP_KEY_AUTH_USER_GENDER, "") ?: "")
 
     override fun currentUserYearOfBirth(): Int =
-        sharedPreferences.getInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, DomainUtil.BAD_VALUE)
+        sharedPreferences.getInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, DomainUtil.UNKNOWN_VALUE)
 
     override fun hasUserCreateTs(): Boolean = currentUserCreateTs() != 0L
 

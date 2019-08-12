@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
@@ -112,14 +113,17 @@ class MainViewModel @Inject constructor(
         FiltersInMemoryCache.restore(spm)
         SentryUtil.setUser(spm)
 
+        // filters not set, use default ones
         if (filtersSource.getFilters() == NoFilters) {
-            // filters not set, use default ones
-            val age = age(spm.currentUserYearOfBirth(), app.calendar)
-            val filters = when (spm.currentUserGender()) {
-                Gender.FEMALE -> Filters.create(minAge = age, maxAge = age + 10)
-                else -> Filters.create(minAge = age - 10, maxAge = age)
+            val yearOfBirth = spm.currentUserYearOfBirth()
+            if (yearOfBirth != DomainUtil.UNKNOWN_VALUE) {
+                val age = age(yearOfBirth, app.calendar)
+                val filters = when (spm.currentUserGender()) {
+                    Gender.FEMALE -> Filters.create(minAge = age, maxAge = age + 10)
+                    else -> Filters.create(minAge = age - 10, maxAge = age)
+                }
+                filtersSource.setFilters(filters)
             }
-            filtersSource.setFilters(filters)
         }
     }
 
