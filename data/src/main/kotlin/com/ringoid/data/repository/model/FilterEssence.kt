@@ -45,14 +45,12 @@ class FilterEssence private constructor(
             val essence = FilterEssence(
                 minAge = maxOf(minAge, DomainUtil.FILTER_MIN_AGE),
                 maxAge = maxOf(maxAge, DomainUtil.FILTER_MIN_AGE),
-                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE)
-            )
+                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE))
 
             return FilterEssence(
                 minAge = essence.minAge.takeIf { it < DomainUtil.FILTER_MAX_AGE } ?: DomainUtil.UNKNOWN_VALUE,
                 maxAge = essence.maxAge.takeIf { it < DomainUtil.FILTER_MAX_AGE } ?: DomainUtil.UNKNOWN_VALUE,
-                maxDistance = essence.maxDistance.takeIf { it < DomainUtil.FILTER_MAX_DISTANCE }
-                    ?: DomainUtil.UNKNOWN_VALUE)
+                maxDistance = essence.maxDistance.takeIf { it < DomainUtil.FILTER_MAX_DISTANCE } ?: DomainUtil.UNKNOWN_VALUE)
         }
 
         fun default(): FilterEssence = create()

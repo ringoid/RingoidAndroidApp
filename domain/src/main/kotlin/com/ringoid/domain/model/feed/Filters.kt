@@ -19,9 +19,12 @@ data class Filters internal constructor(
                    maxAge: Int = DomainUtil.FILTER_MAX_AGE,
                    maxDistance: Int = DomainUtil.FILTER_MAX_DISTANCE): Filters =
             Filters(
-                minAge = maxOf(minAge, DomainUtil.FILTER_MIN_AGE),
-                maxAge = maxOf(maxAge, DomainUtil.FILTER_MIN_AGE),
-                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE))
+                minAge = minOf(maxOf(minAge, DomainUtil.FILTER_MIN_AGE), DomainUtil.FILTER_MAX_AGE),
+                maxAge = minOf(maxOf(maxAge, DomainUtil.FILTER_MIN_AGE), DomainUtil.FILTER_MAX_AGE),
+                maxDistance = minOf(maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE), DomainUtil.FILTER_MAX_DISTANCE))
+
+        fun create(other: Filters): Filters =
+            create(minAge = other.minAge, maxAge = other.maxAge, maxDistance = other.maxDistance)
     }
 }
 

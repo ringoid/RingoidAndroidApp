@@ -42,6 +42,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         }
 
         DebugLogUtil.setConfig(config)
+        checkAndFixFilters()
     }
 
     companion object {
@@ -242,6 +243,15 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     /* Filters */
     // --------------------------------------------------------------------------------------------
+    private fun checkAndFixFilters() {
+        val filters = getFilters()
+        filters
+            .takeIf { it != NoFilters }
+            ?.let { Filters.create(it) }
+            ?.takeIf { it != filters }  // filters has been fixed up to respect boundaries
+            ?.let { setFilters(it) }
+    }
+
     override fun hasFiltersApplied(): Boolean = getFilters() != NoFilters
 
     override fun getFilters(): Filters =
