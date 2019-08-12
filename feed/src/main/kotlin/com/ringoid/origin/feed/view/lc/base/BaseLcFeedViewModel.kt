@@ -20,10 +20,10 @@ import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
-import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.LmmSlice
+import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.REFRESH
@@ -146,6 +146,10 @@ abstract class BaseLcFeedViewModel(
                 }
                 Timber.v("Feed [${getSourceFeed().feedName}] after transfer: ${list.joinToString("\n\t\t", "\n\t\t", transform = { it.id })}")
                 feed.value = list  // prepended list
+
+                if (list.isNotEmpty()) {
+                    viewState.value = ViewState.IDLE
+                }
             }
             .autoDisposable(this)
             .subscribe({ action?.invoke() }, Timber::e)
