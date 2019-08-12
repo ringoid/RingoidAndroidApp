@@ -5,6 +5,8 @@
 
     <string name="channel_id_default" translatable="false">fcm_default_push_channel</string>
 
+    <string name="facebook_app_id" translatable="false">289431595281128</string>
+
     <string name="web_url_licenses" translatable="false">https://ringoid.com/licenses-android.html</string>
     <string name="web_url_privacy" translatable="false">https://ringoid.com/privacy.html</string>
     <string name="web_url_terms" translatable="false">https://ringoid.com/terms.html</string>

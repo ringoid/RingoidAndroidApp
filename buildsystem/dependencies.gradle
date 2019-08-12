@@ -72,6 +72,7 @@ ext {
 //            deeplinkProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkVersion}",
             deeplink:          "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch:eb7e520d87",
             deeplinkProcessor: "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch-processor:eb7e520d87",
+            facebook:          "com.facebook.android:facebook-android-sdk:${facebookVersion}",
             firebase:          "com.google.firebase:firebase-core:${firebaseVersion}",
             firebaseMessaging: "com.google.firebase:firebase-messaging:$firebaseMessagingVersion",
             firebasePerformance: "com.google.firebase:firebase-perf:${firebasePerformanceVersion}",
@@ -507,6 +508,7 @@ ext {
     // ------------------------------------------
     baseDependencies = [
         [configuration: "api", dependency: d_libs.eventBus],
+        [configuration: "api", dependency: d_libs.facebook],
         [configuration: "api", dependency: d_libs.firebase],
         [configuration: "api", dependency: d_libs.flurry],
     ]
