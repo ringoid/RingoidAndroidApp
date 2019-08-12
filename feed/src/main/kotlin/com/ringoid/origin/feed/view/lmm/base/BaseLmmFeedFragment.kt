@@ -159,7 +159,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     // ------------------------------------------
     internal fun clearScreen(mode: Int) {
         invalidateScrollCaches()  // clear cached positions in offset scrolls strategies on clear feed
-        vm.clearScreen(mode)
+        onClearState(mode)
     }
 
     internal fun transferProfile(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null) {

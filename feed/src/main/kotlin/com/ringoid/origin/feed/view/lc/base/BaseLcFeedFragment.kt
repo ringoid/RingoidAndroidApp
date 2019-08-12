@@ -102,12 +102,13 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             }
             observe(vm.refreshOnPush) { showRefreshPopup(isVisible = it) }
         }
-        vm.clearScreen(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // LC feed is initially purged
     }
 
     @Suppress("AutoDispose", "CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // LC feed is initially purged
+
         // refresh by click on 'tap to refresh' popup
         btn_refresh_popup.clicks().compose(clickDebounce()).subscribe {
             filtersPopupWidget?.hide()

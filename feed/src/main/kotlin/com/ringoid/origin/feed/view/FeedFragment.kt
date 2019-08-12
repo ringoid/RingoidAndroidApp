@@ -100,7 +100,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
     }
 
-    private fun onClearState(mode: Int) {
+    protected fun onClearState(mode: Int) {
         fun showEmptyStub(input: EmptyFragment.Companion.Input? = null) {
             fl_empty_container?.let {
                 it.changeVisibility(isVisible = true)
@@ -113,12 +113,15 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
-        vm.onClearScreen()
         toolbarWidget?.removeScrollFlags()  // prevent toolbar from scrolling while in CLEAR state
         getEmptyStateInput(mode)?.let {
             showEmptyStub(input = it)
             showLoading(isVisible = false)
         } ?: run { fl_empty_container?.changeVisibility(isVisible = false) }
+
+        if (isViewModelInitialized) {
+            vm.onClearScreen()
+        }
     }
 
     private fun getVisibleItems(excludedId: String? = null): List<FeedItemVO> =

@@ -120,15 +120,11 @@ abstract class FeedViewModel(
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
-    internal fun clearScreen(mode: Int) {
-        viewActionObjectBackup.clear()
-        viewState.value = ViewState.CLEAR(mode)
-    }
-
     internal fun onClearScreen() {
         DebugLogUtil.v("On clear ${getFeedName()} feed")
         horizontalPrevRanges.clear()
         verticalPrevRange = null
+        viewActionObjectBackup.clear()
     }
 
     override fun onLocationReceived(handleCode: Int) {
@@ -148,7 +144,9 @@ abstract class FeedViewModel(
                 countUserImagesUseCase.source()
                     .doOnSuccess {
                         if (checkImagesCount(it)) {
-                            clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge feed on refresh, before fetching a new one
+                            // purge feed on refresh, before fetching a new one
+                            viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_DEFAULT)
+                            viewActionObjectBackup.clear()
                             getFeed()
                         } else {
                             viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
