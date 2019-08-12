@@ -11,7 +11,7 @@ import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 
-@Database(version = 200,
+@Database(version = 201,
           entities = [ActionObjectDbo::class, ImageDbo::class,
                       MessageDbo::class, FeedItemDbo::class])
 abstract class RingoidDatabase : RoomDatabase() {
