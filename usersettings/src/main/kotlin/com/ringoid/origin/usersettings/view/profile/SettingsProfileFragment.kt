@@ -265,15 +265,15 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
 
     // ------------------------------------------
     private fun onAboutTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_about(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_about(text = it.toString().trim()) }
     }
 
     private fun onCompanyTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_company(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_company(text = it.toString().trim()) }
     }
 
     private fun onJobTitleTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_jobTitle(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_jobTitle(text = it.toString().trim()) }
     }
 
     private fun onHeightTextChange(heightStr: CharSequence) {
@@ -281,22 +281,22 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onNameTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_name(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_name(text = it.toString().trim()) }
     }
 
     private fun onSocialInstagramTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_socialInstagram(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_socialInstagram(text = it.toString().trim()) }
     }
 
     private fun onSocialTikTokTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_socialTikTok(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_socialTikTok(text = it.toString().trim()) }
     }
 
     private fun onUniversityTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_university(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_university(text = it.toString().trim()) }
     }
 
     private fun onWhereLiveTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_whereLive(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_whereLive(text = it.toString().trim()) }
     }
 }
