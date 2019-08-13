@@ -79,7 +79,7 @@ buildscript {
         testVersion = '1.1.0'
         testCoreVersion = '1.0.0'
 
-        buildGradleVersion = '3.4.0'
+        buildGradleVersion = '3.5.0-rc03'
         crashlyticsVersion = '2.9.4@aar'
         googleServicesVersion = '4.0.1'
         leakCanaryVersion = '2.0-alpha-2'
