@@ -428,7 +428,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     private fun onRefresh(): Boolean =
         if (!connectionManager.isNetworkAvailable()) {
-            showLoading(isVisible = false)
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
             noConnection(this@FeedFragment)
             false
         } else {
