@@ -20,7 +20,7 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
-import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
+import com.ringoid.origin.feed.view.NO_IMAGES_IN_USER_PROFILE
 import com.ringoid.origin.feed.view.lmm.CLEAR_AND_REFRESH_EXCEPT
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
@@ -74,7 +74,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                      * current Feed stops refreshing if there is no images in user's profile, it is
                      * also needed to stop refreshing for all the other Lmm's Feeds as well.
                      */
-                    is NO_IMAGES_IN_PROFILE ->
+                    is NO_IMAGES_IN_USER_PROFILE ->
                         communicator(ILmmFragment::class.java)?.accessViewModel()
                             ?.let {
                                 it.viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)

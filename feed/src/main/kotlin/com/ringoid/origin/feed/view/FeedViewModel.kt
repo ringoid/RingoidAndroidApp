@@ -149,7 +149,7 @@ abstract class FeedViewModel(
                             viewActionObjectBackup.clear()
                             getFeed()
                         } else {
-                            viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+                            viewState.value = ViewState.DONE(NO_IMAGES_IN_USER_PROFILE)
                         }
                     })
             .autoDisposable(this)
@@ -171,7 +171,7 @@ abstract class FeedViewModel(
     internal fun onBeforeLike(): Boolean =
         if (userInMemoryCache.userImagesCount() > 0) true
         else {
-            viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+            viewState.value = ViewState.DONE(NO_IMAGES_IN_USER_PROFILE)
             false
         }
 

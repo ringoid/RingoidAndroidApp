@@ -79,7 +79,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 when (newState.residual) {
                     is ASK_TO_ENABLE_LOCATION_SERVICE -> showLoading(isVisible = false)
                     is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
-                    is NO_IMAGES_IN_PROFILE -> {
+                    is NO_IMAGES_IN_USER_PROFILE -> {
                         Dialogs.showTextDialog(activity,
                             descriptionResId = getAddPhotoDialogDescriptionResId(),
                             positiveBtnLabelResId = OriginR_string.button_add_photo,
