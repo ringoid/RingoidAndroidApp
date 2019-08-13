@@ -26,7 +26,6 @@ import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.ON_TRANSFER_PROFILE_COMPLETE
@@ -203,7 +202,7 @@ abstract class BaseLcFeedViewModel(
     internal fun onTapToRefreshClick() {
         analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
         refreshOnPush.value = false  // drop value on each LC feed, when user taps on 'tap to refresh' popup on any LC feed
-        viewState.value = ViewState.DONE(REFRESH)
+        onShowAllWithoutFilters()
     }
 
     // ------------------------------------------
