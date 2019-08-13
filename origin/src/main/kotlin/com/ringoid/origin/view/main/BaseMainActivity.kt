@@ -147,17 +147,25 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             openTabByName(tabName = NavigateFrom.MAIN_TAB_PROFILE)
         }
 
+        fun openMainTab(tab: NavTab? = null) {
+            if (tab == null) {
+                openExploreTab()
+                return
+            }
+
+            when (tab) {
+                NavTab.EXPLORE -> openExploreTab()
+                NavTab.LIKES -> openLikesTab()
+                NavTab.MESSAGES -> openMessagesTab()
+                NavTab.PROFILE -> openProfileTab()
+            }
+        }
+
         fun openInitialTab() {
             savedInstanceState?.getSerializable(BUNDLE_KEY_CURRENT_TAB)
-                ?.let {
-                    when (it) {
-                        NavTab.EXPLORE -> openExploreTab()
-                        NavTab.LIKES -> openLikesTab()
-                        NavTab.MESSAGES -> openMessagesTab()
-                        NavTab.PROFILE -> openProfileTab()
-                    }
-                }
-                ?: run { openExploreTab() }
+                ?.let { it as? NavTab }
+                ?.let { openMainTab(tab = it) }
+                ?: run { openMainTab(tab = bottom_bar.selectedItem) }
         }
 
         Timber.d("Intent data: ${intent.extras?.toJsonObject()}")
