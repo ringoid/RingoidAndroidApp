@@ -53,7 +53,7 @@ import dagger.android.AndroidInjector
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,// DeeplinkDiModule::class,
+@Component(modules = [AndroidInjectionModule::class, ApplicationModule::class, DeeplinkDiModule::class,
                       /** Screen modules */
                       AboutDialogModule::class, BigEditTextDialogModule::class,
                       BlockBottomSheetActivityModule::class, BlockBottomSheetDialogModule::class,
