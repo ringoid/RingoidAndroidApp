@@ -144,8 +144,6 @@ abstract class FeedViewModel(
                 countUserImagesUseCase.source()
                     .doOnSuccess {
                         if (checkImagesCount(it)) {
-                            // purge feed on refresh, before fetching a new one
-                            viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_DEFAULT)
                             viewActionObjectBackup.clear()
                             getFeed()
                         } else {
