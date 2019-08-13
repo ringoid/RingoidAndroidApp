@@ -8,7 +8,6 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
-import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
 import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.view.filters.BaseFiltersFragment
@@ -44,7 +43,6 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
                             setCountOfFilteredFeedItems(count = it.show)
                             setTotalNotFilteredFeedItems(count = it.show + it.hidden)
                         }
-                    is NO_IMAGES_IN_PROFILE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
                     /**
                      * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
                      * have been seen by user, so it's time to hide red badge on a corresponding Lmm tab.

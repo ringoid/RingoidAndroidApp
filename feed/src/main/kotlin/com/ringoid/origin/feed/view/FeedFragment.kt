@@ -85,7 +85,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                             positiveBtnLabelResId = OriginR_string.button_add_photo,
                             negativeBtnLabelResId = OriginR_string.button_later,
                             positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })
-                        showLoading(isVisible = false)
+
+                        onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
                     }
                     is REFRESH -> {
                         onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
