@@ -19,6 +19,7 @@ import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.feed.view.NO_IMAGES_IN_USER_PROFILE
 import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
@@ -71,6 +72,11 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is DISCARD_PROFILES -> onDiscardMultipleProfilesState(profileIds = (newState.residual as DISCARD_PROFILES).profileIds)
+                    is NO_IMAGES_IN_USER_PROFILE -> {
+                        if (feedAdapter.isEmpty()) {
+                            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                        }
+                    }
                 }
             }
             is ViewState.ERROR -> {
