@@ -32,11 +32,6 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.CLEAR -> {
-                if (newState.mode != ViewState.CLEAR.MODE_CHANGE_FILTERS) {
-                    setDefaultToolbarTitle()
-                }
-            }
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is LC_FEED_COUNTS ->
@@ -61,6 +56,13 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
                         }
                     }
             }
+        }
+    }
+
+    override fun onClearState(mode: Int) {
+        super.onClearState(mode)
+        if (mode != ViewState.CLEAR.MODE_CHANGE_FILTERS) {
+            setDefaultToolbarTitle()
         }
     }
 

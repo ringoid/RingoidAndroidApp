@@ -105,7 +105,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
     }
 
-    protected fun onClearState(mode: Int) {
+    protected open fun onClearState(mode: Int) {
         fun showEmptyStub(input: EmptyFragment.Companion.Input? = null) {
             fl_empty_container?.let {
                 it.changeVisibility(isVisible = true)
