@@ -1,5 +1,6 @@
 package com.ringoid.main.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
@@ -66,6 +67,13 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
 
         savedInstanceState?.let {
             markForRecreation = it.getBoolean(BUNDLE_KEY_FLAG_MARK_FOR_RECREATION, false)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (isStopped) {
+            vm.onAppReOpen()
         }
     }
 

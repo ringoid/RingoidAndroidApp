@@ -73,7 +73,7 @@ class UserProfileFragmentViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
+    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         onRefresh()  // app reopen leads Profile screen to refresh

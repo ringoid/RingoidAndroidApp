@@ -286,7 +286,7 @@ abstract class BaseLcFeedViewModel(
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
+    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application reopen [${getFeedName()}]")

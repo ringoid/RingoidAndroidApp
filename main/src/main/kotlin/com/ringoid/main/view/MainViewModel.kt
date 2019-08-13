@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -135,8 +136,7 @@ class MainViewModel @Inject constructor(
             .subscribe({}, Timber::e)
     }
 
-    override fun onAppReOpen() {
-        super.onAppReOpen()
+    internal fun onAppReOpen() {
         onEachAppStart()
     }
 
@@ -167,6 +167,11 @@ class MainViewModel @Inject constructor(
     private fun onEachAppStart() {
         applyReferralCodeIfAny()
         updateUserSettings()
+    }
+
+    override fun onPushOpen() {
+        super.onPushOpen()
+        analyticsManager.fire(Analytics.PUSH_OPEN)
     }
 
     private fun applyReferralCodeIfAny() {

@@ -102,9 +102,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         processExtras(intent, savedInstanceState)
-        if (isStopped) {
-            vm.onAppReOpen()
-        }
     }
 
     override fun onStart() {
