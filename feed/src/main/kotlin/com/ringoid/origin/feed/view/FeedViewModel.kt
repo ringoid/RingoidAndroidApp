@@ -160,7 +160,7 @@ abstract class FeedViewModel(
 
     protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
-    protected fun refresh() {
+    internal fun refresh() {
         viewState.value = ViewState.DONE(REFRESH)
     }
 
