@@ -19,6 +19,7 @@
     <string name="common_clipboard">Скопировано в буфер</string>
     <string name="common_compose_email">Отправить Email</string>
     <string name="common_distance_km">%d км</string>
+    <string name="common_distance_plus_km">%d&#43; км</string>
     <string name="common_online">Онлайн</string>
     <string name="common_pull_to_refresh">Потяни, чтобы обновить</string>
     <string name="common_sex_male">Мужчина</string>

@@ -122,6 +122,8 @@ object AppRes {
         private set
     var FILTER_DISTANCE_KM = ""
         private set
+    var FILTER_DISTANCE_PLUS_KM = ""
+        private set
     var FILTER_BUTTON_APPLY = ""
         private set
     var FILTER_BUTTON_SHOW_ALL = ""
@@ -239,6 +241,7 @@ object AppRes {
         with (resources) {
             FILTER_AGE = getString(R.string.common_age_range)
             FILTER_DISTANCE_KM = getString(R.string.common_distance_km)
+            FILTER_DISTANCE_PLUS_KM = getString(R.string.common_distance_plus_km)
             FILTER_BUTTON_APPLY = getString(R.string.button_filter)
             FILTER_BUTTON_SHOW_ALL = getString(R.string.button_show_all)
             LENGTH_CM = getString(R.string.value_cm)

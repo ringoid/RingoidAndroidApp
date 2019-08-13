@@ -19,6 +19,7 @@
     <string name="common_clipboard">Copied to clipboard</string>
     <string name="common_compose_email">Send Email</string>
     <string name="common_distance_km">%d km</string>
+    <string name="common_distance_plus_km">%d&#43; km</string>
     <string name="common_online">Online</string>
     <string name="common_pull_to_refresh">Pull to refresh</string>
     <string name="common_sex_male">Male</string>

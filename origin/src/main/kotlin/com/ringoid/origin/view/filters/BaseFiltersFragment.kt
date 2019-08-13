@@ -98,7 +98,8 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
 
     private fun displayDistance(thumbValue: Int) {
         val distanceValue = thumbValue * STEP_DISTANCE
-        val valueStr = String.format(AppRes.FILTER_DISTANCE_KM, distanceValue / 1000)  // display in kilometers
-        tv_distance.text = if (thumbValue >= seekbar_distance.max) "$valueStr+" else valueStr
+        val fmt = if (thumbValue >= seekbar_distance.max) AppRes.FILTER_DISTANCE_PLUS_KM
+                  else AppRes.FILTER_DISTANCE_KM
+        tv_distance.text = String.format(fmt, distanceValue / 1000)  // display in kilometers
     }
 }
