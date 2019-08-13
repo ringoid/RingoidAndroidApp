@@ -1,6 +1,9 @@
 rootProject.appPlugins.each {
     apply plugin: it
 }
+if (!project.hasProperty("disable-firebase-performance-plugin")) {
+    apply plugin: 'com.google.firebase.firebase-perf'
+}
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }

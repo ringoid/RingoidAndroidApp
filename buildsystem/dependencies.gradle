@@ -356,7 +356,7 @@ ext {
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAnnotation,
         xPlugins.fabric,
-        xPlugins.firebasePerf,
+//        xPlugins.firebasePerf,  // ruled via property parameter
     ]
 
     appPluginsAtBottom = [
