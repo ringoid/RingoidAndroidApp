@@ -308,9 +308,9 @@ ext {
     ]
 
     def autoDispose = [
-            [configuration: "api", dependency: d_rx.autoDispose],
-            [configuration: "api", dependency: d_rx.autoDisposeAC],
-            [configuration: "api", dependency: d_rx.autoDisposeKt],
+            [configuration: "implementation", dependency: d_rx.autoDispose],
+            [configuration: "implementation", dependency: d_rx.autoDisposeAC],
+            [configuration: "implementation", dependency: d_rx.autoDisposeKt],
     ]
 
     def view = [
@@ -358,8 +358,7 @@ ext {
         [configuration: "implementation", dependency: d_support.sentry],
     ]
     appDependencies += all_features + module_main + module_analytics + module_data + develop +
-                       android + dagger + deeplink + kotlin + log +
-                       fragnav + net + room + support
+                       android + autoDispose + dagger + deeplink + kotlin + log + fragnav + net + room + support
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -381,7 +380,8 @@ ext {
     mainDependencies = [
         [configuration: "implementation", dependency: d_libs.firebase],
     ]
-    mainDependencies += all_features + develop + module_analytics + android + arch + dagger + deeplink + kotlin + log + fragnav + rx + rxBind
+    mainDependencies += all_features + develop + module_analytics + android + arch + dagger +
+                        deeplink + autoDispose + kotlin + log + fragnav + rx + rxBind
 
     androidTestMainDeps = androidTest
     testMainDependencies = test
@@ -395,7 +395,8 @@ ext {
     /* User Settings */
     // ------------------------------------------
     userSettingsDependencies = []
-    userSettingsDependencies += module_origin + develop + module_analytics + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
+    userSettingsDependencies += module_origin + develop + module_analytics + android + arch +
+                                dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test
@@ -410,7 +411,8 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += module_origin + module_analytics + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
+    authDependencies += module_origin + module_analytics + develop + android + arch + dagger +
+                        deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
     testAuthDependencies = test
@@ -429,7 +431,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.gson]
     ]
     feedDependencies += module_messenger + module_origin + module_analytics + develop + android + arch + dagger + deeplink +
-                        image + kotlin + log + rx + rxBind
+                        autoDispose + image + kotlin + log + rx + rxBind
 
     androidTestFeedDeps = androidTest
     testFeedDependencies = test
@@ -444,7 +446,8 @@ ext {
     /* Feature ImagePreview */
     // ------------------------------------------
     imagePreviewDependencies = []
-    imagePreviewDependencies += module_origin + module_analytics + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
+    imagePreviewDependencies += module_origin + module_analytics + develop + android + arch +
+                                dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
     testImagePreviewDependencies = test
@@ -461,7 +464,8 @@ ext {
     messengerDependencies = [
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    messengerDependencies += module_origin + develop + module_analytics + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
+    messengerDependencies += module_origin + develop + module_analytics + android + arch + dagger +
+                             deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test
@@ -476,7 +480,8 @@ ext {
     /* Feature Profile */
     // ------------------------------------------
     profileDependencies = []
-    profileDependencies += module_origin + develop + module_analytics + android + arch + dagger + deeplink + kotlin + image + log + rx + rxBind
+    profileDependencies += module_origin + develop + module_analytics + android + arch + dagger +
+                           deeplink + kotlin + autoDispose + image + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
@@ -502,8 +507,8 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += develop + module_analytics + android + arch + dagger + deeplink + kotlin + image + log + fragnav + rx + rxBind +
-                          support + view
+    originDependencies += develop + module_analytics + android + arch + dagger + deeplink + kotlin +
+                          autoDispose + image + log + fragnav + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
