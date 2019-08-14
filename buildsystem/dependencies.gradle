@@ -175,29 +175,28 @@ ext {
             topsheet: ':topsheet',
     ]
 
-    def module_auth = [[configuration: "implementation", dependency: project(modules.auth)]]
-    def module_feed = [[configuration: "implementation", dependency: project(modules.feed)]]
-    def module_imagePreview = [[configuration: "implementation", dependency: project(modules.imagePreview)]]
-    def module_messenger = [[configuration: "implementation", dependency: project(modules.messenger)]]
-    def module_profile = [[configuration: "implementation", dependency: project(modules.profile)]]
-    def module_userSettings = [[configuration: "implementation", dependency: project(modules.userSettings)]]
+    def Auth = [[configuration: "implementation", dependency: project(modules.auth)]]
+    def Feed = [[configuration: "implementation", dependency: project(modules.feed)]]
+    def ImagePreview = [[configuration: "implementation", dependency: project(modules.imagePreview)]]
+    def Messenger = [[configuration: "implementation", dependency: project(modules.messenger)]]
+    def Profile = [[configuration: "implementation", dependency: project(modules.profile)]]
+    def UserSettings = [[configuration: "implementation", dependency: project(modules.userSettings)]]
 
-    def module_main = [[configuration: "implementation", dependency: project(modules.main)]]
-    def module_origin = [[configuration: "implementation", dependency: project(modules.origin)]]
-    def module_analytics = [[configuration: "implementation", dependency: project(modules.analytcis)]]
-    def module_base = [[configuration: "implementation", dependency: project(modules.base)]]
+    def Main = [[configuration: "implementation", dependency: project(modules.main)]]
+    def Origin = [[configuration: "implementation", dependency: project(modules.origin)]]
+    def Analytics = [[configuration: "implementation", dependency: project(modules.analytcis)]]
+    def Base = [[configuration: "implementation", dependency: project(modules.base)]]
 
-    def module_data = [[configuration: "implementation", dependency: project(modules.data)]]
-    def module_datainterface = [[configuration: "implementation", dependency: project(modules.datainterface)]]
-    def module_repository = [[configuration: "implementation", dependency: project(modules.repository)]]
-    def module_domain = [[configuration: "implementation", dependency: project(modules.domain)]]
+    def Data = [[configuration: "implementation", dependency: project(modules.data)]]
+    def DataInterface = [[configuration: "implementation", dependency: project(modules.datainterface)]]
+    def Repository = [[configuration: "implementation", dependency: project(modules.repository)]]
+    def Domain = [[configuration: "implementation", dependency: project(modules.domain)]]
 
-    def module_utility = [[configuration: "implementation", dependency: project(modules.utility)]]
-    def module_widget = [[configuration: "implementation", dependency: project(modules.widget)]]
+    def Utility = [[configuration: "implementation", dependency: project(modules.utility)]]
+    def Widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
-    def develop = module_base + module_domain + module_utility + module_widget
-    def all_features = module_auth + module_feed + module_imagePreview + module_messenger + module_profile +
-                       module_userSettings + module_origin
+    def develop = Base + Domain + Utility + Widget
+    def all_features = Auth + Feed + ImagePreview + Messenger + Profile + UserSettings + Origin
 
     /* Plugins */
     // --------------------------------------------------------------------------------------------
@@ -352,7 +351,7 @@ ext {
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += all_features + module_main + module_analytics + module_data + develop +
+    appDependencies += all_features + Main + Analytics + Data + develop +
                        android + autoDispose + dagger + deeplink + kotlin + log + leaks + fragnav +
                        net + room + support
 
@@ -377,7 +376,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.firebase],
     ]
-    mainDependencies += all_features + develop + module_analytics + android + arch + dagger +
+    mainDependencies += all_features + develop + Analytics + android + arch + dagger +
                         deeplink + autoDispose + kotlin + log + fragnav + rx + rxBind
 
     androidTestMainDeps = androidTest
@@ -394,7 +393,7 @@ ext {
     userSettingsDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus]
     ]
-    userSettingsDependencies += module_origin + develop + module_analytics + android + arch +
+    userSettingsDependencies += Origin + develop + Analytics + android + arch +
                                 dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
@@ -410,7 +409,7 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += module_origin + module_analytics + develop + android + arch + dagger +
+    authDependencies += Origin + Analytics + develop + android + arch + dagger +
                         deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
@@ -431,7 +430,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    feedDependencies += module_messenger + module_origin + module_analytics + develop + android + arch + dagger + deeplink +
+    feedDependencies += Messenger + Origin + Analytics + develop + android + arch + dagger + deeplink +
                         autoDispose + kotlin + log + rx + rxBind + view
 
     androidTestFeedDeps = androidTest
@@ -449,7 +448,7 @@ ext {
     imagePreviewDependencies = [
         [configuration: "implementation", dependency: project(modules.cropiwa)]
     ]
-    imagePreviewDependencies += module_origin + module_analytics + develop + android + arch +
+    imagePreviewDependencies += Origin + Analytics + develop + android + arch +
                                 dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
@@ -469,7 +468,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    messengerDependencies += module_origin + develop + module_analytics + android + arch + dagger +
+    messengerDependencies += Origin + develop + Analytics + android + arch + dagger +
                              deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
@@ -489,7 +488,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
     ]
-    profileDependencies += module_origin + develop + module_analytics + android + arch + dagger +
+    profileDependencies += Origin + develop + Analytics + android + arch + dagger +
                            deeplink + kotlin + autoDispose + log + rx + rxBind + view
 
     androidTestProfileDeps = androidTest
@@ -515,7 +514,7 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += develop + module_analytics + android + arch + dagger + deeplink + kotlin +
+    originDependencies += develop + Analytics + android + arch + dagger + deeplink + kotlin +
                           autoDispose + log + fragnav + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
@@ -541,7 +540,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebase],
         [configuration: "implementation", dependency: d_libs.flurry],
     ]
-    analyticsDependencies += module_domain + android + dagger + kotlin + log
+    analyticsDependencies += Domain + android + dagger + kotlin + log
     testAnalyticsDependencies = test
 
     analyticsPlugins = [
@@ -555,7 +554,7 @@ ext {
     baseDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    baseDependencies += module_analytics + module_domain + module_utility + module_widget + android + arch + dagger +
+    baseDependencies += Analytics + Domain + Utility + Widget + android + arch + dagger +
                         deeplink + kotlin + google + log + autoDispose + rx + rxBind + leaks
 
     androidTestBaseDeps = androidTest
@@ -576,7 +575,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    dataDependencies += module_domain + module_utility + kotlin + dagger + log + autoDispose + net + room + rx
+    dataDependencies += Domain + Utility + kotlin + dagger + log + autoDispose + net + room + rx
     testDataDependencies = test
 
     dataPlugins = [
@@ -587,7 +586,7 @@ ext {
 
     /* Data Interface */
     // ------------------------------------------
-    dataInterfaceDependencies = module_domain + kotlin + rx
+    dataInterfaceDependencies = Domain + kotlin + rx
     testDataInterfaceDependencies = test
 
     dataInterfacePlugins = [
@@ -602,7 +601,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_support.sentry]
     ]
-    domainDependencies += module_utility + kotlin + dagger + log + autoDispose + rx
+    domainDependencies += Utility + kotlin + dagger + log + autoDispose + rx
     testDomainDependencies = test
 
     domainPlugins = [
@@ -614,7 +613,7 @@ ext {
     /* Repository */
     // ------------------------------------------
     repositoryDependencies = []
-    repositoryDependencies += module_domain + kotlin + dagger + log + rx
+    repositoryDependencies += Domain + kotlin + dagger + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [
@@ -641,7 +640,7 @@ ext {
     /* Widget */
     // ------------------------------------------
     widgetDependencies = []
-    widgetDependencies += module_utility + android + kotlin + log + rx + rxBind
+    widgetDependencies += Utility + android + kotlin + log + rx + rxBind
     testWidgetDependencies = test
 
     widgetPlugins = [
