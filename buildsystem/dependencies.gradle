@@ -379,6 +379,7 @@ ext {
     /* Main */
     // ------------------------------------------
     mainDependencies = [
+        [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.firebase],
     ]
     mainDependencies += all_features + develop + module_analytics + android + arch + dagger +
@@ -395,7 +396,9 @@ ext {
 
     /* User Settings */
     // ------------------------------------------
-    userSettingsDependencies = []
+    userSettingsDependencies = [
+        [configuration: "implementation", dependency: d_libs.eventBus]
+    ]
     userSettingsDependencies += module_origin + develop + module_analytics + android + arch +
                                 dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
 
@@ -429,7 +432,8 @@ ext {
     // ------------------------------------------
     feedDependencies = [
         [configuration: "implementation", dependency: project(modules.topsheet)],
-        [configuration: "implementation", dependency: d_libs.gson]
+        [configuration: "implementation", dependency: d_libs.gson],
+        [configuration: "implementation", dependency: d_libs.eventBus],
     ]
     feedDependencies += module_messenger + module_origin + module_analytics + develop + android + arch + dagger + deeplink +
                         autoDispose + image + kotlin + log + rx + rxBind
@@ -463,6 +467,7 @@ ext {
     /* Feature Messenger */
     // ------------------------------------------
     messengerDependencies = [
+        [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
     messengerDependencies += module_origin + develop + module_analytics + android + arch + dagger +
@@ -480,7 +485,9 @@ ext {
     
     /* Feature Profile */
     // ------------------------------------------
-    profileDependencies = []
+    profileDependencies = [
+        [configuration: "implementation", dependency: d_libs.eventBus],
+    ]
     profileDependencies += module_origin + develop + module_analytics + android + arch + dagger +
                            deeplink + kotlin + autoDispose + image + log + rx + rxBind
 
@@ -546,7 +553,7 @@ ext {
     /* Base */
     // ------------------------------------------
     baseDependencies = [
-        [configuration: "api", dependency: d_libs.eventBus],
+        [configuration: "implementation", dependency: d_libs.eventBus],
     ]
     baseDependencies += module_analytics + module_domain + module_utility + module_widget + android + arch + dagger +
                         deeplink + kotlin + google + log + autoDispose + rx + rxBind + leaks
