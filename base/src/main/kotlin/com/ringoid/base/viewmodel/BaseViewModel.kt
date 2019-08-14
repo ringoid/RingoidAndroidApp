@@ -6,11 +6,11 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.analytics.AnalyticsManager
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.livedata.ActiveMutableLiveData
-import com.ringoid.base.manager.analytics.AnalyticsManager
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.action_storage.IActionObjectPool

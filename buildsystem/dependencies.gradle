@@ -354,8 +354,10 @@ ext {
     appDependencies = [
         [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_android.install],
+        [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += all_features + module_main + module_data + develop + android + dagger + deeplink + kotlin + log +
+    appDependencies += all_features + module_main + module_analytics + module_data + develop +
+                       android + dagger + deeplink + kotlin + log +
                        fragnav + net + room + support
 
     androidTestAppDeps = androidTest
@@ -376,7 +378,7 @@ ext {
     /* Main */
     // ------------------------------------------
     mainDependencies = []
-    mainDependencies += all_features + develop + android + arch + dagger + deeplink + kotlin + log + fragnav + rx + rxBind
+    mainDependencies += all_features + develop + module_analytics + android + arch + dagger + deeplink + kotlin + log + fragnav + rx + rxBind
 
     androidTestMainDeps = androidTest
     testMainDependencies = test
@@ -390,7 +392,7 @@ ext {
     /* User Settings */
     // ------------------------------------------
     userSettingsDependencies = []
-    userSettingsDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
+    userSettingsDependencies += module_origin + develop + module_analytics + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test
@@ -405,7 +407,7 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
+    authDependencies += module_origin + module_analytics + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
     testAuthDependencies = test
@@ -423,7 +425,7 @@ ext {
         [configuration: "api", dependency: project(modules.topsheet)],
         [configuration: "implementation", dependency: d_libs.gson]
     ]
-    feedDependencies += module_messenger + module_origin + develop + android + arch + dagger + deeplink +
+    feedDependencies += module_messenger + module_origin + module_analytics + develop + android + arch + dagger + deeplink +
                         image + kotlin + log + rx + rxBind
 
     androidTestFeedDeps = androidTest
@@ -439,7 +441,7 @@ ext {
     /* Feature ImagePreview */
     // ------------------------------------------
     imagePreviewDependencies = []
-    imagePreviewDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
+    imagePreviewDependencies += module_origin + module_analytics + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
     testImagePreviewDependencies = test
@@ -456,7 +458,7 @@ ext {
     messengerDependencies = [
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    messengerDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
+    messengerDependencies += module_origin + develop + module_analytics + android + arch + dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test
@@ -471,7 +473,7 @@ ext {
     /* Feature Profile */
     // ------------------------------------------
     profileDependencies = []
-    profileDependencies += module_origin + develop + android + arch + dagger + deeplink + kotlin + image + log + rx + rxBind
+    profileDependencies += module_origin + develop + module_analytics + android + arch + dagger + deeplink + kotlin + image + log + rx + rxBind
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
@@ -497,7 +499,7 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += develop + android + arch + dagger + deeplink + kotlin + image + log + fragnav + rx + rxBind +
+    originDependencies += develop + module_analytics + android + arch + dagger + deeplink + kotlin + image + log + fragnav + rx + rxBind +
                           support + view
 
     androidTestOriginDeps = androidTest
@@ -540,7 +542,7 @@ ext {
         [configuration: "api", dependency: d_libs.firebase],
         [configuration: "api", dependency: d_libs.flurry],
     ]
-    baseDependencies += module_domain + module_utility + module_widget + android + arch + dagger +
+    baseDependencies += module_analytics + module_domain + module_utility + module_widget + android + arch + dagger +
                         deeplink + kotlin + google + log + autoDispose + rx + rxBind + leaks
 
     androidTestBaseDeps = androidTest

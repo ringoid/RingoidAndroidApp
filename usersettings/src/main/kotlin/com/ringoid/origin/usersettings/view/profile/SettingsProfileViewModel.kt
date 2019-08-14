@@ -2,7 +2,7 @@ package com.ringoid.origin.usersettings.view.profile
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.manager.analytics.Analytics
+import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase

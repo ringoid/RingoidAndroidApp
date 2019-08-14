@@ -1,4 +1,4 @@
-package com.ringoid.base.manager.analytics
+package com.ringoid.analytics
 
 object Analytics {
     const val SCREEN_SIGN_UP = "SCREEN_SIGN_UP"

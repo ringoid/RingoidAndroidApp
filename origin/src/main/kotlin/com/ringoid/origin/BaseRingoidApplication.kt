@@ -20,7 +20,6 @@ import io.branch.referral.Branch
 import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
-import io.sentry.Sentry
 import leakcanary.LeakSentry
 import timber.log.Timber
 import java.io.IOException
@@ -108,8 +107,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
             .withContinueSessionMillis(10000)
             .withLogLevel(Log.VERBOSE)
             .build(this, com.ringoid.domain.BuildConfig.FLURRY_API_KEY)
-
-        Sentry.init(com.ringoid.domain.BuildConfig.SENTRY_DSN)
     }
 
     /* Resources */
