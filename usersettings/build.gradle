@@ -2,26 +2,6 @@ rootProject.userSettingsPlugins.each {
     apply plugin: it
 }
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.androidVersionCode
-        versionName rootProject.ext.androidVersionName
-        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    sourceSets {
-        main {
-            java.srcDirs += 'src/main/kotlin'
-        }
-    }
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

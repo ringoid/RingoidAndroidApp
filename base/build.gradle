@@ -3,29 +3,13 @@ rootProject.basePlugins.each {
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.androidVersionCode
-        versionName rootProject.ext.androidVersionName
-        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
-
         buildConfigField 'boolean', 'BACK_TO_GALLERY_FROM_IMAGE_PREVIEW', "$rootProject.ext.backToGalleryFromImagePreview"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    sourceSets {
-        main {
-            java.srcDirs += 'src/main/kotlin'
         }
     }
 }
