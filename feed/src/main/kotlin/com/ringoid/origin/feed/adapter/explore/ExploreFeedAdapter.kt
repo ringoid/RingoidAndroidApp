@@ -5,20 +5,21 @@ import android.widget.TextView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.origin.feed.OriginR_id
 import com.ringoid.origin.feed.R
-import com.ringoid.origin.feed.adapter.base.*
+import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
+import com.ringoid.origin.feed.adapter.base.FeedItemVODiffCallback
+import com.ringoid.origin.feed.adapter.base.OriginFeedViewHolder
 import com.ringoid.origin.feed.model.EmptyFeedItemVO
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.image.ImageRequest
 
-class ExploreFeedAdapter(imageLoader: ImageRequest) : BaseFeedAdapter(imageLoader, FeedItemVODiffCallback()) {
+class ExploreFeedAdapter : BaseFeedAdapter(FeedItemVODiffCallback()) {
 
     var onFooterLabelClickListener: (() -> Unit)?= null
 
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
 
     override fun instantiateViewHolder(view: View): OriginFeedViewHolder =
-        ExploreFeedViewHolder(view, viewPool = imagesViewPool, imageLoader = imageLoader)
+        ExploreFeedViewHolder(view, viewPool = imagesViewPool)
             .also { vh ->
                 vh.profileImageAdapter.itemDoubleClickListener = { model, position ->
                     onLikeImageListener?.invoke(model, position)

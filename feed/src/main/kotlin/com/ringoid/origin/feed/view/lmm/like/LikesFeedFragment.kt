@@ -12,7 +12,6 @@ import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.communicator
-import com.ringoid.utility.image.ImageRequest
 
 @Deprecated("LMM -> LC")
 class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
@@ -24,7 +23,7 @@ class LikesFeedFragment : BaseLmmFeedFragment<LikesFeedViewModel>() {
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
 
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
-        LikeFeedAdapter(ImageRequest(context!!)).apply {
+        LikeFeedAdapter().apply {
             onLikeImageListener = { model: ProfileImageVO, _ /** feed item position */: Int ->
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@LikesFeedFragment)

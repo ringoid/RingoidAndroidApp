@@ -8,11 +8,10 @@ import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.rv_item_lmm_profile.view.*
 
-class MessagesFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
-    : LmmViewHolder(view, viewPool, imageLoader) {
+class MessagesFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
+    : LmmViewHolder(view, viewPool) {
 
     override fun bind(model: FeedItemVO) {
         super.bind(model)

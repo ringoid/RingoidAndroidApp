@@ -256,12 +256,6 @@ ext {
             [configuration: "implementation", dependency: d_libs.fragNav]
     ]
 
-    def image = [
-            [configuration: "api", dependency: d_libs.glideAnnotation],
-            [configuration: "kapt", dependency: d_libs.glideCompiler],
-            [configuration: "implementation", dependency: d_libs.glide],
-    ]
-
     def google = [
             [configuration: "implementation", dependency: d_google.googlePlayServices],
             [configuration: "implementation", dependency: d_google.googlePlayServicesAds],
@@ -635,7 +629,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.jodaTime],
     ]
-    utilityDependencies += android + kotlin + image + log + rx
+    utilityDependencies += android + kotlin + log + rx
     testUtilityDependencies = test
 
     utilityPlugins = [

@@ -18,7 +18,6 @@ import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
-import com.ringoid.utility.image.ImageRequest
 import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -52,7 +51,7 @@ abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledV
     override fun getCurrentImagePosition(): Int = 0
 }
 
-abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null, imageLoader: ImageRequest)
+abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : OriginFeedViewHolder(view, viewPool) {
 
     override var onBeforeLikeListener: (() -> Boolean)? = null

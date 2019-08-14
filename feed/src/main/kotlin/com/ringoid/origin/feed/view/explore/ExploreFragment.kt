@@ -26,7 +26,6 @@ import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.getAttributeColor
-import com.ringoid.utility.image.ImageRequest
 
 class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
@@ -35,7 +34,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     }
 
     override fun createFeedAdapter(): BaseFeedAdapter =
-        ExploreFeedAdapter(ImageRequest(context!!)).apply {
+        ExploreFeedAdapter().apply {
             onFooterLabelClickListener = { onEmptyLabelClick() }
             onLikeImageListener = { model: ProfileImageVO, _ /** image position */ ->
                 if (!connectionManager.isNetworkAvailable()) {

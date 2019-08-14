@@ -11,7 +11,6 @@ import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.communicator
-import com.ringoid.utility.image.ImageRequest
 
 @Deprecated("LMM -> LC")
 class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
@@ -23,7 +22,7 @@ class MatchesFeedFragment : BaseMatchesFeedFragment<MatchesFeedViewModel>() {
     override fun getVmClass(): Class<MatchesFeedViewModel> = MatchesFeedViewModel::class.java
 
     override fun instantiateFeedAdapter(): BaseLmmAdapter =
-        MessagesFeedAdapter(ImageRequest(context!!)).apply {
+        MessagesFeedAdapter().apply {
             onImageToOpenChatClickListener = { model: ProfileImageVO, feedItemPosition: Int ->
                 openChat(position = feedItemPosition, peerId = model.profileId, image = model.image)
             }

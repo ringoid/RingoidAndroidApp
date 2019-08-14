@@ -8,9 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
-import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
@@ -40,7 +37,6 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.*
-import com.ringoid.utility.image.ImageRequest
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
 import kotlinx.android.synthetic.main.fragment_profile_2.*
@@ -62,7 +58,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     private var handleRequestToAddImage: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
-    private lateinit var imagePreloadListener: RecyclerViewPreloader<UserImage>
     private val pageSelectListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
@@ -148,7 +143,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imagesAdapter = UserProfileImageAdapter(ImageRequest(context!!))
+        imagesAdapter = UserProfileImageAdapter()
             .apply {
                 onInsertListener = { count ->
                     showEmptyStub(needShow = count <= 0)
@@ -170,8 +165,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
                 itemClickListener = { _, _ -> navigate(this@UserProfileFragment, path = "/settings_profile") }
             }
-
-        imagePreloadListener = RecyclerViewPreloader(Glide.with(this), imagesAdapter, ViewPreloadSizeProvider<UserImage>(), 10)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -353,7 +346,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING)
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(pageSelectListener)
-            addOnScrollListener(imagePreloadListener)
         }
         tv_app_title.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
     }
@@ -362,7 +354,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         super.onDestroyView()
         with (rv_items) {
             removeOnScrollListener(pageSelectListener)
-            removeOnScrollListener(imagePreloadListener)
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View) {}
 

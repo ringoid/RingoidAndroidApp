@@ -46,7 +46,6 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.getAttributeColor
-import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
@@ -59,7 +58,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun getVmClass(): Class<MessagesFeedViewModel> = MessagesFeedViewModel::class.java
 
     override fun createFeedAdapter(): BaseLmmAdapter =
-        MessagesFeedAdapter(ImageRequest(context!!)).apply {
+        MessagesFeedAdapter().apply {
             messageClickListener = { model: FeedItem, position: Int, positionOfImage: Int ->
                 openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
             }

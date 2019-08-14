@@ -28,7 +28,6 @@ import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.getAttributeColor
-import com.ringoid.utility.image.ImageRequest
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
@@ -40,7 +39,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
     override fun getVmClass(): Class<LikesFeedViewModel> = LikesFeedViewModel::class.java
 
     override fun createFeedAdapter(): BaseLmmAdapter =
-        LikeFeedAdapter(ImageRequest(context!!)).apply {
+        LikeFeedAdapter().apply {
             onLikeImageListener = { model: ProfileImageVO, _ /** feed item position */: Int ->
                 if (!connectionManager.isNetworkAvailable()) {
                     noConnection(this@LikesFeedFragment)
