@@ -450,7 +450,9 @@ ext {
 
     /* Feature ImagePreview */
     // ------------------------------------------
-    imagePreviewDependencies = []
+    imagePreviewDependencies = [
+        [configuration: "implementation", dependency: project(modules.cropiwa)]
+    ]
     imagePreviewDependencies += module_origin + module_analytics + develop + android + arch +
                                 dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
 
@@ -504,8 +506,8 @@ ext {
     /* Origin - base feature */
     // ------------------------------------------
     originDependencies = [
-//        [configuration: "api", dependency: d_libs.cropiwa],
-        [configuration: "api", dependency: project(modules.cropiwa)],
+//        [configuration: "implementation", dependency: d_libs.cropiwa],
+        [configuration: "implementation", dependency: project(modules.cropiwa)],
         [configuration: "api", dependency: d_libs.glideRecycler, options: { transitive = true }],
         [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_libs.confetti],

@@ -11,6 +11,8 @@ import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.origin.GlideApp
+import com.ringoid.origin.imagepreview.OriginR_id
+import com.ringoid.origin.imagepreview.OriginR_menu
 import com.ringoid.origin.imagepreview.OriginR_string
 import com.ringoid.origin.imagepreview.R
 import com.ringoid.origin.navigation.ExternalNavigator
@@ -92,10 +94,10 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
-            inflateMenu(com.ringoid.origin.R.menu.menu_done)
+            inflateMenu(OriginR_menu.menu_done)
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    com.ringoid.origin.R.id.menu_done -> { cropImage() ; true }
+                    OriginR_id.menu_done -> { cropImage() ; true }
                     else -> false
                 }
             }
