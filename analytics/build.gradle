@@ -1,0 +1,17 @@
+rootProject.analyticsPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def analyticsDependencies = rootProject.ext.analyticsDependencies
+    def testAnalyticsDependencies = rootProject.ext.testAnalyticsDependencies
+
+    analyticsDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testAnalyticsDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

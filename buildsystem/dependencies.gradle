@@ -157,9 +157,10 @@ ext {
             profile:      ':profile',
             userSettings: ':usersettings',
 
-            main:    ':main',       // -+- [ :main ]
-            origin:  ':origin',     //  ^- [ :origin ]
-            base:    ':base',       //  ^- [ :base ]
+            main:      ':main',       // -+- [ :main ]
+            origin:    ':origin',     //  ^- [ :origin ]
+            analytcis: ':analytics',
+            base:      ':base',       //  ^- [ :base ]
 
             data:    ':data',                  // -+- [ :data ]
             datainterface:  ':datainterface',  //  ^- [ :datainterface ] -+-
@@ -183,6 +184,7 @@ ext {
 
     def module_main = [[configuration: "implementation", dependency: project(modules.main)]]
     def module_origin = [[configuration: "implementation", dependency: project(modules.origin)]]
+    def module_analytics = [[configuration: "implementation", dependency: project(modules.analytcis)]]
     def module_base = [[configuration: "implementation", dependency: project(modules.base)]]
 
     def module_data = [[configuration: "implementation", dependency: project(modules.data)]]
@@ -514,6 +516,22 @@ ext {
         xPlugins.kotlinAnnotation,
     ]
 
+    /* Analytics */
+    // ------------------------------------------
+    analyticsDependencies = [
+        [configuration: "implementation", dependency: d_libs.facebook],
+        [configuration: "implementation", dependency: d_libs.firebase],
+        [configuration: "implementation", dependency: d_libs.flurry],
+    ]
+    analyticsDependencies += module_domain + android + dagger + kotlin + log
+    testAnalyticsDependencies = test
+
+    analyticsPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAnnotation,
+    ]
+
     /* Base */
     // ------------------------------------------
     baseDependencies = [
@@ -522,8 +540,8 @@ ext {
         [configuration: "api", dependency: d_libs.firebase],
         [configuration: "api", dependency: d_libs.flurry],
     ]
-    baseDependencies += module_domain + module_utility + module_widget + android + arch + dagger + deeplink + kotlin +
-                        google + log + autoDispose + rx + rxBind + leaks
+    baseDependencies += module_domain + module_utility + module_widget + android + arch + dagger +
+                        deeplink + kotlin + google + log + autoDispose + rx + rxBind + leaks
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test

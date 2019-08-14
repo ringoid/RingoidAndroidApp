@@ -1,4 +1,5 @@
 include ':app',
+        ':analytics',
         ':auth',
         ':base',
         ':data',
