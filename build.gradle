@@ -1,4 +1,5 @@
 apply from: 'buildsystem/dependencies.gradle'
+apply from: 'buildsystem/projectDependencyGraph.gradle'
 
 enum Environment {
     DEVELOP('com.ringoid.dating.develop', 'Ringoid Test', '"https://test.ringoidapp.com"', "-test"),
