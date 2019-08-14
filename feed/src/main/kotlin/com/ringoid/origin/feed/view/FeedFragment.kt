@@ -7,6 +7,7 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.techisfun.android.topsheet.TopSheetBehavior
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.view.ViewState
@@ -22,13 +23,17 @@ import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.feed.view.widget.FiltersPopupWidget
+import com.ringoid.origin.feed.view.widget.ToolbarWidget
 import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
@@ -40,18 +45,24 @@ import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
-abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
+abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmptyScreenCallback {
 
     protected lateinit var feedAdapter: BaseFeedAdapter
         private set
     private lateinit var feedTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
 
+    protected var filtersPopupWidget: FiltersPopupWidget? = null
+    protected var toolbarWidget: ToolbarWidget? = null
+
+    // ------------------------------------------
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
 
     protected abstract fun createFeedAdapter(): BaseFeedAdapter
+    protected abstract fun createFiltersFragment(): BaseFiltersFragment<*>
     @StringRes protected abstract fun getAddPhotoDialogDescriptionResId(): Int
+    @StringRes protected abstract fun getToolbarTitleResId(): Int
 
     protected abstract fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input?
 
@@ -68,28 +79,33 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 when (newState.residual) {
                     is ASK_TO_ENABLE_LOCATION_SERVICE -> showLoading(isVisible = false)
                     is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
-                    is NO_IMAGES_IN_PROFILE -> {
+                    is NO_IMAGES_IN_USER_PROFILE -> {
                         Dialogs.showTextDialog(activity,
                             descriptionResId = getAddPhotoDialogDescriptionResId(),
                             positiveBtnLabelResId = OriginR_string.button_add_photo,
                             negativeBtnLabelResId = OriginR_string.button_later,
                             positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })
+
                         showLoading(isVisible = false)
                     }
                     is REFRESH -> {
+                        // purge feed on refresh, before fetching a new one
                         onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
                         showLoading(isVisible = true)
                         onRefresh()
                     }
                 }
             }
-            is ViewState.IDLE -> onIdleState()
+            is ViewState.IDLE -> {
+                fl_empty_container?.changeVisibility(isVisible = false)
+                showLoading(isVisible = false)
+            }
             is ViewState.LOADING -> showLoading(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
         }
     }
 
-    private fun onClearState(mode: Int) {
+    protected open fun onClearState(mode: Int) {
         fun showEmptyStub(input: EmptyFragment.Companion.Input? = null) {
             fl_empty_container?.let {
                 it.changeVisibility(isVisible = true)
@@ -102,11 +118,15 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         }
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
-        vm.onClearScreen()
+        toolbarWidget?.removeScrollFlags()  // prevent toolbar from scrolling while in CLEAR state
         getEmptyStateInput(mode)?.let {
             showEmptyStub(input = it)
             showLoading(isVisible = false)
         } ?: run { fl_empty_container?.changeVisibility(isVisible = false) }
+
+        if (isViewModelInitialized) {
+            vm.onClearScreen()
+        }
     }
 
     private fun getVisibleItems(excludedId: String? = null): List<FeedItemVO> =
@@ -145,7 +165,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             }
     }
 
-    protected fun onDiscardProfileState(profileId: String): FeedItemVO? =
+    protected open fun onDiscardProfileState(profileId: String): FeedItemVO? =
         feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
                 val count = feedAdapter.getModelsCount()
@@ -202,14 +222,26 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 //        }
     }
 
-    private fun onIdleState() {
-        showLoading(isVisible = false)
+    override fun onEmptyLabelClick() {
+        // click on empty screen label should open filters popup
+        filtersPopupWidget?.show()
     }
 
     internal fun showLoading(isVisible: Boolean) {
         swipe_refresh_layout
             ?.takeIf { isVisible != it.isRefreshing }  // change visibility w/o interruption of animation, if any
             ?.let { it.isRefreshing = isVisible }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    override fun onBeforeTabSelect() {
+        super.onBeforeTabSelect()
+        filtersPopupWidget?.hide()
+    }
+
+    override fun onTabTransaction(payload: String?) {
+        super.onTabTransaction(payload)
+        toolbarWidget?.show(isVisible = true)  // switch back on any Feed should show toolbar, if was hide
     }
 
     /* Lifecycle */
@@ -219,7 +251,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
         feedAdapter = createFeedAdapter().apply {
             onBeforeLikeListener = { vm.onBeforeLike() }
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
-            onScrollHorizontalListener = { showRefreshPopup(isVisible = false) }
+            onScrollHorizontalListener = {
+                showRefreshPopup(isVisible = false)
+                toolbarWidget?.show(isVisible = false)
+            }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 vm.onSettingsClick(model.id)
                 val image = model.images[positionOfImage]
@@ -266,10 +301,60 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        fun onExpandFilters() {
+            toolbarWidget?.collapse()
+            overlay.changeVisibility(isVisible = true)
+            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
+        }
+
+        fun onHideFilters() {
+            toolbarWidget?.expand()
+            overlay.changeVisibility(isVisible = false)
+            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
+        }
+
         super.onViewCreated(view, savedInstanceState)
-        rv_items.apply {
+        filtersPopupWidget = FiltersPopupWidget(view) {
+            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
+                ?.let { it as? BaseFiltersFragment<*> }
+                ?.requestFiltersForUpdate()
+        }
+        .apply {
+            setOnSlideUpListener(object : FiltersPopupWidget.OnSlideUpListener {
+                override fun onSlideUp(isSlidingUp: Boolean) {
+                    if (isSlidingUp) {
+                        onHideFilters()
+                    } else {
+                        onExpandFilters()
+                    }
+                }
+            })
+            setOnStateChangedListener { newState ->
+                when (newState) {
+                    TopSheetBehavior.STATE_EXPANDED -> onExpandFilters()
+                    TopSheetBehavior.STATE_COLLAPSED,
+                    TopSheetBehavior.STATE_HIDDEN -> onHideFilters()
+                    // TopSheetBehavior.STATE_DRAGGING and
+                    // TopSheetBehavior.STATE_SETTLING handled internally
+                }
+            }
+        }
+        toolbarWidget = ToolbarWidget(view).init { toolbar ->
+            with (toolbar) {
+                setTitle(getToolbarTitleResId())
+                inflateMenu(R.menu.feed_toolbar_menu)
+                setOnClickListener { filtersPopupWidget?.show() }
+                setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.filters -> { filtersPopupWidget?.show(); true }
+                        else -> false
+                    }
+                }
+            }
+        }
+
+        with (rv_items) {
             adapter = feedAdapter
-            isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
             itemAnimator = FeedItemAnimator()
             setHasFixedSize(true)
@@ -279,16 +364,28 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             addOnScrollListener(topScrollListener)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
-        swipe_refresh_layout.apply {
+        with (swipe_refresh_layout) {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
-            refreshes().compose(clickDebounce()).subscribe {
-                if (onRefresh()) {
-                    onRefreshGesture()  // refresh checks have passed
-                }
-            }
+            refreshes().compose(clickDebounce()).subscribe { onRefreshGesture() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
+
+        // top sheet
+        with (overlay) {
+            setOnTouchListener { _, _ -> filtersPopupWidget?.hide(); true }
+        }
+        if (savedInstanceState == null) {
+            childFragmentManager
+                .beginTransaction()
+                .replace(R.id.fl_content, createFiltersFragment(), BaseFiltersFragment.TAG)
+                .commitNow()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        toolbarWidget?.show(isVisible = true)
     }
 
     override fun onResume() {
@@ -328,12 +425,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     // --------------------------------------------------------------------------------------------
     protected open fun onRefreshGesture() {
-        // override in subclasses
+        // purge feed on refresh, before fetching a new one
+        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
+        onRefresh()  // should be the last action in subclasses, if overridden
     }
 
     private fun onRefresh(): Boolean =
         if (!connectionManager.isNetworkAvailable()) {
-            showLoading(isVisible = false)
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
             noConnection(this@FeedFragment)
             false
         } else {
@@ -349,7 +448,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
             true
         }
 
-    // ------------------------------------------
     protected fun showRefreshPopup(isVisible: Boolean) {
         btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.refreshOnPush.value == true)
     }
@@ -384,6 +482,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
 
     protected open fun getOffsetScrollStrategies(): List<OffsetScrollStrategy> =
         listOf(OffsetScrollStrategy(tag = "dot tabs bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_TABS_INDICATOR_BOTTOM2, hide = FeedViewHolderHideTabsIndicatorOnScroll, show = FeedViewHolderShowTabsIndicatorOnScroll),
+               OffsetScrollStrategy(tag = "footer", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_FOOTER_LABEL_BOTTOM, hide = FeedFooterViewHolderHideControls, show = FeedFooterViewHolderShowControls),
                OffsetScrollStrategy(tag = "online bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_BOTTOM, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
                OffsetScrollStrategy(tag = "settings bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
                OffsetScrollStrategy(tag = "prop about bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_ABOUT_BOTTOM, hide = FeedViewHolderHideAboutOnScroll, show = FeedViewHolderShowAboutOnScroll),
@@ -399,7 +498,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
                 rv.linearLayoutManager()?.let {
                     val from = it.findFirstVisibleItemPosition()
                     val to = it.findLastVisibleItemPosition()
-                    for (i in from..to) processItemView(i, it.findViewByPosition(i))
+                    val top = getTopBorderForOffsetScroll()
+                    val bottom = getBottomBorderForOffsetScroll() - (if (dy < 0) AppRes.FEED_TOOLBAR_HEIGHT else 0)
+                    for (i in from..to) {
+                        processItemView(i, it.findViewByPosition(i), top, bottom)
+                    }
                 }
             }
 
@@ -517,10 +620,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
     protected open fun getTopBorderForOffsetScroll(): Int = -2000000000  // no top border by default
 
     // helper method
-    private fun processItemView(position: Int, view: View?) {
-        view?.let {
-            processItemViewControlVisibility(position, view, getTopBorderForOffsetScroll(), getBottomBorderForOffsetScroll())
-        }
+    private fun processItemView(position: Int, view: View?, top: Int, bottom: Int) {
+        view?.let { processItemViewControlVisibility(position, view, top, bottom) }
     }
 
     /**
@@ -534,7 +635,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>() {
          */
         offsetScrollStrats.forEach { it.forgetPosition(position) }
         // apply strategies on item at position, regardless of whether that position has been affected before
-        rv_items.linearLayoutManager()?.let { processItemView(position, it.findViewByPosition(position)) }
+        rv_items.linearLayoutManager()?.let {
+            val top = getTopBorderForOffsetScroll()
+            val bottom = getBottomBorderForOffsetScroll() - (if (toolbarWidget?.isShow() == true) AppRes.FEED_TOOLBAR_HEIGHT else 0)
+            processItemView(position, it.findViewByPosition(position), top, bottom)
+        }
     }
 
     // ------------------------------------------

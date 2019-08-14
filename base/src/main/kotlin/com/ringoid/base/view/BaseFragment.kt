@@ -10,6 +10,8 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.ringoid.base.IBaseRingoidApplication
+import com.ringoid.base.navigation.AppScreen
+import com.ringoid.base.navigation.NavigationRegistry
 import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
@@ -51,6 +53,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
     @LayoutRes protected abstract fun getLayoutId(): Int
+
+    protected open fun appScreen(): AppScreen = AppScreen.UNKNOWN
 
     fun setLastTabTransactionPayload(payload: String?) {
         lastTabTransactionPayload = payload
@@ -198,6 +202,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
             vm.onFreshStart()
             isOnFreshStart = false
         }
+        NavigationRegistry.recordCurrentScreen(screen = appScreen())
         vm.onStart()
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
@@ -24,6 +25,8 @@ class SettingsPushFragment : BaseSettingsFragment<SettingsPushViewModel>() {
     override fun getVmClass(): Class<SettingsPushViewModel> = SettingsPushViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings_push
+
+    override fun appScreen(): AppScreen = AppScreen.SETTINGS_PUSH
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {

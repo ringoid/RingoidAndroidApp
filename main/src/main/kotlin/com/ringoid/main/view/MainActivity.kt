@@ -1,10 +1,13 @@
 package com.ringoid.main.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ringoid.base.deeplink.AppNav
+import com.ringoid.base.eventbus.Bus
+import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugOnly
@@ -21,8 +24,14 @@ import com.ringoid.origin.view.particles.*
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
 
+    companion object {
+        private const val BUNDLE_KEY_FLAG_MARK_FOR_RECREATION = "bundle_key_flag_mark_for_recreation"
+    }
+
     private var currentLocale: String? = null
     @StyleRes private var currentThemeResId: Int = 0
+
+    private var markForRecreation: Boolean = false
 
     override fun getVmClass() = MainViewModel::class.java
 
@@ -55,13 +64,29 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         AppUtils.checkForGooglePlayServices(this)
         initializeFirebase()
         initializeParticleAnimation()
+
+        savedInstanceState?.let {
+            markForRecreation = it.getBoolean(BUNDLE_KEY_FLAG_MARK_FOR_RECREATION, false)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (isStopped) {
+            vm.onAppReOpen()
+        }
     }
 
     override fun onStart() {
         super.onStart()
+        if (markForRecreation) {
+            markForRecreation = false
+            Bus.post(BusEvent.RecreateMainScreen)
+        }
         if (currentLocale != app.localeManager.getLang() ||
             currentThemeResId != spm.getThemeResId(defaultThemeResId = currentThemeResId)) {
             AppRes.initTranslatableStrings(resources)  // translate strings if locale has changed
+            markForRecreation = true
             recreate()  // locale or theme has changed outside, in some another Activity
         }
     }
@@ -69,6 +94,11 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     override fun onResume() {
         super.onResume()
         AppUtils.checkForGooglePlayServices(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(BUNDLE_KEY_FLAG_MARK_FOR_RECREATION, markForRecreation)
     }
 
     // --------------------------------------------------------------------------------------------

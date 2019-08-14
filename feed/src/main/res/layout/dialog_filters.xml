@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_top_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?refColorBg"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/std_margin_48"
+    app:layout_behavior="com.github.techisfun.android.topsheet.TopSheetBehavior">
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_show_all"
+            android:paddingStart="@dimen/std_margin_16"
+            android:paddingEnd="@dimen/std_margin_16"
+            android:text="@string/button_show_all_init"
+            android:textStyle="bold"
+            style="@style/FlatButton.Primary"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btn_apply_filters"
+            android:paddingStart="@dimen/std_margin_16"
+            android:paddingEnd="@dimen/std_margin_16"
+            android:text="@string/button_discover"
+            android:textStyle="bold"
+            style="@style/FlatButton.Primary"/>
+    </LinearLayout>
+</LinearLayout>

@@ -8,8 +8,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.base.eventbus.Bus
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
@@ -22,7 +20,7 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
-import com.ringoid.origin.feed.view.NO_IMAGES_IN_PROFILE
+import com.ringoid.origin.feed.view.NO_IMAGES_IN_USER_PROFILE
 import com.ringoid.origin.feed.view.lmm.CLEAR_AND_REFRESH_EXCEPT
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
@@ -33,6 +31,7 @@ import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.IDialogCallback
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
@@ -51,6 +50,8 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                 openChat(position = position, peerId = model.id, image = model.images[positionOfImage])
             }
         }
+
+    override fun createFiltersFragment(): BaseFiltersFragment<*> = LmmFeedFiltersFragment.newInstance()
 
     protected abstract fun getSourceFeed(): LmmNavTab
 
@@ -73,7 +74,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                      * current Feed stops refreshing if there is no images in user's profile, it is
                      * also needed to stop refreshing for all the other Lmm's Feeds as well.
                      */
-                    is NO_IMAGES_IN_PROFILE ->
+                    is NO_IMAGES_IN_USER_PROFILE ->
                         communicator(ILmmFragment::class.java)?.accessViewModel()
                             ?.let {
                                 it.viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
@@ -132,10 +133,6 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
             }
     }
 
-    override fun onRefreshGesture() {
-        Bus.post(event = BusEvent.RefreshOnLmm(lmmSourceFeed = getSourceFeed().feedName))
-    }
-
     protected fun openChat(position: Int, peerId: String, image: IImage? = null, tag: String = ChatFragment.TAG) {
         if (!connectionManager.isNetworkAvailable()) {
             noConnection(this)
@@ -162,7 +159,7 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     // ------------------------------------------
     internal fun clearScreen(mode: Int) {
         invalidateScrollCaches()  // clear cached positions in offset scrolls strategies on clear feed
-        vm.clearScreen(mode)
+        onClearState(mode)
     }
 
     internal fun transferProfile(profileId: String, destinationFeed: LmmNavTab, payload: Bundle? = null) {

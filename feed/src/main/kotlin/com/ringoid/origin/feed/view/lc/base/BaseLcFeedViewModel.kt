@@ -18,14 +18,17 @@ import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
-import com.ringoid.domain.model.essence.feed.FilterEssence
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.Filters
+import com.ringoid.domain.model.feed.LmmSlice
+import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.REFRESH
+import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.base.ON_TRANSFER_PROFILE_COMPLETE
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.runOnUiThread
@@ -47,18 +50,20 @@ abstract class BaseLcFeedViewModel(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
+    protected var filters: Filters = NoFilters
+
     private val discardedFeedItemIds = mutableSetOf<String>()
     private val notSeenFeedItemIds = Collections.newSetFromMap<String>(ConcurrentHashMap())
 
@@ -72,7 +77,12 @@ abstract class BaseLcFeedViewModel(
 
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { setLcItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
+            .doOnNext {
+                setLcItems(items = it.items, totalNotFilteredCount = it.totalNotFilteredCount,
+                           clearMode = if (filtersSource.hasFiltersApplied()) ViewState.CLEAR.MODE_CHANGE_FILTERS
+                                       else ViewState.CLEAR.MODE_EMPTY_DATA)
+            }
+            .map { it.items }
             .doAfterNext {
                 // analyze for the first reply in messages only once per user session
                 if (!analyticsManager.hasFiredOnce(Analytics.AHA_FIRST_REPLY_RECEIVED)) {
@@ -95,25 +105,20 @@ abstract class BaseLcFeedViewModel(
     protected abstract fun countNotSeen(feed: List<FeedItem>): List<String>
 
     protected abstract fun getFeedFlag(): Int
-    protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
     protected abstract fun sourceBadge(): Observable<Boolean>
-    protected abstract fun sourceFeed(): Observable<List<FeedItem>>
+    protected abstract fun sourceFeed(): Observable<LmmSlice>
 
     override fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                              .put("limit", DomainUtil.LIMIT_PER_PAGE)
-                             .put(FilterEssence.create())  // TODO: prepare global filters
                              .put("source", getFeedName())
+                             .put(filters)
 
         getLcUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({}, Timber::e)
-    }
-
-    private fun refresh() {
-        viewState.value = ViewState.DONE(REFRESH)
     }
 
     private fun prependProfileOnTransfer(profileId: String, destinationFeed: LcNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {
@@ -140,14 +145,20 @@ abstract class BaseLcFeedViewModel(
                 }
                 Timber.v("Feed [${getSourceFeed().feedName}] after transfer: ${list.joinToString("\n\t\t", "\n\t\t", transform = { it.id })}")
                 feed.value = list  // prepended list
+
+                if (list.isNotEmpty()) {
+                    viewState.value = ViewState.IDLE
+                }
             }
             .autoDisposable(this)
             .subscribe({ action?.invoke() }, Timber::e)
     }
 
-    private fun setLcItems(items: List<FeedItem>, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
+    private fun setLcItems(items: List<FeedItem>, totalNotFilteredCount: Int, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
+
+        viewState.value = ViewState.DONE(LC_FEED_COUNTS(show = items.size, hidden = totalNotFilteredCount - items.size))
 
         if (items.isEmpty()) {
             feed.value = emptyList()
@@ -161,12 +172,18 @@ abstract class BaseLcFeedViewModel(
     }
 
     // ------------------------------------------
-    /**
-     * Since on refresh on some of LC feeds leads another LC feed to refresh as well,
-     * such refreshing should be interrupted if there is no images in user's profile.
-     */
-    internal fun onNoImagesInProfile() {
-        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+    internal fun onApplyFilters() {
+        filters = filtersSource.getFilters()
+        refresh()  // apply filters and refresh
+    }
+
+    internal fun dropFilters() {
+        filters = NoFilters
+    }
+
+    internal fun onShowAllWithoutFilters() {
+        dropFilters()
+        refresh()  // refresh without any filters
     }
 
     override fun onRefresh() {
@@ -177,7 +194,7 @@ abstract class BaseLcFeedViewModel(
     internal fun onTapToRefreshClick() {
         analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
         refreshOnPush.value = false  // drop value on each LC feed, when user taps on 'tap to refresh' popup on any LC feed
-        viewState.value = ViewState.DONE(REFRESH)
+        onShowAllWithoutFilters()
     }
 
     // ------------------------------------------
@@ -216,6 +233,17 @@ abstract class BaseLcFeedViewModel(
         }
     }
 
+    private fun refreshIfUserHasImages() {
+        countUserImagesUseCase.source()
+            .autoDisposable(this)
+            .subscribe({
+                if (it > 0) {
+                    dropFilters()
+                    refresh()
+                }
+            }, Timber::e)
+    }
+
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String) {
@@ -244,63 +272,46 @@ abstract class BaseLcFeedViewModel(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventAppFreshStart(event: BusEvent.AppFreshStart) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        refresh()
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        DebugLogUtil.i("Get LC on Application fresh start [${getFeedName()}]")
+        refreshIfUserHasImages()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
+    fun onEventRecreateMainScreen(event: BusEvent.RecreateMainScreen) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Explore Feed screen leads LC screen to refresh as well
-        DebugLogUtil.i("Get LC on refresh Explore Feed [${getFeedName()}]")
-        refresh()
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        DebugLogUtil.i("Get LC on Application recreate while running [${getFeedName()}]")
+        refreshIfUserHasImages()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnLc(event: BusEvent.RefreshOnLc) {
+    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on some of LC screens leads another LC screen to refresh as well
-        if (LcNavTab.from(event.lcSourceFeed) != getSourceFeed()) {
-            refresh()
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Profile screen leads LC screen to refresh as well
-        DebugLogUtil.i("Get LC on refresh Profile [${getFeedName()}]")
-        refresh()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application reopen [${getFeedName()}]")
-        refresh()  // app reopen leads LC screen to refresh as well
+        refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC [${getFeedName()}]")
-            refresh()  // app reopen leads LC screen to refresh as well
+            refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventTransferProfile(event: BusEvent.TransferProfile) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         val destinationFeed = event.payload.getSerializable("destinationFeed") as LcNavTab
         if (destinationFeed == getSourceFeed()) {
-            prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload)
+            prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload) {
+                viewState.value = ViewState.DONE(ON_TRANSFER_PROFILE_COMPLETE)
+            }
         }
     }
 }

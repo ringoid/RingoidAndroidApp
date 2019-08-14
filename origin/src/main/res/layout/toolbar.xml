@@ -8,4 +8,4 @@
     android:fitsSystemWindows="true"
     app:layout_constraintTop_toTopOf="parent"
     app:navigationIcon="?attr/refDrawableNavigationArrow"
-    app:titleTextColor="?attr/refTextColorPrimary"/>
+    app:titleTextColor="?attr/refTextColorSecondary"/>

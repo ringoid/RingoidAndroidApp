@@ -3,6 +3,7 @@ package com.ringoid.data.local.shared_prefs
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StyleRes
+import com.google.gson.Gson
 import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
@@ -13,6 +14,9 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.misc.UserProfilePropertiesRaw
+import com.ringoid.domain.model.feed.EmptyFilters
+import com.ringoid.domain.model.feed.Filters
+import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
@@ -39,6 +43,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         }
 
         DebugLogUtil.setConfig(config)
+        checkAndFixFilters()
     }
 
     companion object {
@@ -59,6 +64,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_AUTH_USER_GENDER = "sp_key_auth_user_gender"
         const val SP_KEY_AUTH_USER_YEAR_OF_BIRTH = "sp_key_auth_user_year_of_birth"
         const val SP_KEY_AUTH_ACCESS_TOKEN = "sp_key_auth_access_token"
+
+        /* Filters */
+        // --------------------------------------
+        const val SP_KEY_FILTERS = "sp_key_filters"
 
         /* Location */
         // --------------------------------------
@@ -205,13 +214,13 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         Gender.from(sharedPreferences.getString(SP_KEY_AUTH_USER_GENDER, "") ?: "")
 
     override fun currentUserYearOfBirth(): Int =
-        sharedPreferences.getInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, DomainUtil.BAD_VALUE)
+        sharedPreferences.getInt(SP_KEY_AUTH_USER_YEAR_OF_BIRTH, DomainUtil.UNKNOWN_VALUE)
 
     override fun hasUserCreateTs(): Boolean = currentUserCreateTs() != 0L
 
     override fun hasUserGender(): Boolean = currentUserGender() != Gender.UNKNOWN
 
-    override fun hasUserYearOfBirth(): Boolean = currentUserYearOfBirth() != DomainUtil.BAD_VALUE
+    override fun hasUserYearOfBirth(): Boolean = currentUserYearOfBirth() > DomainUtil.UNKNOWN_VALUE
 
     override fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String) {
         sharedPreferences.edit()
@@ -231,6 +240,41 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .remove(SP_KEY_AUTH_USER_YEAR_OF_BIRTH)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
             .apply()
+    }
+
+    /* Filters */
+    // --------------------------------------------------------------------------------------------
+    private fun checkAndFixFilters() {
+        val filters = getFilters()
+        filters
+            .takeIf { it != NoFilters }
+            ?.let { Filters.createWithAgeRange(it) }
+            ?.let { fixupFilters ->
+                // if filters out of bounds - use unconstrained filters
+                if (fixupFilters == EmptyFilters) {
+                    setFilters(NoFilters)
+                    return@let
+                }
+                // filters has been fixed up to respect boundaries
+                if (fixupFilters != filters) {
+                    setFilters(fixupFilters)
+                }
+            }
+    }
+
+    override fun hasFiltersApplied(): Boolean = getFilters() != NoFilters
+
+    override fun getFilters(): Filters =
+        sharedPreferences.getString(SP_KEY_FILTERS, null)
+            ?.let { Gson().fromJson(it, Filters::class.java) }
+            ?: NoFilters
+
+    override fun setFilters(filters: Filters) {
+        sharedPreferences.edit().putString(SP_KEY_FILTERS, filters.toJson()).apply()
+    }
+
+    override fun dropFilters() {
+        sharedPreferences.edit().remove(SP_KEY_FILTERS).apply()
     }
 
     /* Location */

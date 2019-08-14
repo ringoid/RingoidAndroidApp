@@ -87,6 +87,8 @@ object AppRes {
         private set
     var FEED_ITEM_TABS_INDICATOR_TOP2: Int = -1
         private set
+    var FEED_TOOLBAR_HEIGHT: Int = -1
+        private set
     var LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT: Int = -1
         private set
     var MAIN_BOTTOM_BAR_HEIGHT: Int = -1
@@ -116,7 +118,25 @@ object AppRes {
 
     /* Translatable */
     // ------------------------------------------
+    var FILTER_AGE = ""
+        private set
+    var FILTER_DISTANCE_KM = ""
+        private set
+    var FILTER_DISTANCE_PLUS_KM = ""
+        private set
+    var FILTER_BUTTON_APPLY = ""
+        private set
+    var FILTER_BUTTON_SHOW_ALL = ""
+        private set
     var LENGTH_CM = ""
+        private set
+    var LC_TITLE_LIKES = ""
+        private set
+    var LC_TITLE_LIKES_HIDDEN = ""
+        private set
+    var LC_TITLE_MESSAGES = ""
+        private set
+    var LC_TITLE_MESSAGES_HIDDEN = ""
         private set
     var LMM_TOP_TAB_LABEL_LIKES_N = ""
         private set
@@ -163,7 +183,7 @@ object AppRes {
             ICON_SIZE_HALF_96 = ICON_SIZE_96 / 2
             ICON_SIZE_HALF2_96 = ICON_SIZE_HALF_96 / 2
 
-            FEED_ITEM_FOOTER_LABEL_BOTTOM = getDimensionPixelSize(R.dimen.std_margin_16)
+            FEED_ITEM_FOOTER_LABEL_BOTTOM = getDimensionPixelSize(R.dimen.std_margin_32)
             FEED_IMAGE_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height)
             FEED_IMAGE_HALF_HEIGHT = getDimensionPixelSize(R.dimen.std_image_height_half)
             FEED_ITEM_BIAS_BTN_BOTTOM = (FEED_IMAGE_HEIGHT * 0.34f).toInt()
@@ -196,6 +216,7 @@ object AppRes {
             FEED_ITEM_TABS_INDICATOR_TOP2 = FEED_IMAGE_HEIGHT - STD_MARGIN_32
             FEED_ITEM_TABS_INDICATOR_BOTTOM = (FEED_ITEM_TABS_INDICATOR_TOP * 1.5f).toInt()
             FEED_ITEM_TABS_INDICATOR_BOTTOM2 = FEED_IMAGE_HEIGHT - STD_MARGIN_16
+            FEED_TOOLBAR_HEIGHT = getDimensionPixelSize(R.dimen.std_toolbar_height)
             LMM_TOP_TAB_BAR_HIDE_AREA_HEIGHT = (BUTTON_HEIGHT_NARROW * 0.67f).toInt()
             MAIN_BOTTOM_BAR_HEIGHT = getDimensionPixelSize(R.dimen.main_bottom_bar_height)
             MAIN_BOTTOM_BAR_HEIGHT_HALF = getDimensionPixelSize(R.dimen.main_bottom_bar_height_half)
@@ -218,7 +239,16 @@ object AppRes {
 
     fun initTranslatableStrings(resources: Resources) {
         with (resources) {
+            FILTER_AGE = getString(R.string.common_age_range)
+            FILTER_DISTANCE_KM = getString(R.string.common_distance_km)
+            FILTER_DISTANCE_PLUS_KM = getString(R.string.common_distance_plus_km)
+            FILTER_BUTTON_APPLY = getString(R.string.button_filter)
+            FILTER_BUTTON_SHOW_ALL = getString(R.string.button_show_all)
             LENGTH_CM = getString(R.string.value_cm)
+            LC_TITLE_LIKES = getString(R.string.feed_likes_you_title_count)
+            LC_TITLE_LIKES_HIDDEN = getString(R.string.feed_likes_you_title_count_hidden)
+            LC_TITLE_MESSAGES = getString(R.string.feed_messages_title_count)
+            LC_TITLE_MESSAGES_HIDDEN = getString(R.string.feed_messages_title_count_hidden)
             LMM_TOP_TAB_LABEL_LIKES_N = getString(R.string.lmm_tab_likes_n)
             LMM_TOP_TAB_LABEL_MATCHES_N = getString(R.string.lmm_tab_matches_n)
             LMM_TOP_TAB_LABEL_MESSAGES_N = getString(R.string.lmm_tab_messenger_n)

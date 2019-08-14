@@ -4,6 +4,9 @@ import org.joda.time.DateTime
 import org.joda.time.Days
 import java.util.*
 
+fun age(yearOfBirth: Int, calendar: Calendar): Int =
+    calendar.get(Calendar.YEAR) - yearOfBirth
+
 fun isAdultAge(yearOfBirth: Int, calendar: Calendar, adultThreshold: Int = 18): Boolean =
     yearOfBirth in 1919..(calendar.get(Calendar.YEAR) - adultThreshold)
 

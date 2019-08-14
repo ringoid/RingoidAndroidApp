@@ -9,6 +9,7 @@
         <item name="android:windowAnimationStyle">@null</item>
         <item name="bottomSheetDialogTheme">@style/BottomSheet.NoAnimation</item>
         <item name="refColorBg">@android:color/white</item>
+        <item name="refColorBgSemi">@color/white_70</item>
         <item name="refColorAccent">@color/grass</item>
         <item name="refColorPrimary">@color/steel</item>
         <item name="refColorPrimaryDark">@color/agat_semi</item>
@@ -38,6 +39,7 @@
         <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_black_36dp</item>
         <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_black_36dp</item>
         <item name="refDrawableDebug">@drawable/ic_adb_black_24dp</item>
+        <item name="refDrawableFeeToolbarMenuIconFilters">@drawable/ic_filter_black_36dp</item>
         <item name="refDrawableMenuCheck">@drawable/ic_done_black_24dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_open_in_browser_black_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_black_24dp</item>
@@ -56,6 +58,8 @@
         <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_black_24dp</item>
         <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_black_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_black_24dp</item>
+        <item name="refDrawableSettingsFilters">@drawable/ic_filter_black_24dp</item>
+        <item name="refDrawableSettingsFiltersThumb">@drawable/ic_seekbar_thumb_black_18dp</item>
         <item name="refDrawableSettingsProfile">@drawable/ic_person_black_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_black_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_24dp</item>
@@ -75,6 +79,7 @@
         <item name="refDrawableBottomBarProfile">@drawable/ic_menu_profile_outline_white_36dp</item>
         <item name="refDrawableBottomBarProfilePressed">@drawable/ic_menu_profile_white_36dp</item>
         <item name="refDrawableDebug">@drawable/ic_adb_white_24dp</item>
+        <item name="refDrawableFeeToolbarMenuIconFilters">@drawable/ic_filter_white_36dp</item>
         <item name="refDrawableMenuCheck">@drawable/ic_done_white_24dp</item>
         <item name="refDrawableMenuInternet">@drawable/ic_open_in_browser_white_24dp</item>
         <item name="refDrawableNavigationArrow">@drawable/ic_arrow_back_white_24dp</item>
@@ -93,10 +98,13 @@
         <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_white_24dp</item>
         <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_white_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_white_24dp</item>
+        <item name="refDrawableSettingsFilters">@drawable/ic_filter_white_24dp</item>
+        <item name="refDrawableSettingsFiltersThumb">@drawable/ic_seekbar_thumb_white_18dp</item>
         <item name="refDrawableSettingsProfile">@drawable/ic_person_white_24dp</item>
         <item name="refDrawableThemeSwitch">@drawable/ic_settings_theme_white_24dp</item>
         <item name="refItemViewArrow">@drawable/ic_keyboard_arrow_right_white_24dp</item>
         <item name="refColorBg">@color/brown</item>
+        <item name="refColorBgSemi">@color/brown_70</item>
         <item name="refColorPrimary">@android:color/black</item>
         <item name="refColorPrimaryDark">@android:color/black</item>
         <item name="refTextColorPrimary">@android:color/white</item>

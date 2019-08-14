@@ -14,6 +14,7 @@ import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCas
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.actions.BlockActionObject
 import com.ringoid.domain.model.actions.LikeActionObject
@@ -32,7 +33,8 @@ abstract class FeedViewModel(
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     private val cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
-    private val countUserImagesUseCase: CountUserImagesUseCase,
+    protected val countUserImagesUseCase: CountUserImagesUseCase,
+    protected val filtersSource: IFiltersSource,
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 
@@ -118,15 +120,11 @@ abstract class FeedViewModel(
 
     /* Feed */
     // --------------------------------------------------------------------------------------------
-    internal fun clearScreen(mode: Int) {
-        viewActionObjectBackup.clear()
-        viewState.value = ViewState.CLEAR(mode)
-    }
-
     internal fun onClearScreen() {
         DebugLogUtil.v("On clear ${getFeedName()} feed")
         horizontalPrevRanges.clear()
         verticalPrevRange = null
+        viewActionObjectBackup.clear()
     }
 
     override fun onLocationReceived(handleCode: Int) {
@@ -146,10 +144,10 @@ abstract class FeedViewModel(
                 countUserImagesUseCase.source()
                     .doOnSuccess {
                         if (checkImagesCount(it)) {
-                            clearScreen(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge feed on refresh, before fetching a new one
+                            viewActionObjectBackup.clear()
                             getFeed()
                         } else {
-                            viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+                            viewState.value = ViewState.DONE(NO_IMAGES_IN_USER_PROFILE)
                         }
                     })
             .autoDisposable(this)
@@ -162,12 +160,16 @@ abstract class FeedViewModel(
 
     protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
+    internal fun refresh() {
+        viewState.value = ViewState.DONE(REFRESH)
+    }
+
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
     internal fun onBeforeLike(): Boolean =
         if (userInMemoryCache.userImagesCount() > 0) true
         else {
-            viewState.value = ViewState.DONE(NO_IMAGES_IN_PROFILE)
+            viewState.value = ViewState.DONE(NO_IMAGES_IN_USER_PROFILE)
             false
         }
 

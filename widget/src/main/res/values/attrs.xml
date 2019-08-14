@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="Main">
         <attr name="refColorBg" format="reference"/>
+        <attr name="refColorBgSemi" format="reference"/>
         <attr name="refColorAccent" format="reference"/>
         <attr name="refColorPrimary" format="reference"/>
         <attr name="refColorPrimaryDark" format="reference"/>

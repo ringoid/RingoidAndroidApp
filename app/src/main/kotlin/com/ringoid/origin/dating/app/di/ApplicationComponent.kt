@@ -25,6 +25,8 @@ import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageDialogModule
 import com.ringoid.origin.profile.view.di.UserProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
+import com.ringoid.origin.usersettings.view.filters.di.SettingsFiltersActivityModule
+import com.ringoid.origin.usersettings.view.filters.di.SettingsFiltersFragmentModule
 import com.ringoid.origin.usersettings.view.info.di.AboutDialogModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoActivityModule
 import com.ringoid.origin.usersettings.view.info.di.SettingsAppInfoFragmentModule
@@ -40,6 +42,7 @@ import com.ringoid.origin.view.dialog.di.BigEditTextDialogModule
 import com.ringoid.origin.view.dialog.di.StatusDialogModule
 import com.ringoid.origin.view.error.di.NoNetworkConnectionActivityModule
 import com.ringoid.origin.view.error.di.OldAppVersionActivityModule
+import com.ringoid.origin.view.filters.di.FiltersFragmentModule
 import com.ringoid.origin.view.splash.di.SplashActivityModule
 import com.ringoid.origin.view.web.di.WebPageActivityModule
 import com.ringoid.origin.view.web.di.WebPageFragmentModule
@@ -50,7 +53,7 @@ import dagger.android.AndroidInjector
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, ApplicationModule::class,
+@Component(modules = [AndroidInjectionModule::class, ApplicationModule::class, DeeplinkDiModule::class,
                       /** Screen modules */
                       AboutDialogModule::class, BigEditTextDialogModule::class,
                       BlockBottomSheetActivityModule::class, BlockBottomSheetDialogModule::class,
@@ -58,12 +61,13 @@ import javax.inject.Singleton
                       ReportBottomSheetDialogModule::class, ChatHostActivityModule::class, ChatFragmentModule::class,
                       DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
-                      LikesFeedFragmentModule::class, LoginActivityModule::class,
-                      MainActivityModule::class, MessagesFeedFragmentModule::class,
-                      NoNetworkConnectionActivityModule::class,
+                      FiltersFragmentModule::class, LikesFeedFragmentModule::class,
+                      LoginActivityModule::class, MainActivityModule::class,
+                      MessagesFeedFragmentModule::class, NoNetworkConnectionActivityModule::class,
                       OldAppVersionActivityModule::class, UserProfileFragmentModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
+                      SettingsFiltersActivityModule::class, SettingsFiltersFragmentModule::class,
                       SettingsLangActivityModule::class, SettingsLangFragmentModule::class,
                       SettingsProfileActivityModule::class, SettingsProfileFragmentModule::class,
                       SettingsPushActivityModule::class, SettingsPushFragmentModule::class,

@@ -5,6 +5,7 @@ import android.text.InputType
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
@@ -17,6 +18,7 @@ import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.*
 import com.ringoid.widget.model.ListItem
+import com.ringoid.widget.view.item_view.TextIconItemView
 import com.ringoid.widget.view.item_view.textChanges
 import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
@@ -35,6 +37,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     override fun getVmClass(): Class<SettingsProfileViewModel> = SettingsProfileViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings_profile
+
+    override fun appScreen(): AppScreen = AppScreen.SETTINGS_PROFILE
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
@@ -131,7 +135,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+                    maxLength = TextIconItemView.MAX_LENGTH)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onCompanyTextChange)
         }
@@ -145,7 +150,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+                    maxLength = TextIconItemView.MAX_LENGTH)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onJobTitleTextChange)
         }
@@ -176,7 +182,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+                    maxLength = 20)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onNameTextChange)
         }
@@ -189,7 +196,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onSocialInstagramTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText())
+                    initText = getText(), maxLength = TextIconItemView.MAX_LENGTH)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onSocialInstagramTextChange)
         }
@@ -202,7 +209,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onSocialTikTokTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText())
+                    initText = getText(), maxLength = TextIconItemView.MAX_LENGTH)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onSocialTikTokTextChange)
         }
@@ -216,7 +223,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+                    maxLength = TextIconItemView.MAX_LENGTH)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onUniversityTextChange)
         }
@@ -230,7 +238,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+                    maxLength = TextIconItemView.MAX_LENGTH)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onWhereLiveTextChange)
         }
@@ -262,15 +271,15 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
 
     // ------------------------------------------
     private fun onAboutTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_about(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_about(text = it.toString().trim()) }
     }
 
     private fun onCompanyTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_company(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_company(text = it.toString().trim()) }
     }
 
     private fun onJobTitleTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_jobTitle(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_jobTitle(text = it.toString().trim()) }
     }
 
     private fun onHeightTextChange(heightStr: CharSequence) {
@@ -278,22 +287,22 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onNameTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_name(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_name(text = it.toString().trim()) }
     }
 
     private fun onSocialInstagramTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_socialInstagram(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_socialInstagram(text = it.toString().trim()) }
     }
 
     private fun onSocialTikTokTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_socialTikTok(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_socialTikTok(text = it.toString().trim()) }
     }
 
     private fun onUniversityTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_university(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_university(text = it.toString().trim()) }
     }
 
     private fun onWhereLiveTextChange(text: CharSequence?) {
-        text?.let { vm.onCustomPropertyChanged_whereLive(text = it.toString()) }
+        text?.let { vm.onCustomPropertyChanged_whereLive(text = it.toString().trim()) }
     }
 }

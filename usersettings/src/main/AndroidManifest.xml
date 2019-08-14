@@ -9,6 +9,11 @@
             android:theme="@style/AppTheme.Dark"/>
 
         <activity
+            android:name=".view.filters.SettingsFiltersActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dark"/>
+
+        <activity
             android:name=".view.language.SettingsLangActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark"/>

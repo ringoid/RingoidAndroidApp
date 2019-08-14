@@ -6,14 +6,20 @@
     <string name="button_cancel">Отмена</string>
     <string name="button_close">Закрыть</string>
     <string name="button_delete">Удалить</string>
+    <string name="button_discover">Искать</string>
     <string name="button_done">Готово</string>
+    <string name="button_filter">Фильтровать (%s)</string>
     <string name="button_later">Не сейчас</string>
     <string name="button_ok">ОК</string>
     <string name="button_settings">Настройки</string>
+    <string name="button_show_all">Показать все (%s)</string>
+    <string name="button_show_all_init">Показать все (0)</string>
 
     <string name="common_choose_image">Выбери фото</string>
     <string name="common_clipboard">Скопировано в буфер</string>
     <string name="common_compose_email">Отправить Email</string>
+    <string name="common_distance_km">%d км</string>
+    <string name="common_distance_plus_km">%d&#43; км</string>
     <string name="common_online">Онлайн</string>
     <string name="common_pull_to_refresh">Потяни, чтобы обновить</string>
     <string name="common_sex_male">Мужчина</string>
@@ -52,15 +58,24 @@
     <string name="report_profile_button_6">Оскорбления, Угрозы или Домогательства</string>
     <string name="report_profile_dialog_description">Причина жалобы: %s.</string>
 
-    <string name="feed_explore_empty_title">Поиск</string>
-    <string name="feed_footer_item_label">Новых больше нет</string>
-
     <string name="feed_explore_dialog_no_user_photo_description">Добавь фото, чтобы посылать лайки</string>
     <string name="feed_explore_empty_no_data">Новых пока нет</string>
+    <string name="feed_explore_empty_title">Поиск</string>
+    <string name="feed_explore_title">Поиск</string>
+    <string name="feed_empty_no_data_filters">Никого рядом нет\nРасширить фильтры</string>
+    <string name="feed_footer_item_label">Новых больше нет</string>
+    <string name="feed_footer_item_label_explore">Expand filters</string>
     <string name="feed_lmm_dialog_no_user_photo_description">Добавь фото, чтобы получать лайки</string>
     <string name="feed_likes_you_empty_no_data">Лайков ещё нет</string>
+    <string name="feed_likes_you_title">Ты нравишься</string>
+    <string name="feed_likes_you_title_count">%d лайков</string>
+    <string name="feed_likes_you_title_count_hidden">%1$d лайков (%2$d спрятано)</string>
     <string name="feed_matches_empty_no_data">Взаимных лайков ещё нет</string>
+    <string name="feed_matches_title">Взаимно</string>
     <string name="feed_messages_empty_no_data">Сообщений ещё нет</string>
+    <string name="feed_messages_title">Чаты</string>
+    <string name="feed_messages_title_count">%d чатов</string>
+    <string name="feed_messages_title_count_hidden">%1$d чатов (%2$d спрятано)</string>
 
     <!-- Image Preview screen -->
 
@@ -111,6 +126,7 @@
     <string name="settings_account_delete_info">Если вы не открывали Ringoid более 16 дней, профиль автоматически удаляется.</string>
     <string name="settings_account_delete_dialog_title">Удалить аккаунт?</string>
     <string name="settings_app_info">Информация</string>
+    <string name="settings_filters">Фильтры</string>
     <string name="settings_language">Язык</string>
     <string name="settings_language_help">Если вы хотите помочь и перевести Ringoid на родной язык, пожалуйста, напишите в support@ringoid.com</string>
     <string name="settings_profile">Профиль</string>
@@ -121,6 +137,10 @@
     <string name="settings_support_rationale">Если у вас есть предложения, как улучшить Ringoid, пожалуйста, напишите на \nsupport@ringoid.com</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_theme_dark">Ночной режим</string>
+
+    <!-- Settings Filters screen -->
+    <string name="settings_filters_age_title">Возраст</string>
+    <string name="settings_filters_distance_title">Максимальная дистанция</string>
 
     <!-- Settings Info screen -->
     <string name="settings_info_about">О приложении</string>

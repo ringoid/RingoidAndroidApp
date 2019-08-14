@@ -16,6 +16,7 @@ import com.ringoid.domain.interactor.feed.property.GetCachedLmmFeedItemIdsUseCas
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
@@ -32,7 +33,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-    private val getNewFacesUseCase: GetNewFacesUseCase,
+    private val getDiscoverUseCase: GetDiscoverUseCase,
     private val getCachedLmmFeedItemIdsUseCase: GetCachedLmmFeedItemIdsUseCase,
     @DebugOnly private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
     @DebugOnly private val debugGetNewFacesDropFlagsUseCase: DebugGetNewFacesDropFlagsUseCase,
@@ -44,15 +45,16 @@ class ExploreViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app), IListScrollCallback {
+        filtersSource, userInMemoryCache, app), IListScrollCallback {
 
     val feed by lazy { MutableLiveData<Feed>() }
+
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
 
@@ -60,7 +62,7 @@ class ExploreViewModel @Inject constructor(
 
     init {
         // discard profiles that appear in Lmm from Explore feed
-        getNewFacesUseCase.repository.lmmLoadFinish
+        getDiscoverUseCase.repository.lmmLoadFinish
             .flatMap { getCachedLmmFeedItemIdsUseCase.source().toObservable() }
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
@@ -84,11 +86,14 @@ class ExploreViewModel @Inject constructor(
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 0))
-        getNewFacesUseCase.source(params = prepareFeedParams())
+        getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess {
-                viewState.value = if (it.isEmpty()) ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
-                                  else ViewState.IDLE
+                viewState.value = if (it.isEmpty()) {
+                    if (filtersSource.hasFiltersApplied()) {
+                        ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)
+                    } else ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
+                } else ViewState.IDLE
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
@@ -100,7 +105,7 @@ class ExploreViewModel @Inject constructor(
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 2))
-        getNewFacesUseCase.source(params = prepareFeedParams())
+        getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError {
@@ -116,9 +121,14 @@ class ExploreViewModel @Inject constructor(
     }
 
     // ------------------------------------------
+    internal fun onApplyFilters() {
+        refresh()  // just refresh, filters are always applied on Explore feed
+    }
+
     private fun prepareFeedParams(): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
+                .put(filtersSource.getFilters())
 
     @DebugOnly
     private fun prepareDebugFeedParams(): Params = Params().put("page", nextPage++)
@@ -179,19 +189,33 @@ class ExploreViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
+    fun onEventRecreateMainScreen(event: BusEvent.RecreateMainScreen) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        onRefresh()  // app reopen leads Explore screen to refresh as well
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        refresh()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        refresh()  // app reopen leads Explore screen to refresh as well
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Explore...")
-            onRefresh()  // app reopen leads Explore screen to refresh as well
+            refresh()  // app reopen leads Explore screen to refresh as well
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventFiltersChangesInSettings(event: BusEvent.FiltersChangesInSettings) {
+        Timber.d("Received bus event: $event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        onApplyFilters()
     }
 }

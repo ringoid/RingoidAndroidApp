@@ -7,13 +7,8 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.utility.clickDebounce
-import timber.log.Timber
 
 abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
-
-    init {
-        Timber.v("Create ViewHolder: ${javaClass.simpleName}")
-    }
 
     abstract fun bind(model: T)
     open fun bind(model: T, payloads: List<Any>) {

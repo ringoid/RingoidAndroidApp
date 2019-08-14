@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" android:id="@id/toolbar"/>
+
+    <ProgressBar
+        android:id="@+id/pb_filters"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/ProgressBar.Horizontal"/>
+
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin_16"/>
+
+    <com.ringoid.widget.view.item_view.IconItemView
+        android:id="@+id/item_suggest_improvements"
+        android:layout_marginTop="@dimen/std_margin_64"
+        app:icon_item_hide_icon="true"
+        app:icon_item_text="@string/settings_suggest_improvements"
+        style="?attr/iconItemView"/>
+</LinearLayout>

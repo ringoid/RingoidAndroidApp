@@ -3,12 +3,14 @@ package com.ringoid.origin.imagepreview.view
 import androidx.fragment.app.Fragment
 import com.ringoid.base.BuildConfig
 import com.ringoid.base.deeplink.AppNav
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.BaseHostActivity
 
 @AppNav("imagepreview")
 class ImagePreviewActivity : BaseHostActivity(), IImagePreviewActivity {
 
+    override fun appScreen(): AppScreen = AppScreen.IMAGE_PREVIEW
     override fun getFragmentTag(): String = ImagePreviewFragment.TAG
     override fun instantiateFragment(): Fragment =
         ImagePreviewFragment.newInstance(

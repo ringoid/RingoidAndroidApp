@@ -16,7 +16,6 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.utils.ScreenHelper
-import com.ringoid.origin.view.main.LmmNavTab
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
@@ -80,7 +79,7 @@ class LmmViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushLikes()
         pushNewLike.value = 0L  // for particle animation
     }
@@ -88,7 +87,7 @@ class LmmViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMatches()
         pushNewMatch.value = 0L  // for particle animation
     }
@@ -96,7 +95,7 @@ class LmmViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMessages()
         if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
             pushNewMessage.value = 0L  // for particle animation
@@ -104,38 +103,9 @@ class LmmViewModel @Inject constructor(
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
+    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Explore Feed screen leads Lmm screen to refresh as well
-        DebugLogUtil.i("Get LMM on refresh Explore Feed")
-        getLmm()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        /**
-         * Refresh on some of Lmm's feeds. This feed is cleared and refreshed, but the whole Lmm
-         * will then be reloaded. Thus, need to display clear and refresh on the other feeds.
-         */
-        viewState.value = ViewState.DONE(CLEAR_AND_REFRESH_EXCEPT(exceptLmmTab = LmmNavTab.from(event.lmmSourceFeed)))
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnProfile(event: BusEvent.RefreshOnProfile) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Profile screen leads Lmm screen to refresh as well
-        DebugLogUtil.i("Get LMM on refresh Profile")
-        getLmm()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LMM on Application reopen")
         getLmm()  // app reopen leads Lmm screen to refresh as well
     }
@@ -143,7 +113,7 @@ class LmmViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Lmm...")
             getLmm()  // app reopen leads Lmm screen to refresh as well

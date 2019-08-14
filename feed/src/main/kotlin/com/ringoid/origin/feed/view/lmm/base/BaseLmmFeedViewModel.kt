@@ -17,9 +17,11 @@ import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.REFRESH
@@ -45,13 +47,13 @@ abstract class BaseLmmFeedViewModel(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : FeedViewModel(
         clearCachedAlreadySeenProfileIdsUseCase,
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     val count by lazy { MutableLiveData<Int>() }
     val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
@@ -70,6 +72,7 @@ abstract class BaseLmmFeedViewModel(
             .subscribe({ badgeIsOn = it }, Timber::e)
 
         sourceFeed()
+            .map { it.items }  // count not used on deprecated LMM
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { setLmmItems(items = it, clearMode = ViewState.CLEAR.MODE_EMPTY_DATA) }
             .doAfterNext {
@@ -97,7 +100,7 @@ abstract class BaseLmmFeedViewModel(
     protected abstract fun getFeedFlag(): Int
     protected abstract fun getFeedFromLmm(lmm: Lmm): List<FeedItem>
     protected abstract fun sourceBadge(): Observable<Boolean>
-    protected abstract fun sourceFeed(): Observable<List<FeedItem>>
+    protected abstract fun sourceFeed(): Observable<LmmSlice>
 
     override fun getFeed() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))

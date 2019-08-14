@@ -12,6 +12,7 @@ import com.ncapdevi.fragnav.FragNavLogger
 import com.ncapdevi.fragnav.FragNavSwitchController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -46,6 +47,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     override fun getLayoutId(): Int = R.layout.activity_main
 
     protected abstract fun getListOfRootFragments(): List<Fragment>
+
+    override fun appScreen(): AppScreen = AppScreen.MAIN
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -99,9 +102,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         processExtras(intent, savedInstanceState)
-        if (isStopped) {
-            vm.onAppReOpen()
-        }
     }
 
     override fun onStart() {
@@ -147,17 +147,25 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             openTabByName(tabName = NavigateFrom.MAIN_TAB_PROFILE)
         }
 
+        fun openMainTab(tab: NavTab? = null) {
+            if (tab == null) {
+                openExploreTab()
+                return
+            }
+
+            when (tab) {
+                NavTab.EXPLORE -> openExploreTab()
+                NavTab.LIKES -> openLikesTab()
+                NavTab.MESSAGES -> openMessagesTab()
+                NavTab.PROFILE -> openProfileTab()
+            }
+        }
+
         fun openInitialTab() {
             savedInstanceState?.getSerializable(BUNDLE_KEY_CURRENT_TAB)
-                ?.let {
-                    when (it) {
-                        NavTab.EXPLORE -> openExploreTab()
-                        NavTab.LIKES -> openLikesTab()
-                        NavTab.MESSAGES -> openMessagesTab()
-                        NavTab.PROFILE -> openProfileTab()
-                    }
-                }
-                ?: run { openExploreTab() }
+                ?.let { it as? NavTab }
+                ?.let { openMainTab(tab = it) }
+                ?: run { openMainTab(tab = bottom_bar.selectedItem) }
         }
 
         Timber.d("Intent data: ${intent.extras?.toJsonObject()}")

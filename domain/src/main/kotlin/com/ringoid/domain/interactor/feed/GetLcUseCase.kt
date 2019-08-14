@@ -6,7 +6,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.essence.feed.FilterEssence
+import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Single
@@ -18,11 +18,11 @@ class GetLcUseCase @Inject constructor(val repository: IFeedRepository,
 
     override fun sourceImpl(params: Params): Single<Lmm> {
         val limit = params.get<Int>("limit")
-        val filter = params.get(FilterEssence::class.java)
+        val filters = params.get(Filters::class.java)
         val source = params.get<String>("source")
 
         return params.processSingle(ImageResolution::class.java) {
-            repository.getLc(it, limit, filter, source)
+            repository.getLc(it, limit, filters, source)
         }
     }
 }

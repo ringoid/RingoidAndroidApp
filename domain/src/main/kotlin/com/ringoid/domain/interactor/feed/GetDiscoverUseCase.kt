@@ -6,8 +6,8 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.essence.feed.FilterEssence
 import com.ringoid.domain.model.feed.Feed
+import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Single
 import javax.inject.Inject
@@ -18,10 +18,10 @@ class GetDiscoverUseCase @Inject constructor(val repository: IFeedRepository,
 
     override fun sourceImpl(params: Params): Single<Feed> {
         val limit = params.get<Int>("limit")
-        val filter = params.get(FilterEssence::class.java)
+        val filters = params.get(Filters::class.java)
 
         return params.processSingle(ImageResolution::class.java) {
-            repository.getDiscover(resolution = it, limit = limit, filter = filter)
+            repository.getDiscover(resolution = it, limit = limit, filters = filters)
         }
     }
 }

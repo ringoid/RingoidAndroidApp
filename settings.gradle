@@ -1,4 +1,22 @@
-include ':app', ':auth', ':feed', ':imagepreview', ':main', ':messenger', ':origin', ':base', ':domain', ':data', ':profile', ':usersettings', ':utility', ':widget'
+include ':app',
+        ':auth',
+        ':base',
+        ':data',
+        ':datainterface',
+        ':domain',
+        ':feed',
+        ':imagepreview',
+        ':main',
+        ':messenger',
+        ':origin',
+        ':profile',
+        ':repository',
+        ':usersettings',
+        ':utility',
+        ':widget'
 
 include ':cropiwa'
 project(':cropiwa').projectDir = new File('cropiwa/library')
+
+include ':topsheet'
+project(':topsheet').projectDir = new File('AndroidTopSheet/library')

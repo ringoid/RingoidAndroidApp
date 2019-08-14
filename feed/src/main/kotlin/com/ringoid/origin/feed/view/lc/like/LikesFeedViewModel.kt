@@ -15,9 +15,10 @@ import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
@@ -45,7 +46,7 @@ class LikesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLcFeedViewModel(
         getLcUseCase,
         getCachedFeedItemByIdUseCase,
@@ -55,7 +56,7 @@ class LikesFeedViewModel @Inject constructor(
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     private val incomingPushLike = PublishSubject.create<BusEvent>()
     internal val pushNewLike by lazy { MutableLiveData<Long>() }
@@ -80,8 +81,6 @@ class LikesFeedViewModel @Inject constructor(
     // ------------------------------------------
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
 
-    override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.likes
-
     override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
@@ -94,7 +93,7 @@ class LikesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLcUseCase.repository.feedLikes
+    override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedLikes
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -132,7 +131,7 @@ class LikesFeedViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushLikes()
         pushNewLike.value = 0L  // for particle animation
         incomingPushLike.onNext(event)  // for 'tap-to-refresh' popup

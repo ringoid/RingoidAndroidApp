@@ -14,9 +14,11 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
@@ -35,7 +37,7 @@ class MessagesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseMatchesFeedViewModel(
         getChatUseCase,
         getLmmUseCase,
@@ -46,7 +48,7 @@ class MessagesFeedViewModel @Inject constructor(
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     override fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.takeIf { it.isNotEmpty() }
@@ -71,7 +73,7 @@ class MessagesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedMessages
+    override fun sourceFeed(): Observable<LmmSlice> = getLmmUseCase.repository.feedMessages
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
 

@@ -32,6 +32,7 @@
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyName"
                 app:icon_item_text="@string/settings_profile_item_custom_property_name"
+                app:text_icon_item_text_max_length="20"
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 

@@ -15,8 +15,6 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
-import com.ringoid.base.eventbus.Bus
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
@@ -102,6 +100,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 when (newState.mode) {
                     ViewState.CLEAR.MODE_EMPTY_DATA -> showEmptyStub(true)
                     ViewState.CLEAR.MODE_NEED_REFRESH -> showErrorStub(true)
+                    ViewState.CLEAR.MODE_CHANGE_FILTERS -> showEmptyStub(true)
                 }
             }
             is ViewState.DONE -> {
@@ -168,7 +167,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     val empty = imagesAdapter.isEmpty()
                     showEmptyStub(needShow = empty)
                     showDotTabs(isVisible = true)
-                    vm.onDeleteImage(empty = empty)
                 }
                 itemClickListener = { _, _ -> navigate(this@UserProfileFragment, path = "/settings_profile") }
             }
@@ -334,10 +332,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             imageOnViewPort()?.let { image ->
                 showControls(isVisible = false)
                 val needWarn = ((image as? UserImage)?.numberOfLikes ?: 0) > 0
-                navigate(this@UserProfileFragment, path = "/delete_image?imageId=${image.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
+                navigate(this, path = "/delete_image?imageId=${image.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
             }
         }
-        ibtn_profile_edit.clicks().compose(clickDebounce()).subscribe { navigate(this@UserProfileFragment, path = "/settings_profile") }
+        ibtn_profile_edit.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile") }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
@@ -357,17 +355,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             addOnScrollListener(pageSelectListener)
             addOnScrollListener(imagePreloadListener)
         }
-        with (tv_app_title) {
-            if (BuildConfig.IS_STAGING) {
-                isClickable = true
-                clicks().compose(clickDebounce()).subscribe {
-                    Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.profile_dialog_simulate_particles_title,
-                        positiveBtnLabelResId = OriginR_string.button_apply,
-                        negativeBtnLabelResId = OriginR_string.button_close,
-                        positiveListener = { _, _, inputText -> simulateParticles(inputText?.toInt() ?: 0) })
-                }
-            }
-        }
+        tv_app_title.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
     }
 
     override fun onDestroyView() {
@@ -394,7 +382,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     // --------------------------------------------------------------------------------------------
     private fun onRefresh() {
-        Bus.post(event = BusEvent.RefreshOnProfile)
         if (!connectionManager.isNetworkAvailable()) {
             swipe_refresh_layout.isRefreshing = false
             noConnection(this@UserProfileFragment)

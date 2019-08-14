@@ -36,18 +36,14 @@ sealed class BusEvent {
 
     object Stub : BusEvent()
     object AppFreshStart : BusEvent()
-    object NoImagesOnProfile : BusEvent()
-    object RefreshOnExplore : BusEvent()
-    data class RefreshOnLc(val lcSourceFeed: String) : BusEvent()
-    @Deprecated("LMM -> LC")
-    data class RefreshOnLmm(val lmmSourceFeed: String) : BusEvent()
-    object RefreshOnProfile : BusEvent()
-    object ReOpenApp: BusEvent()
+    object RecreateMainScreen : BusEvent()
+    object ReOpenAppOnPush: BusEvent()
     data class ReStartWithTime(val msElapsed: Long): BusEvent()
 
     data class PushNewLike(val peerId: String) : BusEvent()
     data class PushNewMatch(val peerId: String) : BusEvent()
     data class PushNewMessage(val peerId: String) : BusEvent()
 
+    object FiltersChangesInSettings : BusEvent()
     data class TransferProfile(val profileId: String, val payload: Bundle)
 }

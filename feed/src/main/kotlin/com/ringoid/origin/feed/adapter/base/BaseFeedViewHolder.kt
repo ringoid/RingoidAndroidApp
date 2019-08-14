@@ -23,6 +23,7 @@ import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.rv_item_feed_footer.view.*
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -101,7 +102,9 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                         val items = profileImageAdapter.getItemsExposed(from = from, to = to)
                         Timber.v("Visible profile images [${items.size}] [$from, $to]: $items")
                         trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
-                        snapPositionListener?.invoke(from)
+                        if (dx != 0) {
+                            snapPositionListener?.invoke(from)
+                        }
                     }
                 }
 
@@ -415,10 +418,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         withAbout = !model.about().isNullOrBlank()
 
-        (model.name() ?: AppInMemory.genderString(model.gender))
+        (model.name()?.takeIf { it.isNotBlank() } ?: AppInMemory.genderString(model.gender))
             ?.let { name ->
                 mutableListOf<String>().apply {
-                    add(name)
+                    add(name.trim())
                     model.age.takeIf { it >= 18 }?.let { age -> add("$age") }
                 }
                 .let { itemView.tv_name_age.text = it.joinToString() }
@@ -437,20 +440,5 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             FeedScreenUtils.propertiesRight
                 .forEach { propertyId -> addLabelView(containerView, propertyId, model) }
         }
-    }
-}
-
-// ------------------------------------------------------------------------------------------------
-class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
-
-    override fun bind(model: FeedItemVO) {
-        // no-op
-    }
-}
-
-class FooterFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
-
-    override fun bind(model: FeedItemVO) {
-        // no-op
     }
 }

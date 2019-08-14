@@ -22,6 +22,15 @@ data class FeedItemDbo(
     @ColumnInfo(name = COLUMN_PROPERTY_INCOME) val income: Int = DomainUtil.UNKNOWN_VALUE,
     @ColumnInfo(name = COLUMN_PROPERTY_PROPERTY) val property: Int = DomainUtil.UNKNOWN_VALUE,
     @ColumnInfo(name = COLUMN_PROPERTY_TRANSPORT) val transport: Int = DomainUtil.UNKNOWN_VALUE,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_ABOUT) val about: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_COMPANY) val company: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_JOB_TITLE) val jobTitle: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_NAME) val name: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_INSTAGRAM) val instagram: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_TIKTOK) val tiktok: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_UNIVERSITY) val university: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_WHERE_FROM) val whereFrom: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_WHERE_LIVE) val whereLive: String? = null,
     @ColumnInfo(name = COLUMN_SOURCE_FEED) val sourceFeed: String = "") {
 
     companion object {
@@ -39,6 +48,15 @@ data class FeedItemDbo(
         const val COLUMN_PROPERTY_INCOME = "income"
         const val COLUMN_PROPERTY_PROPERTY = "property"
         const val COLUMN_PROPERTY_TRANSPORT = "transport"
+        const val COLUMN_CUSTOM_PROPERTY_ABOUT = "about"
+        const val COLUMN_CUSTOM_PROPERTY_COMPANY = "company"
+        const val COLUMN_CUSTOM_PROPERTY_JOB_TITLE = "jobTitle"
+        const val COLUMN_CUSTOM_PROPERTY_NAME = "name"
+        const val COLUMN_CUSTOM_PROPERTY_INSTAGRAM = "instagram"
+        const val COLUMN_CUSTOM_PROPERTY_TIKTOK = "tiktok"
+        const val COLUMN_CUSTOM_PROPERTY_UNIVERSITY = "university"
+        const val COLUMN_CUSTOM_PROPERTY_WHERE_FROM = "whereFrom"
+        const val COLUMN_CUSTOM_PROPERTY_WHERE_LIVE = "whereLive"
         const val COLUMN_SOURCE_FEED = "sourceFeed"
 
         const val TABLE_NAME = "FeedItems"
@@ -58,6 +76,15 @@ data class FeedItemDbo(
                 income = feedItem.income,
                 property = feedItem.property,
                 transport = feedItem.transport,
+                about = feedItem.about,
+                company = feedItem.company,
+                jobTitle = feedItem.jobTitle,
+                name = feedItem.name,
+                instagram = feedItem.instagram,
+                tiktok = feedItem.tiktok,
+                university = feedItem.university,
+                whereFrom = feedItem.whereFrom,
+                whereLive = feedItem.whereLive,
                 isNotSeen = feedItem.isNotSeen,
                 sourceFeed = sourceFeed)
     }

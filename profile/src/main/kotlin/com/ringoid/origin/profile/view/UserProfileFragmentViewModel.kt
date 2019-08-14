@@ -3,7 +3,6 @@ package com.ringoid.origin.profile.view
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -74,25 +73,9 @@ class UserProfileFragmentViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnExplore(event: BusEvent.RefreshOnExplore) {
+    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Explore Feed screen leads Profile screen to refresh as well
-        getUserImages()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRefreshOnLmm(event: BusEvent.RefreshOnLmm) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
-        // refresh on Lmm screen leads Profile screen to refresh as well
-        getUserImages()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenApp) {
-        Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         onRefresh()  // app reopen leads Profile screen to refresh
     }
 
@@ -168,12 +151,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    fun onDeleteImage(empty: Boolean) {
-        if (empty) {
-            Bus.post(event = BusEvent.NoImagesOnProfile)
-        }
-    }
-
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
         when (handleCode) {

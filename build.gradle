@@ -90,7 +90,9 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${buildGradleVersion}"
         classpath "com.google.gms:google-services:${googleServicesVersion}"
-        classpath "com.google.firebase:perf-plugin:${firebasePerformancePluginVersion}"
+        if (!project.hasProperty("disable-firebase-performance-plugin")) {
+            classpath "com.google.firebase:perf-plugin:${firebasePerformancePluginVersion}"
+        }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:${kotlinVersion}"
         classpath 'io.fabric.tools:gradle:1.+'
@@ -105,9 +107,9 @@ allprojects {
     }
 
     ext {
-        majorVersion = 2
+        majorVersion = 3
         minorVersion = 0
-        buildVersion = 204
+        buildVersion = 218
 
         androidApplicationId = getAppId(env)
         androidVersionCode = buildVersion

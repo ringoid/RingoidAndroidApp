@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.core.content.ContextCompat
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
@@ -15,6 +16,8 @@ import com.ringoid.domain.model.messenger.peerMessage
 import com.ringoid.domain.model.messenger.userMessage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
+import com.ringoid.origin.feed.WidgetR_attrs
+import com.ringoid.origin.feed.WidgetR_color
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
@@ -23,6 +26,8 @@ import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
+import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
+import com.ringoid.origin.feed.view.lmm.base.ON_TRANSFER_PROFILE_COMPLETE
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MATCHES_TOTAL
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
@@ -34,12 +39,15 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.dialog.IDialogCallback
+import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.communicator
+import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.image.ImageRequest
+import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
 
 class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatHost, IDialogCallback {
@@ -60,14 +68,23 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
             }
         }
 
+    override fun createFiltersFragment(): BaseFiltersFragment<*> = MessagesFeedFiltersFragment.newInstance()
+
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {
             ViewState.CLEAR.MODE_EMPTY_DATA -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.feed_messages_empty_no_data)
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh)
+            ViewState.CLEAR.MODE_CHANGE_FILTERS ->
+                EmptyFragment.Companion.Input(
+                    emptyTextResId = OriginR_string.feed_empty_no_data_filters,
+                    labelTextColor = context?.getAttributeColor(WidgetR_attrs.refTextColorPrimary) ?: ContextCompat.getColor(context!!, WidgetR_color.primary_text),
+                    isLabelClickable = true)
             else -> null
         }
 
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
+
+    override fun getToolbarTitleResId(): Int = OriginR_string.feed_messages_title
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
@@ -75,6 +92,14 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is LC_FEED_COUNTS ->
+                        (newState.residual as LC_FEED_COUNTS).let {
+                            setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
+                        }
+                    is ON_TRANSFER_PROFILE_COMPLETE -> {
+                        requestFiltersForUpdateOnChangeLcFeed()
+                        setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
+                    }
                     is PUSH_NEW_MESSAGES -> {
                         val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
 
@@ -96,6 +121,25 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 }
             }
         }
+    }
+
+    override fun setDefaultToolbarTitle() {
+        toolbar.setTitle(OriginR_string.feed_messages_title)
+    }
+
+    override fun setToolbarTitleWithLcCounts(show: Int, hidden: Int) {
+        super.setToolbarTitleWithLcCounts(show, hidden)
+        toolbar.title = if (hidden > 0) String.format(AppRes.LC_TITLE_MESSAGES_HIDDEN, show, hidden)
+                        else String.format(AppRes.LC_TITLE_MESSAGES, show)
+    }
+
+    // ------------------------------------------
+    override fun setCountOfFilteredFeedItems(count: Int) {
+        filtersPopupWidget?.setCountOfFilteredFeedItems(String.format(AppRes.FILTER_BUTTON_APPLY, count))
+    }
+
+    override fun setTotalNotFilteredFeedItems(count: Int) {
+        filtersPopupWidget?.setTotalNotFilteredFeedItems(String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count))
     }
 
     /* Lifecycle */

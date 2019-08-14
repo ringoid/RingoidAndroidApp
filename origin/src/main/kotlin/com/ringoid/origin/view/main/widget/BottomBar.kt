@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.origin.view.main.NavTab
 import com.ringoid.utility.changeVisibility
@@ -32,9 +33,11 @@ class BottomBar : LinearLayout {
             prevSelectedItem = field
             field = newValue
             if (prevSelectedItem == newValue) {
+                DebugLogUtil.v("Tab reselect: $newValue")
                 reSelectListener?.invoke(newValue)
             } else {
                 changeItemAppearance()
+                DebugLogUtil.v("Tab select: $newValue")
                 selectListener?.invoke(newValue)
             }
         }
@@ -74,10 +77,10 @@ class BottomBar : LinearLayout {
         minimumHeight = resources.getDimensionPixelSize(R.dimen.main_bottom_bar_height)
         orientation = HORIZONTAL
         LayoutInflater.from(context).inflate(R.layout.widget_bottom_bar, this, true)
-        fl_item_feed.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.EXPLORE }
-        fl_item_likes.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.LIKES }
-        fl_item_messages.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.MESSAGES }
-        fl_item_profile.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.PROFILE }
+        fl_item_feed.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.EXPLORE      ; DebugLogUtil.v("Selected tab: $selectedItem") }
+        fl_item_likes.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.LIKES       ; DebugLogUtil.v("Selected tab: $selectedItem") }
+        fl_item_messages.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.MESSAGES ; DebugLogUtil.v("Selected tab: $selectedItem") }
+        fl_item_profile.clicks().compose(clickDebounce()).subscribe { selectedItem = NavTab.PROFILE   ; DebugLogUtil.v("Selected tab: $selectedItem") }
 
         ivItemFeed = findViewById(R.id.iv_item_feed)
         ivItemLikes = findViewById(R.id.iv_item_likes)

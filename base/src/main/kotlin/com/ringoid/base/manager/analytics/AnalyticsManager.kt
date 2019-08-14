@@ -3,6 +3,7 @@ package com.ringoid.base.manager.analytics
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import com.facebook.appevents.AppEventsLogger
 import com.flurry.android.Constants
 import com.flurry.android.FlurryAgent
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -25,6 +26,7 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
         private val consumedEventIds = mutableSetOf<String>()
     }
 
+    private val facebook: AppEventsLogger = AppEventsLogger.newLogger(context)
     private val firebase = FirebaseAnalytics.getInstance(context)
 
     fun enterUserScope() {
@@ -43,7 +45,10 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
     fun setUser(spm: ISharedPrefsManager) {
         with (spm) {
             currentUserId()?.let { setUserId(it) }
-            currentUserGender().let { setUserGender(it) }
+            setUserGender(currentUserGender())
+            if (hasUserYearOfBirth()) {
+                setUserAge(currentUserYearOfBirth())
+            }
         }
     }
 
@@ -52,6 +57,11 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
             firebase.setUserId(it)
             FlurryAgent.setUserId(it)
         }
+    }
+
+    private fun setUserAge(age: Int) {
+        firebase.setUserProperty("age", "$age")
+        FlurryAgent.setAge(age)
     }
 
     private fun setUserGender(gender: Gender) {
@@ -84,6 +94,7 @@ class AnalyticsManager @Inject constructor(context: Context, private val spm: IS
             mpayload[it.first] = it.second
             xpayload.putString(it.first, it.second)
         }
+        facebook.logEvent(id, xpayload)
         firebase.logEvent(id, xpayload)
         FlurryAgent.logEvent(id, mpayload)
         DebugLogUtil.b("Analytics: $id${payload.joinToString(", ", " (", ")", transform = { "${it.first}:${it.second}" }).trim()}")

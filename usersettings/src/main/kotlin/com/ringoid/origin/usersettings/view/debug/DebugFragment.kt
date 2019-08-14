@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.memory.FiltersInMemoryCache
+import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
@@ -30,6 +33,8 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
     override fun getVmClass(): Class<DebugViewModel> = DebugViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_debug
+
+    override fun appScreen(): AppScreen = AppScreen.SETTINGS_DEBUG
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
@@ -68,6 +73,9 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         item_error_request_params.clicks().compose(clickDebounce()).subscribe { vm.requestWithWrongParams() }
         item_error_request_repeat_after_delay.clicks().compose(clickDebounce()).subscribe { vm.requestWithNeedToRepeatAfterDelay(delay = 5000L) }
         item_error_timeout.clicks().compose(clickDebounce()).subscribe { vm.requestWithTimeOutResponse() }
+        item_invalid_filters.clicks().compose(clickDebounce()).subscribe {
+            FiltersInMemoryCache.setFilters(EmptyFilters)
+        }
         item_last_request.apply {
             setText("Method: ${cloudDebug.get("request")}")
             setLabel("Resolution: ${cloudDebug.get("resolution")}")

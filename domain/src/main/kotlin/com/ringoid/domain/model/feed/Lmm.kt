@@ -2,7 +2,9 @@ package com.ringoid.domain.model.feed
 
 import com.ringoid.domain.DomainUtil
 
-data class Lmm(val likes: List<FeedItem>, val matches: List<FeedItem>, val messages: List<FeedItem>) {
+data class Lmm(val likes: List<FeedItem>, val matches: List<FeedItem>, val messages: List<FeedItem>,
+               val totalNotFilteredLikes: Int = DomainUtil.BAD_VALUE,
+               val totalNotFilteredMessages: Int = DomainUtil.BAD_VALUE) {
 
     constructor(): this(emptyList(), emptyList(), emptyList())
 
@@ -20,8 +22,7 @@ data class Lmm(val likes: List<FeedItem>, val matches: List<FeedItem>, val messa
                 ?.let {
                     it.map { it.messages.filter { it.peerId != DomainUtil.CURRENT_USER_ID }.size }
                       .reduce { acc, i -> acc + i }
-                }
-                ?: 0
+                } ?: 0
 
     fun totalCount(): Int = likes.size + matches.size + messages.size
 

@@ -108,6 +108,8 @@
         <TextView
             android:id="@+id/tv_name_age"
             android:ellipsize="end"
+            android:gravity="center_vertical|start"
+            android:maxLength="20"
             android:shadowColor="@color/text_shadow"
             android:shadowRadius="6"
             android:textSize="@dimen/std_text_22"

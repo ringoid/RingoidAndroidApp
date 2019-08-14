@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.ExternalNavigator
@@ -32,6 +33,8 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
     override fun getVmClass(): Class<SettingsViewModel> = SettingsViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_settings
+
+    override fun appScreen(): AppScreen = AppScreen.SETTINGS
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
@@ -73,6 +76,7 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
         }
 
         item_delete_account.clicks().compose(clickDebounce()).subscribe { openDeleteAccountDialog() }
+        item_filters.clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsFragment, path = "/settings_filters") }
         item_language.apply {
             clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsFragment, path = "/settings_lang", rc = RequestCode.RC_SETTINGS_LANG) }
 //            setLabel(LocaleUtils.getLangById(context, app?.localeManager?.getLang() ?: LocaleManager.LANG_RU))

@@ -14,6 +14,7 @@ import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
+import com.ringoid.data.local.shared_prefs.FeedSharedPrefs
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
@@ -26,10 +27,7 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.essence.feed.FilterEssence
-import com.ringoid.domain.model.feed.Feed
-import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.*
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.feed.IFeedRepository
 import io.reactivex.Completable
@@ -48,12 +46,15 @@ open class FeedRepository @Inject constructor(
     private val local: FeedDao,
     private val imagesLocal: ImageDao,
     private val messengerLocal: MessageDao,
+    private val feedSharedPrefs: FeedSharedPrefs,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
     @PerBlock private val blockedProfilesCache: UserFeedDao,
     @PerLmmLikes private val newLikesProfilesCache: UserFeedDao,
     @PerLmmMatches private val newMatchesProfilesCache: UserFeedDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
+
+    private var lmmInMemory: LcInMemory? = null  // Lmm + it's lastActionTime + corresponding filters
 
     // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.cacheNewFacesAsAlreadySeen(): Single<FeedResponse> =
@@ -102,9 +103,9 @@ open class FeedRepository @Inject constructor(
     override val badgeLikes = PublishSubject.create<Boolean>()
     override val badgeMatches = PublishSubject.create<Boolean>()
     override val badgeMessenger = PublishSubject.create<Boolean>()
-    override val feedLikes = PublishSubject.create<List<FeedItem>>()
-    override val feedMatches = PublishSubject.create<List<FeedItem>>()
-    override val feedMessages = PublishSubject.create<List<FeedItem>>()
+    override val feedLikes = PublishSubject.create<LmmSlice>()
+    override val feedMatches = PublishSubject.create<LmmSlice>()
+    override val feedMessages = PublishSubject.create<LmmSlice>()
     override val lmmChanged = PublishSubject.create<Boolean>()
     override val lmmLoadFinish = PublishSubject.create<Int>()
     override val newLikesCount = PublishSubject.create<Int>()
@@ -113,19 +114,19 @@ open class FeedRepository @Inject constructor(
 
     /* Discover (former New Faces) */
     // ------------------------------------------
-    override fun getDiscover(resolution: ImageResolution, limit: Int?, filter: FilterEssence?): Single<Feed> {
+    override fun getDiscover(resolution: ImageResolution, limit: Int?, filters: Filters?): Single<Feed> {
         val trace = FirebasePerformance.getInstance().newTrace("refresh_discover")
         return aObjPool
             .triggerSource()
             .doOnSubscribe { trace.start() }
-            .flatMap { getDiscoverOnly(resolution, limit, filter, lastActionTime = it) }
+            .flatMap { getDiscoverOnly(resolution, limit, filters, lastActionTime = it) }
             .doFinally { trace.stop() }
     }
 
-    private fun getDiscoverOnly(resolution: ImageResolution, limit: Int?, filter: FilterEssence?,
+    private fun getDiscoverOnly(resolution: ImageResolution, limit: Int?, filters: Filters?,
                                 lastActionTime: Long, extraTraces: Collection<Trace> = emptyList()): Single<Feed> =
         spm.accessSingle {
-            cloud.getDiscover(it.accessToken, resolution, limit, filter, lastActionTime)
+            cloud.getDiscover(it.accessToken, resolution, limit, filters, lastActionTime)
                 .handleError(tag = "getDiscover($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/discover", extraTraces = extraTraces)
                 .doOnSuccess { if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for Discover") }
                 .filterOutDuplicateProfilesFeed()
@@ -226,12 +227,12 @@ open class FeedRepository @Inject constructor(
 
     /* LC (replacing LMM) */
     // ------------------------------------------
-    override fun getLc(resolution: ImageResolution, limit: Int?, filter: FilterEssence?, source: String?): Single<Lmm> {
+    override fun getLc(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm> {
         val trace = FirebasePerformance.getInstance().newTrace("refresh_lc")
         return aObjPool
             .triggerSource()
             .doOnSubscribe { trace.start() }
-            .flatMap { getLcOnly(resolution, limit, filter, source = source, lastActionTime = it, extraTraces = listOf(trace)) }
+            .flatMap { getLcOnly(resolution, limit, filters, source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
                 SentryUtil.capture(it, message = "Fallback to get cached LC", level = Event.Level.WARNING)
@@ -240,23 +241,41 @@ open class FeedRepository @Inject constructor(
             .doFinally { trace.stop() }
     }
 
-    private fun getLcOnly(resolution: ImageResolution, limit: Int?, filter: FilterEssence?,
+    override fun getLcCounters(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm> =
+//        aObjPool.triggerSource()
+//            .flatMap { lastActionTime ->
+                spm.accessSingle {
+                    cloud.getLc(it.accessToken, resolution, limit, filters, source, aObjPool.lastActionTime())
+                        .filterOutDuplicateProfilesLmmResponse()
+                        .filterOutBlockedProfilesLmmResponse()
+                        .map { it.map() }
+                        .keepLmmInMemory(filters)
+                }
+//            }
+
+    private fun getLcOnly(resolution: ImageResolution, limit: Int?, filters: Filters?,
                           source: String?, lastActionTime: Long,
                           extraTraces: Collection<Trace> = emptyList()): Single<Lmm> =
-        spm.accessSingle {
-            cloud.getLc(it.accessToken, resolution, limit, filter, source, lastActionTime)
-                .handleError(tag = "getLc($resolution,lat=$lastActionTime", traceTag = "feeds/get_lc", extraTraces = extraTraces)
-                .dropLmmResponseStatsOnSubscribe()
-                .filterOutDuplicateProfilesLmmResponse()
-                .filterOutBlockedProfilesLmmResponse()
-                .map { it.map() }
-                .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
-                .checkForNewLikes()
-                .checkForNewMessages()
-                .cacheLmm()  // cache new Lmm data fetched from the Server
-                .cacheMessagesFromLmm()
-                .doOnSuccess { lmm -> lmmLoadFinish.onNext(lmm.totalCount()) }
+        if (lmmInMemory != null && lmmInMemory!!.lastActionTime >= lastActionTime &&
+            lmmInMemory!!.filters == filters) {  // use in-memory data only if all criteria fulfill
+            DebugLogUtil.i("Use LC that has been filtered recently from the memory cache")
+            Single.just(lmmInMemory!!.lmm)  // use LC in memory being recently filtered
+        } else {
+            spm.accessSingle {
+                cloud.getLc(it.accessToken, resolution, limit, filters, source, lastActionTime)
+                     .handleError(tag = "getLc($resolution,lat=$lastActionTime", traceTag = "feeds/get_lc", extraTraces = extraTraces)
+                     .filterOutDuplicateProfilesLmmResponse()
+                     .filterOutBlockedProfilesLmmResponse()
+                     .map { it.map() }
+            }
         }
+        .dropLmmStatsOnSubscribe()
+        .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
+        .checkForNewLikes()
+        .checkForNewMessages()
+        .cacheLmm()  // cache new LC data fetched from the Server
+        .cacheMessagesFromLmm()
+        .doOnSuccess { lmm -> lmmLoadFinish.onNext(lmm.totalCount()) }
 
     private fun getCachedLc(): Single<Lmm> =
         getCachedLcOnly()
@@ -270,7 +289,13 @@ open class FeedRepository @Inject constructor(
         Single.zip(
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES).map { it.mapList() },
             local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES).map { it.mapList() },
-            BiFunction { likes, messages -> Lmm(likes, matches = emptyList(), messages = messages) })
+            BiFunction { likes, messages ->
+                val totalNotFilteredLikes = feedSharedPrefs.getTotalNotFilteredLikes()
+                val totalNotFilteredMessages = feedSharedPrefs.getTotalNotFilteredMessages()
+                Lmm(likes = likes, matches = emptyList(), messages = messages,
+                    totalNotFilteredLikes = totalNotFilteredLikes,
+                    totalNotFilteredMessages = totalNotFilteredMessages)
+            })
 
     // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.filterOutAlreadySeenProfilesFeed(): Single<FeedResponse> =
@@ -373,7 +398,6 @@ open class FeedRepository @Inject constructor(
             lmm.matches.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
             lmm.messages.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
             Completable.fromCallable { messengerLocal.insertMessages(messages) }  // cache new messages
-                       .doOnComplete { Timber.v("Cached messages from Lmm: ${messages.joinToString { it.text }}") }
                        .toSingleDefault(lmm)
         }
 
@@ -381,6 +405,10 @@ open class FeedRepository @Inject constructor(
         flatMap { lmm ->
             Single.fromCallable { local.deleteFeedItems() }  // clear old cache before inserting new data
                 .flatMap { Single.fromCallable { imagesLocal.deleteImages() } }
+                .doOnSuccess {
+                    feedSharedPrefs.setTotalNotFilteredLikes(lmm.totalNotFilteredLikes)
+                    feedSharedPrefs.setTotalNotFilteredMessages(lmm.totalNotFilteredMessages)
+                }
                 .flatMap {
                     val feedItems = mutableListOf<FeedItemDbo>()
                         .apply {
@@ -402,6 +430,9 @@ open class FeedRepository @Inject constructor(
                 .flatMap { Single.just(lmm) }
         }
 
+    private fun Single<Lmm>.keepLmmInMemory(filters: Filters?): Single<Lmm> =
+        doAfterSuccess { lmmInMemory = LcInMemory(it, aObjPool.lastActionTime(), filters) }
+
     // ------------------------------------------
     private fun Single<Lmm>.checkForNewFeedItems(): Single<Lmm> =
         doOnSuccess { lmmChanged.onNext(it.containsNotSeenItems()) }  // have not seen items
@@ -409,7 +440,7 @@ open class FeedRepository @Inject constructor(
     private fun Single<Lmm>.checkForNewLikes(): Single<Lmm> =
         doOnSuccess {
             badgeLikes.onNext(it.notSeenLikesCount() > 0)
-            feedLikes.onNext(it.likes)
+            feedLikes.onNext(LmmSlice(items = it.likes, totalNotFilteredCount = it.totalNotFilteredLikes))
         }
         .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
@@ -427,7 +458,7 @@ open class FeedRepository @Inject constructor(
     private fun Single<Lmm>.checkForNewMatches(): Single<Lmm> =
         doOnSuccess {
             badgeMatches.onNext(it.notSeenMatchesCount() > 0)
-            feedMatches.onNext(it.matches)
+            feedMatches.onNext(LmmSlice(items = it.matches, totalNotFilteredCount = DomainUtil.BAD_VALUE))  // count not supported as 'matches' are deprecated
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
@@ -443,7 +474,7 @@ open class FeedRepository @Inject constructor(
             })
 
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
-        doOnSuccess { feedMessages.onNext(it.messages) }
+        doOnSuccess { feedMessages.onNext(LmmSlice(items = it.messages, totalNotFilteredCount = it.totalNotFilteredMessages)) }
         .zipWith(messengerLocal.countUnreadMessages(),
             BiFunction { lmm: Lmm, count: Int ->
                 if (count > 0) {

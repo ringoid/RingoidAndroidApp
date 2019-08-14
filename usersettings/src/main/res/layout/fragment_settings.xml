@@ -13,11 +13,10 @@
         app:layout_constraintTop_toTopOf="parent"
         style="@style/ProgressBar.Horizontal"/>
 
-    <com.ringoid.widget.view.item_view.SwitchIconItemView
-        android:id="@+id/item_theme"
-        android:visibility="gone"
-        app:icon_item_icon="?attr/refDrawableThemeSwitch"
-        app:icon_item_text="@string/settings_theme_dark"
+    <com.ringoid.widget.view.item_view.IconItemView
+        android:id="@+id/item_filters"
+        app:icon_item_icon="?attr/refDrawableSettingsFilters"
+        app:icon_item_text="@string/settings_filters"
         style="?attr/iconItemView"/>
 
     <View style="@style/Underscore" android:visibility="gone"/>
@@ -40,6 +39,15 @@
         style="?attr/iconItemView"/>
 
     <View style="@style/Underscore"/>
+
+    <com.ringoid.widget.view.item_view.SwitchIconItemView
+        android:id="@+id/item_theme"
+        android:visibility="gone"
+        app:icon_item_icon="?attr/refDrawableThemeSwitch"
+        app:icon_item_text="@string/settings_theme_dark"
+        style="?attr/iconItemView"/>
+
+    <View style="@style/Underscore" android:visibility="gone"/>
 
     <com.ringoid.widget.view.item_view.LabelIconItemView
         android:id="@+id/item_language"

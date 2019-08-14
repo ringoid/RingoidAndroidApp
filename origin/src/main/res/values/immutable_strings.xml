@@ -14,6 +14,7 @@
     <string name="debug_item_response_error_server" translatable="false">Internal Server error</string>
     <string name="debug_item_response_error_timeout" translatable="false">Response timed out</string>
     <string name="debug_item_screen_info" translatable="false">Screed Info</string>
+    <string name="debug_item_set_invalid_filters" translatable="false">Set invalid filters</string>
     <string name="debug_item_switch_debug_log" translatable="false">Show debug log</string>
     <string name="debug_item_switch_developer_mode" translatable="false">Developer mode</string>
     <string name="debug_item_clear_debug_log_button_label" translatable="false">Clear Log</string>
@@ -24,6 +25,9 @@
     <string name="main_bottom_bar_menu_feed" translatable="false">New Faces</string>
     <string name="main_bottom_bar_menu_lmm" translatable="false">Likes</string>
     <string name="main_bottom_bar_menu_profile" translatable="false">Profile</string>
+
+    <!-- Settings Filters screen -->
+    <string name="common_age_range" translatable="false">%1$d&#8201;&#45;&#8201;%2$d</string>
 
     <!-- Settings Info screen -->
     <string name="settings_info_debug" translatable="false">Debug</string>

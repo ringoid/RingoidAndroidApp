@@ -1,10 +1,7 @@
 package com.ringoid.domain.repository.feed
 
 import com.ringoid.domain.misc.ImageResolution
-import com.ringoid.domain.model.essence.feed.FilterEssence
-import com.ringoid.domain.model.feed.Feed
-import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.*
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
@@ -38,16 +35,17 @@ interface IFeedRepository {
     val badgeLikes: PublishSubject<Boolean>  // LMM contains new likes
     val badgeMatches: PublishSubject<Boolean>  // LMM contains new matches
     val badgeMessenger: PublishSubject<Boolean>  // LMM contains new messages
-    val feedLikes: PublishSubject<List<FeedItem>>
-    val feedMatches: PublishSubject<List<FeedItem>>
-    val feedMessages: PublishSubject<List<FeedItem>>
+    val feedLikes: PublishSubject<LmmSlice>
+    @Deprecated("LMM -> LC")
+    val feedMatches: PublishSubject<LmmSlice>  // deprecated, 'matches' are part of 'chats' in LC
+    val feedMessages: PublishSubject<LmmSlice>
     val lmmChanged: PublishSubject<Boolean>  // LMM contains new data
     val lmmLoadFinish: PublishSubject<Int>  // LMM load finished, contains LMM's total count
     val newLikesCount: PublishSubject<Int>  // for particle animation
     val newMatchesCount: PublishSubject<Int>  // for particle animation
     val newMessagesCount: PublishSubject<Int>  // for particle animation
 
-    fun getDiscover(resolution: ImageResolution, limit: Int?, filter: FilterEssence?): Single<Feed>
+    fun getDiscover(resolution: ImageResolution, limit: Int?, filters: Filters?): Single<Feed>
 
     @Deprecated("LMM -> LC")
     fun getNewFaces(resolution: ImageResolution, limit: Int?): Single<Feed>
@@ -55,7 +53,8 @@ interface IFeedRepository {
     @Deprecated("LMM -> LC")
     fun getLmm(resolution: ImageResolution, source: String?): Single<Lmm>
 
-    fun getLc(resolution: ImageResolution, limit: Int?, filter: FilterEssence?, source: String?): Single<Lmm>
+    fun getLc(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm>
+    fun getLcCounters(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm>
 
     /**
      * The following methods operate with cached Lmm, which could contain already blocked profiles.

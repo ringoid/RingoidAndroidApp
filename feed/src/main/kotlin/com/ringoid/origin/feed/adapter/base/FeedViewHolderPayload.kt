@@ -23,6 +23,9 @@ object FeedViewHolderShowSettingsBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowTabsIndicatorOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideTabsIndicatorOnScroll : FeedViewHolderPayload()
 
+object FeedFooterViewHolderHideControls : FeedViewHolderPayload()
+object FeedFooterViewHolderShowControls : FeedViewHolderPayload()
+
 data class FeedViewHolderHideOnScroll(val index: Int) : FeedViewHolderPayload()
 data class FeedViewHolderShowOnScroll(val index: Int) : FeedViewHolderPayload()
 data class FeedViewHolderHideNameOnScroll(val index: Int, val type: OffsetScrollStrategy.Type) : FeedViewHolderPayload()

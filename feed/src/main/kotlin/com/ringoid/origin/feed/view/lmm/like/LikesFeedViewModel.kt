@@ -13,9 +13,11 @@ import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
 import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedViewModel
@@ -42,7 +44,7 @@ class LikesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLmmFeedViewModel(
         getLmmUseCase,
         getCachedFeedItemByIdUseCase,
@@ -52,7 +54,7 @@ class LikesFeedViewModel @Inject constructor(
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     private val incomingPushLike = PublishSubject.create<BusEvent>()
 
@@ -78,7 +80,7 @@ class LikesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLmmUseCase.repository.feedLikes
+    override fun sourceFeed(): Observable<LmmSlice> = getLmmUseCase.repository.feedLikes
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
 

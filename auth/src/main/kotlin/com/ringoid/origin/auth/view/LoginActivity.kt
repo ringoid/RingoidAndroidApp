@@ -8,6 +8,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.deeplink.AppNav
+import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
@@ -42,6 +43,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun getVmClass() = LoginViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.activity_login
+
+    override fun appScreen(): AppScreen = AppScreen.LOGIN
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {

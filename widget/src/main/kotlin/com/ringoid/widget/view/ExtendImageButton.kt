@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.utility.clickDebounce
@@ -13,7 +14,7 @@ import com.ringoid.utility.getSelectableItemBgBorderless
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_extend_image_button.view.*
 
-class ExtendImageButton : FrameLayout {
+open class ExtendImageButton : FrameLayout {
 
     constructor(context: Context) : this(context, null)
 
@@ -23,12 +24,14 @@ class ExtendImageButton : FrameLayout {
         init(context, attributes, defStyleAttr)
     }
 
+    @LayoutRes protected open fun getLayoutId(): Int = R.layout.widget_extend_image_button
+
     // --------------------------------------------------------------------------------------------
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
         background = context.getSelectableItemBgBorderless()  // ContextCompat.getDrawable(context, R.drawable.rect_debug_area)
         foreground = context.getSelectableItemBgBorderless()
 
-        LayoutInflater.from(context).inflate(R.layout.widget_extend_image_button, this, true)
+        LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
         context.obtainStyledAttributes(attributes, R.styleable.ExtendImageButton, defStyleAttr, 0)
             .apply {
@@ -62,9 +65,13 @@ class ExtendImageButton : FrameLayout {
         ibtn.clicks().compose(clickDebounce()).subscribe { l?.onClick(ibtn) }
     }
 
-    @Suppress("CheckResult")
     override fun setOnTouchListener(l: OnTouchListener?) {
         super.setOnTouchListener(l)
+        touchImpl(l)
+    }
+
+    @Suppress("CheckResult")
+    protected open fun touchImpl(l: OnTouchListener?) {
         ibtn.touches().compose(clickDebounce()).subscribe { l?.onTouch(ibtn, it) }
     }
 }

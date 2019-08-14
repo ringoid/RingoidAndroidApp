@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
-    <FrameLayout
-        android:id="@+id/fl_empty_container"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"/>
+        android:layout_height="@dimen/std_toolbar_height"
+        android:background="?refColorBgSemi"
+        android:elevation="0dp"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?refColorBgSemi"
+            android:elevation="0dp"
+            app:layout_scrollFlags="scroll|snap|enterAlways"
+            app:titleTextColor="?refTextColorPrimary"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.ringoid.widget.view.rv.GestureEnhancedRecyclerView
             android:id="@+id/rv_items"
@@ -29,6 +43,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <FrameLayout
+        android:id="@+id/fl_empty_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/semitransparent"
+        android:clickable="true"
+        android:visibility="gone"/>
+
+    <include layout="@layout/dialog_filters"/>
+    
     <Button
         android:id="@+id/btn_refresh_popup"
         android:layout_width="wrap_content"
@@ -44,4 +74,5 @@
         android:textColor="@android:color/white"
         android:textSize="@dimen/std_text_16"
         android:visibility="invisible"/>
-</FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

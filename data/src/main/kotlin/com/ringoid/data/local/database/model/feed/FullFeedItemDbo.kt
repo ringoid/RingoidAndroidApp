@@ -5,6 +5,7 @@ import androidx.room.Relation
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.Mappable
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.mapList
@@ -36,11 +37,22 @@ data class FullFeedItemDbo(
             lastOnlineStatus = feedItem.lastOnlineStatus,
             lastOnlineText = feedItem.lastOnlineText,
             age = feedItem.age,
+            children = feedItem.children,
             education = feedItem.education,
+            gender = Gender.from(feedItem.gender),
             hairColor = feedItem.hairColor,
             height = feedItem.height,
             income = feedItem.income,
             property = feedItem.property,
             transport = feedItem.transport,
+            about = feedItem.about,
+            company = feedItem.company,
+            jobTitle = feedItem.jobTitle,
+            name = feedItem.name,
+            instagram = feedItem.instagram,
+            tiktok = feedItem.tiktok,
+            university = feedItem.university,
+            whereFrom = feedItem.whereFrom,
+            whereLive = feedItem.whereLive,
             isNotSeen = feedItem.isNotSeen)
 }

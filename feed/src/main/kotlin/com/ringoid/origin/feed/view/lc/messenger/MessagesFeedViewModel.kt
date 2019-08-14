@@ -19,9 +19,10 @@ import com.ringoid.domain.interactor.messenger.GetChatOnlyUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
+import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
-import com.ringoid.domain.model.feed.Lmm
+import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
@@ -56,7 +57,7 @@ class MessagesFeedViewModel @Inject constructor(
     clearMessagesForChatUseCase: ClearMessagesForChatUseCase,
     cacheBlockedProfileIdUseCase: CacheBlockedProfileIdUseCase,
     countUserImagesUseCase: CountUserImagesUseCase,
-    userInMemoryCache: IUserInMemoryCache, app: Application)
+    filtersSource: IFiltersSource, userInMemoryCache: IUserInMemoryCache, app: Application)
     : BaseLcFeedViewModel(
         getLcUseCase,
         getCachedFeedItemByIdUseCase,
@@ -66,7 +67,7 @@ class MessagesFeedViewModel @Inject constructor(
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app) {
 
     private val incomingPushMatch = PublishSubject.create<BusEvent>()
     private val incomingPushMessages = PublishSubject.create<BusEvent>()
@@ -132,8 +133,6 @@ class MessagesFeedViewModel @Inject constructor(
     // ------------------------------------------
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER
 
-    override fun getFeedFromLmm(lmm: Lmm): List<FeedItem> = lmm.messages
-
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
@@ -146,7 +145,7 @@ class MessagesFeedViewModel @Inject constructor(
                 }
             }
 
-    override fun sourceFeed(): Observable<List<FeedItem>> = getLcUseCase.repository.feedMessages
+    override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedMessages
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -168,7 +167,7 @@ class MessagesFeedViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMatches()
         pushNewMatch.value = 0L  // for particle animation
         incomingPushMatch.onNext(event)  // for 'tap-to-refresh' popup
@@ -177,7 +176,7 @@ class MessagesFeedViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event", "event" to "$event")
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMessages()
         if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
             pushNewMessage.value = 0L  // for particle animation
