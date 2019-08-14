@@ -427,7 +427,7 @@ ext {
     /* Feature Feed */
     // ------------------------------------------
     feedDependencies = [
-        [configuration: "api", dependency: project(modules.topsheet)],
+        [configuration: "implementation", dependency: project(modules.topsheet)],
         [configuration: "implementation", dependency: d_libs.gson]
     ]
     feedDependencies += module_messenger + module_origin + module_analytics + develop + android + arch + dagger + deeplink +
