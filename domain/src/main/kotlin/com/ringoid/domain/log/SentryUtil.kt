@@ -15,19 +15,27 @@ import java.util.*
 
 object SentryUtil {
 
+    enum class Level(val lvl: Event.Level) {
+        DEBUG(Event.Level.DEBUG),
+        INFO(Event.Level.INFO),
+        WARNING(Event.Level.WARNING),
+        ERROR(Event.Level.ERROR),
+        FATAL(Event.Level.FATAL);
+    }
+
     class S constructor(private val `object`: Any? = null) {
 
-        fun d(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.DEBUG,   extras = extras)
-        fun i(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.INFO,    extras = extras)
-        fun w(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.WARNING, extras = extras)
-        fun e(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.ERROR,   extras = extras)
-        fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.FATAL,   extras = extras)
+        fun d(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.DEBUG,   extras = extras)
+        fun i(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.INFO,    extras = extras)
+        fun w(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.WARNING, extras = extras)
+        fun e(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.ERROR,   extras = extras)
+        fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.FATAL,   extras = extras)
 
         fun capture(e: Throwable, message: String? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
             capture(e, message = message, `object` = `object`, tag = tag, extras = extras)
         }
 
-        private fun log(message: String, level: Event.Level, extras: List<Pair<String, String>>? = null) {
+        private fun log(message: String, level: Level, extras: List<Pair<String, String>>? = null) {
             log(message, level = level, `object` = `object`, extras = extras)
         }
     }
@@ -47,13 +55,13 @@ object SentryUtil {
         }
     }
 
-    fun d(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.DEBUG, extras = extras)
-    fun i(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.INFO, extras = extras)
-    fun w(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.WARNING, extras = extras)
-    fun e(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.ERROR, extras = extras)
-    fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Event.Level.FATAL, extras = extras)
+    fun d(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.DEBUG, extras = extras)
+    fun i(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.INFO, extras = extras)
+    fun w(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.WARNING, extras = extras)
+    fun e(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.ERROR, extras = extras)
+    fun a(message: String, extras: List<Pair<String, String>>? = null) = log(message = message, level = Level.FATAL, extras = extras)
 
-    fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
+    fun capture(e: Throwable, message: String? = null, level: Level = Level.ERROR,
                 tag: String? = null, extras: List<Pair<String, String>>? = null) {
         Timber.d(message)
         val fullExtras = mutableListOf<Pair<String, String>>()
@@ -80,12 +88,12 @@ object SentryUtil {
 
     /* Internal */
     // --------------------------------------------------------------------------------------------
-    private fun log(message: String, level: Event.Level, `object`: Any? = null,
+    private fun log(message: String, level: Level, `object`: Any? = null,
                     extras: List<Pair<String, String>>? = null) {
         Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
     }
 
-    private fun capture(e: Throwable, message: String? = null, level: Event.Level = Event.Level.ERROR,
+    private fun capture(e: Throwable, message: String? = null, level: Level = Level.ERROR,
                         `object`: Any? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
         breadcrumb("Captured exception", "exception" to e.javaClass.canonicalName, "message" to "$message",
                    "exception message" to "${e.message}", "tag" to "$tag", "extras" to "${extras?.joinToString { "[${it.first}:${it.second}]" }}")
@@ -103,12 +111,12 @@ object SentryUtil {
         DebugLogUtil.e(e, message.orEmpty(), tag = tag)  // capture exception to debug logs
     }
 
-    private fun createEvent(message: String, level: Event.Level, `object`: Any? = null,
+    private fun createEvent(message: String, level: Level, `object`: Any? = null,
                             extras: List<Pair<String, String>>? = null): Event {
         val user: User? = Sentry.getContext().user
         val builder = EventBuilder()
             .withBreadcrumbs(Sentry.getContext().breadcrumbs)
-            .withLevel(level)
+            .withLevel(level.lvl)
             .withMessage(message)
             .withPlatform("Android: ${Build.VERSION.SDK_INT}")
             .withRelease(BuildConfig.VERSION_NAME)

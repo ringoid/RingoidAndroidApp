@@ -36,7 +36,6 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
 import io.reactivex.subjects.PublishSubject
-import io.sentry.event.Event
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -174,7 +173,7 @@ open class FeedRepository @Inject constructor(
             .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
-                SentryUtil.capture(it, message = "Fallback to get cached Lmm", level = Event.Level.WARNING)
+                SentryUtil.capture(it, message = "Fallback to get cached Lmm", level = SentryUtil.Level.WARNING)
                 getCachedLmm()
             }
             .doFinally { trace.stop() }
@@ -235,7 +234,7 @@ open class FeedRepository @Inject constructor(
             .flatMap { getLcOnly(resolution, limit, filters, source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
-                SentryUtil.capture(it, message = "Fallback to get cached LC", level = Event.Level.WARNING)
+                SentryUtil.capture(it, message = "Fallback to get cached LC", level = SentryUtil.Level.WARNING)
                 getCachedLc()
             }
             .doFinally { trace.stop() }

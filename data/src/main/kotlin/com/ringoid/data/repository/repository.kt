@@ -12,7 +12,6 @@ import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import io.sentry.event.Event
 import retrofit2.HttpException
 import timber.log.Timber
 import java.lang.Math.pow
@@ -74,7 +73,7 @@ private fun expBackoffFlowableImpl(
                     is RepeatRequestAfterSecException -> {
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
-                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = Event.Level.WARNING, tag = tag, extras = extras)
+                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = SentryUtil.Level.WARNING, tag = tag, extras = extras)
                             exception = ThresholdExceededException()  // abort retry and fallback
                         }
                         elapsedTimes.add(error.delay)
