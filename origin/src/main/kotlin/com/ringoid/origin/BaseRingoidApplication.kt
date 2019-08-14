@@ -18,7 +18,6 @@ import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
-import leakcanary.LeakSentry
 import timber.log.Timber
 import java.io.IOException
 import java.net.SocketException
@@ -41,7 +40,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         super.onCreate()
         Timber.d("Starting ${javaClass.simpleName}")
         initializeResources()
-        initializeLeakDetection()
         initializeCrashlytics()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeRxErrorHandler()
@@ -57,11 +55,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
 
     /* Debugging */
     // ------------------------------------------------------------------------
-    private fun initializeLeakDetection() {
-        // suitable for production
-        LeakSentry.config = LeakSentry.config.copy(watchFragmentViews = false)
-    }
-
     private fun initializeStrictMode() {
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(

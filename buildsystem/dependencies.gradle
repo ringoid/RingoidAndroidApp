@@ -324,7 +324,7 @@ ext {
 
     def leaks = [
 //            [configuration: "debugImplementation", dependency: d_support.leakCanary],
-            [configuration: "api", dependency: d_support.leakSentry],
+            [configuration: "implementation", dependency: d_support.leakSentry],
     ]
 
     def support = [
@@ -358,7 +358,8 @@ ext {
         [configuration: "implementation", dependency: d_support.sentry],
     ]
     appDependencies += all_features + module_main + module_analytics + module_data + develop +
-                       android + autoDispose + dagger + deeplink + kotlin + log + fragnav + net + room + support
+                       android + autoDispose + dagger + deeplink + kotlin + log + leaks + fragnav +
+                       net + room + support
 
     androidTestAppDeps = androidTest
     testAppDependencies = test

@@ -15,6 +15,7 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.branch.referral.Branch
 import io.sentry.Sentry
+import leakcanary.LeakSentry
 
 class RingoidApplication : BaseRingoidApplication() {
 
@@ -41,5 +42,6 @@ class RingoidApplication : BaseRingoidApplication() {
             .build(this, BuildConfig.FLURRY_API_KEY)
 
         Sentry.init(BuildConfig.SENTRY_DSN)
+        LeakSentry.config = LeakSentry.config.copy(watchFragmentViews = false)
     }
 }
