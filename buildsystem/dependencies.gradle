@@ -314,12 +314,12 @@ ext {
     ]
 
     def view = [
-            [configuration: "api", dependency: d_view.circularProgress],
-            [configuration: "api", dependency: d_view.dotsIndicator],
-            [configuration: "api", dependency: d_view.dotsIndicatorFix],
-            [configuration: "api", dependency: d_view.overscroll],
-            [configuration: "api", dependency: d_view.rvAnim],
-            [configuration: "api", dependency: d_view.rvItemAnim],
+            [configuration: "implementation", dependency: d_view.circularProgress],
+            [configuration: "implementation", dependency: d_view.dotsIndicator],
+            [configuration: "implementation", dependency: d_view.dotsIndicatorFix],
+            [configuration: "implementation", dependency: d_view.overscroll],
+            [configuration: "implementation", dependency: d_view.rvAnim],
+            [configuration: "implementation", dependency: d_view.rvItemAnim],
     ]
 
     def leaks = [
