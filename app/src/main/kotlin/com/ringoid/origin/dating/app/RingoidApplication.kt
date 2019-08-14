@@ -1,6 +1,7 @@
 package com.ringoid.origin.dating.app
 
 import android.util.Log
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.flurry.android.FlurryAgent
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
@@ -33,6 +34,8 @@ class RingoidApplication : BaseRingoidApplication() {
     override fun onCreate() {
         super.onCreate()
         Branch.getAutoInstance(this)
+
+        Fresco.initialize(this)
 
         FlurryAgent.Builder()
             .withLogEnabled(true)

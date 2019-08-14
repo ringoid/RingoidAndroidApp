@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.log.SentryUtil
-import com.ringoid.origin.GlideApp
 import com.ringoid.origin.imagepreview.OriginR_id
 import com.ringoid.origin.imagepreview.OriginR_menu
 import com.ringoid.origin.imagepreview.OriginR_string
@@ -140,15 +139,13 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
         }
 
         context?.let {
-            val context = it
             val destinationFile = File(it.filesDir, "${randomString()}.jpg")
-            crop_view.let {
+            crop_view.let { view ->
                 val imageConfig = CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
                     .setCompressFormat(Bitmap.CompressFormat.JPEG)
                     .setQuality(100) // hint for lossy compression formats
                     .build()
-                it.setCropSaveCompleteListener { GlideApp.with(context).load(destinationFile).preload() }
-                it.crop(imageConfig)
+                view.crop(imageConfig)
             }
         }
 

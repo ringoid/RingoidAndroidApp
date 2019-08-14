@@ -257,7 +257,6 @@ ext {
     ]
 
     def image = [
-            [configuration: "implementation", dependency: d_libs.fresco],
             [configuration: "api", dependency: d_libs.glideAnnotation],
             [configuration: "kapt", dependency: d_libs.glideCompiler],
             [configuration: "implementation", dependency: d_libs.glide],
@@ -352,8 +351,10 @@ ext {
     /* App */
     // ------------------------------------------
     appDependencies = [
+        [configuration: "implementation", dependency: project(modules.cropiwa)],
         [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_libs.flurry],
+        [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
@@ -432,11 +433,12 @@ ext {
     // ------------------------------------------
     feedDependencies = [
         [configuration: "implementation", dependency: project(modules.topsheet)],
-        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_libs.eventBus],
+        [configuration: "implementation", dependency: d_libs.fresco],
+        [configuration: "implementation", dependency: d_libs.gson],
     ]
     feedDependencies += module_messenger + module_origin + module_analytics + develop + android + arch + dagger + deeplink +
-                        autoDispose + image + kotlin + log + rx + rxBind
+                        autoDispose + kotlin + log + rx + rxBind + view
 
     androidTestFeedDeps = androidTest
     testFeedDependencies = test
@@ -470,6 +472,7 @@ ext {
     // ------------------------------------------
     messengerDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
+        [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
     messengerDependencies += module_origin + develop + module_analytics + android + arch + dagger +
@@ -489,9 +492,11 @@ ext {
     // ------------------------------------------
     profileDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
+        [configuration: "implementation", dependency: d_libs.fresco],
+        [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
     ]
     profileDependencies += module_origin + develop + module_analytics + android + arch + dagger +
-                           deeplink + kotlin + autoDispose + image + log + rx + rxBind
+                           deeplink + kotlin + autoDispose + log + rx + rxBind + view
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
@@ -508,7 +513,6 @@ ext {
     originDependencies = [
 //        [configuration: "implementation", dependency: d_libs.cropiwa],
         [configuration: "implementation", dependency: project(modules.cropiwa)],
-        [configuration: "api", dependency: d_libs.glideRecycler, options: { transitive = true }],
         [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_libs.confetti],
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
@@ -518,7 +522,7 @@ ext {
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
     originDependencies += develop + module_analytics + android + arch + dagger + deeplink + kotlin +
-                          autoDispose + image + log + fragnav + rx + rxBind + support + view
+                          autoDispose + log + fragnav + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
@@ -628,6 +632,7 @@ ext {
     /* Utility */
     // ------------------------------------------
     utilityDependencies = [
+        [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.jodaTime],
     ]
     utilityDependencies += android + kotlin + image + log + rx

@@ -23,7 +23,6 @@ import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.rv_item_feed_footer.view.*
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -68,7 +67,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             profileImageAdapter.onImageTouchListener = value
         }
 
-    internal val profileImageAdapter = ProfileImageAdapter(imageLoader)
+    internal val profileImageAdapter = ProfileImageAdapter()
 
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
     private var withAbout: Boolean = false

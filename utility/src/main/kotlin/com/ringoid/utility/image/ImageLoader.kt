@@ -26,7 +26,7 @@ object ImageLoader {
     /**
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
-    fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView, options: RequestOptions? = null) {
+    fun load(uri: String?, thumbnailUri: String? = null, imageView: ImageView) {
         if (uri.isNullOrBlank()) {
             return
         }
@@ -42,7 +42,7 @@ object ImageLoader {
                 imageView.controller = controller
             } ?: run { imageView.setImageURI(Uri.parse(uri)) }
         } else {
-            loadRequest(uri, thumbnailUri, imageView.context, options)
+            loadRequest(uri, thumbnailUri, imageView.context, null)
                 ?.listener(AutoRetryImageListener(uri, WeakReference(imageView), withThumbnail = !thumbnailUri.isNullOrBlank(), options = null))
                 ?.into(imageView)
         }
