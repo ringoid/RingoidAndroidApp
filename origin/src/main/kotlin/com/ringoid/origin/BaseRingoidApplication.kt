@@ -6,7 +6,6 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.flurry.android.FlurryAgent
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.domain.debug.DebugLogUtil
@@ -16,7 +15,6 @@ import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.domain.scope.UserScopeProvider
 import com.ringoid.utility.manager.LocaleManager
 import dagger.android.support.DaggerApplication
-import io.branch.referral.Branch
 import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -46,7 +44,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         initializeLeakDetection()
         initializeCrashlytics()
         initializeLogger()  // Logger must be initialized to show logs at the very beginning
-        initializeProgrammingTools()
         initializeRxErrorHandler()
 //        initializeStrictMode()  // ignore StrictMode alerts for SDK's initializations
 
@@ -94,19 +91,6 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
         } else {
             Timber.plant(CrashlyticsTree())
         }
-    }
-
-    /* Programming Tools */
-    // --------------------------------------------------------------------------------------------
-    private fun initializeProgrammingTools() {
-        Branch.getAutoInstance(this)
-
-        FlurryAgent.Builder()
-            .withLogEnabled(true)
-            .withCaptureUncaughtExceptions(true)
-            .withContinueSessionMillis(10000)
-            .withLogLevel(Log.VERBOSE)
-            .build(this, com.ringoid.domain.BuildConfig.FLURRY_API_KEY)
     }
 
     /* Resources */

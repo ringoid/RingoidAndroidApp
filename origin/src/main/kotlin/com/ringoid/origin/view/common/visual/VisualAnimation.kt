@@ -1,8 +1,6 @@
 package com.ringoid.origin.view.common.visual
 
 import android.view.animation.*
-import com.flurry.sdk.x
-import com.flurry.sdk.y
 
 fun alphaIn(fromAlpha: Float, toAlpha: Float, dur: Long = 250L, offset: Long = 0L, interp: Interpolator? = null): Animation =
     AlphaAnimation(fromAlpha, toAlpha)

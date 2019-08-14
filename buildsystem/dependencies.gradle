@@ -353,6 +353,7 @@ ext {
     // ------------------------------------------
     appDependencies = [
         [configuration: "implementation", dependency: d_libs.branch],
+        [configuration: "implementation", dependency: d_libs.flurry],
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
@@ -377,7 +378,9 @@ ext {
 
     /* Main */
     // ------------------------------------------
-    mainDependencies = []
+    mainDependencies = [
+        [configuration: "implementation", dependency: d_libs.firebase],
+    ]
     mainDependencies += all_features + develop + module_analytics + android + arch + dagger + deeplink + kotlin + log + fragnav + rx + rxBind
 
     androidTestMainDeps = androidTest
@@ -538,9 +541,6 @@ ext {
     // ------------------------------------------
     baseDependencies = [
         [configuration: "api", dependency: d_libs.eventBus],
-        [configuration: "api", dependency: d_libs.facebook],
-        [configuration: "api", dependency: d_libs.firebase],
-        [configuration: "api", dependency: d_libs.flurry],
     ]
     baseDependencies += module_analytics + module_domain + module_utility + module_widget + android + arch + dagger +
                         deeplink + kotlin + google + log + autoDispose + rx + rxBind + leaks
