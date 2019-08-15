@@ -221,6 +221,9 @@ ext {
             [configuration: "implementation", dependency: d_android.core],
             [configuration: "implementation", dependency: d_android.fragment],
             [configuration: "implementation", dependency: d_android.localBroadcast],
+    ]
+
+    def androidView = [
             [configuration: "implementation", dependency: d_android.material],
             [configuration: "implementation", dependency: d_android_view.cardView],
             [configuration: "implementation", dependency: d_android_view.constraint],
@@ -353,8 +356,8 @@ ext {
         [configuration: "implementation", dependency: d_support.sentry],
     ]
     appDependencies += AllFeatures + Main + Analytics + Data + Develop +
-                       android + autoDispose + dagger + deeplink + kotlin + log + leaks + fragnav +
-                       net + room + support
+                       android + androidView + autoDispose + dagger + deeplink + fragnav +
+                       kotlin + log + leaks + net + room + support
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -377,8 +380,8 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.firebase],
     ]
-    mainDependencies += AllFeatures + Develop + Analytics + android + arch + dagger +
-                        deeplink + autoDispose + kotlin + log + fragnav + rx + rxBind
+    mainDependencies += AllFeatures + Develop + Analytics + android + arch + autoDispose +
+                        dagger + deeplink + fragnav + kotlin + log + rx + rxBind
 
     androidTestMainDeps = androidTest
     testMainDependencies = test
@@ -394,8 +397,8 @@ ext {
     userSettingsDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus]
     ]
-    userSettingsDependencies += Origin + Develop + Analytics + android + arch +
-                                dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
+    userSettingsDependencies += Origin + Develop + Analytics + android + arch + autoDispose +
+                                dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test
@@ -410,8 +413,8 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += Origin + Analytics + Develop + android + arch + dagger +
-                        deeplink + autoDispose + kotlin + log + rx + rxBind
+    authDependencies += Origin + Analytics + Develop + android + arch + autoDispose +
+                        dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
     testAuthDependencies = test
@@ -431,8 +434,9 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    feedDependencies += Messenger + Origin + Analytics + Develop + android + arch + dagger + deeplink +
-                        autoDispose + kotlin + log + rx + rxBind + view
+    feedDependencies += Messenger + Origin + Analytics + Develop +
+                        android + androidView + arch + autoDispose +
+                        dagger + deeplink + kotlin + log + rx + rxBind + view
 
     androidTestFeedDeps = androidTest
     testFeedDependencies = test
@@ -449,8 +453,8 @@ ext {
     imagePreviewDependencies = [
         [configuration: "implementation", dependency: project(modules.cropiwa)]
     ]
-    imagePreviewDependencies += Origin + Analytics + Develop + android + arch +
-                                dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
+    imagePreviewDependencies += Origin + Analytics + Develop + android + arch + autoDispose +
+                                dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
     testImagePreviewDependencies = test
@@ -469,8 +473,8 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    messengerDependencies += Origin + Develop + Analytics + android + arch + dagger +
-                             deeplink + autoDispose + kotlin + log + rx + rxBind
+    messengerDependencies += Origin + Develop + Analytics + android + androidView + arch + autoDispose +
+                             dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test
@@ -489,8 +493,8 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
     ]
-    profileDependencies += Origin + Develop + Analytics + android + arch + dagger +
-                           deeplink + kotlin + autoDispose + log + rx + rxBind + view
+    profileDependencies += Origin + Develop + Analytics + android + androidView + arch + autoDispose +
+                           dagger + deeplink + kotlin + log + rx + rxBind + view
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
@@ -515,8 +519,8 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += Develop + Analytics + android + arch + dagger + deeplink + kotlin +
-                          autoDispose + log + fragnav + rx + rxBind + support + view
+    originDependencies += Develop + Analytics + android + androidView + arch + autoDispose +
+                          dagger + deeplink + fragnav + kotlin + log + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
@@ -555,8 +559,8 @@ ext {
     baseDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    baseDependencies += Analytics + Domain + Utility + android + arch + dagger +
-                        deeplink + kotlin + google + log + autoDispose + rx + rxBind + leaks
+    baseDependencies += Analytics + Domain + Utility + android + androidView + arch + autoDispose +
+                        dagger + deeplink + google + kotlin + leaks + log + rx + rxBind
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test
@@ -576,7 +580,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    dataDependencies += Domain + Utility + kotlin + dagger + log + autoDispose + net + room + rx
+    dataDependencies += Domain + Utility + autoDispose + dagger + kotlin + log + net + room + rx
     testDataDependencies = test
 
     dataPlugins = [
@@ -602,7 +606,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_support.sentry]
     ]
-    domainDependencies += Utility + kotlin + dagger + log + autoDispose + rx
+    domainDependencies += Utility + autoDispose + dagger + kotlin + log + rx
     testDomainDependencies = test
 
     domainPlugins = [
@@ -614,7 +618,7 @@ ext {
     /* Repository */
     // ------------------------------------------
     repositoryDependencies = []
-    repositoryDependencies += Domain + kotlin + dagger + log + rx
+    repositoryDependencies += Domain + dagger + kotlin + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [
@@ -629,7 +633,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.jodaTime],
     ]
-    utilityDependencies += android + kotlin + log + rx
+    utilityDependencies += android + androidView + kotlin + log + rx
     testUtilityDependencies = test
 
     utilityPlugins = [
@@ -641,7 +645,7 @@ ext {
     /* Widget */
     // ------------------------------------------
     widgetDependencies = []
-    widgetDependencies += Utility + android + kotlin + log + rx + rxBind
+    widgetDependencies += Utility + android + androidView + kotlin + log + rx + rxBind
     testWidgetDependencies = test
 
     widgetPlugins = [
