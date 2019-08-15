@@ -2,10 +2,7 @@ package com.ringoid.origin.view.dialog
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
@@ -101,10 +98,17 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
                 .takeIf { !it.isNullOrBlank() }
                 ?.let {
                     with (et_dialog_entry) {
+                        imeOptions = EditorInfo.IME_ACTION_DONE
                         setText(it)
                         setSelection(it.length)
-                        setOnEditorActionListener { _, actionId, _ ->
+                        setOnEditorActionListener { _, actionId, event ->
                             when (actionId) {
+                                EditorInfo.IME_NULL -> {
+                                    if (event.action == KeyEvent.ACTION_DOWN) {
+                                        btn_done?.performClick()
+                                        true
+                                    } else false
+                                }
                                 EditorInfo.IME_ACTION_DONE -> { btn_done?.performClick(); true }
                                 else -> false
                             }

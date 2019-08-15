@@ -55,8 +55,9 @@
                 app:icon_item_icon="?refDrawableProfilePropertyAbout"
                 app:icon_item_text="@string/settings_profile_item_custom_property_about"
                 app:text_icon_item_text_field_height="@dimen/settings_big_text_item_height"
-                app:text_icon_item_wrap_content="false"
                 app:text_icon_item_text_gravity="top|start"
+                app:text_icon_item_text_max_length="9999"
+                app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
             <View style="@style/Underscore"/>
