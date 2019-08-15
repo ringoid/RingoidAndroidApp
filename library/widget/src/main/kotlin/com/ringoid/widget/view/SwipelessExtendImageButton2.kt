@@ -16,8 +16,5 @@ class SwipelessExtendImageButton2 : ExtendImageButton {
         // complete override
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        super.onTouchEvent(event)
-        return false
-    }
+    override fun onTouchEvent(event: MotionEvent): Boolean = false
 }
