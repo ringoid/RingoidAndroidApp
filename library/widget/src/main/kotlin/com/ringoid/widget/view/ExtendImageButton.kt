@@ -31,8 +31,7 @@ open class ExtendImageButton : FrameLayout {
 
     // --------------------------------------------------------------------------------------------
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
-//        background = context.getSelectableItemBgBorderless()  // ContextCompat.getDrawable(context, R.drawable.rect_debug_area)
-//        foreground = context.getSelectableItemBgBorderless()
+        initBgFg(context)
 
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
@@ -45,9 +44,9 @@ open class ExtendImageButton : FrameLayout {
             }
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        super.onTouchEvent(event)
-        return false
+    protected open fun initBgFg(context: Context) {
+        background = context.getSelectableItemBgBorderless()  // ContextCompat.getDrawable(context, R.drawable.rect_debug_area)
+        foreground = context.getSelectableItemBgBorderless()
     }
 
     /* API */

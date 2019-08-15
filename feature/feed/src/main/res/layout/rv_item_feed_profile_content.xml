@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:ci_gravity="center"/>
 
-    <com.ringoid.widget.view.ExtendImageButton
+    <com.ringoid.widget.view.SwipelessExtendImageButton2
         android:id="@+id/ibtn_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
