@@ -26,7 +26,7 @@ import com.ringoid.utility.toast
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
-import leakcanary.LeakSentry
+import leakcanary.AppWatcher
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -172,7 +172,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         super.onDestroy()
         vm.unsubscribeFromBusEvents()
         vm.onDestroy()
-        LeakSentry.refWatcher.watch(this)
+        AppWatcher.objectWatcher.watch(this)
     }
 
     // --------------------------------------------------------------------------------------------

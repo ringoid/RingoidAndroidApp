@@ -22,7 +22,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.view.StateBottomSheetDialog
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.support.AndroidSupportInjection
-import leakcanary.LeakSentry
+import leakcanary.AppWatcher
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -162,7 +162,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onDestroy")
         vm.unsubscribeFromBusEvents()
-        LeakSentry.refWatcher.watch(this)
+        AppWatcher.objectWatcher.watch(this)
     }
 
     override fun onDetach() {

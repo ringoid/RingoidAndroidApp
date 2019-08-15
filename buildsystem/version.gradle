@@ -84,7 +84,6 @@ buildscript {
         googleServicesVersion = '4.0.1'
         gradleVersionsPluginVersion = '0.22.0'
         leakCanaryVersion = '2.0-beta-2'
-        leakSentryVersion = '2.0-alpha-3'
         multidexVersion = '1.0.3'
         sentryVersion = '1.7.26'
         timberVersion = '4.7.1'

@@ -20,7 +20,7 @@ import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.model.user.AccessToken
 import com.uber.autodispose.lifecycle.autoDisposable
-import leakcanary.LeakSentry
+import leakcanary.AppWatcher
 import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
@@ -105,7 +105,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     override fun onCleared() {
         super.onCleared()
         unsubscribeFromBusEvents()
-        LeakSentry.refWatcher.watch(this)
+        AppWatcher.objectWatcher.watch(this)
     }
 
     /* Visibility */
