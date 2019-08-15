@@ -195,8 +195,8 @@ ext {
     def Utility = [[configuration: "implementation", dependency: project(modules.utility)]]
     def Widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
-    def develop = Base + Domain + Utility + Widget
-    def all_features = Auth + Feed + ImagePreview + Messenger + Profile + UserSettings + Origin
+    def Develop = Base + Domain + Utility + Widget
+    def AllFeatures = Auth + Feed + ImagePreview + Messenger + Profile + UserSettings + Origin
 
     /* Plugins */
     // --------------------------------------------------------------------------------------------
@@ -351,7 +351,7 @@ ext {
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += all_features + Main + Analytics + Data + develop +
+    appDependencies += AllFeatures + Main + Analytics + Data + Develop +
                        android + autoDispose + dagger + deeplink + kotlin + log + leaks + fragnav +
                        net + room + support
 
@@ -376,7 +376,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.firebase],
     ]
-    mainDependencies += all_features + develop + Analytics + android + arch + dagger +
+    mainDependencies += AllFeatures + Develop + Analytics + android + arch + dagger +
                         deeplink + autoDispose + kotlin + log + fragnav + rx + rxBind
 
     androidTestMainDeps = androidTest
@@ -393,7 +393,7 @@ ext {
     userSettingsDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus]
     ]
-    userSettingsDependencies += Origin + develop + Analytics + android + arch +
+    userSettingsDependencies += Origin + Develop + Analytics + android + arch +
                                 dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
@@ -409,7 +409,7 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += Origin + Analytics + develop + android + arch + dagger +
+    authDependencies += Origin + Analytics + Develop + android + arch + dagger +
                         deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
@@ -430,7 +430,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    feedDependencies += Messenger + Origin + Analytics + develop + android + arch + dagger + deeplink +
+    feedDependencies += Messenger + Origin + Analytics + Develop + android + arch + dagger + deeplink +
                         autoDispose + kotlin + log + rx + rxBind + view
 
     androidTestFeedDeps = androidTest
@@ -448,7 +448,7 @@ ext {
     imagePreviewDependencies = [
         [configuration: "implementation", dependency: project(modules.cropiwa)]
     ]
-    imagePreviewDependencies += Origin + Analytics + develop + android + arch +
+    imagePreviewDependencies += Origin + Analytics + Develop + android + arch +
                                 dagger + deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
@@ -468,7 +468,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.gson],
     ]
-    messengerDependencies += Origin + develop + Analytics + android + arch + dagger +
+    messengerDependencies += Origin + Develop + Analytics + android + arch + dagger +
                              deeplink + autoDispose + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
@@ -488,7 +488,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
     ]
-    profileDependencies += Origin + develop + Analytics + android + arch + dagger +
+    profileDependencies += Origin + Develop + Analytics + android + arch + dagger +
                            deeplink + kotlin + autoDispose + log + rx + rxBind + view
 
     androidTestProfileDeps = androidTest
@@ -514,7 +514,7 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += develop + Analytics + android + arch + dagger + deeplink + kotlin +
+    originDependencies += Develop + Analytics + android + arch + dagger + deeplink + kotlin +
                           autoDispose + log + fragnav + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
