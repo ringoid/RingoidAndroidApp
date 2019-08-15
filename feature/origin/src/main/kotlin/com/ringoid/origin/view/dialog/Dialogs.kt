@@ -174,8 +174,9 @@ object Dialogs {
             positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
             negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
             initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE,
-            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: (() -> Unit)? = null) =
+            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: ((dialog: DialogInterface?) -> Unit)? = null) =
         activity?.let { activity ->
+            var xdialog: DialogInterface? = null  // lateinit reference to dialog being built
             val hash = hashOf(activity, titleResId, hintRestId.takeIf { it != 0}?.let { activity.resources.getString(it) }, positiveBtnLabelResId, negativeBtnLabelResId)
             val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_text, null)
                 .apply {
@@ -188,7 +189,8 @@ object Dialogs {
                             this.imeOptions = imeOptions
                             setOnEditorActionListener { et, actionId, _ /* event */ ->
                                 if (actionId == et.imeOptions) {
-                                    imeActionListener?.invoke()
+                                    imeActionListener?.invoke(xdialog)
+                                        ?: run { positiveListener?.invoke(xdialog!!, 0, text.toString()) }
                                     true
                                 } else false
                             }
@@ -199,7 +201,8 @@ object Dialogs {
             titleResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setTitle(resId) } }
             positiveBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setPositiveButton(resId) { dialog, which -> positiveListener?.invoke(dialog, which, view?.et_dialog_entry?.text?.toString()) } } }
             negativeBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setNegativeButton(resId, negativeListener) } }
-            HashAlertDialog(dialog = builder.create(), hash = hash)
+            xdialog = builder.create()
+            HashAlertDialog(dialog = xdialog, hash = hash)
         } ?: throw NullPointerException("Unable to show dialog: Activity is null")
 
     fun showEditTextDialog(
@@ -209,7 +212,7 @@ object Dialogs {
             positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
             negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
             initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE,
-            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: (() -> Unit)? = null) =
+            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: ((dialog: DialogInterface?) -> Unit)? = null) =
         activity?.takeIf { !it.isActivityDestroyed() }
                 ?.let { activity ->
                     val dialog = getEditTextDialog(activity, titleResId, hintRestId,
@@ -232,7 +235,7 @@ object Dialogs {
             positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
             negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
             initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE,
-            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: (() -> Unit)? = null) =
+            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: ((dialog: DialogInterface?) -> Unit)? = null) =
         activity?.takeIf { it is BaseActivity<*> }
             ?.let {
                 showEditTextDialog(it as BaseActivity<*>, titleResId, hintRestId,
