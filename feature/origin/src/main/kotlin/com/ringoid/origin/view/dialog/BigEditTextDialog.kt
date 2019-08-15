@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.jakewharton.rxbinding3.view.clicks
@@ -99,8 +100,16 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
             args.getString(BUNDLE_KEY_INPUT)
                 .takeIf { !it.isNullOrBlank() }
                 ?.let {
-                    et_dialog_entry.setText(it)
-                    et_dialog_entry.setSelection(it.length)
+                    with (et_dialog_entry) {
+                        setText(it)
+                        setSelection(it.length)
+                        setOnEditorActionListener { _, actionId, _ ->
+                            when (actionId) {
+                                EditorInfo.IME_ACTION_DONE -> { btn_done?.performClick(); true }
+                                else -> false
+                            }
+                        }
+                    }
                 }
         }
     }
