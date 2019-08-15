@@ -140,7 +140,7 @@ ext {
     d_support = [
             crashlytics: "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
             leakCanary:  "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
-            leakSentry:  "com.squareup.leakcanary:leaksentry:${leakCanaryVersion}",
+            leakSentry:  "com.squareup.leakcanary:leaksentry:${leakSentryVersion}",
             multidex:    "com.android.support:multidex:${multidexVersion}",
             sentry:      "io.sentry:sentry-android:${sentryVersion}",
             timber:      "com.jakewharton.timber:timber:${timberVersion}",
@@ -318,7 +318,7 @@ ext {
     ]
 
     def leaks = [
-//            [configuration: "debugImplementation", dependency: d_support.leakCanary],
+            [configuration: "debugImplementation", dependency: d_support.leakCanary],
             [configuration: "implementation", dependency: d_support.leakSentry],
     ]
 
@@ -398,7 +398,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus]
     ]
     userSettingsDependencies += Origin + Develop + Analytics + android + arch + autoDispose +
-                                dagger + deeplink + kotlin + log + rx + rxBind
+                                dagger + deeplink + kotlin + leaks + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test
