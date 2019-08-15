@@ -140,6 +140,7 @@ ext {
     d_support = [
             crashlytics: "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
             leakCanary:  "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
+            leakCanaryObjectWatcher: "com.squareup.leakcanary:leakcanary-object-watcher-android:${leakCanaryVersion}",
             multidex:    "com.android.support:multidex:${multidexVersion}",
             sentry:      "io.sentry:sentry-android:${sentryVersion}",
             timber:      "com.jakewharton.timber:timber:${timberVersion}",
@@ -268,6 +269,11 @@ ext {
             [configuration: "implementation", dependency: d_kotlin.ktReflect],
     ]
 
+    def leaks = [
+            [configuration: "debugImplementation", dependency: d_support.leakCanary],
+            [configuration: "implementation", dependency: d_support.leakCanaryObjectWatcher],
+    ]
+
     def log = [
             [configuration: "implementation", dependency: d_support.timber],
     ]
@@ -347,12 +353,11 @@ ext {
         [configuration: "implementation", dependency: d_libs.flurry],
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_android.install],
-        [configuration: "debugImplementation", dependency: d_support.leakCanary],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
     appDependencies += AllFeatures + Main + Analytics + Data + Develop +
                        android + androidView + autoDispose + dagger + deeplink + fragnav +
-                       kotlin + log + net + room + support
+                       kotlin + leaks + log + net + room + support
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -391,10 +396,9 @@ ext {
     // ------------------------------------------
     userSettingsDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
-        [configuration: "debugImplementation", dependency: d_support.leakCanary],
     ]
     userSettingsDependencies += Origin + Develop + Analytics + android + arch + autoDispose +
-                                dagger + deeplink + kotlin + log + rx + rxBind
+                                dagger + deeplink + kotlin + leaks + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test
@@ -554,10 +558,9 @@ ext {
     // ------------------------------------------
     baseDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
-        [configuration: "debugImplementation", dependency: d_support.leakCanary],
     ]
     baseDependencies += Analytics + Domain + Utility + Widget + android + androidView + arch + autoDispose +
-                        dagger + deeplink + google + kotlin + log + rx + rxBind
+                        dagger + deeplink + google + kotlin + leaks + log + rx + rxBind
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test
