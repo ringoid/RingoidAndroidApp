@@ -48,12 +48,12 @@ dependencies {
     }
 
     application project(':app')
-    feature project(":auth")
-    feature project(":feed")
-    feature project(":imagepreview")
-    feature project(":messenger")
-    feature project(":profile")
-    feature project(":usersettings")
+    feature project(":feature:auth")
+    feature project(":feature:feed")
+    feature project(":feature:imagepreview")
+    feature project(":feature:messenger")
+    feature project(":feature:profile")
+    feature project(":feature:usersettings")
 }
 
 android.featureVariants.all { variant ->

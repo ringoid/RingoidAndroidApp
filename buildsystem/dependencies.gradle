@@ -150,25 +150,25 @@ ext {
     // --------------------------------------------------------------------------------------------
     modules = [
             app:          ':app',
-            auth:         ':auth',
-            feed:         ':feed',
-            imagePreview: ':imagepreview',
-            messenger:    ':messenger',
-            profile:      ':profile',
-            userSettings: ':usersettings',
+            auth:         ':feature:auth',
+            feed:         ':feature:feed',
+            imagePreview: ':feature:imagepreview',
+            messenger:    ':feature:messenger',
+            profile:      ':feature:profile',
+            userSettings: ':feature:usersettings',
 
             main:      ':main',       // -+- [ :main ]
-            origin:    ':origin',     //  ^- [ :origin ]
-            analytcis: ':analytics',
-            base:      ':base',       //  ^- [ :base ]
+            origin:    ':feature:origin',     //  ^- [ :origin ]
+            analytcis: ':library:analytics',
+            base:      ':core:base',       //  ^- [ :base ]
 
-            data:    ':data',                  // -+- [ :data ]
-            datainterface:  ':datainterface',  //  ^- [ :datainterface ] -+-
-            repository: ':repository',         //  |  [ :repository ] ----^
-            domain:  ':domain',                //  ^- [ :domain ]---------^
+            data:    ':library:data',                  // -+- [ :data ]
+            datainterface:  ':library:datainterface',  //  ^- [ :datainterface ] -+-
+            repository: ':library:repository',         //  |  [ :repository ] ----^
+            domain:  ':core:domain',                //  ^- [ :domain ]---------^
 
-            utility: ':utility',
-            widget:  ':widget',
+            utility: ':library:utility',
+            widget:  ':library:widget',
 
             // 3rd-party submodules
             cropiwa:  ':cropiwa',
