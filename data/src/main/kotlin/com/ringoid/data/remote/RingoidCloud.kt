@@ -27,8 +27,10 @@ import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssence
 import com.ringoid.domain.model.feed.Filters
 import io.reactivex.Completable
 import io.reactivex.Single
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,7 +50,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun deleteUserProfile(accessToken: String): Single<BaseResponse> {
         val content = "{\"accessToken\":\"$accessToken\"}"
-        val body = RequestBody.create(MediaType.parse("application/json"), content)
+        val body = content.toRequestBody("application/json".toMediaTypeOrNull())
         return restAdapter.deleteUserProfile(body)
             .keepDataForDebug(cloudDebug, "request" to "deleteUserProfile")
             .keepResultForDebug(cloudDebug)
@@ -127,7 +129,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logResponse("deleteUserImage")
 
     fun uploadImage(url: String, image: File): Completable {
-        val body = RequestBody.create(MediaType.parse("image/*"), image)
+        val body = image.asRequestBody("image/*".toMediaTypeOrNull())
         val trace = FirebasePerformance.getInstance().newTrace("image upload")
         return restAdapter.uploadImage(url = url, body = body)
             .keepDataForDebug(cloudDebug, "request" to "uploadImage")
@@ -204,7 +206,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             source?.let { add("\"source\":\"$source\"") }
         }
         val content = contentList.joinToString(",", "{", "}")
-        return RequestBody.create(MediaType.parse("application/json"), content)
+        return content.toRequestBody("application/json".toMediaTypeOrNull())
     }
 
     private fun prepareFilters(inputFilters: Filters): FilterEssence =

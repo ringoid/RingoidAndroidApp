@@ -3,7 +3,11 @@ package com.ringoid.data.remote.network
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
-import okhttp3.*
+import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.Protocol
+import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -23,7 +27,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         try {
             val response = chain.proceed(request)
             if (!response.isSuccessful) {  // code not 200-300
-                Timber.w("Unsuccessful network response, code: ${response.code()}")
+                Timber.w("Unsuccessful network response, code: ${response.code}")
             }
             return response
         } catch (e: SocketTimeoutException) {
@@ -40,13 +44,13 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
             unexpected = ERROR_NO_CONNECTION
             DebugLogUtil.e(e)
         }
-        val body = BaseResponse(requestUrl = request.url(), unexpected = unexpected)
+        val body = BaseResponse(requestUrl = request.url, unexpected = unexpected)
         return Response.Builder()
             .code(200)
             .message(errorMessage)
             .protocol(Protocol.HTTP_1_1)
             .request(request)
-            .body(ResponseBody.create(MediaType.parse("application/json"), body.toJson()))
+            .body(body.toJson().toResponseBody("application/json".toMediaTypeOrNull()))
             .build()
     }
 }

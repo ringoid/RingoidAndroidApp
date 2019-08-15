@@ -275,7 +275,7 @@ ext {
 
     def net = [
             [configuration: "implementation", dependency: d_network.logInterceptor, options: { exclude group: 'org.json', module: 'json' }],
-//            [configuration: "implementation", dependency: d_network.okhttp],
+            [configuration: "implementation", dependency: d_network.okhttp],
             [configuration: "implementation", dependency: d_network.okhttpLog],
             [configuration: "implementation", dependency: d_network.retrofit],
             [configuration: "implementation", dependency: d_network.retrofitGson],

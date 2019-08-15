@@ -8,7 +8,7 @@ class RequestUrlInterceptor : IRequestUrlInterceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        SentryUtil.breadcrumb("Request", "url" to "${request.url()}")
+        SentryUtil.breadcrumb("Request", "url" to "${request.url}")
         return chain.proceed(request)
     }
 }

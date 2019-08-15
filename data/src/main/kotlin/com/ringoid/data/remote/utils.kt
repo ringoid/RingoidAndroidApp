@@ -7,12 +7,13 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.IEssence
 import io.reactivex.*
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-fun IEssence.toBody(): RequestBody = RequestBody.create(MediaType.parse("application/json"), this.toJson())
+fun IEssence.toBody(): RequestBody = this.toJson().toRequestBody("application/json".toMediaTypeOrNull())
 
 const val DEFAULT_TAG = "response"
 
