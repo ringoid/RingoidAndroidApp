@@ -31,8 +31,8 @@ open class ExtendImageButton : FrameLayout {
 
     // --------------------------------------------------------------------------------------------
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
-        background = context.getSelectableItemBgBorderless()  // ContextCompat.getDrawable(context, R.drawable.rect_debug_area)
-        foreground = context.getSelectableItemBgBorderless()
+//        background = context.getSelectableItemBgBorderless()  // ContextCompat.getDrawable(context, R.drawable.rect_debug_area)
+//        foreground = context.getSelectableItemBgBorderless()
 
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
