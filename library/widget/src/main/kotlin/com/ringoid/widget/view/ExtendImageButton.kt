@@ -3,6 +3,7 @@ package com.ringoid.widget.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
@@ -42,6 +43,11 @@ open class ExtendImageButton : FrameLayout {
                 setImageSrcResource(resId = getResourceId(R.styleable.ExtendImageButton_xbtnSrc, 0))
                 recycle()
             }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        super.onTouchEvent(event)
+        return false
     }
 
     /* API */
