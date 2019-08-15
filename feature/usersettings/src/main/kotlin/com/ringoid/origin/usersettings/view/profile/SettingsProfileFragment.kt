@@ -3,6 +3,7 @@ package com.ringoid.origin.usersettings.view.profile
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
@@ -23,6 +24,7 @@ import com.ringoid.widget.view.item_view.textChanges
 import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
 import kotlinx.android.synthetic.main.fragment_settings_push.toolbar
+import timber.log.Timber
 
 class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>(),
     BigEditTextDialog.IBigEditTextDialogDone {
@@ -136,7 +138,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText(),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = TextIconItemView.MAX_LENGTH)
+                    maxLength = TextIconItemView.MAX_LENGTH,
+                    imeOptions = EditorInfo.IME_ACTION_DONE,
+                    imeActionListener = { Timber.e("OK") })
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onCompanyTextChange)
         }
@@ -151,7 +155,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText(),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = TextIconItemView.MAX_LENGTH)
+                    maxLength = TextIconItemView.MAX_LENGTH,
+                    imeOptions = EditorInfo.IME_ACTION_DONE,
+                    imeActionListener = { Timber.e("OK") })
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onJobTitleTextChange)
         }
@@ -167,7 +173,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText(),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_CLASS_NUMBER,
-                    maxLength = 3)
+                    maxLength = 3,
+                    imeOptions = EditorInfo.IME_ACTION_DONE,
+                    imeActionListener = { Timber.e("OK") })
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onHeightTextChange)
             setSuffix(OriginR_string.value_cm)
@@ -183,7 +191,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText(),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = 20)
+                    maxLength = 20,
+                    imeOptions = EditorInfo.IME_ACTION_DONE,
+                    imeActionListener = { Timber.e("OK") })
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onNameTextChange)
         }
@@ -196,7 +206,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onSocialInstagramTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(), maxLength = TextIconItemView.MAX_LENGTH)
+                    initText = getText(), maxLength = TextIconItemView.MAX_LENGTH,
+                    imeOptions = EditorInfo.IME_ACTION_DONE,
+                    imeActionListener = { Timber.e("OK") })
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onSocialInstagramTextChange)
         }
@@ -209,7 +221,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onSocialTikTokTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(), maxLength = TextIconItemView.MAX_LENGTH)
+                    initText = getText(), maxLength = TextIconItemView.MAX_LENGTH,
+                    imeOptions = EditorInfo.IME_ACTION_DONE,
+                    imeActionListener = { Timber.e("OK") })
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onSocialTikTokTextChange)
         }
@@ -224,7 +238,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText(),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = TextIconItemView.MAX_LENGTH)
+                    maxLength = TextIconItemView.MAX_LENGTH,
+                    imeOptions = EditorInfo.IME_ACTION_DONE,
+                    imeActionListener = { Timber.e("OK") })
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onUniversityTextChange)
         }
@@ -239,7 +255,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     },
                     initText = getText(),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = TextIconItemView.MAX_LENGTH)
+                    maxLength = TextIconItemView.MAX_LENGTH,
+                    imeOptions = EditorInfo.IME_ACTION_DONE,
+                    imeActionListener = { Timber.e("OK") })
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onWhereLiveTextChange)
         }

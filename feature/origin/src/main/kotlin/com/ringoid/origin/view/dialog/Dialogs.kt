@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.text.InputFilter
 import android.text.InputType
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -172,7 +173,8 @@ object Dialogs {
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
             negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE) =
+            initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE,
+            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: (() -> Unit)? = null) =
         activity?.let { activity ->
             val hash = hashOf(activity, titleResId, hintRestId.takeIf { it != 0}?.let { activity.resources.getString(it) }, positiveBtnLabelResId, negativeBtnLabelResId)
             val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_text, null)
@@ -181,6 +183,16 @@ object Dialogs {
                         initText?.let { setText(it); setSelection(it.length) }
                         this.inputType = inputType
                         this.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+                        // IME options
+                        if (imeOptions != EditorInfo.IME_NULL) {
+                            this.imeOptions = imeOptions
+                            setOnEditorActionListener { et, actionId, _ /* event */ ->
+                                if (actionId == et.imeOptions) {
+                                    imeActionListener?.invoke()
+                                    true
+                                } else false
+                            }
+                        }
                     }
                 }
             val builder = AlertDialog.Builder(activity).setView(view)
@@ -196,13 +208,15 @@ object Dialogs {
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
             negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE) =
+            initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE,
+            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: (() -> Unit)? = null) =
         activity?.takeIf { !it.isActivityDestroyed() }
                 ?.let { activity ->
                     val dialog = getEditTextDialog(activity, titleResId, hintRestId,
                         positiveBtnLabelResId, negativeBtnLabelResId,
                         positiveListener, negativeListener,
-                        initText, inputType, maxLength)
+                        initText, inputType, maxLength,
+                        imeOptions, imeActionListener)
                     registry.takeIf { !it.contains(dialog.hash) }
                             ?.add(dialog.hash)
                             ?.let { dialog.dialog }
@@ -217,20 +231,23 @@ object Dialogs {
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int, inputText: String?) -> Unit)? = null,
             negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE) =
+            initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE,
+            imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: (() -> Unit)? = null) =
         activity?.takeIf { it is BaseActivity<*> }
             ?.let {
                 showEditTextDialog(it as BaseActivity<*>, titleResId, hintRestId,
                     positiveBtnLabelResId, negativeBtnLabelResId,
                     positiveListener, negativeListener,
-                    initText, inputType, maxLength)
+                    initText, inputType, maxLength,
+                    imeOptions, imeActionListener)
             }
             ?: run {
                 val dialog = getEditTextDialog(
                     activity, titleResId, hintRestId,
                     positiveBtnLabelResId, negativeBtnLabelResId,
                     positiveListener, negativeListener,
-                    initText, inputType, maxLength)
+                    initText, inputType, maxLength,
+                    imeOptions, imeActionListener)
                 registry.takeIf { !it.contains(dialog.hash) }
                         ?.add(dialog.hash)
                         ?.let { dialog.dialog }
