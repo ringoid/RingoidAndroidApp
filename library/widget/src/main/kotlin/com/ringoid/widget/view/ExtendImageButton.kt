@@ -11,6 +11,8 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getSelectableItemBgBorderless
+import com.ringoid.utility.model.Coordinates
+import com.ringoid.utility.model.CoordinatesF
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_extend_image_button.view.*
 
@@ -73,5 +75,17 @@ open class ExtendImageButton : FrameLayout {
     @Suppress("CheckResult")
     protected open fun touchImpl(l: OnTouchListener?) {
         ibtn.touches().compose(clickDebounce()).subscribe { l?.onTouch(ibtn, it) }
+    }
+
+    fun getClickLocation(): Coordinates {
+        val xy = IntArray(2)
+        ibtn.getLocationOnScreen(xy)
+        return Coordinates(x = xy[0] + ibtn.width / 2, y = xy[1] + ibtn.height / 2)
+    }
+
+    fun getClickLocationF(): CoordinatesF {
+        val xy = IntArray(2)
+        ibtn.getLocationOnScreen(xy)
+        return CoordinatesF(x = xy[0] + ibtn.width * 0.5f, y = xy[1] + ibtn.height * 0.5f)
     }
 }

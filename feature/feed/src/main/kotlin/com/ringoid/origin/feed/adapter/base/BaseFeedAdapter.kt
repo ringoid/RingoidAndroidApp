@@ -1,10 +1,8 @@
 package com.ringoid.origin.feed.adapter.base
 
-import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
-import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.base.adapter.BaseDiffCallback
 import com.ringoid.base.adapter.BaseListAdapter
 import com.ringoid.origin.feed.R
@@ -64,10 +62,11 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
             ?.let { it as BaseFeedViewHolder }
             ?.also { vh ->
                 with (vh.itemView.ibtn_like) {
-                    clicks().compose(clickDebounce()).subscribe { onLike(vh) }
-                    touches().filter { it.action == MotionEvent.ACTION_DOWN }
-                             .compose(clickDebounce())
-                             .subscribe { if (onLike(vh)) { onImageTouchListener?.invoke(it.rawX, it.rawY) } }
+                    clicks().compose(clickDebounce()).subscribe {
+                        onLike(vh)
+                        val xy = getClickLocationF()
+                        onImageTouchListener?.invoke(xy.x, xy.y)
+                    }
                 }
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
