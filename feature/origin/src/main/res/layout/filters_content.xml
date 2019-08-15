@@ -31,6 +31,7 @@
         android:layout_marginTop="@dimen/std_margin_20"
         app:isb_show_indicator="none"
         app:isb_thumb_drawable="?refDrawableSettingsFiltersThumb"
+        app:isb_thumb_size="@dimen/std_icon_32"
         app:isb_track_background_color="?refTextColorSecondary"
         app:isb_track_progress_color="?refTextColorPrimary"/>
 
@@ -65,6 +66,7 @@
         app:rsb_maxThumbDrawable="?refDrawableSettingsFiltersThumb"
         app:rsb_maxThumbOffsetHorizontal="4dp"
         app:rsb_sidePadding="@dimen/std_margin_16"
+        app:rsb_touchRadius="@dimen/std_icon_32"
         app:rsb_trackColor="?refTextColorSecondary"
         app:rsb_trackSelectedColor="?refTextColorPrimary"/>
 </merge>

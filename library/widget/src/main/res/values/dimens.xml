@@ -11,6 +11,7 @@
     <dimen name="std_icon_12">9dp</dimen>
     <dimen name="std_icon_18">14dp</dimen>
     <dimen name="std_icon_24">19dp</dimen>
+    <dimen name="std_icon_32">24dp</dimen>
     <dimen name="std_icon_36">28dp</dimen>
     <dimen name="std_icon_96">75dp</dimen>
     <dimen name="std_margin_8">6dp</dimen>

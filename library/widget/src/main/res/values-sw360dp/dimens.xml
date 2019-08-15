@@ -10,6 +10,7 @@
     <dimen name="std_icon_12">11dp</dimen>
     <dimen name="std_icon_18">16dp</dimen>
     <dimen name="std_icon_24">21dp</dimen>
+    <dimen name="std_icon_32">28dp</dimen>
     <dimen name="std_icon_36">32dp</dimen>
     <dimen name="std_icon_96">84dp</dimen>
     <dimen name="std_margin_8">7dp</dimen>
