@@ -555,7 +555,7 @@ ext {
     baseDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    baseDependencies += Analytics + Domain + Utility + Widget + android + arch + dagger +
+    baseDependencies += Analytics + Domain + Utility + android + arch + dagger +
                         deeplink + kotlin + google + log + autoDispose + rx + rxBind + leaks
 
     androidTestBaseDeps = androidTest
