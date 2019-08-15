@@ -21,7 +21,10 @@ task projectDependencyGraph {
         def dependencies = new LinkedHashMap<Tuple2<Project, Project>, List<String>>()
         def multiplatformProjects = []
         def jsProjects = []
-        def androidProjects = []
+        def androidApplication = []
+        def androidFeatureProjects = []
+        def androidInstantApp = []
+        def androidLibraryProject = []
         def javaProjects = []
 
         queue = [rootProject]
@@ -35,8 +38,17 @@ task projectDependencyGraph {
             if (project.plugins.hasPlugin('kotlin2js')) {
                 jsProjects.add(project)
             }
-            if (project.plugins.hasPlugin('com.android.library') || project.plugins.hasPlugin('com.android.application')) {
-                androidProjects.add(project)
+            if (project.plugins.hasPlugin('com.android.application')) {
+                androidApplication.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.feature')) {
+                androidFeatureProjects.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.instantapp')) {
+                androidInstantApp.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.library')) {
+                androidLibraryProject.add(project)
             }
             if (project.plugins.hasPlugin('java-library') || project.plugins.hasPlugin('java')) {
                 javaProjects.add(project)
@@ -54,6 +66,12 @@ task projectDependencyGraph {
                             def graphKey = new Tuple2<Project, Project>(project, dependency)
                             def traits = dependencies.computeIfAbsent(graphKey) { new ArrayList<String>() }
 
+                            if (config.name.toLowerCase().endsWith('application')) {
+                                traits.add('style=bold')
+                            }
+                            if (config.name.toLowerCase().endsWith('feature')) {
+                                traits.add('style=dashed')
+                            }
                             if (config.name.toLowerCase().endsWith('implementation')) {
                                 traits.add('style=dotted')
                             }
@@ -75,7 +93,13 @@ task projectDependencyGraph {
                 traits.add('fillcolor="#ffd2b3"')
             } else if (jsProjects.contains(project)) {
                 traits.add('fillcolor="#ffffba"')
-            } else if (androidProjects.contains(project)) {
+            } else if (androidApplication.contains(project)) {
+                traits.add('fillcolor="#4fc173"')
+            } else if (androidFeatureProjects.contains(project)) {
+                traits.add('fillcolor="#edc951"')
+            } else if (androidInstantApp.contains(project)) {
+                traits.add('fillcolor="#ffa500"')
+            } else if (androidLibraryProject.contains(project)) {
                 traits.add('fillcolor="#baffc9"')
             } else if (javaProjects.contains(project)) {
                 traits.add('fillcolor="#ffb3ba"')
