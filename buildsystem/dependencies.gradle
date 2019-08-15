@@ -346,6 +346,7 @@ ext {
     appDependencies = [
         [configuration: "implementation", dependency: project(modules.cropiwa)],
         [configuration: "implementation", dependency: d_libs.branch],
+        [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.flurry],
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_android.install],
