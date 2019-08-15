@@ -82,6 +82,7 @@ buildscript {
         buildGradleVersion = '3.5.0-rc03'
         crashlyticsVersion = '2.9.4@aar'
         googleServicesVersion = '4.0.1'
+        gradleVersionsPluginVersion = '0.22.0'
         leakCanaryVersion = '2.0-alpha-2'
         multidexVersion = '1.0.3'
         sentryVersion = '1.7.16'

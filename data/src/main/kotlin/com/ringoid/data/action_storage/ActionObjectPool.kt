@@ -61,6 +61,7 @@ class ActionObjectPool @Inject constructor(
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
         if (queue.isEmpty()) {
+            DebugLogUtil.d("No actions to commit, lAt is up-to-date [standalone]")
             return  // do nothing on empty queue
         }
 
@@ -76,7 +77,7 @@ class ActionObjectPool @Inject constructor(
 
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
-                Timber.v("Nothing to commit (no actions)")
+                DebugLogUtil.d("No actions to commit, lAt is up-to-date [chained]")
                 Single.just(CommitActionsResponse(lastActionTime()))
             } else {
                 /**

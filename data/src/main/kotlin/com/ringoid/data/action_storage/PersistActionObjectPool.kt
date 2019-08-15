@@ -57,6 +57,7 @@ class PersistActionObjectPool @Inject constructor(
             .subscribeOn(Schedulers.newThread())
             .flatMap { count ->
                 if (count <= 0) {
+                    DebugLogUtil.d("No actions to commit, lAt is up-to-date [standalone]")
                     Single.just(0L)  // do nothing on empty queue
                 } else {
                     triggerSource()
@@ -70,7 +71,7 @@ class PersistActionObjectPool @Inject constructor(
         local.countActionObjects()
             .flatMap { count ->
                 if (count <= 0) {
-                    Timber.v("Nothing to commit (no actions)")
+                    DebugLogUtil.d("No actions to commit, lAt is up-to-date [chained]")
                     Single.just(CommitActionsResponse(lastActionTime()))  // do nothing on empty queue
                 } else {
                     local.actionObjects()
