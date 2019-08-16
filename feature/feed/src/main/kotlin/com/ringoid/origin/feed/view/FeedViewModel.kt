@@ -7,6 +7,7 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
@@ -25,6 +26,7 @@ import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
+import com.ringoid.utility.cloneAsList
 import com.ringoid.utility.collection.EqualRange
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
@@ -365,9 +367,14 @@ abstract class FeedViewModel(
                 .forEach { onViewFeedItem(feedItemId = it) }
 
             values.forEach { it.advance() }
-            actionObjectPool.put(values, onComplete)  // add all aobjs at once
+            /**
+             * Since [IActionObjectPool.put] is performed asynchronously, it should be passed in
+             * an immutable copy of collection of action objects, and then it could be cleared on
+             * the current thread.
+             */
+            actionObjectPool.put(values.cloneAsList(), onComplete)  // add all aobjs at once
             backupPool?.putAll(this)
-            clear()
+            clear()  // <-- this clears [values] on the current thread
         }
     }
 
@@ -381,7 +388,7 @@ abstract class FeedViewModel(
     private fun advanceViewObject(key: Pair<String, String>): ViewActionObject? =
         viewActionObjectBuffer.let {
             val aobj = it[key]?.advance()
-            it.remove(key)
+            it.remove(key)  // remove aobjs from collection, but still return it below
             aobj as? ViewActionObject
         }
         ?.also { onViewFeedItem(it.targetUserId) }

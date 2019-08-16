@@ -19,6 +19,8 @@ const val LOCATION_EPS = 0.000001
 
 /* Misc */
 // ------------------------------------------------------------------------------------------------
+inline fun <reified T> Collection<T>.cloneAsList(): List<T> = ArrayList(this.map { it })
+
 fun Uri.extension(): String =
     toString().takeIf { it.contains('.') }
               ?.let { it.substring(it.lastIndexOf('.') + 1) } ?: ""

@@ -14,6 +14,7 @@ import com.ringoid.domain.scope.UserScopeProvider
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
@@ -35,24 +36,36 @@ class PersistActionObjectPool @Inject constructor(
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
     override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {
-        Timber.v("Put action object: $aobj")
-        DebugLogUtil.v("Put single action object: ${aobj.actionType}")
-        Completable.fromCallable { local.addActionObject(aobj) }
-            .subscribeOn(Schedulers.io())
-            .doOnComplete { onComplete?.invoke(); DebugLogUtil.v("Put single aobj completed") }
-            .autoDisposable(userScopeProvider)
-            .subscribe({ analyzeActionObject(aobj) }, Timber::e)
+        Completable.fromCallable {
+            local.addActionObject(aobj)
+            analyzeActionObject(aobj)
+        }
+        .doOnSubscribe {
+            Timber.v("Put action object: $aobj")
+            DebugLogUtil.v("Put single action object: ${aobj.actionType}")
+        }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete { onComplete?.invoke() }
+        .autoDisposable(userScopeProvider)
+        .subscribe({ DebugLogUtil.v("Put single aobj completed") }, Timber::e)
     }
 
     @Suppress("CheckResult")
     override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
-        Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
-        DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
-        Completable.fromCallable { local.addActionObjects(aobjs) }
-            .subscribeOn(Schedulers.io())
-            .doOnComplete { onComplete?.invoke(); DebugLogUtil.v("Put aobjs completed") }
-            .autoDisposable(userScopeProvider)
-            .subscribe({ aobjs.forEach { analyzeActionObject(it) } }, Timber::e)
+        Completable.fromCallable {
+            local.addActionObjects(aobjs)
+            aobjs.forEach { analyzeActionObject(it) }
+        }
+        .doOnSubscribe {
+            Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
+            DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
+        }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete { onComplete?.invoke() }
+        .autoDisposable(userScopeProvider)
+        .subscribe({ DebugLogUtil.v("Put aobjs completed") }, Timber::e)
     }
 
     @Suppress("CheckResult")

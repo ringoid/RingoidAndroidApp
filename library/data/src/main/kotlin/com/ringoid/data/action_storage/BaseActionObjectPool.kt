@@ -50,6 +50,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
      * a new [ActionObject] should be put into this pool, and no [ActionObject]s that was persisted
      * before will participate in such strategies.
      */
+    @Synchronized
     protected fun analyzeActionObject(aobj: OriginActionObject) {
         if (getTotalQueueSize() >= CAPACITY || aobj.triggerStrategies.contains(Immediate)) {
             Timber.v("Trigger immediately at $aobj")
