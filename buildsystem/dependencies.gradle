@@ -355,7 +355,7 @@ ext {
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += AllFeatures + Main + Analytics + Data + Develop +
+    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop +
                        android + androidView + autoDispose + dagger + deeplink + fragnav +
                        kotlin + leaks + log + net + room + support
 
