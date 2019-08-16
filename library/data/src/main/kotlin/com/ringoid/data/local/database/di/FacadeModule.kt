@@ -1,6 +1,7 @@
 package com.ringoid.data.local.database.di
 
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
+import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.facade.feed.FeedDbFacadeImpl
 import com.ringoid.data.local.database.facade.image.ImageDbFacadeImpl
@@ -43,4 +44,7 @@ class FacadeModule {
 
     @Provides @Singleton @PerUser
     fun provideUserDbFacade(@PerUser dao: UserDao): IUserDbFacade = UserDbFacadeImpl(dao)
+
+    @Provides @Singleton @PerUser
+    fun provideUserMessageDbFacade(@PerUser dao: MessageDao): IMessageDbFacade = MessageDbFacadeImpl(dao)
 }

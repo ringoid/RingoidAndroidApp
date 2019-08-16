@@ -1,12 +1,10 @@
 package com.ringoid.repository.messenger
 
-import com.ringoid.datainterface.di.PerUser
-import com.ringoid.data.local.database.dao.messenger.MessageDao
-import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
-import com.ringoid.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.datainterface.di.PerUser
+import com.ringoid.datainterface.messenger.IMessageDbFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.exception.SkipThisTryException
@@ -14,10 +12,10 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
-import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.messenger.IMessengerRepository
+import com.ringoid.repository.BaseRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -35,8 +33,8 @@ import javax.inject.Singleton
 
 @Singleton
 class MessengerRepository @Inject constructor(
-    private val local: MessageDao,
-    @PerUser private val sentMessagesLocal: MessageDao,
+    private val local: IMessageDbFacade,
+    @PerUser private val sentMessagesLocal: IMessageDbFacade,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
@@ -139,9 +137,7 @@ class MessengerRepository @Inject constructor(
     // ------------------------------------------
     private fun Single<Chat>.cacheMessagesFromChat(): Single<Chat> =
         flatMap { chat ->
-            val messages = mutableListOf<MessageDbo>()
-                .apply { addAll(chat.messages.map { MessageDbo.from(it, unread = 0) }) }
-            Completable.fromCallable { local.insertMessages(messages) }
+            Completable.fromCallable { local.insertMessages(chat.messages, unread = 0) }
                        .toSingleDefault(chat)
         }
 
@@ -195,10 +191,7 @@ class MessengerRepository @Inject constructor(
         }
         .flatMap { chat ->
             if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
-                Completable.fromCallable {
-                    val dbos = sentMessages[chatId]!!.map { MessageDbo.from(it, unread = 0) }
-                    sentMessagesLocal.addMessages(dbos)
-                }
+                Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!, unread = 0) }
                 .toSingleDefault(chat)
             } else Single.just(chat)
         }
@@ -253,8 +246,8 @@ class MessengerRepository @Inject constructor(
         Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId) }
             .flatMap { local.messages(chatId = chatId) }
             .concatWith(sentMessagesLocal.messages(chatId))
-            .collect({ mutableListOf<MessageDbo>() }, { out, localMessages -> out.addAll(localMessages) })
-            .map { it.mapList().reversed() }
+            .collect({ mutableListOf<Message>() }, { out, localMessages -> out.addAll(localMessages) })
+            .map { it.reversed() }
 
     // ------------------------------------------
     override fun sendMessage(essence: MessageEssence): Single<Message> {
@@ -274,7 +267,7 @@ class MessengerRepository @Inject constructor(
             targetImageId = essence.aObjEssence?.targetImageId ?: DomainUtil.BAD_ID,
             targetUserId = essence.aObjEssence?.targetUserId ?: DomainUtil.BAD_ID)
 
-        return Completable.fromCallable { sentMessagesLocal.addMessage(MessageDbo.from(sentMessage, unread = 0)) }
+        return Completable.fromCallable { sentMessagesLocal.addMessage(sentMessage) }
             .doOnSubscribe {
                 keepSentMessage(sentMessage)
                 aObjPool.put(aobj)
@@ -287,7 +280,7 @@ class MessengerRepository @Inject constructor(
     private fun restoreCachedSentMessagesLocal() {
         sentMessagesLocal.messages()
             .subscribeOn(Schedulers.io())
-            .subscribe({ it.forEach { keepSentMessage(it.map()) } }, Timber::e)
+            .subscribe({ it.forEach { message -> keepSentMessage(message) } }, Timber::e)
     }
 
     @Synchronized
