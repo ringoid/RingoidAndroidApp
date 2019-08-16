@@ -1,20 +1,18 @@
 package com.ringoid.repository.debug
 
-import com.ringoid.datainterface.di.PerAlreadySeen
-import com.ringoid.datainterface.di.PerBlock
-import com.ringoid.datainterface.di.PerLmmLikes
-import com.ringoid.datainterface.di.PerLmmMatches
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
-import com.ringoid.data.local.database.dao.messenger.MessageDao
-import com.ringoid.repository.FeedSharedPrefs
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.ProfileEntity
 import com.ringoid.data.remote.model.image.ImageEntity
-import com.ringoid.repository.feed.FeedRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.datainterface.di.PerAlreadySeen
+import com.ringoid.datainterface.di.PerBlock
+import com.ringoid.datainterface.di.PerLmmLikes
+import com.ringoid.datainterface.di.PerLmmMatches
+import com.ringoid.datainterface.messenger.IMessageDbFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -23,6 +21,8 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
+import com.ringoid.repository.FeedSharedPrefs
+import com.ringoid.repository.feed.FeedRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -31,7 +31,7 @@ import javax.inject.Singleton
 
 @Singleton @DebugOnly
 class DebugFeedRepository @Inject constructor(
-    local: FeedDao, imagesLocal: ImageDao, messengerLocal: MessageDao,
+    local: FeedDao, imagesLocal: ImageDao, messengerLocal: IMessageDbFacade,
     feedSharedPrefs: FeedSharedPrefs,
     @PerAlreadySeen alreadySeenProfilesCache: UserFeedDao,
     @PerBlock blockedProfilesCache: UserFeedDao,

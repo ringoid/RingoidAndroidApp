@@ -19,6 +19,7 @@ import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
 import com.ringoid.datainterface.di.PerLmmLikes
 import com.ringoid.datainterface.di.PerLmmMatches
+import com.ringoid.datainterface.messenger.IMessageDbFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
@@ -27,6 +28,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.*
 import com.ringoid.domain.model.mapList
+import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.feed.IFeedRepository
 import com.ringoid.repository.BaseRepository
 import com.ringoid.repository.FeedSharedPrefs
@@ -44,7 +46,7 @@ import javax.inject.Singleton
 open class FeedRepository @Inject constructor(
     private val local: FeedDao,
     private val imagesLocal: ImageDao,
-    private val messengerLocal: MessageDao,
+    private val messengerLocal: IMessageDbFacade,
     private val feedSharedPrefs: FeedSharedPrefs,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
     @PerBlock private val blockedProfilesCache: UserFeedDao,
@@ -392,10 +394,11 @@ open class FeedRepository @Inject constructor(
              * in particular - change of [MessageDbo.sourceFeed] value due to profile transfer,
              * should be performed in addition.
              */
-            val messages = mutableListOf<MessageDbo>()
-            lmm.likes.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
-            lmm.matches.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
-            lmm.messages.forEach { messages.addAll(it.messages.map { message -> MessageDbo.from(message) }) }
+            val messages = mutableListOf<Message>().apply {
+                lmm.likes.forEach { addAll(it.messages) }
+                lmm.matches.forEach { addAll(it.messages) }
+                lmm.messages.forEach { addAll(it.messages) }
+            }
             Completable.fromCallable { messengerLocal.insertMessages(messages) }  // cache new messages
                        .toSingleDefault(lmm)
         }
