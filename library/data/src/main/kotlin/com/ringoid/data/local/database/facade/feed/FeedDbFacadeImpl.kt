@@ -1,4 +1,4 @@
-package com.ringoid.data.local.database.facade
+package com.ringoid.data.local.database.facade.feed
 
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.model.feed.FeedItemDbo

@@ -3,10 +3,8 @@ package com.ringoid.repository.feed
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
-import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
-import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -18,6 +16,7 @@ import com.ringoid.datainterface.di.PerBlock
 import com.ringoid.datainterface.di.PerLmmLikes
 import com.ringoid.datainterface.di.PerLmmMatches
 import com.ringoid.datainterface.feed.IFeedDbFacade
+import com.ringoid.datainterface.image.IImageDbFacade
 import com.ringoid.datainterface.messenger.IMessageDbFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -44,7 +43,7 @@ import javax.inject.Singleton
 @Singleton
 open class FeedRepository @Inject constructor(
     private val local: IFeedDbFacade,
-    private val imagesLocal: ImageDao,
+    private val imagesLocal: IImageDbFacade,
     private val messengerLocal: IMessageDbFacade,
     private val feedSharedPrefs: FeedSharedPrefs,
     @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
@@ -418,13 +417,11 @@ open class FeedRepository @Inject constructor(
                     }
                 }
                 .flatMap {
-                    val images = mutableListOf<ImageDbo>()
-                        .apply {
-                            lmm.likes.forEach { feedItem -> addAll(feedItem.images.map { ImageDbo.from(profileId = feedItem.id, image = it) }) }
-                            lmm.matches.forEach { feedItem -> addAll(feedItem.images.map { ImageDbo.from(profileId = feedItem.id, image = it) }) }
-                            lmm.messages.forEach { feedItem -> addAll(feedItem.images.map { ImageDbo.from(profileId = feedItem.id, image = it) }) }
-                        }
-                    Single.fromCallable { imagesLocal.addImages(images) }
+                    Single.fromCallable {
+                        imagesLocal.addImages(lmm.likes)
+                        imagesLocal.addImages(lmm.matches)
+                        imagesLocal.addImages(lmm.messages)
+                    }
                 }
                 .flatMap { Single.just(lmm) }
         }

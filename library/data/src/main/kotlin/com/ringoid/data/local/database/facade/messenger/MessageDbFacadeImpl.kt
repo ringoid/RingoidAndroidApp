@@ -1,4 +1,4 @@
-package com.ringoid.data.local.database.facade
+package com.ringoid.data.local.database.facade.messenger
 
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
