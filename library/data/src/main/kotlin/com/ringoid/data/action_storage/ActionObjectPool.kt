@@ -39,6 +39,7 @@ class ActionObjectPool @Inject constructor(
     @Synchronized
     override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {
         Timber.v("Put action object: $aobj")
+        DebugLogUtil.v("Put single action object: ${aobj.actionType}")
 //        when (aobj) {
 //            is ViewActionObject, is ViewChatActionObject -> { /* no-op */ }
 //            else -> {
@@ -56,6 +57,7 @@ class ActionObjectPool @Inject constructor(
     @Synchronized
     override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
         Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
+        DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
         aobjs.forEach { aobj ->
             queue.offer(aobj)
             analyzeActionObject(aobj)

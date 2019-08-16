@@ -36,9 +36,10 @@ class PersistActionObjectPool @Inject constructor(
     @Suppress("CheckResult")
     override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {
         Timber.v("Put action object: $aobj")
+        DebugLogUtil.v("Put single action object: ${aobj.actionType}")
         Completable.fromCallable { local.addActionObject(aobj) }
             .subscribeOn(Schedulers.io())
-            .doOnComplete { onComplete?.invoke() }
+            .doOnComplete { onComplete?.invoke(); DebugLogUtil.v("Put single aobj completed") }
             .autoDisposable(userScopeProvider)
             .subscribe({ analyzeActionObject(aobj) }, Timber::e)
     }
@@ -46,9 +47,10 @@ class PersistActionObjectPool @Inject constructor(
     @Suppress("CheckResult")
     override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
         Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
+        DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
         Completable.fromCallable { local.addActionObjects(aobjs) }
             .subscribeOn(Schedulers.io())
-            .doOnComplete { onComplete?.invoke() }
+            .doOnComplete { onComplete?.invoke(); DebugLogUtil.v("Put aobjs completed") }
             .autoDisposable(userScopeProvider)
             .subscribe({ aobjs.forEach { analyzeActionObject(it) } }, Timber::e)
     }
