@@ -61,6 +61,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             }
     }
 
+    private var inputText: CharSequence = ""
     private var peerId: String = BAD_ID
     private var payload: ChatPayload? = null
     private lateinit var chatAdapter: ChatAdapter
@@ -151,7 +152,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 if (it.isNotEmpty() && it.last() == '\n') {  // user has typed newline character
                     scrollToLastItemIfNearBottom()  // avoid input box overlapping list
                 }
-                ChatInMemoryCache.setInputMessage(profileId = peerId, text = it)
+                inputText = it
             }
         }
         ibtn_message_send.clicks().compose(clickDebounce()).subscribe {
@@ -198,6 +199,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
         ChatInMemoryCache.onChatOpen(chatId = peerId)  // Chat screen is visible to user
         dialog?.window?.showKeyboard()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        ChatInMemoryCache.setInputMessage(profileId = peerId, text = buildString { append(inputText) })
     }
 
     override fun onDismiss(dialog: DialogInterface) {
