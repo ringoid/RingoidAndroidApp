@@ -192,7 +192,7 @@ inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = 
 private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer<in T> =
     Consumer {
         if (!it.unexpected.isNullOrBlank()) {
-            throw NetworkUnexpected(it.unexpected)
+            throw NetworkUnexpected(it.unexpected!!)
         }
         if (!it.errorCode.isNullOrBlank()) {
             val apiError = when (it.errorCode) {
