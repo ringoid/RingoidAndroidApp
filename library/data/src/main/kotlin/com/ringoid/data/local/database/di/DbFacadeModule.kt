@@ -25,7 +25,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class FacadeModule {
+class DbFacadeModule {
 
     @Provides @Singleton
     fun provideFeedDbFacade(facade: FeedDbFacadeImpl): IFeedDbFacade = facade
