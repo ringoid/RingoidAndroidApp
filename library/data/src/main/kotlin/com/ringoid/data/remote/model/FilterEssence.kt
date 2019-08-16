@@ -1,4 +1,4 @@
-package com.ringoid.data.repository
+package com.ringoid.data.remote.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

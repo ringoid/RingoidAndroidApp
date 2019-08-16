@@ -6,8 +6,8 @@ import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.DaggerCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.model.BaseResponse
-import com.ringoid.data.repository.handleError
-import com.ringoid.data.repository.handleErrorNoRetry
+import com.ringoid.data.handleError
+import com.ringoid.data.handleErrorNoRetry
 import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
 import com.ringoid.datainterface.local.user.IUserFeedDbFacade

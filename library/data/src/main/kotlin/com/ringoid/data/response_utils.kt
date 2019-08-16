@@ -1,4 +1,4 @@
-package com.ringoid.data.repository
+package com.ringoid.data
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
@@ -179,10 +179,14 @@ fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Long, tag: String
 // --------------------------------------------------------------------------------------------
 /** Completable.withApiError() cannot be provided because [BaseResponse] is required to extract [BaseResponse.errorCode],
  *  which is not the case for [Completable] responses due to lack of response body. So no API error is that case. */
-inline fun <reified T : BaseResponse> Maybe<T>.withApiError(tag: String? = null): Maybe<T> = compose(onApiErrorMaybe(tag))
-inline fun <reified T : BaseResponse> Single<T>.withApiError(tag: String? = null): Single<T> = compose(onApiErrorSingle(tag))
-inline fun <reified T : BaseResponse> Flowable<T>.withApiError(tag: String? = null): Flowable<T> = compose(onApiErrorFlowable(tag))
-inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = null): Observable<T> = compose(onApiErrorObservable(tag))
+inline fun <reified T : BaseResponse> Maybe<T>.withApiError(tag: String? = null): Maybe<T> =
+    compose(onApiErrorMaybe(tag))
+inline fun <reified T : BaseResponse> Single<T>.withApiError(tag: String? = null): Single<T> =
+    compose(onApiErrorSingle(tag))
+inline fun <reified T : BaseResponse> Flowable<T>.withApiError(tag: String? = null): Flowable<T> =
+    compose(onApiErrorFlowable(tag))
+inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = null): Observable<T> =
+    compose(onApiErrorObservable(tag))
 
 // ----------------------------------------------
 private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer<in T> =
@@ -220,11 +224,16 @@ fun <T : BaseResponse> onApiErrorObservable(tag: String? = null): ObservableTran
 
 /* Network Error */
 // --------------------------------------------------------------------------------------------
-fun Completable.withNetError(tag: String? = null): Completable = compose(onNetErrorCompletable(tag))
-inline fun <reified T : BaseResponse> Maybe<T>.withNetError(tag: String? = null): Maybe<T> = compose(onNetErrorMaybe(tag))
-inline fun <reified T : BaseResponse> Single<T>.withNetError(tag: String? = null): Single<T> = compose(onNetErrorSingle(tag))
-inline fun <reified T : BaseResponse> Flowable<T>.withNetError(tag: String? = null): Flowable<T> = compose(onNetErrorFlowable(tag))
-inline fun <reified T : BaseResponse> Observable<T>.withNetError(tag: String? = null): Observable<T> = compose(onNetErrorObservable(tag))
+fun Completable.withNetError(tag: String? = null): Completable =
+    compose(onNetErrorCompletable(tag))
+inline fun <reified T : BaseResponse> Maybe<T>.withNetError(tag: String? = null): Maybe<T> =
+    compose(onNetErrorMaybe(tag))
+inline fun <reified T : BaseResponse> Single<T>.withNetError(tag: String? = null): Single<T> =
+    compose(onNetErrorSingle(tag))
+inline fun <reified T : BaseResponse> Flowable<T>.withNetError(tag: String? = null): Flowable<T> =
+    compose(onNetErrorFlowable(tag))
+inline fun <reified T : BaseResponse> Observable<T>.withNetError(tag: String? = null): Observable<T> =
+    compose(onNetErrorObservable(tag))
 
 // ----------------------------------------------
 fun onNetErrorCompletable(tag: String? = null): CompletableTransformer =

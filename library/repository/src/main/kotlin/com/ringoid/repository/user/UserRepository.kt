@@ -2,7 +2,7 @@ package com.ringoid.repository.user
 
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.api.RingoidCloud
-import com.ringoid.data.repository.handleError
+import com.ringoid.data.handleError
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.local.user.IUserDbFacade
 import com.ringoid.domain.action_storage.IActionObjectPool

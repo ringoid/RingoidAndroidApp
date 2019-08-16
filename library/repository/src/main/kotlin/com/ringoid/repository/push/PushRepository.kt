@@ -3,7 +3,7 @@ package com.ringoid.repository.push
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.repository.BaseRepository
-import com.ringoid.data.repository.handleError
+import com.ringoid.data.handleError
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.model.essence.push.PushTokenEssence
