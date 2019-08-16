@@ -257,8 +257,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 val image = model.images[positionOfImage]
                 val payload = BlockReportPayload(
                     profileImageUri = image.uri,
-                    profileThumbnailUri = image.thumbnailUri
-                )
+                    profileThumbnailUri = image.thumbnailUri)
                 navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
             }
         }
