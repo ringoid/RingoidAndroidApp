@@ -44,7 +44,7 @@ interface MessageDao {
     fun insertMessage(message: MessageDbo)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertMessages(message: Collection<MessageDbo>)
+    fun insertMessages(messages: Collection<MessageDbo>)
 
     @Query("UPDATE ${MessageDbo.TABLE_NAME} SET ${MessageDbo.COLUMN_UNREAD} = 0 WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
     fun markMessagesAsRead(chatId: String): Int

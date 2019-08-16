@@ -3,6 +3,7 @@ package com.ringoid.repository.di
 import com.ringoid.data.action_storage.di.ActionObjectPoolModule
 import com.ringoid.data.executor.di.UseCaseExecutorModule
 import com.ringoid.data.local.database.di.DaoModule
+import com.ringoid.data.local.database.di.FacadeModule
 import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
@@ -30,7 +31,8 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module(includes = [RingoidCloudModule::class, SystemCloudModule::class, ActionObjectPoolModule::class,
-                    DaoModule::class, SharedPrefsManagerModule::class, UseCaseExecutorModule::class])
+                    DaoModule::class, FacadeModule::class, SharedPrefsManagerModule::class,
+                    UseCaseExecutorModule::class])
 class RepositoryModule {
 
     @Provides @Singleton @DebugOnly

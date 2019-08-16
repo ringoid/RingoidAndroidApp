@@ -492,7 +492,7 @@ open class FeedRepository @Inject constructor(
                     badgeMessenger.onNext(true)
                     lmmChanged.onNext(true)  // have new messages from any peer
                     newMessagesCount.onNext(diff)
-                    DebugLogUtil.v("# Lmm: count of new messages: $diff")
+                    DebugLogUtil.v("# LC: count of new messages: $diff")
                 }
                 lmm
             })
