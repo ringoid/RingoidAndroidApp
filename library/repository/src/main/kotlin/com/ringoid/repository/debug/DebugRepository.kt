@@ -10,7 +10,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.data.repository.handleErrorNoRetry
 import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
-import com.ringoid.datainterface.user.IUserFeedDbFacade
+import com.ringoid.datainterface.local.user.IUserFeedDbFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugOnly

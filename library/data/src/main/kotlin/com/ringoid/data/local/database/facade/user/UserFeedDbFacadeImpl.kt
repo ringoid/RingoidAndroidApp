@@ -2,7 +2,7 @@ package com.ringoid.data.local.database.facade.user
 
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
-import com.ringoid.datainterface.user.IUserFeedDbFacade
+import com.ringoid.datainterface.local.user.IUserFeedDbFacade
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.mapList
 import io.reactivex.Single

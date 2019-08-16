@@ -1,4 +1,4 @@
-package com.ringoid.datainterface.user
+package com.ringoid.datainterface.local.user
 
 interface IUserDbFacade {
 

@@ -2,7 +2,7 @@ package com.ringoid.data.local.database.facade.image
 
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.model.image.ImageDbo
-import com.ringoid.datainterface.image.IImageDbFacade
+import com.ringoid.datainterface.local.image.IImageDbFacade
 import com.ringoid.domain.model.feed.FeedItem
 import javax.inject.Inject
 import javax.inject.Singleton

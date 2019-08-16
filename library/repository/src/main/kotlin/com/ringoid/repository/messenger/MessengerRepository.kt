@@ -4,7 +4,7 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.repository.handleError
 import com.ringoid.datainterface.di.PerUser
-import com.ringoid.datainterface.messenger.IMessageDbFacade
+import com.ringoid.datainterface.local.messenger.IMessageDbFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.exception.SkipThisTryException

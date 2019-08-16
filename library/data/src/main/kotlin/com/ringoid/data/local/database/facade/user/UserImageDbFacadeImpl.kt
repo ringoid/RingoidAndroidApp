@@ -2,7 +2,7 @@ package com.ringoid.data.local.database.facade.user
 
 import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.model.image.UserImageDbo
-import com.ringoid.datainterface.user.IUserImageDbFacade
+import com.ringoid.datainterface.local.user.IUserImageDbFacade
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.model.mapList
 import io.reactivex.Single

@@ -2,7 +2,7 @@ package com.ringoid.data.local.database.facade.feed
 
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.model.feed.FeedItemDbo
-import com.ringoid.datainterface.feed.IFeedDbFacade
+import com.ringoid.datainterface.local.feed.IFeedDbFacade
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.mapList
 import io.reactivex.Single

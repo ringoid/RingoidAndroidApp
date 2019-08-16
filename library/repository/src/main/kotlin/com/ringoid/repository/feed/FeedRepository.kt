@@ -13,10 +13,10 @@ import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
 import com.ringoid.datainterface.di.PerLmmLikes
 import com.ringoid.datainterface.di.PerLmmMatches
-import com.ringoid.datainterface.feed.IFeedDbFacade
-import com.ringoid.datainterface.image.IImageDbFacade
-import com.ringoid.datainterface.messenger.IMessageDbFacade
-import com.ringoid.datainterface.user.IUserFeedDbFacade
+import com.ringoid.datainterface.local.feed.IFeedDbFacade
+import com.ringoid.datainterface.local.image.IImageDbFacade
+import com.ringoid.datainterface.local.messenger.IMessageDbFacade
+import com.ringoid.datainterface.local.user.IUserFeedDbFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil

@@ -7,8 +7,8 @@ import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.handleError
 import com.ringoid.datainterface.di.PerUser
-import com.ringoid.datainterface.image.IImageRequestDbFacade
-import com.ringoid.datainterface.user.IUserImageDbFacade
+import com.ringoid.datainterface.local.image.IImageRequestDbFacade
+import com.ringoid.datainterface.local.user.IUserImageDbFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil

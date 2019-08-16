@@ -1,4 +1,4 @@
-package com.ringoid.datainterface.image
+package com.ringoid.datainterface.local.image
 
 import com.ringoid.domain.model.image.ImageRequest
 import io.reactivex.Single

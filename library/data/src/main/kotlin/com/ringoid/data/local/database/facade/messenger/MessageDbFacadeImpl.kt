@@ -2,7 +2,7 @@ package com.ringoid.data.local.database.facade.messenger
 
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
-import com.ringoid.datainterface.messenger.IMessageDbFacade
+import com.ringoid.datainterface.local.messenger.IMessageDbFacade
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
 import io.reactivex.Maybe

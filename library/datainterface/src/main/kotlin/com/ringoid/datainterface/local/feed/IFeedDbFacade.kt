@@ -1,4 +1,4 @@
-package com.ringoid.datainterface.feed
+package com.ringoid.datainterface.local.feed
 
 import com.ringoid.domain.model.feed.FeedItem
 import io.reactivex.Single

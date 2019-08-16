@@ -2,7 +2,7 @@ package com.ringoid.data.local.database.facade.image
 
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.model.image.ImageRequestDbo
-import com.ringoid.datainterface.image.IImageRequestDbFacade
+import com.ringoid.datainterface.local.image.IImageRequestDbFacade
 import com.ringoid.domain.model.image.ImageRequest
 import com.ringoid.domain.model.mapList
 import io.reactivex.Single

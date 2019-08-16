@@ -1,4 +1,4 @@
-package com.ringoid.datainterface.user
+package com.ringoid.datainterface.local.user
 
 import com.ringoid.domain.model.image.UserImage
 import io.reactivex.Single

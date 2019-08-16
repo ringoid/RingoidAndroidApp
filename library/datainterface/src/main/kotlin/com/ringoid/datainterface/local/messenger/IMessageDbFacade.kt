@@ -1,4 +1,4 @@
-package com.ringoid.datainterface.messenger
+package com.ringoid.datainterface.local.messenger
 
 import com.ringoid.domain.model.messenger.Message
 import io.reactivex.Maybe

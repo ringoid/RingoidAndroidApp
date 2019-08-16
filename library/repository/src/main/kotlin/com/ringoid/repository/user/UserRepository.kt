@@ -4,7 +4,7 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.repository.handleError
 import com.ringoid.datainterface.di.PerUser
-import com.ringoid.datainterface.user.IUserDbFacade
+import com.ringoid.datainterface.local.user.IUserDbFacade
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
