@@ -4,15 +4,13 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.R
-import com.ringoid.utility.ICommunicator
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.communicator
+import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.dialog_big_edit_text.*
 
 class BigEditTextDialog : SimpleBaseDialogFragment() {
@@ -102,6 +100,7 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
                         setText(it)
                         setSelection(it.length)
                         setOnEditorActionListener { _, actionId, event ->
+                            context.toast("Action: $actionId, event: $event", duration = Toast.LENGTH_LONG)
                             when (actionId) {
                                 EditorInfo.IME_NULL -> {
                                     if (event.action == KeyEvent.ACTION_DOWN) {
