@@ -1,6 +1,5 @@
 package com.ringoid.repository.debug
 
-import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.remote.RingoidCloud
@@ -12,6 +11,7 @@ import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
 import com.ringoid.datainterface.di.PerLmmLikes
 import com.ringoid.datainterface.di.PerLmmMatches
+import com.ringoid.datainterface.feed.IFeedDbFacade
 import com.ringoid.datainterface.messenger.IMessageDbFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
@@ -31,7 +31,7 @@ import javax.inject.Singleton
 
 @Singleton @DebugOnly
 class DebugFeedRepository @Inject constructor(
-    local: FeedDao, imagesLocal: ImageDao, messengerLocal: IMessageDbFacade,
+    local: IFeedDbFacade, imagesLocal: ImageDao, messengerLocal: IMessageDbFacade,
     feedSharedPrefs: FeedSharedPrefs,
     @PerAlreadySeen alreadySeenProfilesCache: UserFeedDao,
     @PerBlock blockedProfilesCache: UserFeedDao,

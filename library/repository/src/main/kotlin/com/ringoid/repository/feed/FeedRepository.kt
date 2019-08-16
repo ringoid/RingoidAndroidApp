@@ -2,11 +2,9 @@ package com.ringoid.repository.feed
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
-import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
@@ -19,6 +17,7 @@ import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
 import com.ringoid.datainterface.di.PerLmmLikes
 import com.ringoid.datainterface.di.PerLmmMatches
+import com.ringoid.datainterface.feed.IFeedDbFacade
 import com.ringoid.datainterface.messenger.IMessageDbFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -44,7 +43,7 @@ import javax.inject.Singleton
 
 @Singleton
 open class FeedRepository @Inject constructor(
-    private val local: FeedDao,
+    private val local: IFeedDbFacade,
     private val imagesLocal: ImageDao,
     private val messengerLocal: IMessageDbFacade,
     private val feedSharedPrefs: FeedSharedPrefs,
@@ -82,7 +81,7 @@ open class FeedRepository @Inject constructor(
 
     // ------------------------------------------
     override fun getCachedFeedItemById(id: String): Single<FeedItem> =
-        local.feedItem(profileId = id).map { it.map() }
+        local.feedItem(profileId = id)
 
     override fun clearCachedLmm(): Completable = Completable.fromCallable { local.deleteFeedItems() }
 
@@ -221,9 +220,9 @@ open class FeedRepository @Inject constructor(
     @Deprecated("LMM -> LC")
     private fun getCachedLmmOnly(): Single<Lmm> =
         Single.zip(
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES).map { it.mapList() },
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MATCHES).map { it.mapList() },
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES).map { it.mapList() },
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES),
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MATCHES),
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES),
             Function3 { likes, matches, messages -> Lmm(likes, matches, messages) })
 
     /* LC (replacing LMM) */
@@ -288,8 +287,8 @@ open class FeedRepository @Inject constructor(
 
     private fun getCachedLcOnly(): Single<Lmm> =
         Single.zip(
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES).map { it.mapList() },
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES).map { it.mapList() },
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES),
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES),
             BiFunction { likes, messages ->
                 val totalNotFilteredLikes = feedSharedPrefs.getTotalNotFilteredLikes()
                 val totalNotFilteredMessages = feedSharedPrefs.getTotalNotFilteredMessages()
@@ -412,13 +411,11 @@ open class FeedRepository @Inject constructor(
                     feedSharedPrefs.setTotalNotFilteredMessages(lmm.totalNotFilteredMessages)
                 }
                 .flatMap {
-                    val feedItems = mutableListOf<FeedItemDbo>()
-                        .apply {
-                            addAll(lmm.likes.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_LIKES) })
-                            addAll(lmm.matches.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MATCHES) })
-                            addAll(lmm.messages.map { FeedItemDbo.from(it, sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES) })
-                        }
-                    Single.fromCallable { local.addFeedItems(feedItems) }
+                    Single.fromCallable {
+                        local.addFeedItems(lmm.likes, sourceFeed = DomainUtil.SOURCE_FEED_LIKES)
+                        local.addFeedItems(lmm.matches, sourceFeed = DomainUtil.SOURCE_FEED_MATCHES)
+                        local.addFeedItems(lmm.messages, sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES)
+                    }
                 }
                 .flatMap {
                     val images = mutableListOf<ImageDbo>()
