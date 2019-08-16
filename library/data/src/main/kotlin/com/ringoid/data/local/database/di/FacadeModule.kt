@@ -1,17 +1,17 @@
 package com.ringoid.data.local.database.di
 
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
+import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.facade.feed.FeedDbFacadeImpl
 import com.ringoid.data.local.database.facade.image.ImageDbFacadeImpl
 import com.ringoid.data.local.database.facade.messenger.MessageDbFacadeImpl
+import com.ringoid.data.local.database.facade.user.UserDbFacadeImpl
 import com.ringoid.data.local.database.facade.user.UserFeedDbFacadeImpl
-import com.ringoid.datainterface.di.PerAlreadySeen
-import com.ringoid.datainterface.di.PerBlock
-import com.ringoid.datainterface.di.PerLmmLikes
-import com.ringoid.datainterface.di.PerLmmMatches
+import com.ringoid.datainterface.di.*
 import com.ringoid.datainterface.feed.IFeedDbFacade
 import com.ringoid.datainterface.image.IImageDbFacade
 import com.ringoid.datainterface.messenger.IMessageDbFacade
+import com.ringoid.datainterface.user.IUserDbFacade
 import com.ringoid.datainterface.user.IUserFeedDbFacade
 import dagger.Module
 import dagger.Provides
@@ -40,4 +40,7 @@ class FacadeModule {
 
     @Provides @Singleton @PerLmmMatches
     fun provideNewMatchesUserFeedDbFacade(@PerLmmMatches dao: UserFeedDao): IUserFeedDbFacade = UserFeedDbFacadeImpl(dao)
+
+    @Provides @Singleton @PerUser
+    fun provideUserDbFacade(@PerUser dao: UserDao): IUserDbFacade = UserDbFacadeImpl(dao)
 }

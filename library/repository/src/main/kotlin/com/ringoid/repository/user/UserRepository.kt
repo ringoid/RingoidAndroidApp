@@ -1,12 +1,10 @@
 package com.ringoid.repository.user
 
-import com.ringoid.datainterface.di.PerUser
-import com.ringoid.data.local.database.dao.user.UserDao
-import com.ringoid.data.local.database.model.feed.UserProfileDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
-import com.ringoid.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.datainterface.di.PerUser
+import com.ringoid.datainterface.user.IUserDbFacade
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
@@ -15,6 +13,7 @@ import com.ringoid.domain.model.essence.user.*
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.model.user.CurrentUser
 import com.ringoid.domain.repository.user.IUserRepository
+import com.ringoid.repository.BaseRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -22,7 +21,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepository @Inject constructor(
-    @PerUser private val local: UserDao, cloud: RingoidCloud,
+    @PerUser private val local: IUserDbFacade, cloud: RingoidCloud,
     spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserRepository {
 
@@ -39,7 +38,7 @@ class UserRepository @Inject constructor(
              .doOnSuccess {
                  spm.saveUserProfile(userId = it.userId, userGender = Gender.from(essence.sex),
                                      userYearOfBirth = essence.yearOfBirth, accessToken = it.accessToken)
-                 local.addUserProfile(UserProfileDbo(id = it.userId))
+                 local.addUserProfile(userId = it.userId)
                  SentryUtil.setUser(spm)
              }
              .map { it.map() }

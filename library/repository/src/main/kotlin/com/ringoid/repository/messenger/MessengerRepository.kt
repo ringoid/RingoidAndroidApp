@@ -35,7 +35,8 @@ import javax.inject.Singleton
 
 @Singleton
 class MessengerRepository @Inject constructor(
-    private val local: MessageDao, @PerUser private val sentMessagesLocal: MessageDao,
+    private val local: MessageDao,
+    @PerUser private val sentMessagesLocal: MessageDao,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 

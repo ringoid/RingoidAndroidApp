@@ -1,17 +1,15 @@
 package com.ringoid.repository.image
 
-import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
-import com.ringoid.repository.UserInMemoryCache
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.image.UserImageEntity
-import com.ringoid.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.datainterface.di.PerUser
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
@@ -24,6 +22,8 @@ import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.image.IUserImageRepository
+import com.ringoid.repository.BaseRepository
+import com.ringoid.repository.UserInMemoryCache
 import com.ringoid.utility.uriString
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -38,7 +38,8 @@ import javax.inject.Singleton
 
 @Singleton
 class UserImageRepository @Inject constructor(
-    private val local: UserImageDao, @PerUser private val imageRequestLocal: ImageRequestDao,
+    private val local: UserImageDao,
+    @PerUser private val imageRequestLocal: ImageRequestDao,
     private val userInMemoryCache: UserInMemoryCache,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
