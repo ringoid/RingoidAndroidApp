@@ -14,6 +14,7 @@ import com.ringoid.data.local.database.facade.messenger.MessageDbFacadeImpl
 import com.ringoid.data.local.database.facade.user.UserDbFacadeImpl
 import com.ringoid.data.local.database.facade.user.UserFeedDbFacadeImpl
 import com.ringoid.data.local.database.facade.user.UserImageDbFacadeImpl
+import com.ringoid.data.local.database.model.action_storage.ActionObjectDboMapper
 import com.ringoid.datainterface.di.*
 import com.ringoid.datainterface.local.action_storage.IActionObjectDbFacade
 import com.ringoid.datainterface.local.feed.IFeedDbFacade
@@ -34,8 +35,8 @@ class DbFacadeModule {
     fun provideActionObjectDbFacade(facade: ActionObjectDbFacadeImpl): IActionObjectDbFacade = facade
 
     @Provides @Singleton @PerBackup
-    fun provideBackupActionObjectDbFacade(@PerBackup dao: ActionObjectDao): IActionObjectDbFacade =
-        ActionObjectDbFacadeImpl(dao)
+    fun provideBackupActionObjectDbFacade(@PerBackup dao: ActionObjectDao, mapper: ActionObjectDboMapper)
+            : IActionObjectDbFacade = ActionObjectDbFacadeImpl(dao, mapper)
 
     @Provides @Singleton
     fun provideFeedDbFacade(facade: FeedDbFacadeImpl): IFeedDbFacade = facade
