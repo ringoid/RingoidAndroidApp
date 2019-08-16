@@ -1,11 +1,9 @@
 package com.ringoid.data.action_storage
 
 import com.ringoid.data.handleError
-import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
-import com.ringoid.data.local.database.model.action_storage.ActionObjectDboMapper
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.datainterface.di.PerBackup
+import com.ringoid.datainterface.local.action_storage.IActionObjectDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
 import com.ringoid.domain.debug.DebugLogUtil
@@ -24,9 +22,9 @@ import javax.inject.Singleton
 
 @Singleton
 class PersistActionObjectPool @Inject constructor(
-    cloud: IRingoidCloudFacade, @PerBackup private val backup: ActionObjectDao,
-    private val local: ActionObjectDao, private val mapper: ActionObjectDboMapper,
-    spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
+    private val local: IActionObjectDbFacade,
+    private val userScopeProvider: UserScopeProvider,
+    cloud: IRingoidCloudFacade, spm: SharedPrefsManager)
     : BarrierActionObjectPool(cloud, spm) {
 
     // ------------------------------------------------------------------------
@@ -36,7 +34,7 @@ class PersistActionObjectPool @Inject constructor(
     @Suppress("CheckResult")
     override fun put(aobj: OriginActionObject) {
         Timber.v("Put action object: $aobj")
-        Completable.fromCallable { local.addActionObject(mapper.map(aobj)) }
+        Completable.fromCallable { local.addActionObject(aobj) }
             .subscribeOn(Schedulers.io())
             .autoDisposable(userScopeProvider)
             .subscribe({ analyzeActionObject(aobj) }, Timber::e)
@@ -45,7 +43,7 @@ class PersistActionObjectPool @Inject constructor(
     @Suppress("CheckResult")
     override fun put(aobjs: Collection<OriginActionObject>) {
         Timber.v("Put actions object: ${aobjs.joinToString()}")
-        Completable.fromCallable { local.addActionObjects(mapper.map(aobjs)) }
+        Completable.fromCallable { local.addActionObjects(aobjs) }
             .subscribeOn(Schedulers.io())
             .autoDisposable(userScopeProvider)
             .subscribe({ aobjs.forEach { analyzeActionObject(it) } }, Timber::e)
@@ -74,12 +72,7 @@ class PersistActionObjectPool @Inject constructor(
                     DebugLogUtil.d("No actions to commit, lAt is up-to-date [chained]")
                     Single.just(CommitActionsResponse(lastActionTime()))  // do nothing on empty queue
                 } else {
-                    local.actionObjects()
-                        .flatMap {
-                            Completable.fromCallable { local.markActionObjectsAsUsed(ids = it.map { it.id }) }
-                                       .toSingleDefault(it)
-                        }
-                        .map { it.map { it.map() } }  // map from dbo to domain model
+                    local.actionObjectsMarkAsUsed()
                         .flatMap { queue ->
                             spm.accessSingle {
                                 /**

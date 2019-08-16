@@ -1,18 +1,16 @@
 package com.ringoid.data.action_storage
 
 import com.ringoid.data.handleError
-import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
-import com.ringoid.data.local.database.model.action_storage.ActionObjectDboMapper
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.datainterface.di.PerBackup
+import com.ringoid.datainterface.local.action_storage.IActionObjectDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
-import com.ringoid.domain.model.mapList
 import com.ringoid.domain.scope.UserScopeProvider
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
@@ -25,9 +23,9 @@ import javax.inject.Singleton
 
 @Singleton
 class ActionObjectPool @Inject constructor(
-    cloud: IRingoidCloudFacade, @PerBackup private val backup: ActionObjectDao,
-    private val local: ActionObjectDao, private val mapper: ActionObjectDboMapper,
-    spm: SharedPrefsManager, private val userScopeProvider: UserScopeProvider)
+    @PerBackup private val backup: IActionObjectDbFacade,
+    private val userScopeProvider: UserScopeProvider,
+    cloud: IRingoidCloudFacade, spm: SharedPrefsManager)
     : BarrierActionObjectPool(cloud, spm) {
 
     private val queue: Deque<OriginActionObject> = ArrayDeque()
@@ -123,7 +121,6 @@ class ActionObjectPool @Inject constructor(
         .map { it.lastActionTime }
 
         return backup.actionObjects()
-            .map { it.mapList() }
             .flatMapCompletable {
                 it.reversed().forEach { queue.offerFirst(it) }
                 DebugLogUtil.v("Restored [${it.size}] action objects from backup, total: ${queue.size}")
@@ -144,7 +141,7 @@ class ActionObjectPool @Inject constructor(
     // ------------------------------------------
     @Suppress("CheckResult")
     private fun backupQueue(queue: Deque<OriginActionObject>) {
-        Completable.fromCallable { backup.addActionObjects(queue.map(mapper::map)) }
+        Completable.fromCallable { backup.addActionObjects(queue.toList()) }
             .doOnSubscribe { Timber.v("Started backup action objects' queue before triggering...") }
             .doOnComplete { Timber.v("Action objects' queue has been backup-ed, before triggering") }
             .subscribeOn(Schedulers.io())
