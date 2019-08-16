@@ -1,6 +1,6 @@
 package com.ringoid.repository.debug
 
-import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.ProfileEntity
 import com.ringoid.data.remote.model.image.ImageEntity

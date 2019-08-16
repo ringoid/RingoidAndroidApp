@@ -1,7 +1,7 @@
 package com.ringoid.repository.messenger
 
 import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.repository.handleError
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.messenger.IMessageDbFacade

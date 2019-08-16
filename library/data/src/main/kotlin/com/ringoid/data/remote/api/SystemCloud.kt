@@ -1,4 +1,4 @@
-package com.ringoid.data.remote
+package com.ringoid.data.remote.api
 
 import io.reactivex.Completable
 import javax.inject.Inject

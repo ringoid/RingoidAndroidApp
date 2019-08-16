@@ -1,7 +1,7 @@
 package com.ringoid.data.action_storage
 
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
-import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil

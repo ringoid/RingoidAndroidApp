@@ -5,7 +5,7 @@ import com.google.firebase.perf.metrics.Trace
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.LmmResponse
 import com.ringoid.data.repository.handleError

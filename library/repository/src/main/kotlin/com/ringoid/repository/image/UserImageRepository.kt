@@ -3,7 +3,7 @@ package com.ringoid.repository.image
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.handleError
 import com.ringoid.datainterface.di.PerUser

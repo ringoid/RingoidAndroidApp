@@ -1,4 +1,4 @@
-package com.ringoid.data.remote
+package com.ringoid.data.remote.api
 
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.remote.model.actions.CommitActionsResponse

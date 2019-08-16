@@ -1,7 +1,7 @@
 package com.ringoid.repository.debug
 
 import com.ringoid.data.local.shared_prefs.accessCompletable
-import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.DaggerCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule

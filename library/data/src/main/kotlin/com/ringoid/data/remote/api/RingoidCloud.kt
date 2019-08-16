@@ -1,8 +1,10 @@
-package com.ringoid.data.remote
+package com.ringoid.data.remote.api
 
 import com.google.firebase.perf.FirebasePerformance
 import com.ringoid.data.remote.debug.keepDataForDebug
 import com.ringoid.data.remote.debug.keepResultForDebug
+import com.ringoid.data.remote.logRequest
+import com.ringoid.data.remote.logResponse
 import com.ringoid.data.remote.model.BaseResponse
 import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.remote.model.feed.FeedResponse
@@ -11,6 +13,7 @@ import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.data.remote.model.image.UserImageListResponse
 import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.data.remote.model.user.UserSettingsResponse
+import com.ringoid.data.remote.toBody
 import com.ringoid.data.repository.FilterEssence
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.ICloudDebug
