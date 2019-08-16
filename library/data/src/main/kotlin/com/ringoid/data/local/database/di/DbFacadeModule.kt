@@ -32,7 +32,8 @@ import javax.inject.Singleton
 class DbFacadeModule {
 
     @Provides @Singleton
-    fun provideActionObjectDbFacade(facade: ActionObjectDbFacadeImpl): IActionObjectDbFacade = facade
+    fun provideActionObjectDbFacade(dao: ActionObjectDao, mapper: ActionObjectDboMapper)
+            : IActionObjectDbFacade = ActionObjectDbFacadeImpl(dao, mapper)
 
     @Provides @Singleton @PerBackup
     fun provideBackupActionObjectDbFacade(@PerBackup dao: ActionObjectDao, mapper: ActionObjectDboMapper)
