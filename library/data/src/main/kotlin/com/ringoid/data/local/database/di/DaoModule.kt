@@ -1,6 +1,6 @@
 package com.ringoid.data.local.database.di
 
-import com.ringoid.data.di.*
+import com.ringoid.datainterface.di.*
 import com.ringoid.data.local.database.*
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.dao.debug.BarrierLogDao

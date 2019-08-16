@@ -1,6 +1,6 @@
 package com.ringoid.data.repository.messenger
 
-import com.ringoid.data.di.PerUser
+import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle

@@ -1,6 +1,6 @@
 package com.ringoid.data.action_storage
 
-import com.ringoid.data.di.PerBackup
+import com.ringoid.datainterface.di.PerBackup
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.model.action_storage.ActionObjectDboMapper
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager

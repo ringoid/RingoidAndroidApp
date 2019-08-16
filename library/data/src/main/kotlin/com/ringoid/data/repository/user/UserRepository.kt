@@ -1,6 +1,6 @@
 package com.ringoid.data.repository.user
 
-import com.ringoid.data.di.PerUser
+import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.model.feed.UserProfileDbo
 import com.ringoid.data.local.shared_prefs.accessSingle

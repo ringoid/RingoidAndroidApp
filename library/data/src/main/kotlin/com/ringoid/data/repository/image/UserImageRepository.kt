@@ -1,6 +1,6 @@
 package com.ringoid.data.repository.image
 
-import com.ringoid.data.di.PerUser
+import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.model.image.ImageRequestDbo

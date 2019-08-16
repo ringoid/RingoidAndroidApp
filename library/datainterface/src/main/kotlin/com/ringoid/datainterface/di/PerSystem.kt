@@ -1,4 +1,4 @@
-package com.ringoid.data.di
+package com.ringoid.datainterface.di
 
 import javax.inject.Scope
 

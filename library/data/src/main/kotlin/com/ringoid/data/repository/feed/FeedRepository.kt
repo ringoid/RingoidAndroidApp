@@ -2,10 +2,10 @@ package com.ringoid.data.repository.feed
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.ringoid.data.di.PerAlreadySeen
-import com.ringoid.data.di.PerBlock
-import com.ringoid.data.di.PerLmmLikes
-import com.ringoid.data.di.PerLmmMatches
+import com.ringoid.datainterface.di.PerAlreadySeen
+import com.ringoid.datainterface.di.PerBlock
+import com.ringoid.datainterface.di.PerLmmLikes
+import com.ringoid.datainterface.di.PerLmmMatches
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao

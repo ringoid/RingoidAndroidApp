@@ -1,8 +1,8 @@
 package com.ringoid.data.repository.debug
 
-import com.ringoid.data.di.PerAlreadySeen
-import com.ringoid.data.di.PerBlock
-import com.ringoid.data.di.PerUser
+import com.ringoid.datainterface.di.PerAlreadySeen
+import com.ringoid.datainterface.di.PerBlock
+import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
