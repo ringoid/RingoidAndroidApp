@@ -576,7 +576,6 @@ ext {
     // ------------------------------------------
     dataDependencies = [
         [configuration: "implementation", dependency: d_libs.gson],
-        [configuration: "implementation", dependency: d_libs.glideOkHttp],
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
@@ -617,8 +616,12 @@ ext {
 
     /* Repository */
     // ------------------------------------------
-    repositoryDependencies = []
-    repositoryDependencies += Domain + dagger + kotlin + log + rx
+    repositoryDependencies = [
+        [configuration: "implementation", dependency: d_libs.gson],
+        [configuration: "implementation", dependency: d_libs.firebasePerformance],
+        [configuration: "implementation", dependency: d_rx.rxKotlin]
+    ]
+    repositoryDependencies += Data + Domain + dagger + kotlin + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [
