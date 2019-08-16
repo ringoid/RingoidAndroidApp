@@ -2,6 +2,7 @@ package com.ringoid.origin.usersettings.view.debug
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewConfiguration
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
@@ -96,7 +97,8 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
                     it.toast(OriginR_string.common_clipboard)
                 }
             }
-            setLabel("Density: ${activity?.getScreenDensity()}, SW: ${activity?.getSmallestWidth()}, " +
+            setLabel("TS: ${ViewConfiguration.get(context).scaledTouchSlop}, " +
+                     "D: ${activity?.getScreenDensity()}, SW: ${activity?.getSmallestWidth()}, " +
                      "W: ${activity?.getScreenWidthDp()} dp [${activity?.getScreenWidth()} px], " +
                      "H: ${activity?.getScreenHeightDp()} dp [${activity?.getScreenHeight()} px]")
         }

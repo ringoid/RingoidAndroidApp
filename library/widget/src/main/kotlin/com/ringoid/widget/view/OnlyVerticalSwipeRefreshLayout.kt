@@ -6,11 +6,13 @@ import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ringoid.utility.checkMainThread2
+import com.ringoid.widget.R
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.MainThreadDisposable
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 interface OnVerticalSwipeListener {
 
@@ -19,13 +21,26 @@ interface OnVerticalSwipeListener {
 
 class OnlyVerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : SwipeRefreshLayout(context, attrs) {
 
-    private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
+    companion object {
+        internal var touchSlopMin: Int = -1
+    }
+
+    private val touchSlop: Int
     private var prevX: Float = 0.0f
     private var declined: Boolean = false
     private var hasDraggingStarted: Boolean = false
 
     private var listener: OnVerticalSwipeListener? = null
 
+    init {
+        /**
+         * @see https://stackoverflow.com/questions/6785068/android-action-move-threshold
+         */
+        if (touchSlopMin <= -1) touchSlopMin = context.resources.getDimensionPixelSize(R.dimen.std_touch_slop)
+        touchSlop = maxOf(ViewConfiguration.get(context).scaledTouchSlop, touchSlopMin)
+    }
+
+    // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
@@ -34,7 +49,7 @@ class OnlyVerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : Sw
                 declined = false  // new action
             }
             MotionEvent.ACTION_MOVE -> {
-                if (declined || Math.abs(event.x - prevX) > touchSlop) {
+                if (declined || abs(event.x - prevX) > touchSlop) {
                     declined = true  // memorize
                     hasDraggingStarted = false
                     return false
