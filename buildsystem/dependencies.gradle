@@ -590,7 +590,7 @@ ext {
 
     /* Data Interface */
     // ------------------------------------------
-    dataInterfaceDependencies = Domain + kotlin + rx
+    dataInterfaceDependencies = Domain + dagger + kotlin + rx
     testDataInterfaceDependencies = test
 
     dataInterfacePlugins = [
