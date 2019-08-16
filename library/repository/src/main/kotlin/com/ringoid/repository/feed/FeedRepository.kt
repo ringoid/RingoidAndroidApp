@@ -2,11 +2,10 @@ package com.ringoid.repository.feed
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
+import com.ringoid.data.handleError
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.data.remote.api.RingoidCloud
-import com.ringoid.data.handleError
 import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
 import com.ringoid.datainterface.di.PerLmmLikes
@@ -15,6 +14,7 @@ import com.ringoid.datainterface.local.feed.IFeedDbFacade
 import com.ringoid.datainterface.local.image.IImageDbFacade
 import com.ringoid.datainterface.local.messenger.IMessageDbFacade
 import com.ringoid.datainterface.local.user.IUserFeedDbFacade
+import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.feed.FeedResponse
 import com.ringoid.datainterface.remote.model.feed.LmmResponse
 import com.ringoid.domain.DomainUtil
@@ -48,7 +48,7 @@ open class FeedRepository @Inject constructor(
     @PerBlock private val blockedProfilesCache: IUserFeedDbFacade,
     @PerLmmLikes private val newLikesProfilesCache: IUserFeedDbFacade,
     @PerLmmMatches private val newMatchesProfilesCache: IUserFeedDbFacade,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
+    cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
     private var lmmInMemory: LcInMemory? = null  // Lmm + it's lastActionTime + corresponding filters

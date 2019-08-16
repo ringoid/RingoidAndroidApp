@@ -3,13 +3,13 @@ package com.ringoid.repository.debug
 import com.ringoid.data.handleError
 import com.ringoid.data.handleErrorNoRetry
 import com.ringoid.data.local.shared_prefs.accessCompletable
-import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.DaggerCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
 import com.ringoid.datainterface.local.user.IUserFeedDbFacade
+import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -36,7 +36,7 @@ import javax.inject.Singleton
 class DebugRepository @Inject constructor(
     @PerAlreadySeen private val alreadySeenProfilesCache: IUserFeedDbFacade,
     @PerBlock private val blockedProfilesCache: IUserFeedDbFacade,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
+    cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IDebugRepository {
 
     companion object {

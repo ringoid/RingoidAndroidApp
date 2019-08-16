@@ -1,10 +1,10 @@
 package com.ringoid.repository.messenger
 
-import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.handleError
+import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.local.messenger.IMessageDbFacade
+import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.exception.SkipThisTryException
@@ -35,7 +35,7 @@ import javax.inject.Singleton
 class MessengerRepository @Inject constructor(
     private val local: IMessageDbFacade,
     @PerUser private val sentMessagesLocal: IMessageDbFacade,
-    cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
+    cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
     private val sentMessages = ConcurrentHashMap<String, MutableSet<Message>>()

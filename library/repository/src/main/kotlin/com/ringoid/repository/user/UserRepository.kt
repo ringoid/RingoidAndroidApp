@@ -1,10 +1,10 @@
 package com.ringoid.repository.user
 
-import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.data.handleError
+import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.local.user.IUserDbFacade
+import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
@@ -21,7 +21,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepository @Inject constructor(
-    @PerUser private val local: IUserDbFacade, cloud: RingoidCloud,
+    @PerUser private val local: IUserDbFacade, cloud: IRingoidCloudFacade,
     spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserRepository {
 
