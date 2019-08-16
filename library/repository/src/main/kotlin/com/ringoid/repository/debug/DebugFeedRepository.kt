@@ -1,6 +1,5 @@
 package com.ringoid.repository.debug
 
-import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.ProfileEntity
@@ -13,6 +12,7 @@ import com.ringoid.datainterface.di.PerLmmMatches
 import com.ringoid.datainterface.feed.IFeedDbFacade
 import com.ringoid.datainterface.image.IImageDbFacade
 import com.ringoid.datainterface.messenger.IMessageDbFacade
+import com.ringoid.datainterface.user.IUserFeedDbFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -35,10 +35,10 @@ class DebugFeedRepository @Inject constructor(
     imagesLocal: IImageDbFacade,
     messengerLocal: IMessageDbFacade,
     feedSharedPrefs: FeedSharedPrefs,
-    @PerAlreadySeen alreadySeenProfilesCache: UserFeedDao,
-    @PerBlock blockedProfilesCache: UserFeedDao,
-    @PerLmmLikes newLikesProfilesCache: UserFeedDao,
-    @PerLmmMatches newMatchesProfilesCache: UserFeedDao,
+    @PerAlreadySeen alreadySeenProfilesCache: IUserFeedDbFacade,
+    @PerBlock blockedProfilesCache: IUserFeedDbFacade,
+    @PerLmmLikes newLikesProfilesCache: IUserFeedDbFacade,
+    @PerLmmMatches newMatchesProfilesCache: IUserFeedDbFacade,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : FeedRepository(
         local, imagesLocal, messengerLocal, feedSharedPrefs,
@@ -70,8 +70,8 @@ class DebugFeedRepository @Inject constructor(
         .handleError(count = count * 2, delay = 250L)
         .filterOutAlreadySeenProfilesFeed()
         .filterOutBlockedProfilesFeed()
-        .cacheNewFacesAsAlreadySeen()
         .map { it.map() }
+        .cacheNewFacesAsAlreadySeen()
 
     override fun debugGetNewFacesWithRepeatForPageAfterDelay(page: Int, repeatPage: Int, delay: Long): Single<Feed> =
         if (page == repeatPage) {
@@ -86,8 +86,8 @@ class DebugFeedRepository @Inject constructor(
         .handleError()
         .filterOutAlreadySeenProfilesFeed()
         .filterOutBlockedProfilesFeed()
-        .cacheNewFacesAsAlreadySeen()
         .map { it.map() }
+        .cacheNewFacesAsAlreadySeen()
 
     override fun debugGetNewFacesWithThresholdExceedOnAttempt(page: Int, failPage: Int): Single<Feed> =
         if (page == failPage) {
@@ -102,8 +102,8 @@ class DebugFeedRepository @Inject constructor(
         .handleError()
         .filterOutAlreadySeenProfilesFeed()
         .filterOutBlockedProfilesFeed()
-        .cacheNewFacesAsAlreadySeen()
         .map { it.map() }
+        .cacheNewFacesAsAlreadySeen()
 
     override fun dropFlags(): Completable =
         Single.just(0L)

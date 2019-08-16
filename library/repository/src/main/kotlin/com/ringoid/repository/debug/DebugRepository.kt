@@ -1,12 +1,5 @@
 package com.ringoid.repository.debug
 
-import com.ringoid.data.local.database.dao.feed.FeedDao
-import com.ringoid.data.local.database.dao.feed.UserFeedDao
-import com.ringoid.data.local.database.dao.image.ImageDao
-import com.ringoid.data.local.database.dao.image.UserImageDao
-import com.ringoid.data.local.database.dao.messenger.MessageDao
-import com.ringoid.data.local.database.dao.user.UserDao
-import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.di.CloudModule
@@ -17,7 +10,7 @@ import com.ringoid.data.repository.handleError
 import com.ringoid.data.repository.handleErrorNoRetry
 import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
-import com.ringoid.datainterface.di.PerUser
+import com.ringoid.datainterface.user.IUserFeedDbFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugOnly
@@ -29,7 +22,6 @@ import com.ringoid.domain.model.feed.EmptyFeed
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.image.Image
-import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.debug.IDebugRepository
 import com.ringoid.repository.BaseRepository
 import io.reactivex.Completable
@@ -42,11 +34,8 @@ import javax.inject.Singleton
 
 @Singleton @DebugOnly
 class DebugRepository @Inject constructor(
-    private val imageLocal: ImageDao, private val userImageLocal: UserImageDao,
-    private val feedLocal: FeedDao, private val messageLocal: MessageDao,
-    @PerUser private val userLocal: UserDao,
-    @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
-    @PerBlock private val blockedProfilesCache: UserFeedDao,
+    @PerAlreadySeen private val alreadySeenProfilesCache: IUserFeedDbFacade,
+    @PerBlock private val blockedProfilesCache: IUserFeedDbFacade,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IDebugRepository {
 
@@ -170,13 +159,12 @@ class DebugRepository @Inject constructor(
 
     // ------------------------------------------
     private fun Single<Feed>.cacheNewFacesAsAlreadySeen(): Single<Feed> =
-        doOnSuccess { alreadySeenProfilesCache.addProfileIds(it.profiles.map { ProfileIdDbo(it.id) }) }
+        doOnSuccess { alreadySeenProfilesCache.addProfileModelIds(it.profiles) }
 
     private fun getAlreadySeenProfileIds(): Single<List<String>> =
-        alreadySeenProfilesCache.profileIds().map { it.mapList() }
+        alreadySeenProfilesCache.profileIds()
 
-    private fun getBlockedProfileIds(): Single<List<String>> =
-        blockedProfilesCache.profileIds().map { it.mapList() }
+    private fun getBlockedProfileIds(): Single<List<String>> = blockedProfilesCache.profileIds()
 
     private fun Single<Feed>.filterAlreadySeenProfilesFeed(): Single<Feed> =
         filterProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())

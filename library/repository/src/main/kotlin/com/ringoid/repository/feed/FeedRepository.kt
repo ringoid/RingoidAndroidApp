@@ -2,9 +2,7 @@ package com.ringoid.repository.feed
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
-import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
@@ -18,6 +16,7 @@ import com.ringoid.datainterface.di.PerLmmMatches
 import com.ringoid.datainterface.feed.IFeedDbFacade
 import com.ringoid.datainterface.image.IImageDbFacade
 import com.ringoid.datainterface.messenger.IMessageDbFacade
+import com.ringoid.datainterface.user.IUserFeedDbFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
@@ -25,7 +24,6 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.*
-import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.feed.IFeedRepository
 import com.ringoid.repository.BaseRepository
@@ -46,34 +44,33 @@ open class FeedRepository @Inject constructor(
     private val imagesLocal: IImageDbFacade,
     private val messengerLocal: IMessageDbFacade,
     private val feedSharedPrefs: FeedSharedPrefs,
-    @PerAlreadySeen private val alreadySeenProfilesCache: UserFeedDao,
-    @PerBlock private val blockedProfilesCache: UserFeedDao,
-    @PerLmmLikes private val newLikesProfilesCache: UserFeedDao,
-    @PerLmmMatches private val newMatchesProfilesCache: UserFeedDao,
+    @PerAlreadySeen private val alreadySeenProfilesCache: IUserFeedDbFacade,
+    @PerBlock private val blockedProfilesCache: IUserFeedDbFacade,
+    @PerLmmLikes private val newLikesProfilesCache: IUserFeedDbFacade,
+    @PerLmmMatches private val newMatchesProfilesCache: IUserFeedDbFacade,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
     private var lmmInMemory: LcInMemory? = null  // Lmm + it's lastActionTime + corresponding filters
 
     // --------------------------------------------------------------------------------------------
-    protected fun Single<FeedResponse>.cacheNewFacesAsAlreadySeen(): Single<FeedResponse> =
-        doOnSuccess { alreadySeenProfilesCache.addProfileIds(it.profiles.map { ProfileIdDbo(it.id) }) }
+    protected fun Single<Feed>.cacheNewFacesAsAlreadySeen(): Single<Feed> =
+        doOnSuccess { alreadySeenProfilesCache.addProfileModelIds(it.profiles) }
 
     override fun cacheAlreadySeenProfileIds(ids: Collection<String>): Completable =
-        Completable.fromCallable { alreadySeenProfilesCache.addProfileIds(ids.map { ProfileIdDbo(it) }) }
+        Completable.fromCallable { alreadySeenProfilesCache.addProfileIds(ids) }
 
-    override fun getAlreadySeenProfileIds(): Single<List<String>> =
-        alreadySeenProfilesCache.profileIds().map { it.mapList() }
+    override fun getAlreadySeenProfileIds(): Single<List<String>> = alreadySeenProfilesCache.profileIds()
 
     override fun deleteAlreadySeenProfileIds(): Completable =
         Completable.fromCallable { alreadySeenProfilesCache.deleteProfileIds() }
 
     // -------------------------------------------
     override fun cacheBlockedProfileId(profileId: String): Completable =
-        Completable.fromCallable { blockedProfilesCache.addProfileId(ProfileIdDbo(profileId)) }
+        Completable.fromCallable { blockedProfilesCache.addProfileId(profileId) }
 
     override fun getBlockedProfileIds(): Single<List<String>> =
-        blockedProfilesCache.profileIds().map { it.mapList() }
+        blockedProfilesCache.profileIds()
 
     override fun deleteBlockedProfileIds(): Completable =
         Completable.fromCallable { blockedProfilesCache.deleteProfileIds() }
@@ -131,8 +128,8 @@ open class FeedRepository @Inject constructor(
                 .filterOutDuplicateProfilesFeed()
                 .filterOutAlreadySeenProfilesFeed()
                 .filterOutBlockedProfilesFeed()
-                .cacheNewFacesAsAlreadySeen()
                 .map { it.map() }
+                .cacheNewFacesAsAlreadySeen()
         }
 
     /* New Faces */
@@ -158,8 +155,8 @@ open class FeedRepository @Inject constructor(
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
                  .filterOutLMMProfilesFeed()
-                 .cacheNewFacesAsAlreadySeen()
                  .map { it.map() }
+                 .cacheNewFacesAsAlreadySeen()
         }
 
     /* LMM */
@@ -442,7 +439,7 @@ open class FeedRepository @Inject constructor(
         }
         .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
-            val profiles = lmm.notSeenLikesProfileIds().map { ProfileIdDbo(it) }
+            val profiles = lmm.notSeenLikesProfileIds()
             Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }.toSingleDefault(lmm to count)
         }
         .zipWith(newLikesProfilesCache.countProfileIds(),
@@ -460,7 +457,7 @@ open class FeedRepository @Inject constructor(
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
-            val profiles = lmm.notSeenMatchesProfileIds().map { ProfileIdDbo(it) }
+            val profiles = lmm.notSeenMatchesProfileIds()
             Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }.toSingleDefault(lmm to count)
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(),
