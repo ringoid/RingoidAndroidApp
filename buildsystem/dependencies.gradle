@@ -579,7 +579,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    dataDependencies += Domain + Utility + autoDispose + dagger + kotlin + log + net + room + rx
+    dataDependencies += DataInterface + Domain + Utility + autoDispose + dagger + kotlin + log + net + room + rx
     testDataDependencies = test
 
     dataPlugins = [
@@ -621,7 +621,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    repositoryDependencies += Data + Domain + dagger + kotlin + log + rx
+    repositoryDependencies += Data + DataInterface + Domain + dagger + kotlin + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [
