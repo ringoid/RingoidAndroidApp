@@ -1,7 +1,7 @@
-package com.ringoid.data.remote.model.feed
+package com.ringoid.datainterface.remote.model.feed
 
-import com.ringoid.data.remote.model.image.ImageEntity
-import com.ringoid.data.remote.model.messenger.MessageEntity
+import com.ringoid.datainterface.remote.model.image.ImageEntity
+import com.ringoid.datainterface.remote.model.messenger.MessageEntity
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.Chat
 

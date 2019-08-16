@@ -1,8 +1,8 @@
-package com.ringoid.data.remote.model.feed
+package com.ringoid.datainterface.remote.model.feed
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.ringoid.data.remote.model.image.ImageEntity
+import com.ringoid.datainterface.remote.model.image.ImageEntity
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.Mappable
 

@@ -1,6 +1,6 @@
-package com.ringoid.data.remote.model.feed
+package com.ringoid.datainterface.remote.model.feed
 
-import com.ringoid.data.remote.model.image.ImageEntity
+import com.ringoid.datainterface.remote.model.image.ImageEntity
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.feed.Profile

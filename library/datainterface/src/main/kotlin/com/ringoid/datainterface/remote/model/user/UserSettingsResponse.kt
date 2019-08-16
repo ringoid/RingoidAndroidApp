@@ -1,8 +1,8 @@
-package com.ringoid.data.remote.model.user
+package com.ringoid.datainterface.remote.model.user
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.datainterface.remote.model.BaseResponse
 
 /**
  * {

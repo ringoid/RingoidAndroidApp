@@ -1,4 +1,4 @@
-package com.ringoid.data.remote.model.messenger
+package com.ringoid.datainterface.remote.model.messenger
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

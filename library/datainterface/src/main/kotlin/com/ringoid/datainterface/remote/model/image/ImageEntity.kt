@@ -1,4 +1,4 @@
-package com.ringoid.data.remote.model.image
+package com.ringoid.datainterface.remote.model.image
 
 import com.ringoid.domain.model.image.Image
 
