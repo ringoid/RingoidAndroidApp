@@ -60,28 +60,31 @@ object Dialogs {
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null): HashAlertDialog =
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true): HashAlertDialog =
         getTextDialog(activity, titleResId, descriptionResId.takeIf { it != 0 }?.let { activity?.resources?.getString(it) },
-            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
+            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener, isCancellable)
 
     private fun getTextDialog(
             activity: Activity?, @StringRes titleResId: Int = 0, description: String? = null,
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null): HashAlertDialog =
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true): HashAlertDialog =
         getTextDialog(activity, titleResId.takeIf { it != 0 }?.let { activity?.resources?.getString(it) }, description,
-            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
+            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener, isCancellable)
 
     fun getTextDialog(
             activity: Activity?, title: String? = null, description: String? = null,
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null): HashAlertDialog =
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true): HashAlertDialog =
         activity?.let {
             val hash = hashOf(activity, title, description, positiveBtnLabelResId, negativeBtnLabelResId)
-            val builder = AlertDialog.Builder(activity)
+            val builder = AlertDialog.Builder(activity).setCancelable(isCancellable)
             title?.let { title -> builder.also { it.setTitle(title) } }
             description.takeIf { !it.isNullOrBlank() }?.let { str -> builder.also { it.setMessage(str) } }
             positiveBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setPositiveButton(resId, positiveListener) } }
@@ -94,9 +97,10 @@ object Dialogs {
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) {
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true) {
         showTextDialog(activity, titleResId, descriptionResId.takeIf { it != 0}?.let { activity?.resources?.getString(it) },
-            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
+            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener, isCancellable)
     }
 
     fun showTextDialog(
@@ -104,21 +108,23 @@ object Dialogs {
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true) =
         showTextDialog(activity, titleResId.takeIf { it != 0 }?.let { activity?.resources?.getString(it) }, description,
-            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
+            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener, isCancellable)
 
     fun showTextDialog(
             activity: BaseActivity<*>?, title: String? = null, description: String? = null,
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true) =
         activity?.takeIf { !it.isActivityDestroyed() }
                 ?.let { activity ->
                     val dialog = getTextDialog(activity, title, description,
                         positiveBtnLabelResId, negativeBtnLabelResId,
-                        positiveListener, negativeListener)
+                        positiveListener, negativeListener, isCancellable)
                     registry.takeIf { !it.contains(dialog.hash) }
                             ?.add(dialog.hash)
                             ?.also { dialog.dialog.show() }
@@ -130,36 +136,39 @@ object Dialogs {
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true) =
         showTextDialog(activity, titleResId, descriptionResId.takeIf { it != 0 }?.let { activity?.resources?.getString(it) },
-            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
+            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener, isCancellable)
 
     fun showTextDialog(
             activity: Activity?, @StringRes titleResId: Int = 0, description: String? = null,
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true) =
         showTextDialog(activity, titleResId.takeIf { it != 0 }?.let { activity?.resources?.getString(it) }, description,
-            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener)
+            positiveBtnLabelResId, negativeBtnLabelResId, positiveListener, negativeListener, isCancellable)
 
     fun showTextDialog(
             activity: Activity?, title: String? = null, description: String? = null,
             @StringRes positiveBtnLabelResId: Int = R.string.button_close,
             @StringRes negativeBtnLabelResId: Int = 0,
             positiveListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
-            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null) =
+            negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
+            isCancellable: Boolean = true) =
         activity?.takeIf { it is BaseActivity<*> }
                 ?.let {
                     showTextDialog(it as BaseActivity<*>, title, description,
                         positiveBtnLabelResId, negativeBtnLabelResId,
-                        positiveListener, negativeListener)
+                        positiveListener, negativeListener, isCancellable)
                 }
                 ?: run {
                     val dialog = getTextDialog(
                         activity, title, description,
                         positiveBtnLabelResId, negativeBtnLabelResId,
-                        positiveListener, negativeListener)
+                        positiveListener, negativeListener, isCancellable)
                     registry.takeIf { !it.contains(dialog.hash) }
                             ?.add(dialog.hash)
                             ?.also { dialog.dialog.show() }

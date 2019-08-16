@@ -84,7 +84,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                             descriptionResId = getAddPhotoDialogDescriptionResId(),
                             positiveBtnLabelResId = OriginR_string.button_add_photo,
                             negativeBtnLabelResId = OriginR_string.button_later,
-                            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") })
+                            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") },
+                            isCancellable = false)
 
                         showLoading(isVisible = false)
                     }
