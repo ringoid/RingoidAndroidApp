@@ -1,14 +1,14 @@
 package com.ringoid.data.remote.api
 
-import com.ringoid.data.remote.model.BaseResponse
-import com.ringoid.data.remote.model.actions.CommitActionsResponse
-import com.ringoid.data.remote.model.feed.ChatResponse
-import com.ringoid.data.remote.model.feed.FeedResponse
-import com.ringoid.data.remote.model.feed.LmmResponse
-import com.ringoid.data.remote.model.image.ImageUploadUrlResponse
-import com.ringoid.data.remote.model.image.UserImageListResponse
-import com.ringoid.data.remote.model.user.AuthCreateProfileResponse
-import com.ringoid.data.remote.model.user.UserSettingsResponse
+import com.ringoid.datainterface.remote.model.BaseResponse
+import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
+import com.ringoid.datainterface.remote.model.feed.ChatResponse
+import com.ringoid.datainterface.remote.model.feed.FeedResponse
+import com.ringoid.datainterface.remote.model.feed.LmmResponse
+import com.ringoid.datainterface.remote.model.image.ImageUploadUrlResponse
+import com.ringoid.datainterface.remote.model.image.UserImageListResponse
+import com.ringoid.datainterface.remote.model.user.AuthCreateProfileResponse
+import com.ringoid.datainterface.remote.model.user.UserSettingsResponse
 import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.RequestBody

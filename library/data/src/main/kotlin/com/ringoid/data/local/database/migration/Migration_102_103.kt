@@ -2,7 +2,7 @@ package com.ringoid.data.local.database.migration
 
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ringoid.data.local.database.model.feed.FeedItemDbo
-import com.ringoid.data.remote.model.feed.BaseProfileEntity
+import com.ringoid.datainterface.remote.model.feed.BaseProfileEntity
 import javax.inject.Inject
 import javax.inject.Singleton
 

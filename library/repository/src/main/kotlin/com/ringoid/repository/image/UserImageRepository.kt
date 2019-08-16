@@ -4,11 +4,11 @@ import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.api.RingoidCloud
-import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.handleError
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.local.image.IImageRequestDbFacade
 import com.ringoid.datainterface.local.user.IUserImageDbFacade
+import com.ringoid.datainterface.remote.model.image.UserImageEntity
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil

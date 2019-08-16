@@ -6,8 +6,8 @@ import com.ringoid.data.local.database.model.action_storage.ActionObjectDboMappe
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.api.RingoidCloud
-import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.data.handleError
+import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.actions.OriginActionObject
