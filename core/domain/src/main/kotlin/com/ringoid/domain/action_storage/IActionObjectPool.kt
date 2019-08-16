@@ -5,8 +5,8 @@ import io.reactivex.Single
 
 interface IActionObjectPool {
 
-    fun put(aobj: OriginActionObject)
-    fun put(aobjs: Collection<OriginActionObject>)
+    fun put(aobj: OriginActionObject, onComplete: (() -> Unit)? = null)
+    fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)? = null)
 
     fun trigger()
     fun triggerSource(): Single<Long>

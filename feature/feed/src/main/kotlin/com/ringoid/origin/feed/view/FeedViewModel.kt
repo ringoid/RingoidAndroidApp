@@ -88,8 +88,9 @@ abstract class FeedViewModel(
                 .forEach { viewActionObjectBuffer[it.key()] = it }
         } else {
             DebugLogUtil.v("Hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
-            advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
-            actionObjectPool.trigger()
+            advanceAndPushViewObjects(backupPool = viewActionObjectBackup) {
+                actionObjectPool.trigger()
+            }
         }
     }
 
@@ -114,8 +115,7 @@ abstract class FeedViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        advanceAndPushViewObjects()
-        actionObjectPool.trigger()
+        advanceAndPushViewObjects { actionObjectPool.trigger() }
     }
 
     /* Feed */
@@ -356,14 +356,16 @@ abstract class FeedViewModel(
             ?.let { addViewObjectToBuffer(it.recreated()) }
     }
 
-    private fun advanceAndPushViewObjects(backupPool: MutableMap<Pair<String, String>, ViewActionObject>? = null) {
-        viewActionObjectBuffer.apply {
+    private fun advanceAndPushViewObjects(
+            backupPool: MutableMap<Pair<String, String>, ViewActionObject>? = null,
+            onComplete: (() -> Unit)? = null) {
+        with (viewActionObjectBuffer) {
             mutableSetOf<String>()
                 .apply { keys.forEach { add(it.second) } }
                 .forEach { onViewFeedItem(feedItemId = it) }
 
             values.forEach { it.advance() }
-            actionObjectPool.put(values)  // add all aobjs at once
+            actionObjectPool.put(values, onComplete)  // add all aobjs at once
             backupPool?.putAll(this)
             clear()
         }

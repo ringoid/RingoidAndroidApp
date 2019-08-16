@@ -35,7 +35,7 @@ class ActionObjectPool @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Synchronized
-    override fun put(aobj: OriginActionObject) {
+    override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {
         Timber.v("Put action object: $aobj")
 //        when (aobj) {
 //            is ViewActionObject, is ViewChatActionObject -> { /* no-op */ }
@@ -48,16 +48,23 @@ class ActionObjectPool @Inject constructor(
 //        }
         queue.offer(aobj)
         analyzeActionObject(aobj)
+        onComplete?.invoke()
     }
 
     @Synchronized
-    override fun put(aobjs: Collection<OriginActionObject>) {
-        aobjs.forEach { put(it) }
+    override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
+        Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
+        aobjs.forEach { aobj ->
+            queue.offer(aobj)
+            analyzeActionObject(aobj)
+        }
+        onComplete?.invoke()
     }
 
     // ------------------------------------------
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
+        Timber.d("Trigger standalone")
         if (queue.isEmpty()) {
             DebugLogUtil.d("No actions to commit, lAt is up-to-date [standalone]")
             return  // do nothing on empty queue

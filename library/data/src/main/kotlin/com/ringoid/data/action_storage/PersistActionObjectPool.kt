@@ -32,25 +32,28 @@ class PersistActionObjectPool @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
-    override fun put(aobj: OriginActionObject) {
+    override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {
         Timber.v("Put action object: $aobj")
         Completable.fromCallable { local.addActionObject(aobj) }
             .subscribeOn(Schedulers.io())
+            .doOnComplete { onComplete?.invoke() }
             .autoDisposable(userScopeProvider)
             .subscribe({ analyzeActionObject(aobj) }, Timber::e)
     }
 
     @Suppress("CheckResult")
-    override fun put(aobjs: Collection<OriginActionObject>) {
-        Timber.v("Put actions object: ${aobjs.joinToString()}")
+    override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
+        Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
         Completable.fromCallable { local.addActionObjects(aobjs) }
             .subscribeOn(Schedulers.io())
+            .doOnComplete { onComplete?.invoke() }
             .autoDisposable(userScopeProvider)
             .subscribe({ aobjs.forEach { analyzeActionObject(it) } }, Timber::e)
     }
 
     @Suppress("CheckResult")
     override fun trigger() {
+        Timber.d("Trigger standalone")
         local.countActionObjects()
             .subscribeOn(Schedulers.newThread())
             .flatMap { count ->
