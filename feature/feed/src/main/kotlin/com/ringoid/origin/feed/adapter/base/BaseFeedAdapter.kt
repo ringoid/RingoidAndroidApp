@@ -63,9 +63,10 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
             ?.also { vh ->
                 with (vh.itemView.ibtn_like) {
                     clicks().compose(clickDebounce()).subscribe {
-                        onLike(vh)
-                        val xy = getClickLocationF()
-                        onImageTouchListener?.invoke(xy.x, xy.y)
+                        if (onLike(vh)) {
+                            val xy = getClickLocationF()
+                            onImageTouchListener?.invoke(xy.x, xy.y)
+                        }
                     }
                 }
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
