@@ -1,6 +1,6 @@
 package com.ringoid.data.remote
 
-import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.domain.debug.DebugLogUtil

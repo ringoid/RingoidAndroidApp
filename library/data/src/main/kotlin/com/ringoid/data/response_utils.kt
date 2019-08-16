@@ -2,7 +2,7 @@ package com.ringoid.data
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.data.remote.network.ResponseErrorInterceptor.Companion.ERROR_CONNECTION_INSECURE
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
