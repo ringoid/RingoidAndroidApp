@@ -30,6 +30,8 @@ class PersistActionObjectPool @Inject constructor(
     // ------------------------------------------------------------------------
     override fun getTotalQueueSize(): Int = 0  // don't trigger by capacity hit
 
+    override fun countActionObjects(): Single<Int> = local.countActionObjects()
+
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
     override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {

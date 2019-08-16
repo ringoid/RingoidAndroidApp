@@ -32,6 +32,7 @@ sealed class BusEvent {
     override fun toString(): String = javaClass.simpleName
 
     @DebugOnly object CloseDebugView : BusEvent()
+    @DebugOnly object DebugInfo : BusEvent()
     @DebugOnly object SimulateError : BusEvent()
 
     object Stub : BusEvent()

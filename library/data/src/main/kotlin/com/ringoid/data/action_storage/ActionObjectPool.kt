@@ -33,6 +33,8 @@ class ActionObjectPool @Inject constructor(
     // ------------------------------------------------------------------------
     override fun getTotalQueueSize(): Int = queue.size
 
+    override fun countActionObjects(): Single<Int> = Single.just(queue.size)
+
     // --------------------------------------------------------------------------------------------
     @Synchronized
     override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {

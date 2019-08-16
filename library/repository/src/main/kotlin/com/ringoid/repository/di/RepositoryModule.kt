@@ -7,6 +7,7 @@ import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.CloudFacadeModule
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.IUserInMemoryCache
+import com.ringoid.domain.repository.actions.IActionObjectRepository
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
 import com.ringoid.domain.repository.debug.IDebugRepository
 import com.ringoid.domain.repository.feed.IFeedRepository
@@ -16,6 +17,7 @@ import com.ringoid.domain.repository.push.IPushRepository
 import com.ringoid.domain.repository.system.ISystemRepository
 import com.ringoid.domain.repository.user.IUserRepository
 import com.ringoid.repository.UserInMemoryCache
+import com.ringoid.repository.actions.ActionObjectRepository
 import com.ringoid.repository.debug.DebugFeedRepository
 import com.ringoid.repository.debug.DebugRepository
 import com.ringoid.repository.feed.FeedRepository
@@ -31,6 +33,9 @@ import javax.inject.Singleton
 @Module(includes = [ActionObjectPoolModule::class, CloudFacadeModule::class, DbFacadeModule::class,
                     SharedPrefsManagerModule::class, UseCaseExecutorModule::class])
 class RepositoryModule {
+
+    @Provides @Singleton
+    fun provideActionObjectRepository(repository: ActionObjectRepository): IActionObjectRepository = repository
 
     @Provides @Singleton @DebugOnly
     fun provideDebugRepository(repository: DebugRepository): IDebugRepository = repository
