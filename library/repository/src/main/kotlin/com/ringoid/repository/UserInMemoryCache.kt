@@ -1,4 +1,4 @@
-package com.ringoid.data.local.memory
+package com.ringoid.repository
 
 import com.ringoid.domain.memory.IUserInMemoryCache
 import java.util.concurrent.atomic.AtomicInteger

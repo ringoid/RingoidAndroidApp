@@ -1,4 +1,4 @@
-package com.ringoid.data.repository.model
+package com.ringoid.data.repository
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -30,7 +30,8 @@ class FilterEssence private constructor(
             FilterEssence(
                 minAge = maxOf(minAge, DomainUtil.FILTER_MIN_AGE),
                 maxAge = maxOf(maxAge, DomainUtil.FILTER_MIN_AGE),
-                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE))
+                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE)
+            )
 
         /**
          * Creates [FilterEssence] with parameters that cannot be less than minimal values.
@@ -45,15 +46,20 @@ class FilterEssence private constructor(
             val essence = FilterEssence(
                 minAge = maxOf(minAge, DomainUtil.FILTER_MIN_AGE),
                 maxAge = maxOf(maxAge, DomainUtil.FILTER_MIN_AGE),
-                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE))
+                maxDistance = maxOf(maxDistance, DomainUtil.FILTER_MIN_DISTANCE)
+            )
 
             return FilterEssence(
-                minAge = essence.minAge.takeIf { it < DomainUtil.FILTER_MAX_AGE } ?: DomainUtil.UNKNOWN_VALUE,
-                maxAge = essence.maxAge.takeIf { it < DomainUtil.FILTER_MAX_AGE } ?: DomainUtil.UNKNOWN_VALUE,
-                maxDistance = essence.maxDistance.takeIf { it < DomainUtil.FILTER_MAX_DISTANCE } ?: DomainUtil.UNKNOWN_VALUE)
+                minAge = essence.minAge.takeIf { it < DomainUtil.FILTER_MAX_AGE }
+                    ?: DomainUtil.UNKNOWN_VALUE,
+                maxAge = essence.maxAge.takeIf { it < DomainUtil.FILTER_MAX_AGE }
+                    ?: DomainUtil.UNKNOWN_VALUE,
+                maxDistance = essence.maxDistance.takeIf { it < DomainUtil.FILTER_MAX_DISTANCE }
+                    ?: DomainUtil.UNKNOWN_VALUE)
         }
 
-        fun default(): FilterEssence = create()
+        fun default(): FilterEssence =
+            create()
     }
 
     override fun toJson(): String =

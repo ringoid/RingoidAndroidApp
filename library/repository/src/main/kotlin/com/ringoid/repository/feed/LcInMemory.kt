@@ -1,4 +1,4 @@
-package com.ringoid.data.repository.feed
+package com.ringoid.repository.feed
 
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.Lmm

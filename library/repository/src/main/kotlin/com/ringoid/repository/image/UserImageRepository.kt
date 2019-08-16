@@ -1,16 +1,16 @@
-package com.ringoid.data.repository.image
+package com.ringoid.repository.image
 
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
-import com.ringoid.data.local.memory.UserInMemoryCache
+import com.ringoid.repository.UserInMemoryCache
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.image.UserImageEntity
-import com.ringoid.data.repository.BaseRepository
+import com.ringoid.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool

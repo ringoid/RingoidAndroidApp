@@ -1,11 +1,11 @@
-package com.ringoid.data.repository.messenger
+package com.ringoid.repository.messenger
 
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
-import com.ringoid.data.repository.BaseRepository
+import com.ringoid.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool

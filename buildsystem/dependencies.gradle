@@ -355,7 +355,7 @@ ext {
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop +
+    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop + Repository +
                        android + androidView + autoDispose + dagger + deeplink + fragnav +
                        kotlin + leaks + log + net + room + support
 
@@ -575,8 +575,8 @@ ext {
     /* Data */
     // ------------------------------------------
     dataDependencies = [
-        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
+        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
     dataDependencies += DataInterface + Domain + Utility + autoDispose + dagger + kotlin + log + net + room + rx
@@ -617,11 +617,12 @@ ext {
     /* Repository */
     // ------------------------------------------
     repositoryDependencies = [
-        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
+        [configuration: "implementation", dependency: d_libs.gson],
+        [configuration: "implementation", dependency: d_network.okhttp],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    repositoryDependencies += Data + DataInterface + Domain + dagger + kotlin + log + rx
+    repositoryDependencies += Data + DataInterface + Domain + Utility + dagger + kotlin + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [

@@ -1,8 +1,5 @@
-package com.ringoid.data.repository.debug
+package com.ringoid.repository.debug
 
-import com.ringoid.datainterface.di.PerAlreadySeen
-import com.ringoid.datainterface.di.PerBlock
-import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
@@ -16,9 +13,11 @@ import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.DaggerCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.model.BaseResponse
-import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.data.repository.handleErrorNoRetry
+import com.ringoid.datainterface.di.PerAlreadySeen
+import com.ringoid.datainterface.di.PerBlock
+import com.ringoid.datainterface.di.PerUser
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugOnly
@@ -32,6 +31,7 @@ import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.debug.IDebugRepository
+import com.ringoid.repository.BaseRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

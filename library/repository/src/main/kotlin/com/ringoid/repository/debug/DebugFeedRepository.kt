@@ -1,4 +1,4 @@
-package com.ringoid.data.repository.debug
+package com.ringoid.repository.debug
 
 import com.ringoid.datainterface.di.PerAlreadySeen
 import com.ringoid.datainterface.di.PerBlock
@@ -8,12 +8,12 @@ import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
-import com.ringoid.data.local.shared_prefs.FeedSharedPrefs
+import com.ringoid.repository.FeedSharedPrefs
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.ProfileEntity
 import com.ringoid.data.remote.model.image.ImageEntity
-import com.ringoid.data.repository.feed.FeedRepository
+import com.ringoid.repository.feed.FeedRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil

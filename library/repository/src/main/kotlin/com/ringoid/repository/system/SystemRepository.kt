@@ -1,8 +1,8 @@
-package com.ringoid.data.repository.system
+package com.ringoid.repository.system
 
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.SystemCloud
-import com.ringoid.data.repository.BaseRepository
+import com.ringoid.repository.BaseRepository
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.system.ISystemRepository

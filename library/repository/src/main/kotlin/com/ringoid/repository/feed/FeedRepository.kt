@@ -1,11 +1,7 @@
-package com.ringoid.data.repository.feed
+package com.ringoid.repository.feed
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.ringoid.datainterface.di.PerAlreadySeen
-import com.ringoid.datainterface.di.PerBlock
-import com.ringoid.datainterface.di.PerLmmLikes
-import com.ringoid.datainterface.di.PerLmmMatches
 import com.ringoid.data.local.database.dao.feed.FeedDao
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
 import com.ringoid.data.local.database.dao.image.ImageDao
@@ -14,13 +10,15 @@ import com.ringoid.data.local.database.model.feed.FeedItemDbo
 import com.ringoid.data.local.database.model.feed.ProfileIdDbo
 import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.data.local.database.model.messenger.MessageDbo
-import com.ringoid.data.local.shared_prefs.FeedSharedPrefs
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.feed.FeedResponse
 import com.ringoid.data.remote.model.feed.LmmResponse
-import com.ringoid.data.repository.BaseRepository
 import com.ringoid.data.repository.handleError
+import com.ringoid.datainterface.di.PerAlreadySeen
+import com.ringoid.datainterface.di.PerBlock
+import com.ringoid.datainterface.di.PerLmmLikes
+import com.ringoid.datainterface.di.PerLmmMatches
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
@@ -30,6 +28,8 @@ import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.*
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.feed.IFeedRepository
+import com.ringoid.repository.BaseRepository
+import com.ringoid.repository.FeedSharedPrefs
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -430,7 +430,9 @@ open class FeedRepository @Inject constructor(
         }
 
     private fun Single<Lmm>.keepLmmInMemory(filters: Filters?): Single<Lmm> =
-        doAfterSuccess { lmmInMemory = LcInMemory(it, aObjPool.lastActionTime(), filters) }
+        doAfterSuccess { lmmInMemory =
+            LcInMemory(it, aObjPool.lastActionTime(), filters)
+        }
 
     // ------------------------------------------
     private fun Single<Lmm>.checkForNewFeedItems(): Single<Lmm> =

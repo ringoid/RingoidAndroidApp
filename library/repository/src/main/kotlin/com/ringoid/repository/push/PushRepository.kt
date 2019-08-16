@@ -1,8 +1,8 @@
-package com.ringoid.data.repository.push
+package com.ringoid.repository.push
 
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
-import com.ringoid.data.repository.BaseRepository
+import com.ringoid.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.manager.ISharedPrefsManager

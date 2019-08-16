@@ -1,4 +1,4 @@
-package com.ringoid.data.repository
+package com.ringoid.repository
 
 import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.domain.action_storage.IActionObjectPool

@@ -1,11 +1,11 @@
-package com.ringoid.data.repository.user
+package com.ringoid.repository.user
 
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.model.feed.UserProfileDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.data.remote.RingoidCloud
-import com.ringoid.data.repository.BaseRepository
+import com.ringoid.repository.BaseRepository
 import com.ringoid.data.repository.handleError
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.log.SentryUtil
