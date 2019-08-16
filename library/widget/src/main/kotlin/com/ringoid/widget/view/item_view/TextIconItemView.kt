@@ -46,7 +46,7 @@ open class TextIconItemView : IconItemView {
                 getDimension(R.styleable.TextIconItemView_text_icon_item_side_padding, resources.getDimension(R.dimen.std_margin_12))
                     .let { tv_input.setPadding(it.toInt(), paddingTop, it.toInt(), paddingBottom) }
 
-                getInt(R.styleable.TextIconItemView_text_icon_item_text_max_length, MAX_LENGTH)
+                getInt(R.styleable.TextIconItemView_text_icon_item_text_max_length, MAX_LENGTH + 7)
                     .takeIf { it > 0 }?.let { tv_input.filters = arrayOf(InputFilter.LengthFilter(it)) }
 
                 getInt(R.styleable.TextIconItemView_text_icon_item_text_gravity, Gravity.CENTER_VERTICAL or Gravity.START)
