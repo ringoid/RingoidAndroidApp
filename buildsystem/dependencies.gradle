@@ -263,6 +263,10 @@ ext {
             [configuration: "implementation", dependency: d_google.googlePlayServicesAds],
     ]
 
+    def gson = [
+            [configuration: "implementation", dependency: d_libs.gson],
+    ]
+
     def kotlin = [
             [configuration: "implementation", dependency: d_kotlin.ktStdLib],
             [configuration: "implementation", dependency: d_kotlin.ktCoroutines],
@@ -432,11 +436,10 @@ ext {
         [configuration: "implementation", dependency: project(modules.topsheet)],
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
-        [configuration: "implementation", dependency: d_libs.gson],
     ]
     feedDependencies += Messenger + Origin + Analytics + Develop +
                         android + androidView + arch + autoDispose +
-                        dagger + deeplink + kotlin + log + rx + rxBind + view
+                        dagger + deeplink + gson + kotlin + log + rx + rxBind + view
 
     androidTestFeedDeps = androidTest
     testFeedDependencies = test
@@ -471,10 +474,9 @@ ext {
     messengerDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
-        [configuration: "implementation", dependency: d_libs.gson],
     ]
     messengerDependencies += Origin + Develop + Analytics + android + androidView + arch + autoDispose +
-                             dagger + deeplink + kotlin + log + rx + rxBind
+                             dagger + deeplink + gson + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test
@@ -515,12 +517,11 @@ ext {
         [configuration: "implementation", dependency: d_libs.confetti],
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
         [configuration: "implementation", dependency: d_libs.firebaseReferral],
-        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
     originDependencies += Develop + Analytics + android + androidView + arch + autoDispose +
-                          dagger + deeplink + fragnav + kotlin + log + rx + rxBind + support + view
+                          dagger + deeplink + fragnav + gson + kotlin + log + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
     androidTestOriginDeps += [
@@ -576,10 +577,10 @@ ext {
     // ------------------------------------------
     dataDependencies = [
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
-        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    dataDependencies += DataInterface + Domain + Utility + autoDispose + dagger + kotlin + log + net + room + rx
+    dataDependencies += DataInterface + Domain + Utility + autoDispose + dagger + gson + kotlin +
+                        log + net + room + rx
     testDataDependencies = test
 
     dataPlugins = [
@@ -590,11 +591,8 @@ ext {
 
     /* Data Interface */
     // ------------------------------------------
-    dataInterfaceDependencies = [
-        [configuration: "implementation", dependency: d_libs.gson],
-        [configuration: "implementation", dependency: d_network.okhttp],
-    ]
-    dataInterfaceDependencies += Domain + dagger + kotlin + rx
+    dataInterfaceDependencies = []
+    dataInterfaceDependencies += Domain + dagger + gson + kotlin + rx
     testDataInterfaceDependencies = test
 
     dataInterfacePlugins = [
@@ -606,10 +604,9 @@ ext {
     /* Domain */
     // ------------------------------------------
     domainDependencies = [
-        [configuration: "implementation", dependency: d_libs.gson],
         [configuration: "implementation", dependency: d_support.sentry]
     ]
-    domainDependencies += Utility + autoDispose + dagger + kotlin + log + rx
+    domainDependencies += Utility + autoDispose + dagger + gson + kotlin + log + rx
     testDomainDependencies = test
 
     domainPlugins = [

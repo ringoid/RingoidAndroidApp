@@ -44,7 +44,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
             unexpected = ERROR_NO_CONNECTION
             DebugLogUtil.e(e)
         }
-        val body = BaseResponse(requestUrl = request.url, unexpected = unexpected)
+        val body = BaseResponse(requestUrl = request.url.toString(), unexpected = unexpected)
         return Response.Builder()
             .code(200)
             .message(errorMessage)
