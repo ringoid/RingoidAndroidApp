@@ -251,10 +251,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedAdapter = createFeedAdapter().apply {
             onBeforeLikeListener = { vm.onBeforeLike() }
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
-            onScrollHorizontalListener = {
-                showRefreshPopup(isVisible = false)
-                toolbarWidget?.show(isVisible = false)
-            }
+            onScrollHorizontalListener = { showRefreshPopup(isVisible = false) }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 vm.onSettingsClick(model.id)
                 val image = model.images[positionOfImage]
