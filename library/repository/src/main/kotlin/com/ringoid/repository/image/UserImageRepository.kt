@@ -1,7 +1,6 @@
 package com.ringoid.repository.image
 
 import com.ringoid.data.local.database.dao.image.ImageRequestDao
-import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessCompletable
@@ -10,6 +9,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.handleError
 import com.ringoid.datainterface.di.PerUser
+import com.ringoid.datainterface.user.IUserImageDbFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
@@ -20,7 +20,6 @@ import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.*
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.UserImage
-import com.ringoid.domain.model.mapList
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.repository.BaseRepository
 import com.ringoid.repository.UserInMemoryCache
@@ -38,7 +37,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UserImageRepository @Inject constructor(
-    private val local: UserImageDao,
+    private val local: IUserImageDbFacade,
     @PerUser private val imageRequestLocal: ImageRequestDao,
     private val userInMemoryCache: UserInMemoryCache,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
@@ -57,7 +56,7 @@ class UserImageRepository @Inject constructor(
              }
 
     // ------------------------------------------------------------------------
-    override fun getUserImage(id: String): Single<UserImage> = local.userImage(id).map { it.map() }
+    override fun getUserImage(id: String): Single<UserImage> = local.userImage(id)
 
     override fun getUserImages(resolution: ImageResolution): Single<List<UserImage>> {
         fun fetchUserImages(): Single<List<UserImage>> =
@@ -71,8 +70,12 @@ class UserImageRepository @Inject constructor(
                                 Timber.v("Image with id [${image.originId}] has been blocked by Moderator on the Server")
                                 imageBlocked.onNext(image.originId)  // notify image has been blocked by Moderator
                             }
-                            local.updateUserImageByOriginId(originImageId = image.originId, uri = image.uri,
-                                numberOfLikes = image.numberOfLikes, isBlocked = image.isBlocked, sortPosition = index)
+                            local.updateUserImageByOriginId(
+                                originImageId = image.originId,
+                                uri = image.uri,
+                                numberOfLikes = image.numberOfLikes,
+                                isBlocked = image.isBlocked,
+                                sortPosition = index)
                         }
                         .toList()
                 }
@@ -85,7 +88,6 @@ class UserImageRepository @Inject constructor(
                 }
                 .flatMap { countUserImages() }  // actualize user images count
                 .flatMap { local.userImages() }
-                .map { it.mapList() }
 
         return imageRequestLocal.countRequests()
             .flatMap { count ->
@@ -125,7 +127,7 @@ class UserImageRepository @Inject constructor(
     }
 
     override fun getUserImagesAsync(resolution: ImageResolution): Observable<List<UserImage>> =
-        Observable.concatArray(local.userImages().map { it.mapList() }.toObservable(), getUserImages(resolution).toObservable())
+        Observable.concatArray(local.userImages().toObservable(), getUserImages(resolution).toObservable())
 
     // ------------------------------------------------------------------------
     override fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized): Completable =
@@ -151,7 +153,7 @@ class UserImageRepository @Inject constructor(
         local.userImage(id = essence.imageId)
             .flatMapCompletable { deleteUserImageRemoteImpl(localImage = it, essence = essence, retryCount = retryCount) }
 
-    private fun deleteUserImageRemoteImpl(localImage: UserImageDbo, essence: ImageDeleteEssence, retryCount: Int): Completable {
+    private fun deleteUserImageRemoteImpl(localImage: UserImage, essence: ImageDeleteEssence, retryCount: Int): Completable {
         fun addPendingDeleteImageRequest() {
             Completable.fromCallable { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
                        .subscribeOn(Schedulers.io())
@@ -217,7 +219,7 @@ class UserImageRepository @Inject constructor(
 
             val imageFile = File(imageFilePath)
             val uriLocal = imageFile.uriString()
-            val localImage = UserImageDbo(id = xessence.clientImageId, uri = uriLocal, uriLocal = uriLocal)
+            val localImage = UserImage(id = xessence.clientImageId, uri = uriLocal, uriLocal = uriLocal)
 
             Single.fromCallable { local.addUserImage(localImage) }
                 .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
@@ -229,7 +231,8 @@ class UserImageRepository @Inject constructor(
         local.userImage(id = essence.clientImageId)
             .flatMap { createImageRemoteImpl(localImage = it, essence = essence, imageFilePath = imageFilePath, retryCount = retryCount) }
 
-    private fun createImageRemoteImpl(localImage: UserImageDbo, essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> {
+    private fun createImageRemoteImpl(localImage: UserImage, essence: ImageUploadUrlEssence,
+                                      imageFilePath: String, retryCount: Int): Single<Image> {
         fun addPendingCreateImageRequest(imageFilePath: String) {
             Completable.fromCallable { imageRequestLocal.addRequest(ImageRequestDbo.from(essence, imageFilePath)) }
                        .subscribeOn(Schedulers.io())

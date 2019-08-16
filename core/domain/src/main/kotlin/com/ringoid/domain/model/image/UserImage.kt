@@ -11,7 +11,8 @@ data class UserImage(
     val isBlocked: Boolean = false,
     val sortPosition: Int = DomainUtil.BAD_POSITION,
     val uriLocal: String? = null,
-    override val id: String, override val uri: String? = null,
+    override val id: String,
+    override val uri: String? = null,
     override val thumbnailUri: String? = null,
     override val isRealModel: Boolean = true) : IImage {
 
@@ -23,6 +24,13 @@ data class UserImage(
     override fun copyWithId(id: String): IImage =
         UserImage(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked,
                   id = id, uri = uri, thumbnailUri = thumbnailUri)
+
+    fun copyWith(originId: String = this.originId, numberOfLikes: Int = this.numberOfLikes, isBlocked: Boolean = this.isBlocked,
+                 sortPosition: Int = this.sortPosition, uriLocal: String? = this.uriLocal, uri: String? = this.uri,
+                 thumbnailUri: String? = this.thumbnailUri)
+            : UserImage = UserImage(originId = originId, numberOfLikes = numberOfLikes, isBlocked = isBlocked,
+                                    sortPosition = sortPosition, uriLocal = uriLocal,
+                                    id = id, uri = uri, thumbnailUri = thumbnailUri)
 
     override fun describeContents(): Int = 0
 
