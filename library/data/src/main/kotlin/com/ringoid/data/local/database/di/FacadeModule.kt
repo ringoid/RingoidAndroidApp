@@ -1,10 +1,13 @@
 package com.ringoid.data.local.database.di
 
 import com.ringoid.data.local.database.dao.feed.UserFeedDao
+import com.ringoid.data.local.database.dao.image.ImageRequestDao
+import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.data.local.database.facade.feed.FeedDbFacadeImpl
 import com.ringoid.data.local.database.facade.image.ImageDbFacadeImpl
+import com.ringoid.data.local.database.facade.image.ImageRequestDbFacadeImpl
 import com.ringoid.data.local.database.facade.messenger.MessageDbFacadeImpl
 import com.ringoid.data.local.database.facade.user.UserDbFacadeImpl
 import com.ringoid.data.local.database.facade.user.UserFeedDbFacadeImpl
@@ -12,6 +15,7 @@ import com.ringoid.data.local.database.facade.user.UserImageDbFacadeImpl
 import com.ringoid.datainterface.di.*
 import com.ringoid.datainterface.feed.IFeedDbFacade
 import com.ringoid.datainterface.image.IImageDbFacade
+import com.ringoid.datainterface.image.IImageRequestDbFacade
 import com.ringoid.datainterface.messenger.IMessageDbFacade
 import com.ringoid.datainterface.user.IUserDbFacade
 import com.ringoid.datainterface.user.IUserFeedDbFacade
@@ -47,8 +51,11 @@ class FacadeModule {
     @Provides @Singleton @PerUser
     fun provideUserDbFacade(@PerUser dao: UserDao): IUserDbFacade = UserDbFacadeImpl(dao)
 
-    @Provides @Singleton
-    fun provideUserImageDbFacade(facade: UserImageDbFacadeImpl): IUserImageDbFacade = facade
+    @Provides @Singleton @PerUser
+    fun provideUserImageDbFacade(@PerUser dao: UserImageDao): IUserImageDbFacade = UserImageDbFacadeImpl(dao)
+
+    @Provides @Singleton @PerUser
+    fun provideUserImageRequestDbFacade(@PerUser dao: ImageRequestDao): IImageRequestDbFacade = ImageRequestDbFacadeImpl(dao)
 
     @Provides @Singleton @PerUser
     fun provideUserMessageDbFacade(@PerUser dao: MessageDao): IMessageDbFacade = MessageDbFacadeImpl(dao)

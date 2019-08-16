@@ -1,6 +1,5 @@
 package com.ringoid.data.local.database.di
 
-import com.ringoid.datainterface.di.*
 import com.ringoid.data.local.database.*
 import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.dao.debug.BarrierLogDao
@@ -14,6 +13,7 @@ import com.ringoid.data.local.database.dao.image.ImageRequestDao
 import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
+import com.ringoid.datainterface.di.*
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.IBarrierLogDaoHelper
 import com.ringoid.domain.debug.IDebugLogDaoHelper
@@ -36,7 +36,7 @@ class DaoModule {
     @Provides @Singleton
     fun provideFeedImageDao(database: RingoidDatabase): ImageDao = database.imageDao()
 
-    @Provides @Singleton
+    @Provides @Singleton @PerUser
     fun provideUserImageDao(database: UserRingoidDatabase): UserImageDao = database.userImageDao()
 
     @Provides @Singleton @PerUser

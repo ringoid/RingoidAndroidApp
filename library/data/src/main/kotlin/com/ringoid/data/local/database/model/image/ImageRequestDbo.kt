@@ -4,8 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.model.Mappable
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
+import com.ringoid.domain.model.image.ImageRequest
 
 @Entity(tableName = ImageRequestDbo.TABLE_NAME)
 data class ImageRequestDbo(
@@ -15,13 +17,7 @@ data class ImageRequestDbo(
     @ColumnInfo(name = COLUMN_ORIGIN_IMAGE_ID) val originImageId: String = DomainUtil.BAD_ID,
     @ColumnInfo(name = COLUMN_EXTENSION) val extension: String = "",
     @ColumnInfo(name = COLUMN_IMAGE_FILE_PATH) val imageFilePath: String = "",
-    @ColumnInfo(name = COLUMN_TYPE) val type: String) {
-
-    fun createRequestEssence(): ImageUploadUrlEssence =
-        ImageUploadUrlEssence(accessToken = accessToken, clientImageId = clientImageId, extension = extension)
-
-    fun deleteRequestEssence(): ImageDeleteEssence =
-        ImageDeleteEssence(accessToken = accessToken, imageId = originImageId)
+    @ColumnInfo(name = COLUMN_TYPE) val type: String): Mappable<ImageRequest> {
 
     companion object {
         const val COLUMN_ID = "id"
@@ -34,14 +30,23 @@ data class ImageRequestDbo(
 
         const val TABLE_NAME = "ImageRequests"
 
-        const val TYPE_CREATE = "create"
-        const val TYPE_DELETE = "delete"
+        fun from(request: ImageRequest): ImageRequestDbo =
+            ImageRequestDbo(id = request.id, accessToken = request.accessToken,
+                            clientImageId = request.clientImageId, originImageId = request.originImageId,
+                            extension = request.extension, imageFilePath = request.imageFilePath,
+                            type = request.type)
 
         fun from(essence: ImageUploadUrlEssence, imageFilePath: String): ImageRequestDbo =
             ImageRequestDbo(accessToken = essence.accessToken, clientImageId = essence.clientImageId,
-                extension = essence.extension, imageFilePath = imageFilePath, type = TYPE_CREATE)
+                            extension = essence.extension, imageFilePath = imageFilePath,
+                            type = ImageRequest.TYPE_CREATE)
 
         fun from(essence: ImageDeleteEssence): ImageRequestDbo =
-            ImageRequestDbo(accessToken = essence.accessToken, originImageId = essence.imageId, type = TYPE_DELETE)
+            ImageRequestDbo(accessToken = essence.accessToken, originImageId = essence.imageId, type = ImageRequest.TYPE_DELETE)
     }
+
+    override fun map(): ImageRequest =
+        ImageRequest(id = id, accessToken = accessToken, clientImageId = clientImageId,
+                     originImageId = originImageId, extension = extension,
+                     imageFilePath = imageFilePath, type = type)
 }

@@ -7,7 +7,9 @@ import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.mapList
 import io.reactivex.Single
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserFeedDbFacadeImpl @Inject constructor(private val dao: UserFeedDao) : IUserFeedDbFacade {
 
     override fun addProfileId(profileId: String) {

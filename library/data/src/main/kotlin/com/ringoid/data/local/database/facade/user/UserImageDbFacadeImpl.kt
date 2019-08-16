@@ -7,7 +7,9 @@ import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.model.mapList
 import io.reactivex.Single
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserImageDbFacadeImpl @Inject constructor(private val dao: UserImageDao) : IUserImageDbFacade {
 
     override fun addUserImage(image: UserImage) {

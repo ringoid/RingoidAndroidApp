@@ -28,7 +28,8 @@ fun Uri.paths(): List<String> = toString().removePrefix("$scheme://$host/").spli
 fun priorVersion(version: Int): Boolean = Build.VERSION.SDK_INT < version
 fun targetVersion(version: Int): Boolean = Build.VERSION.SDK_INT >= version
 
-fun randomLong(): Long = UUID.randomUUID().hashCode().toLong()
+fun randomInt(): Int = UUID.randomUUID().hashCode()
+fun randomLong(): Long = randomInt().toLong()
 
 fun randomString(): String = UUID.randomUUID().toString()
 fun randomString(length: Int): String = randomString().substring(0 until length)

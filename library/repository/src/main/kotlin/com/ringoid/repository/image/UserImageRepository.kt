@@ -1,7 +1,5 @@
 package com.ringoid.repository.image
 
-import com.ringoid.data.local.database.dao.image.ImageRequestDao
-import com.ringoid.data.local.database.model.image.ImageRequestDbo
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
@@ -9,6 +7,7 @@ import com.ringoid.data.remote.RingoidCloud
 import com.ringoid.data.remote.model.image.UserImageEntity
 import com.ringoid.data.repository.handleError
 import com.ringoid.datainterface.di.PerUser
+import com.ringoid.datainterface.image.IImageRequestDbFacade
 import com.ringoid.datainterface.user.IUserImageDbFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -19,6 +18,7 @@ import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.*
 import com.ringoid.domain.model.image.Image
+import com.ringoid.domain.model.image.ImageRequest
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.repository.BaseRepository
@@ -37,8 +37,8 @@ import javax.inject.Singleton
 
 @Singleton
 class UserImageRepository @Inject constructor(
-    private val local: IUserImageDbFacade,
-    @PerUser private val imageRequestLocal: ImageRequestDao,
+    @PerUser private val local: IUserImageDbFacade,
+    @PerUser private val imageRequestLocal: IImageRequestDbFacade,
     private val userInMemoryCache: UserInMemoryCache,
     cloud: RingoidCloud, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
@@ -99,12 +99,12 @@ class UserImageRepository @Inject constructor(
                             Observable.fromIterable(it)
                                 .map { request ->
                                     when (request.type) {
-                                        ImageRequestDbo.TYPE_CREATE -> {
+                                        ImageRequest.TYPE_CREATE -> {
                                             DebugLogUtil.i("Execute 'create image' request again, as it's failed before")
                                             createImageRemote(request.createRequestEssence(), request.imageFilePath, retryCount = 0)
                                                 .ignoreElement()
                                         }
-                                        ImageRequestDbo.TYPE_DELETE -> {
+                                        ImageRequest.TYPE_DELETE -> {
                                             DebugLogUtil.i("Execute 'delete image' request again, as it's failed before")
                                             deleteUserImageRemote(request.deleteRequestEssence(), retryCount = 0)
                                         }
@@ -155,7 +155,7 @@ class UserImageRepository @Inject constructor(
 
     private fun deleteUserImageRemoteImpl(localImage: UserImage, essence: ImageDeleteEssence, retryCount: Int): Completable {
         fun addPendingDeleteImageRequest() {
-            Completable.fromCallable { imageRequestLocal.addRequest(ImageRequestDbo.from(essence)) }
+            Completable.fromCallable { imageRequestLocal.addRequest(ImageRequest.from(essence)) }
                        .subscribeOn(Schedulers.io())
         }
 
@@ -234,7 +234,7 @@ class UserImageRepository @Inject constructor(
     private fun createImageRemoteImpl(localImage: UserImage, essence: ImageUploadUrlEssence,
                                       imageFilePath: String, retryCount: Int): Single<Image> {
         fun addPendingCreateImageRequest(imageFilePath: String) {
-            Completable.fromCallable { imageRequestLocal.addRequest(ImageRequestDbo.from(essence, imageFilePath)) }
+            Completable.fromCallable { imageRequestLocal.addRequest(ImageRequest.from(essence, imageFilePath)) }
                        .subscribeOn(Schedulers.io())
         }
 

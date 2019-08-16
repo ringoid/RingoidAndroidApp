@@ -5,7 +5,9 @@ import com.ringoid.data.local.database.model.image.ImageDbo
 import com.ringoid.datainterface.image.IImageDbFacade
 import com.ringoid.domain.model.feed.FeedItem
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ImageDbFacadeImpl @Inject constructor(private val dao: ImageDao) : IImageDbFacade {
 
     override fun addImages(feedItem: FeedItem) {
