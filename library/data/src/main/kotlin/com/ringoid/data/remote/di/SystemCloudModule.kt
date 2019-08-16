@@ -1,6 +1,6 @@
 package com.ringoid.data.remote.di
 
-import com.ringoid.data.remote.SlackRestAdapter
+import com.ringoid.data.remote.api.SlackRestAdapter
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

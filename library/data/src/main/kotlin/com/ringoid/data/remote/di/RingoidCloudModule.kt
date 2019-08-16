@@ -1,6 +1,6 @@
 package com.ringoid.data.remote.di
 
-import com.ringoid.data.remote.RingoidRestAdapter
+import com.ringoid.data.remote.api.RingoidRestAdapter
 import com.ringoid.data.remote.debug.CloudDebug
 import com.ringoid.data.remote.network.ApiUrlBase
 import com.ringoid.domain.BuildConfig

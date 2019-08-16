@@ -1,12 +1,12 @@
 package com.ringoid.data.remote.di
 
-import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [RingoidCloudModule::class])
+@Component(modules = [RingoidCloudModule::class, CloudFacadeModule::class])
 interface CloudComponent {
 
-    fun cloud(): RingoidCloud
+    fun cloud(): IRingoidCloudFacade
 }

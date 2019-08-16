@@ -1,6 +1,6 @@
 package com.ringoid.data.remote.network
 
-import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import okhttp3.Interceptor
@@ -44,7 +44,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
             unexpected = ERROR_NO_CONNECTION
             DebugLogUtil.e(e)
         }
-        val body = BaseResponse(requestUrl = request.url, unexpected = unexpected)
+        val body = BaseResponse(requestUrl = request.url.toString(), unexpected = unexpected)
         return Response.Builder()
             .code(200)
             .message(errorMessage)

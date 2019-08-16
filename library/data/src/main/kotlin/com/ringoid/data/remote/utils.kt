@@ -1,6 +1,6 @@
 package com.ringoid.data.remote
 
-import com.ringoid.data.remote.model.BaseResponse
+import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.domain.debug.DebugLogUtil
@@ -50,7 +50,7 @@ inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "", s
     val elapsedTime = System.currentTimeMillis() - startTime
     SentryUtil.breadcrumb("Response [$tag]", "elapsedTime" to "$elapsedTime ms", "error code" to it.errorCode,
         "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
-        "request url" to "${it.requestUrl ?: ""}", "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
+        "request url" to (it.requestUrl ?: ""), "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
     DebugLogUtil.log("<== [$tag][$elapsedTime ms]: ${it.toLogString()} ${data.joinToString()} ${it.errorString()}".trim(),
                      level = if (it.isSuccessful()) DebugLogLevel.DEBUG2 else DebugLogLevel.ERROR)
 }

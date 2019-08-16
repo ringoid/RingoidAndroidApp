@@ -1,7 +1,7 @@
 package com.ringoid.data.action_storage
 
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
-import com.ringoid.data.remote.RingoidCloud
+import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
@@ -13,7 +13,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
-abstract class BaseActionObjectPool(protected val cloud: RingoidCloud, protected val spm: SharedPrefsManager)
+abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, protected val spm: SharedPrefsManager)
     : IActionObjectPool {
 
     companion object {
