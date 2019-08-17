@@ -236,27 +236,26 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             itemView.tabs.changeVisibility(isVisible = true)
         }
         payloads
-            .filter { it is FeedViewHolderHideOnScroll }
+            .filterIsInstance<FeedViewHolderHideOnScroll>()
             .distinct()
             .forEach {
-                (it as FeedViewHolderHideOnScroll).index
+                it.index
                     .also { zone -> hideLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> hideLabelInZone(itemView.ll_right_section, zone) }
             }
         payloads
-            .filter { it is FeedViewHolderShowOnScroll }
+            .filterIsInstance<FeedViewHolderShowOnScroll>()
             .distinct()
             .forEach {
-                (it as FeedViewHolderShowOnScroll).index
+                it.index
                     .also { zone -> showLabelInZone(itemView.ll_left_section, zone) }
                     .also { zone -> showLabelInZone(itemView.ll_right_section, zone) }
             }
 
         // grouped payloads
         payloads
-            .filter { it is FeedViewHolderHideNameOnScroll }
+            .filterIsInstance<FeedViewHolderHideNameOnScroll>()
             .distinct()
-            .map { it as FeedViewHolderHideNameOnScroll }
             .let { list ->
                 val top = list.filter { it.type == OffsetScrollStrategy.Type.TOP }
                 val bottom = list.filter { it.type == OffsetScrollStrategy.Type.BOTTOM }
@@ -267,9 +266,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                 bottom.forEach { hideNameInZone(it.index) }
             }
         payloads
-            .filter { it is FeedViewHolderShowNameOnScroll }
+            .filterIsInstance<FeedViewHolderShowNameOnScroll>()
             .distinct()
-            .map { it as FeedViewHolderShowNameOnScroll }
             .let { list ->
                 val top = list.filter { it.type == OffsetScrollStrategy.Type.TOP }
                 val bottom = list.filter { it.type == OffsetScrollStrategy.Type.BOTTOM }
