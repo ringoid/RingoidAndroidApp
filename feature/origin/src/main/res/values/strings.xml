@@ -220,7 +220,7 @@
     <string name="profile_property_hair_color_m_5">White</string>
     <string name="profile_property_hair_color_f_5">White</string>
 
-    <string name="profile_property_height">Height</string>
+    <string name="profile_property_height">Height, cm</string>
 
     <string name="profile_property_income">Income</string>
     <string name="profile_property_income_0">Low income</string>

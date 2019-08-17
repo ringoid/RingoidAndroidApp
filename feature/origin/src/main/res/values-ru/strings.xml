@@ -215,7 +215,7 @@
     <string name="profile_property_hair_color_m_5">Седой</string>
     <string name="profile_property_hair_color_f_5">Седая</string>
 
-    <string name="profile_property_height">Рост</string>
+    <string name="profile_property_height">Рост, см</string>
 
     <string name="profile_property_income">Заработок</string>
     <string name="profile_property_income_0">Низкий доход</string>

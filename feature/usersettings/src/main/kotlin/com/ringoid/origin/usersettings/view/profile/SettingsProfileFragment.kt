@@ -172,7 +172,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     initText = getText(),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_CLASS_NUMBER,
+                    inputType = InputType.TYPE_CLASS_NUMBER,
                     maxLength = 3,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
                 .also { AppWatcher.objectWatcher.watch(it) }
