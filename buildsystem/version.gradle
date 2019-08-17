@@ -15,7 +15,7 @@ buildscript {
         androidMaterialVersion = '1.1.0-alpha09'
 
         androidCardViewVersion = '1.0.0'
-        androidConstraintLayoutVersion = '2.0.0-beta2'
+        androidConstraintLayoutVersion = '1.1.3'
         androidRecyclerViewVersion = '1.0.0'
         androidViewPagerVersion = '1.0.0'
 
