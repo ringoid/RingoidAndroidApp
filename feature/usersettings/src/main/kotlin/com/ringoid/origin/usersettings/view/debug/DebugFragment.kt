@@ -46,7 +46,7 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
-            is ViewState.DONE -> { snackbar(view, "Success!") ; onIdleState() }
+            is ViewState.DONE -> { context?.toast("Success!") ; onIdleState() }
             is ViewState.LOADING -> pb_debug.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
         }

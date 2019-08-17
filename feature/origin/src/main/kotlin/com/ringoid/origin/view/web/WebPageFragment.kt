@@ -10,7 +10,7 @@ import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.getAttributeColor
-import com.ringoid.utility.snackbar
+import com.ringoid.utility.toast
 import kotlinx.android.synthetic.main.fragment_web.*
 
 class WebPageFragment : BaseFragment<WebPageViewModel>() {
@@ -72,10 +72,10 @@ class WebPageFragment : BaseFragment<WebPageViewModel>() {
                 override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
                     super.onReceivedError(view, request, error)
                     pb_web?.changeVisibility(isVisible = false)
-                    snackbar(view, R.string.error_common)
+                    view.context.toast(R.string.error_common)
                 }
             }
-            webUrl?.let { loadUrl(it) } ?: run { snackbar(view, R.string.error_common) }
+            webUrl?.let { loadUrl(it) } ?: run { view.context.toast(R.string.error_common) }
         }
     }
 }

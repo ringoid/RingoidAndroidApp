@@ -21,7 +21,7 @@ import com.ringoid.origin.navigation.noConnection
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.communicator
 import com.ringoid.utility.randomString
-import com.ringoid.utility.snackbar
+import com.ringoid.utility.toast
 import com.steelkiwi.cropiwa.OnImageLoadListener
 import com.steelkiwi.cropiwa.config.CropIwaSaveConfig
 import kotlinx.android.synthetic.main.fragment_image_preview.*
@@ -171,7 +171,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     override fun onFailure(e: Throwable) {
         isLoading = false
         pb_image_preview.changeVisibility(isVisible = false)
-        snackbar(view, OriginR_string.error_crop_image)
+        context?.toast(OriginR_string.error_crop_image)
         onClose()  // failed to load image to crop - close without retry
     }
 

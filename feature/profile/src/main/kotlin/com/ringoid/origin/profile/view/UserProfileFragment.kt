@@ -192,7 +192,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         fun onCropFailed(e: Throwable) {
             Timber.e(e, "Image crop has failed")
-            view?.let { snackbar(it, OriginR_string.error_crop_image) }
+            context?.toast(OriginR_string.error_crop_image)
             doOnCropErrorAfterLogin()
         }
 
