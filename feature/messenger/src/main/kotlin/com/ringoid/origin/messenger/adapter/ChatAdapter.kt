@@ -45,13 +45,13 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 
-    override fun getItemId(position: Int): Long {
-        val viewType = getItemViewType(position)
-        return when (viewType) {
-            VIEW_TYPE_NORMAL, VIEW_TYPE_NORMAL_MY -> getModel(position).getModelId()
-            else -> viewType.toLong()
+    override fun getItemId(position: Int): Long =
+        getItemViewType(position).let { viewType ->
+            when (viewType) {
+                VIEW_TYPE_NORMAL, VIEW_TYPE_NORMAL_MY -> getModel(position).getModelId()
+                else -> viewType.toLong()
+            }
         }
-    }
 
     override fun getItemViewType(position: Int): Int =
         super.getItemViewType(position).let { viewType ->
@@ -62,7 +62,7 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
                 }
                 else -> viewType
             }
-    }
+        }
 
     // ------------------------------------------
     override fun getOnInsertedCb(): ((position: Int, count: Int) -> Unit)? =
