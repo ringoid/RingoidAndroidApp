@@ -53,15 +53,15 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        val viewType = super.getItemViewType(position)
-        return when (viewType) {
-            VIEW_TYPE_NORMAL -> {
-                if (getModel(position).peerId == DomainUtil.CURRENT_USER_ID) VIEW_TYPE_NORMAL_MY
-                else viewType
+    override fun getItemViewType(position: Int): Int =
+        super.getItemViewType(position).let { viewType ->
+            when (viewType) {
+                VIEW_TYPE_NORMAL -> {
+                    if (getModel(position).peerId == DomainUtil.CURRENT_USER_ID) VIEW_TYPE_NORMAL_MY
+                    else viewType
+                }
+                else -> viewType
             }
-            else -> viewType
-        }
     }
 
     // ------------------------------------------
