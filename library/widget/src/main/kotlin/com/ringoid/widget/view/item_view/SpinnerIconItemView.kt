@@ -69,7 +69,7 @@ class SpinnerIconItemView : IconItemView {
         }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 (spinner.adapter as ItemAdapter<T>).getItemById(id)
                     ?.let { it as? T }
                     ?.also { selectedItemId = it.id }
