@@ -169,16 +169,16 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     }
 
     // ------------------------------------------
-    override fun getItemId(position: Int): Long {
-        val viewType = getItemViewType(position)
-        return when (viewType) {
-            VIEW_TYPE_NORMAL -> getModel(position).getModelId()
-            /**
-             * Any of: VIEW_TYPE_HEADER, VIEW_TYPE_FOOTER, VIEW_TYPE_LOADING, VIEW_TYPE_ERROR
-             */
-            else -> viewType.toLong()
+    override fun getItemId(position: Int): Long =
+        getItemViewType(position).let { viewType ->
+            when (viewType) {
+                VIEW_TYPE_NORMAL -> getModel(position).getModelId()
+                /**
+                 * Any of: VIEW_TYPE_HEADER, VIEW_TYPE_FOOTER, VIEW_TYPE_LOADING, VIEW_TYPE_ERROR
+                 */
+                else -> viewType.toLong()
+            }
         }
-    }
 
     protected open fun getItem(position: Int): T =
         when (getItemViewType(position)) {
