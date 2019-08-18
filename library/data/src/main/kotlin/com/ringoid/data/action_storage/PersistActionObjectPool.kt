@@ -36,6 +36,25 @@ class PersistActionObjectPool @Inject constructor(
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
     override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {
+        putSource(aobj)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete { onComplete?.invoke() }
+            .autoDisposable(userScopeProvider)
+            .subscribe({ DebugLogUtil.v("Put single aobj completed") }, Timber::e)
+    }
+
+    @Suppress("CheckResult")
+    override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
+        putSource(aobjs)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete { onComplete?.invoke() }
+            .autoDisposable(userScopeProvider)
+            .subscribe({ DebugLogUtil.v("Put aobjs completed") }, Timber::e)
+    }
+
+    private fun putSource(aobj: OriginActionObject): Completable =
         Completable.fromCallable {
             local.addActionObject(aobj)
             analyzeActionObject(aobj)
@@ -44,15 +63,8 @@ class PersistActionObjectPool @Inject constructor(
             Timber.v("Put action object: $aobj")
             DebugLogUtil.v("Put single action object: ${aobj.actionType}")
         }
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnComplete { onComplete?.invoke() }
-        .autoDisposable(userScopeProvider)
-        .subscribe({ DebugLogUtil.v("Put single aobj completed") }, Timber::e)
-    }
 
-    @Suppress("CheckResult")
-    override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
+    private fun putSource(aobjs: Collection<OriginActionObject>): Completable =
         Completable.fromCallable {
             local.addActionObjects(aobjs)
             aobjs.forEach { analyzeActionObject(it) }
@@ -61,12 +73,11 @@ class PersistActionObjectPool @Inject constructor(
             Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
             DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
         }
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnComplete { onComplete?.invoke() }
-        .autoDisposable(userScopeProvider)
-        .subscribe({ DebugLogUtil.v("Put aobjs completed") }, Timber::e)
-    }
+
+    // ------------------------------------------
+    override fun commitNow(aobj: OriginActionObject): Single<Long> =
+        Single.fromCallable { local.addActionObject(aobj) }
+              .flatMap { triggerSource() }
 
     @Suppress("CheckResult")
     override fun trigger() {

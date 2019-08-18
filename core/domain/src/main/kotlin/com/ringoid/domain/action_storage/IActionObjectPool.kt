@@ -10,6 +10,7 @@ interface IActionObjectPool {
     fun put(aobj: OriginActionObject, onComplete: (() -> Unit)? = null)
     fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)? = null)
 
+    fun commitNow(aobj: OriginActionObject): Single<Long>
     fun trigger()
     fun triggerSource(): Single<Long>
 

@@ -66,6 +66,11 @@ class ActionObjectPool @Inject constructor(
     }
 
     // ------------------------------------------
+    override fun commitNow(aobj: OriginActionObject): Single<Long> {
+        put(aobj)
+        return triggerSource()
+    }
+
     @Synchronized @Suppress("CheckResult")
     override fun trigger() {
         Timber.d("Trigger standalone")
