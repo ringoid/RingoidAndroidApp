@@ -129,6 +129,11 @@ abstract class FeedViewModel(
         viewActionObjectBackup.clear()
     }
 
+    override fun onLocationPermissionDeniedAction(handleCode: Int) {
+        super.onLocationPermissionDeniedAction(handleCode)
+        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+    }
+
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
         onRefresh()  // request for feed data with potentially updated location data
