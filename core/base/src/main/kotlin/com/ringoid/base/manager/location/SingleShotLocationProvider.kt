@@ -85,7 +85,7 @@ class SingleShotLocationProvider @Inject constructor(
                 getLocationCriteriaByPrecision(locationManager, precision)
                     ?.also { DebugLogUtil.v("Location: request for location for precision '$precision' and criteria: $it") }
                     ?.let { criteria -> requestLocationWithManagerAndCriteria(locationManager, criteria) }
-                    ?: run { Single.error(LocationServiceUnavailableException(getLocationProviderForPrecision(precision), status = -3)) }
+                    ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(getLocationProviderForPrecision(precision), status = -3)) }
             } ?: Single.error(NullPointerException("No location service available"))
 
     // ------------------------------------------
@@ -95,7 +95,7 @@ class SingleShotLocationProvider @Inject constructor(
                 getLocationCriteriaByProvider(provider)
                     ?.also { DebugLogUtil.v("Location: request for location with provider '$provider' and criteria: $it") }
                     ?.let { criteria -> requestLocationWithManagerAndCriteria(locationManager, criteria) }
-                    ?: run { Single.error(LocationServiceUnavailableException(provider, status = -2)) }
+                    ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(provider, status = -2)) }
             } ?: Single.error(NullPointerException("No location service available"))
 
     // --------------------------------------------------------------------------------------------
