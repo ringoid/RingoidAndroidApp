@@ -122,7 +122,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                 BigEditTextDialog.newInstance(titleResId = OriginR_string.settings_profile_item_custom_property_about,
                     btnPositiveResId = OriginR_string.button_done,
                     btnNegativeResId = OriginR_string.button_cancel,
-                    input = getText(), tag = ABOUT_PROPERTY_DIALOG_TAG)
+                    closeOnEnter = true, input = getText(), tag = ABOUT_PROPERTY_DIALOG_TAG)
                 .show(childFragmentManager, BigEditTextDialog.TAG)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
