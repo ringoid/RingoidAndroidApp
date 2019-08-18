@@ -22,7 +22,7 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
     /* Permission */
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
-    fun onLocationPermissionGranted(handleCode: Int) {
+    internal fun onLocationPermissionGranted(handleCode: Int) {
         Timber.v("onLocationPermissionGranted($handleCode)")
         onLocationPermissionGrantedAction(handleCode)
 
@@ -42,7 +42,7 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
             }
     }
 
-    fun onLocationPermissionDenied(handleCode: Int) {
+    internal fun onLocationPermissionDenied(handleCode: Int) {
         Timber.v("onLocationPermissionDenied($handleCode)")
         onLocationPermissionDeniedAction(handleCode)
     }
