@@ -8,6 +8,8 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -33,6 +35,8 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
                 val elapsed = System.currentTimeMillis() - start
                 DebugLogUtil.v("Obtain location has taken $elapsed ms")
             }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ onLocationReceived(handleCode) }) {
                 DebugLogUtil.e(it)
