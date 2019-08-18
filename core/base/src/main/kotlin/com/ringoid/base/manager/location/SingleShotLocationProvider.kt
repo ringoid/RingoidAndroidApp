@@ -176,21 +176,21 @@ class SingleShotLocationProvider @Inject constructor(
 
     private fun compareAndSaveLocationImpl(): SingleTransformer<GpsLocation, GpsLocation> =
         SingleTransformer {
-            it.doOnSuccess { location -> spm.saveLocation(location) }
-                .map { location ->
-                    val changed = LocationUtils.diffLocation(oldLocation = spm.getLocation(), newLocation = location)
-                    val aobj = if (changed) {
-                        DebugLogUtil.d("Location has changed enough, update saved location")
-                        LocationActionObject(location.latitude, location.longitude)
-                    } else {
-                        DebugLogUtil.v("Location has not changed")
-                        null
-                    }
-                    location to aobj
+            it.map { location ->
+                val changed = LocationUtils.diffLocation(oldLocation = spm.getLocation(), newLocation = location)
+                val aobj = if (changed) {
+                    DebugLogUtil.d("Location has changed enough, update saved location")
+                    LocationActionObject(location.latitude, location.longitude)
+                } else {
+                    DebugLogUtil.v("Location has not changed")
+                    null
                 }
-                .flatMap { (location, aobj) ->
-                    aobj?.let { aObj -> actionObjectPool.commitNow(aObj).map { location } }
-                        ?: Single.just(location)
-                }
+                location to aobj
+            }
+            .flatMap { (location, aobj) ->
+                aobj?.let { aObj -> actionObjectPool.commitNow(aObj).map { location } }
+                    ?: Single.just(location)
+            }
+            .doOnSuccess { location -> spm.saveLocation(location) }
         }
 }
