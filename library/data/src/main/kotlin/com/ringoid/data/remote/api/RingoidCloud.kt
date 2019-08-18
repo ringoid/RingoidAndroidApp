@@ -1,6 +1,7 @@
 package com.ringoid.data.remote.api
 
 import com.google.firebase.perf.FirebasePerformance
+import com.ringoid.data.remote.checkLastActionTime
 import com.ringoid.data.remote.debug.keepDataForDebug
 import com.ringoid.data.remote.debug.keepResultForDebug
 import com.ringoid.data.remote.logRequest
@@ -147,6 +148,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     // --------------------------------------------------------------------------------------------
     fun getChat(accessToken: String, resolution: ImageResolution, peerId: String, lastActionTime: Long = 0L) =
         restAdapter.getChat(accessToken = accessToken, resolution = resolution.resolution, peerId = peerId, lastActionTime = lastActionTime)
+            .checkLastActionTime("getChat", lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getChat", "resolution" to "$resolution", "peerId" to peerId, "lastActionTime" to "$lastActionTime")
             .keepResultForDebug(cloudDebug)
             .breadcrumb("getChat", "accessToken" to "", "resolution" to "$resolution", "peerId" to peerId,
@@ -158,6 +160,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
                     lastActionTime: Long = 0L): Single<FeedResponse> {
         val body = prepareFeedRequestBody(accessToken, resolution, limit, filter, source = DomainUtil.SOURCE_FEED_EXPLORE, lastActionTime = lastActionTime)
         return restAdapter.getDiscover(body)
+            .checkLastActionTime("getDiscover", lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getDiscover", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .keepResultForDebug(cloudDebug)
             .breadcrumb("getDiscover", "accessToken" to "", "resolution" to "$resolution",
@@ -169,6 +172,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     @Deprecated("LMM -> LC")
     fun getNewFaces(accessToken: String, resolution: ImageResolution, limit: Int?, lastActionTime: Long = 0L) =
         restAdapter.getNewFaces(accessToken = accessToken, resolution = resolution.resolution, limit = limit, lastActionTime = lastActionTime)
+            .checkLastActionTime("getNewFaces", lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getNewFaces", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .keepResultForDebug(cloudDebug)
             .breadcrumb("getNewFaces", "accessToken" to "", "resolution" to "$resolution",
@@ -179,6 +183,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
     @Deprecated("LMM -> LC")
     fun getLmm(accessToken: String, resolution: ImageResolution, source: String?, lastActionTime: Long = 0L) =
         restAdapter.getLmm(accessToken = accessToken, resolution = resolution.resolution, source = source, lastActionTime = lastActionTime)
+            .checkLastActionTime("getLmm", lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getLmm", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .keepResultForDebug(cloudDebug)
             .breadcrumb("getLmm", "accessToken" to "",
@@ -190,6 +195,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
               source: String?, lastActionTime: Long = 0L): Single<LmmResponse> {
         val body = prepareFeedRequestBody(accessToken, resolution, limit, filter, source, lastActionTime)
         return restAdapter.getLc(body)
+            .checkLastActionTime("getLc", lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getLc", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .keepResultForDebug(cloudDebug)
             .breadcrumb("getLc", "accessToken" to "",
@@ -198,6 +204,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .logResponse("LC")
     }
 
+    // ------------------------------------------
     private fun prepareFeedRequestBody(accessToken: String, resolution: ImageResolution, limit: Int?, filter: Filters?,
                                        source: String?, lastActionTime: Long): RequestBody {
         val contentList = mutableListOf<String>().apply {

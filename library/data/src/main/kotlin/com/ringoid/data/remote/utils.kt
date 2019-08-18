@@ -112,5 +112,16 @@ fun checkElapsedTimeAndWarn(startTime: Long, tag: String = DEFAULT_TAG) {
     }
 }
 
+fun Completable.checkLastActionTime(tag: String, lastActionTime: Long): Completable =
+    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+inline fun <reified T : BaseResponse> Maybe<T>.checkLastActionTime(tag: String, lastActionTime: Long): Maybe<T> =
+    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+inline fun <reified T : BaseResponse> Single<T>.checkLastActionTime(tag: String, lastActionTime: Long): Single<T> =
+    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+inline fun <reified T : BaseResponse> Flowable<T>.checkLastActionTime(tag: String, lastActionTime: Long): Flowable<T> =
+    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+inline fun <reified T : BaseResponse> Observable<T>.checkLastActionTime(tag: String, lastActionTime: Long): Observable<T> =
+    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+
 inline fun <reified T : BaseResponse> Single<T>.withTimeout(timeout: Long = BuildConfig.REQUEST_TIME_THRESHOLD): Single<T> =
     timeout(timeout, TimeUnit.MILLISECONDS)
