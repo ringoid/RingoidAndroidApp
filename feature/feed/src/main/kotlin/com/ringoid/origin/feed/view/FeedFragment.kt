@@ -77,7 +77,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             is ViewState.CLEAR -> onClearState(mode = newState.mode)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> showLoading(isVisible = false)
+                    is ASK_TO_ENABLE_LOCATION_SERVICE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
                     is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
                     is NO_IMAGES_IN_USER_PROFILE -> {
                         Dialogs.showTextDialog(activity,
