@@ -14,6 +14,7 @@
         android:contentDescription="@null"
         fresco:actualImageScaleType="centerCrop"
         fresco:fadeDuration="0"
+        fresco:failureImage="@drawable/ic_no_photo_placeholder_grey_96dp"
         fresco:retryImage="@drawable/ic_no_photo_placeholder_grey_96dp"/>
 
     <TextView
