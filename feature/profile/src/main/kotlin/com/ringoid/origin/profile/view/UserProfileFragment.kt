@@ -16,6 +16,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfilePropertyId
@@ -146,6 +147,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         imagesAdapter = UserProfileImageAdapter()
             .apply {
                 onInsertListener = { count ->
+                    DebugLogUtil.v("Inserting $count images on User Profile")
                     showEmptyStub(needShow = count <= 0)
                     if (count > 1) {  // inserted multiple items
                         // restore position at image on viewport
@@ -160,6 +162,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
                 onRemoveListener = {
                     val empty = imagesAdapter.isEmpty()
+                    DebugLogUtil.v("Removed images on User Profile, is empty: $empty")
                     showEmptyStub(needShow = empty)
                     showDotTabs(isVisible = true)
                 }
