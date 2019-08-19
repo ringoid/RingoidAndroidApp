@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -226,11 +228,10 @@ const val VIBRATE_DURATION = 200L
 
 fun Context.vibrate() {
     (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.let { vibrator ->
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, 255))
-//        } else {
-//            vibrator.vibrate(VIBRATE_DURATION)
-//        }
-        vibrator.vibrate(VIBRATE_DURATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, 255))
+        } else {
+            vibrator.vibrate(VIBRATE_DURATION)
+        }
     }
 }
