@@ -11,9 +11,8 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.*
-import com.ringoid.origin.usersettings.OriginR_string
+import com.ringoid.origin.usersettings.*
 import com.ringoid.origin.usersettings.R
-import com.ringoid.origin.usersettings.WidgetR_attrs
 import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
 import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.origin.view.dialog.Dialogs
@@ -86,6 +85,13 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
+            inflateMenu(OriginR_menu.menu_done)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    OriginR_id.menu_done -> { activity?.onBackPressed(); true }
+                    else -> false
+                }
+            }
             setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(OriginR_string.settings_profile)
         }
