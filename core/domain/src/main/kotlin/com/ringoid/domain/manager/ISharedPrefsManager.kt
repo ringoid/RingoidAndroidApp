@@ -59,9 +59,7 @@ interface ISharedPrefsManager : IFiltersSource {
     /* Location */
     // ------------------------------------------
     fun getLocation(): GpsLocation?
-
     fun saveLocation(location: GpsLocation)
-
     fun deleteLocation()
 
     /* Referral program */
