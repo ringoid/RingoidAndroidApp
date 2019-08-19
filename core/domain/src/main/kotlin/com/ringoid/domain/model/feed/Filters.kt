@@ -39,6 +39,8 @@ data class Filters internal constructor(
         fun createWithAgeRange(other: Filters, ageRange: Int = DomainUtil.FILTER_AGE_MIN_RANGE): Filters =
             createWithAgeRange(minAge = other.minAge, maxAge = other.maxAge, maxDistance = other.maxDistance, ageRange = ageRange)
     }
+
+    override fun toSentryPayload(): String = toJson()
 }
 
 val NoFilters = Filters(minAge = DomainUtil.FILTER_MIN_AGE,

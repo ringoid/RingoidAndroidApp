@@ -164,7 +164,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .keepDataForDebug(cloudDebug, "request" to "getDiscover", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .keepResultForDebug(cloudDebug)
             .breadcrumb("getDiscover", "accessToken" to "", "resolution" to "$resolution",
-                        "lastActionTime" to "$lastActionTime")
+                        filter?.toSentryData() ?: "filters" to "null", "lastActionTime" to "$lastActionTime")
             .logRequest("getDiscover", "lastActionTime" to "$lastActionTime")
             .logResponse("Discover")
     }
@@ -198,8 +198,9 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
             .checkLastActionTime("getLc", lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getLc", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")
             .keepResultForDebug(cloudDebug)
-            .breadcrumb("getLc", "accessToken" to "",
-                        "resolution" to "$resolution", "source" to "$source", "lastActionTime" to "$lastActionTime")
+            .breadcrumb("getLc", "accessToken" to "", "resolution" to "$resolution",
+                        "source" to "$source", filter?.toSentryData() ?: "filters" to "null",
+                        "lastActionTime" to "$lastActionTime")
             .logRequest("getLc", "lastActionTime" to "$lastActionTime")
             .logResponse("LC")
     }
