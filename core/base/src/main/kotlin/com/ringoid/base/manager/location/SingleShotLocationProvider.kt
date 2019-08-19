@@ -11,6 +11,7 @@ import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.model.actions.LocationActionObject
 import io.reactivex.Single
 import io.reactivex.SingleTransformer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
@@ -188,9 +189,15 @@ class SingleShotLocationProvider @Inject constructor(
                 location to aobj
             }
             .flatMap { (location, aobj) ->
-                aobj?.let { aObj -> actionObjectPool.commitNow(aObj).map { location } }
-                    ?: Single.just(location)
+                aobj?.let { aObj ->
+                    actionObjectPool
+                        .commitNow(aObj)
+                        .subscribeOn(Schedulers.io())
+                        .map { location }
+                }
+                ?: Single.just(location)
             }
             .doOnSuccess { location -> spm.saveLocation(location) }
+            .observeOn(AndroidSchedulers.mainThread())
         }
 }
