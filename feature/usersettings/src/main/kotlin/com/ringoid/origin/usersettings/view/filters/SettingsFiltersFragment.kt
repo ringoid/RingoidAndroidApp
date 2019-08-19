@@ -5,6 +5,8 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
+import com.ringoid.origin.usersettings.OriginR_id
+import com.ringoid.origin.usersettings.OriginR_menu
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
@@ -33,6 +35,13 @@ class SettingsFiltersFragment : BaseSettingsFragment<SettingsFiltersViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
+            inflateMenu(OriginR_menu.menu_done)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    OriginR_id.menu_done -> { activity?.onBackPressed(); true }
+                    else -> false
+                }
+            }
             setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(OriginR_string.settings_filters)
         }
