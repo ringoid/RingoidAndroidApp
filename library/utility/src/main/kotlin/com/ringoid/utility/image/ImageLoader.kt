@@ -8,7 +8,7 @@ import com.facebook.drawee.controller.BaseControllerListener
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
-import com.ringoid.utility.thread
+import com.ringoid.utility.delay
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -57,16 +57,12 @@ object ImageLoader {
                             imageView.let { it.post { it.controller = controller } }
                         } else {
                             imageView.tag = depth + 1
-                            thread(2000L) {
+                            delay(2000L) {
                                 Timber.v("Retry load image: [$depth / $RETRY_COUNT]")
-                                imageView.let {
-                                    it.post {  // controller must be build on UI thread
-                                        val controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef)
-                                            .setOldController(imageView.controller)
-                                            .build()
-                                        it.controller = controller
-                                    }
-                                }
+                                val controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef)
+                                    .setOldController(imageView.controller)
+                                    .build()
+                                imageView.controller = controller
                             }
                         }
                     }
