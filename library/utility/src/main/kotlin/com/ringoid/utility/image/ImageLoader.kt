@@ -59,10 +59,14 @@ object ImageLoader {
                             imageView.tag = depth + 1
                             thread(2000L) {
                                 Timber.v("Retry load image: [$depth / $RETRY_COUNT]")
-                                val controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef)
-                                        .setOldController(imageView.controller)
-                                        .build()
-                                imageView.let { it.post { it.controller = controller } }
+                                imageView.let {
+                                    it.post {  // controller must be build on UI thread
+                                        val controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef)
+                                            .setOldController(imageView.controller)
+                                            .build()
+                                        it.controller = controller
+                                    }
+                                }
                             }
                         }
                     }
