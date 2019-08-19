@@ -2,12 +2,14 @@ package com.ringoid.utility
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.VIBRATOR_SERVICE
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Vibrator
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -217,4 +219,18 @@ fun Context.toast(text: String, duration: Int = Toast.LENGTH_SHORT, gravity: Int
 
 fun Context.toast(@StringRes textResId: Int, duration: Int = Toast.LENGTH_SHORT, gravity: Int? = null) {
     toast(text = resources.getString(textResId), duration = duration, gravity = gravity)
+}
+
+// ------------------------------------------------------------------------------------------------
+const val VIBRATE_DURATION = 200L
+
+fun Context.vibrate() {
+    (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.let { vibrator ->
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, 255))
+//        } else {
+//            vibrator.vibrate(VIBRATE_DURATION)
+//        }
+        vibrator.vibrate(VIBRATE_DURATION)
+    }
 }

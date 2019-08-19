@@ -32,6 +32,7 @@ import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.utility.vibrate
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -70,7 +71,9 @@ class MessagesFeedViewModel @Inject constructor(
         filtersSource, userInMemoryCache, app) {
 
     private val incomingPushMatch = PublishSubject.create<BusEvent>()
+    private val incomingPushMatchEffect = PublishSubject.create<Long>()
     private val incomingPushMessages = PublishSubject.create<BusEvent>()
+    private val incomingPushMessagesEffect = PublishSubject.create<Long>()
     internal val pushNewMatch by lazy { MutableLiveData<Long>() }
     internal val pushNewMessage by lazy { MutableLiveData<Long>() }
 
@@ -86,6 +89,14 @@ class MessagesFeedViewModel @Inject constructor(
                 refreshOnPush.value = true
             }, Timber::e)
 
+        // show particle animation and vibrate
+        incomingPushMatchEffect
+            .doOnNext { pushNewMatch.value = 0L }  // for particle animation
+            .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ app.vibrate() }, Timber::e)
+
+        // show 'tap-to-refresh' popup on Feed screen and update chat for particular feed items
         incomingPushMessages
             .subscribeOn(Schedulers.computation())
             .map { (it as BusEvent.PushNewMessage).peerId }
@@ -109,6 +120,13 @@ class MessagesFeedViewModel @Inject constructor(
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, Timber::e)
+
+        // show particle animation and vibrate
+        incomingPushMessagesEffect
+            .doOnNext { pushNewMessage.value = 0L }  // for particle animation
+            .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ app.vibrate() }, Timber::e)
     }
 
     // ------------------------------------------
@@ -169,8 +187,8 @@ class MessagesFeedViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMatches()
-        pushNewMatch.value = 0L  // for particle animation
         incomingPushMatch.onNext(event)  // for 'tap-to-refresh' popup
+        incomingPushMatchEffect.onNext(0L)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -178,9 +196,9 @@ class MessagesFeedViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMessages()
-        if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
-            pushNewMessage.value = 0L  // for particle animation
-        }
         incomingPushMessages.onNext(event)
+        if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
+            incomingPushMessagesEffect.onNext(0L)
+        }
     }
 }

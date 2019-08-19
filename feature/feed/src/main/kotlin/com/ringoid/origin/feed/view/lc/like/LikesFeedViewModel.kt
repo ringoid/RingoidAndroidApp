@@ -27,6 +27,7 @@ import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.utility.vibrate
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -59,6 +60,7 @@ class LikesFeedViewModel @Inject constructor(
         filtersSource, userInMemoryCache, app) {
 
     private val incomingPushLike = PublishSubject.create<BusEvent>()
+    private val incomingPushLikeEffect = PublishSubject.create<Long>()
     internal val pushNewLike by lazy { MutableLiveData<Long>() }
 
     init {
@@ -72,6 +74,13 @@ class LikesFeedViewModel @Inject constructor(
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, Timber::e)
+
+        // show particle animation and vibrate
+        incomingPushLikeEffect
+            .doOnNext { pushNewLike.value = 0L }  // for particle animation
+            .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ app.vibrate() }, Timber::e)
     }
 
     // ------------------------------------------
@@ -133,7 +142,7 @@ class LikesFeedViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushLikes()
-        pushNewLike.value = 0L  // for particle animation
         incomingPushLike.onNext(event)  // for 'tap-to-refresh' popup
+        incomingPushLikeEffect.onNext(0L)
     }
 }
