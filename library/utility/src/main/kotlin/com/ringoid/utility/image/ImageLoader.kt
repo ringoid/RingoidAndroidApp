@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.ImageView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.request.ImageRequest
 
 object ImageLoader {
     /**
@@ -17,8 +18,8 @@ object ImageLoader {
         if (imageView is SimpleDraweeView) {
             thumbnailUri?.let {
                 val controller = Fresco.newDraweeControllerBuilder()
-                    .setLowResImageRequest(com.facebook.imagepipeline.request.ImageRequest.fromUri(it))
-                    .setImageRequest(com.facebook.imagepipeline.request.ImageRequest.fromUri(Uri.parse(uri)))
+                    .setLowResImageRequest(ImageRequest.fromUri(it))
+                    .setImageRequest(ImageRequest.fromUri(Uri.parse(uri)))
                     .setOldController(imageView.controller)
                     .setTapToRetryEnabled(true)
                     .build()
