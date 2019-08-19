@@ -82,7 +82,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
         fun onErrorState() {
             onIdleState()
-            showErrorStub(needShow = true)
+            showErrorStub()
         }
         fun onLoadingState() {
             pb_profile.changeVisibility(isVisible = BuildConfig.IS_STAGING)
@@ -94,7 +94,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 onIdleState()
                 when (newState.mode) {
                     ViewState.CLEAR.MODE_EMPTY_DATA -> showEmptyStub(true)
-                    ViewState.CLEAR.MODE_NEED_REFRESH -> showErrorStub(true)
+                    ViewState.CLEAR.MODE_NEED_REFRESH -> showErrorStub()
                     ViewState.CLEAR.MODE_CHANGE_FILTERS -> showEmptyStub(true)
                 }
             }
@@ -490,18 +490,18 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     // ------------------------------------------
-    private fun showBeginStub() {
+    private fun showBeginStub() {  // empty stub without labels, plain clean stub
         showEmptyStub(needShow = true, input = EmptyFragment.Companion.Input())
     }
 
-    private fun showEmptyStub(needShow: Boolean) {
+    private fun showEmptyStub(needShow: Boolean) {  // empty stub with label 'Add photo to receive likes'
         showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
         showImageControls(isVisible = !needShow)
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
-    private fun showErrorStub(needShow: Boolean) {
-        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh))
+    private fun showErrorStub() {  // empty stub with label 'Pull to refresh'
+        showEmptyStub(needShow = true, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh))
     }
 
     private fun showEmptyStub(needShow: Boolean, input: EmptyFragment.Companion.Input) {
