@@ -9,8 +9,8 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.R
+import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -66,7 +66,7 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
             savedInstanceState ?: run {
                 ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(supportFragmentManager, tag)
             }
-            ImageLoader.load(uri = payload.peerImageUri, thumbnailUri = payload.peerThumbnailUri, imageView = iv_chat_image)
+            ImageLoader.load(uri = payload.peerImageUri, thumbnailUri = payload.peerThumbnailUri, iv = iv_chat_image)
         }
     }
 }
