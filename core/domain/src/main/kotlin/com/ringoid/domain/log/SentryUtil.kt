@@ -1,6 +1,7 @@
 package com.ringoid.domain.log
 
 import android.os.Build
+import android.util.Log
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ApiException
@@ -16,11 +17,22 @@ import java.util.*
 object SentryUtil {
 
     enum class Level(val lvl: Event.Level) {
+        VERBOSE(Event.Level.DEBUG),
         DEBUG(Event.Level.DEBUG),
         INFO(Event.Level.INFO),
         WARNING(Event.Level.WARNING),
         ERROR(Event.Level.ERROR),
         FATAL(Event.Level.FATAL);
+
+        fun toLogPriority(): Int =
+            when (this) {
+                VERBOSE -> Log.VERBOSE
+                DEBUG -> Log.DEBUG
+                INFO -> Log.INFO
+                WARNING -> Log.WARN
+                ERROR -> Log.ERROR
+                FATAL -> Log.ASSERT
+            }
     }
 
     class S constructor(private val `object`: Any? = null) {
@@ -90,6 +102,7 @@ object SentryUtil {
     // --------------------------------------------------------------------------------------------
     private fun log(message: String, level: Level, `object`: Any? = null,
                     extras: List<Pair<String, String>>? = null) {
+        Timber.log(level.toLogPriority(), message)
         Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
     }
 
