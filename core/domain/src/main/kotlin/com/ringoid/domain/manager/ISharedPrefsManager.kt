@@ -56,6 +56,8 @@ interface ISharedPrefsManager : IFiltersSource {
     fun saveUserProfile(userId: String, userGender: Gender, userYearOfBirth: Int, accessToken: String)
     fun deleteUserProfile(userId: String)
 
+    fun onLogout()
+
     /* Location */
     // ------------------------------------------
     fun getLocation(): GpsLocation?
@@ -94,4 +96,7 @@ interface ISharedPrefsManager : IFiltersSource {
     fun getBigEditText(): String
     fun setBigEditText(text: String)
     fun dropBigEditText()
+
+    // ------------------------------------------
+    fun needShowFilters(): Boolean
 }

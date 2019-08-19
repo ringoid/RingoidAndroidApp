@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -94,6 +95,10 @@ class ExploreViewModel @Inject constructor(
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)
                     } else ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
                 } else ViewState.IDLE
+
+                if (spm.needShowFilters()) {
+                    oneShot.value = LiveEvent(NeedShowFilters)
+                }
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)

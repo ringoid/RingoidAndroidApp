@@ -112,6 +112,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         /* Misc */
         // --------------------------------------
         const val SP_KEY_BIG_EDIT_TEXT = "sp_key_big_edit_text"
+        const val SP_KEY_FLAG_NEED_SHOW_FILTERS = "sp_key_flag_need_show_filters"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -240,6 +241,15 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .remove(SP_KEY_AUTH_USER_YEAR_OF_BIRTH)
             .remove(SP_KEY_AUTH_ACCESS_TOKEN)
             .apply()
+    }
+
+    // ------------------------------------------
+    override fun onLogout() {
+        deleteLocation()  // forget saved location on logout
+        dropBigEditText()  // forget saved input text for dialog
+        dropFilters()  // forget saved filters on logout
+        dropUserProfileProperties()  // forget profile properties for previous user
+        sharedPreferences.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, true).apply()
     }
 
     /* Filters */
@@ -451,6 +461,14 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun dropBigEditText() {
         sharedPreferences.edit().remove(SP_KEY_BIG_EDIT_TEXT).apply()
     }
+
+    // ------------------------------------------
+    override fun needShowFilters(): Boolean =
+        sharedPreferences.let {
+            val flag = it.getBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, true)
+            it.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, false).apply()
+            flag
+        }
 }
 
 // --------------------------------------------------------------------------------------------
