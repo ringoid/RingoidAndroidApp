@@ -74,7 +74,7 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
 
         btn_cancel.clicks().compose(clickDebounce()).subscribe { cancel() }
         btn_done.clicks().compose(clickDebounce()).subscribe {
-            communicator(IBigEditTextDialogDone::class.java)?.onDone(text = et_dialog_entry.text.trim().toString(), tag = dialogTag)
+            communicator(IBigEditTextDialogDone::class.java)?.onDone(text = getText(), tag = dialogTag)
             dismiss()
         }
 
@@ -136,6 +136,10 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
 
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
-        communicator(IBigEditTextDialogDone::class.java)?.onCancel(text = et_dialog_entry.text.trim().toString(), tag = dialogTag)
+        communicator(IBigEditTextDialogDone::class.java)?.onCancel(text = getText(), tag = dialogTag)
     }
+
+    // --------------------------------------------------------------------------------------------
+    private fun getText(): String =
+        et_dialog_entry.text.trim().replace("\\s+".toRegex(), " ")
 }
