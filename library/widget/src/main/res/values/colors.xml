@@ -21,6 +21,7 @@
     <color name="brown">#282828</color>
     <color name="brown_half">#aa282828</color>
     <color name="brown_70">#b3282828</color>
+    <color name="debug">#4eFF0339</color>
     <color name="facebook">#4267b2</color>
     <color name="female_pink">#ff62ab</color>
     <color name="grass">#64aa0a</color>
@@ -46,6 +47,8 @@
     <color name="raspberry_saturated">#E91E63</color>
     <color name="red_love">#FF0339</color>
     <color name="semitransparent">#7f000000</color>
+    <color name="semitransparent_75">#bf000000</color>
+    <color name="semitransparent_mid">#4e000000</color>
     <color name="semitransparent_soft">#1d000000</color>
     <color name="semitransparent_tab">#92000000</color>
     <color name="sky">#27a4dd</color>
