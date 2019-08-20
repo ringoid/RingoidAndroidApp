@@ -135,11 +135,21 @@ class UserImageRepository @Inject constructor(
     override fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized): Completable =
         deleteUserImage(essence, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
 
+    /**
+     * Perform deleting image locally and then fails to delete image on remote.
+     */
     @DebugOnly
     override fun deleteUserImageFail(essence: ImageDeleteEssenceUnauthorized): Completable =
         spm.accessCompletable {
             val xessence = ImageDeleteEssence.from(essence, it.accessToken)
-            Completable.error(SimulatedException())
+            local.userImage(id = essence.imageId)
+                .flatMapCompletable {
+                    Single
+                        .fromCallable { local.deleteUserImage(id = essence.imageId) }
+                        .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
+                        .flatMap { countUserImages() }  // actualize user images count
+                        .flatMapCompletable { Completable.error(SimulatedException()) }
+                }
                 .doOnError {
                     Completable.fromCallable { imageRequestLocal.addRequest(ImageRequest.from(xessence)) }
                                .subscribeOn(Schedulers.io())
@@ -151,13 +161,14 @@ class UserImageRepository @Inject constructor(
         spm.accessCompletable { deleteUserImageAsync(ImageDeleteEssence.from(essence, it.accessToken), retryCount) }
 
     /**
-     * Perform deleting image locally and then remotely. If remote delete has failed, record that
-     * as pending request to repeat later, on next [getUserImages] call.
+     * Perform deleting image locally and then remotely. If remote delete has failed,
+     * record that as pending request to repeat later, on next [getUserImages] call.
      */
     private fun deleteUserImageAsync(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)
             .flatMapCompletable { localImage ->
-                Single.fromCallable { local.deleteUserImage(id = essence.imageId) }
+                Single
+                    .fromCallable { local.deleteUserImage(id = essence.imageId) }
                     .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
                     .flatMap { countUserImages() }  // actualize user images count
                     .flatMapCompletable { deleteUserImageRemoteImpl(localImage, essence, retryCount) }

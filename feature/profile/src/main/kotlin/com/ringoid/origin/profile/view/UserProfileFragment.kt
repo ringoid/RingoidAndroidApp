@@ -82,10 +82,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             pb_profile.changeVisibility(isVisible = false)
             swipe_refresh_layout.isRefreshing = false
         }
-        fun onErrorState() {
-            onIdleState()
-            showErrorStub()
-        }
         fun onLoadingState() {
             pb_profile.changeVisibility(isVisible = BuildConfig.IS_STAGING)
         }
