@@ -15,7 +15,7 @@ fun File.uri(): Uri = Uri.parse(toURI().toString())
 fun File.uriString(): String = uri().toString()
 
 fun String.readFromUrl(): Observable<String> =
-    Observable.create<String> { emitter ->
+    Observable.create { emitter ->
         try {
             val url = URL(this)
             BufferedReader(InputStreamReader(url.openStream()))
