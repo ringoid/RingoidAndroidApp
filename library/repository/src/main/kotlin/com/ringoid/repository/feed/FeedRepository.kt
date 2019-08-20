@@ -88,6 +88,12 @@ open class FeedRepository @Inject constructor(
         Single.fromCallable { newLikesProfilesCache.deleteProfileIds() }
               .flatMapCompletable { Completable.fromCallable { newMatchesProfilesCache.deleteProfileIds() } }
 
+    override fun clearCachedLmmTotalCounts(): Completable =
+        Completable.fromCallable {
+            feedSharedPrefs.dropTotalNotFilteredLikes()
+            feedSharedPrefs.dropTotalNotFilteredMessages()
+        }
+
     // ------------------------------------------
     override fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable =
         Completable.fromCallable { local.markFeedItemAsSeen(feedItemId, isNotSeen) }
@@ -195,9 +201,6 @@ open class FeedRepository @Inject constructor(
                 .cacheMessagesFromLmm()
                 .doOnSuccess { lmm -> lmmLoadFinish.onNext(lmm.totalCount()) }
         }
-
-    override fun getLmmTotalCount(): Single<Int> = local.countFeedItems()
-    override fun getLmmTotalCount(source: String): Single<Int> = local.countFeedItems(source)
 
     override fun getLmmProfileIds(): Single<List<String>> = local.feedItemIds()
 

@@ -8,10 +8,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedBlockedProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedLmmProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedLmmUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.ClearCachedImageRequestsUseCase
 import com.ringoid.domain.interactor.image.ClearCachedUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesUseCase
@@ -39,6 +36,7 @@ class LoginViewModel @Inject constructor(
     private val clearCachedBlockedProfileIdsUseCase: ClearCachedBlockedProfileIdsUseCase,
     private val clearCachedLmmUseCase: ClearCachedLmmUseCase,
     private val clearCachedLmmProfileIdsUseCase: ClearCachedLmmProfileIdsUseCase,
+    private val clearCachedLmmTotalCountsUseCase: ClearCachedLmmTotalCountsUseCase,
     private val clearCachedUserImagesUseCase: ClearCachedUserImagesUseCase,
     private val clearCachedImageRequestsUseCase: ClearCachedImageRequestsUseCase,
     private val clearMessagesUseCase: ClearMessagesUseCase,
@@ -122,6 +120,7 @@ class LoginViewModel @Inject constructor(
             .andThen(clearCachedBlockedProfileIdsUseCase.source())
             .andThen(clearCachedLmmUseCase.source())
             .andThen(clearCachedLmmProfileIdsUseCase.source())
+            .andThen(clearCachedLmmTotalCountsUseCase.source())
             .andThen(clearCachedUserImagesUseCase.source())
             .andThen(clearCachedImageRequestsUseCase.source())
             .andThen(clearMessagesUseCase.source())

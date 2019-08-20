@@ -31,4 +31,12 @@ class FeedSharedPrefs @Inject constructor(context: Context) {
     internal fun setTotalNotFilteredMessages(count: Int) {
         sharedPreferences.edit().putInt(SP_KET_TOTAL_NOT_FILTERED_MESSAGES_COUNT, count).apply()
     }
+
+    internal fun dropTotalNotFilteredLikes() {
+        sharedPreferences.edit().remove(SP_KEY_TOTAL_NOT_FILTERED_LIKES_COUNT).apply()
+    }
+
+    internal fun dropTotalNotFilteredMessages() {
+        sharedPreferences.edit().remove(SP_KET_TOTAL_NOT_FILTERED_MESSAGES_COUNT).apply()
+    }
 }

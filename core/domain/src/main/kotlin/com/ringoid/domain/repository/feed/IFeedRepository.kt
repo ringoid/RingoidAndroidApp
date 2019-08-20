@@ -26,6 +26,7 @@ interface IFeedRepository {
 
     fun clearCachedLmm(): Completable
     fun clearCachedLmmProfileIds(): Completable
+    fun clearCachedLmmTotalCounts(): Completable
 
     fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable
 
@@ -55,13 +56,6 @@ interface IFeedRepository {
 
     fun getLc(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm>
     fun getLcCounters(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm>
-
-    /**
-     * The following methods operate with cached Lmm, which could contain already blocked profiles.
-     * Blocked profiles could be filtered out from cached Lmm only on next cache update.
-     */
-    fun getLmmTotalCount(): Single<Int>
-    fun getLmmTotalCount(source: String): Single<Int>
 
     fun getLmmProfileIds(): Single<List<String>>
 }
