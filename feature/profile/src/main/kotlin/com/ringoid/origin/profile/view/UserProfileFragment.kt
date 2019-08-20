@@ -592,6 +592,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             val margin8 = (AppRes.STD_MARGIN_8 * density / 4.5f).toInt()
             val margin16 = (AppRes.STD_MARGIN_16 * density / 4.5f).toInt()
             ibtn_add_image.setPadding(margin16, margin8, margin16, margin8)
+            ibtn_add_image_debug.setPadding(margin16, margin8, margin16, margin8)
             ibtn_profile_edit.setPadding(margin16, margin8, margin16, margin8)
             ibtn_settings.setPadding(margin16, margin8, margin16, margin8)
         }
