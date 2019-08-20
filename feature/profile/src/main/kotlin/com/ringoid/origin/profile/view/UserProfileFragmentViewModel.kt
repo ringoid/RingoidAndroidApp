@@ -8,7 +8,9 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
+import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.*
 import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
@@ -36,7 +38,9 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
     private val getUserImagesUseCase: GetUserImagesUseCase,
-    private val getUserImagesAsyncUseCase: GetUserImagesAsyncUseCase, app: Application) : BasePermissionViewModel(app) {
+    private val getUserImagesAsyncUseCase: GetUserImagesAsyncUseCase,
+    @DebugOnly private var failedDeleteUserImageUseCase: FailedDeleteUserImageUseCase, app: Application)
+    : BasePermissionViewModel(app) {
 
     val imageBlocked by lazy { MutableLiveData<String>() }
     val imageCreated by lazy { MutableLiveData<UserImage>() }
@@ -101,7 +105,16 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     fun deleteImage(id: String) {
-        deleteUserImageUseCase.source(params = Params().put(ImageDeleteEssenceUnauthorized(imageId = id)))
+        deleteImageImpl(id = id, useCase = deleteUserImageUseCase)
+    }
+
+    @DebugOnly
+    fun deleteImageDebug(id: String) {
+        deleteImageImpl(id = id, useCase = failedDeleteUserImageUseCase)
+    }
+
+    private fun deleteImageImpl(id: String, useCase: CompletableUseCase) {
+        useCase.source(params = Params().put(ImageDeleteEssenceUnauthorized(imageId = id)))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnComplete { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }

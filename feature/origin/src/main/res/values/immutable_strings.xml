@@ -26,6 +26,9 @@
     <string name="main_bottom_bar_menu_lmm" translatable="false">Likes</string>
     <string name="main_bottom_bar_menu_profile" translatable="false">Profile</string>
 
+    <!-- Profile screen -->
+    <string name="debug_profile_button_delete_image" translatable="false">Delete photo (debug)</string>
+
     <!-- Settings Filters screen -->
     <string name="common_age_range" translatable="false">%1$d&#8201;&#45;&#8201;%2$d</string>
 

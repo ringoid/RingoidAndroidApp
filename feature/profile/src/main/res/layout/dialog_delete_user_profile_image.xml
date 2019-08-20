@@ -9,6 +9,15 @@
     <View style="@style/Underscore"/>
 
     <Button
+        android:id="@+id/btn_delete_image_debug"
+        android:layout_width="match_parent"
+        android:background="@drawable/flat_button_debug_bg"
+        android:text="@string/debug_profile_button_delete_image"
+        android:textColor="@color/flat_button_text_color_primary"
+        android:visibility="gone"
+        style="@style/FlatButton.Tall"/>
+
+    <Button
         android:id="@+id/btn_delete_image"
         android:layout_width="match_parent"
         android:text="@string/profile_button_delete_image"

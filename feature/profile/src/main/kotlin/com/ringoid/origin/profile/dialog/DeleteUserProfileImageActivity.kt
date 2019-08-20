@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ringoid.base.deeplink.AppNav
+import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.origin.view.base.SimpleBaseDialogActivity
 
 @AppNav("delete_image")
@@ -19,6 +20,12 @@ class DeleteUserProfileImageActivity : SimpleBaseDialogActivity(), IDeleteUserPr
 
     override fun onImageDelete() {
         setResultExposed(Activity.RESULT_OK, Intent().putExtras(intent.extras))
+    }
+
+    @DebugOnly
+    override fun onImageDeleteDebugAndClose() {
+        setResultExposed(Activity.RESULT_OK, Intent().putExtra("debug", true).putExtras(intent.extras))
+        finish()
     }
 
     /* Lifecycle */

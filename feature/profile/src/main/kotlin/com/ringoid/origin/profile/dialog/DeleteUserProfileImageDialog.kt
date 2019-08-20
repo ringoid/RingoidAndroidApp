@@ -7,9 +7,11 @@ import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
+import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.dialog_delete_user_profile_image.*
@@ -44,6 +46,16 @@ class DeleteUserProfileImageDialog : SimpleBaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_delete_image.clicks().compose(clickDebounce()).subscribe { onImageDelete() }
+
+        if (BuildConfig.DEBUG) {
+            with (btn_delete_image_debug) {
+                changeVisibility(isVisible = true)
+                clicks().compose(clickDebounce()).subscribe {
+                    communicator(IDeleteUserProfileImageActivity::class.java)?.onImageDeleteDebugAndClose()
+                    close()
+                }
+            }
+        }
     }
 
     override fun onCancel(dialog: DialogInterface) {

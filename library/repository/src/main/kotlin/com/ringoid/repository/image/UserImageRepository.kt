@@ -12,6 +12,8 @@ import com.ringoid.datainterface.remote.model.image.UserImageEntity
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.exception.SimulatedException
 import com.ringoid.domain.exception.isFatalApiError
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
@@ -132,6 +134,18 @@ class UserImageRepository @Inject constructor(
     // ------------------------------------------------------------------------
     override fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized): Completable =
         deleteUserImage(essence, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
+
+    @DebugOnly
+    override fun deleteUserImageFail(essence: ImageDeleteEssenceUnauthorized): Completable =
+        spm.accessCompletable {
+            val xessence = ImageDeleteEssence.from(essence, it.accessToken)
+            Completable.error(SimulatedException())
+                .doOnError {
+                    Completable.fromCallable { imageRequestLocal.addRequest(ImageRequest.from(xessence)) }
+                               .subscribeOn(Schedulers.io())
+                               .subscribe({}, Timber::e)
+                }
+        }
 
     private fun deleteUserImage(essence: ImageDeleteEssenceUnauthorized, retryCount: Int): Completable =
         spm.accessCompletable { deleteUserImageAsync(ImageDeleteEssence.from(essence, it.accessToken), retryCount) }

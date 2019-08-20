@@ -187,7 +187,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                         Timber.e(e) ; throw e
                     }
 
-                    vm.deleteImage(id = data.getStringExtra("imageId"))
+                    if (data.hasExtra("debug")) {  // DebugOnly
+                        vm.deleteImageDebug(id = data.getStringExtra("imageId"))
+                    } else {
+                        vm.deleteImage(id = data.getStringExtra("imageId"))
+                    }
                 }
             }
         }

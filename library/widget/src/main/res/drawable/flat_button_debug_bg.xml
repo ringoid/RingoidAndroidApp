@@ -4,7 +4,7 @@
     <item>
         <selector>
             <item android:drawable="@android:color/transparent" android:state_enabled="false"/>
-            <item android:drawable="@android:color/white"/>
+            <item android:drawable="@color/debug"/>
         </selector>
     </item>
 </ripple>
