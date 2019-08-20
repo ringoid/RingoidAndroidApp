@@ -23,6 +23,7 @@ import com.ringoid.domain.model.essence.image.*
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.model.image.ImageRequest
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.repository.BaseRepository
 import com.ringoid.repository.UserInMemoryCache
@@ -138,7 +139,7 @@ class UserImageRepository @Inject constructor(
         deleteUserImage(essence, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
 
     /**
-     * Perform deleting image locally and then fails to delete image on remote.
+     * Performs deleting image locally and then fails to delete image on remote.
      */
     @DebugOnly
     override fun deleteUserImageFail(essence: ImageDeleteEssenceUnauthorized): Completable =
@@ -247,30 +248,56 @@ class UserImageRepository @Inject constructor(
         Completable.fromCallable { imageRequestLocal.deleteAllRequests() }
 
     // ------------------------------------------------------------------------
+    private fun prepareImageUploadUrlEssence(essence: IImageUploadUrlEssence, accessToken: AccessToken): ImageUploadUrlEssence =
+        when (essence) {
+            is ImageUploadUrlEssence -> essence  // for ImageUploadUrlEssence with access token supplied
+            is ImageUploadUrlEssenceUnauthorized -> ImageUploadUrlEssence.from(essence, accessToken.accessToken)
+            else -> throw IllegalArgumentException("Unsupported implementation of IImageUploadUrlEssence for createImage()")
+        }
+
     override fun createImage(essence: IImageUploadUrlEssence, imageFilePath: String): Single<Image> =
         createImage(essence, imageFilePath, retryCount = BuildConfig.DEFAULT_RETRY_COUNT)
 
+    /**
+     * Performs crating image locally and then fails to create image on remote.
+     */
+    @DebugOnly
+    override fun createImageFail(essence: IImageUploadUrlEssence, imageFilePath: String): Completable =
+        spm.accessCompletable { accessToken ->
+            createImageLocal(essence, imageFilePath)
+                .flatMapCompletable { Completable.error(SimulatedException()) }
+                .doOnError {
+                    val xessence = prepareImageUploadUrlEssence(essence, accessToken)
+                    Completable.fromCallable { imageRequestLocal.addRequest(ImageRequest.from(xessence, imageFilePath)) }
+                               .subscribeOn(Schedulers.io())
+                               .subscribe({}, Timber::e)
+                }
+        }
+
     private fun createImage(essence: IImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> =
-        spm.accessSingle { accessToken ->
-            val xessence = when (essence) {
-                is ImageUploadUrlEssence -> essence  // for ImageUploadUrlEssence with access token supplied
-                is ImageUploadUrlEssenceUnauthorized -> ImageUploadUrlEssence.from(essence, accessToken.accessToken)
-                else -> throw IllegalArgumentException("Unsupported implementation of IImageUploadUrlEssence for createImage()")
+        createImageLocal(essence, imageFilePath)
+            .flatMap { (essence, localImage) ->
+                createImageRemoteImpl(localImage = localImage, essence = essence,
+                                      imageFilePath = imageFilePath, retryCount = retryCount)
             }
 
+    private fun createImageLocal(essence: IImageUploadUrlEssence, imageFilePath: String): Single<Pair<ImageUploadUrlEssence, UserImage>> =
+        spm.accessSingle { accessToken ->
             val imageFile = File(imageFilePath)
             val uriLocal = imageFile.uriString()
+            val xessence = prepareImageUploadUrlEssence(essence, accessToken)
             val localImage = UserImage(id = xessence.clientImageId, uri = uriLocal, uriLocal = uriLocal)
 
             Single.fromCallable { local.addUserImage(localImage) }
-                .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
-                .flatMap { countUserImages() }  // actualize user images count
-                .flatMap { createImageRemoteImpl(localImage = localImage, essence = xessence, imageFilePath = imageFilePath, retryCount = retryCount) }
+                  .doOnSuccess { imageCreated.onNext(xessence.clientImageId) }  // notify database changed
+                  .flatMapCompletable { countUserImages().ignoreElement() }  // actualize user images count
+                  .toSingleDefault(xessence to localImage)
         }
 
     private fun createImageRemote(essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> =
         local.userImage(id = essence.clientImageId)
-             .flatMap { createImageRemoteImpl(localImage = it, essence = essence, imageFilePath = imageFilePath, retryCount = retryCount) }
+             .flatMap { createImageRemoteImpl(localImage = it, essence = essence,
+                                              imageFilePath = imageFilePath, retryCount = retryCount) }
 
     private fun createImageRemoteImpl(localImage: UserImage, essence: ImageUploadUrlEssence,
                                       imageFilePath: String, retryCount: Int): Single<Image> {
@@ -298,7 +325,7 @@ class UserImageRepository @Inject constructor(
             .flatMap {
                 val imageFile = File(imageFilePath)
                 cloud.uploadImage(url = it.imageUri!!, image = imageFile)
-                    .andThen(Single.just(it))
+                     .andThen(Single.just(it))
             }
             .handleError(count = retryCount, tag = "createImage", traceTag = "image/get_presigned")
             .doOnDispose {

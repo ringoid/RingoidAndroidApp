@@ -71,6 +71,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     private var withAbout: Boolean = false
+    @DebugOnly private var debugAddImage: Boolean = false
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
@@ -197,6 +198,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         fun onCropFailed(e: Throwable) {
             Timber.e(e, "Image crop has failed")
             context?.toast(OriginR_string.error_crop_image)
+            debugAddImage = false
             // on crop error after login
             if (!cropImageAfterLogin) {
                 return
@@ -208,7 +210,12 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
         fun onCropSuccess(croppedUri: Uri) {
             Timber.v("Image cropping has succeeded, uri: $croppedUri")
-            vm.uploadImage(uri = croppedUri)
+            if (debugAddImage) {
+                vm.uploadImageDebug(uri = croppedUri)
+            } else {
+                vm.uploadImage(uri = croppedUri)
+            }
+            debugAddImage = false
             // on crop success after login
             if (!cropImageAfterLogin) {
                 return
@@ -351,6 +358,13 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
                 onAddImage()
             }
+        with (ibtn_add_image_debug) {
+            changeVisibility(isVisible = BuildConfig.DEBUG)
+            clicks().compose(clickDebounce()).subscribe {
+                debugAddImage = true
+                onAddImage()
+            }
+        }
         ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
             if (!connectionManager.isNetworkAvailable()) {
                 noConnection(this)

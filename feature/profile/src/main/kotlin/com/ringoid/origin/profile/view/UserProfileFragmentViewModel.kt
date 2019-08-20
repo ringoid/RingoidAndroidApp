@@ -39,7 +39,8 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
     private val getUserImagesUseCase: GetUserImagesUseCase,
     private val getUserImagesAsyncUseCase: GetUserImagesAsyncUseCase,
-    @DebugOnly private var failedDeleteUserImageUseCase: FailedDeleteUserImageUseCase, app: Application)
+    @DebugOnly private val failedCreateUserImageUseCase: FailedCreateUserImageUseCase,
+    @DebugOnly private val failedDeleteUserImageUseCase: FailedDeleteUserImageUseCase, app: Application)
     : BasePermissionViewModel(app) {
 
     val imageBlocked by lazy { MutableLiveData<String>() }
@@ -138,6 +139,18 @@ class UserProfileFragmentViewModel @Inject constructor(
                 analyticsManager.fire(Analytics.IMAGE_USER_UPLOAD_PHOTO)
                 analyticsManager.fireOnce(Analytics.AHA_PHOTO_ADDED_MANUALLY)
             }, Timber::e)
+    }
+
+    @DebugOnly
+    fun uploadImageDebug(uri: Uri) {
+        val essence = ImageUploadUrlEssenceUnauthorized(extension = uri.extension())
+
+        failedCreateUserImageUseCase.source(params = Params().put(essence).put("uri", uri))
+            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnComplete { viewState.value = ViewState.IDLE }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .autoDisposable(this)
+            .subscribe({}, Timber::e)
     }
 
     // ------------------------------------------
