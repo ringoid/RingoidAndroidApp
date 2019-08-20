@@ -28,6 +28,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.cloneAsList
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.targetVersion
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 
@@ -400,7 +401,7 @@ abstract class FeedViewModel(
 
     // ------------------------------------------
     private fun logViewObjectsBufferState(tag: String) {
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (BuildConfig.DEBUG && targetVersion(Build.VERSION_CODES.O)) {
             DebugLogUtil.d("View buffer [$tag]:\n${viewActionObjectBuffer.values.joinToString("\n\t\t","\t\t", transform = { it.toActionString() })}")
         }
     }

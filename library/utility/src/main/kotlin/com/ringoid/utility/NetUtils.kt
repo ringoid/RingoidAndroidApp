@@ -4,8 +4,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 
 fun Context.isNetworkAvailable(): Boolean =
-    getSystemService(Context.CONNECTIVITY_SERVICE)
-        ?.let { it as? ConnectivityManager }
-        ?.let { it.activeNetworkInfo }
+    connectivityManager()
+        ?.activeNetworkInfo
         ?.let { it.isConnectedOrConnecting }
         ?: false
+
+fun Context.connectivityManager(): ConnectivityManager? =
+    getSystemService(Context.CONNECTIVITY_SERVICE)
+        ?.let { it as? ConnectivityManager }

@@ -228,7 +228,7 @@ const val VIBRATE_DURATION = 200L
 
 fun Context.vibrate() {
     (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.let { vibrator ->
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (targetVersion(Build.VERSION_CODES.O)) {
             vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, 255))
         } else {
             vibrator.vibrate(VIBRATE_DURATION)
