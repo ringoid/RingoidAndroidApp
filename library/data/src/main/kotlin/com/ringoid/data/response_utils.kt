@@ -2,8 +2,8 @@ package com.ringoid.data
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.data.remote.network.ResponseErrorInterceptor.Companion.ERROR_CONNECTION_INSECURE
+import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.*
@@ -101,7 +101,10 @@ private fun expBackoffFlowableImpl(
                     else -> delay * pow(1.8, attemptNumber.toDouble()).toLong()  // exponential delay
                 }
                 if (tag?.equals("commitActions") != true && delay > BuildConfig.REQUEST_TIME_THRESHOLD) {
-                    // exponential delay exceeds threshold, and this is not 'RepeatRequestAfterSecException' (because Server-side value for delay is just 800 ms, which is less than threshold).
+                    /**
+                     * Exponential delay exceeds threshold, and this is not 'RepeatRequestAfterSecException'
+                     * (because Server-side value for delay is just 800 ms, which is less than threshold).
+                     */
                     SentryUtil.capture(error, message = "Common retry after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms")
                     exception = ThresholdExceededException()  // abort retry and fallback, in common case
                 }
@@ -119,7 +122,9 @@ private fun expBackoffFlowableImpl(
                                 if (error is RepeatRequestAfterSecException) {
 //                                  SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
                                     if (attemptNumber >= 3) {
-                                        SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row", tag = tag, extras = extras)
+                                        SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row",
+                                                           level = SentryUtil.Level.WARNING, tag = tag,
+                                                           extras = extras)
                                     }
                                     trace?.incrementMetric("repeatRequestAfter", 1L)
                                     extraTraces.forEach { it.incrementMetric("repeatRequestAfter", 1L) }
