@@ -197,13 +197,29 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         fun onCropFailed(e: Throwable) {
             Timber.e(e, "Image crop has failed")
             context?.toast(OriginR_string.error_crop_image)
-            doOnCropErrorAfterLogin()
+            // on crop error after login
+            if (!cropImageAfterLogin) {
+                return
+            }
+
+            cropImageAfterLogin = false  // ask only once per session
+            showEmptyStub(needShow = true)
         }
 
         fun onCropSuccess(croppedUri: Uri) {
             Timber.v("Image cropping has succeeded, uri: $croppedUri")
             vm.uploadImage(uri = croppedUri)
-            doOnCropSuccessAfterLogin()
+            // on crop success after login
+            if (!cropImageAfterLogin) {
+                return
+            }
+
+            cropImageAfterLogin = false  // ask only once per session
+            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
+                positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
+                negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
+                positiveListener = { _, _ -> cropImageAfterLogin = true ; onAddImage() },
+                negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}") })
         }
 
         fun addLabelView(
@@ -271,6 +287,9 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
+        if (!cropImageAfterLogin) {
+            showEmptyStub(needShow = true)
+        }
 
         /**
          * Register listener on success or failure of image cropping.
@@ -291,9 +310,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
          * the app does refresh on Profile screen.
          */
         if (communicator(IBaseMainActivity::class.java)?.isNewUser() == true) {
-            if (!cropImageAfterLogin) {
-                showEmptyStub(needShow = true)
-            }
             /**
              * For [Onboarding.ADD_IMAGE] mode:
              *
@@ -421,19 +437,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
         cropImageAfterLogin = false  // ask only once per session
         showEmptyStub(needShow = true)
-    }
-
-    private fun doOnCropSuccessAfterLogin() {
-        if (!cropImageAfterLogin) {
-            return
-        }
-
-        cropImageAfterLogin = false  // ask only once per session
-        Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
-            positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
-            negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
-            positiveListener = { _, _ -> cropImageAfterLogin = true ; onAddImage() },
-            negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}") })
     }
 
     private fun doOnBlockedImage(imageId: String) {
