@@ -5,6 +5,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
+import com.ringoid.domain.misc.UserProfileCustomPropertiesRaw
 import com.ringoid.domain.misc.UserProfilePropertiesRaw
 import com.ringoid.domain.model.user.AccessToken
 
@@ -91,6 +92,10 @@ interface ISharedPrefsManager : IFiltersSource {
     fun getUserProfileProperties(): UserProfilePropertiesRaw
     fun setUserProfileProperties(propertiesRaw: UserProfilePropertiesRaw)
     fun dropUserProfileProperties()
+
+    fun getUserProfileCustomPropertiesUnsavedInput(): UserProfileCustomPropertiesRaw
+    fun setUserProfileCustomPropertiesUnsavedInput(unsavedInput: UserProfileCustomPropertiesRaw)
+    fun dropUserProfileCustomPropertiesUnsavedInput()
 
     // ------------------------------------------
     fun getBigEditText(): String

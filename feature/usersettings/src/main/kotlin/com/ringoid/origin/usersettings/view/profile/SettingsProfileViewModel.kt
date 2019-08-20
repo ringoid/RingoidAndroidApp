@@ -7,6 +7,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.interactor.user.UpdateUserProfileSettingsUseCase
+import com.ringoid.domain.misc.UserProfileCustomPropertiesRaw
 import com.ringoid.origin.model.*
 import com.ringoid.origin.usersettings.view.base.BaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -21,13 +22,20 @@ class SettingsProfileViewModel @Inject constructor(
     val profile by lazy { MutableLiveData<UserProfileProperties>() }
 
     private lateinit var properties: UserProfileProperties
+    private lateinit var unsavedProperties: UserProfileCustomPropertiesRaw
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onFreshStart() {
         super.onFreshStart()
         properties = UserProfileProperties.from(spm.getUserProfileProperties())
+        unsavedProperties = spm.getUserProfileCustomPropertiesUnsavedInput()
         profile.value = properties
+    }
+
+    override fun onStop() {
+        super.onStop()
+        spm.setUserProfileCustomPropertiesUnsavedInput(unsavedProperties)
     }
 
     /* Properties */
@@ -82,7 +90,7 @@ class SettingsProfileViewModel @Inject constructor(
 
     /* Custom Properties */
     // --------------------------------------------------------------------------------------------
-    fun onCustomPropertyChanged_about(text: String) {
+    internal fun onCustomPropertyChanged_about(text: String) {
         if (properties.about() == text) {
             return
         }
@@ -90,7 +98,13 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = "about")
     }
 
-    fun onCustomPropertyChanged_company(text: String) {
+    internal fun onCustomPropertyUnsavedInput_about(text: String) {
+        unsavedProperties.about = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_about(): String = unsavedProperties.about
+
+    internal fun onCustomPropertyChanged_company(text: String) {
         if (properties.company() == text) {
             return
         }
@@ -98,7 +112,13 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = "company")
     }
 
-    fun onCustomPropertyChanged_jobTitle(text: String) {
+    internal fun onCustomPropertyUnsavedInput_company(text: String) {
+        unsavedProperties.company = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_company(): String = unsavedProperties.company
+
+    internal fun onCustomPropertyChanged_jobTitle(text: String) {
         if (properties.jobTitle() == text) {
             return
         }
@@ -106,7 +126,13 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = "jobTitle")
     }
 
-    fun onCustomPropertyChanged_height(height: Int) {
+    internal fun onCustomPropertyUnsavedInput_jobTitle(text: String) {
+        unsavedProperties.jobTitle = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_jobTitle(): String = unsavedProperties.jobTitle
+
+    internal fun onCustomPropertyChanged_height(height: Int) {
         if (properties.height == height || height in 1..91) {
             return
         }
@@ -114,7 +140,13 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = "height")
     }
 
-    fun onCustomPropertyChanged_name(text: String) {
+    internal fun onCustomPropertyUnsavedInput_height(text: String) {
+        unsavedProperties.height = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_height(): String = unsavedProperties.height
+
+    internal fun onCustomPropertyChanged_name(text: String) {
         if (properties.name() == text) {
             return
         }
@@ -122,7 +154,13 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = "name")
     }
 
-    fun onCustomPropertyChanged_socialInstagram(text: String) {
+    internal fun onCustomPropertyUnsavedInput_name(text: String) {
+        unsavedProperties.name = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_name(): String = unsavedProperties.name
+
+    internal fun onCustomPropertyChanged_socialInstagram(text: String) {
         if (properties.instagram() == text) {
             return
         }
@@ -130,7 +168,13 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = "instagram")
     }
 
-    fun onCustomPropertyChanged_socialTikTok(text: String) {
+    internal fun onCustomPropertyUnsavedInput_socialInstagram(text: String) {
+        unsavedProperties.instagram = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_socialInstagram(): String = unsavedProperties.instagram
+
+    internal fun onCustomPropertyChanged_socialTikTok(text: String) {
         if (properties.tiktok() == text) {
             return
         }
@@ -138,7 +182,13 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = "tiktok")
     }
 
-    fun onCustomPropertyChanged_university(text: String) {
+    internal fun onCustomPropertyUnsavedInput_socialTikTok(text: String) {
+        unsavedProperties.tiktok = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_socialTikTok(): String = unsavedProperties.tiktok
+
+    internal fun onCustomPropertyChanged_university(text: String) {
         if (properties.university() == text) {
             return
         }
@@ -146,13 +196,25 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyName = "education")
     }
 
-    fun onCustomPropertyChanged_whereLive(text: String) {
+    internal fun onCustomPropertyUnsavedInput_university(text: String) {
+        unsavedProperties.university = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_university(): String = unsavedProperties.university
+
+    internal fun onCustomPropertyChanged_whereLive(text: String) {
         if (properties.whereLive() == text) {
             return
         }
         properties.whereLive(text)
         updateProfileProperties(propertyName = "whereLive")
     }
+
+    internal fun onCustomPropertyUnsavedInput_whereLive(text: String) {
+        unsavedProperties.whereLive = text
+    }
+
+    internal fun getCustomPropertyUnsavedInput_whereLive(): String = unsavedProperties.whereLive
 
     // --------------------------------------------------------------------------------------------
     private fun updateProfileProperties(propertyName: String) {

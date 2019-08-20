@@ -13,6 +13,7 @@ import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
+import com.ringoid.domain.misc.UserProfileCustomPropertiesRaw
 import com.ringoid.domain.misc.UserProfilePropertiesRaw
 import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.domain.model.feed.Filters
@@ -108,6 +109,8 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY = "sp_key_user_profile_custom_property_university"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM = "sp_key_user_profile_custom_property_where_from"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE = "sp_key_user_profile_custom_property_where_live"
+
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT = "sp_key_user_profile_custom_properties_unsaved_input"
 
         /* Misc */
         // --------------------------------------
@@ -249,6 +252,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         dropBigEditText()  // forget saved input text for dialog
         dropFilters()  // forget saved filters on logout
         dropUserProfileProperties()  // forget profile properties for previous user
+        dropUserProfileCustomPropertiesUnsavedInput()  // forget unsaved input profile properties
         sharedPreferences.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, true).apply()
     }
 
@@ -448,6 +452,19 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE)
             .apply()
+    }
+
+    override fun getUserProfileCustomPropertiesUnsavedInput(): UserProfileCustomPropertiesRaw =
+        sharedPreferences.getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT, null)
+            ?.let { Gson().fromJson(it, UserProfileCustomPropertiesRaw::class.java) }
+            ?: UserProfileCustomPropertiesRaw()
+
+    override fun setUserProfileCustomPropertiesUnsavedInput(unsavedInput: UserProfileCustomPropertiesRaw) {
+        sharedPreferences.edit().putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT, unsavedInput.toJson()).apply()
+    }
+
+    override fun dropUserProfileCustomPropertiesUnsavedInput() {
+        sharedPreferences.edit().remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT).apply()
     }
 
     /* Misc */

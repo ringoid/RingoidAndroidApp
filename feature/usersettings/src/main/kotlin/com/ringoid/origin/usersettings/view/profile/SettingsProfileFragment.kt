@@ -128,7 +128,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                 BigEditTextDialog.newInstance(titleResId = OriginR_string.settings_profile_item_custom_property_about,
                     btnPositiveResId = OriginR_string.button_done,
                     btnNegativeResId = OriginR_string.button_cancel,
-                    input = getText(), tag = ABOUT_PROPERTY_DIALOG_TAG)
+                    input = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_about()),
+                    tag = ABOUT_PROPERTY_DIALOG_TAG)
                 .show(childFragmentManager, BigEditTextDialog.TAG)
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
@@ -142,7 +143,12 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onCompanyTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(),
+                    negativeListener = { dialog, _, text ->
+                        onCompanyUnsavedInput(text)
+                        dialog.dismiss()
+                    },
+                    cancelListener = { _, text -> onCompanyUnsavedInput(text) },
+                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_company()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -159,7 +165,12 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onJobTitleTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(),
+                    negativeListener = { dialog, _, text ->
+                        onJobTitleUnsavedInput(text)
+                        dialog.dismiss()
+                    },
+                    cancelListener = { _, text -> onJobTitleUnsavedInput(text) },
+                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_jobTitle()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -177,7 +188,12 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(heightStr)) onHeightTextChange(heightStr)
                         dialog.dismiss()
                     },
-                    initText = getText(),
+                    negativeListener = { dialog, _, text ->
+                        onHeightUnsavedInput(text)
+                        dialog.dismiss()
+                    },
+                    cancelListener = { _, text -> onHeightUnsavedInput(text) },
+                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_height()),
                     inputType = InputType.TYPE_CLASS_NUMBER,
                     maxLength = 3,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -195,7 +211,12 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onNameTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(),
+                    negativeListener = { dialog, _, text ->
+                        onNameUnsavedInput(text)
+                        dialog.dismiss()
+                    },
+                    cancelListener = { _, text -> onNameUnsavedInput(text) },
+                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_name()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = 20,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -212,7 +233,13 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onSocialInstagramTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(), maxLength = TextIconItemView.MAX_LENGTH,
+                    negativeListener = { dialog, _, text ->
+                        onSocialInstagramUnsavedInput(text)
+                        dialog.dismiss()
+                    },
+                    cancelListener = { _, text -> onSocialInstagramUnsavedInput(text) },
+                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_socialInstagram()),
+                    maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
                 .also { AppWatcher.objectWatcher.watch(it) }
             }
@@ -227,7 +254,13 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onSocialTikTokTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(), maxLength = TextIconItemView.MAX_LENGTH,
+                    negativeListener = { dialog, _, text ->
+                        onSocialTikTokUnsavedInput(text)
+                        dialog.dismiss()
+                    },
+                    cancelListener = { _, text -> onSocialTikTokUnsavedInput(text) },
+                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_socialTikTok()),
+                    maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
                 .also { AppWatcher.objectWatcher.watch(it) }
             }
@@ -242,7 +275,12 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onUniversityTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(),
+                    negativeListener = { dialog, _, text ->
+                        onUniversityUnsavedInput(text)
+                        dialog.dismiss()
+                    },
+                    cancelListener = { _, text -> onUniversityUnsavedInput(text) },
+                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_university()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -259,7 +297,12 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onWhereLiveTextChange(text)
                         dialog.dismiss()
                     },
-                    initText = getText(),
+                    negativeListener = { dialog, _, text ->
+                        onWhereLiveUnsavedInput(text)
+                        dialog.dismiss()
+                    },
+                    cancelListener = { _, text -> onWhereLiveUnsavedInput(text) },
+                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_whereLive()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -282,6 +325,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     override fun onCancel(text: String, tag: String?) {
         if (tag != ABOUT_PROPERTY_DIALOG_TAG) {
             super.onCancel(text, tag)
+        } else {
+            onAboutUnsavedInput(text)
         }
     }
 
@@ -298,35 +343,71 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         text?.let { vm.onCustomPropertyChanged_about(text = it.toString().trim()) }
     }
 
+    private fun onAboutUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_about(it.toString().trim()) }        //
+    }
+
     private fun onCompanyTextChange(text: CharSequence?) {
         text?.let { vm.onCustomPropertyChanged_company(text = it.toString().trim()) }
+    }
+
+    private fun onCompanyUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_company(it.toString().trim()) }
     }
 
     private fun onJobTitleTextChange(text: CharSequence?) {
         text?.let { vm.onCustomPropertyChanged_jobTitle(text = it.toString().trim()) }
     }
 
+    private fun onJobTitleUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_jobTitle(it.toString().trim()) }
+    }
+
     private fun onHeightTextChange(heightStr: CharSequence) {
         vm.onCustomPropertyChanged_height(height = if (heightStr.isNotBlank()) heightStr.toString().toInt() else 0)
+    }
+
+    private fun onHeightUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_height(it.toString().trim()) }
     }
 
     private fun onNameTextChange(text: CharSequence?) {
         text?.let { vm.onCustomPropertyChanged_name(text = it.toString().trim()) }
     }
 
+    private fun onNameUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_name(it.toString().trim()) }
+    }
+
     private fun onSocialInstagramTextChange(text: CharSequence?) {
         text?.let { vm.onCustomPropertyChanged_socialInstagram(text = it.toString().trim()) }
+    }
+
+    private fun onSocialInstagramUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_socialInstagram(it.toString().trim()) }
     }
 
     private fun onSocialTikTokTextChange(text: CharSequence?) {
         text?.let { vm.onCustomPropertyChanged_socialTikTok(text = it.toString().trim()) }
     }
 
+    private fun onSocialTikTokUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_socialTikTok(it.toString().trim()) }
+    }
+
     private fun onUniversityTextChange(text: CharSequence?) {
         text?.let { vm.onCustomPropertyChanged_university(text = it.toString().trim()) }
     }
 
+    private fun onUniversityUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_university(it.toString().trim()) }
+    }
+
     private fun onWhereLiveTextChange(text: CharSequence?) {
         text?.let { vm.onCustomPropertyChanged_whereLive(text = it.toString().trim()) }
+    }
+
+    private fun onWhereLiveUnsavedInput(text: CharSequence?) {
+        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_whereLive(it.toString().trim()) }
     }
 }
