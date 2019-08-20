@@ -242,6 +242,7 @@ open class FeedRepository @Inject constructor(
 //            .flatMap { lastActionTime ->
                 spm.accessSingle {
                     cloud.getLc(it.accessToken, resolution, limit, filters, source, aObjPool.lastActionTime())
+                        .handleError(count = 8, tag = "getLcCounts($resolution,lat=${aObjPool.lastActionTime()}", traceTag = "feeds/get_lc_counts")
                         .filterOutDuplicateProfilesLmmResponse()
                         .filterOutBlockedProfilesLmmResponse()
                         .map { it.map() }
