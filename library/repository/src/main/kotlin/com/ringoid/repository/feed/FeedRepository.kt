@@ -246,6 +246,7 @@ open class FeedRepository @Inject constructor(
                         .filterOutDuplicateProfilesLmmResponse()
                         .filterOutBlockedProfilesLmmResponse()
                         .map { it.map() }
+                        .cacheLmmCounts()
                         .keepLmmInMemory(filters)
                 }
 //            }
@@ -264,6 +265,7 @@ open class FeedRepository @Inject constructor(
                      .filterOutDuplicateProfilesLmmResponse()
                      .filterOutBlockedProfilesLmmResponse()
                      .map { it.map() }
+                     .cacheLmmCounts()
             }
         }
         .dropLmmStatsOnSubscribe()
@@ -289,9 +291,15 @@ open class FeedRepository @Inject constructor(
             BiFunction { likes, messages ->
                 val totalNotFilteredLikes = feedSharedPrefs.getTotalNotFilteredLikes()
                 val totalNotFilteredMessages = feedSharedPrefs.getTotalNotFilteredMessages()
+                if (totalNotFilteredLikes == DomainUtil.BAD_VALUE ||
+                    totalNotFilteredMessages == DomainUtil.BAD_VALUE) {
+                    SentryUtil.w("Cached LC has invalid total counts",
+                                 listOf("totalLikes" to "$totalNotFilteredLikes",
+                                        "totalMessages" to "$totalNotFilteredMessages"))
+                }
                 Lmm(likes = likes, matches = emptyList(), messages = messages,
-                    totalNotFilteredLikes = totalNotFilteredLikes,
-                    totalNotFilteredMessages = totalNotFilteredMessages)
+                    totalNotFilteredLikes = maxOf(totalNotFilteredLikes, likes.size),
+                    totalNotFilteredMessages = maxOf(totalNotFilteredMessages, messages.size))
             })
 
     // --------------------------------------------------------------------------------------------
@@ -401,12 +409,9 @@ open class FeedRepository @Inject constructor(
 
     private fun Single<Lmm>.cacheLmm(): Single<Lmm> =
         flatMap { lmm ->
-            Single.fromCallable { local.deleteFeedItems() }  // clear old cache before inserting new data
+            Single
+                .fromCallable { local.deleteFeedItems() }  // clear old cache before inserting new data
                 .flatMap { Single.fromCallable { imagesLocal.deleteImages() } }
-                .doOnSuccess {
-                    feedSharedPrefs.setTotalNotFilteredLikes(lmm.totalNotFilteredLikes)
-                    feedSharedPrefs.setTotalNotFilteredMessages(lmm.totalNotFilteredMessages)
-                }
                 .flatMap {
                     Single.fromCallable {
                         local.addFeedItems(lmm.likes, sourceFeed = DomainUtil.SOURCE_FEED_LIKES)
@@ -422,6 +427,12 @@ open class FeedRepository @Inject constructor(
                     }
                 }
                 .flatMap { Single.just(lmm) }
+        }
+
+    private fun Single<Lmm>.cacheLmmCounts(): Single<Lmm> =
+        doOnSuccess { lmm ->
+            feedSharedPrefs.setTotalNotFilteredLikes(lmm.totalNotFilteredLikes)
+            feedSharedPrefs.setTotalNotFilteredMessages(lmm.totalNotFilteredMessages)
         }
 
     private fun Single<Lmm>.keepLmmInMemory(filters: Filters?): Single<Lmm> =
