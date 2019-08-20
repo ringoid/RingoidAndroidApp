@@ -143,8 +143,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onCompanyTextChange(text)
                         dialog.dismiss()
                     },
-                    negativeListener = { dialog, _, text ->
-                        onCompanyUnsavedInput(text)
+                    negativeListener = { dialog, _, _ ->
+                        onCompanyUnsavedInput(null)
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onCompanyUnsavedInput(text) },
@@ -165,8 +165,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onJobTitleTextChange(text)
                         dialog.dismiss()
                     },
-                    negativeListener = { dialog, _, text ->
-                        onJobTitleUnsavedInput(text)
+                    negativeListener = { dialog, _, _ ->
+                        onJobTitleUnsavedInput(null)
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onJobTitleUnsavedInput(text) },
@@ -188,8 +188,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(heightStr)) onHeightTextChange(heightStr)
                         dialog.dismiss()
                     },
-                    negativeListener = { dialog, _, text ->
-                        onHeightUnsavedInput(text)
+                    negativeListener = { dialog, _, _ ->
+                        onHeightUnsavedInput(null)
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onHeightUnsavedInput(text) },
@@ -211,8 +211,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onNameTextChange(text)
                         dialog.dismiss()
                     },
-                    negativeListener = { dialog, _, text ->
-                        onNameUnsavedInput(text)
+                    negativeListener = { dialog, _, _ ->
+                        onNameUnsavedInput(null)
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onNameUnsavedInput(text) },
@@ -233,8 +233,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onSocialInstagramTextChange(text)
                         dialog.dismiss()
                     },
-                    negativeListener = { dialog, _, text ->
-                        onSocialInstagramUnsavedInput(text)
+                    negativeListener = { dialog, _, _ ->
+                        onSocialInstagramUnsavedInput(null)
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onSocialInstagramUnsavedInput(text) },
@@ -254,8 +254,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onSocialTikTokTextChange(text)
                         dialog.dismiss()
                     },
-                    negativeListener = { dialog, _, text ->
-                        onSocialTikTokUnsavedInput(text)
+                    negativeListener = { dialog, _, _ ->
+                        onSocialTikTokUnsavedInput(null)
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onSocialTikTokUnsavedInput(text) },
@@ -275,8 +275,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onUniversityTextChange(text)
                         dialog.dismiss()
                     },
-                    negativeListener = { dialog, _, text ->
-                        onUniversityUnsavedInput(text)
+                    negativeListener = { dialog, _, _ ->
+                        onUniversityUnsavedInput(null)
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onUniversityUnsavedInput(text) },
@@ -297,8 +297,8 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         if (this.setInputText(text)) onWhereLiveTextChange(text)
                         dialog.dismiss()
                     },
-                    negativeListener = { dialog, _, text ->
-                        onWhereLiveUnsavedInput(text)
+                    negativeListener = { dialog, _, _ ->
+                        onWhereLiveUnsavedInput(null)
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onWhereLiveUnsavedInput(text) },
@@ -322,9 +322,11 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     private fun handleInputHeight(it: String?): Int =
         if (it.isNullOrBlank()) 0 else it.toInt().takeIf { int -> int in 92..214 } ?: 0
 
-    override fun onCancel(text: String, tag: String?) {
+    override fun onCancel(text: String, tag: String?, fromBtn: Boolean) {
         if (tag != ABOUT_PROPERTY_DIALOG_TAG) {
-            super.onCancel(text, tag)
+            super.onCancel(text, tag, fromBtn)
+        } else if (fromBtn) {
+            onAboutUnsavedInput(null)
         } else {
             onAboutUnsavedInput(text)
         }
@@ -344,7 +346,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onAboutUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_about(it.toString().trim()) }        //
+        vm.onCustomPropertyUnsavedInput_about(text?.toString()?.trim() ?: "")
     }
 
     private fun onCompanyTextChange(text: CharSequence?) {
@@ -352,7 +354,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onCompanyUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_company(it.toString().trim()) }
+        vm.onCustomPropertyUnsavedInput_company(text?.toString()?.trim() ?: "")
     }
 
     private fun onJobTitleTextChange(text: CharSequence?) {
@@ -360,7 +362,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onJobTitleUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_jobTitle(it.toString().trim()) }
+        vm.onCustomPropertyUnsavedInput_jobTitle(text?.toString()?.trim() ?: "")
     }
 
     private fun onHeightTextChange(heightStr: CharSequence) {
@@ -368,7 +370,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onHeightUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_height(it.toString().trim()) }
+        vm.onCustomPropertyUnsavedInput_height(text?.toString()?.trim() ?: "")
     }
 
     private fun onNameTextChange(text: CharSequence?) {
@@ -376,7 +378,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onNameUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_name(it.toString().trim()) }
+        vm.onCustomPropertyUnsavedInput_name(text?.toString()?.trim() ?: "")
     }
 
     private fun onSocialInstagramTextChange(text: CharSequence?) {
@@ -384,7 +386,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onSocialInstagramUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_socialInstagram(it.toString().trim()) }
+        vm.onCustomPropertyUnsavedInput_socialInstagram(text?.toString()?.trim() ?: "")
     }
 
     private fun onSocialTikTokTextChange(text: CharSequence?) {
@@ -392,7 +394,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onSocialTikTokUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_socialTikTok(it.toString().trim()) }
+        vm.onCustomPropertyUnsavedInput_socialTikTok(text?.toString()?.trim() ?: "")
     }
 
     private fun onUniversityTextChange(text: CharSequence?) {
@@ -400,7 +402,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onUniversityUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_university(it.toString().trim()) }
+        vm.onCustomPropertyUnsavedInput_university(text?.toString()?.trim() ?: "")
     }
 
     private fun onWhereLiveTextChange(text: CharSequence?) {
@@ -408,6 +410,6 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onWhereLiveUnsavedInput(text: CharSequence?) {
-        text.takeUnless { it.isNullOrBlank() }?.let { vm.onCustomPropertyUnsavedInput_whereLive(it.toString().trim()) }
+        vm.onCustomPropertyUnsavedInput_whereLive(text?.toString()?.trim() ?: "")
     }
 }

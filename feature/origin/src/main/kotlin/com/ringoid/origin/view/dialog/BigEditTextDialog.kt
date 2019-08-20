@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.dialog_big_edit_text.*
 class BigEditTextDialog : SimpleBaseDialogFragment() {
 
     interface IBigEditTextDialogDone : ICommunicator {
-        fun onCancel(text: String, tag: String?)
+        fun onCancel(text: String, tag: String?, fromBtn: Boolean)
         fun onDone(text: String, tag: String?)
     }
 
@@ -57,6 +57,7 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
     override fun getLayoutId(): Int = R.layout.dialog_big_edit_text
 
     private var dialogTag: String? = null
+    private var fromBtn: Boolean = false
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -71,8 +72,9 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         dialogTag = arguments?.getString(BUNDLE_KEY_TAG)
+        fromBtn = false
 
-        btn_cancel.clicks().compose(clickDebounce()).subscribe { cancel() }
+        btn_cancel.clicks().compose(clickDebounce()).subscribe { fromBtn = true; cancel() }
         btn_done.clicks().compose(clickDebounce()).subscribe {
             communicator(IBigEditTextDialogDone::class.java)?.onDone(text = getText(), tag = dialogTag)
             dismiss()
@@ -136,7 +138,7 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
 
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
-        communicator(IBigEditTextDialogDone::class.java)?.onCancel(text = getText(), tag = dialogTag)
+        communicator(IBigEditTextDialogDone::class.java)?.onCancel(text = getText(), tag = dialogTag, fromBtn = fromBtn)
     }
 
     // --------------------------------------------------------------------------------------------
