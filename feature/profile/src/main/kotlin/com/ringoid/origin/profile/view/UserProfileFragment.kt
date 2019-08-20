@@ -95,9 +95,9 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             is ViewState.CLEAR -> {
                 onIdleState()
                 when (newState.mode) {
-                    ViewState.CLEAR.MODE_EMPTY_DATA -> showEmptyStub(true)
+                    ViewState.CLEAR.MODE_EMPTY_DATA -> showNoImageStub(true)
                     ViewState.CLEAR.MODE_NEED_REFRESH -> showErrorStub()
-                    ViewState.CLEAR.MODE_CHANGE_FILTERS -> showEmptyStub(true)
+                    ViewState.CLEAR.MODE_CHANGE_FILTERS -> showNoImageStub(true)
                 }
             }
             is ViewState.DONE -> {
@@ -149,7 +149,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             .apply {
                 onInsertListener = { count ->
                     DebugLogUtil.v("Inserting $count images on User Profile")
-                    showEmptyStub(needShow = count <= 0)
+                    showNoImageStub(needShow = count <= 0)
                     if (count > 1) {  // inserted multiple items
                         // restore position at image on viewport
                         imagesAdapter.getModelAdapterPosition { it.id == imageOnViewPortId }
@@ -164,7 +164,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 onRemoveListener = {
                     val empty = imagesAdapter.isEmpty()
                     DebugLogUtil.v("Removed images on User Profile, is empty: $empty")
-                    showEmptyStub(needShow = empty)
+                    showNoImageStub(needShow = empty)
                     showDotTabs(isVisible = true)
                 }
                 itemClickListener = { _, _ -> navigate(this@UserProfileFragment, path = "/settings_profile") }
@@ -203,7 +203,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
 
             cropImageAfterLogin = false  // ask only once per session
-            showEmptyStub(needShow = true)
+            showNoImageStub(needShow = true)
         }
 
         fun onCropSuccess(croppedUri: Uri) {
@@ -288,7 +288,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
         if (!cropImageAfterLogin) {
-            showEmptyStub(needShow = true)
+            showNoImageStub(needShow = true)
         }
 
         /**
@@ -430,15 +430,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ExternalNavigator.openGalleryToGetImageFragment(this)
     }
 
-    private fun doOnCropErrorAfterLogin() {
-        if (!cropImageAfterLogin) {
-            return
-        }
-
-        cropImageAfterLogin = false  // ask only once per session
-        showEmptyStub(needShow = true)
-    }
-
     private fun doOnBlockedImage(imageId: String) {
         Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_blocked_title, descriptionResId = 0,
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_blocked_button,
@@ -516,9 +507,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         showEmptyStub(needShow = true, input = EmptyFragment.Companion.Input())
     }
 
-    private fun showEmptyStub(needShow: Boolean) {  // empty stub with label 'Add photo to receive likes'
+    private fun showNoImageStub(needShow: Boolean) {  // empty stub with label 'Add photo to receive likes'
         showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
-        showImageControls(isVisible = !needShow)
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
@@ -529,6 +519,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     private fun showEmptyStub(needShow: Boolean, input: EmptyFragment.Companion.Input) {
         fl_empty_container.changeVisibility(isVisible = needShow)
         gradient.changeVisibility(isVisible = !needShow)
+        showImageControls(isVisible = !needShow)
         if (!needShow) {
             return
         }
