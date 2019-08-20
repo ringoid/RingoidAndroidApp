@@ -65,6 +65,11 @@ class DatabaseModule {
             .fallbackToDestructiveMigrationFrom(3)
             .build()
 
+    @Provides @Singleton
+    fun provideBackupUserRingoidDatabase(applicationContext: Context): BackupUserRingoidDatabase =
+        Room.databaseBuilder(applicationContext, BackupUserRingoidDatabase::class.java, BackupUserRingoidDatabase.DATABASE_NAME)
+            .build()
+
     @Provides @Singleton @DebugOnly
     fun provideDebugRingoidDatabase(applicationContext: Context): DebugRingoidDatabase =
         Room.databaseBuilder(applicationContext, DebugRingoidDatabase::class.java, DebugRingoidDatabase.DATABASE_NAME)

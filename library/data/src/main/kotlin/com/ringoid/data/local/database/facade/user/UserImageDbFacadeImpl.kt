@@ -1,5 +1,6 @@
 package com.ringoid.data.local.database.facade.user
 
+import androidx.room.EmptyResultSetException
 import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.datainterface.local.user.IUserImageDbFacade
@@ -36,7 +37,15 @@ class UserImageDbFacadeImpl @Inject constructor(private val dao: UserImageDao) :
             sortPosition: Int): Int =
         dao.updateUserImageByOriginId(originImageId, uri, numberOfLikes, isBlocked, sortPosition)
 
-    override fun userImage(id: String): Single<UserImage> = dao.userImage(id).map { it.map() }
+    override fun userImage(id: String): Single<UserImage> =
+        dao.userImage(id).map { it.map() }
+            .onErrorResumeNext { error: Throwable ->
+                val e = when (error) {
+                    is EmptyResultSetException -> NoSuchElementException()
+                    else -> error
+                }
+                Single.error(e)
+            }
 
     override fun userImages(): Single<List<UserImage>> = dao.userImages().map { it.mapList() }
 }

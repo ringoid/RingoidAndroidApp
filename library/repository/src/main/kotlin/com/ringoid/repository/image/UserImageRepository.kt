@@ -4,6 +4,7 @@ import com.ringoid.data.handleError
 import com.ringoid.data.local.database.model.image.UserImageDbo
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.local.shared_prefs.accessSingle
+import com.ringoid.datainterface.di.PerBackup
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.local.image.IImageRequestDbFacade
 import com.ringoid.datainterface.local.user.IUserImageDbFacade
@@ -41,6 +42,7 @@ import javax.inject.Singleton
 class UserImageRepository @Inject constructor(
     @PerUser private val local: IUserImageDbFacade,
     @PerUser private val imageRequestLocal: IImageRequestDbFacade,
+    @PerBackup private val imagesBackup: IUserImageDbFacade,
     private val userInMemoryCache: UserInMemoryCache,
     cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
@@ -142,14 +144,8 @@ class UserImageRepository @Inject constructor(
     override fun deleteUserImageFail(essence: ImageDeleteEssenceUnauthorized): Completable =
         spm.accessCompletable {
             val xessence = ImageDeleteEssence.from(essence, it.accessToken)
-            local.userImage(id = essence.imageId)
-                .flatMapCompletable {
-                    Single
-                        .fromCallable { local.deleteUserImage(id = essence.imageId) }
-                        .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
-                        .flatMap { countUserImages() }  // actualize user images count
-                        .flatMapCompletable { Completable.error(SimulatedException()) }
-                }
+            deleteUserImageLocal(xessence)
+                .flatMapCompletable { Completable.error(SimulatedException()) }
                 .doOnError {
                     Completable.fromCallable { imageRequestLocal.addRequest(ImageRequest.from(xessence)) }
                                .subscribeOn(Schedulers.io())
@@ -165,17 +161,33 @@ class UserImageRepository @Inject constructor(
      * record that as pending request to repeat later, on next [getUserImages] call.
      */
     private fun deleteUserImageAsync(essence: ImageDeleteEssence, retryCount: Int): Completable =
-        local.userImage(id = essence.imageId)
+        deleteUserImageLocal(essence)
             .flatMapCompletable { localImage ->
-                Single
-                    .fromCallable { local.deleteUserImage(id = essence.imageId) }
+                deleteUserImageRemoteImpl(localImage, essence, retryCount)
+            }
+
+    private fun deleteUserImageLocal(essence: ImageDeleteEssence): Single<UserImage> =
+        local.userImage(id = essence.imageId)
+            .flatMap { localImage ->
+                Completable.fromCallable { imagesBackup.addUserImage(localImage) }
+                           .toSingleDefault(localImage)
+            }
+            .flatMap { localImage ->
+                Single.fromCallable { local.deleteUserImage(id = essence.imageId) }
                     .doOnSuccess { imageDeleted.onNext(essence.imageId) }  // notify database changed
-                    .flatMap { countUserImages() }  // actualize user images count
-                    .flatMapCompletable { deleteUserImageRemoteImpl(localImage, essence, retryCount) }
+                    .flatMapCompletable { countUserImages().ignoreElement() }  // actualize user images count
+                    .toSingleDefault(localImage)
             }
 
     private fun deleteUserImageRemote(essence: ImageDeleteEssence, retryCount: Int): Completable =
         local.userImage(id = essence.imageId)
+            .onErrorResumeNext { error: Throwable ->
+                Timber.e(error, "Image was not found in local cache, try backup instead")
+                when (error) {
+                    is NoSuchElementException -> imagesBackup.userImage(id = essence.imageId)
+                    else -> Single.error(error)
+                }
+            }
             .flatMapCompletable { deleteUserImageRemoteImpl(localImage = it, essence = essence, retryCount = retryCount) }
 
     private fun deleteUserImageRemoteImpl(localImage: UserImage, essence: ImageDeleteEssence, retryCount: Int): Completable {
@@ -226,7 +238,10 @@ class UserImageRepository @Inject constructor(
             .flatMap { countUserImages() }
             .ignoreElement()  // convert to Completable
 
-    override fun deleteLocalUserImages(): Completable = Completable.fromCallable { local.deleteAllUserImages() }
+    // ------------------------------------------
+    override fun deleteLocalUserImages(): Completable =
+        Completable.fromCallable { local.deleteAllUserImages() }
+                   .andThen(Completable.fromCallable { imagesBackup.deleteAllUserImages() })
 
     override fun deleteLocalUserImageRequests(): Completable =
         Completable.fromCallable { imageRequestLocal.deleteAllRequests() }
@@ -255,7 +270,7 @@ class UserImageRepository @Inject constructor(
 
     private fun createImageRemote(essence: ImageUploadUrlEssence, imageFilePath: String, retryCount: Int): Single<Image> =
         local.userImage(id = essence.clientImageId)
-            .flatMap { createImageRemoteImpl(localImage = it, essence = essence, imageFilePath = imageFilePath, retryCount = retryCount) }
+             .flatMap { createImageRemoteImpl(localImage = it, essence = essence, imageFilePath = imageFilePath, retryCount = retryCount) }
 
     private fun createImageRemoteImpl(localImage: UserImage, essence: ImageUploadUrlEssence,
                                       imageFilePath: String, retryCount: Int): Single<Image> {

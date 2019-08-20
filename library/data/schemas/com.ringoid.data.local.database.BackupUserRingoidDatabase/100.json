@@ -1,0 +1,75 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 100,
+    "identityHash": "3d899824138d8949b2d674db74b80438",
+    "entities": [
+      {
+        "tableName": "UserImages",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`originPhotoId` TEXT NOT NULL, `likes` INTEGER NOT NULL, `blocked` INTEGER NOT NULL, `sortPosition` INTEGER NOT NULL, `uriLocal` TEXT, `id` TEXT NOT NULL, `uri` TEXT, `thumbnailPhotoUri` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "originId",
+            "columnName": "originPhotoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfLikes",
+            "columnName": "likes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isBlocked",
+            "columnName": "blocked",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortPosition",
+            "columnName": "sortPosition",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uriLocal",
+            "columnName": "uriLocal",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uri",
+            "columnName": "uri",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "thumbnailUri",
+            "columnName": "thumbnailPhotoUri",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3d899824138d8949b2d674db74b80438\")"
+    ]
+  }
+}

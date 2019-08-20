@@ -66,6 +66,9 @@ class DbFacadeModule {
     @Provides @Singleton @PerUser
     fun provideUserImageDbFacade(@PerUser dao: UserImageDao): IUserImageDbFacade = UserImageDbFacadeImpl(dao)
 
+    @Provides @Singleton @PerBackup
+    fun provideBackupUserImageDbFacade(@PerBackup dao: UserImageDao): IUserImageDbFacade = UserImageDbFacadeImpl(dao)
+
     @Provides @Singleton @PerUser
     fun provideUserImageRequestDbFacade(@PerUser dao: ImageRequestDao): IImageRequestDbFacade = ImageRequestDbFacadeImpl(dao)
 

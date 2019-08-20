@@ -39,6 +39,9 @@ class DaoModule {
     @Provides @Singleton @PerUser
     fun provideUserImageDao(database: UserRingoidDatabase): UserImageDao = database.userImageDao()
 
+    @Provides @Singleton @PerBackup
+    fun provideBackupUserImageDao(database: BackupUserRingoidDatabase): UserImageDao = database.userImageDao()
+
     @Provides @Singleton @PerUser
     fun provideUserImageRequestDao(database: UserRingoidDatabase): ImageRequestDao = database.imageRequestDao()
 
