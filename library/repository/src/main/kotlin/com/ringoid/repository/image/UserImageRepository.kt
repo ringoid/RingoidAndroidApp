@@ -157,6 +157,7 @@ class UserImageRepository @Inject constructor(
         fun addPendingDeleteImageRequest() {
             Completable.fromCallable { imageRequestLocal.addRequest(ImageRequest.from(essence)) }
                        .subscribeOn(Schedulers.io())
+                       .subscribe({}, Timber::e)
         }
 
         return if (localImage.originId.isNullOrBlank()) {
@@ -236,6 +237,7 @@ class UserImageRepository @Inject constructor(
         fun addPendingCreateImageRequest(imageFilePath: String) {
             Completable.fromCallable { imageRequestLocal.addRequest(ImageRequest.from(essence, imageFilePath)) }
                        .subscribeOn(Schedulers.io())
+                       .subscribe({}, Timber::e)
         }
 
         return cloud.getImageUploadUrl(essence)
@@ -248,8 +250,9 @@ class UserImageRepository @Inject constructor(
                      * for image in local cache, keeping [UserImageDbo.id] and [UserImageDbo.uriLocal] unchanged.
                      */
                     val updatedLocalImage = localImage.copyWith(originId = image.originImageId, uri = image.imageUri)
-                    Completable.fromCallable { local.updateUserImage(updatedLocalImage) }  // local image now has proper originId and remote url
-                        .toSingleDefault(image)
+                    // local image now has proper originId and remote url
+                    Completable.fromCallable { local.updateUserImage(updatedLocalImage) }
+                               .toSingleDefault(image)
                 }
             }
             .flatMap {
