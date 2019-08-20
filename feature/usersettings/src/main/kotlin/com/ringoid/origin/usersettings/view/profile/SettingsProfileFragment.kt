@@ -128,7 +128,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                 BigEditTextDialog.newInstance(titleResId = OriginR_string.settings_profile_item_custom_property_about,
                     btnPositiveResId = OriginR_string.button_done,
                     btnNegativeResId = OriginR_string.button_cancel,
-                    input = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_about()),
+                    input = notBlankOf(vm.getCustomPropertyUnsavedInput_about(), getText()),
                     tag = ABOUT_PROPERTY_DIALOG_TAG)
                 .show(childFragmentManager, BigEditTextDialog.TAG)
             }
@@ -148,7 +148,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onCompanyUnsavedInput(text) },
-                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_company()),
+                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_company(), getText()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -170,7 +170,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onJobTitleUnsavedInput(text) },
-                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_jobTitle()),
+                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_jobTitle(), getText()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -193,7 +193,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onHeightUnsavedInput(text) },
-                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_height()),
+                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_height(), getText()),
                     inputType = InputType.TYPE_CLASS_NUMBER,
                     maxLength = 3,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -216,7 +216,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onNameUnsavedInput(text) },
-                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_name()),
+                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_name(), getText()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = 20,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -238,7 +238,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onSocialInstagramUnsavedInput(text) },
-                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_socialInstagram()),
+                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_socialInstagram(), getText()),
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
                 .also { AppWatcher.objectWatcher.watch(it) }
@@ -259,7 +259,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onSocialTikTokUnsavedInput(text) },
-                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_socialTikTok()),
+                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_socialTikTok(), getText()),
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
                 .also { AppWatcher.objectWatcher.watch(it) }
@@ -280,7 +280,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onUniversityUnsavedInput(text) },
-                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_university()),
+                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_university(), getText()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
@@ -302,7 +302,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                         dialog.dismiss()
                     },
                     cancelListener = { _, text -> onWhereLiveUnsavedInput(text) },
-                    initText = notBlankOf(getText(), vm.getCustomPropertyUnsavedInput_whereLive()),
+                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_whereLive(), getText()),
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                     maxLength = TextIconItemView.MAX_LENGTH,
                     imeOptions = EditorInfo.IME_ACTION_DONE)
