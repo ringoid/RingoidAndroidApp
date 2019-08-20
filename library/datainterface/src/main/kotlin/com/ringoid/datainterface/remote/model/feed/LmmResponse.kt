@@ -15,7 +15,9 @@ import com.ringoid.domain.model.mapList
  *   "repeatRequestAfterSec":0,
  *   "likesYou": [...],
  *   "matches": [...],
- *   "messages": [...]
+ *   "messages": [...],
+ *   "allLikesYouProfilesNum":219,
+ *   "allMessagesProfilesNum":23
  * }
  */
 class LmmResponse(
@@ -42,7 +44,9 @@ class LmmResponse(
         const val COLUMN_TOTAL_NOT_FILTERED_MESSAGES = "allMessagesProfilesNum"
     }
 
-    override fun map(): Lmm = Lmm(likes = likes.mapList(), matches = matches.mapList(), messages = messages.mapList(),
+    override fun map(): Lmm = Lmm(likes = likes.mapList(),
+                                  matches = matches.mapList(),
+                                  messages = messages.mapList(),
                                   totalNotFilteredLikes = totalNotFilteredLikes,
                                   totalNotFilteredMessages = totalNotFilteredMessages)
 
@@ -53,6 +57,7 @@ class LmmResponse(
         "LmmResponse(likes=${likes.joinToString(", ", "[", "]")}, " +
                     "matches=${matches.joinToString(", ", "[", "]")}, " +
                     "messages=${messages.joinToString(", ", "[", "]")}, " +
-                    "totalNotFilteredLikes=$totalNotFilteredLikes, totalNotFilteredMessages=$totalNotFilteredMessages, " +
+                    "totalNotFilteredLikes=$totalNotFilteredLikes, " +
+                    "totalNotFilteredMessages=$totalNotFilteredMessages, " +
                     "${super.toString()})"
 }

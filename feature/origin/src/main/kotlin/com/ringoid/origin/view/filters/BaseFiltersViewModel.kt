@@ -42,11 +42,11 @@ open class BaseFiltersViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun requestFiltersForUpdate() {
+    internal fun requestFiltersForUpdate() {
         filtersChanged.onNext(true)
     }
 
-    fun setMinMaxAge(minAge: Int, maxAge: Int) {
+    internal fun setMinMaxAge(minAge: Int, maxAge: Int) {
         val oldFilters = filtersSource.getFilters()
         if (oldFilters.minAge != minAge || oldFilters.maxAge != maxAge) {
             filtersSource.setFilters(Filters.create(minAge = minAge, maxAge = maxAge, maxDistance = oldFilters.maxDistance))
@@ -55,7 +55,7 @@ open class BaseFiltersViewModel @Inject constructor(
         }
     }
 
-    fun setDistance(distance: Int) {
+    internal fun setDistance(distance: Int) {
         val oldFilters = filtersSource.getFilters()
         if (oldFilters.maxDistance != distance) {
             filtersSource.setFilters(Filters.create(minAge = oldFilters.minAge, maxAge = oldFilters.maxAge, maxDistance = distance))

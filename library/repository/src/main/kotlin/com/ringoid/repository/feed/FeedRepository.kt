@@ -424,9 +424,7 @@ open class FeedRepository @Inject constructor(
         }
 
     private fun Single<Lmm>.keepLmmInMemory(filters: Filters?): Single<Lmm> =
-        doAfterSuccess { lmmInMemory =
-            LcInMemory(it, aObjPool.lastActionTime(), filters)
-        }
+        doAfterSuccess { lmmInMemory = LcInMemory(it, aObjPool.lastActionTime(), filters) }
 
     // ------------------------------------------
     private fun Single<Lmm>.checkForNewFeedItems(): Single<Lmm> =
