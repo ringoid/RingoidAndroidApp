@@ -16,6 +16,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.Onboarding
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.Gender
@@ -55,7 +56,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     private var imageOnViewPortId: String = DomainUtil.BAD_ID
     private var currentImagePosition: Int = 0
-    private var cropImageAfterLogin: Boolean = false
+    private var cropImageAfterLogin: Boolean = false  // for Onboarding.ADD_IMAGE
     private var handleRequestToAddImage: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
@@ -125,7 +126,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         super.onTabTransaction(payload)
         payload?.let {
             when (it) {
-                Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }
+                Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }  // for Onboarding.ADD_IMAGE
                 Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> {
                     if (isAdded) {
                         onAddImage()
@@ -270,6 +271,15 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
+
+        /**
+         * Register listener on success or failure of image cropping.
+         *
+         * For [Onboarding.ADD_IMAGE] mode:
+         *
+         * If image cropping has finished before this place (i.e. prior to Profile screen's created),
+         * get that image from the global in-memory cache and show on Profile screen.
+         */
         globalImagePreviewReceiver()
             ?.doOnError(::onCropFailed)
             ?.doOnSuccess(::onCropSuccess)
@@ -284,6 +294,12 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             if (!cropImageAfterLogin) {
                 showEmptyStub(needShow = true)
             }
+            /**
+             * For [Onboarding.ADD_IMAGE] mode:
+             *
+             * If image has not been prepared yet after cropping, but Profile screen had already
+             * been created, so we are actually at this place, subscribe to get image once it's ready.
+             */
             globalImagePreviewReceiver()?.subscribe()  // get last prepared image, if any
         } else {
             // refresh Profile screen for already logged in user on a fresh app's start
