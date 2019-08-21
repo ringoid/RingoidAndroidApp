@@ -20,6 +20,7 @@ import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
+import com.ringoid.origin.feed.exception.LoadMoreFailedException
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedViewModel
@@ -117,7 +118,8 @@ class ExploreViewModel @Inject constructor(
                 if (it is ThresholdExceededException) {
                     feed.value = Feed(profiles = emptyList())
                 } else {
-                    viewState.value = ViewState.ERROR(it)
+                    DebugLogUtil.e(it, "Failed to load more feed items")
+                    viewState.value = ViewState.ERROR(LoadMoreFailedException(it))
                 }
             }
             .doFinally { isLoadingMore = false }

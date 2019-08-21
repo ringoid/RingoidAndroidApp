@@ -14,6 +14,7 @@ import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
 import com.ringoid.origin.feed.adapter.explore.ExploreFeedAdapter
+import com.ringoid.origin.feed.exception.LoadMoreFailedException
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
@@ -80,12 +81,15 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
             }
             is ViewState.ERROR -> {
                 when (newState.e) {
+                    is LoadMoreFailedException -> {
+                        feedAdapter.error()  // set feed items list to error state
+                        return  // override superclass behavior
+                    }
                     is ThresholdExceededException -> {
                         activity?.debugToast("Repeat after delay exceeded time threshold")
                         onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)  // purge Explore feed if fetching has failed with timeout
-                        return
+                        return  // override superclass behavior
                     }
-                    else -> feedAdapter.error()
                 }
             }
         }
