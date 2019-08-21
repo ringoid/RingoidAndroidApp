@@ -5,5 +5,5 @@ import io.reactivex.Completable
 
 interface IPushRepository {
 
-    fun updatePushToken(essence: PushTokenEssenceUnauthorized): Completable
+    fun updatePushToken(essence: PushTokenEssenceUnauthorized, dontWarn: Boolean = false): Completable
 }

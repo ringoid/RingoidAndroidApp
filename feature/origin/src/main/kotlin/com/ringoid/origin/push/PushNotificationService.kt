@@ -37,6 +37,7 @@ class PushNotificationService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         val params = Params().put(PushTokenEssenceUnauthorized(token))
+                             .put("dontWarn", true)
         (application as? IBaseRingoidApplication)?.updatePushTokenUseCase
             ?.source(params = params)
             ?.breadcrumb("Update push token from bg Service", "token" to token)

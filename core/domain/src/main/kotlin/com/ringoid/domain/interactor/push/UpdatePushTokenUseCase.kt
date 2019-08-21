@@ -14,6 +14,11 @@ class UpdatePushTokenUseCase @Inject constructor(private val repository: IPushRe
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : CompletableUseCase(threadExecutor, postExecutor) {
 
-    override fun sourceImpl(params: Params): Completable =
-        params.processCompletable(PushTokenEssenceUnauthorized::class.java, repository::updatePushToken)
+    override fun sourceImpl(params: Params): Completable {
+        val dontWarn = params.get<Boolean>("dontWarn") ?: false
+
+        return params.processCompletable(PushTokenEssenceUnauthorized::class.java) {
+            repository.updatePushToken(essence = it, dontWarn = dontWarn)
+        }
+    }
 }

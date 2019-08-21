@@ -88,6 +88,9 @@ private fun expBackoffFlowableImpl(
                         exception = error  // abort retry and fallback
                         0L  // delay in ms
                     }
+                    is SilentFatalException -> {
+                        exception = error; 0L  // fallback silently w/o Sentry alert
+                    }
                     is NetworkUnexpected -> {
                         when (error.code) {
                             ERROR_CONNECTION_INSECURE -> delay * attemptNumber * 2  // linear delay

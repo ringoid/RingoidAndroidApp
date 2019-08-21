@@ -10,6 +10,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
+import com.ringoid.domain.exception.SilentFatalException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
@@ -490,17 +491,47 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 }
 
 // --------------------------------------------------------------------------------------------
-inline fun ISharedPrefsManager.accessCompletable(body: (it: AccessToken) -> Completable): Completable =
-    accessToken()?.let { body(it) } ?: Completable.error { InvalidAccessTokenException() }
+inline fun ISharedPrefsManager.accessCompletable(dontWarn: Boolean = false, body: (it: AccessToken) -> Completable): Completable =
+    accessToken()
+        ?.let { body(it) }
+        ?: run {
+            val rootCause = InvalidAccessTokenException()
+            val e = if (dontWarn) SilentFatalException(rootCause) else rootCause
+            Completable.error(e)
+        }
 
-inline fun <reified T> ISharedPrefsManager.accessMaybe(body: (it: AccessToken) -> Maybe<T>): Maybe<T> =
-    accessToken()?.let { body(it) } ?: Maybe.error<T> { InvalidAccessTokenException() }
+inline fun <reified T> ISharedPrefsManager.accessMaybe(dontWarn: Boolean = false, body: (it: AccessToken) -> Maybe<T>): Maybe<T> =
+    accessToken()
+        ?.let { body(it) }
+        ?: run {
+            val rootCause = InvalidAccessTokenException()
+            val e = if (dontWarn) SilentFatalException(rootCause) else rootCause
+            Maybe.error<T>(e)
+        }
 
-inline fun <reified T> ISharedPrefsManager.accessSingle(body: (it: AccessToken) -> Single<T>): Single<T> =
-    accessToken()?.let { body(it) } ?: Single.error<T> { InvalidAccessTokenException() }
+inline fun <reified T> ISharedPrefsManager.accessSingle(dontWarn: Boolean = false, body: (it: AccessToken) -> Single<T>): Single<T> =
+    accessToken()
+        ?.let { body(it) }
+        ?: run {
+            val rootCause = InvalidAccessTokenException()
+            val e = if (dontWarn) SilentFatalException(rootCause) else rootCause
+            Single.error<T>(e)
+        }
 
-inline fun <reified T> ISharedPrefsManager.accessFlowable(body: (it: AccessToken) -> Flowable<T>): Flowable<T> =
-    accessToken()?.let { body(it) } ?: Flowable.error<T> { InvalidAccessTokenException() }
+inline fun <reified T> ISharedPrefsManager.accessFlowable(dontWarn: Boolean = false, body: (it: AccessToken) -> Flowable<T>): Flowable<T> =
+    accessToken()
+        ?.let { body(it) }
+        ?: run {
+            val rootCause = InvalidAccessTokenException()
+            val e = if (dontWarn) SilentFatalException(rootCause) else rootCause
+            Flowable.error<T>(e)
+        }
 
-inline fun <reified T> ISharedPrefsManager.accessObservable(body: (it: AccessToken) -> Observable<T>): Observable<T> =
-    accessToken()?.let { body(it) } ?: Observable.error<T> { InvalidAccessTokenException() }
+inline fun <reified T> ISharedPrefsManager.accessObservable(dontWarn: Boolean = false, body: (it: AccessToken) -> Observable<T>): Observable<T> =
+    accessToken()
+        ?.let { body(it) }
+        ?: run {
+            val rootCause = InvalidAccessTokenException()
+            val e = if (dontWarn) SilentFatalException(rootCause) else rootCause
+            Observable.error<T>(e)
+        }

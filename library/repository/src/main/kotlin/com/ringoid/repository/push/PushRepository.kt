@@ -18,8 +18,8 @@ class PushRepository @Inject constructor(
     cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IPushRepository {
 
-    override fun updatePushToken(essence: PushTokenEssenceUnauthorized): Completable =
-        spm.accessSingle { cloud.updatePushToken(PushTokenEssence.from(essence, it.accessToken)) }
+    override fun updatePushToken(essence: PushTokenEssenceUnauthorized, dontWarn: Boolean): Completable =
+        spm.accessSingle(dontWarn) { cloud.updatePushToken(PushTokenEssence.from(essence, it.accessToken)) }
             .handleError(tag = "updatePushToken", traceTag = "push/update_token")
             .ignoreElement()  // convert to Completable
 }
