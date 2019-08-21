@@ -31,13 +31,13 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
         locationProvider.location()
             .doOnSubscribe {
                 start = System.currentTimeMillis()
-                DebugLogUtil.d("Location: start get at $start")
+                DebugLogUtil.d("Location [client]: start get at $start")
             }
-            .doOnSuccess { DebugLogUtil.d("Location: success [$it]") }
+            .doOnSuccess { DebugLogUtil.d("Location [client]: success [$it]") }
             .doOnError { SentryUtil.capture(it, "Location get failed") }
             .doFinally {
                 val elapsed = System.currentTimeMillis() - start
-                DebugLogUtil.d("Location: obtain location has taken $elapsed ms")
+                DebugLogUtil.d("Location [client]: obtain location has taken $elapsed ms")
             }
             .autoDisposable(this)
             .subscribe({ onLocationReceived(handleCode) }) {

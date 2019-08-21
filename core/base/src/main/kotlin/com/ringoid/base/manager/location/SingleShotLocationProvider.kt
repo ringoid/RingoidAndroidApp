@@ -34,14 +34,14 @@ class SingleShotLocationProvider @Inject constructor(
         spm.getLocation()
             ?.let { Single.just(it) }
             ?.doOnSubscribe {
-                DebugLogUtil.d("Location: cache hit")
+                DebugLogUtil.d("Location [service]: cache hit")
                 getLocation()  // this will silently update location in a cache, if changed significantly
-                    .doOnSubscribe { DebugLogUtil.d("Location: get from cache, update eagerly") }
+                    .doOnSubscribe { DebugLogUtil.d("Location [service]: get from cache, update eagerly") }
                     .subscribeOn(AndroidSchedulers.from(backgroundLooper.looper, true))
                     .subscribe({}, Timber::e)  // obtain location eagerly
             }
             ?: run {
-                DebugLogUtil.d("Location: no location has found in cache")
+                DebugLogUtil.d("Location [service]: no location has found in cache")
                 getLocation()
             }
 
@@ -55,15 +55,15 @@ class SingleShotLocationProvider @Inject constructor(
         (context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
             ?.let { locationManager ->
                 getLocationProvider(locationManager)  // get available location provider
-                    .also { DebugLogUtil.v("Location: using provider '$it'") }
+                    .also { DebugLogUtil.v("Location [service]: using provider '$it'") }
                     ?.let { provider ->
                         try {
                             locationManager.getLastKnownLocation(provider)
-                                ?.also { DebugLogUtil.v("Location: last known location for provider '$provider' is: $it") }
+                                ?.also { DebugLogUtil.v("Location [service]: last known location for provider '$provider' is: $it") }
                                 ?.let { Single.just(GpsLocation.from(it)) }
                                 ?: requestLocation(provider)  // no last location found in cache - request for location
                         } catch (e: Throwable) {
-                            DebugLogUtil.e(e, "Location: failed get last known location")
+                            DebugLogUtil.e(e, "Location [service]: failed get last known location")
                             Single.error<GpsLocation>(e)
                         }
                     }
@@ -81,15 +81,15 @@ class SingleShotLocationProvider @Inject constructor(
         (context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
             ?.let { locationManager ->
                 getLocationProviderForPrecision(precision)
-                    .also { DebugLogUtil.v("Location: using provider '$it' for precision '$precision'") }
+                    .also { DebugLogUtil.v("Location [service]: using provider '$it' for precision '$precision'") }
                     .let {
                         try {
                             locationManager.getLastKnownLocation(it)
-                                ?.also { DebugLogUtil.v("Location: last known location for precision '$precision' is: $it") }
+                                ?.also { DebugLogUtil.v("Location [service]: last known location for precision '$precision' is: $it") }
                                 ?.let { Single.just(GpsLocation.from(it)) }
                                 ?: requestLocation(precision)  // no last location found in cache - request for location
                         } catch (e: Throwable) {
-                            DebugLogUtil.e(e, "Location: failed get last known location for precision: $precision")
+                            DebugLogUtil.e(e, "Location [service]: failed get last known location for precision: $precision")
                             Single.error<GpsLocation>(e)
                         }
                     }
@@ -105,7 +105,7 @@ class SingleShotLocationProvider @Inject constructor(
         (context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
             ?.let { locationManager ->
                 getLocationCriteriaByPrecision(locationManager, precision)
-                    ?.also { DebugLogUtil.v("Location: request for location for precision '$precision' and criteria: $it") }
+                    ?.also { DebugLogUtil.v("Location [service]: request for location for precision '$precision' and criteria: $it") }
                     ?.let { criteria -> requestLocationWithManagerAndCriteria(locationManager, criteria) }
                     ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(getLocationProviderForPrecision(precision), status = -3)) }
             } ?: Single.error(NullPointerException("No location service available"))
@@ -114,7 +114,7 @@ class SingleShotLocationProvider @Inject constructor(
         (context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
             ?.let { locationManager ->
                 getLocationCriteriaByProvider(provider)
-                    ?.also { DebugLogUtil.v("Location: request for location with provider '$provider' and criteria: $it") }
+                    ?.also { DebugLogUtil.v("Location [service]: request for location with provider '$provider' and criteria: $it") }
                     ?.let { criteria -> requestLocationWithManagerAndCriteria(locationManager, criteria) }
                     ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(provider, status = -2)) }
             } ?: Single.error(NullPointerException("No location service available"))
@@ -167,12 +167,12 @@ class SingleShotLocationProvider @Inject constructor(
         Single.create { emitter ->
             val listener = object : LocationListener {
                 override fun onLocationChanged(location: Location) {
-                    DebugLogUtil.v("Location: obtained (${location.latitude}, ${location.longitude})")
+                    DebugLogUtil.v("Location [service]: obtained (${location.latitude}, ${location.longitude})")
                     emitter.onSuccess(GpsLocation.from(location))
                 }
 
                 override fun onStatusChanged(provider: String, status: Int, extras: Bundle?) {
-                    DebugLogUtil.v("Location: status has changed to $status for provider '$provider': $extras".trim())
+                    DebugLogUtil.v("Location [service]: status has changed to $status for provider '$provider': $extras".trim())
                     if (status != LocationProvider.AVAILABLE) {
                         emitter.onError(LocationServiceUnavailableException(provider, status))
                     }
@@ -210,7 +210,7 @@ class SingleShotLocationProvider @Inject constructor(
             }
             .flatMap { (location, aobj) ->
                 aobj?.let { aObj ->
-                    DebugLogUtil.v("Location: prepare action object: $aObj")
+                    DebugLogUtil.v("Location [service]: prepare action object: $aObj")
                     actionObjectPool
                         .commitNow(aObj)
                         .subscribeOn(Schedulers.io())
