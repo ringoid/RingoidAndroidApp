@@ -142,7 +142,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
         onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // Explore feed is initially purged
 
         filtersPopupWidget?.setOnClickListener_applyFilters {
-            filtersPopupWidget?.hide()
+            it.hide()
             vm.onApplyFilters()
         }
         filtersPopupWidget?.hideShowAllButton()

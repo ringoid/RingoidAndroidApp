@@ -5,6 +5,7 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
+import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
@@ -117,13 +118,16 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             vm.onTapToRefreshClick()
         }
 
-        filtersPopupWidget?.setOnClickListener_applyFilters {
-            filtersPopupWidget?.hide()
-            vm.onApplyFilters()
-        }
-        filtersPopupWidget?.setOnClickListener_showAll {
-            filtersPopupWidget?.hide()
-            vm.onShowAllWithoutFilters()
+        filtersPopupWidget?.let { widget ->
+            widget.setCountOfFilteredFeedItems(String.format(AppRes.FILTER_BUTTON_APPLY, 0))
+            widget.setOnClickListener_applyFilters {
+                it.hide()
+                vm.onApplyFilters()
+            }
+            widget.setOnClickListener_showAll {
+                it.hide()
+                vm.onShowAllWithoutFilters()
+            }
         }
     }
 }

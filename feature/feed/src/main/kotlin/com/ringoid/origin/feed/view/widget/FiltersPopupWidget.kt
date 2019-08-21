@@ -56,13 +56,13 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
     }
 
     @Suppress("AutoDispose", "CheckResult")
-    internal fun setOnClickListener_applyFilters(l: (() -> Unit)?) {
-        rootView.btn_apply_filters.clicks().compose(clickDebounce()).subscribe { l?.invoke() }
+    internal fun setOnClickListener_applyFilters(l: ((widget: FiltersPopupWidget) -> Unit)?) {
+        rootView.btn_apply_filters.clicks().compose(clickDebounce()).subscribe { l?.invoke(this) }
     }
 
     @Suppress("AutoDispose", "CheckResult")
-    internal fun setOnClickListener_showAll(l: (() -> Unit)?) {
-        rootView.btn_show_all.clicks().compose(clickDebounce()).subscribe { l?.invoke() }
+    internal fun setOnClickListener_showAll(l: ((widget: FiltersPopupWidget) -> Unit)?) {
+        rootView.btn_show_all.clicks().compose(clickDebounce()).subscribe { l?.invoke(this) }
     }
 
     internal fun setOnSlideUpListener(l: OnSlideUpListener?) {
