@@ -128,6 +128,11 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
 
     override fun setToolbarTitleWithLcCounts(show: Int, hidden: Int) {
         super.setToolbarTitleWithLcCounts(show, hidden)
+        if (show <= 0 && hidden <= 0) {
+            setDefaultToolbarTitle()
+            return
+        }
+
         toolbar.title = if (hidden > 0) String.format(AppRes.LC_TITLE_MESSAGES_HIDDEN, show, hidden)
                         else String.format(AppRes.LC_TITLE_MESSAGES, show)
     }
