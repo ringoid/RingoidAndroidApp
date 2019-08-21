@@ -78,8 +78,9 @@ abstract class BaseLcFeedViewModel(
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
+                val emptyDueToFilters = filtersSource.hasFiltersApplied() && it.totalNotFilteredCount > 0
                 setLcItems(items = it.items, totalNotFilteredCount = it.totalNotFilteredCount,
-                           clearMode = if (filtersSource.hasFiltersApplied()) ViewState.CLEAR.MODE_CHANGE_FILTERS
+                           clearMode = if (emptyDueToFilters) ViewState.CLEAR.MODE_CHANGE_FILTERS
                                        else ViewState.CLEAR.MODE_EMPTY_DATA)
             }
             .map { it.items }

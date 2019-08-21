@@ -57,7 +57,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
             ViewState.CLEAR.MODE_NEED_REFRESH -> EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.common_pull_to_refresh)
             ViewState.CLEAR.MODE_CHANGE_FILTERS ->
                 EmptyFragment.Companion.Input(
-                    emptyTextResId = OriginR_string.feed_empty_no_data_filters,
+                    emptyLabelText = String.format(AppRes.EMPTY_FEED_FILTERS, lcCountHidden),
                     labelTextColor = context?.getAttributeColor(WidgetR_attrs.refTextColorPrimary) ?: ContextCompat.getColor(context!!, WidgetR_color.primary_text),
                     isLabelClickable = true)
             else -> null

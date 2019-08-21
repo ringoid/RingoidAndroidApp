@@ -66,6 +66,7 @@
     <string name="feed_footer_item_label">Новых больше нет</string>
     <string name="feed_footer_item_label_explore">Expand filters</string>
     <string name="feed_lmm_dialog_no_user_photo_description">Добавь фото, чтобы получать лайки</string>
+    <string name="feed_lmm_empty_no_data_filters">%d профилей скрыто из&#45;за фильтров</string>
     <string name="feed_likes_you_empty_no_data">Лайков ещё нет</string>
     <string name="feed_likes_you_title">Ты нравишься</string>
     <string name="feed_likes_you_title_count">%d лайков</string>

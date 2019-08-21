@@ -118,6 +118,8 @@ object AppRes {
 
     /* Translatable */
     // ------------------------------------------
+    var EMPTY_FEED_FILTERS = ""
+        private set
     var FILTER_AGE = ""
         private set
     var FILTER_DISTANCE_KM = ""
@@ -239,6 +241,7 @@ object AppRes {
 
     fun initTranslatableStrings(resources: Resources) {
         with (resources) {
+            EMPTY_FEED_FILTERS = getString(R.string.feed_lmm_empty_no_data_filters)
             FILTER_AGE = getString(R.string.common_age_range)
             FILTER_DISTANCE_KM = getString(R.string.common_distance_km)
             FILTER_DISTANCE_PLUS_KM = getString(R.string.common_distance_plus_km)

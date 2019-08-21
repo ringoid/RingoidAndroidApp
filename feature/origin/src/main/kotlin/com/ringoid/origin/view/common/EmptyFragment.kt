@@ -18,8 +18,10 @@ class EmptyFragment : Fragment() {
 
     companion object {
         data class Input(@LayoutRes val layoutResId: Int = R.layout.fragment_empty_text,
-                         @StringRes val emptyTitleResId: Int = 0, @StringRes val emptyTextResId: Int = 0,
+                         @StringRes val emptyTitleResId: Int = 0,
+                         @StringRes val emptyTextResId: Int = 0,
                          @ColorInt val labelTextColor: Int = 0,
+                         val emptyLabelText: String? = null,
                          val isLabelClickable: Boolean = false)
 
         const val TAG = "EmptyFragment_tag"
@@ -28,6 +30,7 @@ class EmptyFragment : Fragment() {
         private const val BUNDLE_KEY_LABEL_TEXT_COLOR = "bundle_key_label_text_color"
         private const val BUNDLE_KEY_EMPTY_TITLE_RES_ID = "bundle_key_empty_title_res_id"
         private const val BUNDLE_KEY_EMPTY_TEXT_RES_ID = "bundle_key_empty_text_res_id"
+        private const val BUNDLE_KEY_EMPTY_LABEL_TEXT = "bundle_key_empty_label_text"
         private const val BUNDLE_KEY_FLAG_LABEL_CLICKABLE = "bundle_key_flag_label_clickable"
 
         fun newInstance(): EmptyFragment = newInstance(Input())
@@ -40,6 +43,7 @@ class EmptyFragment : Fragment() {
                         putInt(BUNDLE_KEY_LABEL_TEXT_COLOR, input.labelTextColor)
                         putInt(BUNDLE_KEY_EMPTY_TITLE_RES_ID, input.emptyTitleResId)
                         putInt(BUNDLE_KEY_EMPTY_TEXT_RES_ID, input.emptyTextResId)
+                        putString(BUNDLE_KEY_EMPTY_LABEL_TEXT, input.emptyLabelText)
                         putBoolean(BUNDLE_KEY_FLAG_LABEL_CLICKABLE, input.isLabelClickable)
                     }
                 }
@@ -50,6 +54,7 @@ class EmptyFragment : Fragment() {
     @ColorInt private var labelTextColor: Int = 0
     @StringRes private var emptyTitleResId: Int = 0
     @StringRes private var emptyTextResId: Int = 0
+    private var emptyLabelText: String? = null
     private var isLabelClickable: Boolean = false
 
     /* Lifecycle */
@@ -61,6 +66,7 @@ class EmptyFragment : Fragment() {
             labelTextColor = it.getInt(BUNDLE_KEY_LABEL_TEXT_COLOR)
             emptyTitleResId = it.getInt(BUNDLE_KEY_EMPTY_TITLE_RES_ID)
             emptyTextResId = it.getInt(BUNDLE_KEY_EMPTY_TEXT_RES_ID)
+            emptyLabelText = it.getString(BUNDLE_KEY_EMPTY_LABEL_TEXT)
             isLabelClickable = it.getBoolean(BUNDLE_KEY_FLAG_LABEL_CLICKABLE, false)
         } ?: throw IllegalArgumentException("EmptyFragment requires non-null input arguments")
     }
@@ -81,6 +87,18 @@ class EmptyFragment : Fragment() {
                     ?.let {
                         findViewById<TextView>(R.id.tv_empty)?.let { tv ->
                             tv.setText(it)
+                            if (isLabelClickable) {
+                                tv.clicks().compose(clickDebounce()).subscribe {
+                                    communicator(IEmptyScreenCallback::class.java)?.onEmptyLabelClick()
+                                }
+                            }
+                        }
+                    }
+                emptyLabelText
+                    .takeIf { !it.isNullOrBlank() }
+                    ?.let {
+                        findViewById<TextView>(R.id.tv_empty)?.let { tv ->
+                            tv.text = it
                             if (isLabelClickable) {
                                 tv.clicks().compose(clickDebounce()).subscribe {
                                     communicator(IEmptyScreenCallback::class.java)?.onEmptyLabelClick()
