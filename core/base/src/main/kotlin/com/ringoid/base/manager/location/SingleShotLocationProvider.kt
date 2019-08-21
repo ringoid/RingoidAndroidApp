@@ -20,11 +20,11 @@ import javax.inject.Singleton
 
 @Singleton
 class SingleShotLocationProvider @Inject constructor(
-    private val context: Context, private val spm: ISharedPrefsManager,
+    private val context: Context,
+    private val backgroundLooper: HandlerThread,
+    private val spm: ISharedPrefsManager,
     private val actionObjectPool: IActionObjectPool)
     : ILocationProvider {
-
-    private val backgroundLooper = HandlerThread("LocationGetThread")
 
     /**
      * Get saved location and obtain location from provider eagerly.
@@ -34,6 +34,7 @@ class SingleShotLocationProvider @Inject constructor(
         spm.getLocation()
             ?.let { Single.just(it) }
             ?.doOnSubscribe {
+                DebugLogUtil.d("Location: cache hit")
                 getLocation()  // this will silently update location in a cache, if changed significantly
                     .doOnSubscribe { DebugLogUtil.d("Location: get from cache, update eagerly") }
                     .subscribeOn(AndroidSchedulers.from(backgroundLooper.looper, true))
@@ -47,15 +48,7 @@ class SingleShotLocationProvider @Inject constructor(
     /**
      * Get location from any available provider.
      */
-    private fun getLocation(): Single<GpsLocation> =
-        getLocationImpl()
-            .doOnSubscribe {
-                if (!backgroundLooper.isAlive) {
-                    DebugLogUtil.d("Location: start background looper thread")
-                    backgroundLooper.start()
-                }
-            }
-            .compareAndSaveLocation()
+    private fun getLocation(): Single<GpsLocation> = getLocationImpl().compareAndSaveLocation()
 
     @SuppressWarnings("MissingPermission")
     private fun getLocationImpl(): Single<GpsLocation> =

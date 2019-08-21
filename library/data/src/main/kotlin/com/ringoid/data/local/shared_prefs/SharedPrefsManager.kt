@@ -249,6 +249,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     // ------------------------------------------
     override fun onLogout() {
+        deleteLocation()  // forget saved location on logout
         dropBigEditText()  // forget saved input text for dialog
         dropFilters()  // forget saved filters on logout
         dropUserProfileProperties()  // forget profile properties for previous user

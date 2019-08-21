@@ -36,11 +36,11 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate() {
+        initializeLogger()  // Logger must be initialized to show logs at the very beginning
         super.onCreate()
         Timber.d("Starting ${javaClass.simpleName}")
         initializeResources()
         initializeCrashlytics()
-        initializeLogger()  // Logger must be initialized to show logs at the very beginning
         initializeRxErrorHandler()
 //        initializeStrictMode()  // ignore StrictMode alerts for SDK's initializations
 

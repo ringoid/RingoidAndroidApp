@@ -1,5 +1,6 @@
 package com.ringoid.origin.dating.app
 
+import android.os.HandlerThread
 import android.util.Log
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.flurry.android.FlurryAgent
@@ -16,6 +17,7 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.branch.referral.Branch
 import io.sentry.Sentry
+import timber.log.Timber
 
 class RingoidApplication : BaseRingoidApplication() {
 
@@ -23,10 +25,19 @@ class RingoidApplication : BaseRingoidApplication() {
         DaggerApplicationComponent.builder()
             .application(this)
             .applicationContext(applicationContext)
+            .bgLooper(HandlerThread("BgLooper-1"))
             .cloudModule(CloudModule(appVersion = BuildConfig.BUILD_NUMBER))
             .ringoidCloudModule(RingoidCloudModule())
             .systemCloudModule(SystemCloudModule())
             .create(this)
+            .also {
+                (it as ApplicationComponent).bgLooper().let { bgLooper ->
+                    if (!bgLooper.isAlive) {
+                        Timber.v("Background looper has been prepared")
+                        bgLooper.start()
+                    }
+                }
+            }
             .also { BarrierLogUtil.connectToDb((it as ApplicationComponent).barrierLogDao()) }
             .also { DebugLogUtil.connectToDb((it as ApplicationComponent).debugLogDao()) }
 

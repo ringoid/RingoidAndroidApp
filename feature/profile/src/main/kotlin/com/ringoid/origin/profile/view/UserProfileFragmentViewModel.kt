@@ -197,7 +197,6 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     fun onRefresh() {
-        actionObjectPool.trigger()
         getUserImages()
     }
 }
