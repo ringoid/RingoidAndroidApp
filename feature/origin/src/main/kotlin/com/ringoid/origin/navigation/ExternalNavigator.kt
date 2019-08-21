@@ -19,6 +19,7 @@ object ExternalNavigator {
 
     const val RC_EMAIL_SEND = 9800
     const val RC_GALLERY_GET_IMAGE = 9900
+    const val RC_SETTINGS_LOCATION = 9901
 
     /* Browser */
     // --------------------------------------------------------------------------------------------
@@ -138,5 +139,19 @@ object ExternalNavigator {
         Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             .takeIf { it.resolveActivity(context.packageManager) != null }
             ?.let { context.startActivity(it) }
+    }
+
+    fun openLocationSettingsForResult(activity: Activity) {
+        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            .takeIf { it.resolveActivity(activity.packageManager) != null }
+            ?.let { activity.startActivityForResult(it, RC_SETTINGS_LOCATION) }
+    }
+
+    fun openLocationSettingsForResult(fragment: Fragment) {
+        fragment.activity?.let { activity ->
+            Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                .takeIf { it.resolveActivity(activity.packageManager) != null }
+                ?.let { fragment.startActivityForResult(it, RC_SETTINGS_LOCATION) }
+        }
     }
 }

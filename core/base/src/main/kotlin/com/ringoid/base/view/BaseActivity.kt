@@ -116,6 +116,14 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         DebugLogUtil.lifecycle(this, "onNewIntent")
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onActivityResult(rc=$requestCode,result=$resultCode,data=$data)")
+        DebugLogUtil.lifecycle(this, "onActivityResult")
+        vm.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onStart() {
         super.onStart()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")

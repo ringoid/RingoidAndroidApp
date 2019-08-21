@@ -2,6 +2,7 @@ package com.ringoid.base.view
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.manager.IRuntimeConfig
@@ -112,6 +114,14 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
                 observe(viewState, this@BaseDialogFragment::onViewStateChange)
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.v("onActivityResult(rc=$requestCode,result=$resultCode,data=$data)")
+        DebugLogUtil.lifecycle(this, "onActivityResult")
+        vm.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onStart() {

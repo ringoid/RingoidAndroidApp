@@ -191,6 +191,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onActivityResult(rc=$requestCode,result=$resultCode,data=$data)")
         DebugLogUtil.lifecycle(this, "onActivityResult")
+        vm.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onStart() {

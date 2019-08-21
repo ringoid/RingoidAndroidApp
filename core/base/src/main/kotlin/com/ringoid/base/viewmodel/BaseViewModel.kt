@@ -3,6 +3,7 @@ package com.ringoid.base.viewmodel
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -106,6 +107,11 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
         super.onCleared()
         unsubscribeFromBusEvents()
         AppWatcher.objectWatcher.watch(this)
+    }
+
+    // ------------------------------------------
+    open fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        // override in subclasses
     }
 
     /* Visibility */

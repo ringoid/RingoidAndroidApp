@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view
 
 import android.app.Application
+import android.content.Intent
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
@@ -25,6 +26,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.cloneAsList
 import com.ringoid.utility.collection.EqualRange
@@ -94,6 +96,14 @@ abstract class FeedViewModel(
             advanceAndPushViewObjects(backupPool = viewActionObjectBackup) {
                 actionObjectPool.trigger()
             }
+        }
+    }
+
+    // ------------------------------------------
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            ExternalNavigator.RC_SETTINGS_LOCATION -> refresh()
         }
     }
 
