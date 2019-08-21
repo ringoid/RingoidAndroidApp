@@ -133,6 +133,8 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
         updateLastActionTime(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
     }
 
+    override fun isLastActionTimeValid(): Boolean = lastActionTime() > 0
+
     override fun lastActionTime(): Long = lastActionTimeValue.get()
 
     protected fun updateLastActionTime(lastActionTime: Long) {

@@ -14,6 +14,7 @@ interface IActionObjectPool {
     fun trigger()
     fun triggerSource(): Single<Long>
 
+    fun isLastActionTimeValid(): Boolean
     fun lastActionTime(): Long
     fun finalizePool()
 }
