@@ -81,6 +81,7 @@ abstract class BasePermissionActivity<T : BasePermissionViewModel> : BaseActivit
         Dialogs.showTextDialog(this, titleResId = R.string.permission_location_dialog_enable_location_service, descriptionResId = 0,
             positiveBtnLabelResId = R.string.button_settings,
             negativeBtnLabelResId = R.string.button_later,
-            positiveListener = { _, _ -> ExternalNavigator.openLocationSettings(this@BasePermissionActivity) })
+            positiveListener = { _, _ -> ExternalNavigator.openLocationSettings(this@BasePermissionActivity) },
+            isCancellable = false)
     }
 }
