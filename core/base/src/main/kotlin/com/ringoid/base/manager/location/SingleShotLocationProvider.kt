@@ -3,6 +3,7 @@ package com.ringoid.base.manager.location
 import android.content.Context
 import android.location.*
 import android.os.Bundle
+import android.os.HandlerThread
 import com.ringoid.base.manager.location.LocationUtils.LocationManager_FUSED_PROVIDER
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
@@ -23,6 +24,8 @@ class SingleShotLocationProvider @Inject constructor(
     private val actionObjectPool: IActionObjectPool)
     : ILocationProvider {
 
+    private val backgroundLooper = HandlerThread("LocationGetThread")
+
     /**
      * Get saved location and obtain location from provider eagerly.
      * If saved location is absent - fallback to get location from any available provider.
@@ -31,16 +34,28 @@ class SingleShotLocationProvider @Inject constructor(
         spm.getLocation()
             ?.let { Single.just(it) }
             ?.doOnSubscribe {
-                getLocation()
-                    .subscribeOn(Schedulers.io())
+                getLocation()  // this will silently update location in a cache, if changed significantly
+                    .doOnSubscribe { DebugLogUtil.d("Location: get from cache, update eagerly") }
+                    .subscribeOn(AndroidSchedulers.from(backgroundLooper.looper, true))
                     .subscribe({}, Timber::e)  // obtain location eagerly
             }
-            ?: getLocation()
+            ?: run {
+                DebugLogUtil.d("Location: no location has found in cache")
+                getLocation()
+            }
 
     /**
      * Get location from any available provider.
      */
-    override fun getLocation(): Single<GpsLocation> = getLocationImpl().compareAndSaveLocation()
+    private fun getLocation(): Single<GpsLocation> =
+        getLocationImpl()
+            .doOnSubscribe {
+                if (!backgroundLooper.isAlive) {
+                    DebugLogUtil.d("Location: start background looper thread")
+                    backgroundLooper.start()
+                }
+            }
+            .compareAndSaveLocation()
 
     @SuppressWarnings("MissingPermission")
     private fun getLocationImpl(): Single<GpsLocation> =
@@ -49,10 +64,15 @@ class SingleShotLocationProvider @Inject constructor(
                 getLocationProvider(locationManager)  // get available location provider
                     .also { DebugLogUtil.v("Location: using provider '$it'") }
                     ?.let { provider ->
-                        locationManager.getLastKnownLocation(provider)
-                            ?.also { DebugLogUtil.v("Location: last known location for provider '$provider' is: $it") }
-                            ?.let { Single.just(GpsLocation.from(it)) }
-                            ?: requestLocation(provider)  // no last location found in cache - request for location
+                        try {
+                            locationManager.getLastKnownLocation(provider)
+                                ?.also { DebugLogUtil.v("Location: last known location for provider '$provider' is: $it") }
+                                ?.let { Single.just(GpsLocation.from(it)) }
+                                ?: requestLocation(provider)  // no last location found in cache - request for location
+                        } catch (e: Throwable) {
+                            DebugLogUtil.e(e, "Location: failed get last known location")
+                            Single.error(e)
+                        }
                     }
                     ?: Single.error(LocationServiceUnavailableException("any", status = -4))
             } ?: Single.error(NullPointerException("No location service available"))
@@ -60,7 +80,7 @@ class SingleShotLocationProvider @Inject constructor(
     /**
      * Get location from provider that corresponds to given [precision].
      */
-    override fun getLocation(precision: LocationPrecision): Single<GpsLocation> =
+    private fun getLocation(precision: LocationPrecision): Single<GpsLocation> =
         getLocationImpl(precision).compareAndSaveLocation()
 
     @SuppressWarnings("MissingPermission")
@@ -69,18 +89,26 @@ class SingleShotLocationProvider @Inject constructor(
             ?.let { locationManager ->
                 getLocationProviderForPrecision(precision)
                     .also { DebugLogUtil.v("Location: using provider '$it' for precision '$precision'") }
-                    .let { locationManager.getLastKnownLocation(it) }
-                    ?.also { DebugLogUtil.v("Location: last known location for precision '$precision' is: $it") }
-                    ?.let { Single.just(GpsLocation.from(it)) }
-                    ?: requestLocation(precision)  // no last location found in cache - request for location
+                    .let {
+                        try {
+                            locationManager.getLastKnownLocation(it)
+                                ?.also { DebugLogUtil.v("Location: last known location for precision '$precision' is: $it") }
+                                ?.let { Single.just(GpsLocation.from(it)) }
+                                ?: requestLocation(precision)  // no last location found in cache - request for location
+                        } catch (e: Throwable) {
+                            DebugLogUtil.e(e, "Location: failed get last known location for precision: $precision")
+                            Single.error(e)
+                        }
+                    }
             } ?: Single.error(NullPointerException("No location service available"))
 
+    // ------------------------------------------
     /**
      * Requests for single location update. Make sure permissions are granted and geoIP / GPS
      * services are enabled, depending on [precision].
      */
     @SuppressWarnings("MissingPermission")
-    override fun requestLocation(precision: LocationPrecision): Single<GpsLocation> =
+    private fun requestLocation(precision: LocationPrecision): Single<GpsLocation> =
         (context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
             ?.let { locationManager ->
                 getLocationCriteriaByPrecision(locationManager, precision)
@@ -89,7 +117,6 @@ class SingleShotLocationProvider @Inject constructor(
                     ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(getLocationProviderForPrecision(precision), status = -3)) }
             } ?: Single.error(NullPointerException("No location service available"))
 
-    // ------------------------------------------
     private fun requestLocation(provider: String): Single<GpsLocation> =
         (context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
             ?.let { locationManager ->

@@ -6,6 +6,7 @@ import com.ringoid.base.manager.location.LocationServiceUnavailableException
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.log.SentryUtil
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
@@ -28,14 +29,21 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
 
         var start = 0L
         locationProvider.location()
-            .doOnSubscribe { start = System.currentTimeMillis() }
+            .doOnSubscribe {
+                start = System.currentTimeMillis()
+                DebugLogUtil.d("Location: start get at $start")
+            }
+            .doOnSuccess { DebugLogUtil.d("Location: success [$it]") }
+            .doOnError {
+                DebugLogUtil.e(it, "Location: failed")
+                SentryUtil.capture(it, "Location get failed")
+            }
             .doFinally {
                 val elapsed = System.currentTimeMillis() - start
-                DebugLogUtil.v("Obtain location has taken $elapsed ms")
+                DebugLogUtil.d("Location: obtain location has taken $elapsed ms")
             }
             .autoDisposable(this)
             .subscribe({ onLocationReceived(handleCode) }) {
-                DebugLogUtil.e(it)
                 when (it) {
                     is LocationServiceUnavailableException -> viewState.value = ViewState.DONE(ASK_TO_ENABLE_LOCATION_SERVICE(handleCode))
                 }

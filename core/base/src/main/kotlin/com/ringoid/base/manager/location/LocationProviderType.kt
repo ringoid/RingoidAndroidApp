@@ -8,7 +8,7 @@ enum class LocationProviderType(val provider: String) {
     FUSED(LocationUtils.LocationManager_FUSED_PROVIDER);  // order matters
 
     companion object {
-        val values: Array<LocationProviderType> = LocationProviderType.values()
+        val values: Array<LocationProviderType> = values()
     }
 
     fun isEnabled(locationManager: LocationManager): Boolean =
