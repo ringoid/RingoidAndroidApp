@@ -189,7 +189,7 @@ class SingleShotLocationProvider @Inject constructor(
                 }
             }
             emitter.setCancellable { locationManager.removeUpdates(listener) }
-            locationManager.requestSingleUpdate(criteria, listener, null)
+            locationManager.requestSingleUpdate(criteria, listener, backgroundLooper.looper)
         }
 
     // ------------------------------------------
