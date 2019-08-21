@@ -76,8 +76,11 @@ class PersistActionObjectPool @Inject constructor(
 
     // ------------------------------------------
     override fun commitNow(aobj: OriginActionObject): Single<Long> =
-        Single.fromCallable { local.addActionObject(aobj) }
-              .flatMap { triggerSource() }
+        Single.fromCallable {
+            DebugLogUtil.v("Put and commit action object: ${aobj.actionType}")
+            local.addActionObject(aobj)
+        }
+        .flatMap { triggerSource() }
 
     @Suppress("CheckResult")
     override fun trigger() {

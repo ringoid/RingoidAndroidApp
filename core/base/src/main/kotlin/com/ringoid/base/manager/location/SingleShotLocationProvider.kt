@@ -217,6 +217,7 @@ class SingleShotLocationProvider @Inject constructor(
             }
             .flatMap { (location, aobj) ->
                 aobj?.let { aObj ->
+                    DebugLogUtil.v("Location: prepare action object: $aObj")
                     actionObjectPool
                         .commitNow(aObj)
                         .subscribeOn(Schedulers.io())
