@@ -117,6 +117,10 @@ class DebugView : ConstraintLayout {
             }, Timber::e)
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+    }
+
     private fun clear() {
         debugLogItemAdapter.clear()
     }

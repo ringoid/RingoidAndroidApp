@@ -75,7 +75,7 @@ object SentryUtil {
 
     fun capture(e: Throwable, message: String? = null, level: Level = Level.ERROR,
                 tag: String? = null, extras: List<Pair<String, String>>? = null) {
-        Timber.log(level.toLogPriority(), message)
+        Timber.log(level.toLogPriority(), e, message)
         val fullExtras = mutableListOf<Pair<String, String>>()
             .apply {
                 add(e.javaClass.simpleName to e.stackTraceString())
