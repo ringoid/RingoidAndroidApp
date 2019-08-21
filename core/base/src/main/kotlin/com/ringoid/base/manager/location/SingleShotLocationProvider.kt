@@ -71,7 +71,7 @@ class SingleShotLocationProvider @Inject constructor(
                                 ?: requestLocation(provider)  // no last location found in cache - request for location
                         } catch (e: Throwable) {
                             DebugLogUtil.e(e, "Location: failed get last known location")
-                            Single.error(e)
+                            Single.error<GpsLocation>(e)
                         }
                     }
                     ?: Single.error(LocationServiceUnavailableException("any", status = -4))
@@ -97,7 +97,7 @@ class SingleShotLocationProvider @Inject constructor(
                                 ?: requestLocation(precision)  // no last location found in cache - request for location
                         } catch (e: Throwable) {
                             DebugLogUtil.e(e, "Location: failed get last known location for precision: $precision")
-                            Single.error(e)
+                            Single.error<GpsLocation>(e)
                         }
                     }
             } ?: Single.error(NullPointerException("No location service available"))
