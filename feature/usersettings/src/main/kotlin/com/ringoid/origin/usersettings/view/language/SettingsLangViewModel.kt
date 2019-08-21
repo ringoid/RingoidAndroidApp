@@ -7,8 +7,7 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.domain.model.user.UserSettings
-import com.ringoid.utility.manager.LocaleManager
-import timber.log.Timber
+import com.uber.autodispose.lifecycle.autoDisposable
 import javax.inject.Inject
 
 class SettingsLangViewModel @Inject constructor(
@@ -20,5 +19,6 @@ class SettingsLangViewModel @Inject constructor(
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)
             .subscribe({ DebugLogUtil.i("Successfully updated locale settings: ${settings.locale}") }, Timber::e)
+            .autoDisposable(this)
     }
 }
