@@ -25,6 +25,7 @@ import io.reactivex.*
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.abs
 
 @Singleton
 class SharedPrefsManager @Inject constructor(context: Context, private val config: RuntimeConfig)
@@ -302,12 +303,12 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
         val latitude = latitudeStr.toDouble()
         val longitude = longitudeStr.toDouble()
-        return if (Math.abs(latitude) <= LOCATION_EPS && Math.abs(longitude) <= LOCATION_EPS) null
+        return if (abs(latitude) <= LOCATION_EPS && abs(longitude) <= LOCATION_EPS) null
                else GpsLocation(latitude, longitude)
     }
 
     override fun saveLocation(location: GpsLocation) {
-        if (Math.abs(location.latitude) <= LOCATION_EPS && Math.abs(location.longitude) <= LOCATION_EPS) {
+        if (abs(location.latitude) <= LOCATION_EPS && abs(location.longitude) <= LOCATION_EPS) {
             deleteLocation()  // location is near (0, 0) point, so delete it
         } else {
             sharedPreferences.edit()
