@@ -141,6 +141,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
                         if (this.setInputText(text)) onCompanyTextChange(text)
+                        onCompanyUnsavedInput(null)
                         dialog.dismiss()
                     },
                     negativeListener = { dialog, _, _ ->
@@ -163,6 +164,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
                         if (this.setInputText(text)) onJobTitleTextChange(text)
+                        onJobTitleUnsavedInput(null)
                         dialog.dismiss()
                     },
                     negativeListener = { dialog, _, _ ->
@@ -186,6 +188,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     positiveListener = { dialog, _, text ->
                         val heightStr = handleInputHeight(text).takeIf { it > 0 }?.toString() ?: ""
                         if (this.setInputText(heightStr)) onHeightTextChange(heightStr)
+                        onHeightUnsavedInput(null)
                         dialog.dismiss()
                     },
                     negativeListener = { dialog, _, _ ->
@@ -209,6 +212,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
                         if (this.setInputText(text)) onNameTextChange(text)
+                        onNameUnsavedInput(null)
                         dialog.dismiss()
                     },
                     negativeListener = { dialog, _, _ ->
@@ -231,6 +235,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
                         if (this.setInputText(text)) onSocialInstagramTextChange(text)
+                        onSocialInstagramUnsavedInput(null)
                         dialog.dismiss()
                     },
                     negativeListener = { dialog, _, _ ->
@@ -252,6 +257,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
                         if (this.setInputText(text)) onSocialTikTokTextChange(text)
+                        onSocialTikTokUnsavedInput(null)
                         dialog.dismiss()
                     },
                     negativeListener = { dialog, _, _ ->
@@ -273,6 +279,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
                         if (this.setInputText(text)) onUniversityTextChange(text)
+                        onUniversityUnsavedInput(null)
                         dialog.dismiss()
                     },
                     negativeListener = { dialog, _, _ ->
@@ -295,6 +302,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     negativeBtnLabelResId = OriginR_string.button_cancel,
                     positiveListener = { dialog, _, text ->
                         if (this.setInputText(text)) onWhereLiveTextChange(text)
+                        onWhereLiveUnsavedInput(null)
                         dialog.dismiss()
                     },
                     negativeListener = { dialog, _, _ ->
@@ -338,6 +346,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         } else if (item_profile_custom_property_about.setInputText(text)) {
             onAboutTextChange(text)
         }
+        onAboutUnsavedInput(null)
     }
 
     // ------------------------------------------
