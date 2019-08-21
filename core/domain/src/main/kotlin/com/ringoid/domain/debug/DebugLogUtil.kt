@@ -1,6 +1,7 @@
 package com.ringoid.domain.debug
 
 import com.ringoid.domain.manager.IRuntimeConfig
+import com.ringoid.utility.tagLine
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -8,9 +9,12 @@ import io.reactivex.subjects.ReplaySubject
 import io.sentry.event.Event
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import java.util.regex.Pattern
 
 @DebugOnly
 object DebugLogUtil {
+
+    private val ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$")
 
     val logger = ReplaySubject.createWithTimeAndSize<DebugLogItem>(15, TimeUnit.SECONDS, Schedulers.newThread(), 10)
     private lateinit var config: IRuntimeConfig
@@ -41,6 +45,7 @@ object DebugLogUtil {
 
     @Synchronized
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
+        tagLine(prefix = " {Debug Log} ")
         Timber.log(level.priority, log)
         if (config.isDeveloper() && config.collectDebugLogs()) {
             val logItem = DebugLogItem(log = log, level = level)

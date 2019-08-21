@@ -2,9 +2,11 @@ package com.ringoid.utility
 
 import android.net.Uri
 import android.os.Build
+import timber.log.Timber
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
+import java.util.regex.Pattern
 
 /* Location GPS */
 // ------------------------------------------------------------------------------------------------
@@ -62,4 +64,24 @@ fun <T> MutableCollection<T>.RemoveIf(predicate: (it: T) -> Boolean): Boolean {
         }
     }
     return removed
+}
+
+/* Log utils */
+// ------------------------------------------------------------------------------------------------
+private val ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$")
+const val MAX_TAG_LENGTH = 23
+const val CALL_STACK_INDEX = 5
+
+fun tagLine(prefix: String = "") {
+    Throwable().stackTrace.getOrNull(CALL_STACK_INDEX)?.className
+        ?.let { tag ->
+            val m = ANONYMOUS_CLASS.matcher(tag)
+            if (m.find()) m.replaceAll("") else tag
+        }
+        ?.let { it.substring(it.lastIndexOf('.') + 1) }
+        ?.let { tag ->
+            if (tag.length <= MAX_TAG_LENGTH || targetVersion(Build.VERSION_CODES.N)) tag
+            else tag.substring(0, MAX_TAG_LENGTH)
+        }
+        ?.also { tag -> Timber.tag("$prefix$tag") }
 }
