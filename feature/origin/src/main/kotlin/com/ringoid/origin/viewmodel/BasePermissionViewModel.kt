@@ -34,10 +34,7 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
                 DebugLogUtil.d("Location: start get at $start")
             }
             .doOnSuccess { DebugLogUtil.d("Location: success [$it]") }
-            .doOnError {
-                DebugLogUtil.e(it, "Location: failed")
-                SentryUtil.capture(it, "Location get failed")
-            }
+            .doOnError { SentryUtil.capture(it, "Location get failed") }
             .doFinally {
                 val elapsed = System.currentTimeMillis() - start
                 DebugLogUtil.d("Location: obtain location has taken $elapsed ms")
