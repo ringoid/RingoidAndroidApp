@@ -73,7 +73,7 @@ abstract class BaseLcFeedViewModel(
         sourceBadge()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ badgeIsOn = it }, Timber::e)
+            .subscribe({ badgeIsOn = it }, DebugLogUtil::e)
 
         sourceFeed()
             .observeOn(AndroidSchedulers.mainThread())
@@ -99,7 +99,7 @@ abstract class BaseLcFeedViewModel(
                 }
             }
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe({}, DebugLogUtil::e)
     }
 
     // --------------------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ abstract class BaseLcFeedViewModel(
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe({}, DebugLogUtil::e)
     }
 
     private fun prependProfileOnTransfer(profileId: String, destinationFeed: LcNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {
@@ -152,7 +152,7 @@ abstract class BaseLcFeedViewModel(
                 }
             }
             .autoDisposable(this)
-            .subscribe({ action?.invoke() }, Timber::e)
+            .subscribe({ action?.invoke() }, DebugLogUtil::e)
     }
 
     private fun setLcItems(items: List<FeedItem>, totalNotFilteredCount: Int, clearMode: Int = ViewState.CLEAR.MODE_NEED_REFRESH) {
@@ -208,7 +208,7 @@ abstract class BaseLcFeedViewModel(
                              .put("isNotSeen", true)
         updateFeedItemAsSeenUseCase.source(params = params)
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe({}, DebugLogUtil::e)
     }
 
     protected fun markFeedItemAsSeen(feedItemId: String) {
@@ -220,7 +220,7 @@ abstract class BaseLcFeedViewModel(
                              .put("isNotSeen", false)
         updateFeedItemAsSeenUseCase.source(params = params)
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe({}, DebugLogUtil::e)
 
         if (notSeenFeedItemIds.remove(feedItemId)) {
             DebugLogUtil.b("Seen [${feedItemId.substring(0..3)}]. Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
@@ -242,7 +242,7 @@ abstract class BaseLcFeedViewModel(
                     dropFilters()
                     refresh()
                 }
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     /* Action Objects */

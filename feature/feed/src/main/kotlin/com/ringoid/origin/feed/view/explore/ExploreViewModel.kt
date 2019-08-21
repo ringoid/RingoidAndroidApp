@@ -79,7 +79,7 @@ class ExploreViewModel @Inject constructor(
                             }
                         }
                 }
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     // --------------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ class ExploreViewModel @Inject constructor(
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({ feed.value = it }, Timber::e)
+            .subscribe({ feed.value = it }, DebugLogUtil::e)
     }
 
     private fun getMoreFeed() {
@@ -124,7 +124,7 @@ class ExploreViewModel @Inject constructor(
             }
             .doFinally { isLoadingMore = false }
             .autoDisposable(this)
-            .subscribe({ feed.value = it }, Timber::e)
+            .subscribe({ feed.value = it }, DebugLogUtil::e)
     }
 
     // ------------------------------------------

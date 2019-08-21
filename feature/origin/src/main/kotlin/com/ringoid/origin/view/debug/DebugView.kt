@@ -27,7 +27,6 @@ import com.uber.autodispose.AutoDispose.autoDisposable
 import com.uber.autodispose.android.scope
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.widget_debug.view.*
-import timber.log.Timber
 import java.util.*
 
 @DebugOnly
@@ -114,11 +113,7 @@ class DebugView : ConstraintLayout {
                         debugLogItemAdapter.append(DebugLogItemVO.from(it))
                     }
                 }
-            }, Timber::e)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
+            }, DebugLogUtil::e)
     }
 
     private fun clear() {

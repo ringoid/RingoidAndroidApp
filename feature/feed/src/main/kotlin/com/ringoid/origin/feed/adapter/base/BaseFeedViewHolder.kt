@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.origin.AppInMemory
@@ -143,7 +144,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                 .subscribe({
                     itemView.rv_items.linearLayoutManager()?.scrollToPosition(positionOfImage)
                     itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f
-                }, Timber::e)
+                }, DebugLogUtil::e)
 
             submitList(model.images.map { ProfileImageVO(profileId = model.id, image = it) })
         }

@@ -41,6 +41,6 @@ class PushNotificationService : FirebaseMessagingService() {
         (application as? IBaseRingoidApplication)?.updatePushTokenUseCase
             ?.source(params = params)
             ?.breadcrumb("Update push token from bg Service", "token" to token)
-            ?.subscribe({ DebugLogUtil.i("Successfully uploaded Firebase push token: $token") }, Timber::e)
+            ?.subscribe({ DebugLogUtil.i("Successfully uploaded Firebase push token: $token") }, DebugLogUtil::e)
     }
 }

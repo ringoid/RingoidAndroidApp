@@ -82,7 +82,7 @@ class LoginViewModel @Inject constructor(
                 analyticsManager.enterUserScope()  // prepare analytics manager data for the new logged in user
                 analyticsManager.fire(Analytics.AUTH_USER_PROFILE_CREATED, "yearOfBirth" to "${essence.yearOfBirth}", "sex" to essence.sex, "referralId" to "${essence.referralId}")
                 app.userScopeProvider.onLogin()
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     fun onGenderSelect(gender: Gender) {
@@ -125,7 +125,7 @@ class LoginViewModel @Inject constructor(
             .andThen(clearCachedImageRequestsUseCase.source())
             .andThen(clearMessagesUseCase.source())
             .autoDisposable(this)
-            .subscribe({ Timber.i("Local user data has been cleared on logout") }, Timber::e)
+            .subscribe({ Timber.i("Local user data has been cleared on logout") }, DebugLogUtil::e)
     }
 
     // ------------------------------------------

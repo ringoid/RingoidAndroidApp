@@ -198,7 +198,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                             DebugLogUtil.d("Discard item ${profileId.substring(0..3)}, visible AFTER[${newIds.size}]: ${newIds.joinToString { it.substring(0..3) }}")
                             checkForNewlyVisibleItems(prevIds, newIds, excludedId = profileId)
                             vm.onSettleVisibleItemsAfterDiscard(newItems)
-                        }, Timber::e)
+                        }, DebugLogUtil::e)
 
                     feedAdapter.remove { it.id == profileId }
                 }
@@ -218,7 +218,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 //                .subscribe({
 //                    val newIds = getVisibleItemIds()  // record ids of whatever items are visible after remove
 //                    checkForNewlyVisibleItems(prevIds, newIds)
-//                }, Timber::e)
+//                }, DebugLogUtil::e)
 //
 //            remove { it.id in profileIds }
 //        }

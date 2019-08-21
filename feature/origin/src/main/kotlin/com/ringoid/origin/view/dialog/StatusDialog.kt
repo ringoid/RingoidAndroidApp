@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.SimpleBaseDialogFragment
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.clickDebounce
@@ -14,7 +15,6 @@ import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.dialog_status.*
-import timber.log.Timber
 
 class StatusDialog : SimpleBaseDialogFragment() {
 
@@ -54,6 +54,6 @@ class StatusDialog : SimpleBaseDialogFragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(scopeProvider)
-            .subscribe({ tv_dialog_status.text = it }, Timber::e)
+            .subscribe({ tv_dialog_status.text = it }, DebugLogUtil::e)
     }
 }

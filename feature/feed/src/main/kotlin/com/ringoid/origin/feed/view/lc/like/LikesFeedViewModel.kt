@@ -6,6 +6,7 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
@@ -73,14 +74,14 @@ class LikesFeedViewModel @Inject constructor(
                 viewState.value = ViewState.DONE(PUSH_NEW_LIKES_TOTAL)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
-            }, Timber::e)
+            }, DebugLogUtil::e)
 
         // show particle animation and vibrate
         incomingPushLikeEffect
             .doOnNext { pushNewLike.value = 0L }  // for particle animation
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ app.vibrate() }, Timber::e)
+            .subscribe({ app.vibrate() }, DebugLogUtil::e)
     }
 
     // ------------------------------------------

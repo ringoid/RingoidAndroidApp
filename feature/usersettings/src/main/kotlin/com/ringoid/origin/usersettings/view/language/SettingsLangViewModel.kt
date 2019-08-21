@@ -18,7 +18,7 @@ class SettingsLangViewModel @Inject constructor(
         val settings = UserSettings(locale = app.localeManager.getLang())
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)
-            .subscribe({ DebugLogUtil.i("Successfully updated locale settings: ${settings.locale}") }, Timber::e)
             .autoDisposable(this)
+            .subscribe({ DebugLogUtil.i("Successfully updated locale settings: ${settings.locale}") }, DebugLogUtil::e)
     }
 }

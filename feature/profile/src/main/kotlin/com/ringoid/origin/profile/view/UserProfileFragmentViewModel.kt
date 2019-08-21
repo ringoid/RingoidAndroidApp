@@ -53,20 +53,20 @@ class UserProfileFragmentViewModel @Inject constructor(
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
             .debounce(500L, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
-            .subscribe({ imageBlocked.value = it }, Timber::e)
+            .subscribe({ imageBlocked.value = it }, DebugLogUtil::e)
 
         createUserImageUseCase.repository.imageCreated
             .autoDisposable(this)
             .subscribe {
                 getUserImageByIdUseCase.source(Params().put("id", it))
                     .autoDisposable(this)
-                    .subscribe({ imageCreated.value = it }, Timber::e)
+                    .subscribe({ imageCreated.value = it }, DebugLogUtil::e)
             }
 
         createUserImageUseCase.repository.imageDeleted
             .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
-            .subscribe({ imageDeleted.value = it }, Timber::e)
+            .subscribe({ imageDeleted.value = it }, DebugLogUtil::e)
     }
 
     /* Lifecycle */
@@ -102,7 +102,7 @@ class UserProfileFragmentViewModel @Inject constructor(
                                   else ViewState.IDLE
             }
             .autoDisposable(this)
-            .subscribe({ images.value = it.apply { sortBy { it.sortPosition } } }, Timber::e)
+            .subscribe({ images.value = it.apply { sortBy { it.sortPosition } } }, DebugLogUtil::e)
     }
 
     fun deleteImage(id: String) {
@@ -123,7 +123,7 @@ class UserProfileFragmentViewModel @Inject constructor(
             .subscribe({
                 Timber.d("Successfully deleted image: $id")
                 analyticsManager.fire(Analytics.IMAGE_USER_DELETE_PHOTO)
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     fun uploadImage(uri: Uri) {
@@ -138,7 +138,7 @@ class UserProfileFragmentViewModel @Inject constructor(
                 Timber.d("Successfully uploaded image: $it")
                 analyticsManager.fire(Analytics.IMAGE_USER_UPLOAD_PHOTO)
                 analyticsManager.fireOnce(Analytics.AHA_PHOTO_ADDED_MANUALLY)
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     @DebugOnly
@@ -150,7 +150,7 @@ class UserProfileFragmentViewModel @Inject constructor(
             .doOnComplete { viewState.value = ViewState.IDLE }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe({}, DebugLogUtil::e)
     }
 
     // ------------------------------------------
@@ -173,7 +173,7 @@ class UserProfileFragmentViewModel @Inject constructor(
                 Timber.d("Successfully applied referral code: $code")
                 spm.setReferralCode(code)  // save accepted referral code
                 viewState.value = ViewState.DONE(REFERRAL_CODE_ACCEPTED)
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     // ------------------------------------------

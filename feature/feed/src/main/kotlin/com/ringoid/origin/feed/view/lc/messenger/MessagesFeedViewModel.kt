@@ -6,6 +6,7 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -87,14 +88,14 @@ class MessagesFeedViewModel @Inject constructor(
                 viewState.value = ViewState.DONE(PUSH_NEW_MATCHES_TOTAL)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
-            }, Timber::e)
+            }, DebugLogUtil::e)
 
         // show particle animation and vibrate
         incomingPushMatchEffect
             .doOnNext { pushNewMatch.value = 0L }  // for particle animation
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ app.vibrate() }, Timber::e)
+            .subscribe({ app.vibrate() }, DebugLogUtil::e)
 
         // show 'tap-to-refresh' popup on Feed screen and update chat for particular feed items
         incomingPushMessages
@@ -119,14 +120,14 @@ class MessagesFeedViewModel @Inject constructor(
                 viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
-            }, Timber::e)
+            }, DebugLogUtil::e)
 
         // show particle animation and vibrate
         incomingPushMessagesEffect
             .doOnNext { pushNewMessage.value = 0L }  // for particle animation
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ app.vibrate() }, Timber::e)
+            .subscribe({ app.vibrate() }, DebugLogUtil::e)
     }
 
     // ------------------------------------------

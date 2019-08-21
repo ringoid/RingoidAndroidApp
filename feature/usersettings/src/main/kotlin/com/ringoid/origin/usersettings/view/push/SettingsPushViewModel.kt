@@ -10,7 +10,6 @@ import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthoriz
 import com.ringoid.domain.model.user.UserSettings
 import com.ringoid.origin.usersettings.view.base.BaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
-import timber.log.Timber
 import javax.inject.Inject
 
 class SettingsPushViewModel @Inject constructor(
@@ -44,6 +43,6 @@ class SettingsPushViewModel @Inject constructor(
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doFinally { viewState.value = ViewState.IDLE }
             .autoDisposable(this)
-            .subscribe({ DebugLogUtil.i("Successfully updated push settings: $settings") }, Timber::e)
+            .subscribe({ DebugLogUtil.i("Successfully updated push settings: $settings") }, DebugLogUtil::e)
     }
 }

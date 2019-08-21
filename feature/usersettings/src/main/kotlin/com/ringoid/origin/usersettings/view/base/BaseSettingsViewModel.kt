@@ -5,13 +5,13 @@ import android.os.Build
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.misc.Gender
 import com.ringoid.utility.daysAgo
 import com.ringoid.utility.fromTs
 import com.uber.autodispose.lifecycle.autoDisposable
-import timber.log.Timber
 import java.util.*
 
 abstract class BaseSettingsViewModel(
@@ -52,6 +52,6 @@ abstract class BaseSettingsViewModel(
                 viewState.value = ViewState.IDLE
             }
             .autoDisposable(this)
-            .subscribe({ spm.dropBigEditText() }, Timber::e)
+            .subscribe({ spm.dropBigEditText() }, DebugLogUtil::e)
     }
 }

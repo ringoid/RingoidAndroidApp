@@ -169,7 +169,7 @@ abstract class FeedViewModel(
                         }
                     })
             .autoDisposable(this)
-            .subscribe({}, Timber::e)
+            .subscribe({}, DebugLogUtil::e)
     }
 
     internal open fun onSettingsClick(profileId: String) {
@@ -254,13 +254,13 @@ abstract class FeedViewModel(
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
                 viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
-            }, Timber::e)
+            }, DebugLogUtil::e)
 
         // remove all messages for blocked profile, to exclude them from messages counting
         clearMessagesForChatUseCase.source(params = Params().put("chatId", profileId))
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
-            .subscribe({ ChatInMemoryCache.deleteProfile(profileId) }, Timber::e)
+            .subscribe({ ChatInMemoryCache.deleteProfile(profileId) }, DebugLogUtil::e)
 
         // remove VIEW aobj associated with blocked profile from backup to prevent it from restoring
         viewActionObjectBackup.remove(imageId to profileId)

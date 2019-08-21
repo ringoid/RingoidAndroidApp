@@ -38,7 +38,6 @@ import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.*
 import com.uber.autodispose.lifecycle.autoDisposable
 import kotlinx.android.synthetic.main.fragment_chat.*
-import timber.log.Timber
 
 class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
@@ -113,7 +112,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)
-            ?.subscribe({ scrollToTopOfItemAtPosition(0) }, Timber::e)
+            ?.subscribe({ scrollToTopOfItemAtPosition(0) }, DebugLogUtil::e)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

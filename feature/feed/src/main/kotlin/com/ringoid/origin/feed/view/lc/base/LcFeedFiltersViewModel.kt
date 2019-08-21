@@ -12,7 +12,6 @@ import com.ringoid.origin.view.filters.BaseFiltersViewModel
 import com.ringoid.origin.view.filters.LC_COUNTS
 import com.ringoid.utility.inputDebounce
 import com.uber.autodispose.lifecycle.autoDisposable
-import timber.log.Timber
 
 abstract class LcFeedFiltersViewModel(
     private val getLcUseCountersCase: GetLcCountersUseCase,
@@ -37,6 +36,6 @@ abstract class LcFeedFiltersViewModel(
                 viewState.value = ViewState.DONE(LC_COUNTS(countLikes = it.likes.size, countMessages = it.messages.size,
                                                            totalNotFilteredLikes = it.totalNotFilteredLikes,
                                                            totalNotFilteredMessages = it.totalNotFilteredMessages))
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 }

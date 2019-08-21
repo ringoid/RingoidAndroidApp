@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.interactor.user.UpdateUserProfileSettingsUseCase
@@ -227,6 +228,6 @@ class SettingsProfileViewModel @Inject constructor(
             .doOnComplete { viewState.value = ViewState.IDLE }
             .doFinally { analyticsManager.fireOnce(Analytics.AHA_FIRST_FIELD_SET, "fieldName" to propertyName) }
             .autoDisposable(this)
-            .subscribe({ Timber.d("Successfully updated user profile properties") }, Timber::e)
+            .subscribe({ Timber.d("Successfully updated user profile properties") }, DebugLogUtil::e)
     }
 }

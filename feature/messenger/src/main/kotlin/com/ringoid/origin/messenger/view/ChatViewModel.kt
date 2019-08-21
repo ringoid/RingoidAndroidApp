@@ -7,6 +7,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
 import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
@@ -63,7 +64,7 @@ class ChatViewModel @Inject constructor(
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS)
             .flatMapSingle { getChatNewMessagesUseCase.source(prepareGetChatParams(profileId = it.peerId)) }
             .autoDisposable(this)
-            .subscribe(::handleChatUpdate, Timber::e)
+            .subscribe(::handleChatUpdate, DebugLogUtil::e)
     }
 
     private fun countPeerMessages(messages: List<Message>): Int =
@@ -91,7 +92,7 @@ class ChatViewModel @Inject constructor(
                 currentMessageList = msgs.toMutableList().apply { removeAll { it.isLocal() } }
                 messages.value = msgs
                 startPollingChat(profileId = profileId, delay = 50L)
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     @Suppress("CheckResult")
@@ -122,7 +123,7 @@ class ChatViewModel @Inject constructor(
                         LcNavTab.MESSAGES -> fire(Analytics.ACTION_USER_MESSAGE_FROM_MESSAGES)
                     }
                 }
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     // --------------------------------------------------------------------------------------------
@@ -134,7 +135,7 @@ class ChatViewModel @Inject constructor(
             }
             .doOnNext { subscribeOnPush() }
             .autoDisposable(this)
-            .subscribe(::handleChatUpdate, Timber::e)  // on error - fail silently
+            .subscribe(::handleChatUpdate, DebugLogUtil::e)  // on error - fail silently
     }
 
     // --------------------------------------------------------------------------------------------

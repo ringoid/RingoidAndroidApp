@@ -3,6 +3,7 @@ package com.ringoid.origin.usersettings.view.settings
 import android.app.Application
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.interactor.user.DeleteUserProfileUseCase
 import com.ringoid.origin.style.APP_THEME
@@ -26,7 +27,7 @@ class SettingsViewModel @Inject constructor(
             .subscribe({
                 Timber.i("Successfully deleted user account")
                 analyticsManager.fire(Analytics.AUTH_USER_CALL_DELETE_HIMSELF)
-            }, Timber::e)
+            }, DebugLogUtil::e)
     }
 
     // ------------------------------------------
