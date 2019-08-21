@@ -39,6 +39,7 @@ class SingleShotLocationProvider @Inject constructor(
                     .doOnSubscribe { DebugLogUtil.d("Location [service]: get from cache, update eagerly") }
                     .subscribeOn(AndroidSchedulers.from(backgroundLooper.looper, true))
                     .subscribe({}, Timber::e)  // obtain location eagerly
+                // TODO: fail silently is GPS is off, always using last cached location, though it may be out of date
             }
             ?: run {
                 DebugLogUtil.d("Location [service]: no location has found in cache")
