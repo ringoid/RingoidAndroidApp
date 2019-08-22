@@ -9,12 +9,9 @@ import io.reactivex.subjects.ReplaySubject
 import io.sentry.event.Event
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 
 @DebugOnly
 object DebugLogUtil {
-
-    private val ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$")
 
     val logger = ReplaySubject.createWithTimeAndSize<DebugLogItem>(15, TimeUnit.SECONDS, Schedulers.newThread(), 10)
     private lateinit var config: IRuntimeConfig
