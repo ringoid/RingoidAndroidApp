@@ -298,7 +298,9 @@ open class FeedRepository @Inject constructor(
                     totalNotFilteredMessages == DomainUtil.BAD_VALUE) {
                     SentryUtil.w("Cached LC has invalid total counts",
                                  listOf("totalLikes" to "$totalNotFilteredLikes",
-                                        "totalMessages" to "$totalNotFilteredMessages"))
+                                        "totalMessages" to "$totalNotFilteredMessages",
+                                        "likesSize" to "${likes.size}",
+                                        "messagesSize" to "${messages.size}"))
                 }
                 Lmm(likes = likes, matches = emptyList(), messages = messages,
                     totalNotFilteredLikes = maxOf(totalNotFilteredLikes, likes.size),
