@@ -6,6 +6,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.BuildConfig
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.origin.error.DynamicLinkNotExistsException
 import com.ringoid.origin.utils.ReferralUtils
@@ -18,6 +19,7 @@ class SplashViewModel @Inject constructor(app: Application) : BaseViewModel(app)
     // --------------------------------------------------------------------------------------------
     override fun onFreshStart() {
         super.onFreshStart()
+        DebugLogUtil.v("Fresh start App, init logs")
         SentryUtil.breadcrumb("App Version", "code" to "${BuildConfig.VERSION_CODE}", "version" to "${BuildConfig.VERSION_NAME}")
     }
 
