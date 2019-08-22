@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_debug_conninfo"
+        android:textColor="@color/green"
+        style="@style/StdText.Accent"/>
+
+    <TextView
+        android:id="@+id/tv_debug_meminfo"
+        android:textColor="@color/raspberry_saturated"
+        style="@style/StdText.Accent"/>
+
+    <TextView
+        android:id="@+id/tv_debug_threadinfo"
+        android:textColor="@color/sky"
+        style="@style/StdText.Accent"/>
+</merge>

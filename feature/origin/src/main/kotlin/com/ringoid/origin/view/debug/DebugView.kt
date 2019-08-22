@@ -27,6 +27,7 @@ import com.uber.autodispose.AutoDispose.autoDisposable
 import com.uber.autodispose.android.scope
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.widget_debug.view.*
+import timber.log.Timber
 import java.util.*
 
 @DebugOnly
@@ -101,6 +102,7 @@ class DebugView : ConstraintLayout {
         DebugLogUtil.logger
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { DebugLogUtil.d("${Date().date()} :: ${BuildConfig.VERSION_NAME}\n\n${ContextUtil.deviceInfo()}\n\n") }
+            .doOnDispose { Timber.v("Disposed DebugView") }
             .`as`(autoDisposable(scope()))
             .subscribe({
                 if (it == EmptyDebugLogItem) {
@@ -114,6 +116,11 @@ class DebugView : ConstraintLayout {
                     }
                 }
             }, DebugLogUtil::e)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        Timber.v("DebugView has been detached from Window")
     }
 
     private fun clear() {

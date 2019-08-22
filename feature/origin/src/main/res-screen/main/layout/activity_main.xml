@@ -22,6 +22,17 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <com.ringoid.origin.view.debug.DebugInfoView
+        android:id="@+id/debug_info_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/std_margin_8"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.27"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

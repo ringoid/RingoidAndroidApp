@@ -14,6 +14,7 @@ import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.ILoginInMemoryCache
@@ -231,6 +232,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     @DebugOnly
     protected fun showDebugView() {
         debug_view.changeVisibility(isVisible = spm.isDebugLogEnabled())
+        debug_info_view.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
     // --------------------------------------------------------------------------------------------
