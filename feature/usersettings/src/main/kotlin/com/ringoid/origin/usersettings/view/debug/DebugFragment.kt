@@ -20,7 +20,6 @@ import com.ringoid.origin.usersettings.R
 import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.fragment_debug.*
 import kotlinx.android.synthetic.main.fragment_debug.view.*
-import timber.log.Timber
 
 @DebugOnly
 class DebugFragment : BaseFragment<DebugViewModel>() {
@@ -104,14 +103,12 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         }
         btn_clear_debug_log.clicks().compose(clickDebounce()).subscribe { DebugLogUtil.clear() }
         btn_copy_debug_log.clicks().compose(clickDebounce()).subscribe {
-            DebugLogUtil.getDebugLog()
-                ?.map { it.joinToString("\n", transform = { it.log() }) }
-                ?.subscribe({ log ->
-                    context?.let {
-                        it.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = log)
-                        it.toast(OriginR_string.common_clipboard)
-                    }
-                }, Timber::e)
+            DebugLogUtil.extractLog().let { log ->
+                context?.let {
+                    it.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = log)
+                    it.toast(OriginR_string.common_clipboard)
+                }
+            }
         }
     }
 }

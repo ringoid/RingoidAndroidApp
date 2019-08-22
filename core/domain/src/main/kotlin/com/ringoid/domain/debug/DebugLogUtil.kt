@@ -71,4 +71,6 @@ object DebugLogUtil {
         dao?.debugLog()
            ?.subscribeOn(Schedulers.io())
            ?.observeOn(AndroidSchedulers.mainThread())
+
+    fun extractLog(): String = dao?.extractLog() ?: "NO DEBUG LOG (cache was not connected)"
 }

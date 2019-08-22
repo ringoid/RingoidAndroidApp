@@ -91,7 +91,7 @@ class DebugView : ConstraintLayout {
         }
         ibtn_separator_debug.clicks().compose(clickDebounce()).subscribe { DebugLogUtil.w("------------------------------------------------------------------------------------\n") }
         ibtn_share_debug.clicks().compose(clickDebounce()).subscribe {
-            context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = debugLogItemAdapter.getContentText())
+            context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = DebugLogUtil.extractLog())
             context.toast(R.string.common_clipboard)
         }
     }
