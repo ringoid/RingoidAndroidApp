@@ -333,7 +333,7 @@ open class FeedRepository @Inject constructor(
     private fun Single<FeedResponse>.filterOutDuplicateProfilesFeed(): Single<FeedResponse> =
         flatMap { response ->
             val filterFeed = response.profiles.distinctBy { it.id }
-                .also { if (it.size != response.profiles.size) SentryUtil.w("Duplicate profiles detected for NewFaces") }
+                .also { if (it.size != response.profiles.size) SentryUtil.w("Duplicate profiles detected for NewFaces", listOf("size in response" to "${response.profiles.size}", "filtered size" to "${it.size}")) }
             Single.just(response.copyWith(profiles = filterFeed))
         }
 
@@ -386,11 +386,11 @@ open class FeedRepository @Inject constructor(
         flatMap { response ->
             val message = "Duplicate profiles detected for "
             val filterLikes = response.likes.distinctBy { it.id }
-                .also { if (it.size != response.likes.size) SentryUtil.w("$message LikesYou") }
+                .also { if (it.size != response.likes.size) SentryUtil.w("$message LikesYou", listOf("size in response" to "${response.likes.size}", "filtered size" to "${it.size}")) }
             val filterMatches = response.matches.distinctBy { it.id }
-                .also { if (it.size != response.matches.size) SentryUtil.w("$message Matches") }
+                .also { if (it.size != response.matches.size) SentryUtil.w("$message Matches", listOf("size in response" to "${response.matches.size}", "filtered size" to "${it.size}")) }
             val filterMessenger = response.messages.distinctBy { it.id }
-                .also { if (it.size != response.messages.size) SentryUtil.w("$message Messages") }
+                .also { if (it.size != response.messages.size) SentryUtil.w("$message Messages", listOf("size in response" to "${response.messages.size}", "filtered size" to "${it.size}")) }
             Single.just(response.copyWith(likes = filterLikes, matches = filterMatches, messages = filterMessenger))
         }
 
