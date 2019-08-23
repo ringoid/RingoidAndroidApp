@@ -112,11 +112,11 @@ class ExploreViewModel @Inject constructor(
     private fun getMoreFeed() {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
 //        debugGetNewFacesFailedUseCase.source()
-        debugGetNewFacesFailedAndRecoverAfterNTimesUseCase.source(params = Params().put("count", 2))
+//        debugGetNewFacesFailedAndRecoverAfterNTimesUseCase.source(params = Params().put("count", 2))
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 2))
-//        getDiscoverUseCase.source(params = prepareFeedParams())
+        getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError {
