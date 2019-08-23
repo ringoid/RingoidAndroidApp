@@ -6,7 +6,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.view.FATAL_ERROR
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.debug.DebugNetworkUtil
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
@@ -86,7 +85,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         Dialogs.showTextDialog(activity, descriptionResId = OriginR_string.error_connection,
             positiveBtnLabelResId = OriginR_string.button_retry,
             negativeBtnLabelResId = OriginR_string.button_cancel,
-            positiveListener = { dialog, _ -> vm.refresh(); DebugNetworkUtil.networkException = null; dialog.dismiss() })
+            positiveListener = { dialog, _ -> vm.refresh(); dialog.dismiss() })
     }
 
     // ------------------------------------------

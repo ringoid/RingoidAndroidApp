@@ -16,7 +16,10 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.*
+import com.ringoid.domain.debug.DebugLogLevel
+import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.debug.EmptyDebugLogItem
 import com.ringoid.origin.R
 import com.ringoid.origin.WidgetR_drawable
 import com.ringoid.utility.*
@@ -25,7 +28,6 @@ import com.uber.autodispose.android.scope
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.widget_debug.view.*
 import timber.log.Timber
-import java.net.SocketTimeoutException
 import java.util.*
 
 @DebugOnly
@@ -83,7 +85,7 @@ class DebugView : ConstraintLayout {
         ibtn_bg_flip_debug.clicks().compose(clickDebounce()).subscribe { bgToggle = !bgToggle }
         ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { clear() }
         ibtn_close_debug.clicks().compose(clickDebounce()).subscribe { Bus.post(BusEvent.CloseDebugView) }
-        ibtn_error_debug.clicks().compose(clickDebounce()).subscribe { DebugNetworkUtil.networkException = SocketTimeoutException() }
+        ibtn_error_debug.clicks().compose(clickDebounce()).subscribe { }
         ibtn_lifecycle_debug.clicks().compose(clickDebounce()).subscribe { lifecycleToggle = !lifecycleToggle }
         ibtn_resize_debug.clicks().compose(clickDebounce()).subscribe {
             if (sizeToggle) minimize() else maximize()
