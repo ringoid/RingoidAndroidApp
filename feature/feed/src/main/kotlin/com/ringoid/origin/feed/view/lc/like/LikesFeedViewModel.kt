@@ -64,6 +64,8 @@ class LikesFeedViewModel @Inject constructor(
     private val incomingPushLikeEffect = PublishSubject.create<Long>()
     internal val pushNewLike by lazy { MutableLiveData<Long>() }
 
+    private var shouldVibrate: Boolean = true
+
     init {
         // show 'tap-to-refresh' popup on Feed screen
         incomingPushLike
@@ -81,7 +83,7 @@ class LikesFeedViewModel @Inject constructor(
             .doOnNext { pushNewLike.value = 0L }  // for particle animation
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ app.vibrate() }, DebugLogUtil::e)
+            .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)
     }
 
     // ------------------------------------------
@@ -113,7 +115,13 @@ class LikesFeedViewModel @Inject constructor(
             if (badgeIsOn) {  /** has new feed items */
                 analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to getFeedName())
             }
+            shouldVibrate = spm.getUserSettingVibrationPushEnabled()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        shouldVibrate = spm.getUserSettingVibrationPushEnabled()
     }
 
     // --------------------------------------------------------------------------------------------

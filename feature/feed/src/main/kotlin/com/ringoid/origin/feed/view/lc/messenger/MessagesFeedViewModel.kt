@@ -78,6 +78,8 @@ class MessagesFeedViewModel @Inject constructor(
     internal val pushNewMatch by lazy { MutableLiveData<Long>() }
     internal val pushNewMessage by lazy { MutableLiveData<Long>() }
 
+    private var shouldVibrate: Boolean = true
+
     init {
         // show 'tap-to-refresh' popup on Feed screen
         incomingPushMatch
@@ -95,7 +97,7 @@ class MessagesFeedViewModel @Inject constructor(
             .doOnNext { pushNewMatch.value = 0L }  // for particle animation
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ app.vibrate() }, DebugLogUtil::e)
+            .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)
 
         // show 'tap-to-refresh' popup on Feed screen and update chat for particular feed items
         incomingPushMessages
@@ -127,7 +129,7 @@ class MessagesFeedViewModel @Inject constructor(
             .doOnNext { pushNewMessage.value = 0L }  // for particle animation
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ app.vibrate() }, DebugLogUtil::e)
+            .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)
     }
 
     // ------------------------------------------
@@ -174,7 +176,13 @@ class MessagesFeedViewModel @Inject constructor(
             if (badgeIsOn) {  /** has new feed items */
                 analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
             }
+            shouldVibrate = spm.getUserSettingVibrationPushEnabled()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        shouldVibrate = spm.getUserSettingVibrationPushEnabled()
     }
 
     // --------------------------------------------------------------------------------------------
