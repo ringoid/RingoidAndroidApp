@@ -35,7 +35,7 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
         initializeBranch()
 
         vm.analyzeIntent(intent)
-        vm.accessToken.observe(this, Observer {
+        vm.accessToken().observe(this, Observer {
             splash(this, path = it.getContentIfNotHandled()?.let { "/main" } ?: run { "/login" }, payload = intent)
         })
         vm.getAccessToken()

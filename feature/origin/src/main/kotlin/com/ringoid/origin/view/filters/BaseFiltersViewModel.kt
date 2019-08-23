@@ -1,6 +1,7 @@
 package com.ringoid.origin.view.filters
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.LiveEvent
@@ -13,7 +14,8 @@ import javax.inject.Inject
 open class BaseFiltersViewModel @Inject constructor(
     private val filtersSource: IFiltersSource, app: Application) : BaseViewModel(app) {
 
-    val filters by lazy { MutableLiveData<Filters>() }
+    private val filters by lazy { MutableLiveData<Filters>() }
+    internal fun filters(): LiveData<Filters> = filters
     protected val filtersChanged = PublishSubject.create<Boolean>()
 
     private fun setUpFilters() {

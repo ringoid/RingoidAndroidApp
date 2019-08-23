@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lc.like
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
@@ -62,7 +63,8 @@ class LikesFeedViewModel @Inject constructor(
 
     private val incomingPushLike = PublishSubject.create<BusEvent>()
     private val incomingPushLikeEffect = PublishSubject.create<Long>()
-    internal val pushNewLike by lazy { MutableLiveData<Long>() }
+    private val pushNewLike by lazy { MutableLiveData<Long>() }
+    internal fun pushNewLike(): LiveData<Long> = pushNewLike
 
     private var shouldVibrate: Boolean = true
 

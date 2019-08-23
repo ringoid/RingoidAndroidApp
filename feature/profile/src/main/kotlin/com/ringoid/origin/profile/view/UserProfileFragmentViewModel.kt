@@ -2,6 +2,7 @@ package com.ringoid.origin.profile.view
 
 import android.app.Application
 import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
@@ -43,11 +44,16 @@ class UserProfileFragmentViewModel @Inject constructor(
     @DebugOnly private val failedDeleteUserImageUseCase: FailedDeleteUserImageUseCase, app: Application)
     : BasePermissionViewModel(app) {
 
-    val imageBlocked by lazy { MutableLiveData<String>() }
-    val imageCreated by lazy { MutableLiveData<UserImage>() }
-    val imageDeleted by lazy { MutableLiveData<String>() }
-    val images by lazy { MutableLiveData<List<UserImage>>() }
-    val profile by lazy { MutableLiveData<UserProfileProperties>() }
+    private val imageBlocked by lazy { MutableLiveData<String>() }
+    private val imageCreated by lazy { MutableLiveData<UserImage>() }
+    private val imageDeleted by lazy { MutableLiveData<String>() }
+    private val images by lazy { MutableLiveData<List<UserImage>>() }
+    private val profile by lazy { MutableLiveData<UserProfileProperties>() }
+    internal fun imageBlocked(): LiveData<String> = imageBlocked
+    internal fun imageCreated(): LiveData<UserImage> = imageCreated
+    internal fun imageDeleted(): LiveData<String> = imageDeleted
+    internal fun images(): LiveData<List<UserImage>> = images
+    internal fun profile(): LiveData<UserProfileProperties> = profile
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once

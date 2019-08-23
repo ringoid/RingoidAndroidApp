@@ -125,13 +125,13 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with (viewLifecycleOwner) {
-            observe(vm.feed) {
+            observe(vm.feed()) {
                 if (feedAdapter.getModelsCount() + it.profiles.size > 0) {
                     toolbarWidget?.restoreScrollFlags()
                 }
                 feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
             }
-            observe(vm.oneShot) {
+            observe(vm.oneShot()) {
                 it.getTypedContentIfNotHandled<NeedShowFilters>()?.let { filtersPopupWidget?.show() }
             }
         }

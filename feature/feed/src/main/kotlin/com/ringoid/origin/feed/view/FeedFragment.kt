@@ -450,7 +450,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
     protected fun showRefreshPopup(isVisible: Boolean) {
-        btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.refreshOnPush.value == true)
+        btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.isRefreshOnPush())
     }
 
     /* Scroll listeners */

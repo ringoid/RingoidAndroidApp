@@ -22,8 +22,8 @@ import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_USER_PROFILE
 import com.ringoid.origin.feed.view.lc.CLEAR_AND_REFRESH_EXCEPT
-import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
@@ -77,8 +77,9 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
                     is NO_IMAGES_IN_USER_PROFILE ->
                         communicator(ILmmFragment::class.java)?.accessViewModel()
                             ?.let {
-                                it.viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
-                                it.viewState.value = ViewState.IDLE
+                                // DEPRECATED and commented
+//                                it.viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+//                                it.viewState.value = ViewState.IDLE
                             }
                     /**
                      * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
@@ -171,12 +172,12 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.count) { communicator(ILmmFragment::class.java)?.showCountOnTopTab(tab = getSourceFeed(), count = it) }
-            observe(vm.feed) {
+            observe(vm.count()) { communicator(ILmmFragment::class.java)?.showCountOnTopTab(tab = getSourceFeed(), count = it) }
+            observe(vm.feed()) {
                 feedAdapter.submitList(it)
                 runOnUiThread { rv_items?.let { scrollListToPosition(0) } }
             }
-            observe(vm.refreshOnPush) { showRefreshPopup(isVisible = it) }
+            observe(vm.refreshOnPush()) { showRefreshPopup(isVisible = it) }
         }
         /**
          * Parent's [Fragment.onActivityCreated] is called before this method on any child [Fragment],
@@ -184,15 +185,16 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
          */
         communicator(ILmmFragment::class.java)?.accessViewModel()
             ?.let {
-                it.viewState.value?.let { state ->
-                    when (state) {
-                        ViewState.LOADING -> showLoading(isVisible = true)
-                        else -> {
-                            showLoading(isVisible = false)
-                            vm.applyCachedFeed(it.cachedLmm)
-                        }
-                    }
-                }
+                // DEPRECATED and commented
+//                it.viewState.value?.let { state ->
+//                    when (state) {
+//                        ViewState.LOADING -> showLoading(isVisible = true)
+//                        else -> {
+//                            showLoading(isVisible = false)
+//                            vm.applyCachedFeed(it.cachedLmm)
+//                        }
+//                    }
+//                }
                 viewLifecycleOwner.observe(it.listScrolls, ::scrollListToPosition)
             }
     }

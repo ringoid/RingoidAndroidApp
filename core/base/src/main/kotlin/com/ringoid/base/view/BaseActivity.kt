@@ -100,7 +100,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         getLayoutId()?.let { setContentView(it) }
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             subscribeOnBusEvents()
-            observe(viewState, ::onViewStateChange)
+            observe(viewState(), ::onViewStateChange)
         }
         this.savedInstanceState = savedInstanceState
         savedInstanceState?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }

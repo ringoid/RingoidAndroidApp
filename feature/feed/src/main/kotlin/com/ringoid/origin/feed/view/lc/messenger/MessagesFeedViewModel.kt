@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lc.messenger
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
@@ -75,8 +76,10 @@ class MessagesFeedViewModel @Inject constructor(
     private val incomingPushMatchEffect = PublishSubject.create<Long>()
     private val incomingPushMessages = PublishSubject.create<BusEvent>()
     private val incomingPushMessagesEffect = PublishSubject.create<Long>()
-    internal val pushNewMatch by lazy { MutableLiveData<Long>() }
-    internal val pushNewMessage by lazy { MutableLiveData<Long>() }
+    private val pushNewMatch by lazy { MutableLiveData<Long>() }
+    private val pushNewMessage by lazy { MutableLiveData<Long>() }
+    internal fun pushNewMatch(): LiveData<Long> = pushNewMatch
+    internal fun pushNewMessage(): LiveData<Long> = pushNewMessage
 
     private var shouldVibrate: Boolean = true
 

@@ -151,8 +151,8 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.pushNewMatch) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
-            observe(vm.pushNewMessage) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
+            observe(vm.pushNewMatch()) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
+            observe(vm.pushNewMessage()) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
         }
     }
 

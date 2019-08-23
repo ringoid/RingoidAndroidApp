@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
@@ -57,7 +58,8 @@ class ExploreViewModel @Inject constructor(
         countUserImagesUseCase,
         filtersSource, userInMemoryCache, app), IListScrollCallback {
 
-    val feed by lazy { MutableLiveData<Feed>() }
+    private val feed by lazy { MutableLiveData<Feed>() }
+    internal fun feed(): LiveData<Feed> = feed
 
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0

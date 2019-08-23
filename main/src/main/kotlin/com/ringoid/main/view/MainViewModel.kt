@@ -2,6 +2,7 @@ package com.ringoid.main.view
 
 import android.app.Application
 import android.os.Bundle
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
@@ -47,12 +48,18 @@ class MainViewModel @Inject constructor(
     private val updateUserSettingsUseCase: UpdateUserSettingsUseCase, app: Application)
     : BaseMainViewModel(app) {
 
-    val badgeLikes by lazy { MutableLiveData<Boolean>() }
-    val badgeMessages by lazy { MutableLiveData<Boolean>() }
-    val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
-    val newLikesCount by lazy { MutableLiveData<Int>() }
-    val newMatchesCount by lazy { MutableLiveData<Int>() }
-    val newMessagesCount by lazy { MutableLiveData<Int>() }
+    private val badgeLikes by lazy { MutableLiveData<Boolean>() }
+    private val badgeMessages by lazy { MutableLiveData<Boolean>() }
+    private val badgeWarningProfile by lazy { MutableLiveData<Boolean>() }
+    private val newLikesCount by lazy { MutableLiveData<Int>() }
+    private val newMatchesCount by lazy { MutableLiveData<Int>() }
+    private val newMessagesCount by lazy { MutableLiveData<Int>() }
+    internal fun badgeLikes(): LiveData<Boolean> = badgeLikes
+    internal fun badgeMessages(): LiveData<Boolean> = badgeMessages
+    internal fun badgeWarningProfile(): LiveData<Boolean> = badgeWarningProfile
+    internal fun newLikesCount(): LiveData<Int> = newLikesCount
+    internal fun newMatchesCount(): LiveData<Int> = newMatchesCount
+    internal fun newMessagesCount(): LiveData<Int> = newMessagesCount
 
     init {
         getLcUseCase.repository.badgeLikes

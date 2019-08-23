@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view
 import android.app.Application
 import android.content.Intent
 import android.os.Build
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -43,7 +44,9 @@ abstract class FeedViewModel(
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 
-    val refreshOnPush by lazy { MutableLiveData<Boolean>() }
+    protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
+    internal fun refreshOnPush(): LiveData<Boolean> = refreshOnPush
+    internal fun isRefreshOnPush(): Boolean = refreshOnPush.value == true
 
     private var verticalPrevRange: EqualRange<ProfileImageVO>? = null
     private val horizontalPrevRanges = mutableMapOf<String, EqualRange<ProfileImageVO>>()  // profileId : range

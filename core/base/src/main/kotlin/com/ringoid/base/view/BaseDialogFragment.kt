@@ -111,7 +111,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
             // tie observer to view's lifecycle rather than Fragment's one
             with(viewLifecycleOwner) {
                 subscribeOnBusEvents()
-                observe(viewState, this@BaseDialogFragment::onViewStateChange)
+                observe(viewState(), this@BaseDialogFragment::onViewStateChange)
             }
         }
     }

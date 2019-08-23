@@ -31,8 +31,8 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.filters, ::displayFilters)
-            observe(vm.oneShot) { communicator(IFiltersHost::class.java)?.onFiltersChange() }
+            observe(vm.filters(), ::displayFilters)
+            observe(vm.oneShot()) { communicator(IFiltersHost::class.java)?.onFiltersChange() }
         }
     }
 

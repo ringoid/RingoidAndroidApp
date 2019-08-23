@@ -1,6 +1,7 @@
 package com.ringoid.origin.messenger.view
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
@@ -41,11 +42,16 @@ class ChatViewModel @Inject constructor(
 
     private data class ChatData(val chatId: String)
 
-    val messages by lazy { MutableLiveData<List<Message>>() }
-    val newMessages by lazy { MutableLiveData<List<Message>>() }
-    val sentMessage by lazy { MutableLiveData<Message>() }
-    val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
-    val peerName by lazy { MutableLiveData<String>() }
+    private val messages by lazy { MutableLiveData<List<Message>>() }
+    private val newMessages by lazy { MutableLiveData<List<Message>>() }
+    private val sentMessage by lazy { MutableLiveData<Message>() }
+    private val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
+    private val peerName by lazy { MutableLiveData<String>() }
+    internal fun messages(): LiveData<List<Message>> = messages
+    internal fun newMessages(): LiveData<List<Message>> = newMessages
+    internal fun sentMessage(): LiveData<Message> = sentMessage
+    internal fun onlineStatus(): LiveData<OnlineStatus> = onlineStatus
+    internal fun peerName(): LiveData<String> = peerName
 
     private var chatData: ChatData? = null
     private var currentMessageList: List<Message> = emptyList()

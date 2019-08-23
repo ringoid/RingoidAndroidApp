@@ -179,7 +179,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
             // tie observer to view's lifecycle rather than Fragment's one
             with(viewLifecycleOwner) {
                 subscribeOnBusEvents()
-                observe(viewState, this@BaseFragment::onViewStateChange)
+                observe(viewState(), this@BaseFragment::onViewStateChange)
             }
         }
         isViewModelInitialized = true

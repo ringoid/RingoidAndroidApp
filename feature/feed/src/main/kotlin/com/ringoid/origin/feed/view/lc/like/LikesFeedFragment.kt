@@ -16,10 +16,10 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lc.PUSH_NEW_LIKES_TOTAL
+import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
+import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
@@ -124,7 +124,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
+            observe(vm.pushNewLike()) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
         }
     }
 

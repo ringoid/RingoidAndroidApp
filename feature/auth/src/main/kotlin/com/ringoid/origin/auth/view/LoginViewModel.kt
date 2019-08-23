@@ -2,6 +2,7 @@ package com.ringoid.origin.auth.view
 
 import android.app.Application
 import android.os.Build
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -44,8 +45,10 @@ class LoginViewModel @Inject constructor(
 
     private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
-    val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
-    val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
+    private val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
+    private val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
+    internal fun loginButtonEnableState(): LiveData<Boolean> = loginButtonEnableState
+    internal fun yearOfBirthEntryState(): LiveData<WidgetState> = yearOfBirthEntryState
 
     var gender: Gender? = null
         private set (value) {

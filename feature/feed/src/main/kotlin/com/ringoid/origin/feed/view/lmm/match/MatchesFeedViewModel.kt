@@ -62,7 +62,7 @@ class MatchesFeedViewModel @Inject constructor(
         incomingPushMatch
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ refreshOnPush.value = feed.value?.isNotEmpty() == true }, Timber::e)
+            .subscribe({ refreshOnPush.value = feed().value?.isNotEmpty() == true }, Timber::e)
     }
 
     override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MATCHES

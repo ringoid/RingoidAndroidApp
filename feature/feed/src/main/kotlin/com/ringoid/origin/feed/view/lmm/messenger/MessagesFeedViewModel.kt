@@ -19,9 +19,9 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.feed.LmmSlice
+import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.view.main.LmmNavTab
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -92,6 +92,6 @@ class MessagesFeedViewModel @Inject constructor(
         // show badge on Messages Lmm top tab
         viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
         // show 'tap-to-refresh' popup on Feed screen
-        refreshOnPush.value = feed.value?.isNotEmpty() == true
+        refreshOnPush.value = feed().value?.isNotEmpty() == true
     }
 }

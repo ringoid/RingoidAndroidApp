@@ -1,6 +1,7 @@
 package com.ringoid.origin.usersettings.view.profile
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -20,7 +21,8 @@ class SettingsProfileViewModel @Inject constructor(
     postToSlackUseCase: PostToSlackUseCase, app: Application)
     : BaseSettingsViewModel(postToSlackUseCase, app) {
 
-    val profile by lazy { MutableLiveData<UserProfileProperties>() }
+    private val profile by lazy { MutableLiveData<UserProfileProperties>() }
+    internal fun profile(): LiveData<UserProfileProperties> = profile
 
     private lateinit var properties: UserProfileProperties
     private lateinit var unsavedProperties: UserProfileCustomPropertiesRaw

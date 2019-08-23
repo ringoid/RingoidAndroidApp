@@ -2,6 +2,7 @@ package com.ringoid.origin.feed.view.lmm.base
 
 import android.app.Application
 import android.os.Bundle
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
@@ -55,8 +56,10 @@ abstract class BaseLmmFeedViewModel(
         countUserImagesUseCase,
         filtersSource, userInMemoryCache, app) {
 
-    val count by lazy { MutableLiveData<Int>() }
-    val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+    private val count by lazy { MutableLiveData<Int>() }
+    internal fun count(): LiveData<Int> = count
+    private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+    internal fun feed(): LiveData<List<FeedItemVO>> = feed
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set

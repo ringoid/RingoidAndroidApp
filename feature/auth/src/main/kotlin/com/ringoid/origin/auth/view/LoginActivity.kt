@@ -129,8 +129,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
         }
 
-        observe(vm.loginButtonEnableState) { btn_login.isEnabled = it }
-        observe(vm.yearOfBirthEntryState) {
+        observe(vm.loginButtonEnableState()) { btn_login.isEnabled = it }
+        observe(vm.yearOfBirthEntryState()) {
             when (it) {
                 WidgetState.NORMAL -> {
                     et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_grey)

@@ -59,7 +59,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with (viewLifecycleOwner) {
-            observe(vm.profile) {
+            observe(vm.profile()) {
                 // properties
                 item_profile_property_children.setSelectedItem(it.children)
                 item_profile_property_education.setSelectedItem(it.education.reduceForLocale(app?.localeManager?.getLang()))

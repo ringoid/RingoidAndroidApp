@@ -249,11 +249,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.imageBlocked, ::doOnBlockedImage)
-            observe(vm.imageCreated, imagesAdapter::prepend)
-            observe(vm.imageDeleted, imagesAdapter::remove)
-            observe(vm.images, imagesAdapter::submitList)
-            observe(vm.profile) { properties ->
+            observe(vm.imageBlocked(), ::doOnBlockedImage)
+            observe(vm.imageCreated(), imagesAdapter::prepend)
+            observe(vm.imageDeleted(), imagesAdapter::remove)
+            observe(vm.images(), imagesAdapter::submitList)
+            observe(vm.profile()) { properties ->
                 val age = maxOf(0, calendar.get(Calendar.YEAR) - spm.currentUserYearOfBirth())
                 val gender = spm.currentUserGender()
                 val showDefault = properties.isAllUnknown()
