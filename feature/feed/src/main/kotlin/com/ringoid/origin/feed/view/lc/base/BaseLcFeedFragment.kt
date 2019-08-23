@@ -70,6 +70,14 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         }
     }
 
+    override fun onDiscardAllProfiles() {
+        if (lcCountHidden > 0) {
+            onClearState(ViewState.CLEAR.MODE_CHANGE_FILTERS)
+        } else {
+            super.onDiscardAllProfiles()
+        }
+    }
+
     override fun onDiscardProfileState(profileId: String): FeedItemVO? =
         super.onDiscardProfileState(profileId)?.also { _ ->
             requestFiltersForUpdateOnChangeLcFeed()
