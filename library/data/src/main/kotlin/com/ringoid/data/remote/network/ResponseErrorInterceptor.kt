@@ -1,7 +1,9 @@
 package com.ringoid.data.remote.network
 
 import com.ringoid.datainterface.remote.model.BaseResponse
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.debug.DebugNetworkUtil
 import com.ringoid.domain.log.SentryUtil
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -25,6 +27,10 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         val request = chain.request()
         val unexpected: String? ; val errorMessage: String
         try {
+            if (BuildConfig.DEBUG && DebugNetworkUtil.networkException != null) {
+                DebugLogUtil.w("Simulating network error...")
+                throw DebugNetworkUtil.networkException!!
+            }
             val response = chain.proceed(request)
             if (!response.isSuccessful) {  // code not 200-300
                 Timber.w("Unsuccessful network response, code: ${response.code}")
