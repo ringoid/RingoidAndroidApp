@@ -1,0 +1,77 @@
+rootProject.originPlugins.each {
+    apply plugin: it
+}
+
+List<String> sngLanguages = ['ba', 'be', 'bg', 'ce', 'cv', 'et',
+                             'kk', 'kv', 'lt', 'lv', 'mk', 'os',
+                             'pl', 'sah', 'sk', 'sl', 'tt', 'ua', 'uk']
+
+static String listToJavaArray(List<String> list) {
+    String result = ""
+    list.each { item -> result += (result.empty ? "" : ",") + "\"${item}\"" }
+    return "{${result}}"
+}
+
+android {
+    baseFeature true
+
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res', 'src/main/res-screen',
+                           'src/main/res-screen/error',
+                           'src/main/res-screen/image',
+                           'src/main/res-screen/main',
+                           'src/main/res-screen/splash',
+                           'src/main/res-screen/user',
+                           'src/main/res-screen/web']
+        }
+    }
+}
+
+dependencies {
+    api 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    api 'com.android.support:appcompat-v7:28.0.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def originDependencies = rootProject.ext.originDependencies
+    def androidTestOriginDeps = rootProject.ext.androidTestOriginDeps
+    def testOriginDependencies = rootProject.ext.testOriginDependencies
+
+    originDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testOriginDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestOriginDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+
+    application project(':app')
+    feature project(":feature:auth")
+    feature project(":feature:feed")
+    feature project(":feature:imagepreview")
+    feature project(":feature:messenger")
+    feature project(":feature:profile")
+    feature project(":feature:usersettings")
+}
+
+android.featureVariants.all { variant ->
+    variant.mergeResources.doFirst {
+        File tmpResDir = file(buildDir.absolutePath + '/tmp/res')
+        if (!tmpResDir.exists()) {
+            tmpResDir.mkdirs()
+        }
+        sngLanguages.each { language ->
+            File languageDir = file(tmpResDir.absolutePath + "/values-${language}")
+            if (!languageDir.exists()) {
+                languageDir.mkdirs()
+            }
+            copy {
+                from rootDir.absolutePath + '/origin/src/main/res/values-ru/'
+                into languageDir.absolutePath
+            }
+        }
+        android.sourceSets['main'].res.srcDirs += tmpResDir.absolutePath
+    }
+}

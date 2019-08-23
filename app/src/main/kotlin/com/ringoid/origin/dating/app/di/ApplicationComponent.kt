@@ -2,6 +2,7 @@ package com.ringoid.origin.dating.app.di
 
 import android.app.Application
 import android.content.Context
+import android.os.HandlerThread
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
@@ -79,11 +80,13 @@ interface ApplicationComponent : AndroidInjector<RingoidApplication> {
     abstract class Builder : AndroidInjector.Builder<RingoidApplication>() {
         @BindsInstance abstract fun application(app: Application): Builder
         @BindsInstance abstract fun applicationContext(context: Context): Builder
+        @BindsInstance abstract fun bgLooper(bgLooper: HandlerThread): Builder
         abstract fun cloudModule(cloudModule: CloudModule): Builder
         abstract fun ringoidCloudModule(ringoidCloudModule: RingoidCloudModule): Builder
         abstract fun systemCloudModule(systemCloudModule: SystemCloudModule): Builder
     }
 
+    fun bgLooper(): HandlerThread
     fun barrierLogDao(): IBarrierLogDaoHelper  // exposed access to barrier-log database
     fun debugLogDao(): IDebugLogDaoHelper  // exposed access to debug-log database
 }

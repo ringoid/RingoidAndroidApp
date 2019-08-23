@@ -1,0 +1,21 @@
+rootProject.feedPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def feedDependencies = rootProject.ext.feedDependencies
+    def androidTestFeedDeps = rootProject.ext.androidTestFeedDeps
+    def testFeedDependencies = rootProject.ext.testFeedDependencies
+
+    feedDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testFeedDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestFeedDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

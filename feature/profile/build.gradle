@@ -1,0 +1,21 @@
+rootProject.profilePlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def profileDependencies = rootProject.ext.profileDependencies
+    def androidTestProfileDeps = rootProject.ext.androidTestProfileDeps
+    def testProfileDependencies = rootProject.ext.testProfileDependencies
+
+    profileDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testProfileDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestProfileDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

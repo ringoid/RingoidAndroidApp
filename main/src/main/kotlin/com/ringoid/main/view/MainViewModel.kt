@@ -3,12 +3,13 @@ package com.ringoid.main.view
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.manager.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
+import com.ringoid.domain.interactor.actions.CountActionObjectsCachedInPoolUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLcUseCase
@@ -40,6 +41,7 @@ class MainViewModel @Inject constructor(
     getLcUseCase: GetLcUseCase, getUserImagesUseCase: GetUserImagesUseCase,
     private val filtersSource: IFiltersSource,
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
+    private val countActionObjectsCachedInPoolUseCase: CountActionObjectsCachedInPoolUseCase,
     private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
     private val updatePushTokenUseCase: UpdatePushTokenUseCase,
     private val updateUserSettingsUseCase: UpdateUserSettingsUseCase, app: Application)
@@ -161,6 +163,16 @@ class MainViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         viewState.value = ViewState.DONE(CLOSE_DEBUG_VIEW)
+    }
+
+    @DebugOnly
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onEventDebugInfo(event: BusEvent.DebugInfo) {
+        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Timber.d("Received bus event: $event")
+        countActionObjectsCachedInPoolUseCase.source()
+            .autoDisposable(this)
+            .subscribe({ DebugLogUtil.i("Total count of aobjs in pool: $it") }, Timber::e)
     }
 
     // --------------------------------------------------------------------------------------------

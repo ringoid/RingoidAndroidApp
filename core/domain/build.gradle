@@ -1,0 +1,35 @@
+rootProject.domainPlugins.each {
+    apply plugin: it
+}
+
+android {
+    defaultConfig {
+        buildConfigField 'int', 'BUILD_NUMBER', "$rootProject.ext.buildVersion"
+        buildConfigField 'boolean', 'IS_STAGING', "$rootProject.ext.isStaging"
+        buildConfigField 'String', 'ONBOARDING', "\"$rootProject.ext.onboarding\""
+        buildConfigField 'String', 'API_URL', rootProject.ext.apiUrl
+        buildConfigField 'String', 'APPNAV', rootProject.ext.appnav
+        buildConfigField 'String', 'AUTHORITY', rootProject.ext.authority
+        buildConfigField 'int', 'DEFAULT_RETRY_COUNT', rootProject.ext.retryCount
+        buildConfigField 'long', 'DEFAULT_RETRY_DELAY', rootProject.ext.retryDelayMs
+        buildConfigField 'String', 'HOST', rootProject.ext.host
+        buildConfigField 'long', 'REQUEST_TIME_THRESHOLD', rootProject.ext.requestTimeThreshold
+        buildConfigField 'long', "RESPONSE_TIME_THRESHOLD", rootProject.ext.responseTimeThreshold
+        buildConfigField 'String', 'FLURRY_API_KEY', rootProject.ext.flurryApiKey
+        buildConfigField 'String', 'SENTRY_DSN', rootProject.ext.sentryDSN
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def domainDependencies = rootProject.ext.domainDependencies
+    def testDomainDependencies = rootProject.ext.testDomainDependencies
+
+    domainDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testDomainDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

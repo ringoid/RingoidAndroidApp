@@ -1,0 +1,21 @@
+rootProject.authPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def authDependencies = rootProject.ext.authDependencies
+    def androidTestAuthDeps = rootProject.ext.androidTestAuthDeps
+    def testAuthDependencies = rootProject.ext.testAuthDependencies
+
+    authDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testAuthDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestAuthDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

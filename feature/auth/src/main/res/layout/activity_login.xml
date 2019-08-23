@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:clipToPadding="false"
+    android:paddingTop="@dimen/std_margin_8"
+    android:paddingBottom="@dimen/std_margin_16">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Switch
+            android:id="@+id/switch_theme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/std_margin_8"
+            android:layout_marginEnd="@dimen/std_margin_8"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="@dimen/std_margin_16"
+            android:layout_marginStart="@dimen/std_margin_16"
+            android:layout_marginEnd="@dimen/std_margin_16"
+            android:paddingTop="@dimen/std_margin_16"
+            android:paddingBottom="@dimen/std_margin_16"
+            android:text="@string/login_button"
+            android:textSize="@dimen/std_text_20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/RaisedButton"/>
+
+        <ProgressBar
+            android:id="@+id/pb_login"
+            android:layout_marginBottom="@dimen/std_margin_16"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/ProgressBar"/>
+
+        <TextView
+            android:id="@+id/tv_terms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/std_margin_16"
+            android:layout_marginEnd="@dimen/std_margin_16"
+            android:layout_marginBottom="@dimen/std_margin_16"
+            android:text="@string/login_terms"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:textColor="@color/grey_middle"
+            app:layout_constraintBottom_toTopOf="@id/btn_login"/>
+
+        <LinearLayout
+            android:id="@+id/ll_sex_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/std_margin_16"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/tv_terms"
+            app:layout_constraintStart_toStartOf="@+id/et_year_of_birth"
+            app:layout_constraintEnd_toEndOf="@+id/et_year_of_birth">
+
+            <TextView
+                android:id="@+id/tv_sex_male"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/sex_bg_selector"
+                android:clickable="true"
+                android:drawableTop="@drawable/ic_sex_male_blue_60dp"
+                android:padding="@dimen/std_margin_16"
+                android:text="@string/common_sex_male"
+                android:textColor="@color/male_blue"
+                style="@style/StdText"/>
+
+            <TextView
+                android:id="@+id/tv_sex_female"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/sex_bg_selector"
+                android:clickable="true"
+                android:drawableTop="@drawable/ic_sex_female_red_60dp"
+                android:padding="@dimen/std_margin_16"
+                android:text="@string/common_sex_female"
+                android:textColor="@color/female_pink"
+                style="@style/StdText"/>
+        </LinearLayout>
+
+        <com.ringoid.widget.view.KeyEditText
+            android:id="@+id/et_year_of_birth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/std_margin_8"
+            android:background="@drawable/rect_round_grey"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:hint="@string/login_year_of_birth_et_hint"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:maxLength="4"
+            android:paddingTop="@dimen/std_margin_16"
+            android:paddingBottom="@dimen/std_margin_16"
+            android:paddingStart="@dimen/std_margin_32"
+            android:paddingEnd="@dimen/std_margin_32"
+            android:textColor="?attr/refTextColorPrimary"
+            android:textSize="@dimen/login_year_of_birth_et_text_size"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/ll_sex_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <requestFocus/>
+        </com.ringoid.widget.view.KeyEditText>
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/std_margin_16"
+            app:layout_constraintTop_toTopOf="@id/et_year_of_birth"
+            app:layout_constraintBottom_toBottomOf="@id/et_year_of_birth"
+            app:layout_constraintEnd_toEndOf="@id/et_year_of_birth"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="std_btn_height">53dp</dimen>
+    <dimen name="std_btn_height_narrow">42dp</dimen>
+    <dimen name="std_dialog_height">180dp</dimen>
+    <dimen name="std_dialog_height_double">360dp</dimen>
+    <dimen name="std_dialog_width">315dp</dimen>
+    <dimen name="std_element_height">53dp</dimen>
+    <dimen name="std_icon_8">7dp</dimen>
+    <dimen name="std_icon_12">11dp</dimen>
+    <dimen name="std_icon_18">16dp</dimen>
+    <dimen name="std_icon_24">21dp</dimen>
+    <dimen name="std_icon_32">28dp</dimen>
+    <dimen name="std_icon_36">32dp</dimen>
+    <dimen name="std_icon_96">84dp</dimen>
+    <dimen name="std_margin_8">7dp</dimen>
+    <dimen name="std_margin_12">11dp</dimen>
+    <dimen name="std_margin_16">14dp</dimen>
+    <dimen name="std_margin_18">16dp</dimen>
+    <dimen name="std_margin_20">18dp</dimen>
+    <dimen name="std_margin_24">21dp</dimen>
+    <dimen name="std_margin_32">28dp</dimen>
+    <dimen name="std_margin_40">36dp</dimen>
+    <dimen name="std_margin_48">42dp</dimen>
+    <dimen name="std_margin_64">56dp</dimen>
+    <dimen name="std_screen_10">35dp</dimen>
+    <dimen name="std_screen_20">70dp</dimen>
+    <dimen name="std_screen_w">328dp</dimen>
+    <dimen name="std_screen_w_half">164dp</dimen>
+    <dimen name="std_text_10">9sp</dimen>
+    <dimen name="std_text_12">11sp</dimen>
+    <dimen name="std_text_14">12sp</dimen>
+    <dimen name="std_text_16">14sp</dimen>
+    <dimen name="std_text_18">16sp</dimen>
+    <dimen name="std_text_20">18sp</dimen>
+    <dimen name="std_text_22">19sp</dimen>
+    <dimen name="std_text_30">26sp</dimen>
+    <dimen name="std_text_36">32sp</dimen>
+    <dimen name="std_toolbar_height">46dp</dimen>
+
+    <!-- Widget -->
+    <dimen name="icon_item_view_height">53dp</dimen>
+    <dimen name="edit_text_icon_item_view_height">70dp</dimen>
+</resources>

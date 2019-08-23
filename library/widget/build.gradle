@@ -1,0 +1,17 @@
+rootProject.widgetPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def widgetDependencies = rootProject.ext.widgetDependencies
+    def testWidgetDependencies = rootProject.ext.testWidgetDependencies
+
+    widgetDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testWidgetDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

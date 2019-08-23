@@ -1,0 +1,21 @@
+rootProject.imagePreviewPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def imagePreviewDependencies = rootProject.ext.imagePreviewDependencies
+    def androidTestImagePreviewDeps = rootProject.ext.androidTestImagePreviewDeps
+    def testImagePreviewDependencies = rootProject.ext.testImagePreviewDependencies
+
+    imagePreviewDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testImagePreviewDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestImagePreviewDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

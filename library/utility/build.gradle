@@ -1,0 +1,25 @@
+rootProject.utilityPlugins.each {
+    apply plugin: it
+}
+
+android {
+    defaultConfig {
+        buildConfigField 'long', 'DEBOUNCE_CLICK', rootProject.ext.debounceClickMs
+        buildConfigField 'long', 'DEBOUNCE_INPUT', rootProject.ext.debounceInputMs
+        buildConfigField 'long', 'POST_DELAY', rootProject.ext.postDelayMs
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def utilityDependencies = rootProject.ext.utilityDependencies
+    def testUtilityDependencies = rootProject.ext.testUtilityDependencies
+
+    utilityDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testUtilityDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

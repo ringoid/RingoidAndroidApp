@@ -1,0 +1,21 @@
+rootProject.userSettingsPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def userSettingsDependencies = rootProject.ext.userSettingsDependencies
+    def androidTestUserSettingsDeps = rootProject.ext.androidTestUserSettingsDeps
+    def testUserSettingsDependencies = rootProject.ext.testUserSettingsDependencies
+
+    userSettingsDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testUserSettingsDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestUserSettingsDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

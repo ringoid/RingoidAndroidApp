@@ -1,0 +1,21 @@
+rootProject.messengerPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def messengerDependencies = rootProject.ext.messengerDependencies
+    def androidTestMessengerDeps = rootProject.ext.androidTestMessengerDeps
+    def testMessengerDependencies = rootProject.ext.testMessengerDependencies
+
+    messengerDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testMessengerDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestMessengerDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

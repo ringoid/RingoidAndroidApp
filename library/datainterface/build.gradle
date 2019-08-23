@@ -1,0 +1,17 @@
+rootProject.dataInterfacePlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def dataInterfaceDependencies = rootProject.ext.dataInterfaceDependencies
+    def testDataInterfaceDependencies = rootProject.ext.testDataInterfaceDependencies
+
+    dataInterfaceDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testDataInterfaceDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

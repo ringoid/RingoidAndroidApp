@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.drawee.view.SimpleDraweeView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/iv_chat_image"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/std_image_height"
+    android:contentDescription="@null"
+    fresco:actualImageScaleType="centerCrop"
+    fresco:fadeDuration="0"
+    fresco:overlayImage="@color/semitransparent_mid"
+    fresco:retryImage="@drawable/ic_no_photo_placeholder_grey_96dp"/>

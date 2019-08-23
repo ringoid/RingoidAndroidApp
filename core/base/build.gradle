@@ -1,0 +1,33 @@
+rootProject.basePlugins.each {
+    apply plugin: it
+}
+
+android {
+    defaultConfig {
+        buildConfigField 'boolean', 'BACK_TO_GALLERY_FROM_IMAGE_PREVIEW', "$rootProject.ext.backToGalleryFromImagePreview"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def baseDependencies = rootProject.ext.baseDependencies
+    def androidTestBaseDeps = rootProject.ext.androidTestBaseDeps
+    def testBaseDependencies = rootProject.ext.testBaseDependencies
+
+    baseDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testBaseDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestBaseDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

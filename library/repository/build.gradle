@@ -1,0 +1,17 @@
+rootProject.repositoryPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def repositoryDependencies = rootProject.ext.repositoryDependencies
+    def testRepositoryDependencies = rootProject.ext.testRepositoryDependencies
+
+    repositoryDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testRepositoryDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

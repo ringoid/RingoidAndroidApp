@@ -1,0 +1,30 @@
+rootProject.dataPlugins.each {
+    apply plugin: it
+}
+
+android {
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas".toString())
+        }
+    }
+    sourceSets {
+        androidTest {
+            assets.srcDirs += files("$projectDir/schemas".toString())
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def dataDependencies = rootProject.ext.dataDependencies
+    def testDataDependencies = rootProject.ext.testDataDependencies
+
+    dataDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testDataDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}
