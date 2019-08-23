@@ -20,6 +20,7 @@ import com.ringoid.datainterface.remote.model.feed.LmmResponse
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.NetworkUnexpected
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
@@ -110,6 +111,7 @@ open class FeedRepository @Inject constructor(
     override val feedMessages = PublishSubject.create<LmmSlice>()
     override val lmmChanged = PublishSubject.create<Boolean>()
     override val lmmLoadFinish = PublishSubject.create<Int>()
+    override val lmmLoadFailed = PublishSubject.create<Throwable>()
     override val newLikesCount = PublishSubject.create<Int>()
     override val newMatchesCount = PublishSubject.create<Int>()
     override val newMessagesCount = PublishSubject.create<Int>()
@@ -177,6 +179,9 @@ open class FeedRepository @Inject constructor(
             .onErrorResumeNext {
                 Timber.e(it)
                 SentryUtil.capture(it, message = "Fallback to get cached Lmm", level = SentryUtil.Level.WARNING)
+                if (it is NetworkUnexpected) {
+                    lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
+                }
                 getCachedLmm()
             }
             .doFinally { trace.stop() }
@@ -235,6 +240,9 @@ open class FeedRepository @Inject constructor(
             .onErrorResumeNext {
                 Timber.e(it)
                 SentryUtil.capture(it, message = "Fallback to get cached LC", level = SentryUtil.Level.WARNING)
+                if (it is NetworkUnexpected) {
+                    lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
+                }
                 getCachedLc()
             }
             .doFinally { trace.stop() }

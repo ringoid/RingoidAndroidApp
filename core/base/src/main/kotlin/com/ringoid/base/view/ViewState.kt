@@ -6,6 +6,8 @@ open class Residual : IResidual() {
     override fun toString(): String = javaClass.simpleName
 }
 
+object FATAL_ERROR : Residual()
+
 sealed class ViewState {
 
     override fun toString(): String = javaClass.simpleName

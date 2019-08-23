@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
+import com.ringoid.base.view.FATAL_ERROR
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.debug.DebugNetworkUtil
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_USER_PROFILE
-import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
+import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
+import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
@@ -35,6 +38,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
+                    is FATAL_ERROR -> showFatalErrorDialog()
                     is LC_FEED_COUNTS ->
                         (newState.residual as LC_FEED_COUNTS).let {
                             setCountOfFilteredFeedItems(count = it.show)
@@ -67,17 +71,25 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         }
     }
 
-    override fun onRefreshGesture() {
-        vm.dropFilters()  // manual refresh acts as 'show all', but selected filters remain, though not applied
-        super.onRefreshGesture()
-    }
-
     override fun onDiscardProfileState(profileId: String): FeedItemVO? =
         super.onDiscardProfileState(profileId)?.also { _ ->
             requestFiltersForUpdateOnChangeLcFeed()
             setToolbarTitleWithLcCounts(--lcCountShow, lcCountHidden)
         }
 
+    override fun onRefreshGesture() {
+        vm.dropFilters()  // manual refresh acts as 'show all', but selected filters remain, though not applied
+        super.onRefreshGesture()
+    }
+
+    private fun showFatalErrorDialog() {
+        Dialogs.showTextDialog(activity, descriptionResId = OriginR_string.error_connection,
+            positiveBtnLabelResId = OriginR_string.button_retry,
+            negativeBtnLabelResId = OriginR_string.button_cancel,
+            positiveListener = { dialog, _ -> vm.refresh(); DebugNetworkUtil.networkException = null; dialog.dismiss() })
+    }
+
+    // ------------------------------------------
     protected abstract fun setDefaultToolbarTitle()
 
     protected open fun setToolbarTitleWithLcCounts(show: Int, hidden: Int) {

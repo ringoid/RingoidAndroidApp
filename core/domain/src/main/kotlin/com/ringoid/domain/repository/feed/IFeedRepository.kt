@@ -42,6 +42,7 @@ interface IFeedRepository {
     val feedMessages: PublishSubject<LmmSlice>
     val lmmChanged: PublishSubject<Boolean>  // LMM contains new data
     val lmmLoadFinish: PublishSubject<Int>  // LMM load finished, contains LMM's total count
+    val lmmLoadFailed: PublishSubject<Throwable>  // LMM load failed, fallback to cache
     val newLikesCount: PublishSubject<Int>  // for particle animation
     val newMatchesCount: PublishSubject<Int>  // for particle animation
     val newMessagesCount: PublishSubject<Int>  // for particle animation

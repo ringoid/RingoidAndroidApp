@@ -89,7 +89,6 @@ class DebugView : ConstraintLayout {
             if (sizeToggle) minimize() else maximize()
         }
         ibtn_separator_debug.clicks().compose(clickDebounce()).subscribe {
-            DebugNetworkUtil.networkException = null
             DebugLogUtil.w("------------------------------------------------------------------------------------\n")
         }
         ibtn_share_debug.clicks().compose(clickDebounce()).subscribe {

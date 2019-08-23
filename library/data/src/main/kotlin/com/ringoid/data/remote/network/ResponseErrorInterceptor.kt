@@ -27,7 +27,8 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         val request = chain.request()
         val unexpected: String? ; val errorMessage: String
         try {
-            if (BuildConfig.DEBUG && DebugNetworkUtil.networkException != null) {
+            if (BuildConfig.DEBUG && DebugNetworkUtil.networkException != null &&
+                request.url.toString().contains("get_lc")) {
                 DebugLogUtil.w("Simulating network error...")
                 throw DebugNetworkUtil.networkException!!
             }

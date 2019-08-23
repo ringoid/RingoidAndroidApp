@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.base.view.FATAL_ERROR
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -26,9 +27,9 @@ import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
-import com.ringoid.origin.feed.view.lmm.base.ON_TRANSFER_PROFILE_COMPLETE
+import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
+import com.ringoid.origin.feed.view.lc.ON_TRANSFER_PROFILE_COMPLETE
+import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.runOnUiThread
@@ -100,6 +101,12 @@ abstract class BaseLcFeedViewModel(
             }
             .autoDisposable(this)
             .subscribe({}, DebugLogUtil::e)
+
+        // notify UI about unexpected fatal errors
+        getLcUseCase.repository.lmmLoadFailed
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ viewState.value = ViewState.DONE(FATAL_ERROR) }, DebugLogUtil::e)
     }
 
     // --------------------------------------------------------------------------------------------

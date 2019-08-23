@@ -11,6 +11,7 @@
     <string name="button_filter">Фильтровать (%s)</string>
     <string name="button_later">Не сейчас</string>
     <string name="button_ok">ОК</string>
+    <string name="button_retry">Повторить</string>
     <string name="button_settings">Настройки</string>
     <string name="button_show_all">Показать все (%s)</string>
     <string name="button_show_all_init">Показать все (0)</string>
@@ -29,6 +30,7 @@
     <string name="common_unchosen">Не выбрано</string>
 
     <string name="error_common">Ой! Что-то пошло не так&#8230;</string>
+    <string name="error_connection">Ошибка соединения. Пожалуйста повторите.</string>
     <string name="error_crop_image">Не удалось загрузить фото</string>
     <string name="error_invalid_referral_code">Код неверен</string>
 
