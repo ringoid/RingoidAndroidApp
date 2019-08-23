@@ -170,8 +170,10 @@ class MessagesFeedViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun handleUserVisibleHint(isVisibleToUser: Boolean) {
         super.handleUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser /** switched to this LC tab */ && badgeIsOn /** has new feed items */) {
-            analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
+        if (isVisibleToUser) {  /** switched to this LC tab */
+            if (badgeIsOn) {  /** has new feed items */
+                analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
+            }
         }
     }
 

@@ -21,10 +21,10 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
-import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
+import com.ringoid.origin.feed.view.lc.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_LIKES_TOTAL
+import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.ringoid.origin.view.main.LcNavTab
@@ -109,8 +109,10 @@ class LikesFeedViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun handleUserVisibleHint(isVisibleToUser: Boolean) {
         super.handleUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser /** switched to this LC tab */ && badgeIsOn /** has new feed items */) {
-            analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to getFeedName())
+        if (isVisibleToUser) {  /** switched to this LC tab */
+            if (badgeIsOn) {  /** has new feed items */
+                analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to getFeedName())
+            }
         }
     }
 
