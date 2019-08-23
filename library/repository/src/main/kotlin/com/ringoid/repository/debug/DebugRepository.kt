@@ -14,6 +14,7 @@ import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.exception.SimulatedException
 import com.ringoid.domain.log.breadcrumb
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
@@ -150,12 +151,31 @@ class DebugRepository @Inject constructor(
     override fun debugRequestWithUnsupportedAppVersion(): Completable = cloud.debugOldVersion()
 
     // ------------------------------------------
+    private var manualRetryAttempt: Int = 0
+
+    private fun getAndIncrementManualRetryAttempt(): Int = manualRetryAttempt++
+
     override fun debugGetNewFaces(page: Int): Single<Feed> =
         Single.just(getFeed(page))
             .doOnSubscribe { Timber.v("Debug Feed: page: $page") }
             .filterAlreadySeenProfilesFeed()
             .filterBlockedProfilesFeed()
             .cacheNewFacesAsAlreadySeen()
+
+    override fun debugGetNewFacesFail(): Single<Feed> = Single.error(SimulatedException())
+
+    override fun debugGetNewFacesFailAndRecoverAfterNTimes(count: Int): Single<Feed> =
+        Single.just(0L)
+            .flatMap {
+                val i = getAndIncrementManualRetryAttempt()
+                if (i < count) Single.error(SimulatedException())
+                else Single.just(getFeed(1))  // return some page
+            }
+
+    override fun dropFlags(): Completable =
+        Single.just(0L)
+            .doOnSubscribe { manualRetryAttempt = 0 }
+            .ignoreElement()  // convert to Completable
 
     // ------------------------------------------
     private fun Single<Feed>.cacheNewFacesAsAlreadySeen(): Single<Feed> =
@@ -177,7 +197,7 @@ class DebugRepository @Inject constructor(
         .withLatestFrom(idsSource,
             BiFunction { feed: Feed, blockedIds: List<String> ->
                 blockedIds
-                    .takeIf { !it.isEmpty() }
+                    .takeIf { it.isNotEmpty() }
                     ?.let {
                         val l = feed.profiles.toMutableList().apply { removeAll { it.id in blockedIds } }
                         feed.copyWith(profiles = l)

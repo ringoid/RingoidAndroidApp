@@ -6,19 +6,15 @@ import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.model.feed.Feed
-import com.ringoid.domain.repository.debug.IDebugFeedRepository
+import com.ringoid.domain.repository.debug.IDebugRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
 @DebugOnly
-class DebugGetNewFacesThresholdExceed @Inject constructor(
-    private val repository: IDebugFeedRepository,
+class DebugGetNewFacesFailedUseCase @Inject constructor(
+    private val repository: IDebugRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<Feed>(threadExecutor, postExecutor) {
 
-    override fun sourceImpl(params: Params): Single<Feed> {
-        val page = params.get<Int>("page") ?: 0
-        val failPage = params.get<Int>("failPage") ?: 0
-        return repository.debugGetNewFacesWithThresholdExceedOnAttempt(page = page, failPage = failPage)
-    }
+    override fun sourceImpl(params: Params): Single<Feed> = repository.debugGetNewFacesFail()
 }

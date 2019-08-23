@@ -26,4 +26,8 @@ interface IDebugRepository {
 
     // ------------------------------------------
     fun debugGetNewFaces(page: Int): Single<Feed>
+    fun debugGetNewFacesFail(): Single<Feed>
+    fun debugGetNewFacesFailAndRecoverAfterNTimes(count: Int): Single<Feed>
+
+    fun dropFlags(): Completable
 }

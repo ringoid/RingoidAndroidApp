@@ -38,6 +38,8 @@ class ExploreViewModel @Inject constructor(
     private val getDiscoverUseCase: GetDiscoverUseCase,
     private val getCachedLmmFeedItemIdsUseCase: GetCachedLmmFeedItemIdsUseCase,
     @DebugOnly private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
+    @DebugOnly private val debugGetNewFacesFailedUseCase: DebugGetNewFacesFailedUseCase,
+    @DebugOnly private val debugGetNewFacesFailedAndRecoverAfterNTimesUseCase: DebugGetNewFacesFailedAndRecoverAfterNTimesUseCase,
     @DebugOnly private val debugGetNewFacesDropFlagsUseCase: DebugGetNewFacesDropFlagsUseCase,
     @DebugOnly private val debugGetNewFacesRepeatAfterDelayForPageUseCase: DebugGetNewFacesRepeatAfterDelayForPageUseCase,
     @DebugOnly private val debugGetNewFacesRetryNTimesForPageUseCase: DebugGetNewFacesRetryNTimesForPageUseCase,
@@ -85,6 +87,7 @@ class ExploreViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun getFeed() {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
+//        debugGetNewFacesFailedUseCase.source()
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 0))
@@ -108,10 +111,12 @@ class ExploreViewModel @Inject constructor(
 
     private fun getMoreFeed() {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
+//        debugGetNewFacesFailedUseCase.source()
+        debugGetNewFacesFailedAndRecoverAfterNTimesUseCase.source(params = Params().put("count", 2))
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 2))
-        getDiscoverUseCase.source(params = prepareFeedParams())
+//        getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.PAGING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
             .doOnError {
