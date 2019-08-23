@@ -39,7 +39,7 @@ class ExploreFeedAdapter : BaseFeedAdapter(FeedItemVODiffCallback()) {
 
     override fun instantiateErrorViewHolder(view: View): OriginFeedViewHolder =
         ErrorFeedViewHolder(view).also { vh ->
-            vh.itemView.findViewById<TextView>(OriginR_id.tv_error_end_item)?.let {
+            vh.itemView.findViewById<TextView>(OriginR_id.tv_end_item)?.let {
                 it.clicks().compose(clickDebounce()).subscribe {
                     onErrorLabelClickListener?.invoke()
                 }
