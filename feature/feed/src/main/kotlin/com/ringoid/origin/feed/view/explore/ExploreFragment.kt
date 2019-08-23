@@ -93,6 +93,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
                     }
                 }
             }
+            is ViewState.PAGING -> feedAdapter.loading()
         }
         super.onViewStateChange(newState)
     }

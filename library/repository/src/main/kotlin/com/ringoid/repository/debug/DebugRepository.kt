@@ -151,6 +151,7 @@ class DebugRepository @Inject constructor(
     override fun debugRequestWithUnsupportedAppVersion(): Completable = cloud.debugOldVersion()
 
     // ------------------------------------------
+    private var manualPage: Int = 0
     private var manualRetryAttempt: Int = 0
 
     private fun getAndIncrementManualRetryAttempt(): Int = manualRetryAttempt++
@@ -169,12 +170,15 @@ class DebugRepository @Inject constructor(
             .flatMap {
                 val i = getAndIncrementManualRetryAttempt()
                 if (i < count) Single.error(SimulatedException())
-                else Single.just(getFeed(1))  // return some page
+                else Single.just(getFeed(manualPage++))  // return some page
             }
 
     override fun dropFlags(): Completable =
         Single.just(0L)
-            .doOnSubscribe { manualRetryAttempt = 0 }
+            .doOnSubscribe {
+                manualPage = 0
+                manualRetryAttempt = 0
+            }
             .ignoreElement()  // convert to Completable
 
     // ------------------------------------------

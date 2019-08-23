@@ -120,6 +120,15 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
         noMoreItems(emptyList()) { false }
     }
 
+    /**
+     * Use only to change ERROR state with LOADING in adapter.
+     */
+    fun loading() {
+        isInErrorState = false
+        isThereMore = true
+        notifyItemChanged(errorFooterPosition())
+    }
+
     fun append(item: T) {
         submitList(mutableListOf<T>().apply { addAll(helper.currentList) }.also { it.add(item) })
     }
@@ -289,6 +298,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     private fun fixUpForLoader(): Int = if (isEmpty()) 0 else if (withLoader()) 1 else 0
     private fun fixUpForError():  Int = if (isEmpty()) 0 else if (withError())  1 else 0
     fun footerPosition(): Int = getModelsCount() + fixUpForHeader()
+    fun errorFooterPosition(): Int = footerPosition() + fixUpForError()
 
     // --------------------------------------------------------------------------------------------
     override fun toString(): String = "$javaClass: size=${getModelsCount()}, withHeader=${withHeader()}, withFooter=${withFooter()}[at ${footerPosition()}]"
