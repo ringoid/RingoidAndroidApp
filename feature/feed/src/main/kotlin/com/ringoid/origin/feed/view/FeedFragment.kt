@@ -421,6 +421,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     // --------------------------------------------------------------------------------------------
     protected open fun onRefreshGesture() {
+        DebugLogUtil.i("PULL to REFRESH")
         // purge feed on refresh, before fetching a new one
         onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
         onRefresh()  // should be the last action in subclasses, if overridden
