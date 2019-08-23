@@ -84,6 +84,8 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
     // ------------------------------------------
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer
 
+    override fun getErrorLayoutResId(): Int = R.layout.rv_item_feed_footer_error
+
     /**
      * Wraps outer click on image listener, but passes feed item position in adapter instead of image's
      * position in the inner adapter. This is useful when callers need just a callback on image click

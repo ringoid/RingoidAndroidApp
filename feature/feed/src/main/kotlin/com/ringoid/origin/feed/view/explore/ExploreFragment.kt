@@ -36,6 +36,7 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
 
     override fun createFeedAdapter(): BaseFeedAdapter =
         ExploreFeedAdapter().apply {
+            onErrorLabelClickListener = { vm.onRetryLoadMore() }
             onFooterLabelClickListener = { onEmptyLabelClick() }
             onLikeImageListener = { model: ProfileImageVO, _ /** image position */ ->
                 if (!connectionManager.isNetworkAvailable()) {

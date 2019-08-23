@@ -22,6 +22,7 @@
     <string name="common_distance_plus_km">%d&#43; км</string>
     <string name="common_online">Онлайн</string>
     <string name="common_pull_to_refresh">Потяни, чтобы обновить</string>
+    <string name="common_tap_to_refresh">Обновить</string>
     <string name="common_sex_male">Мужчина</string>
     <string name="common_sex_female">Женщина</string>
     <string name="common_uncancellable">Восстановления нет.</string>

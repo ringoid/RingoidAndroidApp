@@ -19,14 +19,16 @@ abstract class BaseListAdapter<T : IListModel, VH : BaseViewHolder<T>>(diffCb: B
     protected abstract fun instantiateHeaderViewHolder(view: View): VH  // default header and footer viewHolders bind nothing
     protected abstract fun instantiateFooterViewHolder(view: View): VH
     private fun instantiateLoadingViewHolder(view: View): VH = instantiateHeaderViewHolder(view)  // same for loading viewHolder
-    private fun instantiateErrorViewHolder(view: View): VH = instantiateHeaderViewHolder(view)  // same for error viewHolder
+    protected open fun instantiateErrorViewHolder(view: View): VH = instantiateHeaderViewHolder(view)  // same for error viewHolder
+
+    override fun getErrorLayoutResId(): Int = R.layout.rv_item_error
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val layoutResId = when (viewType) {
             VIEW_TYPE_HEADER -> getHeaderLayoutResId()
             VIEW_TYPE_FOOTER -> getFooterLayoutResId()
             VIEW_TYPE_LOADING -> R.layout.rv_item_loading
-            VIEW_TYPE_ERROR -> R.layout.rv_item_error
+            VIEW_TYPE_ERROR -> getErrorLayoutResId()
             else -> getLayoutId()
         }
 

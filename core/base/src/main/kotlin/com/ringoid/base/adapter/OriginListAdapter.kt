@@ -277,6 +277,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     // ------------------------------------------
     @LayoutRes protected open fun getHeaderLayoutResId(): Int = 0
     @LayoutRes protected open fun getFooterLayoutResId(): Int = 0
+    @LayoutRes protected open fun getErrorLayoutResId(): Int = 0
 
     fun withHeader(): Boolean = headerRows > 0
     fun withFooter(): Boolean = getFooterLayoutResId() != 0 && !withLoader() && !withError()

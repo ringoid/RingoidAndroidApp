@@ -194,6 +194,11 @@ class ExploreViewModel @Inject constructor(
         VisualEffectManager.call(LikeVisualEffect(x, y))
     }
 
+    internal fun onRetryLoadMore() {
+        DebugLogUtil.v("User pressed to retry load more feed items...")
+        getMoreFeed()
+    }
+
     // --------------------------------------------------------------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRecreateMainScreen(event: BusEvent.RecreateMainScreen) {

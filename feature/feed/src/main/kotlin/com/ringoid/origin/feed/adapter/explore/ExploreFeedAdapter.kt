@@ -14,6 +14,7 @@ import com.ringoid.utility.clickDebounce
 
 class ExploreFeedAdapter : BaseFeedAdapter(FeedItemVODiffCallback()) {
 
+    var onErrorLabelClickListener: (() -> Unit)?= null
     var onFooterLabelClickListener: (() -> Unit)?= null
 
     override fun getLayoutId(): Int = R.layout.rv_item_feed_profile
@@ -32,6 +33,15 @@ class ExploreFeedAdapter : BaseFeedAdapter(FeedItemVODiffCallback()) {
             vh.itemView.findViewById<TextView>(OriginR_id.tv_end_item)?.let {
                 it.clicks().compose(clickDebounce()).subscribe {
                     onFooterLabelClickListener?.invoke()
+                }
+            }
+        }
+
+    override fun instantiateErrorViewHolder(view: View): OriginFeedViewHolder =
+        ErrorFeedViewHolder(view).also { vh ->
+            vh.itemView.findViewById<TextView>(OriginR_id.tv_error_end_item)?.let {
+                it.clicks().compose(clickDebounce()).subscribe {
+                    onErrorLabelClickListener?.invoke()
                 }
             }
         }

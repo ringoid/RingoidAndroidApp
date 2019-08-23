@@ -42,7 +42,7 @@ class HeaderFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHo
     }
 }
 
-class FooterFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
+open class FooterFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHolder {
 
     override fun bind(model: FeedItemVO) {
         showControls()
@@ -66,3 +66,6 @@ class FooterFeedViewHolder(view: View) : OriginFeedViewHolder(view), IFeedViewHo
         itemView.tv_end_item.changeVisibility(isVisible = true)
     }
 }
+
+// apply same show / hide properties as for footer item
+class ErrorFeedViewHolder(view: View) : FooterFeedViewHolder(view)

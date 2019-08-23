@@ -22,6 +22,7 @@
     <string name="common_distance_plus_km">%d&#43; km</string>
     <string name="common_online">Online</string>
     <string name="common_pull_to_refresh">Pull to refresh</string>
+    <string name="common_tap_to_refresh">Tap to refresh</string>
     <string name="common_sex_male">Male</string>
     <string name="common_sex_female">Female</string>
     <string name="common_uncancellable">There is no undo.</string>
