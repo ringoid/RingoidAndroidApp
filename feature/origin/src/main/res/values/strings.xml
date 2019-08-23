@@ -182,6 +182,7 @@
     <string name="settings_push_item_message">New Message</string>
     <string name="settings_push_item_daily">Evening Notification</string>
     <string name="settings_push_item_daily_description">Once per day if you have new like, match, message, or new users</string>
+    <string name="settings_push_item_vibration">In&#45;App Vibration</string>
 
     <!-- Settings Lang screen -->
     <string name="settings_lang_en">English</string>

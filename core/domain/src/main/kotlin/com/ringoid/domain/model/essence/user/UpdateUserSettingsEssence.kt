@@ -19,6 +19,7 @@ data class UpdateUserSettingsEssence(
     @Expose @SerializedName(COLUMN_PUSH_LIKES) val pushLikes: Boolean? = null,
     @Expose @SerializedName(COLUMN_PUSH_MATCHES) val pushMatches: Boolean? = null,
     @Expose @SerializedName(COLUMN_PUSH_MESSAGES) val pushMessages: Boolean? = null,
+    @Expose @SerializedName(COLUMN_PUSH_VIBRATION) val pushVibration: Boolean? = null,
     @Expose @SerializedName(COLUMN_TIMEZONE) val timeZone: Int? = null) : IEssence {
 
     companion object {
@@ -28,6 +29,7 @@ data class UpdateUserSettingsEssence(
         const val COLUMN_PUSH_LIKES = "pushNewLike"
         const val COLUMN_PUSH_MATCHES = "pushNewMatch"
         const val COLUMN_PUSH_MESSAGES = "pushNewMessage"
+        const val COLUMN_PUSH_VIBRATION = "vibration"
         const val COLUMN_TIMEZONE = "timeZone"
 
         fun from(essence: UpdateUserSettingsEssenceUnauthorized, accessToken: String): UpdateUserSettingsEssence =
@@ -38,9 +40,10 @@ data class UpdateUserSettingsEssence(
                 pushLikes = essence.userSettings.pushLikes,
                 pushMatches = essence.userSettings.pushMatches,
                 pushMessages = essence.userSettings.pushMessages,
+                pushVibration = essence.userSettings.pushVibration,
                 timeZone = essence.userSettings.timeZone)
     }
 
     override fun toDebugPayload(): String = "[locale=$locale,push=$push,pushLikes=$pushLikes,pushMatches=$pushMatches," +
-                                            "pushMessages=$pushMessages,timezone=$timeZone]"
+                                            "pushMessages=$pushMessages,pushVibration=$pushVibration,timezone=$timeZone]"
 }

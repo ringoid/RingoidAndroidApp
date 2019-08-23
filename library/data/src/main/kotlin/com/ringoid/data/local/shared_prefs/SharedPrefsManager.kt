@@ -93,6 +93,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED = "sp_key_user_settings_likes_push_enabled"
         const val SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED = "sp_key_user_settings_matches_push_enabled"
         const val SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED = "sp_key_user_settings_messages_push_enabled"
+        const val SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED = "sp_key_user_settings_vibration_push_enabled"
 
         const val SP_KEY_USER_PROFILE_PROPERTY_CHILDREN = "sp_key_user_profile_property_children"
         const val SP_KEY_USER_PROFILE_PROPERTY_EDUCATION  = "sp_key_user_profile_property_education"
@@ -375,6 +376,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun getUserSettingLikesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, true)
     override fun getUserSettingMatchesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, true)
     override fun getUserSettingMessagesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, true)
+    override fun getUserSettingVibrationPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED, true)
 
     override fun setUserSettingDailyPushEnabled(pushEnabled: Boolean) {
         sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, pushEnabled).apply()
@@ -390,6 +392,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean) {
         sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, pushEnabled).apply()
+    }
+
+    override fun setUserSettingVibrationPushEnabled(pushEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED, pushEnabled).apply()
     }
 
     // ------------------------------------------

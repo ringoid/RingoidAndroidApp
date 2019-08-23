@@ -177,6 +177,7 @@
     <string name="settings_push_item_message">Новое сообщение</string>
     <string name="settings_push_item_daily">Вечернее уведомление</string>
     <string name="settings_push_item_daily_description">Один раз в день, если есть лайк, взаимная симпатия, сообщение, или новые люди</string>
+    <string name="settings_push_item_vibration">Вибрация</string>
 
     <!-- Settings Lang screen -->
     <string name="settings_lang_en">English</string>

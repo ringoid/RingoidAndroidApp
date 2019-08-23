@@ -9,5 +9,6 @@ interface IUpdateUserSettingsEssence : IEssence {
 
     override fun toSentryPayload(): String = "[locale=${userSettings.locale},push=${userSettings.push}," +
             "pushLikes=${userSettings.pushLikes},pushMatches=${userSettings.pushMatches}" +
-            "pushMessages=${userSettings.pushMessages},timeZone=${userSettings.timeZone}]"
+            "pushMessages=${userSettings.pushMessages},pushVibration=${userSettings.pushVibration}," +
+            "timeZone=${userSettings.timeZone}]"
 }

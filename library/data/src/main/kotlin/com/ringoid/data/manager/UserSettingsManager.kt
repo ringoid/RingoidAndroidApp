@@ -10,7 +10,8 @@ import javax.inject.Singleton
 
 @Singleton
 class UserSettingsManager @Inject constructor(
-    private val localeManager: LocaleManager, private val spm: SharedPrefsManager,
+    private val localeManager: LocaleManager,
+    private val spm: SharedPrefsManager,
     private val timezoneManager: TimezoneManager) : IUserSettingsManager {
 
     override fun getUserSettings(): UserSettings {
@@ -19,9 +20,10 @@ class UserSettingsManager @Inject constructor(
         val pushLikesEnabled = spm.getUserSettingLikesPushEnabled()
         val pushMatchesEnabled = spm.getUserSettingMatchesPushEnabled()
         val pushMessagesEnabled = spm.getUserSettingMessagesPushEnabled()
+        val pushVibrationEnabled = spm.getUserSettingVibrationPushEnabled()
         val timeZone = timezoneManager.getTimeZone()
         return UserSettings(locale = locale, push = pushEnabled, pushLikes = pushLikesEnabled,
                             pushMatches = pushMatchesEnabled, pushMessages = pushMessagesEnabled,
-                            timeZone = timeZone)
+                            pushVibration = pushVibrationEnabled, timeZone = timeZone)
     }
 }

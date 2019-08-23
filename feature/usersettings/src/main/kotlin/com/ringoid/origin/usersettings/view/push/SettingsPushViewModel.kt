@@ -37,6 +37,11 @@ class SettingsPushViewModel @Inject constructor(
         updateUserSettingPush(UserSettings(pushMessages = isEnabled))
     }
 
+    fun updateUserSettingPushVibration(isEnabled: Boolean) {
+        spm.setUserSettingVibrationPushEnabled(isEnabled)
+        updateUserSettingPush(UserSettings(pushVibration = isEnabled))
+    }
+
     private fun updateUserSettingPush(settings: UserSettings) {
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)

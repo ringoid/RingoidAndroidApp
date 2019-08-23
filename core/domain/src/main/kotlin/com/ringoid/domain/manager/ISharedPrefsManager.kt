@@ -83,11 +83,13 @@ interface ISharedPrefsManager : IFiltersSource {
     fun getUserSettingLikesPushEnabled(): Boolean
     fun getUserSettingMatchesPushEnabled(): Boolean
     fun getUserSettingMessagesPushEnabled(): Boolean
+    fun getUserSettingVibrationPushEnabled(): Boolean
 
     fun setUserSettingDailyPushEnabled(pushEnabled: Boolean)
     fun setUserSettingLikesPushEnabled(pushEnabled: Boolean)
     fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean)
     fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean)
+    fun setUserSettingVibrationPushEnabled(pushEnabled: Boolean)
 
     fun getUserProfileProperties(): UserProfilePropertiesRaw
     fun setUserProfileProperties(propertiesRaw: UserProfilePropertiesRaw)

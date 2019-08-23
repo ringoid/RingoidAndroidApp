@@ -67,6 +67,10 @@ class SettingsPushFragment : BaseSettingsFragment<SettingsPushViewModel>() {
             setChecked(spm.getUserSettingMessagesPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMessages(isChecked()) }
         }
+        item_push_vibrate.apply {
+            setChecked(spm.getUserSettingVibrationPushEnabled())
+            clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushVibration(isChecked()) }
+        }
 
         // other
         item_suggest_improvements.clicks().compose(clickDebounce()).subscribe { openSuggestImprovementsDialog("SuggestFromNotificationsSettings") }
