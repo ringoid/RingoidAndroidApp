@@ -25,8 +25,8 @@ import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.REFRESH
-import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
-import com.ringoid.origin.feed.view.lmm.TRANSFER_PROFILE
+import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LmmNavTab
 import com.ringoid.utility.runOnUiThread

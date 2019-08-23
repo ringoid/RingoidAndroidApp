@@ -1,4 +1,4 @@
-package com.ringoid.origin.feed.view.lmm.base
+package com.ringoid.origin.feed.view.lc
 
 import com.ringoid.base.view.Residual
 

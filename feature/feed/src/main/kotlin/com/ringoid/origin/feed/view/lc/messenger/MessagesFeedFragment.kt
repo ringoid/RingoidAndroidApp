@@ -26,11 +26,11 @@ import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
-import com.ringoid.origin.feed.view.lmm.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lmm.base.ON_TRANSFER_PROFILE_COMPLETE
-import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MATCHES_TOTAL
-import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES
-import com.ringoid.origin.feed.view.lmm.base.PUSH_NEW_MESSAGES_TOTAL
+import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
+import com.ringoid.origin.feed.view.lc.ON_TRANSFER_PROFILE_COMPLETE
+import com.ringoid.origin.feed.view.lc.PUSH_NEW_MATCHES_TOTAL
+import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES
+import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost

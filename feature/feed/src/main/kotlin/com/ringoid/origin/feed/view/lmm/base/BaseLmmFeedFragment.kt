@@ -21,9 +21,9 @@ import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.NO_IMAGES_IN_USER_PROFILE
-import com.ringoid.origin.feed.view.lmm.CLEAR_AND_REFRESH_EXCEPT
+import com.ringoid.origin.feed.view.lc.CLEAR_AND_REFRESH_EXCEPT
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
-import com.ringoid.origin.feed.view.lmm.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
