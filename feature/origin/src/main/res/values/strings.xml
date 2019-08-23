@@ -137,7 +137,7 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email support@ringoid.com</string>
     <string name="settings_profile">Profile</string>
-    <string name="settings_push">Push Notifications</string>
+    <string name="settings_push">Notifications</string>
     <string name="settings_suggest_improvements">Suggest improvements</string>
     <string name="settings_support">Email support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>

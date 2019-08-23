@@ -132,7 +132,7 @@
     <string name="settings_language">Язык</string>
     <string name="settings_language_help">Если вы хотите помочь и перевести Ringoid на родной язык, пожалуйста, напишите в support@ringoid.com</string>
     <string name="settings_profile">Профиль</string>
-    <string name="settings_push">Push&#45;уведомления</string>
+    <string name="settings_push">Уведомления</string>
     <string name="settings_suggest_improvements">Предложить улучшения</string>
     <string name="settings_support">Написать support@ringoid.com</string>
     <string name="settings_support_mail_subject">Ringoid Android App %s</string>
