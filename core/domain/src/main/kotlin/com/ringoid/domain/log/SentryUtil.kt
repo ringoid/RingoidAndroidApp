@@ -76,6 +76,7 @@ object SentryUtil {
     fun capture(e: Throwable, message: String? = null, level: Level = Level.ERROR,
                 tag: String? = null, extras: List<Pair<String, String>>? = null) {
         Timber.log(level.toLogPriority(), e, message)
+        DebugLogUtil.e(e, message.orEmpty(), tag = tag)  // capture exception to debug logs
         val fullExtras = mutableListOf<Pair<String, String>>()
             .apply {
                 add(e.javaClass.simpleName to e.stackTraceString())
@@ -121,7 +122,6 @@ object SentryUtil {
         } else {
             Sentry.capture(e)
         }
-        DebugLogUtil.e(e, message.orEmpty(), tag = tag)  // capture exception to debug logs
     }
 
     private fun createEvent(message: String, level: Level, `object`: Any? = null,
