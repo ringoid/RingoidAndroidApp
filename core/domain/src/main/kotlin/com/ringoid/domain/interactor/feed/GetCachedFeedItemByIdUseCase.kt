@@ -1,4 +1,4 @@
-package com.ringoid.domain.interactor.feed.property
+package com.ringoid.domain.interactor.feed
 
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor

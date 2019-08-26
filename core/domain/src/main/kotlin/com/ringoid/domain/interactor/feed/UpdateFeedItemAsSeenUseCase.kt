@@ -1,4 +1,4 @@
-package com.ringoid.domain.interactor.feed.property
+package com.ringoid.domain.interactor.feed
 
 import com.ringoid.domain.exception.MissingRequiredParamsException
 import com.ringoid.domain.executor.UseCasePostExecutor

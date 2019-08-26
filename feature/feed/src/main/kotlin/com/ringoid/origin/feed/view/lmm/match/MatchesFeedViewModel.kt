@@ -7,9 +7,9 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
 import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.GetCachedFeedItemByIdUseCase
+import com.ringoid.domain.interactor.feed.TransferFeedItemUseCase
+import com.ringoid.domain.interactor.feed.UpdateFeedItemAsSeenUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
