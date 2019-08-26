@@ -15,7 +15,7 @@ fun listOfMainScreens(): List<Fragment> =
                 NavTab.LIKES -> LikesFeedFragment.newInstance()
                 NavTab.MESSAGES -> MessagesFeedFragment.newInstance()
                 NavTab.PROFILE -> UserProfileFragment.newInstance()
-            }
+            } as Fragment
             add(fragment)
         }
     }
