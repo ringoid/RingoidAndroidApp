@@ -151,6 +151,16 @@ class DebugRepository @Inject constructor(
     override fun debugRequestWithUnsupportedAppVersion(): Completable = cloud.debugOldVersion()
 
     // ------------------------------------------
+    override fun debugHandleErrorDownstream(): Completable =
+        Completable.complete()
+
+    override fun debugHandleErrorMultistream(): Completable =
+        Completable.complete()
+
+    override fun debugHandleErrorUpstream(): Completable =
+        Completable.complete()
+
+    // ------------------------------------------
     private var manualPage: Int = 0
     private var manualRetryAttempt: Int = 0
 

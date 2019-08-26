@@ -25,6 +25,11 @@ interface IDebugRepository {
     fun debugRequestWithUnsupportedAppVersion(): Completable
 
     // ------------------------------------------
+    fun debugHandleErrorDownstream(): Completable
+    fun debugHandleErrorMultistream(): Completable
+    fun debugHandleErrorUpstream(): Completable
+
+    // ------------------------------------------
     fun debugGetNewFaces(page: Int): Single<Feed>
     fun debugGetNewFacesFail(): Single<Feed>
     fun debugGetNewFacesFailAndRecoverAfterNTimes(count: Int): Single<Feed>

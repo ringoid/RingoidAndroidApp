@@ -22,6 +22,9 @@ class DebugViewModel @Inject constructor(
     @DebugOnly private val requestRetryNTimesUseCase: RequestRetryNTimesUseCase,
     @DebugOnly private val unsupportedAppVersionRequestUseCase: UnsupportedAppVersionRequestUseCase,
     @DebugOnly private val wrongParamsRequestUseCase: WrongParamsRequestUseCase,
+    @DebugOnly private val debugHandleErrorDownstreamUseCase: DebugHandleErrorDownstreamUseCase,
+    @DebugOnly private val debugHandleErrorUpstreamUseCase: DebugHandleErrorUpstreamUseCase,
+    @DebugOnly private val debugHandleErrorMultistreamUseCase: DebugHandleErrorMultistreamUseCase,
     @DebugOnly private val debugInvalidAccessTokenRequestUseCase: DebugInvalidAccessTokenRequestUseCase,
     @DebugOnly private val debugNotSuccessRequestUseCase: DebugNotSuccessRequestUseCase,
     @DebugOnly private val debugResponseWith404UseCase: DebugResponseWith404UseCase,
@@ -30,6 +33,17 @@ class DebugViewModel @Inject constructor(
     @DebugOnly private val debugUnsupportedAppVersionRequestUseCase: DebugUnsupportedAppVersionRequestUseCase,
     app: Application) : BaseViewModel(app) {
 
+    // --------------------------------------------------------------------------------------------
+    fun debugHandleErrorStream() {
+//        debugHandleErrorDownstreamUseCase.source()
+//        debugHandleErrorMultistreamUseCase.source()
+        debugHandleErrorUpstreamUseCase.source()
+            .handleResult(this)
+            .autoDisposable(this)
+            .subscribe({ /* no-op */}, Timber::e)
+    }
+
+    // ------------------------------------------
     fun requestWithCommitActionsFailAllRetries() {
         commitActionsFailUseCase.source()
             .handleResult(this)

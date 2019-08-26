@@ -61,6 +61,7 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
             setTitle(OriginR_string.debug_title)
         }
 
+        item_debug_handle_error_stream.clicks().compose(clickDebounce()).subscribe { vm.debugHandleErrorStream() }
         item_error_http.clicks().compose(clickDebounce()).subscribe { vm.requestWithNotSuccessResponse() }
         item_error_http_404.clicks().compose(clickDebounce()).subscribe { vm.requestWith404Response() }
         item_error_token.clicks().compose(clickDebounce()).subscribe { vm.requestWithInvalidAccessToken() }
