@@ -1,9 +1,6 @@
 package com.ringoid.data.local.database.dao.action_storage
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.ringoid.data.local.database.model.action_storage.ActionObjectDbo
 import io.reactivex.Single
 
@@ -27,6 +24,9 @@ interface ActionObjectDao {
 
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME}")
     fun deleteActionObjects()
+
+    @Delete
+    fun deleteActionObjects(aobjs: Collection<ActionObjectDbo>)
 
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME} WHERE ${ActionObjectDbo.COLUMN_USED} = 1")
     fun deleteUsedActionObjects()
