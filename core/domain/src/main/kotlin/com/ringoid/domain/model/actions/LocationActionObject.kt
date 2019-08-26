@@ -12,6 +12,8 @@ class LocationActionObject(
     : OriginActionObject(actionTime = actionTime, actionType = ACTION_TYPE_LOCATION,
                          triggerStrategies = listOf(Immediate)) {
 
+    override fun isValid(): Boolean = latitude != 0.0 || longitude != 0.0
+
     companion object {
         const val COLUMN_LATITUDE = "lat"
         const val COLUMN_LONGITUDE = "lon"

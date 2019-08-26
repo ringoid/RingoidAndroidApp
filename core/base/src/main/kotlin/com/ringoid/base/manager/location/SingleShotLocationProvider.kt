@@ -202,7 +202,7 @@ class SingleShotLocationProvider @Inject constructor(
                 val aobj = if (!actionObjectPool.isLastActionTimeValid() ||
                                LocationUtils.diffLocation(oldLocation = spm.getLocation(), newLocation = location)) {
                     DebugLogUtil.d("Location has changed enough, update saved location")
-                    LocationActionObject(location.latitude, location.longitude)
+                    LocationActionObject(location.latitude, location.longitude).takeIf { it.isValid() }
                 } else {
                     DebugLogUtil.v("Location has not changed")
                     null

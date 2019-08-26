@@ -27,11 +27,11 @@ class ActionObjectDbFacadeImpl @Inject constructor(
             }
 
     override fun addActionObject(aobj: OriginActionObject) {
-        mapper.map(aobj).also { dao.addActionObject(it) }
+        aobj.takeIf { it.isValid() }?.let { a -> mapper.map(a).also { dao.addActionObject(it) } }
     }
 
     override fun addActionObjects(objects: Collection<OriginActionObject>) {
-        objects.map(mapper::map).also { dao.addActionObjects(it) }
+        objects.filter { it.isValid() }.map(mapper::map).also { dao.addActionObjects(it) }
     }
 
     override fun countActionObjects(): Single<Int> = dao.countActionObjects()

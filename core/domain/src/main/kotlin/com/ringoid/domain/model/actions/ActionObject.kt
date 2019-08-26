@@ -21,6 +21,8 @@ open class OriginActionObject(
     val triggerStrategies: List<TriggerStrategy> = emptyList())
     : BaseActionObject(), IEssence {
 
+    open fun isValid(): Boolean = true
+
     protected open fun propertyString(): String? = null
 
     override fun toString(): String {

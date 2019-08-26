@@ -7,7 +7,7 @@ import javax.inject.Singleton
 @Singleton
 class ActionObjectDboMapper @Inject constructor() {
 
-    fun map(aobj: OriginActionObject): ActionObjectDbo {
+    internal fun map(aobj: OriginActionObject): ActionObjectDbo {
         val dbo = ActionObjectDbo.from(aobj)
         return when (aobj) {
             is ActionObject -> {
@@ -30,6 +30,6 @@ class ActionObjectDboMapper @Inject constructor() {
         }
     }
 
-    fun map(aobjs: Collection<OriginActionObject>): List<ActionObjectDbo> =
+    internal fun map(aobjs: Collection<OriginActionObject>): List<ActionObjectDbo> =
         mutableListOf<ActionObjectDbo>().apply { aobjs.forEach { add(map(it)) } }
 }
