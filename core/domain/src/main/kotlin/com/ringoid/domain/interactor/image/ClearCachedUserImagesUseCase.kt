@@ -9,8 +9,8 @@ import io.reactivex.Completable
 import javax.inject.Inject
 
 class ClearCachedUserImagesUseCase@Inject constructor(private val repository: IUserImageRepository,
-threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
-: CompletableUseCase(threadExecutor, postExecutor) {
+    threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
+    : CompletableUseCase(threadExecutor, postExecutor) {
 
     override fun sourceImpl(params: Params): Completable = repository.deleteLocalUserImages()
 }
