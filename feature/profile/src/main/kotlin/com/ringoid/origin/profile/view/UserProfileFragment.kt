@@ -570,10 +570,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             ?.let { imagesAdapter.getModel(it) }
 
     private fun scrollToPosition(position: Int) {
-        rv_items?.post {
-            rv_items?.scrollToPosition(position)
-            onImageSelect(position)
-        }
+        rv_items?.post { rv_items?.scrollToPosition(position)?.also { onImageSelect(position) } }
     }
 
     private fun showControls(isVisible: Boolean) {
