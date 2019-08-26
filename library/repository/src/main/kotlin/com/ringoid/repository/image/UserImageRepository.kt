@@ -308,9 +308,12 @@ class UserImageRepository @Inject constructor(
         }
 
         return cloud.getImageUploadUrl(essence)
+            .handleError(count = retryCount, tag = "createImage", traceTag = "image/get_presigned")
             .flatMap { image ->
                 if (image.imageUri.isNullOrBlank()) {
-                    Single.error(NullPointerException("Upload uri is null: $image"))
+                    val e = NullPointerException("Upload uri is null: $image")
+                    SentryUtil.capture(e)
+                    Single.error(e)
                 } else {
                     /**
                      * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
@@ -325,9 +328,9 @@ class UserImageRepository @Inject constructor(
             .flatMap {
                 val imageFile = File(imageFilePath)
                 cloud.uploadImage(url = it.imageUri!!, image = imageFile)
+                     .handleError(count = retryCount, tag = "uploadImage", traceTag = "image/upload")
                      .andThen(Single.just(it))
             }
-            .handleError(count = retryCount, tag = "createImage", traceTag = "image/get_presigned")
             .doOnDispose {
                 DebugLogUtil.i("Cancelled image create and upload")
                 addPendingCreateImageRequest(imageFilePath)
