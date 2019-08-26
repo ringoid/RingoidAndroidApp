@@ -152,13 +152,76 @@ class DebugRepository @Inject constructor(
 
     // ------------------------------------------
     override fun debugHandleErrorDownstream(): Completable =
-        Completable.complete()
+        Single.just(BaseResponse() /** successful response */)
+            .doOnSubscribe { Timber.i("Downstream subscribe on debug") }
+            .doOnSuccess { Timber.v("Upstream debug response: $it") }
+            .doOnError { Timber.v("Upstream failed al debug retries: $it") }
+            .flatMap {
+                Single.just(BaseResponse(errorCode = "DownstreamDebugError", errorMessage = "Downstream Debug error"))
+                    .doOnSubscribe { Timber.v("Internal subscribe debug") }
+                    .doOnSuccess { Timber.v("Internal debug response: $it") }
+                    .doOnError { Timber.v("Internal failed all retries: $it") }
+                    .map { Timber.v("Internal upstream debug mapping 1"); it }
+            }
+            .map { Timber.v("Upstream debug mapping 1"); it }
+            .handleError(count = 4)
+            .map { Timber.d("Downstream debug mapping 1"); it }
+            .doOnSuccess { Timber.d("Downstream debug response: $it") }
+            .doOnError { Timber.d("Downstream failed all debug retries: $it") }
+            .ignoreElement()
 
     override fun debugHandleErrorMultistream(): Completable =
-        Completable.complete()
+        Single.just(BaseResponse() /** successful response */)
+            .doOnSubscribe { Timber.i("Multistream subscribe on debug") }
+            .doOnSuccess { Timber.v("Upstream debug response: $it") }
+            .doOnError { Timber.v("Upstream failed al debug retries: $it") }
+            .map { Timber.v("Upstream debug mapping 0"); it }
+            .handleError(count = 4)
+            .map { Timber.d("Downstream debug mapping 0"); it }
+            .flatMap {
+                Single.just(BaseResponse(errorCode = "DownstreamDebugError", errorMessage = "Downstream Debug error"))
+                    .doOnSubscribe { Timber.v("Internal upstream subscribe debug") }
+                    .doOnSuccess { Timber.v("Internal upstream debug response: $it") }
+                    .doOnError { Timber.v("Internal upstream failed all retries: $it") }
+                    .map { Timber.v("Internal upstream debug mapping 0"); it }
+                    .handleError(count = 4)
+                    .map { Timber.d("Internal downstream debug mapping 0"); it }
+            }
+            .map { Timber.d("Downstream debug mapping 1"); it }
+            .doOnSuccess { Timber.d("Downstream debug response: $it") }
+            .doOnError { Timber.d("Downstream failed all debug retries: $it") }
+            .ignoreElement()
 
     override fun debugHandleErrorUpstream(): Completable =
-        Completable.complete()
+        Single.just(BaseResponse(errorCode = "UpstreamDebugError", errorMessage = "Upstream Debug error"))
+            .doOnSubscribe { Timber.i("Upstream subscribe on debug") }
+            .doOnSuccess { Timber.v("Upstream debug response: $it") }
+            .doOnError { Timber.v("Upstream failed all debug retries: $it") }
+            .map { Timber.v("Upstream debug mapping 0"); it }
+            .handleError(count = 4)
+            .map { Timber.d("Downstream debug mapping 0"); it }
+            .doOnSuccess { Timber.d("Downstream debug response: $it") }
+            .doOnError { Timber.d("Downstream failed all debug retries: $it") }
+            .ignoreElement()
+
+    override fun debugHandleErrorStream(): Completable =
+        Single.just(BaseResponse() /** successful response */)
+            .doOnSubscribe { Timber.i("Stream subscribe on debug") }
+            .doOnSuccess { Timber.v("Upstream debug response: $it") }
+            .doOnError { Timber.v("Upstream failed al debug retries: $it") }
+            .flatMap {
+                Single.just(BaseResponse(errorCode = "DownstreamDebugError", errorMessage = "Downstream Debug error"))
+                    .doOnSubscribe { Timber.v("Internal upstream subscribe debug") }
+                    .doOnSuccess { Timber.v("Internal upstream debug response: $it") }
+                    .doOnError { Timber.v("Internal upstream failed all retries: $it") }
+                    .map { Timber.v("Internal upstream debug mapping 0"); it }
+                    .handleError(count = 4)
+                    .map { Timber.d("Internal downstream debug mapping 0"); it }
+            }
+            .map { Timber.d("Downstream debug mapping 0"); it }
+            .doOnSuccess { Timber.d("Downstream debug response: $it") }
+            .doOnError { Timber.d("Downstream failed all debug retries: $it") }
+            .ignoreElement()
 
     // ------------------------------------------
     private var manualPage: Int = 0

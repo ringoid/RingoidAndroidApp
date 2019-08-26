@@ -25,6 +25,7 @@ class DebugViewModel @Inject constructor(
     @DebugOnly private val debugHandleErrorDownstreamUseCase: DebugHandleErrorDownstreamUseCase,
     @DebugOnly private val debugHandleErrorUpstreamUseCase: DebugHandleErrorUpstreamUseCase,
     @DebugOnly private val debugHandleErrorMultistreamUseCase: DebugHandleErrorMultistreamUseCase,
+    @DebugOnly private val debugHandleErrorStreamUseCase: DebugHandleErrorStreamUseCase,
     @DebugOnly private val debugInvalidAccessTokenRequestUseCase: DebugInvalidAccessTokenRequestUseCase,
     @DebugOnly private val debugNotSuccessRequestUseCase: DebugNotSuccessRequestUseCase,
     @DebugOnly private val debugResponseWith404UseCase: DebugResponseWith404UseCase,
@@ -35,6 +36,7 @@ class DebugViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     fun debugHandleErrorStream() {
+//        debugHandleErrorStreamUseCase.source()
 //        debugHandleErrorDownstreamUseCase.source()
 //        debugHandleErrorMultistreamUseCase.source()
         debugHandleErrorUpstreamUseCase.source()

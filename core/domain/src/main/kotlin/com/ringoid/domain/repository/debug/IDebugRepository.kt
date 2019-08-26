@@ -28,6 +28,7 @@ interface IDebugRepository {
     fun debugHandleErrorDownstream(): Completable
     fun debugHandleErrorMultistream(): Completable
     fun debugHandleErrorUpstream(): Completable
+    fun debugHandleErrorStream(): Completable
 
     // ------------------------------------------
     fun debugGetNewFaces(page: Int): Single<Feed>

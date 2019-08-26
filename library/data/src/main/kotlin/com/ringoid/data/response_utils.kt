@@ -298,10 +298,10 @@ inline fun <reified T : BaseResponse> onNetErrorObservable(tag: String? = null):
 // --------------------------------------------------------------------------------------------
 fun Completable.handleErrorNoRetry(tag: String? = null): Completable = withNetError(tag)
 fun Completable.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Completable =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Completable =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
@@ -312,10 +312,10 @@ fun Completable.handleError(
 inline fun <reified T : BaseResponse> Maybe<T>.handleErrorNoRetry(tag: String? = null): Maybe<T> =
     withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Maybe<T>.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Maybe<T> =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Maybe<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
@@ -326,24 +326,29 @@ inline fun <reified T : BaseResponse> Maybe<T>.handleError(
 inline fun <reified T : BaseResponse> Single<T>.handleErrorNoRetry(tag: String? = null): Single<T> =
     withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Single<T>.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Single<T> =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Single<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
             val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces) else it
             source.doOnSubscribe { trace.start() }.doFinally { trace.stop() }
         }
+inline fun <reified T : BaseResponse> Single<T>.handleErrorNoTrace(
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null): Single<T> =
+    handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Flowable<T>.handleErrorNoRetry(tag: String? = null): Flowable<T> =
     withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Flowable<T>.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Flowable<T> =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Flowable<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
@@ -354,10 +359,10 @@ inline fun <reified T : BaseResponse> Flowable<T>.handleError(
 inline fun <reified T : BaseResponse> Observable<T>.handleErrorNoRetry(tag: String? = null): Observable<T> =
     withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Observable<T>.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Observable<T> =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Observable<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
