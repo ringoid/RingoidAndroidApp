@@ -184,6 +184,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         }
         isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
+        vm.onCreate(savedInstanceState)  // for Fragments
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

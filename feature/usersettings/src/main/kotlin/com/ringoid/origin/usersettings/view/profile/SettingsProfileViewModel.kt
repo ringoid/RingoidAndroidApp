@@ -1,6 +1,7 @@
 package com.ringoid.origin.usersettings.view.profile
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
@@ -29,8 +30,8 @@ class SettingsProfileViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onFreshStart() {
-        super.onFreshStart()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         properties = UserProfileProperties.from(spm.getUserProfileProperties())
         unsavedProperties = spm.getUserProfileCustomPropertiesUnsavedInput()
         profile.value = properties

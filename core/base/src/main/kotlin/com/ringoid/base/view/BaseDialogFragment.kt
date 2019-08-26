@@ -114,6 +114,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
                 observe(viewState(), this@BaseDialogFragment::onViewStateChange)
             }
         }
+        vm.onCreate(savedInstanceState)  // for Fragments
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
