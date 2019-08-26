@@ -305,13 +305,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fun onExpandFilters() {
             toolbarWidget?.collapse()
-            overlay.changeVisibility(isVisible = true)
+            overlay?.changeVisibility(isVisible = true)
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
         }
 
         fun onHideFilters() {
             toolbarWidget?.expand()
-            overlay.changeVisibility(isVisible = false)
+            overlay?.changeVisibility(isVisible = false)
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
         }
 
@@ -374,7 +374,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
         // top sheet
-        overlay.clicks().compose(clickDebounce()).subscribe { filtersPopupWidget?.hide() }
+        overlay?.clicks()?.compose(clickDebounce())?.subscribe { filtersPopupWidget?.hide() }
         if (savedInstanceState == null) {
             childFragmentManager
                 .beginTransaction()
