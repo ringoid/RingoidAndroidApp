@@ -8,6 +8,7 @@ import com.ringoid.domain.model.mapList
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,6 +24,7 @@ class ActionObjectDbFacadeImpl @Inject constructor(
     private fun init() {
         // refine legacy db removing invalid action objects, if any
         dao.actionObjects()
+            .subscribeOn(Schedulers.io())
             .flatMapObservable { Observable.fromIterable(it) }
             .filter { !it.isValid() }
             .toList()
