@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
@@ -29,10 +30,13 @@ import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
+import com.ringoid.origin.profile.WidgetR_attrs
+import com.ringoid.origin.profile.WidgetR_color
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
 import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
@@ -46,7 +50,7 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 import java.util.*
 
-class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>() {
+class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>(), IEmptyScreenCallback {
 
     companion object {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
@@ -522,7 +526,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     private fun showNoImageStub(needShow: Boolean) {  // empty stub with label 'Add photo to receive likes'
-        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
+        showEmptyStub(needShow, input =
+            EmptyFragment.Companion.Input(
+                emptyTextResId = OriginR_string.profile_empty_images,
+                labelTextColor = context?.getAttributeColor(WidgetR_attrs.refTextColorPrimary) ?: ContextCompat.getColor(context!!, WidgetR_color.primary_text),
+                isLabelClickable = true))
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
@@ -545,6 +553,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 .replace(R.id.fl_empty_container, emptyFragment, EmptyFragment.TAG)
                 .commitNowAllowingStateLoss()
         }
+    }
+
+    override fun onEmptyLabelClick() {
+        // click on empty screen label should open Gallery to choose image
+        onAddImage()
     }
 
     // ------------------------------------------

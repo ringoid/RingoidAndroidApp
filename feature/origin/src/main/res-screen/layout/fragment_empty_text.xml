@@ -20,6 +20,6 @@
         android:layout_marginStart="@dimen/std_margin_40"
         android:layout_marginEnd="@dimen/std_margin_40"
         android:clickable="true"
-        tools:text="@string/profile_empty_images"
+        tools:text="This is empty stub screen"
         style="@style/StdText.Secondary"/>
 </FrameLayout>
