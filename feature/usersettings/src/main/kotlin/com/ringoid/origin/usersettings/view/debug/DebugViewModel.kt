@@ -22,6 +22,7 @@ class DebugViewModel @Inject constructor(
     @DebugOnly private val requestRetryNTimesUseCase: RequestRetryNTimesUseCase,
     @DebugOnly private val unsupportedAppVersionRequestUseCase: UnsupportedAppVersionRequestUseCase,
     @DebugOnly private val wrongParamsRequestUseCase: WrongParamsRequestUseCase,
+    @DebugOnly private val debugHandleErrorDoublestreamUseCase: DebugHandleErrorDoublestreamUseCase,
     @DebugOnly private val debugHandleErrorDownstreamUseCase: DebugHandleErrorDownstreamUseCase,
     @DebugOnly private val debugHandleErrorUpstreamUseCase: DebugHandleErrorUpstreamUseCase,
     @DebugOnly private val debugHandleErrorMultistreamUseCase: DebugHandleErrorMultistreamUseCase,
@@ -36,10 +37,11 @@ class DebugViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     fun debugHandleErrorStream() {
+        debugHandleErrorDoublestreamUseCase.source()
 //        debugHandleErrorStreamUseCase.source()
 //        debugHandleErrorDownstreamUseCase.source()
 //        debugHandleErrorMultistreamUseCase.source()
-        debugHandleErrorUpstreamUseCase.source()
+//        debugHandleErrorUpstreamUseCase.source()
             .handleResult(this)
             .autoDisposable(this)
             .subscribe({ /* no-op */}, Timber::e)
