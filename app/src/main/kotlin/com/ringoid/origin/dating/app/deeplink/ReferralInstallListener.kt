@@ -22,8 +22,8 @@ class ReferralInstallListener : BroadcastReceiver() {
             SentryUtil.i("Referral Code received on App install",
                          listOf("referralId" to "$referralId", "link" to intent.dataString))
         }
-        SentryUtil.i("Referral Install callback",
-                     listOf("referralId" to "$referralId", "data" to "$intent"))
+//        SentryUtil.i("Referral Install callback",
+//                     listOf("referralId" to "$referralId", "data" to "$intent"))
         spm.setReferralCode(referralId, dontOverride = !referralId.isNullOrBlank())  // save input referral code (or null)
     }
 }
