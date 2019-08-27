@@ -21,6 +21,7 @@ import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.domain.model.feed.EmptyFeed
 import com.ringoid.domain.model.feed.Feed
+import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.repository.debug.IDebugRepository
@@ -123,7 +124,7 @@ class DebugRepository @Inject constructor(
             .cloud()
 
         return spm.accessCompletable {
-            cloud.getNewFaces(it.accessToken, ImageResolution._480x640, 20, lastActionTime = aObjPool.lastActionTime())
+            cloud.getDiscover(it.accessToken, ImageResolution._480x640, 20, NoFilters, lastActionTime = aObjPool.lastActionTime())
                 .handleErrorNoRetry()
                 .map { it.map() }
                 .ignoreElement()  // convert to Completable
