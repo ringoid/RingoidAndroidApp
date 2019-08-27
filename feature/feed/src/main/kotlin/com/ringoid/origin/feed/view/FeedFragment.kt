@@ -70,7 +70,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onErrorState() {
-            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // error state on Feed
         }
 
         super.onViewStateChange(newState)
@@ -78,7 +78,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             is ViewState.CLEAR -> onClearState(mode = newState.mode)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                    is ASK_TO_ENABLE_LOCATION_SERVICE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // ask to enable location services
                     is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
                     is NO_IMAGES_IN_USER_PROFILE -> {
                         Dialogs.showTextDialog(activity,
@@ -92,7 +92,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     }
                     is REFRESH -> {
                         // purge feed on refresh, before fetching a new one
-                        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
+                        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed while refreshing by state
                         showLoading(isVisible = true)
                         onRefresh()
                     }
@@ -168,7 +168,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     }
 
     protected open fun onDiscardAllProfiles() {
-        onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
+        onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)  // discard all profiles in Feed
     }
 
     protected open fun onDiscardProfileState(profileId: String): FeedItemVO? =
@@ -427,13 +427,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     protected open fun onRefreshGesture() {
         DebugLogUtil.i("PULL to REFRESH")
         // purge feed on refresh, before fetching a new one
-        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
+        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed on manual refresh
         onRefresh()  // should be the last action in subclasses, if overridden
     }
 
     private fun onRefresh(): Boolean =
         if (!connectionManager.isNetworkAvailable()) {
-            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no connection on refresh
             noConnection(this@FeedFragment)
             false
         } else {
@@ -444,7 +444,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
              * to call refreshing procedure.
              */
             if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
-                onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no location permission on refresh
             }
             true
         }

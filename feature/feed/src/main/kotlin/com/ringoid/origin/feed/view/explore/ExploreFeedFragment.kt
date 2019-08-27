@@ -75,7 +75,7 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
                     is DISCARD_PROFILES -> onDiscardMultipleProfilesState(profileIds = (newState.residual as DISCARD_PROFILES).profileIds)
                     is NO_IMAGES_IN_USER_PROFILE -> {
                         if (feedAdapter.isEmpty()) {
-                            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+                            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no images in Profile
                         }
                     }
                 }

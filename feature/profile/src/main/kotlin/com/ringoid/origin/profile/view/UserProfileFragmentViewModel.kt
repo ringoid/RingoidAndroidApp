@@ -104,7 +104,7 @@ class UserProfileFragmentViewModel @Inject constructor(
                     .toObservable()
             }
             .doOnNext {
-                viewState.value = if (it.isEmpty()) ViewState.CLEAR(ViewState.CLEAR.MODE_EMPTY_DATA)
+                viewState.value = if (it.isEmpty()) ViewState.CLEAR(ViewState.CLEAR.MODE_EMPTY_DATA)  // no images in Profile
                                   else ViewState.IDLE
             }
             .autoDisposable(this)

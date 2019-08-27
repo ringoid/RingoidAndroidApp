@@ -65,8 +65,8 @@ abstract class FeedViewModel(
         viewState.value
             .takeIf { it is ViewState.CLEAR }
             ?.let { it as ViewState.CLEAR }
-            ?.takeIf { it.mode == ViewState.CLEAR.MODE_EMPTY_DATA }
-            ?.let { viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_NEED_REFRESH) }
+            ?.takeIf { it.mode == ViewState.CLEAR.MODE_EMPTY_DATA }  // before tab select there was no data
+            ?.let { viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_NEED_REFRESH) }  // before tab select change clear mode
     }
 
     /* Lifecycle */
@@ -145,7 +145,7 @@ abstract class FeedViewModel(
 
     override fun onLocationPermissionDeniedAction(handleCode: Int) {
         super.onLocationPermissionDeniedAction(handleCode)
-        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // location permission denied
     }
 
     override fun onLocationReceived(handleCode: Int) {

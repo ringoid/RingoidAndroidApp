@@ -97,8 +97,10 @@ class ExploreFeedViewModel @Inject constructor(
             .doOnSuccess {
                 viewState.value = if (it.isEmpty()) {
                     if (filtersSource.hasFiltersApplied()) {
-                        ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)
-                    } else ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)
+                        ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)  // set empty Explore feed due to filters
+                    } else {
+                        ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)  // set empty Explore feed (no filters)
+                    }
                 } else ViewState.IDLE
 
                 if (spm.needShowFilters()) {

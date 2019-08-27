@@ -11,12 +11,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLcUseCase
-import com.ringoid.domain.interactor.feed.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -83,8 +78,8 @@ abstract class BaseLcFeedViewModel(
             .doOnNext {
                 val emptyDueToFilters = filtersSource.hasFiltersApplied() && it.totalNotFilteredCount > 0
                 setLcItems(items = it.items, totalNotFilteredCount = it.totalNotFilteredCount,
-                           clearMode = if (emptyDueToFilters) ViewState.CLEAR.MODE_CHANGE_FILTERS
-                                       else ViewState.CLEAR.MODE_EMPTY_DATA)
+                           clearMode = if (emptyDueToFilters) ViewState.CLEAR.MODE_CHANGE_FILTERS  // set empty LC due to filters
+                                       else ViewState.CLEAR.MODE_EMPTY_DATA)  // set empty LC (no filters)
             }
             .map { it.items }
             .doAfterNext {

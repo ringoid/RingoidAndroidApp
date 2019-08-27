@@ -72,7 +72,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
 
     override fun onDiscardAllProfiles() {
         if (lcCountHidden > 0) {
-            onClearState(ViewState.CLEAR.MODE_CHANGE_FILTERS)
+            onClearState(ViewState.CLEAR.MODE_CHANGE_FILTERS)  // discard all profiles in Feed, but there are hidden in LC
         } else {
             super.onDiscardAllProfiles()
         }
