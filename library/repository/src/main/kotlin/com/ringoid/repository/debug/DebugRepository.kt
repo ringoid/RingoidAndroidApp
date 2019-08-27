@@ -140,15 +140,10 @@ class DebugRepository @Inject constructor(
 
     // ------------------------------------------
     override fun debugRequestTimeOut(): Completable = cloud.debugTimeout()
-
     override fun debugNotSuccessResponse(): Completable = cloud.debugNotSuccess()
-
     override fun debugResponseWith404(): Completable = cloud.debugResponseWith404()
-
     override fun debugRequestCausingServerError(): Completable = cloud.debugServerError()
-
     override fun debugRequestWithInvalidAccessToken(): Completable = cloud.debugInvalidToken()
-
     override fun debugRequestWithUnsupportedAppVersion(): Completable = cloud.debugOldVersion()
 
     // ------------------------------------------
