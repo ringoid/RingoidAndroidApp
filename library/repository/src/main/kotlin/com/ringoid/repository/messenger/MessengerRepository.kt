@@ -270,7 +270,7 @@ class MessengerRepository @Inject constructor(
         return Completable.fromCallable { sentMessagesLocal.addMessage(sentMessage) }
             .doOnSubscribe {
                 keepSentMessage(sentMessage)
-                aObjPool.put(aobj)
+                aObjPool.put(aobj)  // immediate action object will be committed right now
             }
             .toSingleDefault(sentMessage)
     }
