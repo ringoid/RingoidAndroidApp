@@ -28,10 +28,10 @@ import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.getAttributeColor
 
-class ExploreFragment : FeedFragment<ExploreViewModel>() {
+class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
 
     companion object {
-        fun newInstance(): ExploreFragment = ExploreFragment()
+        fun newInstance(): ExploreFeedFragment = ExploreFeedFragment()
     }
 
     override fun createFeedAdapter(): BaseFeedAdapter =
@@ -40,16 +40,16 @@ class ExploreFragment : FeedFragment<ExploreViewModel>() {
             onFooterLabelClickListener = { onEmptyLabelClick() }
             onLikeImageListener = { model: ProfileImageVO, _ /** image position */ ->
                 if (!connectionManager.isNetworkAvailable()) {
-                    noConnection(this@ExploreFragment)
+                    noConnection(this@ExploreFeedFragment)
                 } else {
                     vm.onLike(profileId = model.profileId, imageId = model.image.id)
                 }
             }
         }
 
-    override fun createFiltersFragment(): BaseFiltersFragment<*> = ExploreFiltersFragment.newInstance()
+    override fun createFiltersFragment(): BaseFiltersFragment<*> = ExploreFeedFiltersFragment.newInstance()
 
-    override fun getVmClass(): Class<ExploreViewModel> = ExploreViewModel::class.java
+    override fun getVmClass(): Class<ExploreFeedViewModel> = ExploreFeedViewModel::class.java
 
     override fun getEmptyStateInput(mode: Int): EmptyFragment.Companion.Input? =
         when (mode) {

@@ -14,7 +14,6 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
-import com.ringoid.domain.interactor.feed.GetCachedLmmFeedItemIdsUseCase
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -35,7 +34,7 @@ import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
-class ExploreViewModel @Inject constructor(
+class ExploreFeedViewModel @Inject constructor(
     private val getDiscoverUseCase: GetDiscoverUseCase,
     private val getCachedLmmFeedItemIdsUseCase: GetCachedLmmFeedItemIdsUseCase,
     @DebugOnly private val debugGetNewFacesUseCase: DebugGetNewFacesUseCase,
