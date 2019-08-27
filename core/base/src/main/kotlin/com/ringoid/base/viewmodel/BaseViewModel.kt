@@ -16,12 +16,9 @@ import com.ringoid.base.livedata.ActiveMutableLiveData
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
 import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.manager.ISharedPrefsManager
-import com.ringoid.domain.model.user.AccessToken
-import com.uber.autodispose.lifecycle.autoDisposable
 import leakcanary.AppWatcher
 import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
@@ -37,11 +34,9 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
 
-    private val accessToken: MutableLiveData<LiveEvent<AccessToken?>> by lazy { MutableLiveData<LiveEvent<AccessToken?>>() }
     protected val viewState: MutableLiveData<ViewState> by lazy { ActiveMutableLiveData<ViewState>() }
     protected val oneShot: MutableLiveData<LiveEvent<Any?>> by lazy { MutableLiveData<LiveEvent<Any?>>() }
 
-    fun accessToken(): LiveData<LiveEvent<AccessToken?>> = accessToken
     fun viewState(): LiveData<ViewState> = viewState
     fun oneShot(): LiveData<LiveEvent<Any?>> = oneShot
 
@@ -50,18 +45,6 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     private var userVisibilityHint: Boolean = false
 
     // --------------------------------------------------------------------------------------------
-    fun getAccessToken() {
-        accessToken.value = LiveEvent(spm.accessToken())
-    }
-
-    fun obtainAccessToken() {
-        getUserAccessTokenUseCase.source(Params.EMPTY)
-            .autoDisposable(this)
-            .subscribe({ accessToken.value = LiveEvent(it) },
-                       { accessToken.value = LiveEvent(null) })
-    }
-
-    // ------------------------------------------
     /**
      * @see [BaseFragment.onBeforeTabSelect].
      */
