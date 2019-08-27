@@ -18,11 +18,13 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.IBaseActivity
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
+import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
@@ -93,6 +95,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         chatAdapter = ChatAdapter().apply {
             itemDoubleClickListener = { _, _ -> closeChat() }
             onMessageInsertListener = { _ -> scrollToLastItem() }
+            onMessageLongClickListener = { message ->
+                context?.let {
+                    it.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_CHAT_MESSAGE, value = message.text)
+                    it.toast(OriginR_string.common_clipboard)
+                }
+            }
         }
     }
 

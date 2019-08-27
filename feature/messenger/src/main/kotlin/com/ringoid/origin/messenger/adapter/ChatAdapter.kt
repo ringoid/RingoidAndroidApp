@@ -2,12 +2,15 @@ package com.ringoid.origin.messenger.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding3.view.longClicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.EmptyMessage
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.origin.messenger.R
+import com.ringoid.utility.clickDebounce
 import timber.log.Timber
 
 class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCallback()) {
@@ -16,7 +19,8 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
         const val VIEW_TYPE_NORMAL_MY = 5
     }
 
-    var onMessageInsertListener: ((position: Int) -> Unit)? = null
+    internal var onMessageInsertListener: ((position: Int) -> Unit)? = null
+    internal var onMessageLongClickListener: ((message: Message) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatViewHolder {
         val layoutResId = when (viewType) {
@@ -39,9 +43,14 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
 
         return viewHolder  // perform additional initialization only for VIEW_TYPE_NORMAL view holders
             .takeIf { viewType == VIEW_TYPE_NORMAL || viewType == VIEW_TYPE_NORMAL_MY }
-            ?.also { vh->
+            ?.also { vh ->
                 vh.setOnClickListener(getOnItemClickListener(vh))
                 vh.setOnDoubleClickListener(getOnItemDoubleClickListener(vh))
+                vh.itemView.longClicks().compose(clickDebounce()).subscribe {
+                    vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                        ?.let { findModel(it) }
+                        ?.let { onMessageLongClickListener?.invoke(it) }
+                }
             } ?: viewHolder  // don't apply additional initializations on non-VIEW_TYPE_NORMAL view holders
     }
 
