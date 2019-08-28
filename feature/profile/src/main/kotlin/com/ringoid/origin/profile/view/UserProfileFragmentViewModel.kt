@@ -7,19 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.*
-import com.ringoid.domain.interactor.user.ApplyReferralCodeUseCase
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
-import com.ringoid.domain.model.essence.user.ReferralCodeEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.utils.ScreenHelper
@@ -35,7 +31,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class UserProfileFragmentViewModel @Inject constructor(
-    private val applyReferralCodeUseCase: ApplyReferralCodeUseCase,
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
@@ -50,13 +45,11 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val imageDeleted by lazy { MutableLiveData<String>() }
     private val images by lazy { MutableLiveData<List<UserImage>>() }
     private val profile by lazy { MutableLiveData<UserProfileProperties>() }
-    private val referralCodeOneShot by lazy { MutableLiveData<LiveEvent<ReferralCode>>() }
     internal fun imageBlocked(): LiveData<String> = imageBlocked
     internal fun imageCreated(): LiveData<UserImage> = imageCreated
     internal fun imageDeleted(): LiveData<String> = imageDeleted
     internal fun images(): LiveData<List<UserImage>> = images
     internal fun profile(): LiveData<UserProfileProperties> = profile
-    internal fun referralCodeOneShot(): LiveData<LiveEvent<ReferralCode>> = referralCodeOneShot
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
@@ -160,31 +153,6 @@ class UserProfileFragmentViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({}, DebugLogUtil::e)
-    }
-
-    // ------------------------------------------
-    fun applyReferralCode(code: String?) {
-        if (code.isNullOrBlank()) {
-            return  // apply nothing
-        }
-
-        DebugLogUtil.d("Applying referral code: $code")
-        applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code)))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnError {
-                when (it) {
-                    is WrongRequestParamsClientApiException ->
-                        referralCodeOneShot.value = LiveEvent(ReferralCode.ReferralCodeDeclined)
-                    else -> viewState.value = ViewState.ERROR(it)
-                }
-            }
-            .doFinally { viewState.value = ViewState.IDLE }
-            .autoDisposable(this)
-            .subscribe({
-                Timber.d("Successfully applied referral code: $code")
-                spm.setReferralCode(code)  // save accepted referral code
-                referralCodeOneShot.value = LiveEvent(ReferralCode.ReferralCodeAccepted)
-            }, DebugLogUtil::e)
     }
 
     // ------------------------------------------

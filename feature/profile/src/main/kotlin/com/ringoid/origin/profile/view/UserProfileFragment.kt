@@ -14,7 +14,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
-import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
@@ -104,7 +103,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
             is ViewState.DONE -> {
                 onIdleState()
-                updateReferralLabel()
                 when (newState.residual) {
                     is ASK_TO_ENABLE_LOCATION_SERVICE -> {
                         val handleCode = (newState.residual as ASK_TO_ENABLE_LOCATION_SERVICE).handleCode
@@ -294,14 +292,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
                 onImageSelect(position = currentImagePosition)
             }
-            observeOneShot(vm.referralCodeOneShot()) {
-                when (it) {
-                    is ReferralCode.ReferralCodeAccepted ->
-                        Dialogs.showTextDialog(activity, title = String.format(resources.getString(OriginR_string.referral_dialog_reward_message), "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
-                    is ReferralCode.ReferralCodeDeclined ->
-                        Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_invalid_referral_code, description = null)
-                }
-            }
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
@@ -350,17 +340,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adjustViews()
-        btn_referral.apply {
-            updateReferralLabel()
-            clicks().compose(clickDebounce()).subscribe {
-                if (!spm.hasReferralCode()) {
-                    Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.referral_dialog_title,
-                        positiveBtnLabelResId = OriginR_string.button_apply,
-                        negativeBtnLabelResId = OriginR_string.button_close,
-                        positiveListener = { _, _, inputText -> vm.applyReferralCode(code = inputText) })
-                }
-            }
-        }
         ibtn_add_image.clicks().compose(clickDebounce())
             .subscribe {
                 if (!connectionManager.isNetworkAvailable()) {
@@ -595,11 +574,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ll_left_container.changeVisibility(isVisible = isVisible)
         ll_right_section.changeVisibility(isVisible = isVisible)
         tv_about.changeVisibility(isVisible = isVisible && isAboutVisible())
-    }
-
-    // ------------------------------------------
-    private fun updateReferralLabel() {
-        btn_referral.text = String.format(resources.getString(OriginR_string.profile_label_coins), if (spm.hasReferralCode()) "5" else "0")
     }
 
     // --------------------------------------------------------------------------------------------
