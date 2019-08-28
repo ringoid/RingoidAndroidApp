@@ -17,7 +17,6 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
-import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
@@ -90,10 +89,7 @@ class LikesFeedViewModel @Inject constructor(
         feed.filter { it.isNotSeen }.map { it.id }
 
     // ------------------------------------------
-    override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
-
     override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
-
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
 
     override fun sourceBadge(): Observable<Boolean> =

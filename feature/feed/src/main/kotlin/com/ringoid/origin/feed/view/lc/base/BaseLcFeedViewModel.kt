@@ -24,10 +24,9 @@ import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.lc.FeedCounts
-import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lc.SeenAllFeed
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
-import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -57,10 +56,12 @@ abstract class BaseLcFeedViewModel(
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
     private val feedCounts by lazy { MutableLiveData<LiveEvent<FeedCounts>>() }
     private val lmmLoadFailedOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val seenAllFeedItemsOneShot by lazy { MutableLiveData<LiveEvent<SeenAllFeed>>() }
     private val transferProfileCompleteOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
     internal fun feedCounts(): MutableLiveData<LiveEvent<FeedCounts>> = feedCounts
     internal fun lmmLoadFailedOneShot(): LiveData<LiveEvent<Boolean>> = lmmLoadFailedOneShot
+    internal fun seenAllFeedItemsOneShot(): LiveData<LiveEvent<SeenAllFeed>> = seenAllFeedItemsOneShot
     internal fun transferProfileCompleteOneShot(): LiveData<LiveEvent<Boolean>> = transferProfileCompleteOneShot
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
@@ -121,7 +122,6 @@ abstract class BaseLcFeedViewModel(
     // --------------------------------------------------------------------------------------------
     protected abstract fun countNotSeen(feed: List<FeedItem>): List<String>
 
-    protected abstract fun getFeedFlag(): Int
     protected abstract fun sourceBadge(): Observable<Boolean>
     protected abstract fun sourceFeed(): Observable<LmmSlice>
 
@@ -242,10 +242,7 @@ abstract class BaseLcFeedViewModel(
             DebugLogUtil.b("Seen [${feedItemId.substring(0..3)}]. Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
             if (notSeenFeedItemIds.isEmpty()) {
                 DebugLogUtil.b("All seen [${getFeedName()}]")
-                runOnUiThread {
-                    viewState.value = ViewState.DONE(SEEN_ALL_FEED(getFeedFlag()))
-                    viewState.value = ViewState.IDLE
-                }
+                seenAllFeedItemsOneShot.value = LiveEvent(SeenAllFeed(getSourceFeed()))
             }
         }
     }

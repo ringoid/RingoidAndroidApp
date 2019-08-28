@@ -22,7 +22,6 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
-import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
@@ -153,10 +152,7 @@ class MessagesFeedViewModel @Inject constructor(
     private fun checkFlagAndDrop(): Boolean = compareFlag.getAndSet(true)
 
     // ------------------------------------------
-    override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER
-
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
-
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
 
     override fun sourceBadge(): Observable<Boolean> =

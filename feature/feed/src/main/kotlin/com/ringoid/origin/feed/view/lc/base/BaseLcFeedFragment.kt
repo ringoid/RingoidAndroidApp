@@ -11,7 +11,7 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lc.FeedCounts
-import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lc.SeenAllFeed
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
@@ -31,30 +31,6 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
     override fun getAddPhotoDialogDescriptionResId(): Int = OriginR_string.feed_lmm_dialog_no_user_photo_description
 
     // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    /**
-                     * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
-                     * have been seen by user, so it's time to hide red badge on a corresponding Lmm tab.
-                     */
-                    is SEEN_ALL_FEED -> {
-                        (newState.residual as SEEN_ALL_FEED)
-                            .let {
-                                when (it.sourceFeed) {
-                                    SEEN_ALL_FEED.FEED_LIKES -> communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(false)
-                                    SEEN_ALL_FEED.FEED_MESSENGER -> communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(false)
-                                    else -> { /* no-op */ }
-                                }
-                            }
-                        }
-                    }
-            }
-        }
-    }
-
     override fun onClearState(mode: Int) {
         super.onClearState(mode)
         if (mode != ViewState.CLEAR.MODE_CHANGE_FILTERS) {
@@ -84,6 +60,17 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
     override fun onRefreshGesture() {
         vm.dropFilters()  // manual refresh acts as 'show all', but selected filters remain, though not applied
         super.onRefreshGesture()
+    }
+
+    /**
+     * All feed items on a particular LC feed, specified by [SeenAllFeed.sourceFeed],
+     * have been seen by user, so it's time to hide red badge on a corresponding LC tab.
+     */
+    private fun onSeenAllFeed(seenAllFeed: SeenAllFeed) {
+        when (seenAllFeed.sourceFeed) {
+            LcNavTab.LIKES -> communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(false)
+            LcNavTab.MESSAGES -> communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(false)
+        }
     }
 
     private fun showFatalErrorDialog() {
@@ -128,6 +115,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             observe(vm.refreshOnPush(), ::showRefreshPopup)
             observeOneShot(vm.feedCounts(), ::updateFeedCounts)
             observeOneShot(vm.lmmLoadFailedOneShot()) { showFatalErrorDialog() }
+            observeOneShot(vm.seenAllFeedItemsOneShot(), ::onSeenAllFeed)
         }
     }
 
