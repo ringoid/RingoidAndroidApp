@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.origin.AppRes
@@ -131,9 +132,7 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
                 }
                 feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
             }
-            observe(vm.oneShot()) {
-                it.getTypedContentIfNotHandled<NeedShowFilters>()?.let { filtersPopupWidget?.show() }
-            }
+            observeOneShot(vm.oneShot()) { filtersPopupWidget?.show() }
         }
 
         if (postponedTabTransaction) {

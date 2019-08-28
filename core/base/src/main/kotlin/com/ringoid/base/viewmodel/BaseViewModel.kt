@@ -35,10 +35,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     @Inject protected lateinit var spm: ISharedPrefsManager
 
     protected val viewState: MutableLiveData<ViewState> by lazy { ActiveMutableLiveData<ViewState>(ViewState.NO_STATE) }
-    protected val oneShot: MutableLiveData<LiveEvent<Any?>> by lazy { MutableLiveData<LiveEvent<Any?>>() }
-
     fun viewState(): LiveData<ViewState> = viewState
-    fun oneShot(): LiveData<LiveEvent<Any?>> = oneShot
 
     protected var isStopped = false
         private set

@@ -22,10 +22,6 @@ open class LiveEvent<out T>(private val content: T?) {
             content
         }
 
-    @Suppress("unchecked_cast")
-    fun <T> getTypedContentIfNotHandled(): T? =
-        getContentIfNotHandled() as? T?
-
     /**
      * Returns the content, even if it's already been handled.
      */

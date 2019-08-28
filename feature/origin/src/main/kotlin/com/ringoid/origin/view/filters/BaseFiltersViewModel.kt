@@ -15,7 +15,10 @@ open class BaseFiltersViewModel @Inject constructor(
     private val filtersSource: IFiltersSource, app: Application) : BaseViewModel(app) {
 
     private val filters by lazy { MutableLiveData<Filters>() }
+    private val oneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun filters(): LiveData<Filters> = filters
+    internal fun oneShot(): LiveData<LiveEvent<Boolean>> = oneShot
+
     protected val filtersChanged = PublishSubject.create<Boolean>()
 
     private fun setUpFilters() {
