@@ -204,6 +204,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 vm.onDiscardProfile(profileId)
             }
 
+    private fun onDiscardProfileRef(profileId: String) {
+        onDiscardProfile(profileId)
+    }
+
     protected fun onDiscardMultipleProfilesState(profileIds: Collection<String>) {
 //        val prevIds = getVisibleItemIds()  // record ids of visible items before remove
 //        with (feedAdapter) {
@@ -305,7 +309,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
         imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
         feedAdapter.trackingBus = imagesTrackingBus
-        observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfile)
+        observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
     }
 
