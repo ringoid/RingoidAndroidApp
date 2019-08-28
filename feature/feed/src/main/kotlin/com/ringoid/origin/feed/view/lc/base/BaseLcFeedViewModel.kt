@@ -116,6 +116,7 @@ abstract class BaseLcFeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onRecreate(savedInstanceState: Bundle) {
         super.onRecreate(savedInstanceState)
+        Timber.d("Restore destroyed state: $savedInstanceState")
         // TODO: restore destroyed state
     }
 

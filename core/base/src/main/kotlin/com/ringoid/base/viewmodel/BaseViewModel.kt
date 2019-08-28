@@ -16,6 +16,7 @@ import com.ringoid.base.livedata.ActiveMutableLiveData
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.action_storage.IActionObjectPool
+import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
 import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.manager.ISharedPrefsManager
@@ -24,6 +25,10 @@ import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
+
+    companion object {
+        private const val BUNDLE_KEY_VM_STATE = "bundle_key_vm_state"
+    }
 
     protected val app: IBaseRingoidApplication by lazy { app as IBaseRingoidApplication }
     protected val context: Context by lazy { app.applicationContext }
@@ -77,6 +82,12 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
      * and so on was permanently lost.
      */
     protected open fun onRecreate(savedInstanceState: Bundle) {
+        with (savedInstanceState) {
+            getParcelable<VMSavedState>(BUNDLE_KEY_VM_STATE)?.let {
+                DebugLogUtil.d("Recreate view model and restore view state: $it")
+                viewState.value = it.viewState
+            }
+        }
         // override in subclasses
     }
 
@@ -103,6 +114,9 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     }
 
     open fun onSaveInstanceState(outState: Bundle) {
+        viewState.value?.let {
+            outState.putParcelable(BUNDLE_KEY_VM_STATE, VMSavedState(viewState = it))
+        }
         // override in subclasses
     }
 
