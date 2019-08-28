@@ -52,6 +52,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_loading.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
+            else -> { /* no-op */ }
         }
     }
 

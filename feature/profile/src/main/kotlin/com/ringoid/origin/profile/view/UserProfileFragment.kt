@@ -104,6 +104,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> onLoadingState()
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
+            else -> { /* no-op */ }
         }
     }
 
