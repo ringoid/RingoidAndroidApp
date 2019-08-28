@@ -113,7 +113,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
                 runOnUiThread { rv_items?.let { scrollListToPosition(0) } }
             }
             observe(vm.refreshOnPush(), ::showRefreshPopup)
-            observeOneShot(vm.feedCounts(), ::updateFeedCounts)
+            observeOneShot(vm.feedCountsOneShot(), ::updateFeedCounts)
             observeOneShot(vm.lmmLoadFailedOneShot()) { showFatalErrorDialog() }
             observeOneShot(vm.seenAllFeedItemsOneShot(), ::onSeenAllFeed)
         }

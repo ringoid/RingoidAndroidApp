@@ -54,12 +54,12 @@ abstract class BaseLcFeedViewModel(
         filtersSource, userInMemoryCache, app) {
 
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
-    private val feedCounts by lazy { MutableLiveData<LiveEvent<FeedCounts>>() }
+    private val feedCountsOneShot by lazy { MutableLiveData<LiveEvent<FeedCounts>>() }
     private val lmmLoadFailedOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     private val seenAllFeedItemsOneShot by lazy { MutableLiveData<LiveEvent<SeenAllFeed>>() }
     private val transferProfileCompleteOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
-    internal fun feedCounts(): MutableLiveData<LiveEvent<FeedCounts>> = feedCounts
+    internal fun feedCountsOneShot(): MutableLiveData<LiveEvent<FeedCounts>> = feedCountsOneShot
     internal fun lmmLoadFailedOneShot(): LiveData<LiveEvent<Boolean>> = lmmLoadFailedOneShot
     internal fun seenAllFeedItemsOneShot(): LiveData<LiveEvent<SeenAllFeed>> = seenAllFeedItemsOneShot
     internal fun transferProfileCompleteOneShot(): LiveData<LiveEvent<Boolean>> = transferProfileCompleteOneShot
@@ -175,7 +175,7 @@ abstract class BaseLcFeedViewModel(
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
-        feedCounts.value = LiveEvent(FeedCounts(show = items.size, hidden = totalNotFilteredCount - items.size))
+        feedCountsOneShot.value = LiveEvent(FeedCounts(show = items.size, hidden = totalNotFilteredCount - items.size))
 
         if (items.isEmpty()) {
             feed.value = emptyList()
