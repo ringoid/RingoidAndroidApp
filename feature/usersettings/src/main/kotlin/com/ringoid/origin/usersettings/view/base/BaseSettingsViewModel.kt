@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
@@ -54,7 +53,6 @@ abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlack
                              .put("text", reportText)
         postToSlackUseCase.source(params = params)
             .doOnComplete { suggestImprovementsOneShot.value = OneShot(true) }
-            .doFinally { viewState.value = ViewState.IDLE }
             .autoDisposable(this)
             .subscribe({ spm.dropBigEditText() }, DebugLogUtil::e)
     }
