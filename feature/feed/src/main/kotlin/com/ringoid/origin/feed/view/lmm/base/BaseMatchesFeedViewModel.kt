@@ -2,15 +2,9 @@ package com.ringoid.origin.feed.view.lmm.base
 
 import android.app.Application
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
@@ -18,7 +12,6 @@ import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.messenger.EmptyChat
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES
 import com.ringoid.origin.utils.ScreenHelper
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Single
@@ -78,7 +71,7 @@ abstract class BaseMatchesFeedViewModel(
                  * so need to update corresponding feed item, if any, to visually reflect change in unread messages count.
                  */
                 ChatInMemoryCache.setPeerMessagesCount(profileId = peerId, count = 0)
-                viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES(profileId = peerId))
+//                viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES(profileId = peerId))
             }
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)

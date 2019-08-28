@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.core.content.ContextCompat
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
@@ -27,7 +26,6 @@ import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
@@ -93,22 +91,6 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                         (newState.residual as LC_FEED_COUNTS).let {
                             setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
                         }
-                    is PUSH_NEW_MESSAGES -> {
-                        val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
-
-                        feedAdapter.findModelAndPosition { it.id == profileId }?.let { (position, feedItem) ->
-                            with (feedItem.messagesReflection) {
-                                /**
-                                * New messages have been received from push notification for profile with id [BusEvent.PushNewMessage.peerId],
-                                * so need to update corresponding feed item, if any, to visually reflect change in unread messages count.
-                                 * It's enough to achieve peer messages count to be greater than count in cache.
-                                */
-                                ChatInMemoryCache.setPeerMessagesCount(profileId = profileId, count = 0)
-                                add(peerMessage(chatId = profileId))
-                            }
-                            feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
-                        }
-                    }
                 }
             }
         }
@@ -151,6 +133,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 requestFiltersForUpdateOnChangeLcFeed()
                 setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
             }
+            observeOneShot(vm.pushMessageUpdateProfileOneShot(), ::updateChatForProfile)
         }
     }
 
@@ -240,6 +223,27 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
+        }
+    }
+
+    // ------------------------------------------
+    private fun updateChatForProfile(profileId: String) {
+        feedAdapter.findModelAndPosition { it.id == profileId }?.let { (position, feedItem) ->
+            with (feedItem.messagesReflection) {
+                /**
+                 * New messages have been received from push notification for profile with id [profileId],
+                 * so need to update corresponding feed item, if any, to visually reflect change in
+                 * unread messages count. To achieve that, it's enough to set peer messages count
+                 * in memory-cache to '0' that it will be less than count in local cache.
+                 */
+                ChatInMemoryCache.setPeerMessagesCount(profileId = profileId, count = 0)
+                /**
+                 * Adding synthetic message to feed item model make the feed item to change it's
+                 * appearance.
+                 */
+                add(peerMessage(chatId = profileId))
+            }
+            feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
         }
     }
 

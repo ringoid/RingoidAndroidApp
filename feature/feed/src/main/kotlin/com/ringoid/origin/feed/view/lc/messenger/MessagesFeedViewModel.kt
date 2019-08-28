@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -23,7 +22,6 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
@@ -74,10 +72,12 @@ class MessagesFeedViewModel @Inject constructor(
     private val pushNewMessage by lazy { MutableLiveData<Long>() }
     private val pushMatchesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     private val pushMessagesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val pushMessageUpdateProfileOneShot by lazy { MutableLiveData<LiveEvent<String>>() }
     internal fun pushNewMatch(): LiveData<Long> = pushNewMatch
     internal fun pushNewMessage(): LiveData<Long> = pushNewMessage
     internal fun pushMatchesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushMatchesBadgeOneShot
     internal fun pushMessagesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushMessagesBadgeOneShot
+    internal fun pushMessageUpdateProfileOneShot(): LiveData<LiveEvent<String>> = pushMessageUpdateProfileOneShot
 
     private var shouldVibrate: Boolean = true
 
@@ -115,7 +115,7 @@ class MessagesFeedViewModel @Inject constructor(
                     .onErrorResumeNext { Single.just(EmptyChat) }
                     .map { peerId }
             }  // use case will deliver it's result to Main thread
-            .doOnNext { viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES(profileId = it)) }
+            .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = LiveEvent(profileId) }
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({
