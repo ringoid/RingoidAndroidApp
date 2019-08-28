@@ -1,7 +1,6 @@
 package com.ringoid.origin.feed.view.lc
 
 import com.ringoid.base.view.Residual
-import com.ringoid.origin.feed.view.ProfileResidual
 import com.ringoid.origin.view.main.LmmNavTab
 
 // visually display clear screen in mode DEFAULT and refresh spinner on all Lmm tabs except the specified one
@@ -18,4 +17,4 @@ data class SEEN_ALL_FEED(val sourceFeed: Int) : Residual() {
     }
 }
 
-class TRANSFER_PROFILE(profileId: String) : ProfileResidual(profileId)
+class TRANSFER_PROFILE(val profileId: String) : Residual()
