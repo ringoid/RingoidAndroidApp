@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
@@ -110,7 +111,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                             HC_REFRESH -> vm.onRefresh()  // TODO: use cached
                         }
                     }
-                    is REQUEST_TO_ADD_IMAGE -> onAddImageNoPermission()
                 }
             }
             is ViewState.IDLE -> onIdleState()
@@ -292,6 +292,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
                 onImageSelect(position = currentImagePosition)
             }
+            observeOneShot(vm.requestToAddImageOneShot()) { onAddImageNoPermission() }
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
