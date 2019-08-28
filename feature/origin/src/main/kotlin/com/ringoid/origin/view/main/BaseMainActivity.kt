@@ -114,7 +114,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         super.onSaveInstanceState(outState)
         fragNav.onSaveInstanceState(outState)
         outState.putSerializable(BUNDLE_KEY_CURRENT_TAB, bottom_bar.selectedItem)
-        (fragNav.currentFrag as? BaseFragment<*>)?.onActivitySaveInstanceState(outState)
     }
 
     private fun processExtras(intent: Intent, savedInstanceState: Bundle?) {

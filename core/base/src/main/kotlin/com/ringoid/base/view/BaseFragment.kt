@@ -107,11 +107,6 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         // override in subclasses
     }
 
-    open fun onActivitySaveInstanceState(outState: Bundle) {
-        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.v("onActivitySaveInstanceState: $outState")
-    }
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         val changed = userVisibleHint != isVisibleToUser
         super.setUserVisibleHint(isVisibleToUser)
