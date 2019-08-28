@@ -132,7 +132,7 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
                 }
                 feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
             }
-            observeOneShot(vm.oneShot()) { filtersPopupWidget?.show() }
+            observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
         }
 
         if (postponedTabTransaction) {

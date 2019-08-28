@@ -58,9 +58,9 @@ class ExploreFeedViewModel @Inject constructor(
         filtersSource, userInMemoryCache, app), IListScrollCallback {
 
     private val feed by lazy { MutableLiveData<Feed>() }
-    private val oneShot by lazy { MutableLiveData<LiveEvent<NeedShowFilters>>() }
+    private val needShowFiltersOneShot by lazy { MutableLiveData<LiveEvent<NeedShowFilters>>() }
     internal fun feed(): LiveData<Feed> = feed
-    internal fun oneShot(): LiveData<LiveEvent<NeedShowFilters>> = oneShot
+    internal fun needShowFiltersOneShot(): LiveData<LiveEvent<NeedShowFilters>> = needShowFiltersOneShot
 
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
@@ -106,7 +106,7 @@ class ExploreFeedViewModel @Inject constructor(
                 } else ViewState.IDLE
 
                 if (spm.needShowFilters()) {
-                    oneShot.value = LiveEvent(NeedShowFilters)
+                    needShowFiltersOneShot.value = LiveEvent(NeedShowFilters)
                 }
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }

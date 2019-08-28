@@ -33,7 +33,7 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.filters(), ::displayFilters)
-            observeOneShot(vm.oneShot()) { communicator(IFiltersHost::class.java)?.onFiltersChange() }
+            observeOneShot(vm.filtersChangeOneShot()) { communicator(IFiltersHost::class.java)?.onFiltersChange() }
         }
     }
 

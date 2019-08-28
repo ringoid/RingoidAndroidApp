@@ -15,9 +15,9 @@ open class BaseFiltersViewModel @Inject constructor(
     private val filtersSource: IFiltersSource, app: Application) : BaseViewModel(app) {
 
     private val filters by lazy { MutableLiveData<Filters>() }
-    private val oneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val filtersChangeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun filters(): LiveData<Filters> = filters
-    internal fun oneShot(): LiveData<LiveEvent<Boolean>> = oneShot
+    internal fun filtersChangeOneShot(): LiveData<LiveEvent<Boolean>> = filtersChangeOneShot
 
     protected val filtersChanged = PublishSubject.create<Boolean>()
 
@@ -56,7 +56,7 @@ open class BaseFiltersViewModel @Inject constructor(
         if (oldFilters.minAge != minAge || oldFilters.maxAge != maxAge) {
             filtersSource.setFilters(Filters.create(minAge = minAge, maxAge = maxAge, maxDistance = oldFilters.maxDistance))
             requestFiltersForUpdate()
-            oneShot.value = LiveEvent(true)
+            filtersChangeOneShot.value = LiveEvent(true)
         }
     }
 
@@ -65,7 +65,7 @@ open class BaseFiltersViewModel @Inject constructor(
         if (oldFilters.maxDistance != distance) {
             filtersSource.setFilters(Filters.create(minAge = oldFilters.minAge, maxAge = oldFilters.maxAge, maxDistance = distance))
             requestFiltersForUpdate()
-            oneShot.value = LiveEvent(true)
+            filtersChangeOneShot.value = LiveEvent(true)
         }
     }
 }
