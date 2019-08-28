@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.deeplink.AppNav
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.R
@@ -28,7 +29,6 @@ class NoNetworkConnectionActivity : BaseActivity<NoNetworkConnectionViewModel>()
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.CLOSE -> finish()
             is ViewState.IDLE -> {
                 btn_retry.changeVisibility(isVisible = true)
                 pb_no_connection.changeVisibility(isVisible = false)
@@ -47,11 +47,13 @@ class NoNetworkConnectionActivity : BaseActivity<NoNetworkConnectionViewModel>()
         super.onCreate(savedInstanceState)
         btn_retry.clicks().compose(clickDebounce()).subscribe { vm.onPageReload() }
 
+        observeOneShot(vm.connectionRestoreOneShot()) { finish() }
+
         if (targetVersion(Build.VERSION_CODES.N)) {
             networkCallback = object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
-                    onViewStateChange(ViewState.CLOSE)
+                    vm.onPageReload()
                 }
             }
             application.applicationContext.connectivityManager()?.registerDefaultNetworkCallback(networkCallback)

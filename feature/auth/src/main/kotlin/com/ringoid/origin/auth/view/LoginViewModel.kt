@@ -47,9 +47,11 @@ class LoginViewModel @Inject constructor(
     private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
     private val changeThemeOneShot by lazy { MutableLiveData<OneShot<AppTheme>>() }
+    private val loginUserOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
     private val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
     internal fun changeThemeOneShot(): LiveData<OneShot<AppTheme>> = changeThemeOneShot
+    internal fun loginUserOneShot(): LiveData<OneShot<Boolean>> = loginUserOneShot
     internal fun loginButtonEnableState(): LiveData<Boolean> = loginButtonEnableState
     internal fun yearOfBirthEntryState(): LiveData<WidgetState> = yearOfBirthEntryState
 
@@ -80,7 +82,7 @@ class LoginViewModel @Inject constructor(
 
         createUserProfileUseCase.source(params = Params().put(essence))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.CLOSE }
+            .doOnSuccess { loginUserOneShot.value = OneShot(true) }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({

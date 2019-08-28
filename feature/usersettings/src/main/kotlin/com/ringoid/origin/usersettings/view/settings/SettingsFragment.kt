@@ -45,7 +45,6 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
 
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.CLOSE -> logout(this)
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_settings.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
@@ -58,6 +57,7 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeOneShot(vm.changeThemeOneShot()) { activity?.recreate() }
+        observeOneShot(vm.logoutUserOneShot()) { logout(this@SettingsFragment) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

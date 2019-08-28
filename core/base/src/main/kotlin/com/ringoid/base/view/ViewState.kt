@@ -7,7 +7,6 @@ sealed class ViewState {
     object NO_STATE : ViewState()  // used for initialization of LiveData
     object IDLE : ViewState()
     object LOADING : ViewState()
-    object CLOSE : ViewState()
     object PAGING : ViewState()
 
     data class CLEAR(val mode: Int = MODE_DEFAULT) : ViewState() {

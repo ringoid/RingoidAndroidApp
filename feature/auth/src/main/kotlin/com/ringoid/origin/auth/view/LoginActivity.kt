@@ -56,13 +56,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
-            is ViewState.CLOSE -> {
-                loginInMemoryCache.setNewUser(true)
-                when (Onboarding.current()) {
-                    Onboarding.ADD_IMAGE -> ExternalNavigator.openGalleryToGetImage(this)
-                    Onboarding.DIRECT -> navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}")
-                }
-            }
             is ViewState.LOADING -> {
                 btn_login.changeVisibility(isVisible = false, soft = true)
                 pb_login.changeVisibility(isVisible = true)
@@ -149,6 +142,13 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
         }
         observeOneShot(vm.changeThemeOneShot()) { recreate() }
+        observeOneShot(vm.loginUserOneShot()) {
+            loginInMemoryCache.setNewUser(true)
+            when (Onboarding.current()) {
+                Onboarding.ADD_IMAGE -> ExternalNavigator.openGalleryToGetImage(this)
+                Onboarding.DIRECT -> navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}")
+            }
+        }
 
         savedInstanceState?.let {
             (it.getSerializable(BUNDLE_KEY_SELECTED_GENDER) as? Gender)

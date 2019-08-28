@@ -22,12 +22,14 @@ class SettingsViewModel @Inject constructor(
     : BaseSettingsViewModel(postToSlackUseCase, app) {
 
     private val changeThemeOneShot by lazy { MutableLiveData<OneShot<AppTheme>>() }
+    private val logoutUserOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun changeThemeOneShot(): LiveData<OneShot<AppTheme>> = changeThemeOneShot
+    internal fun logoutUserOneShot(): LiveData<OneShot<Boolean>> = logoutUserOneShot
 
     fun deleteAccount() {
         deleteUserProfileUseCase.source()
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnComplete { viewState.value = ViewState.CLOSE }
+            .doOnComplete { logoutUserOneShot.value = OneShot(true) }
             .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({
