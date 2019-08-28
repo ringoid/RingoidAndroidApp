@@ -1,9 +1,9 @@
 package com.ringoid.origin.feed.view.lc.like
 
-import com.ringoid.base.view.ViewState
+import android.os.Bundle
+import com.ringoid.base.observeOneShot
 import com.ringoid.origin.feed.view.lc.base.ILcFeedFiltersHost
 import com.ringoid.origin.feed.view.lc.base.LcFeedFiltersFragment
-import com.ringoid.origin.view.filters.LC_COUNTS
 import com.ringoid.utility.communicator
 
 class LikesFeedFiltersFragment : LcFeedFiltersFragment<LikesFeedFiltersViewModel>() {
@@ -14,20 +14,14 @@ class LikesFeedFiltersFragment : LcFeedFiltersFragment<LikesFeedFiltersViewModel
 
     override fun getVmClass(): Class<LikesFeedFiltersViewModel> = LikesFeedFiltersViewModel::class.java
 
+    /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is LC_COUNTS ->
-                        (newState.residual as LC_COUNTS).let { counts ->
-                            communicator(ILcFeedFiltersHost::class.java)?.let {
-                                it.setCountOfFilteredFeedItems(counts.countLikes)
-                                it.setTotalNotFilteredFeedItems(counts.totalNotFilteredLikes)
-                            }
-                        }
-                }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeOneShot(vm.filterCountsOneShot()) { counts ->
+            communicator(ILcFeedFiltersHost::class.java)?.let {
+                it.setCountOfFilteredFeedItems(counts.countLikes)
+                it.setTotalNotFilteredFeedItems(counts.totalNotFilteredLikes)
             }
         }
     }
