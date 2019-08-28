@@ -50,6 +50,7 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
                     is APP_THEME -> activity?.recreate()
                 }
             }
+            is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_settings.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
             else -> { /* no-op */ }

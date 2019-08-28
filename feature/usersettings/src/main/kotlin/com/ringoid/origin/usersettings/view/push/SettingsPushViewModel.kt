@@ -46,7 +46,8 @@ class SettingsPushViewModel @Inject constructor(
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doFinally { viewState.value = ViewState.IDLE }
+            .doOnComplete { viewState.value = ViewState.IDLE }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
             .autoDisposable(this)
             .subscribe({ DebugLogUtil.i("Successfully updated push settings: $settings") }, DebugLogUtil::e)
     }

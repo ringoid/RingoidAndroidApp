@@ -1,7 +1,8 @@
 package com.ringoid.origin.usersettings.view.base
 
+import android.os.Bundle
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.base.view.ViewState
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.origin.view.dialog.Dialogs
@@ -10,20 +11,15 @@ abstract class BaseSettingsFragment<VM : BaseSettingsViewModel> : BaseFragment<V
 
     private var dialog: Dialogs.HashAlertDialog? = null
 
+    /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is SUGGEST_IMPROVEMENTS -> showSuggestImprovementsDoneDialog()
-                }
-            }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with (viewLifecycleOwner) {
+            observeOneShot(vm.suggestImprovementsOneShot()) { showSuggestImprovementsDoneDialog() }
         }
     }
 
-    /* Lifecycle */
-    // --------------------------------------------------------------------------------------------
     override fun onDestroyView() {
         super.onDestroyView()
         dialog?.dialog?.dismiss()

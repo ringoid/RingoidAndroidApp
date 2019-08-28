@@ -227,8 +227,8 @@ class SettingsProfileViewModel @Inject constructor(
                 viewState.value = ViewState.LOADING
                 spm.setUserProfileProperties(propertiesRaw = properties.map())
             }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
             .doOnComplete { viewState.value = ViewState.IDLE }
+            .doOnError { viewState.value = ViewState.ERROR(it) }
             .doFinally { analyticsManager.fireOnce(Analytics.AHA_FIRST_FIELD_SET, "fieldName" to propertyName) }
             .autoDisposable(this)
             .subscribe({ Timber.d("Successfully updated user profile properties") }, DebugLogUtil::e)
