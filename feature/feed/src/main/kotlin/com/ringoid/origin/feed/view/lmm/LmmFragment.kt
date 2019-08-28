@@ -10,7 +10,6 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.feed.model.FeedItemVO
-import com.ringoid.origin.feed.view.lc.CLEAR_AND_REFRESH_EXCEPT
 import com.ringoid.origin.feed.view.lmm.base.BaseLmmFeedFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LmmNavTab
@@ -55,27 +54,27 @@ class LmmFragment : BaseFragment<LmmViewModel>(), ILmmFragment {
             is ViewState.LOADING -> showLoading(isVisible = true)
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    /**
-                     * When user manually pulls to refresh on some of Lmm feeds, it gets cleared and
-                     * refresh spinner is showing, and the whole Lmm data is fetching. Once completes,
-                     * all Lmm feeds will be updated, so need to programmatically clear other Lmm feeds
-                     * and display refresh spinner on them to avoid user to navigate on them and then
-                     * lost some of his actions when Lmm data received.
-                     */
-                    is CLEAR_AND_REFRESH_EXCEPT -> {
-                        val exceptLmmTab = (newState.residual as CLEAR_AND_REFRESH_EXCEPT).exceptLmmTab
-                        LmmNavTab.values.forEach { lmmTab ->
-                            when (lmmTab) {
-                                exceptLmmTab -> { /* ignore except lmm tab */ }
-                                else -> lmmPagesAdapter.accessItem(lmmTab)
-                                    ?.let { it as? BaseLmmFeedFragment<*> }
-                                    ?.let {
-                                        it.clearScreen(ViewState.CLEAR.MODE_DEFAULT)
-                                        it.showLoading(isVisible = true)
-                                    }
-                            }
-                        }
-                    }
+//                    /**
+//                     * When user manually pulls to refresh on some of Lmm feeds, it gets cleared and
+//                     * refresh spinner is showing, and the whole Lmm data is fetching. Once completes,
+//                     * all Lmm feeds will be updated, so need to programmatically clear other Lmm feeds
+//                     * and display refresh spinner on them to avoid user to navigate on them and then
+//                     * lost some of his actions when Lmm data received.
+//                     */
+//                    is CLEAR_AND_REFRESH_EXCEPT -> {
+//                        val exceptLmmTab = (newState.residual as CLEAR_AND_REFRESH_EXCEPT).exceptLmmTab
+//                        LmmNavTab.values.forEach { lmmTab ->
+//                            when (lmmTab) {
+//                                exceptLmmTab -> { /* ignore except lmm tab */ }
+//                                else -> lmmPagesAdapter.accessItem(lmmTab)
+//                                    ?.let { it as? BaseLmmFeedFragment<*> }
+//                                    ?.let {
+//                                        it.clearScreen(ViewState.CLEAR.MODE_DEFAULT)
+//                                        it.showLoading(isVisible = true)
+//                                    }
+//                            }
+//                        }
+//                    }
                 }
             }
         }
