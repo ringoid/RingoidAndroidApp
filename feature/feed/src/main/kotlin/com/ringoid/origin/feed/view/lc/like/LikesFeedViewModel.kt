@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -19,7 +18,6 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
-import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
@@ -60,8 +58,10 @@ class LikesFeedViewModel @Inject constructor(
     private val incomingPushLikeEffect = PublishSubject.create<Long>()
     private val pushNewLike by lazy { MutableLiveData<Long>() }
     private val pushLikesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val transferProfileOneShot by lazy { MutableLiveData<LiveEvent<String>>() }
     internal fun pushNewLike(): LiveData<Long> = pushNewLike
     internal fun pushLikesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushLikesBadgeOneShot
+    internal fun transferProfileOneShot(): LiveData<LiveEvent<String>> = transferProfileOneShot
 
     private var shouldVibrate: Boolean = true
 
@@ -127,7 +127,7 @@ class LikesFeedViewModel @Inject constructor(
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
         // transfer liked profile from Likes Feed to Matches Feed, by Product
-        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
+        transferProfileOneShot.value = LiveEvent(profileId)
     }
 
     override fun onImageTouch(x: Float, y: Float) {

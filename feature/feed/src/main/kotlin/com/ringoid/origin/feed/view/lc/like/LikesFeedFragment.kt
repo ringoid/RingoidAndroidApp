@@ -18,7 +18,6 @@ import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
@@ -77,18 +76,6 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                         (newState.residual as LC_FEED_COUNTS).let {
                             setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
                         }
-                    is TRANSFER_PROFILE -> {
-                        val profileId = (newState.residual as TRANSFER_PROFILE).profileId
-                        onDiscardProfile(profileId)?.let { discarded ->
-                            communicator(IBaseMainActivity::class.java)?.let {
-                                val payload = Bundle().apply {
-                                    putInt("positionOfImage", discarded.positionOfImage)
-                                    putSerializable("destinationFeed", LcNavTab.MESSAGES)
-                                }
-                                Bus.post(BusEvent.TransferProfile(profileId = discarded.id, payload = payload))
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -118,6 +105,19 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         filtersPopupWidget?.setTotalNotFilteredFeedItems(String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count))
     }
 
+    // ------------------------------------------
+    private fun onTransferProfile(profileId: String) {
+        onDiscardProfile(profileId)?.let { discarded ->
+            communicator(IBaseMainActivity::class.java)?.let {
+                val payload = Bundle().apply {
+                    putInt("positionOfImage", discarded.positionOfImage)
+                    putSerializable("destinationFeed", LcNavTab.MESSAGES)
+                }
+                Bus.post(BusEvent.TransferProfile(profileId = discarded.id, payload = payload))
+            }
+        }
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -127,6 +127,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
             observeOneShot(vm.pushLikesBadgeOneShot()) {
                 communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(isVisible = true)
             }
+            observeOneShot(vm.transferProfileOneShot(), ::onTransferProfile)
         }
     }
 
