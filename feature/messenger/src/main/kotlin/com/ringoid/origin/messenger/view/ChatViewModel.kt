@@ -90,7 +90,7 @@ class ChatViewModel @Inject constructor(
         getMessagesForPeerUseCase.source(params = Params().put("chatId", profileId))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // get chat for peer failed
             .autoDisposable(this)
             .subscribe({ msgs ->
                 ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = countPeerMessages(msgs))
@@ -114,7 +114,7 @@ class ChatViewModel @Inject constructor(
         sendMessageToPeerUseCase.source(params = Params().put(message))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // send message to peer in chat failed
             .autoDisposable(this)
             .subscribe({
                 ChatInMemoryCache.addUserMessagesCount(chatId = peerId, count = 1)

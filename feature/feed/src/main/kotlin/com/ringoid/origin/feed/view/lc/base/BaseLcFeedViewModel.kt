@@ -133,7 +133,7 @@ abstract class BaseLcFeedViewModel(
 
         getLcUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // load LC feed items failed
             .autoDisposable(this)
             .subscribe({}, DebugLogUtil::e)
     }

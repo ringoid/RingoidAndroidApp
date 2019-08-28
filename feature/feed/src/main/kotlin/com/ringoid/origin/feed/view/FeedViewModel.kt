@@ -259,7 +259,7 @@ abstract class FeedViewModel(
 
         // remove profile from feed, filter it from backend responses in future
         cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // cache blocked peer id failed
             .autoDisposable(this)
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
@@ -268,7 +268,7 @@ abstract class FeedViewModel(
 
         // remove all messages for blocked profile, to exclude them from messages counting
         clearMessagesForChatUseCase.source(params = Params().put("chatId", profileId))
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // clear local chat for blocked peer failed
             .autoDisposable(this)
             .subscribe({ ChatInMemoryCache.deleteProfile(profileId) }, DebugLogUtil::e)
 

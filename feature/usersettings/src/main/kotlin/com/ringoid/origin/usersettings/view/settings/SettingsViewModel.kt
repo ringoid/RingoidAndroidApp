@@ -30,7 +30,7 @@ class SettingsViewModel @Inject constructor(
         deleteUserProfileUseCase.source()
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnComplete { logoutUserOneShot.value = OneShot(true) }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // delete account failed
             .autoDisposable(this)
             .subscribe({
                 Timber.i("Successfully deleted user account")

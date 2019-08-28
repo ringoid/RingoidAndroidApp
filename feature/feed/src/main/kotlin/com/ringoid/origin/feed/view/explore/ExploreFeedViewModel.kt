@@ -109,7 +109,7 @@ class ExploreFeedViewModel @Inject constructor(
                     needShowFiltersOneShot.value = OneShot(true)
                 }
             }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // load feed items failed
             .autoDisposable(this)
             .subscribe({ feed.value = it }, DebugLogUtil::e)
     }
@@ -129,7 +129,7 @@ class ExploreFeedViewModel @Inject constructor(
                     feed.value = Feed(profiles = emptyList())
                 } else {
                     DebugLogUtil.e(it, "Failed to load more feed items")
-                    viewState.value = ViewState.ERROR(LoadMoreFailedException(it))
+                    viewState.value = ViewState.ERROR(LoadMoreFailedException(it))  // load more feed items failed
                 }
             }
             .doFinally { isLoadingMore = false }

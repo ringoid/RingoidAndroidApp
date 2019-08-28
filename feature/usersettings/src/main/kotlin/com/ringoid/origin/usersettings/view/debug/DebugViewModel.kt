@@ -155,7 +155,7 @@ class DebugViewModel @Inject constructor(
         CompletableTransformer {
             it.doOnSubscribe { viewState.value = ViewState.LOADING }
               .doOnComplete { viewState.value = ViewState.IDLE }
-              .doOnError { viewState.value = ViewState.ERROR(it) }
+              .doOnError { viewState.value = ViewState.ERROR(it) }  // DEBUG: common error
         }
 
     private fun Completable.handleResult() = compose(handleResultTransformer())

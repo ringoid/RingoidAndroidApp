@@ -83,7 +83,7 @@ class LoginViewModel @Inject constructor(
         createUserProfileUseCase.source(params = Params().put(essence))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { loginUserOneShot.value = OneShot(true) }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // sign up new user failed
             .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully signed up, current user: $it")

@@ -95,7 +95,7 @@ class UserProfileFragmentViewModel @Inject constructor(
 
         getUserImagesAsyncUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // get user profile images failed
             .flatMap {
                 Observable.fromIterable(it)
                     .filter { !it.isBlocked }
@@ -123,7 +123,7 @@ class UserProfileFragmentViewModel @Inject constructor(
         useCase.source(params = Params().put(ImageDeleteEssenceUnauthorized(imageId = id)))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnComplete { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // delete user profile image failed
             .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully deleted image: $id")
@@ -137,7 +137,7 @@ class UserProfileFragmentViewModel @Inject constructor(
         createUserImageUseCase.source(params = Params().put(essence).put("uri", uri))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnSuccess { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // create user profile image failed
             .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully uploaded image: $it")
@@ -153,7 +153,7 @@ class UserProfileFragmentViewModel @Inject constructor(
         failedCreateUserImageUseCase.source(params = Params().put(essence).put("uri", uri))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnComplete { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // DEBUG: upload user profile image failed
             .autoDisposable(this)
             .subscribe({}, DebugLogUtil::e)
     }

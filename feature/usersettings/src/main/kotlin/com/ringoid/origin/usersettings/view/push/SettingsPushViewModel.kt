@@ -47,7 +47,7 @@ class SettingsPushViewModel @Inject constructor(
         updateUserSettingsUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnComplete { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // updated user push settings failed
             .autoDisposable(this)
             .subscribe({ DebugLogUtil.i("Successfully updated push settings: $settings") }, DebugLogUtil::e)
     }
