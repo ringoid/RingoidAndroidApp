@@ -88,8 +88,8 @@ class ChatViewModel @Inject constructor(
         chatData = ChatData(chatId = profileId)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
         getMessagesForPeerUseCase.source(params = Params().put("chatId", profileId))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // get chat for peer progress
+            .doOnSuccess { viewState.value = ViewState.IDLE }  // get chat for peer success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // get chat for peer failed
             .autoDisposable(this)
             .subscribe({ msgs ->
@@ -112,8 +112,8 @@ class ChatViewModel @Inject constructor(
         val message = MessageEssence(peerId = peerId, text = text.trim(), aObjEssence = essence)
 
         sendMessageToPeerUseCase.source(params = Params().put(message))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // send message to peer in chat progress
+            .doOnSuccess { viewState.value = ViewState.IDLE }  // send message to peer in chat success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // send message to peer in chat failed
             .autoDisposable(this)
             .subscribe({

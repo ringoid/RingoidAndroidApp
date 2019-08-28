@@ -81,8 +81,8 @@ class LoginViewModel @Inject constructor(
             settings = app.userSettingsManager.getUserSettings())
 
         createUserProfileUseCase.source(params = Params().put(essence))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { loginUserOneShot.value = OneShot(true) }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // sign up new user progress
+            .doOnSuccess { loginUserOneShot.value = OneShot(true) }  // sign up new user success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // sign up new user failed
             .autoDisposable(this)
             .subscribe({

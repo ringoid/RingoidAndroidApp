@@ -15,12 +15,13 @@ class NoNetworkConnectionViewModel @Inject constructor(app: Application) : BaseV
     internal fun connectionRestoreOneShot(): LiveData<OneShot<Boolean>> = connectionRestoreOneShot
 
     internal fun onPageReload() {
-        viewState.value = ViewState.LOADING
+        viewState.value = ViewState.LOADING  // checking for net connection progress
         delay {
             if (connectionManager.isNetworkAvailable()) {
+                // checking for net connection success
                 connectionRestoreOneShot.value = OneShot(true)
             } else {
-                viewState.value = ViewState.IDLE
+                viewState.value = ViewState.IDLE  // checking for net connection failed
             }
         }
     }

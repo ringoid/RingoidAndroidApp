@@ -28,8 +28,8 @@ class SettingsViewModel @Inject constructor(
 
     fun deleteAccount() {
         deleteUserProfileUseCase.source()
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnComplete { logoutUserOneShot.value = OneShot(true) }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // delete account progress
+            .doOnComplete { logoutUserOneShot.value = OneShot(true) }  // delete account success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // delete account failed
             .autoDisposable(this)
             .subscribe({

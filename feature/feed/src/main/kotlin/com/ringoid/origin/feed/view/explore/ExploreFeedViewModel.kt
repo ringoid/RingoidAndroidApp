@@ -95,7 +95,7 @@ class ExploreFeedViewModel @Inject constructor(
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 0))
         getDiscoverUseCase.source(params = prepareFeedParams())
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // load feed items progress
             .doOnSuccess {
                 viewState.value = if (it.isEmpty()) {
                     if (filtersSource.hasFiltersApplied()) {
@@ -103,7 +103,7 @@ class ExploreFeedViewModel @Inject constructor(
                     } else {
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)  // set empty Explore feed (no filters)
                     }
-                } else ViewState.IDLE
+                } else ViewState.IDLE  // load feed items success
 
                 if (spm.needShowFilters()) {
                     needShowFiltersOneShot.value = OneShot(true)
@@ -122,8 +122,8 @@ class ExploreFeedViewModel @Inject constructor(
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 2))
         getDiscoverUseCase.source(params = prepareFeedParams())
-            .doOnSubscribe { viewState.value = ViewState.PAGING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSubscribe { viewState.value = ViewState.PAGING }  // load more feed items
+            .doOnSuccess { viewState.value = ViewState.IDLE }  // load more feed items success
             .doOnError {
                 if (it is ThresholdExceededException) {
                     feed.value = Feed(profiles = emptyList())

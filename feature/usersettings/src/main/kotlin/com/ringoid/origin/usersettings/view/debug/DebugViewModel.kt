@@ -153,8 +153,8 @@ class DebugViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     private fun handleResultTransformer(): CompletableTransformer =
         CompletableTransformer {
-            it.doOnSubscribe { viewState.value = ViewState.LOADING }
-              .doOnComplete { viewState.value = ViewState.IDLE }
+            it.doOnSubscribe { viewState.value = ViewState.LOADING }  // DEBUG: common progress
+              .doOnComplete { viewState.value = ViewState.IDLE }  // DEBUG: common success
               .doOnError { viewState.value = ViewState.ERROR(it) }  // DEBUG: common error
         }
 

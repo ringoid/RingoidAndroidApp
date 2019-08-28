@@ -224,10 +224,10 @@ class SettingsProfileViewModel @Inject constructor(
     private fun updateProfileProperties(propertyName: String) {
         updateUserProfileSettingsUseCase.source(Params().put(properties.map()))
             .doOnSubscribe {
-                viewState.value = ViewState.LOADING
+                viewState.value = ViewState.LOADING  // update user profile properties progress
                 spm.setUserProfileProperties(propertiesRaw = properties.map())
             }
-            .doOnComplete { viewState.value = ViewState.IDLE }
+            .doOnComplete { viewState.value = ViewState.IDLE }  // update user profile properties success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // update user profile properties failed
             .doFinally { analyticsManager.fireOnce(Analytics.AHA_FIRST_FIELD_SET, "fieldName" to propertyName) }
             .autoDisposable(this)

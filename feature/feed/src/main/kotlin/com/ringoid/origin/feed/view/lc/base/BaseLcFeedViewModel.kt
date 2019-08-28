@@ -132,7 +132,7 @@ abstract class BaseLcFeedViewModel(
                              .put(filters)
 
         getLcUseCase.source(params = params)
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // load LC feed items progress
             .doOnError { viewState.value = ViewState.ERROR(it) }  // load LC feed items failed
             .autoDisposable(this)
             .subscribe({}, DebugLogUtil::e)
@@ -164,7 +164,7 @@ abstract class BaseLcFeedViewModel(
                 feed.value = list  // prepended list
 
                 if (list.isNotEmpty()) {
-                    viewState.value = ViewState.IDLE
+                    viewState.value = ViewState.IDLE  // LC feed is no longer empty after transfer profile
                 }
             }
             .autoDisposable(this)
@@ -179,10 +179,10 @@ abstract class BaseLcFeedViewModel(
 
         if (items.isEmpty()) {
             feed.value = emptyList()
-            viewState.value = ViewState.CLEAR(mode = clearMode)
+            viewState.value = ViewState.CLEAR(mode = clearMode)  // LC feed is empty
         } else {
             feed.value = items.map { FeedItemVO(it) }
-            viewState.value = ViewState.IDLE
+            viewState.value = ViewState.IDLE  // set LC feed items success
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
         }

@@ -94,7 +94,7 @@ class UserProfileFragmentViewModel @Inject constructor(
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 
         getUserImagesAsyncUseCase.source(params = params)
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // get user profile images progress
             .doOnError { viewState.value = ViewState.ERROR(it) }  // get user profile images failed
             .flatMap {
                 Observable.fromIterable(it)
@@ -103,8 +103,8 @@ class UserProfileFragmentViewModel @Inject constructor(
                     .toObservable()
             }
             .doOnNext {
-                viewState.value = if (it.isEmpty()) ViewState.CLEAR(ViewState.CLEAR.MODE_EMPTY_DATA)  // no images in Profile
-                                  else ViewState.IDLE
+                viewState.value = if (it.isEmpty()) ViewState.CLEAR(ViewState.CLEAR.MODE_EMPTY_DATA)  // no images in user profile
+                                  else ViewState.IDLE  // get user profile images success
             }
             .autoDisposable(this)
             .subscribe({ images.value = it.apply { sortBy { it.sortPosition } } }, DebugLogUtil::e)
@@ -121,8 +121,8 @@ class UserProfileFragmentViewModel @Inject constructor(
 
     private fun deleteImageImpl(id: String, useCase: CompletableUseCase) {
         useCase.source(params = Params().put(ImageDeleteEssenceUnauthorized(imageId = id)))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnComplete { viewState.value = ViewState.IDLE }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // delete user profile image progress
+            .doOnComplete { viewState.value = ViewState.IDLE }  // delete user profile image success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // delete user profile image failed
             .autoDisposable(this)
             .subscribe({
@@ -135,8 +135,8 @@ class UserProfileFragmentViewModel @Inject constructor(
         val essence = ImageUploadUrlEssenceUnauthorized(extension = uri.extension())
 
         createUserImageUseCase.source(params = Params().put(essence).put("uri", uri))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // create user profile image progress
+            .doOnSuccess { viewState.value = ViewState.IDLE }  // create user profile image success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // create user profile image failed
             .autoDisposable(this)
             .subscribe({
@@ -151,8 +151,8 @@ class UserProfileFragmentViewModel @Inject constructor(
         val essence = ImageUploadUrlEssenceUnauthorized(extension = uri.extension())
 
         failedCreateUserImageUseCase.source(params = Params().put(essence).put("uri", uri))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnComplete { viewState.value = ViewState.IDLE }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // DEBUG: upload user profile image progress
+            .doOnComplete { viewState.value = ViewState.IDLE }  // DEBUG: upload user profile image success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // DEBUG: upload user profile image failed
             .autoDisposable(this)
             .subscribe({}, DebugLogUtil::e)
