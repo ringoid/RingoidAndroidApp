@@ -10,12 +10,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.memory.IFiltersSource
@@ -25,7 +20,6 @@ import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.REFRESH
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
 import com.ringoid.origin.utils.ScreenHelper
@@ -177,7 +171,7 @@ abstract class BaseLmmFeedViewModel(
     internal fun onTapToRefreshClick() {
         analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
         refreshOnPush.value = false  // drop value on each Lmm feed, when user taps on 'tap to refresh' popup on any Lmm feed
-        viewState.value = ViewState.DONE(REFRESH)
+//        viewState.value = ViewState.DONE(REFRESH)
     }
 
     // ------------------------------------------

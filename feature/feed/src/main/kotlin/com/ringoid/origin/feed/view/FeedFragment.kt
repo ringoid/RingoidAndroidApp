@@ -80,12 +80,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is ASK_TO_ENABLE_LOCATION_SERVICE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // ask to enable location services
-                    is REFRESH -> {
-                        // purge feed on refresh, before fetching a new one
-                        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed while refreshing by state
-                        showLoading(isVisible = true)
-                        onRefresh()
-                    }
                 }
             }
             is ViewState.IDLE -> {
@@ -311,6 +305,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedAdapter.trackingBus = imagesTrackingBus
         observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
+        observeOneShot(vm.refreshOneShot()) {
+            // purge feed on refresh, before fetching a new one
+            onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed while refreshing by state
+            showLoading(isVisible = true)
+            onRefresh()
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")

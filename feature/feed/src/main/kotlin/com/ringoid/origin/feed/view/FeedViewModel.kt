@@ -47,9 +47,11 @@ abstract class FeedViewModel(
 
     protected val discardProfileOneShot by lazy { MutableLiveData<LiveEvent<String>>() }
     private val noImagesInUserProfileOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val refreshOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
     internal fun discardProfileOneShot(): LiveData<LiveEvent<String>> = discardProfileOneShot
     internal fun noImagesInUserProfileOneShot(): LiveData<LiveEvent<Boolean>> = noImagesInUserProfileOneShot
+    internal fun refreshOneShot(): LiveData<LiveEvent<Boolean>> = refreshOneShot
     internal fun refreshOnPush(): LiveData<Boolean> = refreshOnPush
     internal fun isRefreshOnPush(): Boolean = refreshOnPush.value == true
 
@@ -187,7 +189,7 @@ abstract class FeedViewModel(
     protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
     internal fun refresh() {
-        viewState.value = ViewState.DONE(REFRESH)
+        refreshOneShot.value = LiveEvent(true)
     }
 
     /* Action Objects */
