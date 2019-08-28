@@ -34,7 +34,6 @@ import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.WidgetR_attrs
 import com.ringoid.origin.profile.WidgetR_color
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
-import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.IEmptyScreenCallback
@@ -100,17 +99,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     ViewState.CLEAR.MODE_EMPTY_DATA -> showNoImageStub(true)
                     ViewState.CLEAR.MODE_NEED_REFRESH -> showErrorStub()
                     ViewState.CLEAR.MODE_CHANGE_FILTERS -> showNoImageStub(true)
-                }
-            }
-            is ViewState.DONE -> {
-                onIdleState()
-                when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> {
-                        val handleCode = (newState.residual as ASK_TO_ENABLE_LOCATION_SERVICE).handleCode
-                        when (handleCode) {
-                            HC_REFRESH -> vm.onRefresh()  // TODO: use cached
-                        }
-                    }
                 }
             }
             is ViewState.IDLE -> onIdleState()
@@ -291,6 +279,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                         .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
                 }
                 onImageSelect(position = currentImagePosition)
+            }
+            observeOneShot(vm.askToEnableLocationServiceOneShot()) { handleCode ->
+                when (handleCode) {
+                    HC_REFRESH -> vm.onRefresh()  // TODO: use cached
+                }
             }
             observeOneShot(vm.requestToAddImageOneShot()) { onAddImageNoPermission() }
         }

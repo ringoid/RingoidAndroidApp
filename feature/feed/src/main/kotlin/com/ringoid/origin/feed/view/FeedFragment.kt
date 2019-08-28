@@ -29,7 +29,6 @@ import com.ringoid.origin.feed.view.widget.FiltersPopupWidget
 import com.ringoid.origin.feed.view.widget.ToolbarWidget
 import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.*
-import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.IEmptyScreenCallback
@@ -77,11 +76,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.CLEAR -> onClearState(mode = newState.mode)
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // ask to enable location services
-                }
-            }
             is ViewState.IDLE -> {
                 fl_empty_container?.changeVisibility(isVisible = false)
                 showLoading(isVisible = false)
@@ -303,6 +297,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
         imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
         feedAdapter.trackingBus = imagesTrackingBus
+        observeOneShot(vm.askToEnableLocationServiceOneShot()) {
+            // ask to enable location services
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+        }
         observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
         observeOneShot(vm.refreshOneShot()) {
