@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -49,11 +50,13 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val imageDeleted by lazy { MutableLiveData<String>() }
     private val images by lazy { MutableLiveData<List<UserImage>>() }
     private val profile by lazy { MutableLiveData<UserProfileProperties>() }
+    private val referralCodeOneShot by lazy { MutableLiveData<LiveEvent<ReferralCode>>() }
     internal fun imageBlocked(): LiveData<String> = imageBlocked
     internal fun imageCreated(): LiveData<UserImage> = imageCreated
     internal fun imageDeleted(): LiveData<String> = imageDeleted
     internal fun images(): LiveData<List<UserImage>> = images
     internal fun profile(): LiveData<UserProfileProperties> = profile
+    internal fun referralCodeOneShot(): LiveData<LiveEvent<ReferralCode>> = referralCodeOneShot
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
@@ -169,16 +172,18 @@ class UserProfileFragmentViewModel @Inject constructor(
         applyReferralCodeUseCase.source(params = Params().put(ReferralCodeEssenceUnauthorized(referralId = code)))
             .doOnSubscribe { viewState.value = ViewState.LOADING }
             .doOnError {
-                viewState.value = when (it) {
-                    is WrongRequestParamsClientApiException -> ViewState.DONE(REFERRAL_CODE_DECLINED)
-                    else -> ViewState.ERROR(it)
+                when (it) {
+                    is WrongRequestParamsClientApiException ->
+                        referralCodeOneShot.value = LiveEvent(ReferralCode.ReferralCodeDeclined)
+                    else -> viewState.value = ViewState.ERROR(it)
                 }
             }
+            .doFinally { viewState.value = ViewState.IDLE }
             .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully applied referral code: $code")
                 spm.setReferralCode(code)  // save accepted referral code
-                viewState.value = ViewState.DONE(REFERRAL_CODE_ACCEPTED)
+                referralCodeOneShot.value = LiveEvent(ReferralCode.ReferralCodeAccepted)
             }, DebugLogUtil::e)
     }
 

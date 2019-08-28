@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
@@ -111,8 +112,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                             HC_REFRESH -> vm.onRefresh()  // TODO: use cached
                         }
                     }
-                    is REFERRAL_CODE_ACCEPTED -> Dialogs.showTextDialog(activity, title = String.format(resources.getString(OriginR_string.referral_dialog_reward_message), "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
-                    is REFERRAL_CODE_DECLINED -> Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_invalid_referral_code, description = null)
                     is REQUEST_TO_ADD_IMAGE -> onAddImageNoPermission()
                 }
             }
@@ -294,6 +293,14 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                         .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
                 }
                 onImageSelect(position = currentImagePosition)
+            }
+            observeOneShot(vm.referralCodeOneShot()) {
+                when (it) {
+                    is ReferralCode.ReferralCodeAccepted ->
+                        Dialogs.showTextDialog(activity, title = String.format(resources.getString(OriginR_string.referral_dialog_reward_message), "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
+                    is ReferralCode.ReferralCodeDeclined ->
+                        Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_invalid_referral_code, description = null)
+                }
             }
         }
 
