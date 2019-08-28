@@ -80,7 +80,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             is ViewState.DONE -> {
                 when (newState.residual) {
                     is ASK_TO_ENABLE_LOCATION_SERVICE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // ask to enable location services
-                    is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
                     is REFRESH -> {
                         // purge feed on refresh, before fetching a new one
                         onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed while refreshing by state
@@ -162,6 +161,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)  // discard all profiles in Feed
     }
 
+    /**
+     * User discards profile manually (via transition (LIKE) or block (BLOCK / REPORT),
+     * so need to handle VIEW aobjs for profiles that comes into viewport after removal
+     * animation finishes.
+     */
     protected open fun onDiscardProfileState(profileId: String): FeedItemVO? =
         feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
@@ -301,6 +305,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
         imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
         feedAdapter.trackingBus = imagesTrackingBus
+        observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileState)
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
     }
 

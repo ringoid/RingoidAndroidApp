@@ -45,8 +45,10 @@ abstract class FeedViewModel(
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 
+    protected val discardProfileOneShot by lazy { MutableLiveData<LiveEvent<String>>() }
     private val noImagesInUserProfileOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
+    internal fun discardProfileOneShot(): LiveData<LiveEvent<String>> = discardProfileOneShot
     internal fun noImagesInUserProfileOneShot(): LiveData<LiveEvent<Boolean>> = noImagesInUserProfileOneShot
     internal fun refreshOnPush(): LiveData<Boolean> = refreshOnPush
     internal fun isRefreshOnPush(): Boolean = refreshOnPush.value == true
@@ -259,7 +261,7 @@ abstract class FeedViewModel(
             .autoDisposable(this)
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
-                viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
+                discardProfileOneShot.value = LiveEvent(profileId)
             }, DebugLogUtil::e)
 
         // remove all messages for blocked profile, to exclude them from messages counting

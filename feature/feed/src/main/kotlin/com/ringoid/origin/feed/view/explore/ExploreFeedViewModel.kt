@@ -21,7 +21,6 @@ import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.exception.LoadMoreFailedException
-import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
@@ -172,7 +171,7 @@ class ExploreFeedViewModel @Inject constructor(
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
         // discard profile from feed after like
-        viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
+        discardProfileOneShot.value = LiveEvent(profileId)
     }
 
     // ------------------------------------------

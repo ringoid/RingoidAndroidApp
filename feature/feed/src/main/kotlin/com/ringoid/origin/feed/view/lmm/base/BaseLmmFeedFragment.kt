@@ -18,7 +18,6 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
-import com.ringoid.origin.feed.view.DISCARD_PROFILE
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.ILmmFragment
@@ -61,11 +60,11 @@ abstract class BaseLmmFeedFragment<VM : BaseLmmFeedViewModel> : FeedFragment<VM>
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is DISCARD_PROFILE -> {
-                        // Deprecated, method 'decrementCountOnLmm()' was removed
-                        // communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
-                        communicator(ILmmFragment::class.java)?.changeCountOnTopTab(tab = getSourceFeed(), delta = -1)
-                    }
+//                    is DISCARD_PROFILE -> {
+//                        // Deprecated, method 'decrementCountOnLmm()' was removed
+//                        // communicator(IBaseMainActivity::class.java)?.decrementCountOnLmm()
+//                        communicator(ILmmFragment::class.java)?.changeCountOnTopTab(tab = getSourceFeed(), delta = -1)
+//                    }
 //                    /**
 //                     * Since on refresh on Lmm each other Lmm's Feed except the current one goes into
 //                     * [ViewState.DONE] with [CLEAR_AND_REFRESH_EXCEPT] residual payload, and the
