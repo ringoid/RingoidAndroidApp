@@ -2,6 +2,7 @@ package com.ringoid.utility
 
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import timber.log.Timber
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -21,6 +22,8 @@ const val LOCATION_EPS = 0.000001
 
 /* Misc */
 // ------------------------------------------------------------------------------------------------
+fun checkForNull(state: Bundle?): String? = state?.let { "saved state" }
+
 inline fun <reified T> Collection<T>.cloneAsList(): List<T> = ArrayList(this.map { it })
 
 fun Uri.extension(): String =

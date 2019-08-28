@@ -24,6 +24,7 @@ import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.view.base.BasePermissionActivity
 import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.checkForNull
 import com.ringoid.utility.collection.toJsonObject
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -170,7 +171,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
         Timber.d("Intent data: ${intent.extras?.toJsonObject()}")
         intent.extras?.apply {
-            Timber.v("Process extras[$savedInstanceState]: $this")
+            Timber.v("Process extras[${checkForNull(savedInstanceState)}]: $this")
             getString("tab")?.let { tabName ->
                 Timber.v("In-App extras: $tabName")
                 tabPayload = getString("tabPayload")

@@ -19,6 +19,7 @@ import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.manager.IRuntimeConfig
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.utility.checkForNull
 import com.ringoid.utility.manager.KeyboardManager
 import com.ringoid.utility.manager.KeyboardStatus
 import com.ringoid.utility.manager.LocaleManager
@@ -91,7 +92,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.d("onCreate($savedInstanceState), intent: ${intent.print()}")
+        Timber.d("onCreate(${checkForNull(savedInstanceState)}), intent: ${intent.print()}")
         DebugLogUtil.lifecycle(this, "onCreate")
         isDestroying = false
         AndroidInjection.inject(this)
