@@ -2,14 +2,8 @@ package com.ringoid.origin.feed.view.lmm.messenger
 
 import android.app.Application
 import com.ringoid.analytics.Analytics
-import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLmmUseCase
-import com.ringoid.domain.interactor.feed.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
@@ -19,7 +13,6 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.Lmm
 import com.ringoid.domain.model.feed.LmmSlice
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedViewModel
 import com.ringoid.origin.view.main.LmmNavTab
@@ -90,7 +83,7 @@ class MessagesFeedViewModel @Inject constructor(
     override fun handlePushMessage(peerId: String) {
         super.handlePushMessage(peerId)
         // show badge on Messages Lmm top tab
-        viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
+//        viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
         // show 'tap-to-refresh' popup on Feed screen
         refreshOnPush.value = feed().value?.isNotEmpty() == true
     }

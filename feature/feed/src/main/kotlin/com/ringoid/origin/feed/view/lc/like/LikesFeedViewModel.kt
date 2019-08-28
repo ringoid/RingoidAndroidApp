@@ -6,14 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLcUseCase
-import com.ringoid.domain.interactor.feed.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.log.SentryUtil
@@ -22,7 +18,6 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
@@ -64,7 +59,9 @@ class LikesFeedViewModel @Inject constructor(
     private val incomingPushLike = PublishSubject.create<BusEvent>()
     private val incomingPushLikeEffect = PublishSubject.create<Long>()
     private val pushNewLike by lazy { MutableLiveData<Long>() }
+    private val pushLikesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun pushNewLike(): LiveData<Long> = pushNewLike
+    internal fun pushLikesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushLikesBadgeOneShot
 
     private var shouldVibrate: Boolean = true
 
@@ -75,7 +72,7 @@ class LikesFeedViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 // show badge on Likes LC tab
-                viewState.value = ViewState.DONE(PUSH_NEW_LIKES_TOTAL)
+                pushLikesBadgeOneShot.value = LiveEvent(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)

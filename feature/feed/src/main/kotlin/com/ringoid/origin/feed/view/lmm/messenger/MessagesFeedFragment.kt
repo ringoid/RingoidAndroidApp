@@ -5,12 +5,9 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.lmm.ILmmFragment
 import com.ringoid.origin.feed.view.lmm.base.BaseMatchesFeedFragment
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.main.LmmNavTab
-import com.ringoid.utility.communicator
 
 @Deprecated("LMM -> LC")
 class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
@@ -44,11 +41,11 @@ class MessagesFeedFragment : BaseMatchesFeedFragment<MessagesFeedViewModel>() {
     override fun onViewStateChange(newState: ViewState) {
         super.onViewStateChange(newState)
         when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is PUSH_NEW_MESSAGES_TOTAL -> communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(isVisible = true)
-                }
-            }
+//            is ViewState.DONE -> {
+//                when (newState.residual) {
+//                    is PUSH_NEW_MESSAGES_TOTAL -> communicator(ILmmFragment::class.java)?.showBadgeOnMessenger(isVisible = true)
+//                }
+//            }
         }
     }
 }

@@ -6,15 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLcUseCase
-import com.ringoid.domain.interactor.feed.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatOnlyUseCase
@@ -27,9 +23,7 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MATCHES_TOTAL
 import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
@@ -78,8 +72,12 @@ class MessagesFeedViewModel @Inject constructor(
     private val incomingPushMessagesEffect = PublishSubject.create<Long>()
     private val pushNewMatch by lazy { MutableLiveData<Long>() }
     private val pushNewMessage by lazy { MutableLiveData<Long>() }
+    private val pushMatchesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val pushMessagesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun pushNewMatch(): LiveData<Long> = pushNewMatch
     internal fun pushNewMessage(): LiveData<Long> = pushNewMessage
+    internal fun pushMatchesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushMatchesBadgeOneShot
+    internal fun pushMessagesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushMessagesBadgeOneShot
 
     private var shouldVibrate: Boolean = true
 
@@ -90,7 +88,7 @@ class MessagesFeedViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 // show badge on Messages LC tab (as being for new Matches)
-                viewState.value = ViewState.DONE(PUSH_NEW_MATCHES_TOTAL)
+                pushMatchesBadgeOneShot.value = LiveEvent(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)
@@ -122,7 +120,7 @@ class MessagesFeedViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 // show badge on Messages LC tab
-                viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
+                pushMessagesBadgeOneShot.value = LiveEvent(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)

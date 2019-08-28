@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
@@ -17,7 +18,6 @@ import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.navigation.noConnection
@@ -89,7 +89,6 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                             }
                         }
                     }
-                    is PUSH_NEW_LIKES_TOTAL -> communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(isVisible = true)
                 }
             }
         }
@@ -125,6 +124,9 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.pushNewLike()) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
+            observeOneShot(vm.pushLikesBadgeOneShot()) {
+                communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(isVisible = true)
+            }
         }
     }
 
