@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.view.FATAL_ERROR
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.DomainUtil
@@ -56,8 +55,10 @@ abstract class BaseLcFeedViewModel(
         filtersSource, userInMemoryCache, app) {
 
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+    private val lmmLoadFailedOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     private val transferProfileCompleteOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
+    internal fun lmmLoadFailedOneShot(): LiveData<LiveEvent<Boolean>> = lmmLoadFailedOneShot
     internal fun transferProfileCompleteOneShot(): LiveData<LiveEvent<Boolean>> = transferProfileCompleteOneShot
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
@@ -105,7 +106,7 @@ abstract class BaseLcFeedViewModel(
         getLcUseCase.repository.lmmLoadFailed
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ viewState.value = ViewState.DONE(FATAL_ERROR) }, DebugLogUtil::e)
+            .subscribe({ lmmLoadFailedOneShot.value = LiveEvent(true) }, DebugLogUtil::e)
     }
 
     /* Lifecycle */

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.FATAL_ERROR
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
@@ -36,7 +37,6 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is FATAL_ERROR -> showFatalErrorDialog()
                     is LC_FEED_COUNTS ->
                         (newState.residual as LC_FEED_COUNTS).let {
                             setCountOfFilteredFeedItems(count = it.show)
@@ -126,6 +126,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
                 runOnUiThread { rv_items?.let { scrollListToPosition(0) } }
             }
             observe(vm.refreshOnPush()) { showRefreshPopup(isVisible = it) }
+            observeOneShot(vm.lmmLoadFailedOneShot()) { showFatalErrorDialog() }
         }
     }
 
