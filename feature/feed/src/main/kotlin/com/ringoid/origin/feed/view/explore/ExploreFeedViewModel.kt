@@ -22,7 +22,6 @@ import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.origin.feed.exception.LoadMoreFailedException
 import com.ringoid.origin.feed.view.DISCARD_PROFILE
-import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
@@ -58,8 +57,10 @@ class ExploreFeedViewModel @Inject constructor(
         filtersSource, userInMemoryCache, app), IListScrollCallback {
 
     private val feed by lazy { MutableLiveData<Feed>() }
+    private val discardProfilesOneShot by lazy { MutableLiveData<LiveEvent<Collection<String>>>() }
     private val needShowFiltersOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun feed(): LiveData<Feed> = feed
+    internal fun discardProfilesOneShot(): LiveData<LiveEvent<Collection<String>>> = discardProfilesOneShot
     internal fun needShowFiltersOneShot(): LiveData<LiveEvent<Boolean>> = needShowFiltersOneShot
 
     private var isLoadingMore: Boolean = false
@@ -74,7 +75,7 @@ class ExploreFeedViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ ids ->
-                viewState.value = ViewState.DONE(DISCARD_PROFILES(ids))
+                discardProfilesOneShot.value = LiveEvent(ids)
                 if (BuildConfig.IS_STAGING) {
                     feed.value?.profiles?.toMutableList()
                         ?.let { profiles ->

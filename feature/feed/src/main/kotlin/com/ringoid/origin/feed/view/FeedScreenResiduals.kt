@@ -10,9 +10,5 @@ open class ProfileResidual(val profileId: String) : Residual()
  * animation finishes.
  */
 class DISCARD_PROFILE(profileId: String) : ProfileResidual(profileId)
-data class DISCARD_PROFILES(val profileIds: Collection<String>) : Residual() {  // discard multiple profiles
-
-    override fun toString(): String = "${super.toString()}(${profileIds.joinToString { it.substring(0..3) }})"
-}
 
 object REFRESH : Residual()  // refresh programmatically

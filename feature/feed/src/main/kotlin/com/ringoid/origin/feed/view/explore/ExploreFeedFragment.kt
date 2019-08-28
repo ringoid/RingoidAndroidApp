@@ -19,7 +19,6 @@ import com.ringoid.origin.feed.exception.LoadMoreFailedException
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.DISCARD_PROFILES
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
@@ -70,11 +69,6 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is DISCARD_PROFILES -> onDiscardMultipleProfilesState(profileIds = (newState.residual as DISCARD_PROFILES).profileIds)
-                }
-            }
             is ViewState.ERROR -> {
                 when (newState.e) {
                     is LoadMoreFailedException -> {
@@ -133,6 +127,7 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
                 }
                 feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
             }
+            observeOneShot(vm.discardProfilesOneShot()) { onDiscardMultipleProfilesState(profileIds = it) }
             observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
         }
 
