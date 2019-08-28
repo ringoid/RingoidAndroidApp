@@ -1,9 +1,11 @@
 package com.ringoid.origin.usersettings.view.debug
 
 import android.app.Application
-import com.ringoid.base.view.Residual
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.debug.*
@@ -35,6 +37,9 @@ class DebugViewModel @Inject constructor(
     @DebugOnly private val debugUnsupportedAppVersionRequestUseCase: DebugUnsupportedAppVersionRequestUseCase,
     app: Application) : BaseViewModel(app) {
 
+    private val completeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    internal fun completeOneShot(): LiveData<LiveEvent<Boolean>> = completeOneShot
+
     // --------------------------------------------------------------------------------------------
     fun debugHandleErrorStream() {
         debugHandleErrorDoublestreamUseCase.source()
@@ -42,7 +47,7 @@ class DebugViewModel @Inject constructor(
 //        debugHandleErrorDownstreamUseCase.source()
 //        debugHandleErrorMultistreamUseCase.source()
 //        debugHandleErrorUpstreamUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */}, Timber::e)
     }
@@ -50,107 +55,108 @@ class DebugViewModel @Inject constructor(
     // ------------------------------------------
     fun requestWithCommitActionsFailAllRetries() {
         commitActionsFailUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */}, Timber::e)
     }
 
     fun requestWithExpiredAccessToken() {
 //        invalidAccessTokenRequestUseCase.source(params = Params().put("token", "98736c88-b82e-48d2-bf8b-aeab10a663f7"))
-//            .handleResult(this)
+//            .handleResult()
 //            .autoDisposable(this)
 //            .subscribe({ /* no-op */ }, Timber::e)
 
         debugInvalidAccessTokenRequestUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithFailAllRetries() {
         requestFailUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithFailNTimesBeforeSuccess(n: Int) {
         requestRetryNTimesUseCase.source(params = Params().put("count", n))
-            .handleResult(this, ViewState.DONE(Residual()))
+            .doOnComplete { completeOneShot.value = LiveEvent(true) }
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithInvalidAccessToken() {
         invalidAccessTokenRequestUseCase.source(params = Params().put("token", "invalid_token"))
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithNeedToRepeatAfterDelay(delay: Long /* in seconds */) {
         requestRepeatAfterDelayUseCase.source(params = Params().put("delay", delay))
-            .handleResult(this, ViewState.DONE(Residual()))
+            .doOnComplete { completeOneShot.value = LiveEvent(true) }
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithNotSuccessResponse() {
         debugNotSuccessRequestUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWith404Response() {
         debugResponseWith404UseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithServerError() {
         debugServerErrorCauseRequestUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithStaledAppVersion() {
         unsupportedAppVersionRequestUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
 
 //        debugUnsupportedAppVersionRequestUseCase.source()
-//            .handleResult(this)
+//            .handleResult()
 //            .autoDisposable(this)
 //            .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithTimeOutResponse() {
         debugTimeOutRequestUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     fun requestWithWrongParams() {
         wrongParamsRequestUseCase.source()
-            .handleResult(this)
+            .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
     }
 
     /* Misc */
     // --------------------------------------------------------------------------------------------
-    private fun handleResult(completeState: ViewState = ViewState.IDLE): CompletableTransformer =
+    private fun handleResultTransformer(): CompletableTransformer =
         CompletableTransformer {
             it.doOnSubscribe { viewState.value = ViewState.LOADING }
-                .doOnComplete { viewState.value = completeState }
-                .doOnError { viewState.value = ViewState.ERROR(it) }
+              .doOnComplete { viewState.value = ViewState.IDLE }
+              .doOnError { viewState.value = ViewState.ERROR(it) }
         }
 
-    private fun Completable.handleResult(handler: BaseViewModel, completeState: ViewState = ViewState.IDLE)
-            : Completable = compose(handleResult(completeState))
+    private fun Completable.handleResult() = compose(handleResultTransformer())
 }
