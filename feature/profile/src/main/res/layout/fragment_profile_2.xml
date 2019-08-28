@@ -50,16 +50,6 @@
             app:xbtnSrc="?refDrawableProfileMenuAddImage"/>
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_empty_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
@@ -83,6 +73,16 @@
         android:background="@drawable/rect_gradient"
         app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"/>
+
+    <FrameLayout
+        android:id="@+id/fl_empty_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs2"
