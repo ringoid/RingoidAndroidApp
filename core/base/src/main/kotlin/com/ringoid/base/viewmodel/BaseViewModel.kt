@@ -16,12 +16,12 @@ import com.ringoid.base.livedata.ActiveMutableLiveData
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
 import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.manager.ISharedPrefsManager
 import leakcanary.AppWatcher
 import org.greenrobot.eventbus.Subscribe
+import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
@@ -84,7 +84,8 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     protected open fun onRecreate(savedInstanceState: Bundle) {
         with (savedInstanceState) {
             getParcelable<VMSavedState>(BUNDLE_KEY_VM_STATE)?.let {
-                DebugLogUtil.d("Recreate view model and restore view state: $it")
+                Timber.tag(this@BaseViewModel.javaClass.simpleName)
+                Timber.d("Recreate view model and restore view state: $it")
                 viewState.value = it.viewState
             }
         }
