@@ -25,7 +25,6 @@ import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
-import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
@@ -82,20 +81,6 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_messages_title
 
     // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is LC_FEED_COUNTS ->
-                        (newState.residual as LC_FEED_COUNTS).let {
-                            setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
-                        }
-                }
-            }
-        }
-    }
-
     override fun setDefaultToolbarTitle() {
         toolbar.setTitle(OriginR_string.feed_messages_title)
     }

@@ -10,7 +10,7 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
-import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
+import com.ringoid.origin.feed.view.lc.FeedCounts
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.filters.BaseFiltersFragment
@@ -36,11 +36,6 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         when (newState) {
             is ViewState.DONE -> {
                 when (newState.residual) {
-                    is LC_FEED_COUNTS ->
-                        (newState.residual as LC_FEED_COUNTS).let {
-                            setCountOfFilteredFeedItems(count = it.show)
-                            setTotalNotFilteredFeedItems(count = it.show + it.hidden)
-                        }
                     /**
                      * All feed items on a particular Lmm feed, specified by [SEEN_ALL_FEED.sourceFeed],
                      * have been seen by user, so it's time to hide red badge on a corresponding Lmm tab.
@@ -98,6 +93,12 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             positiveListener = { dialog, _ -> vm.refresh(); dialog.dismiss() })
     }
 
+    private fun updateFeedCounts(feedCounts: FeedCounts) {
+        setCountOfFilteredFeedItems(count = feedCounts.show)
+        setTotalNotFilteredFeedItems(count = feedCounts.show + feedCounts.hidden)
+        setToolbarTitleWithLcCounts(show = feedCounts.show, hidden = feedCounts.hidden)
+    }
+
     // ------------------------------------------
     protected abstract fun setDefaultToolbarTitle()
 
@@ -124,7 +125,8 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
                 feedAdapter.submitList(it)
                 runOnUiThread { rv_items?.let { scrollListToPosition(0) } }
             }
-            observe(vm.refreshOnPush()) { showRefreshPopup(isVisible = it) }
+            observe(vm.refreshOnPush(), ::showRefreshPopup)
+            observeOneShot(vm.feedCounts(), ::updateFeedCounts)
             observeOneShot(vm.lmmLoadFailedOneShot()) { showFatalErrorDialog() }
         }
     }

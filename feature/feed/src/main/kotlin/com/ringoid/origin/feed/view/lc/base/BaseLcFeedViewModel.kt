@@ -23,7 +23,7 @@ import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
+import com.ringoid.origin.feed.view.lc.FeedCounts
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
@@ -55,9 +55,11 @@ abstract class BaseLcFeedViewModel(
         filtersSource, userInMemoryCache, app) {
 
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+    private val feedCounts by lazy { MutableLiveData<LiveEvent<FeedCounts>>() }
     private val lmmLoadFailedOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     private val transferProfileCompleteOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
+    internal fun feedCounts(): MutableLiveData<LiveEvent<FeedCounts>> = feedCounts
     internal fun lmmLoadFailedOneShot(): LiveData<LiveEvent<Boolean>> = lmmLoadFailedOneShot
     internal fun transferProfileCompleteOneShot(): LiveData<LiveEvent<Boolean>> = transferProfileCompleteOneShot
 
@@ -173,7 +175,7 @@ abstract class BaseLcFeedViewModel(
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
-        viewState.value = ViewState.DONE(LC_FEED_COUNTS(show = items.size, hidden = totalNotFilteredCount - items.size))
+        feedCounts.value = LiveEvent(FeedCounts(show = items.size, hidden = totalNotFilteredCount - items.size))
 
         if (items.isEmpty()) {
             feed.value = emptyList()
