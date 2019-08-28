@@ -15,5 +15,4 @@ data class DISCARD_PROFILES(val profileIds: Collection<String>) : Residual() {  
     override fun toString(): String = "${super.toString()}(${profileIds.joinToString { it.substring(0..3) }})"
 }
 
-object NO_IMAGES_IN_USER_PROFILE : Residual()
 object REFRESH : Residual()  // refresh programmatically

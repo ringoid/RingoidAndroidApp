@@ -11,6 +11,7 @@ import com.github.techisfun.android.topsheet.TopSheetBehavior
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -80,16 +81,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 when (newState.residual) {
                     is ASK_TO_ENABLE_LOCATION_SERVICE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // ask to enable location services
                     is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
-                    is NO_IMAGES_IN_USER_PROFILE -> {
-                        Dialogs.showTextDialog(activity,
-                            descriptionResId = getAddPhotoDialogDescriptionResId(),
-                            positiveBtnLabelResId = OriginR_string.button_add_photo,
-                            negativeBtnLabelResId = OriginR_string.button_later,
-                            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") },
-                            isCancellable = false)
-
-                        showLoading(isVisible = false)
-                    }
                     is REFRESH -> {
                         // purge feed on refresh, before fetching a new one
                         onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed while refreshing by state
@@ -233,6 +224,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         filtersPopupWidget?.show()
     }
 
+    protected open fun onNoImagesInUserProfile(dummy: Boolean) {
+        Dialogs.showTextDialog(activity,
+            descriptionResId = getAddPhotoDialogDescriptionResId(),
+            positiveBtnLabelResId = OriginR_string.button_add_photo,
+            negativeBtnLabelResId = OriginR_string.button_later,
+            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") },
+            isCancellable = false)
+
+        showLoading(isVisible = false)
+    }
+
     internal fun showLoading(isVisible: Boolean) {
         swipe_refresh_layout
             ?.takeIf { isVisible != it.isRefreshing }  // change visibility w/o interruption of animation, if any
@@ -299,6 +301,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
         imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
         feedAdapter.trackingBus = imagesTrackingBus
+        observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
     }
 
     @Suppress("CheckResult", "AutoDispose")

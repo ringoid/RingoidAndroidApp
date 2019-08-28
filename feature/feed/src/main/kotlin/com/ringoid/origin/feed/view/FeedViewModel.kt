@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -44,7 +45,9 @@ abstract class FeedViewModel(
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 
+    private val noImagesInUserProfileOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
+    internal fun noImagesInUserProfileOneShot(): LiveData<LiveEvent<Boolean>> = noImagesInUserProfileOneShot
     internal fun refreshOnPush(): LiveData<Boolean> = refreshOnPush
     internal fun isRefreshOnPush(): Boolean = refreshOnPush.value == true
 
@@ -168,7 +171,7 @@ abstract class FeedViewModel(
                             viewActionObjectBackup.clear()
                             getFeed()
                         } else {
-                            viewState.value = ViewState.DONE(NO_IMAGES_IN_USER_PROFILE)
+                            noImagesInUserProfileOneShot.value = LiveEvent(true)
                         }
                     })
             .autoDisposable(this)
@@ -190,7 +193,7 @@ abstract class FeedViewModel(
     internal fun onBeforeLike(): Boolean =
         if (userInMemoryCache.userImagesCount() > 0) true
         else {
-            viewState.value = ViewState.DONE(NO_IMAGES_IN_USER_PROFILE)
+            noImagesInUserProfileOneShot.value = LiveEvent(true)
             false
         }
 
