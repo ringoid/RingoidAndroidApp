@@ -8,6 +8,7 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.FATAL_ERROR
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
@@ -24,7 +25,6 @@ import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.ON_TRANSFER_PROFILE_COMPLETE
 import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
@@ -56,7 +56,9 @@ abstract class BaseLcFeedViewModel(
         filtersSource, userInMemoryCache, app) {
 
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+    private val transferProfileCompleteOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
+    internal fun transferProfileCompleteOneShot(): LiveData<LiveEvent<Boolean>> = transferProfileCompleteOneShot
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
@@ -322,7 +324,7 @@ abstract class BaseLcFeedViewModel(
         val destinationFeed = event.payload.getSerializable("destinationFeed") as LcNavTab
         if (destinationFeed == getSourceFeed()) {
             prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload) {
-                viewState.value = ViewState.DONE(ON_TRANSFER_PROFILE_COMPLETE)
+                transferProfileCompleteOneShot.value = LiveEvent(true)
             }
         }
     }

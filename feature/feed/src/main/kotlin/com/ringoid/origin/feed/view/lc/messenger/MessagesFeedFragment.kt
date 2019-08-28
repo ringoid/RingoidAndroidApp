@@ -27,7 +27,6 @@ import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.ON_TRANSFER_PROFILE_COMPLETE
 import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.messenger.model.ChatPayload
@@ -94,10 +93,6 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                         (newState.residual as LC_FEED_COUNTS).let {
                             setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
                         }
-                    is ON_TRANSFER_PROFILE_COMPLETE -> {
-                        requestFiltersForUpdateOnChangeLcFeed()
-                        setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
-                    }
                     is PUSH_NEW_MESSAGES -> {
                         val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
 
@@ -152,6 +147,10 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
             observe(vm.pushNewMessage()) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
             observeOneShot(vm.pushMatchesBadgeOneShot()) { communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = true) }
             observeOneShot(vm.pushMessagesBadgeOneShot()) { communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = true) }
+            observeOneShot(vm.transferProfileCompleteOneShot()) {
+                requestFiltersForUpdateOnChangeLcFeed()
+                setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
+            }
         }
     }
 
