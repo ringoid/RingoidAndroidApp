@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.viewmodel.LiveEvent
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
@@ -21,7 +22,7 @@ import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
-import com.ringoid.origin.style.APP_THEME
+import com.ringoid.origin.style.AppTheme
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
@@ -45,8 +46,10 @@ class LoginViewModel @Inject constructor(
 
     private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
+    private val changeThemeOneShot by lazy { MutableLiveData<LiveEvent<AppTheme>>() }
     private val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
     private val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
+    internal fun changeThemeOneShot(): LiveData<LiveEvent<AppTheme>> = changeThemeOneShot
     internal fun loginButtonEnableState(): LiveData<Boolean> = loginButtonEnableState
     internal fun yearOfBirthEntryState(): LiveData<WidgetState> = yearOfBirthEntryState
 
@@ -134,8 +137,7 @@ class LoginViewModel @Inject constructor(
     // ------------------------------------------
     fun switchTheme() {
         val newTheme = ThemeUtils.switchTheme(spm)
-        viewState.value = ViewState.DONE(APP_THEME(newTheme))
-        viewState.value = ViewState.IDLE
+        changeThemeOneShot.value = LiveEvent(AppTheme(newTheme))
     }
 
     // --------------------------------------------------------------------------------------------

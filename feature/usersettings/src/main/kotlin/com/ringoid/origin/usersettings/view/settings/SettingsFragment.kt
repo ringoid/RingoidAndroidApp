@@ -7,13 +7,14 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.navigate
-import com.ringoid.origin.style.APP_THEME
+import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
@@ -45,11 +46,6 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.CLOSE -> logout(this)
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is APP_THEME -> activity?.recreate()
-                }
-            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> pb_settings.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
@@ -59,6 +55,11 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeOneShot(vm.changeThemeOneShot()) { activity?.recreate() }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -93,10 +94,10 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
                 "lastActionTime" to "${cloudDebug.get("lastActionTime")}")
         }
         item_suggest_improvements.clicks().compose(clickDebounce()).subscribe { openSuggestImprovementsDialog("SuggestFromSettings") }
-//        item_theme.apply {
-//            setChecked(!ThemeUtils.isDefaultTheme(spm))
-//            clicks().compose(clickDebounce()).subscribe { vm.switchTheme() }
-//        }
+        item_theme.apply {
+            setChecked(!ThemeUtils.isDefaultTheme(spm))
+            clicks().compose(clickDebounce()).subscribe { vm.switchTheme() }
+        }
     }
 
     // --------------------------------------------------------------------------------------------
