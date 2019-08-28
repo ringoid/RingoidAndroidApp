@@ -3,7 +3,7 @@ package com.ringoid.base.livedata
 import androidx.lifecycle.MutableLiveData
 import java.util.*
 
-class ActiveMutableLiveData<T> : MutableLiveData<T>() {
+class ActiveMutableLiveData<T>(initialValue: T) : MutableLiveData<T>(initialValue) {
 
     private val values: Queue<T> = LinkedList()
 

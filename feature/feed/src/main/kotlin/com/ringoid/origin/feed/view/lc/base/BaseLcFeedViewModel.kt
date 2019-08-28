@@ -106,6 +106,13 @@ abstract class BaseLcFeedViewModel(
             .subscribe({ viewState.value = ViewState.DONE(FATAL_ERROR) }, DebugLogUtil::e)
     }
 
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onRecreate(savedInstanceState: Bundle) {
+        super.onRecreate(savedInstanceState)
+        // TODO: restore destroyed state
+    }
+
     // --------------------------------------------------------------------------------------------
     protected abstract fun countNotSeen(feed: List<FeedItem>): List<String>
 

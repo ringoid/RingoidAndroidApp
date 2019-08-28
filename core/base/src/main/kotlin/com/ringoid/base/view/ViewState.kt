@@ -12,6 +12,7 @@ sealed class ViewState {
 
     override fun toString(): String = javaClass.simpleName
 
+    object NO_STATE : ViewState()  // used for initialization of LiveData
     object IDLE : ViewState()
     object LOADING : ViewState()
     object CLOSE : ViewState()

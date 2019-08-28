@@ -34,7 +34,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     @Inject protected lateinit var connectionManager: IConnectionManager
     @Inject protected lateinit var spm: ISharedPrefsManager
 
-    protected val viewState: MutableLiveData<ViewState> by lazy { ActiveMutableLiveData<ViewState>() }
+    protected val viewState: MutableLiveData<ViewState> by lazy { ActiveMutableLiveData<ViewState>(ViewState.NO_STATE) }
     protected val oneShot: MutableLiveData<LiveEvent<Any?>> by lazy { MutableLiveData<LiveEvent<Any?>>() }
 
     fun viewState(): LiveData<ViewState> = viewState
@@ -54,12 +54,39 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    /**
+     * Called when [BaseViewModel] has just been created, it could be either in [Activity.onCreate]
+     * or in [Fragment.onActivityCreated] methods. [savedInstanceState] is passed through.
+     * If [savedInstanceState] is not null, then it's either recovery after configuration change,
+     * or restore after destruction. Thus [BaseViewModel] should then check whether it has some
+     * data already cached in-memory, because [BaseViewModel] outlives configuration changes,
+     * or it should parse [savedInstanceState] to restore that data, because it's a new [BaseViewModel]
+     * instance.
+     *
+     * @see https://medium.com/androiddevelopers/viewmodels-persistence-onsaveinstancestate-restoring-ui-state-and-loaders-fc7cc4a6c090
+     */
     open fun onCreate(savedInstanceState: Bundle?) {
+        savedInstanceState?.let {
+            if (viewState.value == ViewState.NO_STATE) {
+                onRecreate(it)
+            }
+        }
+        // override in subclasses
+    }
+
+    /**
+     * [BaseViewModel] was destroyed and then recreated. It has a chance to restore it's previous
+     * state from [savedInstanceState], because all it's in-memory values, such as [LiveData]
+     * and so on was permanently lost.
+     */
+    protected open fun onRecreate(savedInstanceState: Bundle) {
         // override in subclasses
     }
 
     /**
      * Called on fresh start of the [Activity] or [Fragment], not after recreate with state restore.
+     * Basically, it is called in [Activity.onStart] or [Fragment.onStart] if and only if
+     * 'savedInstanceState' is null.
      */
     open fun onFreshStart() {
         // override in subclasses
