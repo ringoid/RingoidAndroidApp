@@ -30,6 +30,7 @@ ext {
             lifecycleExt:      "androidx.lifecycle:lifecycle-extensions:${archComponentsVersion}",
             lifecycleRx:       "androidx.lifecycle:lifecycle-reactivestreams:${archComponentsVersion}",
             lifedata:          "androidx.lifecycle:lifecycle-livedata:${archComponentsVersion}",
+            savedState:        "androidx.lifecycle:lifecycle-viewmodel-savedstate:${archComponentsSavedStateVersion}",
             viewmodel:         "androidx.lifecycle:lifecycle-viewmodel:${archComponentsVersion}",
 
             paging:       "androidx.paging:paging-common:${archComponentsVersion}",
@@ -237,6 +238,7 @@ ext {
             [configuration: "implementation", dependency: d_arch.lifecycleExt],
             [configuration: "implementation", dependency: d_arch.lifecycleRx],
             [configuration: "implementation", dependency: d_arch.lifedata],
+            [configuration: "implementation", dependency: d_arch.savedState],
             [configuration: "implementation", dependency: d_arch.viewmodel],
 //            [configuration: "implementation", dependency: d_arch.paging],
     ]
