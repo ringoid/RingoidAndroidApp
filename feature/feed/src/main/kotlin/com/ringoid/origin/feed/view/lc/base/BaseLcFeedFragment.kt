@@ -76,8 +76,8 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         }
     }
 
-    override fun onDiscardProfileState(profileId: String): FeedItemVO? =
-        super.onDiscardProfileState(profileId)?.also { _ ->
+    override fun onDiscardProfile(profileId: String): FeedItemVO? =
+        super.onDiscardProfile(profileId)?.also { _ ->
             requestFiltersForUpdateOnChangeLcFeed()
             setToolbarTitleWithLcCounts(--lcCountShow, lcCountHidden)
         }

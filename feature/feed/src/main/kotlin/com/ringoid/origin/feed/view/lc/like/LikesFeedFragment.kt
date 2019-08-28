@@ -79,7 +79,7 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
                         }
                     is TRANSFER_PROFILE -> {
                         val profileId = (newState.residual as TRANSFER_PROFILE).profileId
-                        onDiscardProfileState(profileId)?.let { discarded ->
+                        onDiscardProfile(profileId)?.let { discarded ->
                             communicator(IBaseMainActivity::class.java)?.let {
                                 val payload = Bundle().apply {
                                     putInt("positionOfImage", discarded.positionOfImage)

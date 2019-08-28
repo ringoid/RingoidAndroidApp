@@ -166,7 +166,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
      * so need to handle VIEW aobjs for profiles that comes into viewport after removal
      * animation finishes.
      */
-    protected open fun onDiscardProfileState(profileId: String): FeedItemVO? =
+    protected open fun onDiscardProfile(profileId: String): FeedItemVO? =
         feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
                 val count = feedAdapter.getModelsCount()
@@ -305,7 +305,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
         imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
         feedAdapter.trackingBus = imagesTrackingBus
-        observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileState)
+        observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfile)
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
     }
 
