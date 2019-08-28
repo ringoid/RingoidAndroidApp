@@ -5,7 +5,6 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
-import com.ringoid.base.view.FATAL_ERROR
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
