@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
@@ -56,11 +56,11 @@ class ExploreFeedViewModel @Inject constructor(
         filtersSource, userInMemoryCache, app), IListScrollCallback {
 
     private val feed by lazy { MutableLiveData<Feed>() }
-    private val discardProfilesOneShot by lazy { MutableLiveData<LiveEvent<Collection<String>>>() }
-    private val needShowFiltersOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val discardProfilesOneShot by lazy { MutableLiveData<OneShot<Collection<String>>>() }
+    private val needShowFiltersOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun feed(): LiveData<Feed> = feed
-    internal fun discardProfilesOneShot(): LiveData<LiveEvent<Collection<String>>> = discardProfilesOneShot
-    internal fun needShowFiltersOneShot(): LiveData<LiveEvent<Boolean>> = needShowFiltersOneShot
+    internal fun discardProfilesOneShot(): LiveData<OneShot<Collection<String>>> = discardProfilesOneShot
+    internal fun needShowFiltersOneShot(): LiveData<OneShot<Boolean>> = needShowFiltersOneShot
 
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
@@ -74,7 +74,7 @@ class ExploreFeedViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ ids ->
-                discardProfilesOneShot.value = LiveEvent(ids)
+                discardProfilesOneShot.value = OneShot(ids)
                 if (BuildConfig.IS_STAGING) {
                     feed.value?.profiles?.toMutableList()
                         ?.let { profiles ->
@@ -106,7 +106,7 @@ class ExploreFeedViewModel @Inject constructor(
                 } else ViewState.IDLE
 
                 if (spm.needShowFilters()) {
-                    needShowFiltersOneShot.value = LiveEvent(true)
+                    needShowFiltersOneShot.value = OneShot(true)
                 }
             }
             .doOnError { viewState.value = ViewState.ERROR(it) }
@@ -171,7 +171,7 @@ class ExploreFeedViewModel @Inject constructor(
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
         // discard profile from feed after like
-        discardProfileOneShot.value = LiveEvent(profileId)
+        discardProfileOneShot.value = OneShot(profileId)
     }
 
     // ------------------------------------------

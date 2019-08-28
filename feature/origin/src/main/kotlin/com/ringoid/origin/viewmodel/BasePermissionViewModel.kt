@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.manager.location.ILocationProvider
 import com.ringoid.base.manager.location.LocationServiceUnavailableException
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.log.SentryUtil
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -16,8 +16,8 @@ import javax.inject.Inject
 abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
 
     @Inject lateinit var locationProvider: ILocationProvider
-    private val askToEnableLocationServiceOneShot by lazy { MutableLiveData<LiveEvent<Int>>() }
-    fun askToEnableLocationServiceOneShot(): LiveData<LiveEvent<Int>> = askToEnableLocationServiceOneShot
+    private val askToEnableLocationServiceOneShot by lazy { MutableLiveData<OneShot<Int>>() }
+    fun askToEnableLocationServiceOneShot(): LiveData<OneShot<Int>> = askToEnableLocationServiceOneShot
 
     protected open fun onLocationPermissionGrantedAction(handleCode: Int) {}
     protected open fun onLocationPermissionDeniedAction(handleCode: Int) {}
@@ -46,7 +46,7 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
             .subscribe({ onLocationReceived(handleCode) }) {
                 when (it) {
                     is LocationServiceUnavailableException ->
-                        askToEnableLocationServiceOneShot.value = LiveEvent(handleCode)
+                        askToEnableLocationServiceOneShot.value = OneShot(handleCode)
                 }
             }
     }

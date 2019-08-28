@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
@@ -20,8 +20,8 @@ import java.util.*
 abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlackUseCase, app: Application)
     : BaseViewModel(app) {
 
-    private val suggestImprovementsOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
-    internal fun suggestImprovementsOneShot(): LiveData<LiveEvent<Boolean>> = suggestImprovementsOneShot
+    private val suggestImprovementsOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    internal fun suggestImprovementsOneShot(): LiveData<OneShot<Boolean>> = suggestImprovementsOneShot
 
     internal fun suggestImprovements(text: String, tag: String?) {
         if (text.isBlank()) {
@@ -53,7 +53,7 @@ abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlack
         val params = Params().put("channelId", channelId)
                              .put("text", reportText)
         postToSlackUseCase.source(params = params)
-            .doOnComplete { suggestImprovementsOneShot.value = LiveEvent(true) }
+            .doOnComplete { suggestImprovementsOneShot.value = OneShot(true) }
             .doFinally { viewState.value = ViewState.IDLE }
             .autoDisposable(this)
             .subscribe({ spm.dropBigEditText() }, DebugLogUtil::e)

@@ -3,7 +3,7 @@ package com.ringoid.origin.feed.view.lc.base
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
@@ -20,8 +20,8 @@ abstract class LcFeedFiltersViewModel(
     filtersSource: IFiltersSource, app: Application)
     : BaseFiltersViewModel(filtersSource, app) {
 
-    private val filterCountsOneShot by lazy { MutableLiveData<LiveEvent<FeedFilterCounts>>() }
-    internal fun filterCountsOneShot(): LiveData<LiveEvent<FeedFilterCounts>> = filterCountsOneShot
+    private val filterCountsOneShot by lazy { MutableLiveData<OneShot<FeedFilterCounts>>() }
+    internal fun filterCountsOneShot(): LiveData<OneShot<FeedFilterCounts>> = filterCountsOneShot
 
     abstract fun getFeedName(): String
 
@@ -45,7 +45,7 @@ abstract class LcFeedFiltersViewModel(
                         totalNotFilteredLikes = it.totalNotFilteredLikes,
                         totalNotFilteredMessages = it.totalNotFilteredMessages)
 
-                filterCountsOneShot.value = LiveEvent(counts)
+                filterCountsOneShot.value = OneShot(counts)
             }, DebugLogUtil::e)
     }
 }

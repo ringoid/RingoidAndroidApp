@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.feed.*
@@ -56,11 +56,11 @@ class LikesFeedViewModel @Inject constructor(
     private val incomingPushLike = PublishSubject.create<BusEvent>()
     private val incomingPushLikeEffect = PublishSubject.create<Long>()
     private val pushNewLike by lazy { MutableLiveData<Long>() }
-    private val pushLikesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
-    private val transferProfileOneShot by lazy { MutableLiveData<LiveEvent<String>>() }
+    private val pushLikesBadgeOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val transferProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
     internal fun pushNewLike(): LiveData<Long> = pushNewLike
-    internal fun pushLikesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushLikesBadgeOneShot
-    internal fun transferProfileOneShot(): LiveData<LiveEvent<String>> = transferProfileOneShot
+    internal fun pushLikesBadgeOneShot(): LiveData<OneShot<Boolean>> = pushLikesBadgeOneShot
+    internal fun transferProfileOneShot(): LiveData<OneShot<String>> = transferProfileOneShot
 
     private var shouldVibrate: Boolean = true
 
@@ -71,7 +71,7 @@ class LikesFeedViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 // show badge on Likes LC tab
-                pushLikesBadgeOneShot.value = LiveEvent(true)
+                pushLikesBadgeOneShot.value = OneShot(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)
@@ -123,7 +123,7 @@ class LikesFeedViewModel @Inject constructor(
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
         // transfer liked profile from Likes Feed to Matches Feed, by Product
-        transferProfileOneShot.value = LiveEvent(profileId)
+        transferProfileOneShot.value = OneShot(profileId)
     }
 
     override fun onImageTouch(x: Float, y: Float) {

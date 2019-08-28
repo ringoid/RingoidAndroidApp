@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.debug.*
@@ -37,8 +37,8 @@ class DebugViewModel @Inject constructor(
     @DebugOnly private val debugUnsupportedAppVersionRequestUseCase: DebugUnsupportedAppVersionRequestUseCase,
     app: Application) : BaseViewModel(app) {
 
-    private val completeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
-    internal fun completeOneShot(): LiveData<LiveEvent<Boolean>> = completeOneShot
+    private val completeOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    internal fun completeOneShot(): LiveData<OneShot<Boolean>> = completeOneShot
 
     // --------------------------------------------------------------------------------------------
     fun debugHandleErrorStream() {
@@ -81,7 +81,7 @@ class DebugViewModel @Inject constructor(
 
     fun requestWithFailNTimesBeforeSuccess(n: Int) {
         requestRetryNTimesUseCase.source(params = Params().put("count", n))
-            .doOnComplete { completeOneShot.value = LiveEvent(true) }
+            .doOnComplete { completeOneShot.value = OneShot(true) }
             .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)
@@ -96,7 +96,7 @@ class DebugViewModel @Inject constructor(
 
     fun requestWithNeedToRepeatAfterDelay(delay: Long /* in seconds */) {
         requestRepeatAfterDelayUseCase.source(params = Params().put("delay", delay))
-            .doOnComplete { completeOneShot.value = LiveEvent(true) }
+            .doOnComplete { completeOneShot.value = OneShot(true) }
             .handleResult()
             .autoDisposable(this)
             .subscribe({ /* no-op */ }, Timber::e)

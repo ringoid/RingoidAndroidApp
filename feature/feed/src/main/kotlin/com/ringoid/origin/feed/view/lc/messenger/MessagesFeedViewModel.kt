@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
@@ -69,14 +69,14 @@ class MessagesFeedViewModel @Inject constructor(
     private val incomingPushMessagesEffect = PublishSubject.create<Long>()
     private val pushNewMatch by lazy { MutableLiveData<Long>() }
     private val pushNewMessage by lazy { MutableLiveData<Long>() }
-    private val pushMatchesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
-    private val pushMessagesBadgeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
-    private val pushMessageUpdateProfileOneShot by lazy { MutableLiveData<LiveEvent<String>>() }
+    private val pushMatchesBadgeOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val pushMessagesBadgeOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val pushMessageUpdateProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
     internal fun pushNewMatch(): LiveData<Long> = pushNewMatch
     internal fun pushNewMessage(): LiveData<Long> = pushNewMessage
-    internal fun pushMatchesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushMatchesBadgeOneShot
-    internal fun pushMessagesBadgeOneShot(): LiveData<LiveEvent<Boolean>> = pushMessagesBadgeOneShot
-    internal fun pushMessageUpdateProfileOneShot(): LiveData<LiveEvent<String>> = pushMessageUpdateProfileOneShot
+    internal fun pushMatchesBadgeOneShot(): LiveData<OneShot<Boolean>> = pushMatchesBadgeOneShot
+    internal fun pushMessagesBadgeOneShot(): LiveData<OneShot<Boolean>> = pushMessagesBadgeOneShot
+    internal fun pushMessageUpdateProfileOneShot(): LiveData<OneShot<String>> = pushMessageUpdateProfileOneShot
 
     private var shouldVibrate: Boolean = true
 
@@ -87,7 +87,7 @@ class MessagesFeedViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 // show badge on Messages LC tab (as being for new Matches)
-                pushMatchesBadgeOneShot.value = LiveEvent(true)
+                pushMatchesBadgeOneShot.value = OneShot(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)
@@ -114,12 +114,12 @@ class MessagesFeedViewModel @Inject constructor(
                     .onErrorResumeNext { Single.just(EmptyChat) }
                     .map { peerId }
             }  // use case will deliver it's result to Main thread
-            .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = LiveEvent(profileId) }
+            .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = OneShot(profileId) }
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({
                 // show badge on Messages LC tab
-                pushMessagesBadgeOneShot.value = LiveEvent(true)
+                pushMessagesBadgeOneShot.value = OneShot(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)

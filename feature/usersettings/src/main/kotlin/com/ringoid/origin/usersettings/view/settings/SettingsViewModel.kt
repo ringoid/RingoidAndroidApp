@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.interactor.user.DeleteUserProfileUseCase
@@ -21,8 +21,8 @@ class SettingsViewModel @Inject constructor(
     postToSlackUseCase: PostToSlackUseCase, app: Application)
     : BaseSettingsViewModel(postToSlackUseCase, app) {
 
-    private val changeThemeOneShot by lazy { MutableLiveData<LiveEvent<AppTheme>>() }
-    internal fun changeThemeOneShot(): LiveData<LiveEvent<AppTheme>> = changeThemeOneShot
+    private val changeThemeOneShot by lazy { MutableLiveData<OneShot<AppTheme>>() }
+    internal fun changeThemeOneShot(): LiveData<OneShot<AppTheme>> = changeThemeOneShot
 
     fun deleteAccount() {
         deleteUserProfileUseCase.source()
@@ -39,6 +39,6 @@ class SettingsViewModel @Inject constructor(
     // ------------------------------------------
     fun switchTheme() {
         val newTheme = ThemeUtils.switchTheme(spm)
-        changeThemeOneShot.value = LiveEvent(AppTheme(newTheme))
+        changeThemeOneShot.value = OneShot(AppTheme(newTheme))
     }
 }

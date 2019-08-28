@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.model.feed.Filters
 import io.reactivex.subjects.PublishSubject
@@ -15,9 +15,9 @@ open class BaseFiltersViewModel @Inject constructor(
     private val filtersSource: IFiltersSource, app: Application) : BaseViewModel(app) {
 
     private val filters by lazy { MutableLiveData<Filters>() }
-    private val filtersChangeOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val filtersChangeOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun filters(): LiveData<Filters> = filters
-    internal fun filtersChangeOneShot(): LiveData<LiveEvent<Boolean>> = filtersChangeOneShot
+    internal fun filtersChangeOneShot(): LiveData<OneShot<Boolean>> = filtersChangeOneShot
 
     protected val filtersChanged = PublishSubject.create<Boolean>()
 
@@ -56,7 +56,7 @@ open class BaseFiltersViewModel @Inject constructor(
         if (oldFilters.minAge != minAge || oldFilters.maxAge != maxAge) {
             filtersSource.setFilters(Filters.create(minAge = minAge, maxAge = maxAge, maxDistance = oldFilters.maxDistance))
             requestFiltersForUpdate()
-            filtersChangeOneShot.value = LiveEvent(true)
+            filtersChangeOneShot.value = OneShot(true)
         }
     }
 
@@ -65,7 +65,7 @@ open class BaseFiltersViewModel @Inject constructor(
         if (oldFilters.maxDistance != distance) {
             filtersSource.setFilters(Filters.create(minAge = oldFilters.minAge, maxAge = oldFilters.maxAge, maxDistance = distance))
             requestFiltersForUpdate()
-            filtersChangeOneShot.value = LiveEvent(true)
+            filtersChangeOneShot.value = OneShot(true)
         }
     }
 }

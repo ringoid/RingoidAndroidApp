@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.WrongRequestParamsClientApiException
@@ -54,14 +54,14 @@ class MainViewModel @Inject constructor(
     private val newLikesCount by lazy { MutableLiveData<Int>() }
     private val newMatchesCount by lazy { MutableLiveData<Int>() }
     private val newMessagesCount by lazy { MutableLiveData<Int>() }
-    @DebugOnly private val closeDebugViewOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    @DebugOnly private val closeDebugViewOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun badgeLikes(): LiveData<Boolean> = badgeLikes
     internal fun badgeMessages(): LiveData<Boolean> = badgeMessages
     internal fun badgeWarningProfile(): LiveData<Boolean> = badgeWarningProfile
     internal fun newLikesCount(): LiveData<Int> = newLikesCount
     internal fun newMatchesCount(): LiveData<Int> = newMatchesCount
     internal fun newMessagesCount(): LiveData<Int> = newMessagesCount
-    @DebugOnly internal fun closeDebugViewOneShot(): LiveData<LiveEvent<Boolean>> = closeDebugViewOneShot
+    @DebugOnly internal fun closeDebugViewOneShot(): LiveData<OneShot<Boolean>> = closeDebugViewOneShot
 
     init {
         getLcUseCase.repository.badgeLikes
@@ -171,7 +171,7 @@ class MainViewModel @Inject constructor(
     fun onEventCloseDebugView(event: BusEvent.CloseDebugView) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        closeDebugViewOneShot.value = LiveEvent(true)
+        closeDebugViewOneShot.value = OneShot(true)
     }
 
     @DebugOnly

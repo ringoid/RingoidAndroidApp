@@ -3,7 +3,7 @@ package com.ringoid.base
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 
 /**
  * Inspired with Clean Architecture...Reloaded.
@@ -42,5 +42,5 @@ fun <T : Any, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T) -> 
 fun <T : Any, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T) -> Unit = {}, also: (T) -> Unit = {}) =
     liveData.observe(this, Observer { body(it) ; also(it) })
 
-fun <T : Any, L : LiveData<LiveEvent<T>>> LifecycleOwner.observeOneShot(liveData: L, body: (T) -> Unit = {}) =
+fun <T : Any, L : LiveData<OneShot<T>>> LifecycleOwner.observeOneShot(liveData: L, body: (T) -> Unit = {}) =
     liveData.observe(this, Observer { it.getContentIfNotHandled()?.let(body) })

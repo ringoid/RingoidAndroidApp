@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
@@ -54,15 +54,15 @@ abstract class BaseLcFeedViewModel(
         filtersSource, userInMemoryCache, app) {
 
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
-    private val feedCountsOneShot by lazy { MutableLiveData<LiveEvent<FeedCounts>>() }
-    private val lmmLoadFailedOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
-    private val seenAllFeedItemsOneShot by lazy { MutableLiveData<LiveEvent<SeenAllFeed>>() }
-    private val transferProfileCompleteOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val feedCountsOneShot by lazy { MutableLiveData<OneShot<FeedCounts>>() }
+    private val lmmLoadFailedOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val seenAllFeedItemsOneShot by lazy { MutableLiveData<OneShot<SeenAllFeed>>() }
+    private val transferProfileCompleteOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
-    internal fun feedCountsOneShot(): MutableLiveData<LiveEvent<FeedCounts>> = feedCountsOneShot
-    internal fun lmmLoadFailedOneShot(): LiveData<LiveEvent<Boolean>> = lmmLoadFailedOneShot
-    internal fun seenAllFeedItemsOneShot(): LiveData<LiveEvent<SeenAllFeed>> = seenAllFeedItemsOneShot
-    internal fun transferProfileCompleteOneShot(): LiveData<LiveEvent<Boolean>> = transferProfileCompleteOneShot
+    internal fun feedCountsOneShot(): MutableLiveData<OneShot<FeedCounts>> = feedCountsOneShot
+    internal fun lmmLoadFailedOneShot(): LiveData<OneShot<Boolean>> = lmmLoadFailedOneShot
+    internal fun seenAllFeedItemsOneShot(): LiveData<OneShot<SeenAllFeed>> = seenAllFeedItemsOneShot
+    internal fun transferProfileCompleteOneShot(): LiveData<OneShot<Boolean>> = transferProfileCompleteOneShot
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
@@ -109,7 +109,7 @@ abstract class BaseLcFeedViewModel(
         getLcUseCase.repository.lmmLoadFailed
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ lmmLoadFailedOneShot.value = LiveEvent(true) }, DebugLogUtil::e)
+            .subscribe({ lmmLoadFailedOneShot.value = OneShot(true) }, DebugLogUtil::e)
     }
 
     /* Lifecycle */
@@ -175,7 +175,7 @@ abstract class BaseLcFeedViewModel(
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
-        feedCountsOneShot.value = LiveEvent(FeedCounts(show = items.size, hidden = totalNotFilteredCount - items.size))
+        feedCountsOneShot.value = OneShot(FeedCounts(show = items.size, hidden = totalNotFilteredCount - items.size))
 
         if (items.isEmpty()) {
             feed.value = emptyList()
@@ -242,7 +242,7 @@ abstract class BaseLcFeedViewModel(
             DebugLogUtil.b("Seen [${feedItemId.substring(0..3)}]. Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
             if (notSeenFeedItemIds.isEmpty()) {
                 DebugLogUtil.b("All seen [${getFeedName()}]")
-                seenAllFeedItemsOneShot.value = LiveEvent(SeenAllFeed(getSourceFeed()))
+                seenAllFeedItemsOneShot.value = OneShot(SeenAllFeed(getSourceFeed()))
             }
         }
     }
@@ -324,7 +324,7 @@ abstract class BaseLcFeedViewModel(
         val destinationFeed = event.payload.getSerializable("destinationFeed") as LcNavTab
         if (destinationFeed == getSourceFeed()) {
             prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload) {
-                transferProfileCompleteOneShot.value = LiveEvent(true)
+                transferProfileCompleteOneShot.value = OneShot(true)
             }
         }
     }

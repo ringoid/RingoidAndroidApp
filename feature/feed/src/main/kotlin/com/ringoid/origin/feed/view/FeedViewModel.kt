@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -45,13 +45,13 @@ abstract class FeedViewModel(
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 
-    protected val discardProfileOneShot by lazy { MutableLiveData<LiveEvent<String>>() }
-    private val noImagesInUserProfileOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
-    private val refreshOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    protected val discardProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
+    private val noImagesInUserProfileOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val refreshOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
-    internal fun discardProfileOneShot(): LiveData<LiveEvent<String>> = discardProfileOneShot
-    internal fun noImagesInUserProfileOneShot(): LiveData<LiveEvent<Boolean>> = noImagesInUserProfileOneShot
-    internal fun refreshOneShot(): LiveData<LiveEvent<Boolean>> = refreshOneShot
+    internal fun discardProfileOneShot(): LiveData<OneShot<String>> = discardProfileOneShot
+    internal fun noImagesInUserProfileOneShot(): LiveData<OneShot<Boolean>> = noImagesInUserProfileOneShot
+    internal fun refreshOneShot(): LiveData<OneShot<Boolean>> = refreshOneShot
     internal fun refreshOnPush(): LiveData<Boolean> = refreshOnPush
     internal fun isRefreshOnPush(): Boolean = refreshOnPush.value == true
 
@@ -175,7 +175,7 @@ abstract class FeedViewModel(
                             viewActionObjectBackup.clear()
                             getFeed()
                         } else {
-                            noImagesInUserProfileOneShot.value = LiveEvent(true)
+                            noImagesInUserProfileOneShot.value = OneShot(true)
                         }
                     })
             .autoDisposable(this)
@@ -189,7 +189,7 @@ abstract class FeedViewModel(
     protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
     internal fun refresh() {
-        refreshOneShot.value = LiveEvent(true)
+        refreshOneShot.value = OneShot(true)
     }
 
     /* Action Objects */
@@ -197,7 +197,7 @@ abstract class FeedViewModel(
     internal fun onBeforeLike(): Boolean =
         if (userInMemoryCache.userImagesCount() > 0) true
         else {
-            noImagesInUserProfileOneShot.value = LiveEvent(true)
+            noImagesInUserProfileOneShot.value = OneShot(true)
             false
         }
 
@@ -263,7 +263,7 @@ abstract class FeedViewModel(
             .autoDisposable(this)
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
-                discardProfileOneShot.value = LiveEvent(profileId)
+                discardProfileOneShot.value = OneShot(profileId)
             }, DebugLogUtil::e)
 
         // remove all messages for blocked profile, to exclude them from messages counting

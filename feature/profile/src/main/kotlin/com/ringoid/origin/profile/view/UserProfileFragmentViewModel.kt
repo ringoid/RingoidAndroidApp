@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.LiveEvent
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -46,13 +46,13 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val imageDeleted by lazy { MutableLiveData<String>() }
     private val images by lazy { MutableLiveData<List<UserImage>>() }
     private val profile by lazy { MutableLiveData<UserProfileProperties>() }
-    private val requestToAddImageOneShot by lazy { MutableLiveData<LiveEvent<Boolean>>() }
+    private val requestToAddImageOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun imageBlocked(): LiveData<String> = imageBlocked
     internal fun imageCreated(): LiveData<UserImage> = imageCreated
     internal fun imageDeleted(): LiveData<String> = imageDeleted
     internal fun images(): LiveData<List<UserImage>> = images
     internal fun profile(): LiveData<UserProfileProperties> = profile
-    internal fun requestToAddImageOneShot(): LiveData<LiveEvent<Boolean>> = requestToAddImageOneShot
+    internal fun requestToAddImageOneShot(): LiveData<OneShot<Boolean>> = requestToAddImageOneShot
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
@@ -162,7 +162,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
         when (handleCode) {
-            HC_ADD_IMAGE -> requestToAddImageOneShot.value = LiveEvent(true)
+            HC_ADD_IMAGE -> requestToAddImageOneShot.value = OneShot(true)
             HC_REFRESH -> onRefresh()
         }
     }
