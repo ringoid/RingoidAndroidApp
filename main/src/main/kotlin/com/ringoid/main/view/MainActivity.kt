@@ -9,7 +9,7 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
-import com.ringoid.base.view.ViewState
+import com.ringoid.base.observeOneShot
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_string
@@ -37,17 +37,6 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
 
     override fun getListOfRootFragments(): List<Fragment> = listOfMainScreens()
 
-    // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE ->
-                when (newState.residual) {
-                    is CLOSE_DEBUG_VIEW -> askToCloseDebugView()
-                }
-        }
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +49,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         observe(vm.newLikesCount()) { showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = it) }
         observe(vm.newMatchesCount()) { showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = it) }
         observe(vm.newMessagesCount()) { showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = it) }
+        observeOneShot(vm.closeDebugViewOneShot()) { askToCloseDebugView() }
 
         AppUtils.checkForGooglePlayServices(this)
         initializeFirebase()
