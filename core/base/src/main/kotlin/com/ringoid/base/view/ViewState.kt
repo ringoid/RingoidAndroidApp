@@ -1,11 +1,5 @@
 package com.ringoid.base.view
 
-sealed class IResidual
-open class Residual : IResidual() {
-
-    override fun toString(): String = javaClass.simpleName
-}
-
 sealed class ViewState {
 
     override fun toString(): String = javaClass.simpleName
@@ -24,6 +18,5 @@ sealed class ViewState {
             const val MODE_CHANGE_FILTERS = 3
         }
     }
-    data class DONE(val residual: IResidual) : ViewState()
     data class ERROR(val e: Throwable) : ViewState()
 }

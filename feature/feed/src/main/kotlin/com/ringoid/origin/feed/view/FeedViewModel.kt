@@ -226,7 +226,7 @@ abstract class FeedViewModel(
     internal open fun onChatOpen(profileId: String, imageId: String) {
         /**
          * Need to mark profile as seen before opening chat, because it then malfunctions when
-         * feed screen goes background while chat is opening: basically transition to [ViewState.DONE]
+         * feed screen goes background while chat is opening: basically setting [viewState] liveData
          * does not work during background. So, as a workaround, such transition should be done here
          * while feed screen is on foreground and chat not yet opened.
          */
