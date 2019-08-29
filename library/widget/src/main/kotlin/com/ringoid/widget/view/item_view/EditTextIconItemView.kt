@@ -44,4 +44,4 @@ class EditTextIconItemView : TextIconItemView {
 
 fun EditTextIconItemView.textChanges(): InitialValueObservable<CharSequence> =
     TextIconItemViewTextChangesObservable(this)
-        .doOnNext { setCharsCount(it.length) }
+        .doOnNext { setCharsCount(it?.length ?: 0) }

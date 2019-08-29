@@ -20,9 +20,9 @@ fun TextIconItemView.textChanges(): InitialValueObservable<CharSequence> =
 internal class TextIconItemViewTextChangesObservable(private val view: TextIconItemView)
     : InitialValueObservable<CharSequence>() {
 
-    private var sideEffect: ((str: CharSequence) -> Unit)? = null
+    private var sideEffect: ((str: CharSequence?) -> Unit)? = null
 
-    internal fun doOnNext(l: (str: CharSequence) -> Unit): TextIconItemViewTextChangesObservable =
+    internal fun doOnNext(l: (str: CharSequence?) -> Unit): TextIconItemViewTextChangesObservable =
         this.also { sideEffect = l }
 
     override fun subscribeListener(observer: Observer<in CharSequence>) {
@@ -40,16 +40,15 @@ internal class TextIconItemViewTextChangesObservable(private val view: TextIconI
             private val observer: Observer<in CharSequence>)
         : MainThreadDisposable(), TextWatcher {
 
-        internal var sideEffect: ((str: CharSequence) -> Unit)? = null
+        internal var sideEffect: ((str: CharSequence?) -> Unit)? = null
 
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             if (!isDisposed) {
-                if (view.hasText()) {
-                    observer.onNext(s)
-                }
-                sideEffect?.invoke(s)
+                val output = view.assignText(s.toString())
+                observer.onNext(output ?: "")
+                sideEffect?.invoke(output)
             }
         }
 

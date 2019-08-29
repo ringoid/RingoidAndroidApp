@@ -77,12 +77,14 @@ open class TextIconItemView : IconItemView {
     }
 
     open fun setInputText(text: String?): Boolean {
-        val changed = if (inputText.isNullOrBlank() && text.isNullOrBlank()) false
-                      else inputText != text
+        val changed = didTextChanged(text)  // check before assign inputText
         inputText = text
 
         if (text.isNullOrBlank()) {
+            tv_input.text = null  // set empty text and notify text change watchers
+            disableTextChangeWatchers()  // disable text watcher while setting hint
             tv_input.text = hint  // can be empty
+            enableTextChangeWatchers()  // enable text watcher back
             if (hint.isNotBlank()) {
                 tv_input.setTextColor(context.getAttributeColor(R.attr.refTextColorSecondary))
             }
@@ -110,14 +112,64 @@ open class TextIconItemView : IconItemView {
 
     /* Internal */
     // --------------------------------------------------------------------------------------------
-    internal fun hasHint(): Boolean = hint.isNotBlank()
-    fun hasText(): Boolean = !inputText.isNullOrBlank()
+    private fun hasHint(): Boolean = hint.isNotBlank()
+    private fun hasText(): Boolean = !inputText.isNullOrBlank()
+    private fun didTextChanged(text: String?): Boolean =
+        if (inputText.isNullOrBlank() && text.isNullOrBlank()) false
+        else inputText != text
+
+    internal fun assignText(text: String?): CharSequence? =
+        text?.takeIf { it.isNotBlank() }
+            ?.let {
+                if (!hasText()) {
+                    setInputTextInternal(it)
+                } else {
+                    inputText = text
+                }
+                text
+            }
+            ?: run {  // text is null or blank - use hint, if any
+                setInputTextInternal(null)
+                null
+            }
+
+    private fun setInputTextInternal(text: String?): Boolean {
+        disableTextChangeWatchers()
+
+        val changed = didTextChanged(text)  // check before assign inputText
+        inputText = text
+
+        if (text.isNullOrBlank()) {
+            tv_input.text = hint  // can be empty
+            if (hint.isNotBlank()) {
+                tv_input.setTextColor(context.getAttributeColor(R.attr.refTextColorSecondary))
+            }
+        } else {
+            tv_input.text = text
+            tv_input.setTextColor(context.getAttributeColor(R.attr.refTextColorPrimary))
+        }
+
+        enableTextChangeWatchers()
+        return changed
+    }
 
     internal fun addTextChangedListener(listener: TextWatcher) {
+        textChangeWatchers.add(listener)
         tv_input.addTextChangedListener(listener)
     }
 
     internal fun removeTextChangedListener(listener: TextWatcher) {
+        textChangeWatchers.remove(listener)  // removes by ref compare
         tv_input.removeTextChangedListener(listener)
     }
+
+    private fun disableTextChangeWatchers() {
+        textChangeWatchers.forEach { tv_input.removeTextChangedListener(it) }
+    }
+
+    private fun enableTextChangeWatchers() {
+        textChangeWatchers.forEach { tv_input.addTextChangedListener(it) }
+    }
+
+    private val textChangeWatchers = mutableListOf<TextWatcher>()
 }
