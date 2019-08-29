@@ -17,8 +17,10 @@ open class TextIconItemView : IconItemView {
         const val MAX_LENGTH = 30
     }
 
-    private var hint: String = ""
-    private var inputText: String? = null
+    protected var hint: String = ""
+        private set
+    protected var inputText: String? = null
+        private set
 
     constructor(context: Context) : this(context, null)
 
@@ -112,9 +114,9 @@ open class TextIconItemView : IconItemView {
 
     /* Internal */
     // --------------------------------------------------------------------------------------------
-    private fun hasHint(): Boolean = hint.isNotBlank()
-    private fun hasText(): Boolean = !inputText.isNullOrBlank()
-    private fun didTextChanged(text: String?): Boolean =
+    protected fun hasHint(): Boolean = hint.isNotBlank()
+    protected fun hasText(): Boolean = !inputText.isNullOrBlank()
+    protected fun didTextChanged(text: String?): Boolean =
         if (inputText.isNullOrBlank() && text.isNullOrBlank()) false
         else inputText != text
 
@@ -133,7 +135,7 @@ open class TextIconItemView : IconItemView {
                 null
             }
 
-    private fun setInputTextInternal(text: String?): Boolean {
+    protected open fun setInputTextInternal(text: String?): Boolean {
         disableTextChangeWatchers()
 
         val changed = didTextChanged(text)  // check before assign inputText
@@ -163,11 +165,11 @@ open class TextIconItemView : IconItemView {
         tv_input.removeTextChangedListener(listener)
     }
 
-    private fun disableTextChangeWatchers() {
+    protected fun disableTextChangeWatchers() {
         textChangeWatchers.forEach { tv_input.removeTextChangedListener(it) }
     }
 
-    private fun enableTextChangeWatchers() {
+    protected fun enableTextChangeWatchers() {
         textChangeWatchers.forEach { tv_input.addTextChangedListener(it) }
     }
 

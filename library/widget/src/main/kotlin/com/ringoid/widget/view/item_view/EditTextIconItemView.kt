@@ -2,6 +2,7 @@ package com.ringoid.widget.view.item_view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.InitialValueObservable
 import com.ringoid.utility.changeVisibility
@@ -18,6 +19,20 @@ class EditTextIconItemView : TextIconItemView {
         with (context.obtainStyledAttributes(attributes, R.styleable.EditTextIconItemView, defStyleAttr, R.style.TextIconItemView)) {
             ll_count_container.changeVisibility(isVisible = getBoolean(R.styleable.EditTextIconItemView_edit_text_icon_item_with_counter, false))
             recycle()
+        }
+
+        tv_input.setOnFocusChangeListener { etView, hasFocus ->
+            if (!hasText() && hasHint()) {
+                (etView as? TextView)?.let { et ->
+                    disableTextChangeWatchers()
+                    et.text = if (hasFocus) {
+                        null  // replace hint with empty silently
+                    } else {
+                        hint  // show hint back if any
+                    }
+                    enableTextChangeWatchers()
+                }
+            }
         }
     }
 
