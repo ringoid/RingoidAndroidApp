@@ -2,7 +2,6 @@ package com.ringoid.widget.view.item_view
 
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.annotation.CheckResult
 import com.jakewharton.rxbinding3.InitialValueObservable
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -13,10 +12,6 @@ import io.reactivex.android.MainThreadDisposable
  *
  * @see https://github.com/JakeWharton/RxBinding/blob/master/rxbinding/src/main/java/com/jakewharton/rxbinding3/widget/TextViewTextChangesObservable.kt
  */
-@CheckResult
-fun TextIconItemView.textChanges(): InitialValueObservable<CharSequence> =
-    TextIconItemViewTextChangesObservable(this)
-
 internal class TextIconItemViewTextChangesObservable(private val view: TextIconItemView)
     : InitialValueObservable<CharSequence>() {
 

@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import com.jakewharton.rxbinding3.InitialValueObservable
 import com.ringoid.utility.changeVisibility
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_edit_text_icon_item_view_layout.view.*
@@ -65,7 +64,3 @@ class EditTextIconItemView : TextIconItemView {
     override fun setInputTextInternal(text: String?): Boolean =
         super.setInputTextInternal(text).also { sideEffectOnSetInputText(text) }
 }
-
-fun EditTextIconItemView.textChanges(): InitialValueObservable<CharSequence> =
-    TextIconItemViewTextChangesObservable(this)
-        .doOnNext { setCharsCount(it?.length ?: 0) }
