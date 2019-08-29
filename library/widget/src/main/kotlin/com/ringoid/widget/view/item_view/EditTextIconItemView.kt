@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.showKeyboard
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_edit_text_icon_item_view_layout.view.*
 
@@ -34,7 +35,12 @@ class EditTextIconItemView : TextIconItemView {
             }
         }
 
-        setOnClickListener { tv_input.requestFocusFromTouch() }
+        setOnClickListener {
+            with (tv_input) {
+                requestFocusFromTouch()
+                showKeyboard()
+            }
+        }
     }
 
     @LayoutRes
