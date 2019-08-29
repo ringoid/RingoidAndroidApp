@@ -116,12 +116,6 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyNameForAnalytics = "company")
     }
 
-    internal fun onCustomPropertyUnsavedInput_company(text: String) {
-        unsavedProperties.company = text
-    }
-
-    internal fun getCustomPropertyUnsavedInput_company(): String = unsavedProperties.company
-
     internal fun onCustomPropertyChanged_jobTitle(text: String) {
         if (properties.jobTitle() == text) {
             return
@@ -129,12 +123,6 @@ class SettingsProfileViewModel @Inject constructor(
         properties.jobTitle(text)
         updateProfileProperties(propertyNameForAnalytics = "jobTitle")
     }
-
-    internal fun onCustomPropertyUnsavedInput_jobTitle(text: String) {
-        unsavedProperties.jobTitle = text
-    }
-
-    internal fun getCustomPropertyUnsavedInput_jobTitle(): String = unsavedProperties.jobTitle
 
     internal fun onCustomPropertyChanged_height(height: Int) {
         if (properties.height == height || height in 1..91) {
@@ -158,12 +146,6 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyNameForAnalytics = "name")
     }
 
-    internal fun onCustomPropertyUnsavedInput_name(text: String) {
-        unsavedProperties.name = text
-    }
-
-    internal fun getCustomPropertyUnsavedInput_name(): String = unsavedProperties.name
-
     internal fun onCustomPropertyChanged_status(text: String) {
         if (properties.status() == text) {
             return
@@ -181,12 +163,6 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyNameForAnalytics = "instagram")
     }
 
-    internal fun onCustomPropertyUnsavedInput_socialInstagram(text: String) {
-        unsavedProperties.instagram = text
-    }
-
-    internal fun getCustomPropertyUnsavedInput_socialInstagram(): String = unsavedProperties.instagram
-
     internal fun onCustomPropertyChanged_socialTikTok(text: String) {
         if (properties.tiktok() == text) {
             return
@@ -194,12 +170,6 @@ class SettingsProfileViewModel @Inject constructor(
         properties.tiktok(text)
         updateProfileProperties(propertyNameForAnalytics = "tiktok")
     }
-
-    internal fun onCustomPropertyUnsavedInput_socialTikTok(text: String) {
-        unsavedProperties.tiktok = text
-    }
-
-    internal fun getCustomPropertyUnsavedInput_socialTikTok(): String = unsavedProperties.tiktok
 
     internal fun onCustomPropertyChanged_university(text: String) {
         if (properties.university() == text) {
@@ -209,12 +179,6 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyNameForAnalytics = "education")
     }
 
-    internal fun onCustomPropertyUnsavedInput_university(text: String) {
-        unsavedProperties.university = text
-    }
-
-    internal fun getCustomPropertyUnsavedInput_university(): String = unsavedProperties.university
-
     internal fun onCustomPropertyChanged_whereLive(text: String) {
         if (properties.whereLive() == text) {
             return
@@ -222,13 +186,7 @@ class SettingsProfileViewModel @Inject constructor(
         properties.whereLive(text)
         updateProfileProperties(propertyNameForAnalytics = "whereLive")
     }
-
-    internal fun onCustomPropertyUnsavedInput_whereLive(text: String) {
-        unsavedProperties.whereLive = text
-    }
-
-    internal fun getCustomPropertyUnsavedInput_whereLive(): String = unsavedProperties.whereLive
-
+    
     // --------------------------------------------------------------------------------------------
     private fun updateProfileProperties(propertyNameForAnalytics: String) {
         updateUserProfileSettingsUseCase.source(Params().put(properties.map()))
