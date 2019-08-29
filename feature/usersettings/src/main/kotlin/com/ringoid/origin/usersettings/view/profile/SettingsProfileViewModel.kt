@@ -132,12 +132,6 @@ class SettingsProfileViewModel @Inject constructor(
         updateProfileProperties(propertyNameForAnalytics = "height")
     }
 
-    internal fun onCustomPropertyUnsavedInput_height(text: String) {
-        unsavedProperties.height = text
-    }
-
-    internal fun getCustomPropertyUnsavedInput_height(): String = unsavedProperties.height
-
     internal fun onCustomPropertyChanged_name(text: String) {
         if (properties.name() == text) {
             return
@@ -186,7 +180,7 @@ class SettingsProfileViewModel @Inject constructor(
         properties.whereLive(text)
         updateProfileProperties(propertyNameForAnalytics = "whereLive")
     }
-    
+
     // --------------------------------------------------------------------------------------------
     private fun updateProfileProperties(propertyNameForAnalytics: String) {
         updateUserProfileSettingsUseCase.source(Params().put(properties.map()))

@@ -1,9 +1,7 @@
 package com.ringoid.origin.usersettings.view.profile
 
 import android.os.Bundle
-import android.text.InputType
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
@@ -15,14 +13,12 @@ import com.ringoid.origin.usersettings.*
 import com.ringoid.origin.usersettings.R
 import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
 import com.ringoid.origin.view.dialog.BigEditTextDialog
-import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.*
 import com.ringoid.widget.model.ListItem
 import com.ringoid.widget.view.item_view.textChanges
 import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
 import kotlinx.android.synthetic.main.fragment_settings_push.toolbar
-import leakcanary.AppWatcher
 
 class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>(),
     BigEditTextDialog.IBigEditTextDialogDone {
@@ -143,29 +139,11 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
             textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onJobTitleTextChange)
         }
         with (item_profile_property_height) {
-            clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.profile_property_height,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        val heightStr = handleInputHeight(text).takeIf { it > 0 }?.toString() ?: ""
-                        if (this.setInputText(heightStr)) onHeightTextChange(heightStr)
-                        onHeightUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    negativeListener = { dialog, _, _ ->
-                        onHeightUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    cancelListener = { _, text -> onHeightUnsavedInput(text) },
-                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_height(), getText()),
-                    inputType = InputType.TYPE_CLASS_NUMBER,
-                    maxLength = 3,
-                    imeOptions = EditorInfo.IME_ACTION_DONE)
-                .also { AppWatcher.objectWatcher.watch(it) }
-            }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onHeightTextChange)
             setSuffix(OriginR_string.value_cm)
+            textChanges().skipInitialValue().compose(inputDebounce())
+                .map { it.toString() }
+                .map { text -> handleInputHeight(text).takeIf { it > 0 }?.toString() ?: "" }
+                .subscribe(::onHeightTextChange)
         }
         with (item_profile_custom_property_name) {
             textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onNameTextChange)
@@ -236,11 +214,6 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
 
     private fun onHeightTextChange(heightStr: CharSequence) {
         vm.onCustomPropertyChanged_height(height = if (heightStr.isNotBlank()) heightStr.toString().toInt() else 0)
-    }
-
-    // TODO: unsaved remove
-    private fun onHeightUnsavedInput(text: CharSequence?) {
-        vm.onCustomPropertyUnsavedInput_height(text?.toString()?.trim() ?: "")
     }
 
     private fun onNameTextChange(text: CharSequence?) {
