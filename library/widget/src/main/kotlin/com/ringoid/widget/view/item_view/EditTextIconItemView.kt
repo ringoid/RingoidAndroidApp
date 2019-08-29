@@ -34,6 +34,8 @@ class EditTextIconItemView : TextIconItemView {
                 }
             }
         }
+
+        setOnClickListener { tv_input.requestFocusFromTouch() }
     }
 
     @LayoutRes
