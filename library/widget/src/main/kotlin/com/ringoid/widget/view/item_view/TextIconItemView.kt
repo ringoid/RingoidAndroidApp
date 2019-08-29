@@ -143,7 +143,9 @@ open class TextIconItemView : IconItemView {
         inputText = text
 
         if (text.isNullOrBlank()) {
-            tv_input.text = hint  // can be empty
+            if (!tv_input.hasFocus()) {
+                tv_input.text = hint  // can be empty
+            }
             if (hint.isNotBlank()) {
                 tv_input.setTextColor(context.getAttributeColor(R.attr.refTextColorSecondary))
             }
