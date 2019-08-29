@@ -12,6 +12,7 @@ data class UserProfileCustomPropertiesRaw(
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_NAME) var name: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM) var instagram: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK) var tiktok: String = "",
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_STATUS_TEXT) var statusText: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_UNIVERSITY) var university: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_FROM) var whereFrom: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_LIVE) var whereLive: String = "")
@@ -25,6 +26,7 @@ data class UserProfileCustomPropertiesRaw(
         const val COLUMN_PROPERTY_CUSTOM_NAME = "name"
         const val COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM = "instagram"
         const val COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK = "tikTok"
+        const val COLUMN_PROPERTY_CUSTOM_STATUS_TEXT = "statusText"
         const val COLUMN_PROPERTY_CUSTOM_UNIVERSITY = "education"
         const val COLUMN_PROPERTY_CUSTOM_WHERE_FROM = "whereFrom"
         const val COLUMN_PROPERTY_CUSTOM_WHERE_LIVE = "whereLive"
