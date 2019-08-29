@@ -44,17 +44,24 @@ class EditTextIconItemView : TextIconItemView {
     override fun getText(): String = tv_input.text.toString()
 
     override fun setInputText(text: String?): Boolean =
-        super.setInputText(text).also {
-            with (tv_input) {
-                setCharsCount(text?.length ?: 0)
-                setSelection(text?.length ?: 0)
-            }
-        }
+        super.setInputText(text).also { sideEffectOnSetInputText(text) }
 
     @Suppress("SetTextI18n")
     internal fun setCharsCount(count: Int) {
         tv_chars_count?.text = "$count/$MAX_LENGTH"
     }
+
+    /* Internal */
+    // --------------------------------------------------------------------------------------------
+    private fun sideEffectOnSetInputText(text: String?) {
+        with (tv_input) {
+            setCharsCount(text?.length ?: 0)
+            setSelection(text?.length ?: 0)
+        }
+    }
+
+    override fun setInputTextInternal(text: String?): Boolean =
+        super.setInputTextInternal(text).also { sideEffectOnSetInputText(text) }
 }
 
 fun EditTextIconItemView.textChanges(): InitialValueObservable<CharSequence> =
