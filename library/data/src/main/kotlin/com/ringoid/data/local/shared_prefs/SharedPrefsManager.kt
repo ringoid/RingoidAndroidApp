@@ -14,7 +14,7 @@ import com.ringoid.domain.exception.SilentFatalException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.GpsLocation
-import com.ringoid.domain.misc.UserProfileCustomPropertiesRaw
+import com.ringoid.domain.misc.UserProfileCustomPropertiesUnsavedInput
 import com.ringoid.domain.misc.UserProfilePropertiesRaw
 import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.domain.model.feed.Filters
@@ -466,12 +466,12 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .apply()
     }
 
-    override fun getUserProfileCustomPropertiesUnsavedInput(): UserProfileCustomPropertiesRaw =
+    override fun getUserProfileCustomPropertiesUnsavedInput(): UserProfileCustomPropertiesUnsavedInput =
         sharedPreferences.getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT, null)
-            ?.let { Gson().fromJson(it, UserProfileCustomPropertiesRaw::class.java) }
-            ?: UserProfileCustomPropertiesRaw()
+            ?.let { Gson().fromJson(it, UserProfileCustomPropertiesUnsavedInput::class.java) }
+            ?: UserProfileCustomPropertiesUnsavedInput()
 
-    override fun setUserProfileCustomPropertiesUnsavedInput(unsavedInput: UserProfileCustomPropertiesRaw) {
+    override fun setUserProfileCustomPropertiesUnsavedInput(unsavedInput: UserProfileCustomPropertiesUnsavedInput) {
         sharedPreferences.edit().putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT, unsavedInput.toJson()).apply()
     }
 

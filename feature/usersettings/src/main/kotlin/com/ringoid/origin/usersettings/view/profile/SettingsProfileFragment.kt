@@ -199,7 +199,6 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         text?.let { vm.onCustomPropertyChanged_about(text = it.toString().trim()) }
     }
 
-    // TODO: unsaved remove
     private fun onAboutUnsavedInput(text: CharSequence?) {
         vm.onCustomPropertyUnsavedInput_about(text?.toString()?.trim() ?: "")
     }

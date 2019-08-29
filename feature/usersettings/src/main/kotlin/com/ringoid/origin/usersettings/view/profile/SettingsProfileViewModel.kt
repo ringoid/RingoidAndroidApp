@@ -10,7 +10,7 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.interactor.user.UpdateUserProfileSettingsUseCase
-import com.ringoid.domain.misc.UserProfileCustomPropertiesRaw
+import com.ringoid.domain.misc.UserProfileCustomPropertiesUnsavedInput
 import com.ringoid.origin.model.*
 import com.ringoid.origin.usersettings.view.base.BaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -26,7 +26,7 @@ class SettingsProfileViewModel @Inject constructor(
     internal fun profile(): LiveData<UserProfileProperties> = profile
 
     private lateinit var properties: UserProfileProperties
-    private lateinit var unsavedProperties: UserProfileCustomPropertiesRaw
+    private lateinit var unsavedProperties: UserProfileCustomPropertiesUnsavedInput
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -147,7 +147,6 @@ class SettingsProfileViewModel @Inject constructor(
         properties.status(text)
         updateProfileProperties(propertyNameForAnalytics = "status")
     }
-    // TODO: status unsaved input
 
     internal fun onCustomPropertyChanged_socialInstagram(text: String) {
         if (properties.instagram() == text) {
