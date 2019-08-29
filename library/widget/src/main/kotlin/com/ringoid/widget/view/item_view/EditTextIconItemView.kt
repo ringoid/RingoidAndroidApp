@@ -2,14 +2,20 @@ package com.ringoid.widget.view.item_view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import com.jakewharton.rxbinding3.InitialValueObservable
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.showKeyboard
 import com.ringoid.widget.R
+import io.reactivex.Observer
+import io.reactivex.android.MainThreadDisposable
 import kotlinx.android.synthetic.main.widget_edit_text_icon_item_view_layout.view.*
 
 class EditTextIconItemView : TextIconItemView {
+
+    internal var onFocusInterceptListener: OnFocusChangeListener? = null
 
     constructor(context: Context) : this(context, null)
 
@@ -33,6 +39,7 @@ class EditTextIconItemView : TextIconItemView {
                     enableTextChangeWatchers()
                 }
             }
+            onFocusInterceptListener?.onFocusChange(etView, hasFocus)
         }
 
         setOnClickListener {
@@ -40,6 +47,7 @@ class EditTextIconItemView : TextIconItemView {
                 requestFocusFromTouch()
                 showKeyboard()
             }
+            onFocusInterceptListener?.onFocusChange(tv_input, true)
         }
     }
 
@@ -69,4 +77,37 @@ class EditTextIconItemView : TextIconItemView {
 
     override fun setInputTextInternal(text: String?): Boolean =
         super.setInputTextInternal(text).also { sideEffectOnSetInputText(text) }
+}
+
+// ------------------------------------------------------------------------------------------------
+fun EditTextIconItemView.focuses(): InitialValueObservable<Boolean> =
+    EditTextIconItemViewFocusChangeObservable(this)
+
+private class EditTextIconItemViewFocusChangeObservable(private val etView: EditTextIconItemView)
+    : InitialValueObservable<Boolean>() {
+
+    override val initialValue: Boolean
+        get() = etView.tv_input.hasFocus()
+
+    override fun subscribeListener(observer: Observer<in Boolean>) {
+        val listener = Listener(etView, observer)
+        observer.onSubscribe(listener)
+        etView.onFocusInterceptListener = listener
+    }
+
+    private class Listener(
+            private val etView: EditTextIconItemView,
+            private val observer: Observer<in Boolean>)
+        : MainThreadDisposable(), View.OnFocusChangeListener {
+
+        override fun onFocusChange(v: View, hasFocus: Boolean) {
+            if (!isDisposed) {
+                observer.onNext(hasFocus)
+            }
+        }
+
+        override fun onDispose() {
+            etView.onFocusInterceptListener = null
+        }
+    }
 }
