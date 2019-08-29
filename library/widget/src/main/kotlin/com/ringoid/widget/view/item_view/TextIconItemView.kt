@@ -26,42 +26,41 @@ open class TextIconItemView : IconItemView {
 
     constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int) : super(context, attributes, defStyleAttr) {
         isClickable = true
-        context.obtainStyledAttributes(attributes, R.styleable.TextIconItemView, defStyleAttr, R.style.TextIconItemView)
-            .apply {
-                val wrapContent = getBoolean(R.styleable.TextIconItemView_text_icon_item_wrap_content, true)
-                if (!wrapContent) {
-                    space.changeVisibility(isVisible = false)
-                    tv_suffix.changeVisibility(isVisible = false)
-                    tv_input.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        with (context.obtainStyledAttributes(attributes, R.styleable.TextIconItemView, defStyleAttr, R.style.TextIconItemView)) {
+            val wrapContent = getBoolean(R.styleable.TextIconItemView_text_icon_item_wrap_content, true)
+            if (!wrapContent) {
+                space.changeVisibility(isVisible = false)
+                tv_suffix.changeVisibility(isVisible = false)
+                tv_input.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            }
+
+            getResourceId(R.styleable.TextIconItemView_text_icon_item_text_field_height, 0)
+                .takeIf { it != 0 }
+                ?.let { resources.getDimensionPixelSize(it) }
+                ?.let {
+                    val lp = (tv_input.layoutParams as LayoutParams).apply { height = it }
+                    tv_input.layoutParams = lp
                 }
 
-                getResourceId(R.styleable.TextIconItemView_text_icon_item_text_field_height, 0)
-                    .takeIf { it != 0 }
-                    ?.let { resources.getDimensionPixelSize(it) }
-                    ?.let {
-                        val lp = (tv_input.layoutParams as LayoutParams).apply { height = it }
-                        tv_input.layoutParams = lp
-                    }
+            getDimension(R.styleable.TextIconItemView_text_icon_item_side_padding, resources.getDimension(R.dimen.std_margin_12))
+                .let { tv_input.setPadding(it.toInt(), paddingTop, it.toInt(), paddingBottom) }
 
-                getDimension(R.styleable.TextIconItemView_text_icon_item_side_padding, resources.getDimension(R.dimen.std_margin_12))
-                    .let { tv_input.setPadding(it.toInt(), paddingTop, it.toInt(), paddingBottom) }
+            getInt(R.styleable.TextIconItemView_text_icon_item_text_max_length, MAX_LENGTH + 7)
+                .takeIf { it > 0 }?.let { tv_input.filters = arrayOf(InputFilter.LengthFilter(it)) }
 
-                getInt(R.styleable.TextIconItemView_text_icon_item_text_max_length, MAX_LENGTH + 7)
-                    .takeIf { it > 0 }?.let { tv_input.filters = arrayOf(InputFilter.LengthFilter(it)) }
+            getInt(R.styleable.TextIconItemView_text_icon_item_text_gravity, Gravity.CENTER_VERTICAL or Gravity.START)
+                .let { tv_input.gravity = it }
 
-                getInt(R.styleable.TextIconItemView_text_icon_item_text_gravity, Gravity.CENTER_VERTICAL or Gravity.START)
-                    .let { tv_input.gravity = it }
+            getResourceId(R.styleable.TextIconItemView_text_icon_item_text_hint, 0)
+                .takeIf { it != 0 }?.let { setTextHint(resId = it) }
+                ?: run { setTextHint(hint = getString(R.styleable.TextIconItemView_text_icon_item_text_hint)) }
 
-                getResourceId(R.styleable.TextIconItemView_text_icon_item_text_hint, 0)
-                    .takeIf { it != 0 }?.let { setTextHint(resId = it) }
-                    ?: run { setTextHint(hint = getString(R.styleable.TextIconItemView_text_icon_item_text_hint)) }
+            getResourceId(R.styleable.TextIconItemView_text_icon_item_text, 0)
+                .takeIf { it != 0 }?.let { setInputText(resId = it) }
+                ?: run { setInputText(text = getString(R.styleable.TextIconItemView_text_icon_item_text)) }
 
-                getResourceId(R.styleable.TextIconItemView_text_icon_item_text, 0)
-                    .takeIf { it != 0 }?.let { setInputText(resId = it) }
-                    ?: run { setInputText(text = getString(R.styleable.TextIconItemView_text_icon_item_text)) }
-
-                recycle()
-            }
+            recycle()
+        }
     }
 
     override fun getLayoutId(): Int = R.layout.widget_text_icon_item_view_layout

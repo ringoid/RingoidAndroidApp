@@ -27,11 +27,12 @@
             android:paddingBottom="@dimen/std_margin_32">
 
             <!-- Custom Properties -->
-            <com.ringoid.widget.view.item_view.CountTextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_status"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyStatus"
                 app:icon_item_text="@string/settings_profile_item_custom_property_status"
+                app:edit_text_icon_item_with_counter="true"
                 app:text_icon_item_text_max_length="30"
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>

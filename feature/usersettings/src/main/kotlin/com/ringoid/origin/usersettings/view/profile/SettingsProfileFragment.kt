@@ -61,6 +61,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         super.onActivityCreated(savedInstanceState)
         with (viewLifecycleOwner) {
             observe(vm.profile()) {
+                // TODO: use View state / restore
                 // properties
                 item_profile_property_children.setSelectedItem(it.children)
                 item_profile_property_education.setSelectedItem(it.education.reduceForLocale(app?.localeManager?.getLang()))
@@ -74,6 +75,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                 item_profile_custom_property_job_title.setInputText(it.jobTitle())
                 item_profile_property_height.setInputText(if (it.height > 0) "${it.height}" else "")
                 item_profile_custom_property_name.setInputText(it.name())
+                item_profile_custom_property_status.setInputText(it.status())
                 item_profile_custom_property_instagram.setInputText(it.instagram())
                 item_profile_custom_property_tiktok.setInputText(it.tiktok())
                 item_profile_custom_property_university.setInputText(it.university())
@@ -228,6 +230,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                 .also { AppWatcher.objectWatcher.watch(it) }
             }
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onNameTextChange)
+        }
+        with (item_profile_custom_property_status) {
+            textChanges().compose(inputDebounce()).subscribe(::onStatusTextChange)
         }
         with (item_profile_custom_property_instagram) {
             clicks().compose(clickDebounce()).subscribe {
@@ -390,6 +395,11 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     private fun onNameUnsavedInput(text: CharSequence?) {
         vm.onCustomPropertyUnsavedInput_name(text?.toString()?.trim() ?: "")
     }
+
+    private fun onStatusTextChange(text: CharSequence?) {
+        // TODO: status text change
+    }
+    // TODO: status unsaved input
 
     private fun onSocialInstagramTextChange(text: CharSequence?) {
         text?.let { vm.onCustomPropertyChanged_socialInstagram(text = it.toString().trim()) }
