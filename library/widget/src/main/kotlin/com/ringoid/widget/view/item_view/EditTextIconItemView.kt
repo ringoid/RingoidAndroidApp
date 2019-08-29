@@ -44,6 +44,4 @@ class EditTextIconItemView : TextIconItemView {
 }
 
 fun EditTextIconItemView.textChanges() =
-    tv_input.textChanges()
-            .skipInitialValue()
-            .doOnNext { setCharsCount(it.length) }
+    tv_input.textChanges().skipInitialValue().doOnNext { setCharsCount(it.length) }

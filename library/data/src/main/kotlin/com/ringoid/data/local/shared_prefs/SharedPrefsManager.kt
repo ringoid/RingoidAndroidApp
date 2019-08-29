@@ -107,6 +107,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY = "sp_key_user_profile_custom_property_company"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE = "sp_key_user_profile_custom_property_job_title"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME = "sp_key_user_profile_custom_property_name"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_STATUS_TEXT = "sp_key_user_profile_custom_property_status_text"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM = "sp_key_user_profile_custom_property_social_instagram"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK = "sp_key_user_profile_custom_property_social_tiktok"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY = "sp_key_user_profile_custom_property_university"
@@ -413,6 +414,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
                 company = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY, "") ?: "",
                 jobTitle = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE, "") ?: "",
                 name = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME, "") ?: "",
+                statusText = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_STATUS_TEXT, "") ?: "",
                 socialInstagram = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM, "") ?: "",
                 socialTikTok = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK, "") ?: "",
                 university = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY, "") ?: "",
@@ -433,6 +435,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY, propertiesRaw.company)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE, propertiesRaw.jobTitle)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME, propertiesRaw.name)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_STATUS_TEXT, propertiesRaw.statusText)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM, propertiesRaw.socialInstagram)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK, propertiesRaw.socialTikTok)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY, propertiesRaw.university)
@@ -454,6 +457,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_STATUS_TEXT)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY)

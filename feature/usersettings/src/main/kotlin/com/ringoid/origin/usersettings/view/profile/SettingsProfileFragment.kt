@@ -232,7 +232,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onNameTextChange)
         }
         with (item_profile_custom_property_status) {
-            textChanges().compose(inputDebounce()).subscribe(::onStatusTextChange)
+            textChanges().compose(inputDebounceNet()).subscribe(::onStatusTextChange)
         }
         with (item_profile_custom_property_instagram) {
             clicks().compose(clickDebounce()).subscribe {
@@ -397,7 +397,7 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     private fun onStatusTextChange(text: CharSequence?) {
-        // TODO: status text change
+        text?.let { vm.onCustomPropertyChanged_status(text = it.toString().trim()) }
     }
     // TODO: status unsaved input
 

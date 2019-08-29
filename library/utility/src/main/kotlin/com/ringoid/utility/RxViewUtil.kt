@@ -17,6 +17,9 @@ fun <T> clickDebounce(timeout: Long = BuildConfig.DEBOUNCE_CLICK): ObservableTra
 fun <T> inputDebounce(timeout: Long = BuildConfig.DEBOUNCE_INPUT): ObservableTransformer<T, T> =
     ObservableTransformer { it.debounce(timeout, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()) }
 
+fun <T> inputDebounceNet(): ObservableTransformer<T, T> =
+    inputDebounce(BuildConfig.DEBOUNCE_INPUT_NETWORK)
+
 fun checkMainThread2(): Boolean = Looper.myLooper() == Looper.getMainLooper()
 
 fun checkMainThread2(observer: Observer<*>): Boolean {

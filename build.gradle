@@ -78,6 +78,7 @@ ext {
 
     debounceClickMs = "500L"
     debounceInputMs = "200L"
+    debounceInputNetworkMs = "500L"
     postDelayMs = "1000L"
     requestTimeThreshold = "6000L"  // repeat request up to this threshold
     responseTimeThreshold = "2000L"  // alert if network responded later
