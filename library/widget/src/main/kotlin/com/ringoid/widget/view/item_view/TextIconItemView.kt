@@ -5,7 +5,6 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.Gravity
-import android.widget.TextView
 import androidx.annotation.StringRes
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.getAttributeColor
@@ -32,25 +31,25 @@ open class TextIconItemView : IconItemView {
             if (!wrapContent) {
                 space.changeVisibility(isVisible = false)
                 tv_suffix.changeVisibility(isVisible = false)
-                getInputTextView().layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                tv_input.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             }
 
             getResourceId(R.styleable.TextIconItemView_text_icon_item_text_field_height, 0)
                 .takeIf { it != 0 }
                 ?.let { resources.getDimensionPixelSize(it) }
                 ?.let {
-                    val lp = (getInputTextView().layoutParams as LayoutParams).apply { height = it }
-                    getInputTextView().layoutParams = lp
+                    val lp = (tv_input.layoutParams as LayoutParams).apply { height = it }
+                    tv_input.layoutParams = lp
                 }
 
             getDimension(R.styleable.TextIconItemView_text_icon_item_side_padding, resources.getDimension(R.dimen.std_margin_12))
-                .let { getInputTextView().setPadding(it.toInt(), paddingTop, it.toInt(), paddingBottom) }
+                .let { tv_input.setPadding(it.toInt(), paddingTop, it.toInt(), paddingBottom) }
 
             getInt(R.styleable.TextIconItemView_text_icon_item_text_max_length, MAX_LENGTH + 7)
-                .takeIf { it > 0 }?.let { getInputTextView().filters = arrayOf(InputFilter.LengthFilter(it)) }
+                .takeIf { it > 0 }?.let { tv_input.filters = arrayOf(InputFilter.LengthFilter(it)) }
 
             getInt(R.styleable.TextIconItemView_text_icon_item_text_gravity, Gravity.CENTER_VERTICAL or Gravity.START)
-                .let { getInputTextView().gravity = it }
+                .let { tv_input.gravity = it }
 
             getResourceId(R.styleable.TextIconItemView_text_icon_item_text_hint, 0)
                 .takeIf { it != 0 }?.let { setTextHint(resId = it) }
@@ -65,8 +64,6 @@ open class TextIconItemView : IconItemView {
     }
 
     override fun getLayoutId(): Int = R.layout.widget_text_icon_item_view_layout
-
-    protected open fun getInputTextView(): TextView = tv_input
 
     /* API */
     // --------------------------------------------------------------------------------------------
@@ -85,13 +82,13 @@ open class TextIconItemView : IconItemView {
         inputText = text
 
         if (text.isNullOrBlank()) {
-            getInputTextView().text = hint  // can be empty
+            tv_input.text = hint  // can be empty
             if (hint.isNotBlank()) {
-                getInputTextView().setTextColor(context.getAttributeColor(R.attr.refTextColorSecondary))
+                tv_input.setTextColor(context.getAttributeColor(R.attr.refTextColorSecondary))
             }
         } else {
-            getInputTextView().text = text
-            getInputTextView().setTextColor(context.getAttributeColor(R.attr.refTextColorPrimary))
+            tv_input.text = text
+            tv_input.setTextColor(context.getAttributeColor(R.attr.refTextColorPrimary))
         }
         return changed
     }
@@ -117,10 +114,10 @@ open class TextIconItemView : IconItemView {
     fun hasText(): Boolean = !inputText.isNullOrBlank()
 
     internal fun addTextChangedListener(listener: TextWatcher) {
-        getInputTextView().addTextChangedListener(listener)
+        tv_input.addTextChangedListener(listener)
     }
 
     internal fun removeTextChangedListener(listener: TextWatcher) {
-        getInputTextView().removeTextChangedListener(listener)
+        tv_input.removeTextChangedListener(listener)
     }
 }
