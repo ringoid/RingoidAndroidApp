@@ -2,8 +2,10 @@ package com.ringoid.widget.view.item_view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.widget.EditText
+import android.widget.TextView
 import androidx.annotation.LayoutRes
-import com.jakewharton.rxbinding3.widget.textChanges
+import com.jakewharton.rxbinding3.InitialValueObservable
 import com.ringoid.utility.changeVisibility
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_edit_text_icon_item_view_layout.view.*
@@ -24,18 +26,19 @@ class EditTextIconItemView : TextIconItemView {
     @LayoutRes
     override fun getLayoutId(): Int = R.layout.widget_edit_text_icon_item_view_layout
 
+    override fun getInputTextView(): TextView = tv_input
+
     /* API */
     // --------------------------------------------------------------------------------------------
-    override fun getText(): String = tv_input.text.toString()
+    override fun getText(): String = getInputTextView().text.toString()
 
-    override fun setInputText(text: String?): Boolean {
-        with (tv_input) {
-            setText(text)
-            setCharsCount(text?.length ?: 0)
-            setSelection(text?.length ?: 0)
+    override fun setInputText(text: String?): Boolean =
+        super.setInputText(text).also {
+            with (getInputTextView() as EditText) {
+                setCharsCount(text?.length ?: 0)
+                setSelection(text?.length ?: 0)
+            }
         }
-        return true
-    }
 
     @Suppress("SetTextI18n")
     internal fun setCharsCount(count: Int) {
@@ -43,5 +46,6 @@ class EditTextIconItemView : TextIconItemView {
     }
 }
 
-fun EditTextIconItemView.textChanges() =
-    tv_input.textChanges().skipInitialValue().doOnNext { setCharsCount(it.length) }
+fun EditTextIconItemView.textChanges(): InitialValueObservable<CharSequence> =
+    TextIconItemViewTextChangesObservable(this)
+        .doOnNext { setCharsCount(it.length) }

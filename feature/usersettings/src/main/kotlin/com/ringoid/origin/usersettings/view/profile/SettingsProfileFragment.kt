@@ -18,7 +18,6 @@ import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.*
 import com.ringoid.widget.model.ListItem
-import com.ringoid.widget.view.item_view.TextIconItemView
 import com.ringoid.widget.view.item_view.textChanges
 import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
@@ -138,50 +137,50 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
         }
         with (item_profile_custom_property_company) {
-            clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_company,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        if (this.setInputText(text)) onCompanyTextChange(text)
-                        onCompanyUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    negativeListener = { dialog, _, _ ->
-                        onCompanyUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    cancelListener = { _, text -> onCompanyUnsavedInput(text) },
-                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_company(), getText()),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = TextIconItemView.MAX_LENGTH,
-                    imeOptions = EditorInfo.IME_ACTION_DONE)
-                .also { AppWatcher.objectWatcher.watch(it) }
-            }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onCompanyTextChange)
+//            clicks().compose(clickDebounce()).subscribe {
+//                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_company,
+//                    positiveBtnLabelResId = OriginR_string.button_done,
+//                    negativeBtnLabelResId = OriginR_string.button_cancel,
+//                    positiveListener = { dialog, _, text ->
+//                        if (this.setInputText(text)) onCompanyTextChange(text)
+//                        onCompanyUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    negativeListener = { dialog, _, _ ->
+//                        onCompanyUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    cancelListener = { _, text -> onCompanyUnsavedInput(text) },
+//                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_company(), getText()),
+//                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+//                    maxLength = TextIconItemView.MAX_LENGTH,
+//                    imeOptions = EditorInfo.IME_ACTION_DONE)
+//                .also { AppWatcher.objectWatcher.watch(it) }
+//            }
+            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onCompanyTextChange)
         }
         with (item_profile_custom_property_job_title) {
-            clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_job_title,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        if (this.setInputText(text)) onJobTitleTextChange(text)
-                        onJobTitleUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    negativeListener = { dialog, _, _ ->
-                        onJobTitleUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    cancelListener = { _, text -> onJobTitleUnsavedInput(text) },
-                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_jobTitle(), getText()),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = TextIconItemView.MAX_LENGTH,
-                    imeOptions = EditorInfo.IME_ACTION_DONE)
-                .also { AppWatcher.objectWatcher.watch(it) }
-            }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onJobTitleTextChange)
+//            clicks().compose(clickDebounce()).subscribe {
+//                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_job_title,
+//                    positiveBtnLabelResId = OriginR_string.button_done,
+//                    negativeBtnLabelResId = OriginR_string.button_cancel,
+//                    positiveListener = { dialog, _, text ->
+//                        if (this.setInputText(text)) onJobTitleTextChange(text)
+//                        onJobTitleUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    negativeListener = { dialog, _, _ ->
+//                        onJobTitleUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    cancelListener = { _, text -> onJobTitleUnsavedInput(text) },
+//                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_jobTitle(), getText()),
+//                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+//                    maxLength = TextIconItemView.MAX_LENGTH,
+//                    imeOptions = EditorInfo.IME_ACTION_DONE)
+//                .also { AppWatcher.objectWatcher.watch(it) }
+//            }
+            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onJobTitleTextChange)
         }
         with (item_profile_property_height) {
             clicks().compose(clickDebounce()).subscribe {
@@ -209,120 +208,120 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
             setSuffix(OriginR_string.value_cm)
         }
         with (item_profile_custom_property_name) {
-            clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_name,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        if (this.setInputText(text)) onNameTextChange(text)
-                        onNameUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    negativeListener = { dialog, _, _ ->
-                        onNameUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    cancelListener = { _, text -> onNameUnsavedInput(text) },
-                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_name(), getText()),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = 20,
-                    imeOptions = EditorInfo.IME_ACTION_DONE)
-                .also { AppWatcher.objectWatcher.watch(it) }
-            }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onNameTextChange)
+//            clicks().compose(clickDebounce()).subscribe {
+//                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_name,
+//                    positiveBtnLabelResId = OriginR_string.button_done,
+//                    negativeBtnLabelResId = OriginR_string.button_cancel,
+//                    positiveListener = { dialog, _, text ->
+//                        if (this.setInputText(text)) onNameTextChange(text)
+//                        onNameUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    negativeListener = { dialog, _, _ ->
+//                        onNameUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    cancelListener = { _, text -> onNameUnsavedInput(text) },
+//                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_name(), getText()),
+//                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+//                    maxLength = 20,
+//                    imeOptions = EditorInfo.IME_ACTION_DONE)
+//                .also { AppWatcher.objectWatcher.watch(it) }
+//            }
+            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onNameTextChange)
         }
         with (item_profile_custom_property_status) {
-            textChanges().compose(inputDebounceNet()).subscribe(::onStatusTextChange)
+            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onStatusTextChange)
         }
         with (item_profile_custom_property_instagram) {
-            clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_instagram,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        if (this.setInputText(text)) onSocialInstagramTextChange(text)
-                        onSocialInstagramUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    negativeListener = { dialog, _, _ ->
-                        onSocialInstagramUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    cancelListener = { _, text -> onSocialInstagramUnsavedInput(text) },
-                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_socialInstagram(), getText()),
-                    maxLength = TextIconItemView.MAX_LENGTH,
-                    imeOptions = EditorInfo.IME_ACTION_DONE)
-                .also { AppWatcher.objectWatcher.watch(it) }
-            }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onSocialInstagramTextChange)
+//            clicks().compose(clickDebounce()).subscribe {
+//                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_instagram,
+//                    positiveBtnLabelResId = OriginR_string.button_done,
+//                    negativeBtnLabelResId = OriginR_string.button_cancel,
+//                    positiveListener = { dialog, _, text ->
+//                        if (this.setInputText(text)) onSocialInstagramTextChange(text)
+//                        onSocialInstagramUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    negativeListener = { dialog, _, _ ->
+//                        onSocialInstagramUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    cancelListener = { _, text -> onSocialInstagramUnsavedInput(text) },
+//                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_socialInstagram(), getText()),
+//                    maxLength = TextIconItemView.MAX_LENGTH,
+//                    imeOptions = EditorInfo.IME_ACTION_DONE)
+//                .also { AppWatcher.objectWatcher.watch(it) }
+//            }
+            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onSocialInstagramTextChange)
         }
         with (item_profile_custom_property_tiktok) {
-            clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_tiktok,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        if (this.setInputText(text)) onSocialTikTokTextChange(text)
-                        onSocialTikTokUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    negativeListener = { dialog, _, _ ->
-                        onSocialTikTokUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    cancelListener = { _, text -> onSocialTikTokUnsavedInput(text) },
-                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_socialTikTok(), getText()),
-                    maxLength = TextIconItemView.MAX_LENGTH,
-                    imeOptions = EditorInfo.IME_ACTION_DONE)
-                .also { AppWatcher.objectWatcher.watch(it) }
-            }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onSocialTikTokTextChange)
+//            clicks().compose(clickDebounce()).subscribe {
+//                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_tiktok,
+//                    positiveBtnLabelResId = OriginR_string.button_done,
+//                    negativeBtnLabelResId = OriginR_string.button_cancel,
+//                    positiveListener = { dialog, _, text ->
+//                        if (this.setInputText(text)) onSocialTikTokTextChange(text)
+//                        onSocialTikTokUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    negativeListener = { dialog, _, _ ->
+//                        onSocialTikTokUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    cancelListener = { _, text -> onSocialTikTokUnsavedInput(text) },
+//                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_socialTikTok(), getText()),
+//                    maxLength = TextIconItemView.MAX_LENGTH,
+//                    imeOptions = EditorInfo.IME_ACTION_DONE)
+//                .also { AppWatcher.objectWatcher.watch(it) }
+//            }
+            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onSocialTikTokTextChange)
         }
         with (item_profile_custom_property_university) {
-            clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_university,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        if (this.setInputText(text)) onUniversityTextChange(text)
-                        onUniversityUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    negativeListener = { dialog, _, _ ->
-                        onUniversityUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    cancelListener = { _, text -> onUniversityUnsavedInput(text) },
-                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_university(), getText()),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = TextIconItemView.MAX_LENGTH,
-                    imeOptions = EditorInfo.IME_ACTION_DONE)
-                .also { AppWatcher.objectWatcher.watch(it) }
-            }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onUniversityTextChange)
+//            clicks().compose(clickDebounce()).subscribe {
+//                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_university,
+//                    positiveBtnLabelResId = OriginR_string.button_done,
+//                    negativeBtnLabelResId = OriginR_string.button_cancel,
+//                    positiveListener = { dialog, _, text ->
+//                        if (this.setInputText(text)) onUniversityTextChange(text)
+//                        onUniversityUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    negativeListener = { dialog, _, _ ->
+//                        onUniversityUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    cancelListener = { _, text -> onUniversityUnsavedInput(text) },
+//                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_university(), getText()),
+//                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+//                    maxLength = TextIconItemView.MAX_LENGTH,
+//                    imeOptions = EditorInfo.IME_ACTION_DONE)
+//                .also { AppWatcher.objectWatcher.watch(it) }
+//            }
+            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onUniversityTextChange)
         }
         with (item_profile_custom_property_where_live) {
-            clicks().compose(clickDebounce()).subscribe {
-                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_where_live,
-                    positiveBtnLabelResId = OriginR_string.button_done,
-                    negativeBtnLabelResId = OriginR_string.button_cancel,
-                    positiveListener = { dialog, _, text ->
-                        if (this.setInputText(text)) onWhereLiveTextChange(text)
-                        onWhereLiveUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    negativeListener = { dialog, _, _ ->
-                        onWhereLiveUnsavedInput(null)
-                        dialog.dismiss()
-                    },
-                    cancelListener = { _, text -> onWhereLiveUnsavedInput(text) },
-                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_whereLive(), getText()),
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                    maxLength = TextIconItemView.MAX_LENGTH,
-                    imeOptions = EditorInfo.IME_ACTION_DONE)
-                .also { AppWatcher.objectWatcher.watch(it) }
-            }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onWhereLiveTextChange)
+//            clicks().compose(clickDebounce()).subscribe {
+//                Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.settings_profile_item_custom_property_where_live,
+//                    positiveBtnLabelResId = OriginR_string.button_done,
+//                    negativeBtnLabelResId = OriginR_string.button_cancel,
+//                    positiveListener = { dialog, _, text ->
+//                        if (this.setInputText(text)) onWhereLiveTextChange(text)
+//                        onWhereLiveUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    negativeListener = { dialog, _, _ ->
+//                        onWhereLiveUnsavedInput(null)
+//                        dialog.dismiss()
+//                    },
+//                    cancelListener = { _, text -> onWhereLiveUnsavedInput(text) },
+//                    initText = notBlankOf(vm.getCustomPropertyUnsavedInput_whereLive(), getText()),
+//                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+//                    maxLength = TextIconItemView.MAX_LENGTH,
+//                    imeOptions = EditorInfo.IME_ACTION_DONE)
+//                .also { AppWatcher.objectWatcher.watch(it) }
+//            }
+            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onWhereLiveTextChange)
         }
 
         // other

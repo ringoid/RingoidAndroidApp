@@ -17,11 +17,18 @@ import io.reactivex.android.MainThreadDisposable
 fun TextIconItemView.textChanges(): InitialValueObservable<CharSequence> =
     TextIconItemViewTextChangesObservable(this)
 
-private class TextIconItemViewTextChangesObservable(private val view: TextIconItemView)
+internal class TextIconItemViewTextChangesObservable(private val view: TextIconItemView)
     : InitialValueObservable<CharSequence>() {
 
+    private var sideEffect: ((str: CharSequence) -> Unit)? = null
+
+    internal fun doOnNext(l: (str: CharSequence) -> Unit): TextIconItemViewTextChangesObservable =
+        this.also { sideEffect = l }
+
     override fun subscribeListener(observer: Observer<in CharSequence>) {
-        val listener = Listener(view, observer)
+        val listener = Listener(view, observer).apply {
+            sideEffect = this@TextIconItemViewTextChangesObservable.sideEffect
+        }
         observer.onSubscribe(listener)
         view.addTextChangedListener(listener)
     }
@@ -33,20 +40,24 @@ private class TextIconItemViewTextChangesObservable(private val view: TextIconIt
             private val observer: Observer<in CharSequence>)
         : MainThreadDisposable(), TextWatcher {
 
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-        }
+        internal var sideEffect: ((str: CharSequence) -> Unit)? = null
+
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            if (!isDisposed && view.hasText()) {
-                observer.onNext(s)
+            if (!isDisposed) {
+                if (view.hasText()) {
+                    observer.onNext(s)
+                }
+                sideEffect?.invoke(s)
             }
         }
 
-        override fun afterTextChanged(s: Editable) {
-        }
+        override fun afterTextChanged(s: Editable) {}
 
         override fun onDispose() {
             view.removeTextChangedListener(this)
+            sideEffect = null
         }
     }
 }

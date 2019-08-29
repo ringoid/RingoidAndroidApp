@@ -39,7 +39,7 @@
 
             <View style="@style/Underscore"/>
 
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_name"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyName"
@@ -50,7 +50,7 @@
 
             <View style="@style/Underscore"/>
 
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_where_live"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyLocation"
@@ -74,7 +74,7 @@
 
             <View style="@style/Underscore"/>
 
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_instagram"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyInstagram"
@@ -85,7 +85,7 @@
 
             <View style="@style/Underscore"/>
 
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_tiktok"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyTikTok"
@@ -96,7 +96,7 @@
 
             <View style="@style/Underscore"/>
 
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_job_title"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyCompany"
@@ -106,7 +106,7 @@
 
             <View style="@style/Underscore"/>
 
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_company"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyCompany"
@@ -117,7 +117,7 @@
 
             <View style="@style/Underscore"/>
 
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_university"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyEducation"
