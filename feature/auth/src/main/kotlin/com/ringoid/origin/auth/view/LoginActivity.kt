@@ -153,14 +153,14 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         savedInstanceState?.let {
             (it.getSerializable(BUNDLE_KEY_SELECTED_GENDER) as? Gender)
                 ?.let { gender ->
-                    when (gender) {
-                        Gender.MALE -> tv_sex_male.isSelected = true
-                        Gender.FEMALE -> tv_sex_female.isSelected = true
-                        Gender.UNKNOWN -> {
-                            tv_sex_male.isSelected = false
-                            tv_sex_female.isSelected = false
-                        }
-                    }
+//                    when (gender) {
+//                        Gender.MALE -> tv_sex_male.isSelected = true
+//                        Gender.FEMALE -> tv_sex_female.isSelected = true
+//                        Gender.UNKNOWN -> {
+//                            tv_sex_male.isSelected = false
+//                            tv_sex_female.isSelected = false
+//                        }
+//                    }
                     vm.onGenderSelect(gender)
                 }
         }
