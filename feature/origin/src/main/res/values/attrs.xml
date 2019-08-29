@@ -27,6 +27,7 @@
         <attr name="refDrawableProfilePropertyLocation" format="reference"/>
         <attr name="refDrawableProfilePropertyName" format="reference"/>
         <attr name="refDrawableProfilePropertyProperty" format="reference"/>
+        <attr name="refDrawableProfilePropertyStatus" format="reference"/>
         <attr name="refDrawableProfilePropertyTikTok" format="reference"/>
         <attr name="refDrawableProfilePropertyTransport" format="reference"/>
         <attr name="refDrawableSettingsFilters" format="reference"/>

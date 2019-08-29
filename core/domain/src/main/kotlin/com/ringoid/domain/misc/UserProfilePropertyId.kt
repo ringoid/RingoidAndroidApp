@@ -11,7 +11,7 @@ enum class UserProfilePropertyId {
     PROPERTY,
     SOCIAL_INSTAGRAM,
     SOCIAL_TIKTOK,
-    STATUS,
+//    STATUS,
     TRANSPORT,
     UNIVERSITY,
     WHERE_LIVE

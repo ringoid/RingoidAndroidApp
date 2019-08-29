@@ -169,6 +169,7 @@
     <string name="settings_profile_item_custom_property_company_placeholder">Name of company or industry</string>
     <string name="settings_profile_item_custom_property_job_title">Job title</string>
     <string name="settings_profile_item_custom_property_name">Name</string>
+    <string name="settings_profile_item_custom_property_status">Status</string>
     <string name="settings_profile_item_custom_property_instagram">Instagram</string>
     <string name="settings_profile_item_custom_property_instagram_placeholder">\&#64;username</string>
     <string name="settings_profile_item_custom_property_tiktok">TikTok</string>

@@ -70,7 +70,7 @@ open class TextIconItemView : IconItemView {
     // --------------------------------------------------------------------------------------------
     open fun getText(): String = inputText ?: ""
 
-    fun setInputText(@StringRes resId: Int): Boolean {
+    private fun setInputText(@StringRes resId: Int): Boolean {
         if (resId == 0) {
             return false
         }
