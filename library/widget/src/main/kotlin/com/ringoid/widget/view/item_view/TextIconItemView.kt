@@ -122,17 +122,18 @@ open class TextIconItemView : IconItemView {
 
     internal fun assignText(text: String?): CharSequence? =
         text?.takeIf { it.isNotBlank() }
-            ?.let {
+            ?.let {  // some non-empty text is being typed
                 if (!hasText()) {
+                    // initial replacement of empty or hint with input text
                     setInputTextInternal(it)
                 } else {
-                    inputText = text
+                    inputText = text  // continue typing
                 }
-                text
+                text  // output - is actual text in input box
             }
             ?: run {  // text is null or blank - use hint, if any
                 setInputTextInternal(null)
-                null
+                null  // output - is actual text in input box
             }
 
     protected open fun setInputTextInternal(text: String?): Boolean {
