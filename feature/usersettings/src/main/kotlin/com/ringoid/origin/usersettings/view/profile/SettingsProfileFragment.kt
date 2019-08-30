@@ -23,6 +23,8 @@ import kotlinx.android.synthetic.main.fragment_settings_push.toolbar
 class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>(),
     BigEditTextDialog.IBigEditTextDialogDone {
 
+    private var isInitialFocus: Boolean = true
+
     companion object {
         internal const val TAG = "SettingsProfileFragment_tag"
         private const val ABOUT_PROPERTY_DIALOG_TAG = "PropertyAbout"
@@ -168,6 +170,30 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         with (tv_support) {
             highlightFrom(start = text.lastIndexOf(' '), textColor = context.getAttributeColor(WidgetR_attrs.refTextColorPrimary))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isInitialFocus) {
+            // focus on particular fields, if they are empty
+            if (item_profile_custom_property_name.isEmpty()) {
+                item_profile_custom_property_name.requestFocus()
+                return
+            }
+            if (item_profile_custom_property_where_live.isEmpty()) {
+                item_profile_custom_property_where_live.requestFocus()
+                return
+            }
+            if (item_profile_custom_property_status.isEmpty()) {
+                item_profile_custom_property_status.requestFocus()
+                return
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isInitialFocus = false  // next onResume() won't be treated as initial focus
     }
 
     // --------------------------------------------------------------------------------------------
