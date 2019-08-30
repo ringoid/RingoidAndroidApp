@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.explore
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.eventbus.BusEvent
@@ -85,6 +86,13 @@ class ExploreFeedViewModel @Inject constructor(
                         }
                 }
             }, DebugLogUtil::e)
+    }
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onRecreate(savedInstanceState: Bundle) {
+        super.onRecreate(savedInstanceState)
+        refresh()  // TODO: do proper state restore
     }
 
     // --------------------------------------------------------------------------------------------
