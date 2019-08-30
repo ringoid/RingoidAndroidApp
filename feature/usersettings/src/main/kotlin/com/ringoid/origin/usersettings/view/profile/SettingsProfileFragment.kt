@@ -133,7 +133,6 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
             textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
         }
         with (item_profile_custom_property_company) {
-//            focuses().skipInitialValue().filter { it }.compose(clickDebounce()).subscribe { scroll_container?.scrollTo(0, bottom) }
             textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onCompanyTextChange)
         }
         with (item_profile_custom_property_job_title) {
