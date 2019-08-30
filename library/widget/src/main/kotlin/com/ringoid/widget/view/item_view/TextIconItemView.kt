@@ -71,6 +71,8 @@ open class TextIconItemView : IconItemView {
     // --------------------------------------------------------------------------------------------
     open fun getText(): String = inputText ?: ""
 
+    fun isEmpty(): Boolean = inputText.isNullOrBlank()
+
     private fun setInputText(@StringRes resId: Int): Boolean {
         if (resId == 0) {
             return false
@@ -115,15 +117,14 @@ open class TextIconItemView : IconItemView {
     /* Internal */
     // --------------------------------------------------------------------------------------------
     protected fun hasHint(): Boolean = hint.isNotBlank()
-    protected fun hasText(): Boolean = !inputText.isNullOrBlank()
-    protected fun didTextChanged(text: String?): Boolean =
+    private fun didTextChanged(text: String?): Boolean =
         if (inputText.isNullOrBlank() && text.isNullOrBlank()) false
         else inputText != text
 
     internal fun assignText(text: String?): CharSequence? =
         text?.takeIf { it.isNotBlank() }
             ?.let {  // some non-empty text is being typed
-                if (!hasText()) {
+                if (isEmpty()) {
                     // initial replacement of empty or hint with input text
                     setInputTextInternal(it)
                 } else {

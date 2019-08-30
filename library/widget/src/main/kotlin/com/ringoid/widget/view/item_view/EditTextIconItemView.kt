@@ -29,7 +29,7 @@ class EditTextIconItemView : TextIconItemView {
         }
 
         tv_input.setOnFocusChangeListener { etView, hasFocus ->
-            if (!hasText() && hasHint()) {
+            if (isEmpty() && hasHint()) {
                 (etView as? TextView)?.let { et ->
                     disableTextChangeWatchers()
                     et.text = if (hasFocus) {
