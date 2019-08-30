@@ -20,6 +20,15 @@
             style="@style/ProgressBar.Horizontal"/>
 
         <com.ringoid.widget.view.item_view.SwitchIconItemView
+            android:id="@+id/item_push_vibrate"
+            app:icon_item_text="@string/settings_push_item_vibration"
+            style="?attr/iconItemView"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/std_margin_16"/>
+
+        <com.ringoid.widget.view.item_view.SwitchIconItemView
             android:id="@+id/item_push_message"
             app:icon_item_text="@string/settings_push_item_message"
             style="?attr/iconItemView"/>
@@ -40,26 +49,12 @@
 
         <View style="@style/Underscore"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/std_margin_16"/>
-
         <com.ringoid.widget.view.item_view.SwitchLabelIconItemView
             android:id="@+id/item_push_daily"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/std_margin_16"
             app:icon_item_text="@string/settings_push_item_daily"
             app:icon_item_text_label="@string/settings_push_item_daily_description"
-            style="?attr/iconItemView"/>
-
-        <View style="@style/Underscore"/>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/std_margin_16"/>
-
-        <com.ringoid.widget.view.item_view.SwitchIconItemView
-            android:id="@+id/item_push_vibrate"
-            app:icon_item_text="@string/settings_push_item_vibration"
             style="?attr/iconItemView"/>
 
         <View style="@style/Underscore"/>
