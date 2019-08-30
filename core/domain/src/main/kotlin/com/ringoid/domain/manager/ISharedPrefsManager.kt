@@ -31,9 +31,6 @@ interface ISharedPrefsManager : IFiltersSource {
     @DebugOnly
     fun switchDebugLogEnabled()
 
-    @DebugOnly
-    fun testBackup()
-
     fun isDeveloperModeEnabled(): Boolean
     fun enableDeveloperMode()
     fun switchDeveloperMode()

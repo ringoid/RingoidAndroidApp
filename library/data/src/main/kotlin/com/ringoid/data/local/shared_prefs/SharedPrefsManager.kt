@@ -168,13 +168,6 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         enableDebugLog(isEnabled = !currentFlag)
     }
 
-    @DebugOnly
-    override fun testBackup() {
-        Timber.d("Test Backup: accessToken=${accessToken()}, userId=${currentUserId()}, %s backup[%s]",
-            "lastActionTime=${getLastActionTime()}, themeId=${getThemeResId()}, debugLog=${isDebugLogEnabled()}",
-                "privateKey=${getPrivateKey()}, referralId=${getReferralCode()}")
-    }
-
     override fun isDeveloperModeEnabled(): Boolean =
         sharedPreferences.getBoolean(SP_KEY_DEVELOPER_MODE, BuildConfig.IS_STAGING)
             .also { config.setDeveloperMode(it) }

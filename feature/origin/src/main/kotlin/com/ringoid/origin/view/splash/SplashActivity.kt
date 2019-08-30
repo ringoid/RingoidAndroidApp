@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.ringoid.base.view.BaseActivity
-import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.splash
@@ -22,10 +21,6 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
     // --------------------------------------------------------------------------------------------
     override fun onBeforeCreate() {
         setTheme(R.style.SplashTheme)
-
-        if (BuildConfig.DEBUG) {
-            spm.testBackup()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
