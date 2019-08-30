@@ -33,6 +33,7 @@
     <string name="error_connection">Connection error. Please try again.</string>
     <string name="error_crop_image">Failed to load and prepare photo</string>
     <string name="error_invalid_referral_code">Referral code is invalid</string>
+    <string name="error_support">Write to support</string>
 
     <string name="value_cm">cm</string>
     

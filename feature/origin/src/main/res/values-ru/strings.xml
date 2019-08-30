@@ -33,6 +33,7 @@
     <string name="error_connection">Ошибка соединения. Пожалуйста повторите.</string>
     <string name="error_crop_image">Не удалось загрузить фото</string>
     <string name="error_invalid_referral_code">Код неверен</string>
+    <string name="error_support">Обратитесь в поддержку</string>
 
     <string name="value_cm">см</string>
 

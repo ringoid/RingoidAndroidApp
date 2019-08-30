@@ -187,7 +187,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         fun onCropFailed(e: Throwable) {
             Timber.e(e, "Image crop has failed")
-            context?.toast(OriginR_string.error_crop_image)
+            Dialogs.supportDialog(this@UserProfileFragment, OriginR_string.error_crop_image)
             debugAddImage = false
             // on crop error after login
             if (!cropImageAfterLogin) {
