@@ -37,6 +37,7 @@ import com.ringoid.domain.model.Mappable
  *   "about":"Nice person",
  *   "instagram":"unknown",
  *   "tikTok":"unknown",
+ *   "statusText":"This is my status!",
  *   "whereLive":"St.Petersburg",
  *   "whereFrom":"Leningrad"
  * }
@@ -63,6 +64,7 @@ abstract class BaseProfileEntity<T>(
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_NAME) val name: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM) val instagram: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK) val tiktok: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_STATUS_TEXT) val status: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_UNIVERSITY) val university: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_FROM) val whereFrom: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_LIVE) val whereLive: String? = null)
@@ -90,10 +92,11 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_PROPERTY_CUSTOM_NAME = "name"
         const val COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM = "instagram"
         const val COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK = "tikTok"
+        const val COLUMN_PROPERTY_CUSTOM_STATUS_TEXT = "statusText"
         const val COLUMN_PROPERTY_CUSTOM_UNIVERSITY = "education"
         const val COLUMN_PROPERTY_CUSTOM_WHERE_FROM = "whereFrom"
         const val COLUMN_PROPERTY_CUSTOM_WHERE_LIVE = "whereLive"
     }
 
-    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, children=$children, gender='$gender', education=$education, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport)"
+    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, children=$children, education=$education, gender=$gender, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport, about=$about, company=$company, jobTitle=$jobTitle, name=$name, instagram=$instagram, tiktok=$tiktok, status=$status, university=$university, whereFrom=$whereFrom, whereLive=$whereLive)"
 }

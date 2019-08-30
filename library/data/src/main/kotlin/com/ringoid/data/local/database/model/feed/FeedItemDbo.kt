@@ -28,6 +28,7 @@ data class FeedItemDbo(
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_NAME) val name: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_INSTAGRAM) val instagram: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_TIKTOK) val tiktok: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_STATUS_TEXT) val status: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_UNIVERSITY) val university: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_WHERE_FROM) val whereFrom: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_WHERE_LIVE) val whereLive: String? = null,
@@ -54,6 +55,7 @@ data class FeedItemDbo(
         const val COLUMN_CUSTOM_PROPERTY_NAME = "name"
         const val COLUMN_CUSTOM_PROPERTY_INSTAGRAM = "instagram"
         const val COLUMN_CUSTOM_PROPERTY_TIKTOK = "tiktok"
+        const val COLUMN_CUSTOM_PROPERTY_STATUS_TEXT = "statusText"
         const val COLUMN_CUSTOM_PROPERTY_UNIVERSITY = "university"
         const val COLUMN_CUSTOM_PROPERTY_WHERE_FROM = "whereFrom"
         const val COLUMN_CUSTOM_PROPERTY_WHERE_LIVE = "whereLive"
@@ -82,6 +84,7 @@ data class FeedItemDbo(
                 name = feedItem.name,
                 instagram = feedItem.instagram,
                 tiktok = feedItem.tiktok,
+                status = feedItem.status,
                 university = feedItem.university,
                 whereFrom = feedItem.whereFrom,
                 whereLive = feedItem.whereLive,

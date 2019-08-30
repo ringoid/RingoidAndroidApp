@@ -28,6 +28,7 @@ open class FeedItem(
     override val name: String? = null,
     override val instagram: String? = null,
     override val tiktok: String? = null,
+    override val status: String? = null,
     override val university: String? = null,
     override val whereFrom: String? = null,
     override val whereLive: String? = null,

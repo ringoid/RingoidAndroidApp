@@ -30,6 +30,7 @@ interface IProfile : IModel {
     val name: String?
     val instagram: String?
     val tiktok: String?
+    val status: String?
     val university: String?
     val whereFrom: String?
     val whereLive: String?
@@ -54,6 +55,7 @@ interface IProfile : IModel {
     fun name(): String? = if (name != DomainUtil.BAD_PROPERTY) name else null
     fun instagram(): String? = if (instagram != DomainUtil.BAD_PROPERTY) instagram else null
     fun tiktok(): String? = if (tiktok != DomainUtil.BAD_PROPERTY) tiktok else null
+    fun status(): String? = if (status != DomainUtil.BAD_PROPERTY) status else null
     fun university(): String? = if (university != DomainUtil.BAD_PROPERTY) university else null
     fun whereFrom(): String? = if (whereFrom != DomainUtil.BAD_PROPERTY) whereFrom else null
     fun whereLive(): String? = if (whereLive != DomainUtil.BAD_PROPERTY) whereLive else null

@@ -35,6 +35,7 @@ data class FeedItemVO(
     override val name: String? = null,
     override val instagram: String? = null,
     override val tiktok: String? = null,
+    override val status: String? = null,
     override val university: String? = null,
     override val whereFrom: String? = null,
     override val whereLive: String? = null,
@@ -67,6 +68,7 @@ data class FeedItemVO(
         name = feedItem.name,
         instagram = feedItem.instagram,
         tiktok = feedItem.tiktok,
+        status = feedItem.status,
         university = feedItem.university,
         whereFrom = feedItem.whereFrom,
         whereLive = feedItem.whereLive)
@@ -93,6 +95,7 @@ data class FeedItemVO(
         name = profile.name,
         instagram = profile.instagram,
         tiktok = profile.tiktok,
+        status = profile.status,
         university = profile.university,
         whereFrom = profile.whereFrom,
         whereLive = profile.whereLive)

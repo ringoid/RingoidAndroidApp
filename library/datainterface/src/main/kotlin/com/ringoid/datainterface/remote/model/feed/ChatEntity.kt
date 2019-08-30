@@ -71,6 +71,7 @@ class ChatEntity(
     name: String? = null,
     instagram: String? = null,
     tiktok: String? = null,
+    status: String? = null,
     university: String? = null,
     whereFrom: String? = null,
     whereLive: String? = null)
@@ -98,6 +99,7 @@ class ChatEntity(
         name = name,
         instagram = instagram,
         tiktok = tiktok,
+        status = status,
         university = university,
         whereFrom = whereFrom,
         whereLive = whereLive) {

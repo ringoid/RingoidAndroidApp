@@ -49,6 +49,7 @@ class ProfileEntity(
     name: String? = null,
     instagram: String? = null,
     tiktok: String? = null,
+    status: String? = null,
     university: String? = null,
     whereFrom: String? = null,
     whereLive: String? = null)
@@ -74,6 +75,7 @@ class ProfileEntity(
         name = name,
         instagram = instagram,
         tiktok = tiktok,
+        status = status,
         university = university,
         whereFrom = whereFrom,
         whereLive = whereLive) {
@@ -100,6 +102,7 @@ class ProfileEntity(
             name = name,
             instagram = instagram,
             tiktok = tiktok,
+            status = status,
             university = university,
             whereFrom = whereFrom,
             whereLive = whereLive)

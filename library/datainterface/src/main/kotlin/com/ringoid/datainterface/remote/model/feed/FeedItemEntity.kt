@@ -68,6 +68,7 @@ open class FeedItemEntity(
     name: String? = null,
     instagram: String? = null,
     tiktok: String? = null,
+    status: String? = null,
     university: String? = null,
     whereFrom: String? = null,
     whereLive: String? = null)
@@ -93,6 +94,7 @@ open class FeedItemEntity(
         name = name,
         instagram = instagram,
         tiktok = tiktok,
+        status = status,
         university = university,
         whereFrom = whereFrom,
         whereLive = whereLive) {
@@ -135,6 +137,7 @@ open class FeedItemEntity(
             name = name,
             instagram = instagram,
             tiktok = tiktok,
+            status = status,
             university = university,
             whereFrom = whereFrom,
             whereLive = whereLive)
