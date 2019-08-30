@@ -106,6 +106,21 @@
         app:label_text="@string/common_online"
         app:label_text_size="@dimen/std_text_18"/>
 
+    <com.ringoid.widget.view.ExtendImageButton
+        android:id="@+id/ibtn_profile_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/std_margin_24"
+        android:paddingBottom="@dimen/std_margin_32"
+        android:paddingStart="@dimen/std_margin_32"
+        android:paddingEnd="@dimen/std_margin_16"
+        android:contentDescription="@null"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:xbtnSrc="@drawable/ic_edit_white_36dp"/>
+
     <View
         android:id="@+id/anchor"
         android:layout_width="1dp"
@@ -140,9 +155,7 @@
         android:maxLines="6"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
-        app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ibtn_profile_edit"
         app:layout_constraintStart_toStartOf="parent"
         app:fontFamily="@font/status_font"
         style="@style/StatusText"/>
@@ -212,21 +225,6 @@
         app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:xbtnSrc="@drawable/ic_more_white"/>
-
-    <com.ringoid.widget.view.ExtendImageButton
-        android:id="@+id/ibtn_profile_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/std_margin_24"
-        android:paddingBottom="@dimen/std_margin_32"
-        android:paddingStart="@dimen/std_margin_32"
-        android:paddingEnd="@dimen/std_margin_16"
-        android:contentDescription="@null"
-        app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_edit_white_36dp"/>
 
     <ProgressBar
         android:id="@+id/pb_profile"
