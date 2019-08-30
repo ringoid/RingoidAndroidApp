@@ -409,12 +409,14 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // --------------------------------------
+        // about
         model.about()
-            .takeIf { !it.isNullOrBlank() }
+            ?.takeIf { it.isNotBlank() }
             ?.let { itemView.tv_about.text = it.trim() }
 
         withAbout = !model.about().isNullOrBlank()
 
+        // name, age
         (model.name()?.takeIf { it.isNotBlank() } ?: AppInMemory.genderString(model.gender))
             ?.let { name ->
                 mutableListOf<String>().apply {
@@ -424,6 +426,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                 .let { itemView.tv_name_age.text = it.joinToString() }
             }
 
+        // status
+        model.status()
+            ?.takeIf { it.isNotBlank() }
+            ?.let { itemView.tv_status.text = it.trim() }
+
+        // labels in sections
         itemView.ll_left_section?.let { containerView ->
             containerView.removeAllViews()
             when (model.gender) {

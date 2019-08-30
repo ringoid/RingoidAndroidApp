@@ -92,6 +92,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/StdText.Primary"/>
 
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="@dimen/feed_item_status_max_width"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:gravity="start|center_vertical"
+        android:maxLines="6"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        app:layout_constraintTop_toTopOf="@id/ibtn_like"
+        app:layout_constraintStart_toStartOf="parent"
+        app:fontFamily="@font/status_font"
+        style="@style/StatusText"/>
+
     <LinearLayout
         android:id="@+id/ll_left_container"
         android:layout_width="0dp"
