@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
 import android.webkit.URLUtil
@@ -113,8 +114,7 @@ object ExternalNavigator {
     }
 
     private fun openGalleryToGetImageIntent(): Intent =
-        Intent().apply {
-            action = Intent.ACTION_OPEN_DOCUMENT
+        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
             type = "image/*"
         }
 
