@@ -172,7 +172,6 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         }
 
         // other
-        item_suggest_improvements.clicks().compose(clickDebounce()).subscribe { openSuggestImprovementsDialog("SuggestFromProfileSettings") }
         with (tv_support) {
             highlightFrom(start = text.lastIndexOf(' '), textColor = context.getAttributeColor(WidgetR_attrs.refTextColorPrimary))
         }
