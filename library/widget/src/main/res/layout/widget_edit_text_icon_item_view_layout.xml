@@ -37,7 +37,7 @@
                 android:layout_weight="0.3"
                 android:background="@drawable/rect_round_secondary_stroke"
                 android:gravity="center"
-                android:inputType="text|textCapWords"
+                android:inputType="text|textCapSentences"
                 android:maxLength="3"
                 android:minHeight="@dimen/std_margin_32"
                 android:padding="4dp"
