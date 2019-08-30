@@ -68,23 +68,18 @@ class SettingsPushFragment : BaseSettingsFragment<SettingsPushViewModel>() {
 
         with (item_push_daily) {
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushDaily(isChecked()) }
-//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushDaily(it) }
         }
         with (item_push_like) {
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushLikes(isChecked()) }
-//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushLikes(it) }
         }
         with (item_push_match) {
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMatches(isChecked()) }
-//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMatches(it) }
         }
         with (item_push_message) {
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMessages(isChecked()) }
-//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMessages(it) }
         }
         with (item_push_vibrate) {
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushVibration(isChecked()) }
-//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushVibration(it) }
         }
 
         // other
