@@ -106,7 +106,7 @@ class ExploreFeedViewModel @Inject constructor(
             .doOnSubscribe { viewState.value = ViewState.LOADING }  // load feed items progress
             .doOnSuccess {
                 viewState.value = if (it.isEmpty()) {
-                    if (filtersSource.hasFiltersApplied()) {
+                    if (hasFiltersApplied()) {
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)  // set empty Explore feed due to filters
                     } else {
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)  // set empty Explore feed (no filters)
@@ -149,6 +149,8 @@ class ExploreFeedViewModel @Inject constructor(
     internal fun onApplyFilters() {
         refresh()  // just refresh, filters are always applied on Explore feed
     }
+
+    internal fun hasFiltersApplied(): Boolean = filtersSource.hasFiltersApplied()
 
     private fun prepareFeedParams(): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))

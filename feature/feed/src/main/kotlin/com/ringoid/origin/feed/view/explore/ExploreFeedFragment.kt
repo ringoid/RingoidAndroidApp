@@ -87,6 +87,14 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
         super.onViewStateChange(newState)
     }
 
+    override fun onDiscardAllProfiles() {
+        if (vm.hasFiltersApplied()) {
+            onClearState(ViewState.CLEAR.MODE_CHANGE_FILTERS)  // discard all filtered profiles in Feed
+        } else {
+            super.onDiscardAllProfiles()
+        }
+    }
+
     override fun onHiddenChanged(hidden: Boolean) {
         // don't call 'super', completely overridden method
     }
