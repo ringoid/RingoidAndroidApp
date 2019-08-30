@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="chat_blob_my">#7ff2f2f2</color>
-    <color name="chat_blob_peer">#7fe0ffc5</color>
+    <color name="chat_blob_my">#aff2f2f2</color>
+    <color name="chat_blob_peer">#afe0ffc5</color>
     <color name="chat_edit_text_bg_color">#26000000</color>
 </resources>

@@ -419,6 +419,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         model.about()
             ?.takeIf { it.isNotBlank() }
             ?.let { itemView.tv_about.text = it.trim() }
+            ?: run { itemView.tv_about.text = "" }
 
         withAbout = !model.about().isNullOrBlank()
 
@@ -436,6 +437,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         model.status()
             ?.takeIf { it.isNotBlank() }
             ?.let { itemView.tv_status.text = it.trim() }
+            ?: run { itemView.tv_status.text = "" }
 
         // labels in sections
         itemView.ll_left_section?.let { containerView ->
