@@ -4,6 +4,6 @@
     <application>
         <activity
             android:name=".dialog.DeleteUserProfileImageActivity"
-            android:theme="@style/AppTheme.Light.SemiTransparent"/>
+            android:theme="@style/AppTheme.Dark.SemiTransparent"/>
     </application>
 </manifest>
