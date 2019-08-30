@@ -6,8 +6,6 @@
     android:orientation="vertical"
     android:minHeight="@dimen/dialog_bottom_sheet_delete_image_height">
 
-    <View style="@style/Underscore"/>
-
     <Button
         android:id="@+id/btn_delete_image_debug"
         android:layout_width="match_parent"

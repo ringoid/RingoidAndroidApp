@@ -6,8 +6,6 @@
     android:orientation="vertical"
     android:minHeight="@dimen/dialog_bottom_sheet_report_height">
 
-    <View style="@style/Underscore"/>
-
     <Button
         android:id="@+id/btn_report_0"
         android:layout_width="match_parent"

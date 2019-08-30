@@ -49,7 +49,6 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
                 changeVisibility(isVisible = config.isDeveloper())
                 clicks().compose(clickDebounce()).subscribe { navigate(this@SettingsAppInfoFragment, path="/debug") }
             }
-            debug_underscore.changeVisibility(isVisible = config.isDeveloper())
         }
 
         super.onViewCreated(view, savedInstanceState)

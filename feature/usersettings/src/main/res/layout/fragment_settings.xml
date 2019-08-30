@@ -19,8 +19,6 @@
         app:icon_item_text="@string/settings_filters"
         style="?attr/iconItemView"/>
 
-    <View style="@style/Underscore" android:visibility="gone"/>
-
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_profile"
         android:layout_height="wrap_content"
@@ -29,16 +27,12 @@
         app:icon_item_text="@string/settings_profile"
         style="?attr/iconItemView"/>
 
-    <View style="@style/Underscore"/>
-
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_push"
         android:layout_height="wrap_content"
         app:icon_item_hide_icon="false"
         app:icon_item_text="@string/settings_push"
         style="?attr/iconItemView"/>
-
-    <View style="@style/Underscore"/>
 
     <com.ringoid.widget.view.item_view.SwitchIconItemView
         android:id="@+id/item_theme"
@@ -47,15 +41,11 @@
         app:icon_item_text="@string/settings_theme_dark"
         style="?attr/iconItemView"/>
 
-    <View style="@style/Underscore" android:visibility="gone"/>
-
     <com.ringoid.widget.view.item_view.LabelIconItemView
         android:id="@+id/item_language"
         app:icon_item_hide_icon="false"
         app:icon_item_text="@string/settings_language"
         style="?attr/iconItemView"/>
-
-    <View style="@style/Underscore"/>
 
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_legal"
@@ -63,23 +53,17 @@
         app:icon_item_text="@string/settings_app_info"
         style="?attr/iconItemView"/>
 
-    <View style="@style/Underscore"/>
-
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_support"
         app:icon_item_hide_icon="false"
         app:icon_item_text="@string/settings_support"
         style="?attr/iconItemView"/>
 
-    <View style="@style/Underscore"/>
-
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_suggest_improvements"
         app:icon_item_hide_icon="false"
         app:icon_item_text="@string/settings_suggest_improvements"
         style="?attr/iconItemView"/>
-
-    <View style="@style/Underscore"/>
 
     <com.ringoid.widget.view.item_view.IconItemView
         android:id="@+id/item_delete_account"

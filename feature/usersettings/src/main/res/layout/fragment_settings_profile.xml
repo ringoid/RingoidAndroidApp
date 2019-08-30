@@ -39,8 +39,6 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_name"
                 android:layout_marginTop="@dimen/std_margin_16"
@@ -50,8 +48,6 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_where_live"
                 android:layout_marginTop="@dimen/std_margin_16"
@@ -60,8 +56,6 @@
                 app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_where_live_placeholder"
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.TextIconItemView
                 android:id="@+id/item_profile_custom_property_about"
@@ -74,8 +68,6 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_instagram"
                 android:layout_marginTop="@dimen/std_margin_16"
@@ -84,8 +76,6 @@
                 app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_instagram_placeholder"
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_tiktok"
@@ -96,8 +86,6 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_job_title"
                 android:layout_marginTop="@dimen/std_margin_16"
@@ -105,8 +93,6 @@
                 app:icon_item_text="@string/settings_profile_item_custom_property_job_title"
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_company"
@@ -117,8 +103,6 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_university"
                 android:layout_marginTop="@dimen/std_margin_16"
@@ -127,8 +111,6 @@
                 app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_university_placeholder"
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <!-- Properties -->
             <com.ringoid.widget.view.item_view.EditTextIconItemView
@@ -141,16 +123,12 @@
                 app:text_icon_item_side_padding="0dp"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_hair_color"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyHairColor"
                 app:icon_item_text="@string/profile_property_hair_color"
                 style="?attr/spinnerIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_education"
@@ -159,16 +137,12 @@
                 app:icon_item_text="@string/profile_property_education"
                 style="?attr/spinnerIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_children"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyChildren"
                 app:icon_item_text="@string/profile_property_children"
                 style="?attr/spinnerIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_income"
@@ -177,16 +151,12 @@
                 app:icon_item_text="@string/profile_property_income"
                 style="?attr/spinnerIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_property"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyProperty"
                 app:icon_item_text="@string/profile_property_property"
                 style="?attr/spinnerIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_transport"
