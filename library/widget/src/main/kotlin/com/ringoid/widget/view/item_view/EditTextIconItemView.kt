@@ -24,6 +24,7 @@ class EditTextIconItemView : TextIconItemView {
     constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int) : super(context, attributes, defStyleAttr) {
         with (context.obtainStyledAttributes(attributes, R.styleable.EditTextIconItemView, defStyleAttr, R.style.TextIconItemView)) {
             ll_count_container.changeVisibility(isVisible = getBoolean(R.styleable.EditTextIconItemView_edit_text_icon_item_with_counter, false))
+            tv_input.setSelectAllOnFocus(getBoolean(R.styleable.EditTextIconItemView_edit_text_icon_item_select_all_on_focus, false))
             recycle()
         }
 
