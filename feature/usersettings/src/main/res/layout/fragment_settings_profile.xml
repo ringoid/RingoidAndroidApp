@@ -116,6 +116,7 @@
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_property_height"
                 android:layout_marginTop="@dimen/std_margin_16"
+                android:inputType="number"
                 app:icon_item_icon="?refDrawableProfilePropertyHeight"
                 app:icon_item_text="@string/profile_property_height"
                 app:text_icon_item_text_gravity="center"
