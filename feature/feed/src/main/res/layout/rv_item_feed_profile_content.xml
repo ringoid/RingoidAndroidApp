@@ -107,7 +107,9 @@
         android:maxLines="6"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
-        app:layout_constraintTop_toTopOf="@id/anchor0"
+        app:layout_constraintVertical_bias="0.6"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:fontFamily="@font/status_font"
         style="@style/StatusText"/>
@@ -172,14 +174,15 @@
 
     <TextView
         android:id="@+id/tv_profile_id"
-        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
         android:textSize="@dimen/std_text_22"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.55"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Debug profile id"
