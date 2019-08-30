@@ -19,6 +19,7 @@ import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.model.UserProfileProperties
+import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -76,6 +77,16 @@ class UserProfileFragmentViewModel @Inject constructor(
     override fun onStart() {
         super.onStart()
         profile.value = UserProfileProperties.from(spm.getUserProfileProperties())
+            .apply {
+                /**
+                 * Convert hex unicode to decimal. For emoji HTML entities (hex / decimal):
+                 *
+                 * @see https://www.fileformat.info/info/emoji/list.htm
+                 */
+                if (spm.getNeedShowStubStatus() /** check flag and drop */ && status().isBlank()) {
+                    status(app.getRes().getString(OriginR_string.settings_profile_item_custom_property_status_stub))
+                }
+            }
     }
 
     // --------------------------------------------------------------------------------------------

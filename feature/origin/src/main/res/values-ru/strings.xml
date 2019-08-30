@@ -169,6 +169,7 @@
     <string name="settings_profile_item_custom_property_instagram_placeholder">\&#64;username</string>
     <string name="settings_profile_item_custom_property_tiktok">TikTok</string>
     <string name="settings_profile_item_custom_property_tiktok_placeholder">\&#64;username</string>
+    <string name="settings_profile_item_custom_property_status_stub">Привет! &#128525; Это мой статус&#8230; &#128075;</string>
     <string name="settings_profile_item_custom_property_university">Место учебы</string>
     <string name="settings_profile_item_custom_property_university_placeholder">Университет, колледж. Год выпуска</string>
     <string name="settings_profile_item_custom_property_where_live">Город</string>

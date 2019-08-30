@@ -1,6 +1,7 @@
 package com.ringoid.origin
 
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.StrictMode
 import android.util.Log
 import com.crashlytics.android.Crashlytics
@@ -32,6 +33,8 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     @Inject override lateinit var userScopeProvider: UserScopeProvider
     @Inject override lateinit var userSettingsManager: IUserSettingsManager
     @Inject override lateinit var updatePushTokenUseCase: UpdatePushTokenUseCase
+
+    override fun getRes(): Resources = resources
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

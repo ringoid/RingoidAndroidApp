@@ -35,6 +35,7 @@ class SettingsProfileViewModel @Inject constructor(
         properties = UserProfileProperties.from(spm.getUserProfileProperties())
         unsavedProperties = spm.getUserProfileCustomPropertiesUnsavedInput()
         profile.value = properties  // assign initial values to views
+        spm.dropNeedShowStubStatus()
     }
 
     override fun onStop() {
