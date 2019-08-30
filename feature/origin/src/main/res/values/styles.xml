@@ -2,7 +2,7 @@
 <resources>
     <style name="StatusText" parent="StdText.White">
         <item name="android:fontFamily">@font/status_font</item>
-        <item name="android:textSize">@dimen/std_text_30</item>
+        <item name="android:textSize">@dimen/std_text_34</item>
         <item name="android:textStyle">normal</item>
     </style>
 </resources>

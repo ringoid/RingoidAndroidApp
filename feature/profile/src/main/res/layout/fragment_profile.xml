@@ -133,17 +133,19 @@
 
     <TextView
         android:id="@+id/tv_status"
+        android:layout_width="@dimen/profile_status_max_width"
         android:layout_marginStart="@dimen/std_margin_16"
         android:clickable="true"
         android:gravity="start|center_vertical"
         android:maxLines="6"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
-        app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
-        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:fontFamily="@font/status_font"
-        style="@style/StdText.Primary"/>
+        style="@style/StatusText"/>
 
     <LinearLayout
         android:id="@+id/ll_left_container"
