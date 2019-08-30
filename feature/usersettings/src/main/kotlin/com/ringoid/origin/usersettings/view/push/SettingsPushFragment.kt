@@ -52,23 +52,23 @@ class SettingsPushFragment : BaseSettingsFragment<SettingsPushViewModel>() {
             setTitle(OriginR_string.settings_push)
         }
 
-        item_push_daily.apply {
+        with (item_push_daily) {
             setChecked(spm.getUserSettingDailyPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushDaily(isChecked()) }
         }
-        item_push_like.apply {
+        with (item_push_like) {
             setChecked(spm.getUserSettingLikesPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushLikes(isChecked()) }
         }
-        item_push_match.apply {
+        with (item_push_match) {
             setChecked(spm.getUserSettingMatchesPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMatches(isChecked()) }
         }
-        item_push_message.apply {
+        with (item_push_message) {
             setChecked(spm.getUserSettingMessagesPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMessages(isChecked()) }
         }
-        item_push_vibrate.apply {
+        with (item_push_vibrate) {
             setChecked(spm.getUserSettingVibrationPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushVibration(isChecked()) }
         }
