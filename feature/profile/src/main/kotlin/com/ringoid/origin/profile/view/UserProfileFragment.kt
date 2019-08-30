@@ -378,7 +378,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             addOnScrollListener(pageSelectListener)
         }
         tv_app_title.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
-        tv_status.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile&focus=${UserProfileEditablePropertyId.STATUS}") }
+        tv_status.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile?focus=${UserProfileEditablePropertyId.STATUS}") }
     }
 
     override fun onDestroyView() {
