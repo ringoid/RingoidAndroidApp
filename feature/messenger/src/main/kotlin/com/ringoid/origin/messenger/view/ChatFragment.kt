@@ -5,10 +5,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.KeyEvent
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -98,7 +95,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             onMessageLongClickListener = { message ->
                 context?.let {
                     it.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_CHAT_MESSAGE, value = message.text)
-                    it.toast(OriginR_string.common_clipboard)
+                    it.toast(OriginR_string.common_clipboard, gravity = Gravity.CENTER)
                 }
             }
         }
