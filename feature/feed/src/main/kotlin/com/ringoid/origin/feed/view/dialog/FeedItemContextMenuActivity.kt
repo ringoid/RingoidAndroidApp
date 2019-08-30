@@ -13,7 +13,7 @@ import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.activity_bottom_sheet_block.*
 
 @AppNav("block_dialog", "report_dialog")
-class BlockBottomSheetActivity : SimpleBaseActivity(), IBlockBottomSheetActivity {
+class FeedItemContextMenuActivity : SimpleBaseActivity(), IBlockBottomSheetActivity {
 
     companion object {
         private const val BUNDLE_KEY_OUTPUT_DATA = "bundle_key_output_data"

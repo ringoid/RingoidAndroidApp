@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".view.dialog.BlockBottomSheetActivity"
+            android:name=".view.dialog.FeedItemContextMenuActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark"/>
     </application>

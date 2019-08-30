@@ -11,7 +11,7 @@ import com.ringoid.domain.debug.IDebugLogDaoHelper
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.dating.app.RingoidApplication
-import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetActivityModule
+import com.ringoid.origin.feed.view.dialog.di.FeedItemContextMenuActivityModule
 import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetDialogModule
 import com.ringoid.origin.feed.view.dialog.di.ReportBottomSheetDialogModule
 import com.ringoid.origin.feed.view.explore.di.ExploreFragmentModule
@@ -57,7 +57,7 @@ import javax.inject.Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class, DeeplinkDiModule::class,
                       /** Screen modules */
                       AboutDialogModule::class, BigEditTextDialogModule::class,
-                      BlockBottomSheetActivityModule::class, BlockBottomSheetDialogModule::class,
+                      FeedItemContextMenuActivityModule::class, BlockBottomSheetDialogModule::class,
                       DeleteUserProfileImageActivityModule::class, DeleteUserProfileImageDialogModule::class,
                       ReportBottomSheetDialogModule::class, ChatHostActivityModule::class, ChatFragmentModule::class,
                       DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
