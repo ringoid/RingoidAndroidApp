@@ -173,13 +173,13 @@ class MessagesFeedViewModel @Inject constructor(
             if (badgeIsOn) {  /** has new feed items */
                 analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
             }
-            shouldVibrate = spm.getUserSettingVibrationPushEnabled()
+            shouldVibrate = spm.getUserPushSettings().pushVibration
         }
     }
 
     override fun onStart() {
         super.onStart()
-        shouldVibrate = spm.getUserSettingVibrationPushEnabled()
+        shouldVibrate = spm.getUserPushSettings().pushVibration
     }
 
     // --------------------------------------------------------------------------------------------

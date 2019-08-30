@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
+import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
@@ -44,6 +45,19 @@ class SettingsPushFragment : BaseSettingsFragment<SettingsPushViewModel>() {
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with (viewLifecycleOwner) {
+            observe(vm.pushSettings()) {
+                item_push_daily.setChecked(it.push)
+                item_push_like.setChecked(it.pushLikes)
+                item_push_match.setChecked(it.pushMatches)
+                item_push_message.setChecked(it.pushMessages)
+                item_push_vibrate.setChecked(it.pushVibration)
+            }
+        }
+    }
+
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,24 +67,24 @@ class SettingsPushFragment : BaseSettingsFragment<SettingsPushViewModel>() {
         }
 
         with (item_push_daily) {
-            setChecked(spm.getUserSettingDailyPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushDaily(isChecked()) }
+//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushDaily(it) }
         }
         with (item_push_like) {
-            setChecked(spm.getUserSettingLikesPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushLikes(isChecked()) }
+//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushLikes(it) }
         }
         with (item_push_match) {
-            setChecked(spm.getUserSettingMatchesPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMatches(isChecked()) }
+//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMatches(it) }
         }
         with (item_push_message) {
-            setChecked(spm.getUserSettingMessagesPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMessages(isChecked()) }
+//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushMessages(it) }
         }
         with (item_push_vibrate) {
-            setChecked(spm.getUserSettingVibrationPushEnabled())
             clicks().compose(clickDebounce()).subscribe { vm.updateUserSettingPushVibration(isChecked()) }
+//            switches().skipInitialValue().compose(clickDebounce()).subscribe { vm.updateUserSettingPushVibration(it) }
         }
 
         // other

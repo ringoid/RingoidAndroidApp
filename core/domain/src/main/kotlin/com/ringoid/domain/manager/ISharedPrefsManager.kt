@@ -3,10 +3,7 @@ package com.ringoid.domain.manager
 import androidx.annotation.StyleRes
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.IFiltersSource
-import com.ringoid.domain.misc.Gender
-import com.ringoid.domain.misc.GpsLocation
-import com.ringoid.domain.misc.UserProfileCustomPropertiesUnsavedInput
-import com.ringoid.domain.misc.UserProfilePropertiesRaw
+import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.user.AccessToken
 
 interface ISharedPrefsManager : IFiltersSource {
@@ -79,17 +76,9 @@ interface ISharedPrefsManager : IFiltersSource {
 
     /* User Settings */
     // ------------------------------------------
-    fun getUserSettingDailyPushEnabled(): Boolean
-    fun getUserSettingLikesPushEnabled(): Boolean
-    fun getUserSettingMatchesPushEnabled(): Boolean
-    fun getUserSettingMessagesPushEnabled(): Boolean
-    fun getUserSettingVibrationPushEnabled(): Boolean
-
-    fun setUserSettingDailyPushEnabled(pushEnabled: Boolean)
-    fun setUserSettingLikesPushEnabled(pushEnabled: Boolean)
-    fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean)
-    fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean)
-    fun setUserSettingVibrationPushEnabled(pushEnabled: Boolean)
+    fun getUserPushSettings(): PushSettingsRaw
+    fun setUserPushSettings(settingsRaw: PushSettingsRaw)
+    fun dropUserPushSettings()
 
     fun getUserProfileProperties(): UserProfilePropertiesRaw
     fun setUserProfileProperties(propertiesRaw: UserProfilePropertiesRaw)

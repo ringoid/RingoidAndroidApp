@@ -12,10 +12,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.exception.InvalidAccessTokenException
 import com.ringoid.domain.exception.SilentFatalException
 import com.ringoid.domain.manager.ISharedPrefsManager
-import com.ringoid.domain.misc.Gender
-import com.ringoid.domain.misc.GpsLocation
-import com.ringoid.domain.misc.UserProfileCustomPropertiesUnsavedInput
-import com.ringoid.domain.misc.UserProfilePropertiesRaw
+import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.NoFilters
@@ -32,6 +29,7 @@ import kotlin.math.abs
 class SharedPrefsManager @Inject constructor(context: Context, private val config: RuntimeConfig)
     : ISharedPrefsManager {
 
+    private val gson = Gson()
     private val sharedPreferences: SharedPreferences
     private val backupSharedPreferences: SharedPreferences
 
@@ -47,6 +45,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
         DebugLogUtil.setConfig(config)
         checkAndFixFilters()
+        migrateUserPushSettings()
     }
 
     companion object {
@@ -89,12 +88,6 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
         /* User Settings */
         // --------------------------------------
-        const val SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED = "sp_key_user_settings_daily_push_enabled"
-        const val SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED = "sp_key_user_settings_likes_push_enabled"
-        const val SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED = "sp_key_user_settings_matches_push_enabled"
-        const val SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED = "sp_key_user_settings_messages_push_enabled"
-        const val SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED = "sp_key_user_settings_vibration_push_enabled"
-
         const val SP_KEY_USER_PROFILE_PROPERTY_CHILDREN = "sp_key_user_profile_property_children"
         const val SP_KEY_USER_PROFILE_PROPERTY_EDUCATION  = "sp_key_user_profile_property_education"
         const val SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR = "sp_key_user_profile_property_hair_color"
@@ -114,6 +107,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM = "sp_key_user_profile_custom_property_where_from"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE = "sp_key_user_profile_custom_property_where_live"
 
+        const val SP_KEY_USER_PUSH_SETTINGS = "sp_key_user_push_settings"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT = "sp_key_user_profile_custom_properties_unsaved_input"
 
         /* Misc */
@@ -284,7 +278,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun getFilters(): Filters =
         sharedPreferences.getString(SP_KEY_FILTERS, null)
-            ?.let { Gson().fromJson(it, Filters::class.java) }
+            ?.let { gson.fromJson(it, Filters::class.java) }
             ?: NoFilters
 
     override fun setFilters(filters: Filters) {
@@ -373,30 +367,17 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     /* User Settings */
     // --------------------------------------------------------------------------------------------
-    override fun getUserSettingDailyPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, true)
-    override fun getUserSettingLikesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, true)
-    override fun getUserSettingMatchesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, true)
-    override fun getUserSettingMessagesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, true)
-    override fun getUserSettingVibrationPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED, true)
+    override fun getUserPushSettings(): PushSettingsRaw =
+        sharedPreferences.getString(SP_KEY_USER_PUSH_SETTINGS, null)
+            ?.let { gson.fromJson(it, PushSettingsRaw::class.java) }
+            ?: PushSettingsRaw()
 
-    override fun setUserSettingDailyPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, pushEnabled).apply()
+    override fun setUserPushSettings(settingsRaw: PushSettingsRaw) {
+        sharedPreferences.edit().putString(SP_KEY_USER_PUSH_SETTINGS, settingsRaw.toJson()).apply()
     }
 
-    override fun setUserSettingLikesPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, pushEnabled).apply()
-    }
-
-    override fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, pushEnabled).apply()
-    }
-
-    override fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, pushEnabled).apply()
-    }
-
-    override fun setUserSettingVibrationPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED, pushEnabled).apply()
+    override fun dropUserPushSettings() {
+        sharedPreferences.edit().remove(SP_KEY_USER_PUSH_SETTINGS).apply()
     }
 
     // ------------------------------------------
@@ -468,7 +449,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun getUserProfileCustomPropertiesUnsavedInput(): UserProfileCustomPropertiesUnsavedInput =
         sharedPreferences.getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT, null)
-            ?.let { Gson().fromJson(it, UserProfileCustomPropertiesUnsavedInput::class.java) }
+            ?.let { gson.fromJson(it, UserProfileCustomPropertiesUnsavedInput::class.java) }
             ?: UserProfileCustomPropertiesUnsavedInput()
 
     override fun setUserProfileCustomPropertiesUnsavedInput(unsavedInput: UserProfileCustomPropertiesUnsavedInput) {
@@ -498,6 +479,54 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             it.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, false).apply()
             flag
         }
+
+    /* Migration */
+    // --------------------------------------------------------------------------------------------
+    private fun migrateUserPushSettings() {
+        with (sharedPreferences) {
+            if (contains(SP_KEY_USER_PUSH_SETTINGS)) {
+                return  // have some push settings already
+            }
+
+            Timber.v("*** Migration user push settings STARTED ***")
+            val editor = edit()
+            val pushSettings = PushSettingsRaw()
+
+            "sp_key_user_settings_daily_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.push = getBoolean(key, true)
+                    editor.remove(key)
+                }
+            "sp_key_user_settings_likes_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.pushLikes = getBoolean(key, true)
+                    editor.remove(key)
+                }
+            "sp_key_user_settings_matches_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.pushMatches = getBoolean(key, true)
+                    editor.remove(key)
+                }
+            "sp_key_user_settings_messages_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.pushMessages = getBoolean(key, true)
+                    editor.remove(key)
+                }
+            "sp_key_user_settings_vibration_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.pushVibration = getBoolean(key, true)
+                    editor.remove(key)
+                }
+
+            editor.putString(SP_KEY_USER_PUSH_SETTINGS, pushSettings.toJson()).apply()
+            Timber.v("*** Migration user push settings FINISHED ***")
+        }
+    }
 }
 
 // --------------------------------------------------------------------------------------------
