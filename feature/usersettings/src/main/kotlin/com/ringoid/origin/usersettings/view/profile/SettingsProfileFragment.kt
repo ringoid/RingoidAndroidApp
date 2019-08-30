@@ -7,6 +7,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.misc.UserProfileEditablePropertyId
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.*
 import com.ringoid.origin.usersettings.*
@@ -29,7 +30,12 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         internal const val TAG = "SettingsProfileFragment_tag"
         private const val ABOUT_PROPERTY_DIALOG_TAG = "PropertyAbout"
 
-        fun newInstance(): SettingsProfileFragment = SettingsProfileFragment()
+        private const val BUNDLE_KEY_FOCUS_FIELD = "bundle_key_focus_field"
+
+        fun newInstance(focus: String? = null): SettingsProfileFragment =
+            SettingsProfileFragment().apply {
+                arguments = Bundle().apply { putString(BUNDLE_KEY_FOCUS_FIELD, focus) }
+            }
     }
 
     override fun getVmClass(): Class<SettingsProfileViewModel> = SettingsProfileViewModel::class.java
@@ -175,19 +181,35 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     override fun onResume() {
         super.onResume()
         if (isInitialFocus) {
-            // focus on particular fields, if they are empty
-            if (item_profile_custom_property_name.isEmpty()) {
-                item_profile_custom_property_name.requestFocus()
-                return
-            }
-            if (item_profile_custom_property_where_live.isEmpty()) {
-                item_profile_custom_property_where_live.requestFocus()
-                return
-            }
-            if (item_profile_custom_property_status.isEmpty()) {
-                item_profile_custom_property_status.requestFocus()
-                return
-            }
+            arguments?.getString(BUNDLE_KEY_FOCUS_FIELD)
+                ?.let { UserProfileEditablePropertyId.valueOf(it) }
+                ?.let {
+                    when (it) {
+                        UserProfileEditablePropertyId.COMPANY -> item_profile_custom_property_company.requestFocus()
+                        UserProfileEditablePropertyId.JOB_TITLE -> item_profile_custom_property_job_title.requestFocus()
+                        UserProfileEditablePropertyId.HEIGHT -> item_profile_property_height.requestFocus()
+                        UserProfileEditablePropertyId.NAME -> item_profile_custom_property_name.requestFocus()
+                        UserProfileEditablePropertyId.SOCIAL_INSTAGRAM -> item_profile_custom_property_instagram.requestFocus()
+                        UserProfileEditablePropertyId.SOCIAL_TIKTOK -> item_profile_custom_property_tiktok.requestFocus()
+                        UserProfileEditablePropertyId.STATUS -> item_profile_custom_property_status.requestFocus()
+                        UserProfileEditablePropertyId.UNIVERSITY -> item_profile_custom_property_university.requestFocus()
+                        UserProfileEditablePropertyId.WHERE_LIVE -> item_profile_custom_property_where_live.requestFocus()
+                    }
+                } ?: run {
+                    // focus on particular fields, if they are empty
+                    if (item_profile_custom_property_name.isEmpty()) {
+                        item_profile_custom_property_name.requestFocus()
+                        return
+                    }
+                    if (item_profile_custom_property_where_live.isEmpty()) {
+                        item_profile_custom_property_where_live.requestFocus()
+                        return
+                    }
+                    if (item_profile_custom_property_status.isEmpty()) {
+                        item_profile_custom_property_status.requestFocus()
+                        return
+                    }
+                }
         }
     }
 

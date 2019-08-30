@@ -22,6 +22,7 @@ import com.ringoid.domain.Onboarding
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.Gender
+import com.ringoid.domain.misc.UserProfileEditablePropertyId
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.image.UserImage
@@ -247,11 +248,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 val gender = spm.currentUserGender()
                 val showDefault = properties.isAllUnknown()
 
-                properties.about()
-                    .takeIf { it.isNotBlank() }
-                    ?.let { tv_about.text = it.trim() }
-
-                withAbout = properties.about().isNotBlank()
+                properties.about().let { about ->
+                    withAbout = about.isNotBlank()
+                    tv_about.text = about.trim()
+                }
+                properties.status().let { status ->
+                    tv_status.text = status.trim()
+                }
 
                 mutableListOf<String>().apply {
                     properties.name()
@@ -375,6 +378,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             addOnScrollListener(pageSelectListener)
         }
         tv_app_title.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
+        tv_status.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile&focus=${UserProfileEditablePropertyId.STATUS}") }
     }
 
     override fun onDestroyView() {
@@ -554,6 +558,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         ll_left_container.changeVisibility(isVisible = isVisible)
         ll_right_section.changeVisibility(isVisible = isVisible)
         tv_about.changeVisibility(isVisible = isVisible && isAboutVisible())
+        tv_status.changeVisibility(isVisible = isVisible)
     }
 
     // --------------------------------------------------------------------------------------------

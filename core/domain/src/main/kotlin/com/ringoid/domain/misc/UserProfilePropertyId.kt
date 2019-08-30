@@ -11,8 +11,19 @@ enum class UserProfilePropertyId {
     PROPERTY,
     SOCIAL_INSTAGRAM,
     SOCIAL_TIKTOK,
-//    STATUS,
     TRANSPORT,
+    UNIVERSITY,
+    WHERE_LIVE
+}
+
+enum class UserProfileEditablePropertyId {
+    COMPANY,
+    JOB_TITLE,
+    HEIGHT,
+    NAME,
+    SOCIAL_INSTAGRAM,
+    SOCIAL_TIKTOK,
+    STATUS,
     UNIVERSITY,
     WHERE_LIVE
 }
