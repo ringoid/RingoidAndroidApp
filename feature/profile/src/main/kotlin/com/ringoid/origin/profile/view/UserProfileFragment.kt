@@ -44,7 +44,7 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.*
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
-import kotlinx.android.synthetic.main.fragment_profile_2.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 import java.util.*
@@ -78,7 +78,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
-    override fun getLayoutId(): Int = R.layout.fragment_profile_2
+    override fun getLayoutId(): Int = R.layout.fragment_profile
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
