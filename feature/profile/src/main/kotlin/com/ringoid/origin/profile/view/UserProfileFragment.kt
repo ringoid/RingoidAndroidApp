@@ -14,7 +14,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
-import com.ringoid.base.observeOneShot
+import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
@@ -34,7 +34,6 @@ import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.WidgetR_attrs
 import com.ringoid.origin.profile.WidgetR_color
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
-import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.dialog.Dialogs
@@ -50,7 +49,7 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 import java.util.*
 
-class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>(), IEmptyScreenCallback {
+class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmptyScreenCallback {
 
     companion object {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
@@ -281,12 +280,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 }
                 onImageSelect(position = currentImagePosition)
             }
-            observeOneShot(vm.askToEnableLocationServiceOneShot()) { handleCode ->
-                when (handleCode) {
-                    HC_REFRESH -> vm.onRefresh()  // TODO: use cached
-                }
-            }
-            observeOneShot(vm.requestToAddImageOneShot()) { onAddImageNoPermission() }
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
@@ -322,7 +315,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             globalImagePreviewReceiver()?.subscribe()  // get last prepared image, if any
         } else {
             // refresh Profile screen for already logged in user on a fresh app's start
-            permissionManager.askForLocationPermission(this, handleCode = HC_REFRESH)
+            onRefresh()
         }
 
         if (handleRequestToAddImage) {  // postponed handling to ensure initialization
@@ -418,14 +411,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
     // ------------------------------------------
     private fun onAddImage() {
-        /**
-         * Asks for location permission, and if granted - callback will then handle
-         * opening Gallery to pick image.
-         */
-        permissionManager.askForLocationPermission(this, handleCode = HC_ADD_IMAGE)
-    }
-
-    private fun onAddImageNoPermission() {
         ExternalNavigator.openGalleryToGetImageFragment(this)
     }
 

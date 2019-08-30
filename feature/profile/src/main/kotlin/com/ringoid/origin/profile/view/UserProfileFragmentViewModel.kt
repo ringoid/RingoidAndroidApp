@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -20,7 +20,6 @@ import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.utils.ScreenHelper
-import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -35,24 +34,22 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
-    private val getUserImagesUseCase: GetUserImagesUseCase,
+//    private val getUserImagesUseCase: GetUserImagesUseCase,
     private val getUserImagesAsyncUseCase: GetUserImagesAsyncUseCase,
     @DebugOnly private val failedCreateUserImageUseCase: FailedCreateUserImageUseCase,
     @DebugOnly private val failedDeleteUserImageUseCase: FailedDeleteUserImageUseCase, app: Application)
-    : BasePermissionViewModel(app) {
+    : BaseViewModel(app) {
 
     private val imageBlocked by lazy { MutableLiveData<String>() }
     private val imageCreated by lazy { MutableLiveData<UserImage>() }
     private val imageDeleted by lazy { MutableLiveData<String>() }
     private val images by lazy { MutableLiveData<List<UserImage>>() }
     private val profile by lazy { MutableLiveData<UserProfileProperties>() }
-    private val requestToAddImageOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun imageBlocked(): LiveData<String> = imageBlocked
     internal fun imageCreated(): LiveData<UserImage> = imageCreated
     internal fun imageDeleted(): LiveData<String> = imageDeleted
     internal fun images(): LiveData<List<UserImage>> = images
     internal fun profile(): LiveData<UserProfileProperties> = profile
-    internal fun requestToAddImageOneShot(): LiveData<OneShot<Boolean>> = requestToAddImageOneShot
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
@@ -159,26 +156,11 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    override fun onLocationReceived(handleCode: Int) {
-        super.onLocationReceived(handleCode)
-        when (handleCode) {
-            HC_ADD_IMAGE -> requestToAddImageOneShot.value = OneShot(true)
-            HC_REFRESH -> onRefresh()
-        }
-    }
-
-    override fun onLocationPermissionDeniedAction(handleCode: Int) {
-        super.onLocationPermissionDeniedAction(handleCode)
-        when (handleCode) {
-            HC_REFRESH -> onRefresh()  // TODO: use cached
-        }
-    }
-
-    fun onStartRefresh() {
+    internal fun onStartRefresh() {
         analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to DomainUtil.SOURCE_FEED_PROFILE)
     }
 
-    fun onRefresh() {
+    internal fun onRefresh() {
         getUserImages()
     }
 }
