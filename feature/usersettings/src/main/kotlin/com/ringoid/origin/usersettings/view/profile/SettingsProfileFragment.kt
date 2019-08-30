@@ -56,7 +56,6 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         super.onActivityCreated(savedInstanceState)
         with (viewLifecycleOwner) {
             observe(vm.profile()) {
-                // TODO: use View state / restore
                 // properties
                 item_profile_property_children.setSelectedItem(it.children)
                 item_profile_property_education.setSelectedItem(it.education.reduceForLocale(app?.localeManager?.getLang()))

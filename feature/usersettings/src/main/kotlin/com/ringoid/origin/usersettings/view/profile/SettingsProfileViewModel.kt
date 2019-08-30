@@ -34,7 +34,7 @@ class SettingsProfileViewModel @Inject constructor(
         super.onCreate(savedInstanceState)
         properties = UserProfileProperties.from(spm.getUserProfileProperties())
         unsavedProperties = spm.getUserProfileCustomPropertiesUnsavedInput()
-        profile.value = properties  // TODO: use View state / restore
+        profile.value = properties  // assign initial values to views
     }
 
     override fun onStop() {
