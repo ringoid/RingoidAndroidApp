@@ -155,7 +155,9 @@
         android:maxLines="6"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
-        app:layout_constraintTop_toTopOf="@id/ibtn_profile_edit"
+        app:layout_constraintVertical_bias="0.6"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:fontFamily="@font/status_font"
         style="@style/StatusText"/>
