@@ -1,5 +1,6 @@
 package com.ringoid.utility
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -69,6 +70,11 @@ fun Context.pasteFromClipboard(): String {
 
 /* Keyboard */
 // --------------------------------------------------------------------------------------------
+fun Activity.hideKeyboard() {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
+}
+
 fun EditText.showKeyboard() {
     requestFocus()
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -82,6 +88,11 @@ fun View.hideKeyboard() {
 
 fun Window.showKeyboard() {
     setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+}
+
+fun Window.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(decorView.windowToken, 0)
 }
 
 /* Span */

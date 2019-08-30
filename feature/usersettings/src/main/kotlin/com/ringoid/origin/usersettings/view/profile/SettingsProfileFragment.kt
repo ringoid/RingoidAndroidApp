@@ -196,6 +196,11 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         isInitialFocus = false  // next onResume() won't be treated as initial focus
     }
 
+    override fun onStop() {
+        super.onStop()
+        activity?.window?.showKeyboard()
+    }
+
     // --------------------------------------------------------------------------------------------
     private fun handleInputHeight(it: String?): Int =
         if (it.isNullOrBlank()) 0 else it.toInt().takeIf { int -> int in 92..214 } ?: 0
