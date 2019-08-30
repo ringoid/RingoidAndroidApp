@@ -20,6 +20,8 @@ object FeedViewHolderHideOnlineStatusOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowOnlineStatusOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideSettingsBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowSettingsBtnOnScroll : FeedViewHolderPayload()
+object FeedViewHolderHideStatusOnScroll : FeedViewHolderPayload()
+object FeedViewHolderShowStatusOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowTabsIndicatorOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideTabsIndicatorOnScroll : FeedViewHolderPayload()
 

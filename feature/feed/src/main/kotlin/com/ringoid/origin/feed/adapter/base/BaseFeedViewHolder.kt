@@ -218,6 +218,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowAboutOnScroll)) {
             itemView.tv_about.alpha = 1.0f
         }
+        if (payloads.contains(FeedViewHolderHideStatusOnScroll)) {
+            itemView.tv_status.alpha = 0.0f
+        }
+        if (payloads.contains(FeedViewHolderShowStatusOnScroll)) {
+            itemView.tv_status.alpha = 1.0f
+        }
         if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
             itemView.label_online_status.changeVisibility(isVisible = false, soft = true)
         }
