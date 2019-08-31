@@ -20,6 +20,7 @@ import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
+import com.ringoid.widget.view.LabelView
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -70,7 +71,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     internal val profileImageAdapter = ProfileImageAdapter()
 
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
-    private var withAbout: Boolean = false
+    private var withAbout: Boolean = false  // 'about' property is not empty
+    private var withLabel: Boolean = false  // model has at least one property (excluding 'about')
 
     init {
         itemView.rv_items.apply {
@@ -180,14 +182,14 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
          * the more lines in 'about', the higher 'name-age' label is placed, so that it could
          * potentially reside in any of available visibility zones.
          *
-         * If the current page, given by [model.positionOfImage], does not contain 'about'
+         * If the current page, given by [FeedItemVO.positionOfImage], does not contain 'about'
          * (this is defined by [isAboutPage] method), then visibility zone for 'name-age'
          * label is controlled by the number zones, occupied by other property labels inside
          * the left section container.
          */
         fun showNameInZone(zone: Int, isVisible: Boolean) {
             val alpha = if (isVisible) 1.0f else 0.0f
-            if (isAboutPage(model)) {
+            if (isAboutPage(page = model.positionOfImage)) {
                 model.about()  // approximate number of lines
                     ?.let { minOf(3, it.length / 50 + 1) }
                     ?.takeIf { zone == it - 1 }
@@ -383,39 +385,43 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         val startIndex = page * FeedScreenUtils.COUNT_LABELS_ON_PAGE
         val endIndex = startIndex + FeedScreenUtils.COUNT_LABELS_ON_PAGE
 
-        if (withAbout) {
-            when (AppInMemory.oppositeUserGender()) {
-                Gender.FEMALE -> {
-                    when (positionOfImage) {
-                        0 -> showAbout()
-                        else -> showLabels(startIndex, endIndex)
-                    }
-                }
-                else -> {
-                    when (positionOfImage) {
-                        1 -> showAbout()
-                        else -> showLabels(startIndex, endIndex)
-                    }
-                }
-            }
+        /**
+         * When image at [positionOfImage] comes into viewport, check whether [FeedItemVO.about]
+         * is not empty (given by [withAbout] flag) and show it if [positionOfImage] is equal to
+         * the position that is predefined for 'about' property by Product Design. Then show property
+         * labels on each of the rest of pages until exhausted.
+         */
+        if (isAboutPage(positionOfImage)) {
+            showAbout()  // show 'about' on predefined position, if any
         } else {
             showLabels(startIndex, endIndex)
         }
     }
 
-    private fun isAboutPage(model: FeedItemVO): Boolean =
-        if (withAbout) {
-            when (model.gender) {
-                Gender.FEMALE -> model.positionOfImage == 0
-                else -> model.positionOfImage == 1
-            }
-        } else false
+    /**
+     * Given [FeedItemVO.positionOfImage] (page), defines whether that page should display
+     * 'about' property field, if the latter is not empty.
+     */
+    private fun isAboutPage(page: Int): Boolean {
+        /**
+         * Calculates page on which 'about' property should be displayed.
+         * @note: This method must be called inside 'if (withAbout)' block.
+         */
+        fun positionForAboutIfPresent(): Int = if (withLabel) 1 else 0
+
+        return if (withAbout) page == positionForAboutIfPresent() else false
+    }
 
     private fun fixupPage(positionOfImage: Int): Int =
         if (withAbout) maxOf(0, positionOfImage - 1)
         else positionOfImage
 
     private fun setPropertyFields(model: FeedItemVO) {
+        /**
+         * Creates [LabelView] for property given by [propertyId] from [properties],
+         * and then adds that view into [containerView]. If no such property found
+         * in [properties], then resulting [LabelView] is null and not added.
+         */
         fun addLabelView(
                 containerView: ViewGroup,
                 propertyId: UserProfilePropertyId,
@@ -439,6 +445,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             ?: run { itemView.tv_about.text = "" }
 
         withAbout = !model.about().isNullOrBlank()
+        withLabel = FeedScreenUtils.hasAtLeastOneProperty(model)
 
         // name, age
         (model.name()?.takeIf { it.isNotBlank() } ?: AppInMemory.genderString(model.gender))

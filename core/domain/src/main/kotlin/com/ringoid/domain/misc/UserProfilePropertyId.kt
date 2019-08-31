@@ -13,7 +13,11 @@ enum class UserProfilePropertyId {
     SOCIAL_TIKTOK,
     TRANSPORT,
     UNIVERSITY,
-    WHERE_LIVE
+    WHERE_LIVE;
+
+    companion object {
+        val values = values()
+    }
 }
 
 enum class UserProfileEditablePropertyId {
