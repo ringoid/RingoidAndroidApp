@@ -158,16 +158,33 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
+        /**
+         * Visibility zones are used to trigger visibility of labels and other content on feed item
+         * when offset scroll strategy is applied. Number of zones is equal to the number of lines in
+         * left / right section, maximum of these two, and up to '2'.
+         */
         fun showLabelInZone(container: ViewGroup, zone: Int, isVisible: Boolean) {
             val alpha = if (isVisible) 1.0f else 0.0f
             with (container) {
-                (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
+                (zone - (2 /** max */ - countLabelsOnPosition(container, model.positionOfImage)))
                     .takeIf { it >= 0 }
                     ?.let { it + fixupPage(model.positionOfImage) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
                     ?.let { getChildAt(it)?.alpha = alpha }
             }
         }
 
+        /**
+         * Calculate offset scroll zone where 'name-age' label is visible / invisible.
+         *
+         * That depends on presence of 'about' property and number of it's lines, because
+         * the more lines in 'about', the higher 'name-age' label is placed, so that it could
+         * potentially reside in any of available visibility zones.
+         *
+         * If the current page, given by [model.positionOfImage], does not contain 'about'
+         * (this is defined by [isAboutPage] method), then visibility zone for 'name-age'
+         * label is controlled by the number zones, occupied by other property labels inside
+         * the left section container.
+         */
         fun showNameInZone(zone: Int, isVisible: Boolean) {
             val alpha = if (isVisible) 1.0f else 0.0f
             if (isAboutPage(model)) {
