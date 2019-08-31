@@ -130,8 +130,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 //                .also { listener -> addOnScrollListener(listener) }
         }
         itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
+        itemView.tv_with_info.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
+    @Suppress("SetTextI18n")
     override fun bind(model: FeedItemVO) {
         showControls()  // cancel any effect caused by applied payloads
         showOnlineStatus(model)  // apply updates, if any
@@ -416,6 +418,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (withAbout) maxOf(0, positionOfImage - 1)
         else positionOfImage
 
+    @Suppress("SetTextI18n")
     private fun setPropertyFields(model: FeedItemVO) {
         /**
          * Creates [LabelView] for property given by [propertyId] from [properties],
@@ -446,6 +449,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 
         withAbout = !model.about().isNullOrBlank()
         withLabel = FeedScreenUtils.hasAtLeastOneProperty(model)
+
+        if (BuildConfig.IS_STAGING) {
+            itemView.tv_with_info.text = "about=$withAbout, lb=$withLabel"
+        }
 
         // name, age
         (model.name()?.takeIf { it.isNotBlank() } ?: AppInMemory.genderString(model.gender))

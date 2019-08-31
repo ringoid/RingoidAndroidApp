@@ -187,4 +187,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Debug profile id"
         style="@style/StdText.White"/>
+
+    <TextView
+        android:id="@+id/tv_with_info"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        android:textColor="@color/grass"
+        android:textSize="@dimen/std_text_22"
+        android:visibility="gone"
+        app:layout_constraintVertical_bias="0.6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Debug profile id"
+        style="@style/StdText.White"/>
 </merge>
