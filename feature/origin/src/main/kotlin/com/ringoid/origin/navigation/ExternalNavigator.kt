@@ -12,7 +12,6 @@ import android.webkit.URLUtil
 import androidx.fragment.app.Fragment
 import com.ringoid.base.ContextUtil
 import com.ringoid.origin.AppRes
-import com.ringoid.origin.R
 import com.ringoid.utility.toast
 import timber.log.Timber
 
@@ -56,20 +55,14 @@ object ExternalNavigator {
     fun openEmailComposer(activity: Activity, email: String, subject: String = "", body: String = "") {
         openEmailComposerIntent(email = email, subject = subject, body = body)
             .takeIf { it.resolveActivity(activity.packageManager) != null }
-            ?.let {
-                val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email)).singleTop()
-                activity.startActivityForResult(intent, RC_EMAIL_SEND)
-            }
+            ?.let { activity.startActivityForResult(it, RC_EMAIL_SEND) }
     }
 
     fun openEmailComposer(fragment: Fragment, email: String, subject: String = "", body: String = "") {
         fragment.activity?.let { activity ->
             openEmailComposerIntent(email = email, subject = subject, body = body)
                 .takeIf { it.resolveActivity(activity.packageManager) != null }
-                ?.let {
-                    val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_compose_email)).singleTop()
-                    fragment.startActivityForResult(intent, RC_EMAIL_SEND)
-                }
+                ?.let { fragment.startActivityForResult(it, RC_EMAIL_SEND) }
         }
     }
 
@@ -96,20 +89,14 @@ object ExternalNavigator {
     fun openGalleryToGetImage(activity: Activity) {
         openGalleryToGetImageIntent()
             .takeIf { it.resolveActivity(activity.packageManager) != null }
-            ?.let {
-                val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_choose_image)).singleTop()
-                activity.startActivityForResult(intent, RC_GALLERY_GET_IMAGE)
-            }
+            ?.let { activity.startActivityForResult(it, RC_GALLERY_GET_IMAGE) }
     }
 
     fun openGalleryToGetImageFragment(fragment: Fragment) {
         fragment.activity?.let { activity ->
             openGalleryToGetImageIntent()
                 .takeIf { it.resolveActivity(activity.packageManager) != null }
-                ?.let {
-                    val intent = Intent.createChooser(it, activity.resources.getString(R.string.common_choose_image)).singleTop()
-                    fragment.startActivityForResult(intent, RC_GALLERY_GET_IMAGE)
-                }
+                ?.let { fragment.startActivityForResult(it, RC_GALLERY_GET_IMAGE) }
         }
     }
 
