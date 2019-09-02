@@ -104,6 +104,7 @@
 
     <!-- Profile screen -->
     <string name="profile_button_delete_image">Удалить фото</string>
+    <string name="profile_dialog_image_another_common_title">Добавить еще фото?</string>
     <string name="profile_dialog_image_another_button_add">Добавить еще фото</string>
     <string name="profile_dialog_image_another_button_cancel">Искать новых пользователей</string>
     <string name="profile_dialog_image_another_title">Что дальше?</string>

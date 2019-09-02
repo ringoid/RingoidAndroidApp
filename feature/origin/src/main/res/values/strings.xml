@@ -109,6 +109,7 @@
 
     <!-- Profile screen -->
     <string name="profile_button_delete_image">Delete photo</string>
+    <string name="profile_dialog_image_another_common_title">Add another photo?</string>
     <string name="profile_dialog_image_another_button_add">Add another photo</string>
     <string name="profile_dialog_image_another_button_cancel">Discover new users</string>
     <string name="profile_dialog_image_another_title">What\'s next?</string>

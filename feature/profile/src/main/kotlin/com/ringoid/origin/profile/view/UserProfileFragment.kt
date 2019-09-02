@@ -186,6 +186,21 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        /**
+         * Asks to add another photo yo user profile.
+         */
+        fun askForAnotherImage() {
+            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_common_title, descriptionResId = 0,
+                positiveBtnLabelResId = OriginR_string.button_add_photo,
+                negativeBtnLabelResId = OriginR_string.button_later,
+                positiveListener = { _, _ -> onAddImage() })
+        }
+
+        /**
+         * Asks to add another photo to user profile or navigate on Explore feed screen instead.
+         *
+         * @note: for Onboarding.ADD_IMAGE.
+         */
         fun askForAnotherImageAfterLogin() {
             Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
                 positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
