@@ -20,7 +20,10 @@ import com.ringoid.datainterface.remote.model.feed.LmmResponse
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.InvalidAccessTokenApiException
 import com.ringoid.domain.exception.NetworkUnexpected
+import com.ringoid.domain.exception.OldAppVersionApiException
+import com.ringoid.domain.exception.WrongRequestParamsClientApiException
 import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
@@ -243,11 +246,19 @@ open class FeedRepository @Inject constructor(
             .flatMap { getLcOnly(resolution, limit, filters, source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
-                SentryUtil.capture(it, message = "Fallback to get cached LC", level = SentryUtil.Level.WARNING)
-                if (it is NetworkUnexpected) {
-                    lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
+                when (it) {
+                    // unrecoverable errors
+                    is OldAppVersionApiException,
+                    is InvalidAccessTokenApiException,
+                    is WrongRequestParamsClientApiException -> Single.error<Lmm>(it)
+                    else -> {
+                        if (it is NetworkUnexpected) {
+                            lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
+                        }
+                        SentryUtil.capture(it, message = "Fallback to get cached LC", level = SentryUtil.Level.WARNING)
+                        getCachedLc()  // recover with cache
+                    }
                 }
-                getCachedLc()
             }
             .doFinally { trace.stop() }
     }

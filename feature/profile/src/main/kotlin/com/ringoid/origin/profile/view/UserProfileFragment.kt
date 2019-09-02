@@ -104,7 +104,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> onLoadingState()
-            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState) { onRefresh() }
             else -> { /* no-op */ }
         }
     }
@@ -435,7 +435,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             noConnection(this@UserProfileFragment)
         } else {
             imageOnViewPortId = imageOnViewPort()?.id ?: DomainUtil.BAD_ID
-            vm.onRefresh()
+            vm.refresh()
         }
     }
 

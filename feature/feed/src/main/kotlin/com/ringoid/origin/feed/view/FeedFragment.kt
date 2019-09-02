@@ -81,7 +81,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 showLoading(isVisible = false)
             }
             is ViewState.LOADING -> showLoading(isVisible = true)
-            is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState) { vm.refresh() }
         }
     }
 

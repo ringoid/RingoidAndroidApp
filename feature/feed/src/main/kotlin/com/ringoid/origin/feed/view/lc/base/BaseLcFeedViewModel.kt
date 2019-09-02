@@ -10,6 +10,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.domain.exception.ErrorConnectionTimedOut
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
@@ -55,12 +56,12 @@ abstract class BaseLcFeedViewModel(
 
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
     private val feedCountsOneShot by lazy { MutableLiveData<OneShot<FeedCounts>>() }
-    private val lmmLoadFailedOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val lmmLoadFailedOneShot by lazy { MutableLiveData<OneShot<Throwable>>() }
     private val seenAllFeedItemsOneShot by lazy { MutableLiveData<OneShot<SeenAllFeed>>() }
     private val transferProfileCompleteOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
     internal fun feedCountsOneShot(): MutableLiveData<OneShot<FeedCounts>> = feedCountsOneShot
-    internal fun lmmLoadFailedOneShot(): LiveData<OneShot<Boolean>> = lmmLoadFailedOneShot
+    internal fun lmmLoadFailedOneShot(): LiveData<OneShot<Throwable>> = lmmLoadFailedOneShot
     internal fun seenAllFeedItemsOneShot(): LiveData<OneShot<SeenAllFeed>> = seenAllFeedItemsOneShot
     internal fun transferProfileCompleteOneShot(): LiveData<OneShot<Boolean>> = transferProfileCompleteOneShot
 
@@ -107,9 +108,10 @@ abstract class BaseLcFeedViewModel(
 
         // notify UI about unexpected fatal errors
         getLcUseCase.repository.lmmLoadFailed
+            .filter { it is ErrorConnectionTimedOut }  // handle only connection timeout error, ignore other connection errors
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ lmmLoadFailedOneShot.value = OneShot(true) }, DebugLogUtil::e)
+            .subscribe({ lmmLoadFailedOneShot.value = OneShot(it) }, DebugLogUtil::e)
     }
 
     /* Lifecycle */

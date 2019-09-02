@@ -2,7 +2,6 @@ package com.ringoid.data
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.ringoid.data.remote.network.ResponseErrorInterceptor.Companion.ERROR_CONNECTION_INSECURE
 import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
@@ -93,7 +92,7 @@ private fun expBackoffFlowableImpl(
                     }
                     is NetworkUnexpected -> {
                         when (error.code) {
-                            ERROR_CONNECTION_INSECURE -> delay * attemptNumber * 2  // linear delay
+                            NetworkUnexpected.ERROR_CONNECTION_INSECURE -> delay * attemptNumber * 2  // linear delay
                             else -> {
                                 SentryUtil.capture(error, message = error.message, tag = tag, extras = extras)
                                 exception = error  // abort retry and fallback
@@ -200,7 +199,7 @@ inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = 
 private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer<in T> =
     Consumer {
         if (!it.unexpected.isNullOrBlank()) {
-            throw NetworkUnexpected(it.unexpected!!)
+            throw NetworkUnexpected.from(it.unexpected!!)
         }
         if (!it.errorCode.isNullOrBlank()) {
             val apiError = when (it.errorCode) {

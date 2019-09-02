@@ -94,7 +94,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        onRefresh()  // app reopen leads Profile screen to refresh
+        refresh()  // app reopen leads Profile screen to refresh
     }
 
     // --------------------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ class UserProfileFragmentViewModel @Inject constructor(
         analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to DomainUtil.SOURCE_FEED_PROFILE)
     }
 
-    internal fun onRefresh() {
+    internal fun refresh() {
         getUserImages()
     }
 }

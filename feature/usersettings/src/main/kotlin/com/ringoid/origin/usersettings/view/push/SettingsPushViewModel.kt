@@ -60,6 +60,7 @@ class SettingsPushViewModel @Inject constructor(
         updateUserSettingPush(UserSettings(pushVibration = isEnabled))
     }
 
+    // --------------------------------------------------------------------------------------------
     private fun updateUserSettingPush(settings: UserSettings) {
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)
@@ -71,5 +72,9 @@ class SettingsPushViewModel @Inject constructor(
             .doOnError { viewState.value = ViewState.ERROR(it) }  // updated user push settings failed
             .autoDisposable(this)
             .subscribe({ DebugLogUtil.i("Successfully updated push settings: $settings") }, DebugLogUtil::e)
+    }
+
+    internal fun retryOnError() {
+        updateUserSettingPush(UserSettings.from(properties))
     }
 }

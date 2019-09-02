@@ -194,4 +194,8 @@ class SettingsProfileViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({ Timber.d("Successfully updated user profile properties") }, DebugLogUtil::e)
     }
+
+    internal fun retryOnError() {
+        updateProfileProperties("")
+    }
 }

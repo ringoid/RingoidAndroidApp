@@ -7,12 +7,12 @@ import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
+import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lc.FeedCounts
 import com.ringoid.origin.feed.view.lc.SeenAllFeed
-import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
@@ -73,13 +73,6 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
         }
     }
 
-    private fun showFatalErrorDialog() {
-        Dialogs.showTextDialog(activity, descriptionResId = OriginR_string.error_connection,
-            positiveBtnLabelResId = OriginR_string.button_retry,
-            negativeBtnLabelResId = OriginR_string.button_cancel,
-            positiveListener = { dialog, _ -> vm.refresh(); dialog.dismiss() })
-    }
-
     private fun updateFeedCounts(feedCounts: FeedCounts) {
         setCountOfFilteredFeedItems(count = feedCounts.show)
         setTotalNotFilteredFeedItems(count = feedCounts.show + feedCounts.hidden)
@@ -114,8 +107,10 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             }
             observe(vm.refreshOnPush(), ::showRefreshPopup)
             observeOneShot(vm.feedCountsOneShot(), ::updateFeedCounts)
-            observeOneShot(vm.lmmLoadFailedOneShot()) { showFatalErrorDialog() }
             observeOneShot(vm.seenAllFeedItemsOneShot(), ::onSeenAllFeed)
+            observeOneShot(vm.lmmLoadFailedOneShot()) {
+                it.handleOnView(this@BaseLcFeedFragment, {}) { vm.refresh() }
+            }
         }
     }
 
