@@ -20,7 +20,6 @@ import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.FeedFragment
-import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
@@ -106,24 +105,6 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
         }
     }
 
-    // ------------------------------------------
-    private var postponedTabTransaction = false
-
-    override fun onTabTransaction(payload: String?) {
-        super.onTabTransaction(payload)
-        if (!isViewModelInitialized) {
-            postponedTabTransaction = true
-            return
-        }
-
-        payload?.let {
-            when (it) {
-                Payload.PAYLOAD_FEED_NEED_REFRESH -> vm.refresh()
-                else -> { /* no-op */ }
-            }
-        }
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -137,11 +118,6 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
             }
             observeOneShot(vm.discardProfilesOneShot()) { onDiscardMultipleProfilesState(profileIds = it) }
             observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
-        }
-
-        if (postponedTabTransaction) {
-            doPostponedTabTransaction()
-            postponedTabTransaction = false
         }
     }
 

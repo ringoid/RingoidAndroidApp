@@ -224,6 +224,7 @@ class ExploreFeedViewModel @Inject constructor(
     fun onEventAppFreshStart(event: BusEvent.AppFreshStart) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        DebugLogUtil.i("Get Discover on Application fresh start [${getFeedName()}]")
         refresh()
     }
 
@@ -231,6 +232,7 @@ class ExploreFeedViewModel @Inject constructor(
     fun onEventRecreateMainScreen(event: BusEvent.RecreateMainScreen) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        DebugLogUtil.i("Get Discover on Application recreate while running [${getFeedName()}]")
         refresh()
     }
 
@@ -238,6 +240,7 @@ class ExploreFeedViewModel @Inject constructor(
     fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
         SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        DebugLogUtil.i("Get Discover on Application reopen [${getFeedName()}]")
         refresh()  // app reopen leads Explore screen to refresh as well
     }
 

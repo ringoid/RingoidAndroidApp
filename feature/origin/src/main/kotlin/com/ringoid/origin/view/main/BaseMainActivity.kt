@@ -19,7 +19,6 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
-import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.view.base.BasePermissionActivity
 import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.changeVisibility
@@ -120,17 +119,14 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     private fun processExtras(intent: Intent, savedInstanceState: Bundle?) {
         fun openExploreTab() {
-            tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
             openTabByName(tabName = NavigateFrom.MAIN_TAB_EXPLORE)
         }
 
         fun openLikesTab() {
-            tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
             openTabByName(tabName = NavigateFrom.MAIN_TAB_LIKES)
         }
 
         fun openMessagesTab() {
-            tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
             openTabByName(tabName = NavigateFrom.MAIN_TAB_MESSAGES)
         }
 
