@@ -89,6 +89,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             }
         }
 
+        Timber.i("Cold start")
         processExtras(intent, savedInstanceState)
         DebugLogUtil.clear()  // clear debug logs when recreate Main screen
     }
@@ -102,7 +103,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
      */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        processExtras(intent, savedInstanceState)
+        Timber.i("Warm start")
+        processExtras(intent, savedInstanceState)  // app's warm start
     }
 
     override fun onStart() {
@@ -148,8 +150,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         }
 
         fun openMainTab(tab: NavTab? = null) {
-            if (tab == null) {
-                openExploreTab()
+            if (tab == null) {  // open default tab
+                openProfileTab()
                 return
             }
 
@@ -171,20 +173,37 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         Timber.d("Intent data: ${intent.extras?.toJsonObject()}")
         intent.extras?.apply {
             Timber.v("Process extras[${checkForNull(savedInstanceState)}]: $this")
+            // in-app navigation
             getString("tab")?.let { tabName ->
                 Timber.v("In-App extras: $tabName")
                 tabPayload = getString("tabPayload")
+                Timber.i("Open $tabName for in-app navigation")
                 openTabByName(tabName)
             }
+            // app is opened from notification
             ?: getString("type")?.let { type ->
                 Timber.v("Push extras: $type")
                 vm.onPushOpen()
                 LcNavTab.fromPushType(pushType = type)
-                    ?.let { openLcTab(lcTab = it) }
-                    ?: run { openInitialTab() }
+                    ?.let {
+                        Timber.i("Open ${it.feedName} tab (by notification)")
+                        openLcTab(lcTab = it)
+                    }
+                    ?: run {
+                        Timber.i("Open init tab (unknown notification type)")
+                        openInitialTab()  // unknown notification type
+                    }
             }
-            ?: run { openInitialTab() }
-        } ?: run { openInitialTab() }
+            ?: run {
+                // neither in-app navigation nor open from notification, possibly clicking on launcher icon
+                Timber.i("Open init tab (splash)")
+                openInitialTab()
+            }
+        } ?: run {
+            // app's cold start
+            Timber.i("Open init tab (no extra)")
+            openInitialTab()
+        }
     }
 
     override fun onStop() {
