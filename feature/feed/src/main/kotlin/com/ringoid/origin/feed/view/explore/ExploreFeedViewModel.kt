@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
@@ -12,6 +13,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.domain.exception.ErrorConnectionTimedOut
 import com.ringoid.domain.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
@@ -117,7 +119,12 @@ class ExploreFeedViewModel @Inject constructor(
                     needShowFiltersOneShot.value = OneShot(true)
                 }
             }
-            .doOnError { viewState.value = ViewState.ERROR(it) }  // load feed items failed
+            .doOnError {
+                viewState.value = ViewState.ERROR(it)  // load feed items failed
+                when (it) {
+                    is ErrorConnectionTimedOut -> analyticsManager.fire(Analytics.CONNECTION_TIMEOUT, "sourceFeed" to getFeedName())
+                }
+            }
             .autoDisposable(this)
             .subscribe({ feed.value = it }, DebugLogUtil::e)
     }
@@ -136,6 +143,9 @@ class ExploreFeedViewModel @Inject constructor(
                 if (it is ThresholdExceededException) {
                     feed.value = Feed(profiles = emptyList())
                 } else {
+                    when (it) {
+                        is ErrorConnectionTimedOut -> analyticsManager.fire(Analytics.CONNECTION_TIMEOUT, "sourceFeed" to getFeedName(), "state" to "load more items")
+                    }
                     DebugLogUtil.e(it, "Failed to load more feed items")
                     viewState.value = ViewState.ERROR(LoadMoreFailedException(it))  // load more feed items failed
                 }
