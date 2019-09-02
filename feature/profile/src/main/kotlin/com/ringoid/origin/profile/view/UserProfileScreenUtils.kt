@@ -41,6 +41,22 @@ internal object UserProfileScreenUtils {
                UserProfilePropertyId.HEIGHT,
                UserProfilePropertyId.HAIR_COLOR)
 
+    fun hasAtLeastOneProperty(properties: UserProfileProperties): Boolean =
+        properties.let {
+            hasChildrenProperty(it) ||
+            hasCompanyAndJobTitleProperty(it) ||
+            hasEducationProperty(it) ||
+            hasHairColorProperty(it) ||
+            hasHeightProperty(it) ||
+            hasIncomeProperty(it) ||
+            hasPropertyProperty(it) ||
+            hasSocialInstagramProperty(it) ||
+            hasSocialTiktokProperty(it) ||
+            hasTransportProperty(it) ||
+            hasUniversityProperty(it) ||
+            hasWhereLiveProperty(it)
+        }
+
     fun createLabelView(
             container: ViewGroup, gender: Gender,
             propertyId: UserProfilePropertyId,
@@ -111,7 +127,7 @@ internal object UserProfileScreenUtils {
                 } else null
             }
             UserProfilePropertyId.HEIGHT -> {
-                if (properties.height > 0) {
+                if (hasHeightProperty(properties)) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_height_property_white_18dp)
                         setText("${properties.height} ${AppRes.LENGTH_CM}")
@@ -219,4 +235,43 @@ internal object UserProfileScreenUtils {
                 } else null
             }
         }
+
+    // --------------------------------------------------------------------------------------------
+    private fun hasChildrenProperty(properties: UserProfileProperties): Boolean =
+        properties.children != ChildrenProfileProperty.Unknown
+
+    private fun hasCompanyAndJobTitleProperty(properties: UserProfileProperties): Boolean =
+        properties.company().isNotBlank() || properties.jobTitle().isNotBlank()
+
+    // distance is not defined on Profile screen
+
+    private fun hasEducationProperty(properties: UserProfileProperties): Boolean =
+        properties.education != EducationProfileProperty.Unknown
+
+    private fun hasHairColorProperty(properties: UserProfileProperties): Boolean =
+        properties.hairColor != HairColorProfileProperty.Unknown
+
+    private fun hasHeightProperty(properties: UserProfileProperties): Boolean =
+        properties.height > 0
+
+    private fun hasIncomeProperty(properties: UserProfileProperties): Boolean =
+        properties.income != IncomeProfileProperty.Unknown
+
+    private fun hasPropertyProperty(properties: UserProfileProperties): Boolean =
+        properties.property != PropertyProfileProperty.Unknown
+
+    private fun hasSocialInstagramProperty(properties: UserProfileProperties): Boolean =
+        properties.instagram().isNotBlank()
+
+    private fun hasSocialTiktokProperty(properties: UserProfileProperties): Boolean =
+        properties.tiktok().isNotBlank()
+
+    private fun hasTransportProperty(properties: UserProfileProperties): Boolean =
+        properties.transport != TransportProfileProperty.Unknown
+
+    private fun hasUniversityProperty(properties: UserProfileProperties): Boolean =
+        properties.university().isNotBlank()
+
+    private fun hasWhereLiveProperty(properties: UserProfileProperties): Boolean =
+        properties.whereLive().isNotBlank()
 }

@@ -74,7 +74,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         }
     }
 
-    private var withAbout: Boolean = false
+    private var withAbout: Boolean = false  // 'about' property is not empty
+    private var withLabel: Boolean = false  // profile has at least one property (excluding 'about')
     @DebugOnly private var debugAddImage: Boolean = false
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
@@ -242,6 +243,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             val gender = spm.currentUserGender()
             val showDefault = properties.isAllUnknown()
 
+            withLabel = UserProfileScreenUtils.hasAtLeastOneProperty(properties)
             properties.about().let { about ->
                 withAbout = about.isNotBlank()
                 tv_about.text = about.trim()
@@ -464,34 +466,24 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         val startIndex = page * UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
         val endIndex = startIndex + UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
 
-        if (withAbout) {
-            when (spm.currentUserGender()) {
-                Gender.FEMALE -> {
-                    when (position) {
-                        1 -> showAbout()
-                        else -> showLabels(startIndex, endIndex)
-                    }
-                }
-                else -> {
-                    when (position) {
-                        0 -> showAbout()
-                        else -> showLabels(startIndex, endIndex)
-                    }
-                }
-            }
+        if (isAboutPage(position)) {
+            showAbout()  // show 'about' on predefined position, if any
         } else {
             showLabels(startIndex, endIndex)
         }
     }
 
-    private fun isAboutVisible(): Boolean {
-        val isOnPageAbout =
-            when (spm.currentUserGender()) {
-                Gender.FEMALE -> currentImagePosition == 1
-                else -> currentImagePosition == 0
-            }
-        return withAbout && isOnPageAbout
+    private fun isAboutPage(page: Int): Boolean {
+        /**
+         * Calculates page on which 'about' property should be displayed.
+         * @note: This method must be called inside 'if (withAbout)' block.
+         */
+        fun positionForAboutIfPresent(): Int = if (withLabel) 1 else 0
+
+        return if (withAbout) page == positionForAboutIfPresent() else false
     }
+
+    private fun isAboutVisible(): Boolean = isAboutPage(page = currentImagePosition)
 
     // ------------------------------------------
     private fun showBeginStub() {  // empty stub without labels, plain clean stub
