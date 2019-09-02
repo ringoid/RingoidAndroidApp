@@ -5,6 +5,7 @@ import android.widget.ImageView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder
 import com.facebook.drawee.controller.BaseControllerListener
+import com.facebook.drawee.view.DraweeView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
@@ -21,23 +22,19 @@ object ImageLoader {
      */
     fun load(uri: String?, thumbnailUri: String? = null, iv: ImageView) {
         if (uri.isNullOrBlank()) {
-            return
+            return  // no image data to load
         }
         val imageViewRef = WeakReference(iv)
-        imageViewRef.get()?.let { imageView ->
-            if (imageView is SimpleDraweeView) {
-                thumbnailUri?.let { thumbUri ->
-                    imageView.tag = 0  // depth of retry recursion
-                    imageView.controller = createRecursiveImageController(uri, thumbUri, imageViewRef).build()
-                } ?: run { imageView.setImageURI(Uri.parse(uri)) }
-            } else {
-                throw UnsupportedOperationException("Only Fresco is available")
-            }
-        } ?: run { Timber.e("Reference to ImageView is null") }
+        imageViewRef.get()
+            ?.let { it as? DraweeView<*> }
+            ?.let {
+                it.tag = 0  // depth of retry recursion
+                it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef).build()
+            } ?: run { Timber.e("Either ImageView is not Fresco DraweeView or it's GC'ed (ref is null)") }
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun createRecursiveImageController(uri: String, thumbnailUri: String, imageViewRef: WeakReference<ImageView>)
+    private fun createRecursiveImageController(uri: String, thumbnailUri: String?, imageViewRef: WeakReference<ImageView>)
             : PipelineDraweeControllerBuilder =
         imageViewRef.get()?.let { it as? SimpleDraweeView }?.let { imageView ->
             createFlatImageController(uri, thumbnailUri)
@@ -69,7 +66,7 @@ object ImageLoader {
                 })
         } ?: createFlatImageController(uri, thumbnailUri)
 
-    private fun createFlatImageController(uri: String, thumbnailUri: String)
+    private fun createFlatImageController(uri: String, thumbnailUri: String?)
             : PipelineDraweeControllerBuilder =
         Fresco.newDraweeControllerBuilder()
             .setLowResImageRequest(ImageRequest.fromUri(thumbnailUri))
