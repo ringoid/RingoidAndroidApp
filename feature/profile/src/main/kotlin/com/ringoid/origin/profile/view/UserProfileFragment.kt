@@ -190,7 +190,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
          * Asks to add another photo yo user profile.
          */
         fun askForAnotherImage() {
-            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_common_title, descriptionResId = 0,
+            Dialogs.showTextDialog(activity,
+                titleResId = OriginR_string.profile_dialog_image_another_common_title, descriptionResId = 0,
                 positiveBtnLabelResId = OriginR_string.button_add_photo,
                 negativeBtnLabelResId = OriginR_string.button_later,
                 positiveListener = { _, _ -> onAddImage() })
@@ -202,7 +203,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
          * @note: for Onboarding.ADD_IMAGE.
          */
         fun askForAnotherImageAfterLogin() {
-            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
+            Dialogs.showTextDialog(activity,
+                titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
                 positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
                 negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
                 positiveListener = { _, _ -> cropImageAfterLogin = true ; onAddImage() },
@@ -443,7 +445,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     private fun doOnBlockedImage(imageId: String) {
-        Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_blocked_title, descriptionResId = 0,
+        Dialogs.showTextDialog(activity,
+            titleResId = OriginR_string.profile_dialog_image_blocked_title, descriptionResId = 0,
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_blocked_button,
             negativeBtnLabelResId = OriginR_string.button_close,
             positiveListener = { _, _ -> navigate(this, path = "/webpage?url=${AppRes.WEB_URL_TERMS}") })
