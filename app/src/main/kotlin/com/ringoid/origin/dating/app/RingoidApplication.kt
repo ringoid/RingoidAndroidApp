@@ -70,6 +70,10 @@ class RingoidApplication : BaseRingoidApplication() {
         val frescoConfig =
             OkHttpImagePipelineConfigFactory.newBuilder(this, networkClient)
 //                .setImageCacheStatsTracker(ImageCacheTracker())
+                .experiment()
+                .setBitmapPrepareToDraw(true, 0, Integer.MAX_VALUE, true)
+                .experiment()
+                .setDecodeCancellationEnabled(true)
                 .build()
         Fresco.initialize(this, frescoConfig)
     }
