@@ -3,6 +3,7 @@ package com.ringoid.origin.dating.app
 import android.os.HandlerThread
 import android.util.Log
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.flurry.android.FlurryAgent
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
@@ -13,6 +14,7 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.dating.app.di.ApplicationComponent
 import com.ringoid.origin.dating.app.di.DaggerApplicationComponent
+import com.ringoid.utility.image.ImageCacheTracker
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.branch.referral.Branch
@@ -45,7 +47,11 @@ class RingoidApplication : BaseRingoidApplication() {
         super.onCreate()
         Branch.getAutoInstance(this)
 
-        Fresco.initialize(this)
+        val frescoConfig =
+            ImagePipelineConfig.newBuilder(this)
+                .setImageCacheStatsTracker(ImageCacheTracker())
+                .build()
+        Fresco.initialize(this, frescoConfig)
 
         FlurryAgent.Builder()
             .withLogEnabled(true)
