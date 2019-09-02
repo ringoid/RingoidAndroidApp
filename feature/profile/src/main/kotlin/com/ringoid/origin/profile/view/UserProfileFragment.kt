@@ -186,6 +186,14 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        fun askForAnotherImageAfterLogin() {
+            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
+                positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
+                negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
+                positiveListener = { _, _ -> cropImageAfterLogin = true ; onAddImage() },
+                negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}") })
+        }
+
         fun onCropFailed(e: Throwable) {
             Timber.e(e, "Image crop has failed")
             Dialogs.supportDialog(this@UserProfileFragment, OriginR_string.error_crop_image)
@@ -213,11 +221,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             }
 
             cropImageAfterLogin = false  // ask only once per session
-            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
-                positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
-                negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
-                positiveListener = { _, _ -> cropImageAfterLogin = true ; onAddImage() },
-                negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}") })
+            askForAnotherImageAfterLogin()
         }
 
         fun addLabelView(
