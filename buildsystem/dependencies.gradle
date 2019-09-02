@@ -83,6 +83,7 @@ ext {
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
             fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
             fresco:         "com.facebook.fresco:fresco:${frescoVersion}",
+            frescoOkHttp:   "com.facebook.fresco:imagepipeline-okhttp3:${frescoVersion}",
             gson:           "com.google.code.gson:gson:${gsonVersion}",
             jobQueue:       "com.birbit:android-priority-jobqueue:${jobQueueVersion}",
             jodaTime:       "net.danlew:android.joda:${jodaTimeVersion}",
@@ -358,6 +359,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.flurry],
         [configuration: "implementation", dependency: d_libs.fresco],
+        [configuration: "implementation", dependency: d_libs.frescoOkHttp],
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]

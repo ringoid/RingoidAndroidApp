@@ -3,9 +3,10 @@ package com.ringoid.origin.dating.app
 import android.os.HandlerThread
 import android.util.Log
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.core.ImagePipelineConfig
+import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory
 import com.flurry.android.FlurryAgent
 import com.ringoid.data.remote.di.CloudModule
+import com.ringoid.data.remote.di.DaggerImageCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
 import com.ringoid.domain.BuildConfig
@@ -45,13 +46,13 @@ class RingoidApplication : BaseRingoidApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        Branch.getAutoInstance(this)
+        initializeAnalytics()
+        initializeImageLoader()
+    }
 
-        val frescoConfig =
-            ImagePipelineConfig.newBuilder(this)
-                .setImageCacheStatsTracker(ImageCacheTracker())
-                .build()
-        Fresco.initialize(this, frescoConfig)
+    // --------------------------------------------------------------------------------------------
+    private fun initializeAnalytics() {
+        Branch.getAutoInstance(this)
 
         FlurryAgent.Builder()
             .withLogEnabled(true)
@@ -61,5 +62,16 @@ class RingoidApplication : BaseRingoidApplication() {
             .build(this, BuildConfig.FLURRY_API_KEY)
 
         Sentry.init(BuildConfig.SENTRY_DSN)
+    }
+
+    private fun initializeImageLoader() {
+        val networkClient = DaggerImageCloudComponent.create()
+            .networkClientForImageLoader()
+
+        val frescoConfig =
+            OkHttpImagePipelineConfigFactory.newBuilder(this, networkClient)
+                .setImageCacheStatsTracker(ImageCacheTracker())
+                .build()
+        Fresco.initialize(this, frescoConfig)
     }
 }
