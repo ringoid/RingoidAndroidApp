@@ -53,7 +53,7 @@ class NoNetworkConnectionActivity : BaseActivity<NoNetworkConnectionViewModel>()
             networkCallback = object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
-                    vm.onPageReload()
+                    runOnUiThread { vm.onPageReload() }
                 }
             }
             application.applicationContext.connectivityManager()?.registerDefaultNetworkCallback(networkCallback)
