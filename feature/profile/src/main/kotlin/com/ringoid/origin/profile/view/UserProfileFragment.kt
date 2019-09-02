@@ -213,13 +213,12 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             Timber.e(e, "Image crop has failed")
             Dialogs.supportDialog(this@UserProfileFragment, OriginR_string.error_crop_image)
             debugAddImage = false
-            // on crop error after login
-            if (!cropImageAfterLogin) {
-                return
-            }
 
-            cropImageAfterLogin = false  // ask only once per session
-            showNoImageStub(needShow = true)
+            if (cropImageAfterLogin) {  // for Onboarding.ADD_IMAGE
+                // on crop error after login
+                cropImageAfterLogin = false  // ask only once per session
+                showNoImageStub(needShow = true)
+            }
         }
 
         fun onCropSuccess(croppedUri: Uri) {
@@ -230,13 +229,14 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 vm.uploadImage(uri = croppedUri)
             }
             debugAddImage = false
-            // on crop success after login
-            if (!cropImageAfterLogin) {
-                return
-            }
 
-            cropImageAfterLogin = false  // ask only once per session
-            askForAnotherImageAfterLogin()
+            if (cropImageAfterLogin) {  // for Onboarding.ADD_IMAGE
+                // on crop success after login
+                cropImageAfterLogin = false  // ask only once per session
+                askForAnotherImageAfterLogin()
+            } else {
+                askForAnotherImage()
+            }
         }
 
         fun addLabelView(
