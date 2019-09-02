@@ -1,5 +1,6 @@
 package com.ringoid.utility.image
 
+import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.widget.ImageView
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -40,6 +41,11 @@ object ImageLoader {
             createFlatImageController(uri, thumbnailUri)
                 .setOldController(imageView.controller)
                 .setControllerListener(object : BaseControllerListener<ImageInfo>() {
+                    override fun onFinalImageSet(id: String, imageInfo: ImageInfo?, animatable: Animatable?) {
+                        super.onFinalImageSet(id, imageInfo, animatable)
+                        Timber.v("Image has loaded: $id [${imageInfo?.width}, ${imageInfo?.height}]")
+                    }
+
                     override fun onFailure(id: String, throwable: Throwable) {
                         super.onFailure(id, throwable)
                         val depth = imageView.tag as Int
