@@ -237,52 +237,55 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             }
         }
 
+        fun onProfilePropertiesUpdate(properties: UserProfileProperties) {
+            val age = maxOf(0, calendar.get(Calendar.YEAR) - spm.currentUserYearOfBirth())
+            val gender = spm.currentUserGender()
+            val showDefault = properties.isAllUnknown()
+
+            properties.about().let { about ->
+                withAbout = about.isNotBlank()
+                tv_about.text = about.trim()
+            }
+            properties.status().let { status ->
+                tv_status.text = status.trim()
+            }
+
+            mutableListOf<String>().apply {
+                properties.name()
+                    .takeIf { it.isNotBlank() }
+                    ?.let { name -> add(name) }
+                    ?: run { add(resources.getString(OriginR_string.settings_profile_item_custom_property_name)) }
+
+                if (spm.hasUserYearOfBirth()) {
+                    age.takeIf { it >= 18 }?.let { age -> add("$age") }
+                }
+            }
+            .let { tv_name_age.text = it.joinToString() }
+
+            ll_left_section?.let { containerView ->
+                containerView.removeAllViews()
+                when (gender) {
+                    Gender.FEMALE -> UserProfileScreenUtils.propertiesFemale
+                    else -> UserProfileScreenUtils.propertiesMale
+                }
+                .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
+            }
+            ll_right_section?.let { containerView ->
+                containerView.removeAllViews()
+                UserProfileScreenUtils.propertiesRight
+                    .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
+            }
+            onImageSelect(position = currentImagePosition)
+        }
+
+        // --------------------------------------
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
             observe(vm.imageBlocked(), ::doOnBlockedImage)
             observe(vm.imageCreated(), imagesAdapter::prepend)
             observe(vm.imageDeleted(), imagesAdapter::remove)
             observe(vm.images(), imagesAdapter::submitList)
-            observe(vm.profile()) { properties ->
-                val age = maxOf(0, calendar.get(Calendar.YEAR) - spm.currentUserYearOfBirth())
-                val gender = spm.currentUserGender()
-                val showDefault = properties.isAllUnknown()
-
-                properties.about().let { about ->
-                    withAbout = about.isNotBlank()
-                    tv_about.text = about.trim()
-                }
-                properties.status().let { status ->
-                    tv_status.text = status.trim()
-                }
-
-                mutableListOf<String>().apply {
-                    properties.name()
-                        .takeIf { it.isNotBlank() }
-                        ?.let { name -> add(name) }
-                        ?: run { add(resources.getString(OriginR_string.settings_profile_item_custom_property_name)) }
-
-                    if (spm.hasUserYearOfBirth()) {
-                        age.takeIf { it >= 18 }?.let { age -> add("$age") }
-                    }
-                }
-                .let { tv_name_age.text = it.joinToString() }
-
-                ll_left_section?.let { containerView ->
-                    containerView.removeAllViews()
-                    when (gender) {
-                        Gender.FEMALE -> UserProfileScreenUtils.propertiesFemale
-                        else -> UserProfileScreenUtils.propertiesMale
-                    }
-                    .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
-                }
-                ll_right_section?.let { containerView ->
-                    containerView.removeAllViews()
-                    UserProfileScreenUtils.propertiesRight
-                        .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
-                }
-                onImageSelect(position = currentImagePosition)
-            }
+            observe(vm.profile(), ::onProfilePropertiesUpdate)
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
