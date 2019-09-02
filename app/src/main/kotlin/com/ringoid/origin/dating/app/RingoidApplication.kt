@@ -15,7 +15,6 @@ import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.dating.app.di.ApplicationComponent
 import com.ringoid.origin.dating.app.di.DaggerApplicationComponent
-import com.ringoid.utility.image.ImageCacheTracker
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.branch.referral.Branch
@@ -70,7 +69,7 @@ class RingoidApplication : BaseRingoidApplication() {
 
         val frescoConfig =
             OkHttpImagePipelineConfigFactory.newBuilder(this, networkClient)
-                .setImageCacheStatsTracker(ImageCacheTracker())
+//                .setImageCacheStatsTracker(ImageCacheTracker())
                 .build()
         Fresco.initialize(this, frescoConfig)
     }
