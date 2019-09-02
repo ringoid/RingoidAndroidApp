@@ -2,6 +2,7 @@ package com.ringoid.analytics
 
 object Analytics {
     const val CONNECTION_TIMEOUT = "CONNECTION_TIMEOUT"
+    const val EMPTY_FEED_DISCOVER_NO_FILTERS = "EMPTY_FEED_DISCOVER_NO_FILTERS"
 
     const val SCREEN_SIGN_UP = "SCREEN_SIGN_UP"
 

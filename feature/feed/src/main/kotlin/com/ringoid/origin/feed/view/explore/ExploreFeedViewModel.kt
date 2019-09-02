@@ -111,6 +111,7 @@ class ExploreFeedViewModel @Inject constructor(
                     if (hasFiltersApplied()) {
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)  // set empty Explore feed due to filters
                     } else {
+                        analyticsManager.fire(Analytics.EMPTY_FEED_DISCOVER_NO_FILTERS)
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)  // set empty Explore feed (no filters)
                     }
                 } else ViewState.IDLE  // load feed items success
