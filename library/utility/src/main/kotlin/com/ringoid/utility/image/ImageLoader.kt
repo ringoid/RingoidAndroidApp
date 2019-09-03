@@ -10,6 +10,8 @@ import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
 import com.ringoid.utility.delay
 import com.ringoid.utility.isNotFoundNetworkError
+import com.ringoid.utility.loge
+import com.ringoid.utility.logv
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -49,20 +51,20 @@ object ImageLoader {
                     override fun onFailure(id: String, throwable: Throwable) {
                         super.onFailure(id, throwable)
                         val depth = imageView.tag as Int
-                        Timber.e(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
+                        imageView.loge(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
                         if (throwable.isNotFoundNetworkError()) {
                             return  // resource at uri not found, don't retry
                         }
 
                         if (depth >= RETRY_COUNT) {
-                            Timber.v("ImageLoader: All retries have exhausted, fallback to manual retry")
+                            imageView.logv("ImageLoader: All retries have exhausted, fallback to manual retry")
                             val controller = createFlatImageController(uri, thumbnailUri)
                                 .setOldController(imageView.controller)
                                 .setTapToRetryEnabled(true)  // enable manual retry on tap
                                 .build()
                             imageView.let { it.post { it.controller = controller } }
                         } else {
-                            Timber.v("ImageLoader: Retry load image: [$depth / $RETRY_COUNT]")
+                            imageView.logv("ImageLoader: Retry load image: [$depth / $RETRY_COUNT]")
                             imageView.tag = depth + 1
                             delay(2000L) {
                                 val controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef)
