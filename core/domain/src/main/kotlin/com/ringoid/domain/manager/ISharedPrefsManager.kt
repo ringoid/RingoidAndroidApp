@@ -92,6 +92,7 @@ interface ISharedPrefsManager : IFiltersSource {
 
     // ------------------------------------------
     fun needShowFilters(): Boolean
+    fun needShowFiltersOnLc(): Boolean
     fun getNeedShowStubStatus(): Boolean
     fun dropNeedShowStubStatus()
 }

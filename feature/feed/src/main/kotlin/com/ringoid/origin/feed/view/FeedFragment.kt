@@ -308,6 +308,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge Feed while displaying ask to enable GPS popup
         }
         observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
+        observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
         observeOneShot(vm.refreshOneShot()) {
             onBeforeRefresh()

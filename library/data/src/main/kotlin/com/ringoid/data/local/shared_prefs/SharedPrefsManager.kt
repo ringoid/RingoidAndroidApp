@@ -114,6 +114,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         // --------------------------------------
         const val SP_KEY_BIG_EDIT_TEXT = "sp_key_big_edit_text"
         const val SP_KEY_FLAG_NEED_SHOW_FILTERS = "sp_key_flag_need_show_filters"
+        const val SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC = "sp_key_flag_need_show_filters_on_lc"
         const val SP_KEY_FLAG_NEED_SHOW_STUB_STATUS = "sp_key_flag_need_show_stub_status"
     }
 
@@ -247,6 +248,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         dropUserProfileCustomPropertiesUnsavedInput()  // forget unsaved input profile properties
         sharedPreferences.edit()
             .putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, true)
+            .putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC, true)
             .putBoolean(SP_KEY_FLAG_NEED_SHOW_STUB_STATUS, true)
             .apply()
     }
@@ -474,6 +476,13 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         sharedPreferences.let {
             val flag = it.getBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, true)
             it.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, false).apply()
+            flag
+        }
+
+    override fun needShowFiltersOnLc(): Boolean =
+        sharedPreferences.let {
+            val flag = it.getBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC, true)
+            it.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC, false).apply()
             flag
         }
 

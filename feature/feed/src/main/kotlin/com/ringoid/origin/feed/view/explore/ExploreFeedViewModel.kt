@@ -60,10 +60,8 @@ class ExploreFeedViewModel @Inject constructor(
 
     private val feed by lazy { MutableLiveData<Feed>() }
     private val discardProfilesOneShot by lazy { MutableLiveData<OneShot<Collection<String>>>() }
-    private val needShowFiltersOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun feed(): LiveData<Feed> = feed
     internal fun discardProfilesOneShot(): LiveData<OneShot<Collection<String>>> = discardProfilesOneShot
-    internal fun needShowFiltersOneShot(): LiveData<OneShot<Boolean>> = needShowFiltersOneShot
 
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0

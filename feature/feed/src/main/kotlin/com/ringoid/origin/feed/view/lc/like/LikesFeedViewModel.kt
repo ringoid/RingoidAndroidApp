@@ -21,6 +21,7 @@ import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.utility.runOnUiThread
 import com.ringoid.utility.vibrate
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -101,6 +102,14 @@ class LikesFeedViewModel @Inject constructor(
             }
 
     override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedLikes
+        .doAfterNext {
+            runOnUiThread {
+                if (it.totalNotFilteredCount >= 15 && getUserVisibleHint() &&
+                    spm.needShowFiltersOnLc() /** check flag once and drop */ ) {
+                    needShowFiltersOneShot.value = OneShot(true)
+                }
+            }
+        }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

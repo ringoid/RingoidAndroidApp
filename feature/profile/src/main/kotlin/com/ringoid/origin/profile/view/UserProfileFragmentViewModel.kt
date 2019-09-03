@@ -87,7 +87,7 @@ class UserProfileFragmentViewModel @Inject constructor(
                  *
                  * @see https://www.fileformat.info/info/emoji/list.htm
                  */
-                if (spm.getNeedShowStubStatus() /** check flag and drop */ && status().isBlank()) {
+                if (spm.getNeedShowStubStatus() /** check flag, drop another place */ && status().isBlank()) {
                     status(app.getRes().getString(OriginR_string.settings_profile_item_custom_property_status_stub))
                 }
             }

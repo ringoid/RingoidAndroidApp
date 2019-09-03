@@ -46,11 +46,13 @@ abstract class FeedViewModel(
     : BasePermissionViewModel(app) {
 
     protected val discardProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
+    protected val needShowFiltersOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val noImagesInUserProfileOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val refreshOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val refreshOnLocationPermissionOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
     internal fun discardProfileOneShot(): LiveData<OneShot<String>> = discardProfileOneShot
+    internal fun needShowFiltersOneShot(): LiveData<OneShot<Boolean>> = needShowFiltersOneShot
     internal fun noImagesInUserProfileOneShot(): LiveData<OneShot<Boolean>> = noImagesInUserProfileOneShot
     internal fun refreshOneShot(): LiveData<OneShot<Boolean>> = refreshOneShot
     internal fun refreshOnLocationPermissionOneShot(): LiveData<OneShot<Boolean>> = refreshOnLocationPermissionOneShot
@@ -189,7 +191,7 @@ abstract class FeedViewModel(
     protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
     internal fun refresh() {
-        Timber.d("Refreshing Feed [${getFeedName()}]")
+        DebugLogUtil.d("Refreshing Feed [${getFeedName()}]")
         refreshOneShot.value = OneShot(true)
     }
 

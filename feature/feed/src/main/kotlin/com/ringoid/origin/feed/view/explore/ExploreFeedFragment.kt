@@ -117,7 +117,6 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
                 feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
             }
             observeOneShot(vm.discardProfilesOneShot()) { onDiscardMultipleProfilesState(profileIds = it) }
-            observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
         }
     }
 
