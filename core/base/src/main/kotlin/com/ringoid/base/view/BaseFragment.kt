@@ -119,6 +119,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     protected fun doPostponedTabTransaction() {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("Perform postponed tab transaction with payload: $lastTabTransactionPayload")
         onTabTransaction(payload = lastTabTransactionPayload)
     }
 
