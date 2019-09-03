@@ -293,6 +293,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        fun onBeforeRefresh() {
+            // purge feed on refresh, before fetching a new one
+            onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed while refreshing by state
+            showLoading(isVisible = true)
+        }
+
+        // --------------------------------------
         super.onActivityCreated(savedInstanceState)
         feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
         imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
@@ -303,10 +310,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
         observeOneShot(vm.refreshOneShot()) {
-            // purge feed on refresh, before fetching a new one
-            onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed while refreshing by state
-            showLoading(isVisible = true)
+            onBeforeRefresh()
             onRefresh()
+        }
+        observeOneShot(vm.refreshOnLocationPermissionOneShot()) {
+            onBeforeRefresh()
+            onRefresh(askForLocation = false)
         }
     }
 
@@ -440,7 +449,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         onRefresh()  // should be the last action in subclasses, if overridden
     }
 
-    private fun onRefresh(): Boolean =
+    private fun onRefresh(askForLocation: Boolean = true): Boolean =
         if (!connectionManager.isNetworkAvailable()) {
             onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no connection on refresh
             noConnection(this@FeedFragment)
@@ -448,12 +457,16 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         } else {
             feedTrackingBus.allowSingleUnchanged()
             invalidateScrollCaches()
-            /**
-             * Asks for location permission, and if granted - callback will then handle
-             * to call refreshing procedure.
-             */
-            if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
-                onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no location permission on refresh
+            if (askForLocation) {
+                /**
+                 * Asks for location permission, and if granted - callback will then handle
+                 * to call refreshing procedure.
+                 */
+                if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
+                    onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no location permission on refresh
+                }
+            } else {
+                vm.onRefresh()  // refresh without asking for location permission
             }
             true
         }

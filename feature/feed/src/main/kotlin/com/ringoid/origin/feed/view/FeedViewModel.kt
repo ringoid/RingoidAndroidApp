@@ -48,10 +48,12 @@ abstract class FeedViewModel(
     protected val discardProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
     private val noImagesInUserProfileOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val refreshOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val refreshOnLocationPermissionOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
     internal fun discardProfileOneShot(): LiveData<OneShot<String>> = discardProfileOneShot
     internal fun noImagesInUserProfileOneShot(): LiveData<OneShot<Boolean>> = noImagesInUserProfileOneShot
     internal fun refreshOneShot(): LiveData<OneShot<Boolean>> = refreshOneShot
+    internal fun refreshOnLocationPermissionOneShot(): LiveData<OneShot<Boolean>> = refreshOnLocationPermissionOneShot
     internal fun refreshOnPush(): LiveData<Boolean> = refreshOnPush
     internal fun isRefreshOnPush(): Boolean = refreshOnPush.value == true
 
@@ -155,16 +157,14 @@ abstract class FeedViewModel(
 
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
-        viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_DEFAULT)
-        viewState.value = ViewState.LOADING
-        onRefresh()  // request for feed data with potentially updated location data
+        refreshOnLocationPermissionOneShot.value = OneShot(true)
     }
 
     internal fun onStartRefresh() {
         analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to getFeedName())
     }
 
-    protected open fun onRefresh() {
+    internal open fun onRefresh() {
         advanceAndPushViewObjects()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
