@@ -1,5 +1,7 @@
 package com.ringoid.utility.image
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -17,6 +19,12 @@ import java.lang.ref.WeakReference
 object ImageLoader {
 
     const val RETRY_COUNT = 5
+
+    private var notFoundDrawable: Drawable? = null
+
+    fun init(context: Context) {
+        notFoundDrawable = ContextCompat.getDrawable(context, R.drawable.ic_not_found_photo_placeholder_grey_96dp)
+    }
 
     /**
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
@@ -52,7 +60,7 @@ object ImageLoader {
                         val depth = imageView.tag as Int
                         imageView.loge(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
                         if (throwable is FileNotFoundException || throwable.isNotFoundNetworkError()) {
-                            imageView.hierarchy.setFailureImage(ContextCompat.getDrawable(imageView.context, R.drawable.ic_not_found_photo_placeholder_grey_96dp))
+                            imageView.hierarchy.setFailureImage(notFoundDrawable)
                             return  // resource at uri not found, don't retry
                         }
 
