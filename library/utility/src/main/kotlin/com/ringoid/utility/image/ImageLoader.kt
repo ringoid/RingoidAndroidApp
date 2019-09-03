@@ -2,17 +2,16 @@ package com.ringoid.utility.image
 
 import android.net.Uri
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder
 import com.facebook.drawee.controller.BaseControllerListener
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
-import com.ringoid.utility.delay
-import com.ringoid.utility.isNotFoundNetworkError
-import com.ringoid.utility.loge
-import com.ringoid.utility.logv
+import com.ringoid.utility.*
 import timber.log.Timber
+import java.io.FileNotFoundException
 import java.lang.ref.WeakReference
 
 object ImageLoader {
@@ -52,7 +51,8 @@ object ImageLoader {
                         super.onFailure(id, throwable)
                         val depth = imageView.tag as Int
                         imageView.loge(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
-                        if (throwable.isNotFoundNetworkError()) {
+                        if (throwable is FileNotFoundException || throwable.isNotFoundNetworkError()) {
+                            imageView.hierarchy.setFailureImage(ContextCompat.getDrawable(imageView.context, R.drawable.ic_not_found_photo_placeholder_grey_96dp))
                             return  // resource at uri not found, don't retry
                         }
 
@@ -64,7 +64,7 @@ object ImageLoader {
                                 .build()
                             imageView.let { it.post { it.controller = controller } }
                         } else {
-                            imageView.logv("ImageLoader: Retry load image: [$depth / $RETRY_COUNT]")
+                            imageView.logv("ImageLoader: Retry load image: [${depth + 1} / $RETRY_COUNT]")
                             imageView.tag = depth + 1
                             delay(2000L) {
                                 val controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef)
