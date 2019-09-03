@@ -526,7 +526,7 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += Develop + Analytics + ImageLoader + android + androidView + arch + autoDispose +
+    originDependencies += Develop + Analytics + android + androidView + arch + autoDispose +
                           dagger + deeplink + fragnav + gson + kotlin + log + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest

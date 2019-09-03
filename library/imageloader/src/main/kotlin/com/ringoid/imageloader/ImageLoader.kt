@@ -23,10 +23,6 @@ object ImageLoader {
 
     private var notFoundDrawable: Drawable? = null
 
-    fun init(context: Context) {
-        notFoundDrawable = ContextCompat.getDrawable(context, R.drawable.ic_not_found_photo_placeholder_grey_96dp)
-    }
-
     /**
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
@@ -36,12 +32,20 @@ object ImageLoader {
         }
         val imageViewRef = WeakReference(iv)
         imageViewRef.get()
+            ?.also { initResources(it.context) }
             ?.let { it as? SimpleDraweeView }
             ?.let {
                 it.tag = 0  // depth of retry recursion
                 it.hierarchy.setProgressBarImage(CircularImageProgressBarDrawable())
                 it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef).build()
             } ?: run { Timber.e("ImageLoader: Either ImageView is not Fresco DraweeView or it's GC'ed (ref is null)") }
+    }
+
+    // ------------------------------------------
+    private fun initResources(context: Context) {
+        if (notFoundDrawable == null) {
+            notFoundDrawable = ContextCompat.getDrawable(context, UtilityR_drawable.ic_not_found_photo_placeholder_grey_96dp)
+        }
     }
 
     // --------------------------------------------------------------------------------------------
