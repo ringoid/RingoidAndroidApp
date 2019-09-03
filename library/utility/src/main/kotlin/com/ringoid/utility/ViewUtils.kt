@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.TouchDelegate
@@ -25,6 +26,18 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
+
+fun View.logv(message: String) { log(message, Log.VERBOSE) }
+fun View.loge(error: Throwable, message: String) { log(error, message, Log.ERROR) }
+
+fun View.log(message: String, severity: Int) {
+    post { Timber.log(severity, message) }
+}
+
+fun View.log(error: Throwable, message: String, severity: Int) {
+    post { Timber.log(severity, error, message) }
+}
 
 // ------------------------------------------------------------------------------------------------
 fun View.changeVisibility(isVisible: Boolean, soft: Boolean = false) {
