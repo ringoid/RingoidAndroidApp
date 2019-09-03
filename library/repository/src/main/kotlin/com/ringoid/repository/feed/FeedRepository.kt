@@ -135,11 +135,6 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getDiscover(it.accessToken, resolution, limit, filters, lastActionTime)
                 .handleError(tag = "getDiscover($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/discover", extraTraces = extraTraces)
-                .doOnSuccess {
-                    if (it.profiles.isEmpty() && filters == NoFilters) {
-                        SentryUtil.w("No profiles received for Discover")
-                    }
-                }
                 .filterOutDuplicateProfilesFeed()
                 .filterOutAlreadySeenProfilesFeed()
                 .filterOutBlockedProfilesFeed()
