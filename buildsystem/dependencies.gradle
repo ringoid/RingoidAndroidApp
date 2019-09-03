@@ -443,7 +443,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
     ]
-    feedDependencies += Messenger + Origin + Analytics + Develop +
+    feedDependencies += Messenger + Origin + Analytics + Develop + ImageLoader +
                         android + androidView + arch + autoDispose +
                         dagger + deeplink + gson + kotlin + log + rx + rxBind + view
 
@@ -481,8 +481,8 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
     ]
-    messengerDependencies += Origin + Develop + Analytics + android + androidView + arch + autoDispose +
-                             dagger + deeplink + gson + kotlin + log + rx + rxBind
+    messengerDependencies += Origin + Develop + Analytics + ImageLoader + android + androidView +
+                             arch + autoDispose + dagger + deeplink + gson + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test
@@ -501,8 +501,8 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
     ]
-    profileDependencies += Origin + Develop + Analytics + android + androidView + arch + autoDispose +
-                           dagger + deeplink + kotlin + log + rx + rxBind + view
+    profileDependencies += Origin + Develop + Analytics + ImageLoader + android + androidView +
+                           arch + autoDispose + dagger + deeplink + kotlin + log + rx + rxBind + view
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
@@ -526,7 +526,7 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += Develop + Analytics + android + androidView + arch + autoDispose +
+    originDependencies += Develop + Analytics + ImageLoader + android + androidView + arch + autoDispose +
                           dagger + deeplink + fragnav + gson + kotlin + log + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
@@ -626,7 +626,7 @@ ext {
     imageloaderDependencies = [
         [configuration: "implementation", dependency: d_libs.fresco]
     ]
-    imageloaderDependencies += android + kotlin + log
+    imageloaderDependencies += Utility + android + kotlin + log
     testImageloaderDependencies = test
 
     imageloaderPlugins = [

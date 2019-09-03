@@ -3,9 +3,9 @@ package com.ringoid.origin.feed.adapter.profile
 import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
+import com.ringoid.imageloader.ImageLoader
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
 abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view) {

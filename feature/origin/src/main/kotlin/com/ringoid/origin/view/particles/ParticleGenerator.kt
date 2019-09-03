@@ -6,9 +6,9 @@ import com.github.jinatonic.confetti.ConfettoGenerator
 import com.github.jinatonic.confetti.confetto.BitmapConfetto
 import com.github.jinatonic.confetti.confetto.Confetto
 import com.ringoid.origin.R
+import com.ringoid.utility.getBitmap
 import com.ringoid.utility.getScreenHeight
 import com.ringoid.utility.getScreenWidth
-import com.ringoid.utility.image.getBitmap
 import java.util.*
 
 abstract class ParticleGenerator(internal val id: String, activity: Activity) : ConfettoGenerator {

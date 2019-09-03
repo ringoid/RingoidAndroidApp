@@ -1,4 +1,4 @@
-package com.ringoid.utility.image
+package com.ringoid.utility
 
 import android.content.Context
 import android.graphics.Bitmap

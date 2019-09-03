@@ -13,7 +13,7 @@ import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
 import com.ringoid.domain.manager.IUserSettingsManager
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.domain.scope.UserScopeProvider
-import com.ringoid.utility.image.ImageLoader
+import com.ringoid.imageloader.ImageLoader
 import com.ringoid.utility.manager.LocaleManager
 import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric

@@ -4,8 +4,8 @@ import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.imageloader.ImageLoader
 import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_user_profile_image.view.*
 
 

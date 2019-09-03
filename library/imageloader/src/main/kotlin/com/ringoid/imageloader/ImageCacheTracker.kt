@@ -1,4 +1,4 @@
-package com.ringoid.utility.image
+package com.ringoid.imageloader
 
 import com.facebook.cache.common.CacheKey
 import com.facebook.imagepipeline.cache.CountingMemoryCache

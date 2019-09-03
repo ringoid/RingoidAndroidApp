@@ -1,4 +1,4 @@
-package com.ringoid.utility.image
+package com.ringoid.imageloader
 
 import android.graphics.Canvas
 import android.graphics.Color

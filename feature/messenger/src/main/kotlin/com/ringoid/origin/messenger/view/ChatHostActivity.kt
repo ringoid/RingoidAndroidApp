@@ -9,10 +9,10 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.imageloader.ImageLoader
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.view.dialog.IDialogCallback
-import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.activity_chat.*
 
 @AppNav("chat")

@@ -1,4 +1,4 @@
-package com.ringoid.utility.image
+package com.ringoid.imageloader
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -11,7 +11,8 @@ import com.facebook.drawee.controller.BaseControllerListener
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
-import com.ringoid.utility.*
+import com.ringoid.utility.delay
+import com.ringoid.utility.isNotFoundNetworkError
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.lang.ref.WeakReference
