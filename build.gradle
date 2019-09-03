@@ -86,7 +86,7 @@ ext {
     retryDelayMs = "54L"
 }
 
-buildscript { 
+buildscript {
     ext.kotlin_version = '1.3.50'
 
     apply from: 'buildsystem/version.gradle'
@@ -108,7 +108,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:${kotlinVersion}"
         classpath 'io.fabric.tools:gradle:1.+'
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
+    }
 }
 
 allprojects {

@@ -1,20 +1,21 @@
 include ':app',
-        ':library:analytics',
-        ':feature:auth',
+        ':main',
         ':core:base',
+        ':core:domain',
+        ':library:analytics',
         ':library:data',
         ':library:datainterface',
-        ':core:domain',
+        ':library:imageloader',
+        ':library:repository',
+        ':library:utility',
+        ':library:widget',
+        ':feature:auth',
         ':feature:feed',
         ':feature:imagepreview',
-        ':main',
         ':feature:messenger',
         ':feature:origin',
         ':feature:profile',
-        ':library:repository',
-        ':feature:usersettings',
-        ':library:utility',
-        ':library:widget'
+        ':feature:usersettings'
 
 include ':cropiwa'
 project(':cropiwa').projectDir = new File('cropiwa/library')

@@ -164,10 +164,11 @@ ext {
             analytcis: ':library:analytics',
             base:      ':core:base',       //  ^- [ :base ]
 
-            data:    ':library:data',                  // -+- [ :data ]
+            data:           ':library:data',           // -+- [ :data ]
             datainterface:  ':library:datainterface',  //  ^- [ :datainterface ] -+-
-            repository: ':library:repository',         //  |  [ :repository ] ----^
-            domain:  ':core:domain',                //  ^- [ :domain ]---------^
+            imageloader:    ':library:imageloader',
+            repository:     ':library:repository',     //  |  [ :repository ] ----^
+            domain:         ':core:domain',            //  ^- [ :domain ]---------^
 
             utility: ':library:utility',
             widget:  ':library:widget',
@@ -191,6 +192,7 @@ ext {
 
     def Data = [[configuration: "implementation", dependency: project(modules.data)]]
     def DataInterface = [[configuration: "implementation", dependency: project(modules.datainterface)]]
+    def ImageLoader = [[configuration: "implementation", dependency: project(modules.imageloader)]]
     def Repository = [[configuration: "implementation", dependency: project(modules.repository)]]
     def Domain = [[configuration: "implementation", dependency: project(modules.domain)]]
 
@@ -363,8 +365,8 @@ ext {
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop + Repository +
-                       android + androidView + autoDispose + dagger + deeplink + fragnav +
+    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop + ImageLoader +
+                       Repository + android + androidView + autoDispose + dagger + deeplink + fragnav +
                        kotlin + leaks + log + net + room + support
 
     androidTestAppDeps = androidTest
@@ -619,6 +621,19 @@ ext {
         xPlugins.kotlinAnnotation,
     ]
 
+    /* Image Loader */
+    // ------------------------------------------
+    imageloaderDependencies = [
+        [configuration: "implementation", dependency: d_libs.fresco]
+    ]
+    imageloaderDependencies += android + kotlin + log
+    testImageloaderDependencies = test
+
+    imageloaderPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+    ]
+
     /* Repository */
     // ------------------------------------------
     repositoryDependencies = [
@@ -637,7 +652,6 @@ ext {
     /* Utility */
     // ------------------------------------------
     utilityDependencies = [
-        [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.jodaTime],
     ]
     utilityDependencies += android + androidView + kotlin + log + rx
