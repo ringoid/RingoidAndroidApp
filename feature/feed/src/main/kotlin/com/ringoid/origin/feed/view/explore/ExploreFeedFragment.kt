@@ -20,6 +20,7 @@ import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.FeedFragment
+import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
@@ -105,6 +106,24 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
         }
     }
 
+    // ------------------------------------------
+    private var postponedTabTransaction = false
+
+    override fun onTabTransaction(payload: String?) {
+        super.onTabTransaction(payload)
+        if (!isViewModelInitialized) {
+            postponedTabTransaction = true
+            return
+        }
+
+        payload?.let {
+            when (it) {
+                Payload.PAYLOAD_FEED_NEED_REFRESH -> vm.refresh()
+                else -> { /* no-op */ }
+            }
+        }
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -118,6 +137,18 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
             }
             observeOneShot(vm.discardProfilesOneShot()) { onDiscardMultipleProfilesState(profileIds = it) }
             observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
+        }
+
+        /**
+         * Since Explore feed is the first tab on the bottom bar, and 'FragNavController'
+         * performs a transaction on it automatically, that Explore screen might not be fully
+         * initialized at the moment of [onTabTransaction] call (i.e. [onActivityCreated] not yet
+         * called). And hence, [vm] hasn't been initialized as well. In order not to lose transaction
+         * payload, the following call is required here.
+         */
+        if (postponedTabTransaction) {
+            doPostponedTabTransaction()
+            postponedTabTransaction = false
         }
     }
 
