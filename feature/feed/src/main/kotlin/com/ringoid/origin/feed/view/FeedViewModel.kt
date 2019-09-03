@@ -187,6 +187,7 @@ abstract class FeedViewModel(
     protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
     internal fun refresh() {
+        Timber.d("Refreshing Feed [${getFeedName()}]")
         refreshOneShot.value = OneShot(true)
     }
 
