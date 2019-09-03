@@ -55,6 +55,7 @@ object ImageLoader {
 //                        Timber.v("Image has loaded: $id [${imageInfo?.width}, ${imageInfo?.height}]")
 //                    }
 
+                    // TODO: remove logs and debug drawable on PROD
                     override fun onFailure(id: String, throwable: Throwable) {
                         super.onFailure(id, throwable)
                         val depth = imageView.tag as Int
