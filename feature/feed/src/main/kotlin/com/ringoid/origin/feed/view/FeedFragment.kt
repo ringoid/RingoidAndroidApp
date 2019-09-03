@@ -336,6 +336,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
         super.onViewCreated(view, savedInstanceState)
         filtersPopupWidget = FiltersPopupWidget(view) {
+            onShowFiltersPopup()
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
                 ?.let { it as? BaseFiltersFragment<*> }
                 ?.requestFiltersForUpdate()
@@ -474,6 +475,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     protected fun showRefreshPopup(isVisible: Boolean) {
         btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.isRefreshOnPush())
+    }
+
+    protected open fun onShowFiltersPopup() {
+        // override in subclasses
     }
 
     /* Scroll listeners */

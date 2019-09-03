@@ -90,6 +90,11 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         filtersPopupWidget?.setTotalNotFilteredFeedItems(String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count))
     }
 
+    override fun onShowFiltersPopup() {
+        super.onShowFiltersPopup()
+        spm.needShowFiltersOnLc()  // drop flag since user has already seen filters popup on LikesYou screen
+    }
+
     // ------------------------------------------
     private fun onTransferProfile(profileId: String) {
         onDiscardProfile(profileId)?.let { discarded ->
