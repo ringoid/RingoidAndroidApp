@@ -115,8 +115,9 @@ class PersistActionObjectPool @Inject constructor(
                                 val queueCopy = ArrayDeque(queue)
                                 val essence = CommitActionsEssence(it.accessToken, queueCopy)
                                 cloud.commitActions(essence)
-                                     .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)                       }
-                    }
+                                     .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
+                            }
+                        }
                 }
             }
             .doOnError {
