@@ -105,3 +105,20 @@ fun TextView.highlightFrom(start: Int, textColor: Int) {
         }
     }
 }
+
+/* String */
+// --------------------------------------------------------------------------------------------
+fun String.splitBySegments(segmentSize: Int): List<String> {
+    if (segmentSize >= length) return listOf(this)
+    if (segmentSize <= 0) throw IllegalArgumentException("Segment size must be greater than 0")
+    val l = mutableListOf<String>()
+    var start = 0
+    var left = length
+    do {
+        val s = substring(start, start + minOf(segmentSize, left))
+        l.add(s)
+        start += segmentSize
+        left -= segmentSize
+    } while (left > 0)
+    return l
+}
