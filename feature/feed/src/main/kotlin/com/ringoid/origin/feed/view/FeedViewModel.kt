@@ -155,7 +155,9 @@ abstract class FeedViewModel(
 
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
-        refresh()  // request for feed data with potentially updated location data
+        viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_DEFAULT)
+        viewState.value = ViewState.LOADING
+        onRefresh()  // request for feed data with potentially updated location data
     }
 
     internal fun onStartRefresh() {
