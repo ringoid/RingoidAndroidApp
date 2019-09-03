@@ -9,6 +9,7 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
 import com.ringoid.utility.delay
+import com.ringoid.utility.isNotFoundNetworkError
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -30,7 +31,7 @@ object ImageLoader {
                 it.tag = 0  // depth of retry recursion
                 it.hierarchy.setProgressBarImage(CircularImageProgressBarDrawable())
                 it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef).build()
-            } ?: run { Timber.e("Either ImageView is not Fresco DraweeView or it's GC'ed (ref is null)") }
+            } ?: run { Timber.e("ImageLoader: Either ImageView is not Fresco DraweeView or it's GC'ed (ref is null)") }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -48,19 +49,22 @@ object ImageLoader {
                     override fun onFailure(id: String, throwable: Throwable) {
                         super.onFailure(id, throwable)
                         val depth = imageView.tag as Int
-                        Timber.e(throwable, "Failed to load image (depth=$depth), retrying [$id]...")
+                        Timber.e(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
+                        if (throwable.isNotFoundNetworkError()) {
+                            return  // resource at uri not found, don't retry
+                        }
 
-                        if (depth > RETRY_COUNT) {
-                            Timber.v("All retries have exhausted, fallback to manual retry")
+                        if (depth >= RETRY_COUNT) {
+                            Timber.v("ImageLoader: All retries have exhausted, fallback to manual retry")
                             val controller = createFlatImageController(uri, thumbnailUri)
                                 .setOldController(imageView.controller)
                                 .setTapToRetryEnabled(true)  // enable manual retry on tap
                                 .build()
                             imageView.let { it.post { it.controller = controller } }
                         } else {
+                            Timber.v("ImageLoader: Retry load image: [$depth / $RETRY_COUNT]")
                             imageView.tag = depth + 1
                             delay(2000L) {
-                                Timber.v("Retry load image: [$depth / $RETRY_COUNT]")
                                 val controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef)
                                     .setOldController(imageView.controller)
                                     .build()
