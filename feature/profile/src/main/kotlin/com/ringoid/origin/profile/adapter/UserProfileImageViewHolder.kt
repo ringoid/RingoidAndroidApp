@@ -17,6 +17,7 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
         itemView.tv_image_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
+    @Suppress("SetTextI18n")
     override fun bind(model: UserImage) {
         ImageLoader.load(uri = model.uri, thumbnailUri = model.uriLocal ?: model.thumbnailUri,
                          iv = itemView.iv_image)
