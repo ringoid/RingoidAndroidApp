@@ -5,7 +5,6 @@ import android.widget.ImageView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder
 import com.facebook.drawee.controller.BaseControllerListener
-import com.facebook.drawee.view.DraweeView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
@@ -26,9 +25,10 @@ object ImageLoader {
         }
         val imageViewRef = WeakReference(iv)
         imageViewRef.get()
-            ?.let { it as? DraweeView<*> }
+            ?.let { it as? SimpleDraweeView }
             ?.let {
                 it.tag = 0  // depth of retry recursion
+                it.hierarchy.setProgressBarImage(CircularImageProgressBarDrawable())
                 it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef).build()
             } ?: run { Timber.e("Either ImageView is not Fresco DraweeView or it's GC'ed (ref is null)") }
     }
