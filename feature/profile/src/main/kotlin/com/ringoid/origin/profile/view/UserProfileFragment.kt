@@ -63,6 +63,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     private var currentImagePosition: Int = 0
     private var cropImageAfterLogin: Boolean = false  // for Onboarding.ADD_IMAGE
     private var handleRequestToAddImage: Boolean = false
+    private var handleRequestToCheckNoImagesAndAddImage: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
     private val pageSelectListener = object : RecyclerView.OnScrollListener() {
@@ -115,6 +116,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         super.onTabTransaction(payload)
         payload?.let {
             when (it) {
+                Payload.PAYLOAD_PROFILE_CHECK_NO_IMAGES_AND_REQUEST_ADD_IMAGE -> {
+                    if (isAdded && isViewModelInitialized) {
+                        vm.countUserImages()
+                    } else {
+                        handleRequestToCheckNoImagesAndAddImage = true
+                    }
+                }
                 Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }  // for Onboarding.ADD_IMAGE
                 Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> {
                     if (isAdded) {
@@ -371,8 +379,9 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             handleRequestToAddImage = false  // don't reuse flag
             // redirect from other screen (in-app navigation with PAYLOAD_PROFILE_REQUEST_ADD_IMAGE payload)
             onAddImage()
-        } else if (Onboarding.current() != Onboarding.ADD_IMAGE) {
-            // cold start on Profile screen, not in-app navigation to add image
+        }
+        if (handleRequestToCheckNoImagesAndAddImage) {
+            handleRequestToCheckNoImagesAndAddImage = false
             vm.countUserImages()
         }
     }

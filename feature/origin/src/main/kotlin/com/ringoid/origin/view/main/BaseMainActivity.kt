@@ -19,6 +19,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
+import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.view.base.BasePermissionActivity
 import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.changeVisibility
@@ -142,6 +143,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         }
 
         fun openProfileTab() {
+            tabPayload = Payload.PAYLOAD_PROFILE_CHECK_NO_IMAGES_AND_REQUEST_ADD_IMAGE
             openTabByName(tabName = NavigateFrom.MAIN_TAB_PROFILE)
         }
 
