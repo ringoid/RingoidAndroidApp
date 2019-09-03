@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
@@ -187,7 +188,19 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         /**
-         * Asks to add another photo yo user profile.
+         * Asks to add first photo to user profile.
+         */
+        fun askForImage(count: Int) {
+            Dialogs.showTextDialog(activity,
+                descriptionResId = OriginR_string.profile_empty_images_dialog,
+                positiveBtnLabelResId = OriginR_string.button_add_photo,
+                negativeBtnLabelResId = OriginR_string.button_later,
+                positiveListener = { _, _ -> onAddImage() },
+                isCancellable = false)
+        }
+
+        /**
+         * Asks to add another photo to user profile.
          */
         fun askForAnotherImage() {
             Dialogs.showTextDialog(activity,
@@ -309,6 +322,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             observe(vm.imageDeleted(), imagesAdapter::remove)
             observe(vm.images(), imagesAdapter::submitList)
             observe(vm.profile(), ::onProfilePropertiesUpdate)
+            observeOneShot(vm.requestToAddImageOneShot(), ::askForImage)
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
@@ -323,6 +337,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
          *
          * If image cropping has finished before this place (i.e. prior to Profile screen's created),
          * get that image from the global in-memory cache and show on Profile screen.
+         * The image will be immediately passed into [onCropSuccess] callback upon subscribed
+         * (at the moment of call [IImagePreviewReceiver.subscribe]).
          */
         globalImagePreviewReceiver()
             ?.doOnError(::onCropFailed)
@@ -340,6 +356,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
              *
              * If image has not been prepared yet after cropping, but Profile screen had already
              * been created, so we are actually at this place, subscribe to get image once it's ready.
+             * The image will be passed into [onCropSuccess] callback.
+             *
+             * If image has already been prepared before this place, call [IImagePreviewReceiver.subscribe]
+             * will immediately pass it into [onCropSuccess] callback.
              */
             globalImagePreviewReceiver()?.subscribe()  // get last prepared image, if any
         } else {
@@ -348,8 +368,12 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         }
 
         if (handleRequestToAddImage) {  // postponed handling to ensure initialization
-            handleRequestToAddImage = false
-            onAddImage()  // redirect from other screen
+            handleRequestToAddImage = false  // don't reuse flag
+            // redirect from other screen (in-app navigation with PAYLOAD_PROFILE_REQUEST_ADD_IMAGE payload)
+            onAddImage()
+        } else if (Onboarding.current() != Onboarding.ADD_IMAGE) {
+            // cold start on Profile screen, not in-app navigation to add image
+            vm.countUserImages()
         }
     }
 

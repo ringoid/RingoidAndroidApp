@@ -8,6 +8,7 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class UserProfileFragmentViewModel @Inject constructor(
+    private val countUserImagesUseCase: CountUserImagesUseCase,
     private val createUserImageUseCase: CreateUserImageUseCase,
     private val getUserImageByIdUseCase: GetUserImageByIdUseCase,
     private val deleteUserImageUseCase: DeleteUserImageUseCase,
@@ -46,11 +48,13 @@ class UserProfileFragmentViewModel @Inject constructor(
     private val imageDeleted by lazy { MutableLiveData<String>() }
     private val images by lazy { MutableLiveData<List<UserImage>>() }
     private val profile by lazy { MutableLiveData<UserProfileProperties>() }
+    private val requestToAddImageOneShot by lazy { MutableLiveData<OneShot<Int>>() }
     internal fun imageBlocked(): LiveData<String> = imageBlocked
     internal fun imageCreated(): LiveData<UserImage> = imageCreated
     internal fun imageDeleted(): LiveData<String> = imageDeleted
     internal fun images(): LiveData<List<UserImage>> = images
     internal fun profile(): LiveData<UserProfileProperties> = profile
+    internal fun requestToAddImageOneShot(): LiveData<OneShot<Int>> = requestToAddImageOneShot
 
     init {
         createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
@@ -98,6 +102,14 @@ class UserProfileFragmentViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
+    internal fun countUserImages() {
+        countUserImagesUseCase.source()
+            .autoDisposable(this)
+            .subscribe({
+                if (it <= 0) { requestToAddImageOneShot.value = OneShot(it) }
+            }, DebugLogUtil::e)
+    }
+
     private fun getUserImages() {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
 

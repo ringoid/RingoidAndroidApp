@@ -113,6 +113,7 @@
     <string name="profile_dialog_image_delete_title">Удалить фото?</string>
     <string name="profile_dialog_simulate_particles_title">Эмулировать иконки</string>
     <string name="profile_empty_images">Добавь фото, чтобы\nполучать лайки</string>
+    <string name="profile_empty_images_dialog">Добавь фото, чтобы получать лайки</string>
     <string name="profile_empty_title">Профиль</string>
     <string name="profile_label_coins">%s монет</string>
 
