@@ -65,10 +65,9 @@ object ImageLoader {
                         super.onFailure(id, throwable)
                         val depth = imageView.tag as Int
                         imageView.loge(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
-                        imageView.hierarchy.setFailureImage(DebugImageLoadDrawable(cause = throwable))
+                        imageView.hierarchy.setFailureImage(DebugImageLoadDrawable(cause = throwable))  // TODO: remove for prod
                         if (throwable is FileNotFoundException || throwable.isNotFoundNetworkError()) {
-//                            imageView.hierarchy.setFailureImage(notFoundDrawable)
-//                            imageView.hierarchy.setFailureImage(DebugImageLoadDrawable(cause = throwable))
+//                            imageView.hierarchy.setFailureImage(notFoundDrawable)  // TODO: uncomment for prod
                             return  // resource at uri not found, don't retry
                         }
 
