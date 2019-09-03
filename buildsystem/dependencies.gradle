@@ -414,7 +414,7 @@ ext {
     testUserSettingsDependencies = test
 
     userSettingsPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -430,7 +430,7 @@ ext {
     testAuthDependencies = test
 
     authPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -451,7 +451,7 @@ ext {
     testFeedDependencies = test
 
     feedPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -469,7 +469,7 @@ ext {
     testImagePreviewDependencies = test
 
     imagePreviewPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -488,7 +488,7 @@ ext {
     testMessengerDependencies = test
 
     messengerPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -508,7 +508,7 @@ ext {
     testProfileDependencies = test
 
     profilePlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -539,7 +539,7 @@ ext {
     ]
 
     originPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
