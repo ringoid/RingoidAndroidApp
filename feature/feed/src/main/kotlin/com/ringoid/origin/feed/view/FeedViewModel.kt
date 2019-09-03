@@ -155,7 +155,7 @@ abstract class FeedViewModel(
 
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
-        onRefresh()  // request for feed data with potentially updated location data
+        refresh()  // request for feed data with potentially updated location data
     }
 
     internal fun onStartRefresh() {
