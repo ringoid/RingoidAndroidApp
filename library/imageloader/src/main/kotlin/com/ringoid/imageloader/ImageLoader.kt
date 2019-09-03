@@ -55,11 +55,6 @@ object ImageLoader {
             createFlatImageController(uri, thumbnailUri)
                 .setOldController(imageView.controller)
                 .setControllerListener(object : BaseControllerListener<ImageInfo>() {
-//                    override fun onFinalImageSet(id: String, imageInfo: ImageInfo?, animatable: Animatable?) {
-//                        super.onFinalImageSet(id, imageInfo, animatable)
-//                        Timber.v("Image has loaded: $id [${imageInfo?.width}, ${imageInfo?.height}]")
-//                    }
-
                     // TODO: remove logs and debug drawable on PROD
                     override fun onFailure(id: String, throwable: Throwable) {
                         super.onFailure(id, throwable)
