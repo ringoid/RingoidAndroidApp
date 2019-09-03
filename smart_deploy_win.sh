@@ -17,7 +17,6 @@ echo "next version: $NEXT_VERSION"
 sed "s/$CURRENT_VERSION/$NEXT_VERSION/g" "$FILE" > $TEMP && mv $TEMP "$FILE"
 
 # commit
-git diff
 git add $FILE
 git commit -m "Build $NEXT_VERSION (script)"
 git show
@@ -51,6 +50,7 @@ echo "building $NEXT_FLAVOR ..."
 
 # set initial flavor
 sed "s/$NEXT_FLAVORSTR/$FLAVORSTR/g" "$FILE" > $TEMP && mv $TEMP "$FILE"
+git status
 
 # run Android Studio
 # build and run apk
