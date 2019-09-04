@@ -7,7 +7,6 @@ import com.ringoid.datainterface.local.messenger.IMessageDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.exception.SkipThisTryException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
@@ -15,6 +14,7 @@ import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.messenger.IMessengerRepository
+import com.ringoid.report.exception.SkipThisTryException
 import com.ringoid.repository.BaseRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
@@ -270,7 +270,7 @@ class MessengerRepository @Inject constructor(
         return Completable.fromCallable { sentMessagesLocal.addMessage(sentMessage) }
             .doOnSubscribe {
                 keepSentMessage(sentMessage)
-                aObjPool.put(aobj)
+                aObjPool.put(aobj)  // immediate action object will be committed right now
             }
             .toSingleDefault(sentMessage)
     }

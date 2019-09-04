@@ -5,7 +5,6 @@ import com.ringoid.data.executor.di.UseCaseExecutorModule
 import com.ringoid.data.local.database.di.DbFacadeModule
 import com.ringoid.data.local.shared_prefs.di.SharedPrefsManagerModule
 import com.ringoid.data.remote.di.CloudFacadeModule
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.repository.actions.IActionObjectRepository
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
@@ -26,6 +25,7 @@ import com.ringoid.repository.messenger.MessengerRepository
 import com.ringoid.repository.push.PushRepository
 import com.ringoid.repository.system.SystemRepository
 import com.ringoid.repository.user.UserRepository
+import com.ringoid.utility.DebugOnly
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

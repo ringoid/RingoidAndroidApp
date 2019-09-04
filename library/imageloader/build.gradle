@@ -1,0 +1,17 @@
+rootProject.imageloaderPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def imageloaderDependencies = rootProject.ext.imageloaderDependencies
+    def testImageloaderDependencies = rootProject.ext.testImageloaderDependencies
+
+    imageloaderDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testImageloaderDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

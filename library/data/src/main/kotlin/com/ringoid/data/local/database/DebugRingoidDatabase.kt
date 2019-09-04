@@ -6,7 +6,7 @@ import com.ringoid.data.local.database.dao.debug.BarrierLogDao
 import com.ringoid.data.local.database.dao.debug.DebugLogDao
 import com.ringoid.data.local.database.model.debug.BarrierLogItemDbo
 import com.ringoid.data.local.database.model.debug.DebugLogItemDbo
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 
 @DebugOnly
 @Database(version = 101, entities = [BarrierLogItemDbo::class, DebugLogItemDbo::class])

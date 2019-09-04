@@ -5,21 +5,21 @@ import androidx.core.content.ContextCompat
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.WidgetR_attrs
 import com.ringoid.origin.feed.WidgetR_color
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideTotalLikesCountOnScroll
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowTotalLikesCountOnScroll
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.LikeFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
-import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_LIKES_TOTAL
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
@@ -68,33 +68,6 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_likes_you_title
 
     // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is LC_FEED_COUNTS ->
-                        (newState.residual as LC_FEED_COUNTS).let {
-                            setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
-                        }
-                    is TRANSFER_PROFILE -> {
-                        val profileId = (newState.residual as TRANSFER_PROFILE).profileId
-                        onDiscardProfileState(profileId)?.let { discarded ->
-                            communicator(IBaseMainActivity::class.java)?.let {
-                                val payload = Bundle().apply {
-                                    putInt("positionOfImage", discarded.positionOfImage)
-                                    putSerializable("destinationFeed", LcNavTab.MESSAGES)
-                                }
-                                Bus.post(BusEvent.TransferProfile(profileId = discarded.id, payload = payload))
-                            }
-                        }
-                    }
-                    is PUSH_NEW_LIKES_TOTAL -> communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(isVisible = true)
-                }
-            }
-        }
-    }
-
     override fun setDefaultToolbarTitle() {
         toolbar.setTitle(OriginR_string.feed_likes_you_title)
     }
@@ -119,12 +92,34 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
         filtersPopupWidget?.setTotalNotFilteredFeedItems(String.format(AppRes.FILTER_BUTTON_SHOW_ALL, count))
     }
 
+    override fun onShowFiltersPopup() {
+        super.onShowFiltersPopup()
+        spm.needShowFiltersOnLc()  // drop flag since user has already seen filters popup on LikesYou screen
+    }
+
+    // ------------------------------------------
+    private fun onTransferProfile(profileId: String) {
+        onDiscardProfile(profileId)?.let { discarded ->
+            communicator(IBaseMainActivity::class.java)?.let {
+                val payload = Bundle().apply {
+                    putInt("positionOfImage", discarded.positionOfImage)
+                    putSerializable("destinationFeed", LcNavTab.MESSAGES)
+                }
+                Bus.post(BusEvent.TransferProfile(profileId = discarded.id, payload = payload))
+            }
+        }
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.pushNewLike) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
+            observe(vm.pushNewLike()) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_LIKE) }
+            observeOneShot(vm.pushLikesBadgeOneShot()) {
+                communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(isVisible = true)
+            }
+            observeOneShot(vm.transferProfileOneShot(), ::onTransferProfile)
         }
     }
 
@@ -135,5 +130,6 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
             .apply {
                 addAll(super.getOffsetScrollStrategies())
                 add(OffsetScrollStrategy(tag = "like btn bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_BOTTOM, hide = FeedViewHolderHideLikeBtnOnScroll, show = FeedViewHolderShowLikeBtnOnScroll))
+                add(OffsetScrollStrategy(tag = "total likes bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_LABEL_BOTTOM, hide = FeedViewHolderHideTotalLikesCountOnScroll, show = FeedViewHolderShowTotalLikesCountOnScroll))
             }
 }

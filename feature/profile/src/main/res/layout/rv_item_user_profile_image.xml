@@ -15,11 +15,11 @@
         fresco:actualImageScaleType="centerCrop"
         fresco:fadeDuration="0"
         fresco:failureImage="@drawable/ic_no_photo_placeholder_grey_96dp"
-        fresco:retryImage="@drawable/ic_no_photo_placeholder_grey_96dp"/>
+        fresco:retryImage="@drawable/ic_refresh_photo_placeholder_grey_96dp"/>
 
     <TextView
         android:id="@+id/tv_image_id"
-        android:layout_marginStart="@dimen/std_margin_8"
+        android:layout_marginEnd="@dimen/std_margin_8"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"
@@ -28,7 +28,7 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Debug image id"
         style="@style/StdText.White"/>
 

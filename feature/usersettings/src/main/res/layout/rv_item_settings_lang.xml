@@ -8,9 +8,11 @@
     android:minHeight="@dimen/settings_lang_item_height">
 
     <View
-        android:id="@+id/underscore"
-        app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/Underscore"/>
+        android:id="@+id/anchor"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/tv_lang_label"
@@ -18,7 +20,7 @@
         android:layout_marginEnd="@dimen/std_margin_8"
         android:gravity="start|center_vertical"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/underscore"
+        app:layout_constraintBottom_toTopOf="@id/anchor"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="English"
         style="@style/StdText.Primary"/>
@@ -30,7 +32,7 @@
         android:layout_marginEnd="@dimen/std_margin_16"
         android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/underscore"
+        app:layout_constraintBottom_toTopOf="@id/anchor"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="?attr/refDrawableMenuCheck"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

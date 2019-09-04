@@ -1,33 +1,27 @@
 package com.ringoid.origin.feed.view.lc.like
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLcUseCase
-import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_LIKES_TOTAL
-import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
-import com.ringoid.origin.feed.view.lc.TRANSFER_PROFILE
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.view.common.visual.MatchVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.report.log.SentryUtil
+import com.ringoid.utility.runOnUiThread
 import com.ringoid.utility.vibrate
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -62,7 +56,12 @@ class LikesFeedViewModel @Inject constructor(
 
     private val incomingPushLike = PublishSubject.create<BusEvent>()
     private val incomingPushLikeEffect = PublishSubject.create<Long>()
-    internal val pushNewLike by lazy { MutableLiveData<Long>() }
+    private val pushNewLike by lazy { MutableLiveData<Long>() }
+    private val pushLikesBadgeOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val transferProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
+    internal fun pushNewLike(): LiveData<Long> = pushNewLike
+    internal fun pushLikesBadgeOneShot(): LiveData<OneShot<Boolean>> = pushLikesBadgeOneShot
+    internal fun transferProfileOneShot(): LiveData<OneShot<String>> = transferProfileOneShot
 
     private var shouldVibrate: Boolean = true
 
@@ -73,7 +72,7 @@ class LikesFeedViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 // show badge on Likes LC tab
-                viewState.value = ViewState.DONE(PUSH_NEW_LIKES_TOTAL)
+                pushLikesBadgeOneShot.value = OneShot(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)
@@ -91,10 +90,7 @@ class LikesFeedViewModel @Inject constructor(
         feed.filter { it.isNotSeen }.map { it.id }
 
     // ------------------------------------------
-    override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_LIKES
-
     override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
-
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
 
     override fun sourceBadge(): Observable<Boolean> =
@@ -106,6 +102,14 @@ class LikesFeedViewModel @Inject constructor(
             }
 
     override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedLikes
+        .doAfterNext {
+            runOnUiThread {
+                if (it.totalNotFilteredCount >= 15 && getUserVisibleHint() &&
+                    spm.needShowFiltersOnLc() /** check flag once and drop */ ) {
+                    needShowFiltersOneShot.value = OneShot(true)
+                }
+            }
+        }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
@@ -115,20 +119,20 @@ class LikesFeedViewModel @Inject constructor(
             if (badgeIsOn) {  /** has new feed items */
                 analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to getFeedName())
             }
-            shouldVibrate = spm.getUserSettingVibrationPushEnabled()
+            shouldVibrate = spm.getUserPushSettings().pushVibration
         }
     }
 
     override fun onStart() {
         super.onStart()
-        shouldVibrate = spm.getUserSettingVibrationPushEnabled()
+        shouldVibrate = spm.getUserPushSettings().pushVibration
     }
 
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
         // transfer liked profile from Likes Feed to Matches Feed, by Product
-        viewState.value = ViewState.DONE(TRANSFER_PROFILE(profileId = profileId))
+        transferProfileOneShot.value = OneShot(profileId)
     }
 
     override fun onImageTouch(x: Float, y: Float) {

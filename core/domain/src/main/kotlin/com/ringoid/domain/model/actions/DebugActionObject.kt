@@ -1,7 +1,7 @@
 package com.ringoid.domain.model.actions
 
 import com.ringoid.domain.action_storage.Immediate
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 
 @DebugOnly
 class DebugActionObject(actionTime: Long = System.currentTimeMillis())

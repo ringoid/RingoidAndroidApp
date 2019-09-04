@@ -16,6 +16,7 @@ data class UserProfilePropertiesRaw(
     var name: String = "",
     var socialInstagram: String = "",
     var socialTikTok: String = "",
+    var statusText: String = "",
     var university: String = "",
     var whereFrom: String = "",
     var whereLive: String = "")

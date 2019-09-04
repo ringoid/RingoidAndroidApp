@@ -13,12 +13,13 @@ import com.ringoid.base.print
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.config.IRuntimeConfig
+import com.ringoid.debug.DebugLogUtil
+import com.ringoid.debug.ICloudDebug
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
-import com.ringoid.domain.manager.IRuntimeConfig
 import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.utility.checkForNull
 import com.ringoid.utility.manager.KeyboardManager
 import com.ringoid.utility.manager.KeyboardStatus
 import com.ringoid.utility.manager.LocaleManager
@@ -91,7 +92,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.d("onCreate($savedInstanceState), intent: ${intent.print()}")
+        Timber.d("onCreate(${checkForNull(savedInstanceState)}), intent: ${intent.print()}")
         DebugLogUtil.lifecycle(this, "onCreate")
         isDestroying = false
         AndroidInjection.inject(this)
@@ -100,7 +101,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         getLayoutId()?.let { setContentView(it) }
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             subscribeOnBusEvents()
-            observe(viewState, ::onViewStateChange)
+            observe(viewState(), ::onViewStateChange)
         }
         this.savedInstanceState = savedInstanceState
         savedInstanceState?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }

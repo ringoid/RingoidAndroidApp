@@ -42,6 +42,23 @@ internal object FeedScreenUtils {
                UserProfilePropertyId.HEIGHT,
                UserProfilePropertyId.HAIR_COLOR)
 
+    fun hasAtLeastOneProperty(properties: FeedItemVO): Boolean =
+        properties.let {
+            hasChildrenProperty(it) ||
+            hasCompanyAndJobTitleProperty(it) ||
+            hasDistanceProperty(it) ||
+            hasEducationProperty(it) ||
+            hasHairColorProperty(it) ||
+            hasHeightProperty(it) ||
+            hasIncomeProperty(it) ||
+            hasPropertyProperty(it) ||
+            hasSocialInstagramProperty(it) ||
+            hasSocialTiktokProperty(it) ||
+            hasTransportProperty(it) ||
+            hasUniversityProperty(it) ||
+            hasWhereLiveProperty(it)
+        }
+
     fun createLabelView(
             container: ViewGroup, gender: Gender,
             propertyId: UserProfilePropertyId,
@@ -71,8 +88,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.DISTANCE -> {
-                if (!properties.distanceText.isNullOrBlank() &&
-                    properties.distanceText != DomainUtil.BAD_PROPERTY) {
+                if (hasDistanceProperty(properties)) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_location_arrow_white_18dp)
                         setText(properties.distanceText)
@@ -98,7 +114,7 @@ internal object FeedScreenUtils {
                 } else null
             }
             UserProfilePropertyId.HEIGHT -> {
-                if (properties.height > 0) {
+                if (hasHeightProperty(properties)) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_height_property_white_18dp)
                         setText("${properties.height} ${AppRes.LENGTH_CM}")
@@ -169,4 +185,45 @@ internal object FeedScreenUtils {
                 } else null
             }
         }
+
+    // --------------------------------------------------------------------------------------------
+    private fun hasChildrenProperty(properties: FeedItemVO): Boolean =
+        properties.children() != ChildrenProfileProperty.Unknown
+
+    private fun hasCompanyAndJobTitleProperty(properties: FeedItemVO): Boolean =
+        !properties.company().isNullOrBlank() || !properties.jobTitle().isNullOrBlank()
+
+    private fun hasDistanceProperty(properties: FeedItemVO): Boolean =
+        !properties.distanceText.isNullOrBlank() &&
+         properties.distanceText != DomainUtil.BAD_PROPERTY
+
+    private fun hasEducationProperty(properties: FeedItemVO): Boolean =
+        properties.education() != EducationProfileProperty.Unknown
+
+    private fun hasHairColorProperty(properties: FeedItemVO): Boolean =
+        properties.hairColor() != HairColorProfileProperty.Unknown
+
+    private fun hasHeightProperty(properties: FeedItemVO): Boolean =
+        properties.height > 0
+
+    private fun hasIncomeProperty(properties: FeedItemVO): Boolean =
+        properties.income() != IncomeProfileProperty.Unknown
+
+    private fun hasPropertyProperty(properties: FeedItemVO): Boolean =
+        properties.property() != PropertyProfileProperty.Unknown
+
+    private fun hasSocialInstagramProperty(properties: FeedItemVO): Boolean =
+        !properties.instagram().isNullOrBlank()
+
+    private fun hasSocialTiktokProperty(properties: FeedItemVO): Boolean =
+        !properties.tiktok().isNullOrBlank()
+
+    private fun hasTransportProperty(properties: FeedItemVO): Boolean =
+        properties.transport() != TransportProfileProperty.Unknown
+
+    private fun hasUniversityProperty(properties: FeedItemVO): Boolean =
+        !properties.university().isNullOrBlank()
+
+    private fun hasWhereLiveProperty(properties: FeedItemVO): Boolean =
+        !properties.whereLive().isNullOrBlank()
 }

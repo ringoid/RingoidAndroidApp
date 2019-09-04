@@ -56,6 +56,12 @@
         <attr name="text_icon_item_wrap_content" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="EditTextIconItemView">
+        <attr name="android:inputType"/>
+        <attr name="edit_text_icon_item_select_all_on_focus" format="boolean"/>
+        <attr name="edit_text_icon_item_with_counter" format="boolean"/>
+    </declare-styleable>
+
     <declare-styleable name="LabelView">
         <attr name="label_icon" format="reference"/>
         <attr name="label_icon_size" format="reference"/>

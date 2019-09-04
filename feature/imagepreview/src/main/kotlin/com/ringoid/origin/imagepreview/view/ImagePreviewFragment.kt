@@ -9,7 +9,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.origin.imagepreview.OriginR_id
 import com.ringoid.origin.imagepreview.OriginR_menu
 import com.ringoid.origin.imagepreview.OriginR_string
@@ -157,7 +157,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
         crop_view.apply {
             isLoading = true
             clear()
-            pb_image_preview.changeVisibility(isVisible = true)
+            pb_image_preview?.changeVisibility(isVisible = true)
             setImageUri(uri)
         }
     }
@@ -165,12 +165,12 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     // ------------------------------------------
     override fun onSuccess(uri: Uri) {
         isLoading = false
-        pb_image_preview.changeVisibility(isVisible = false)
+        pb_image_preview?.changeVisibility(isVisible = false)
     }
 
     override fun onFailure(e: Throwable) {
         isLoading = false
-        pb_image_preview.changeVisibility(isVisible = false)
+        pb_image_preview?.changeVisibility(isVisible = false)
         context?.toast(OriginR_string.error_crop_image)
         onClose()  // failed to load image to crop - close without retry
     }

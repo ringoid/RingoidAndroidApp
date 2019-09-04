@@ -2,12 +2,11 @@ package com.ringoid.data
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.ringoid.data.remote.network.ResponseErrorInterceptor.Companion.ERROR_CONNECTION_INSECURE
 import com.ringoid.datainterface.remote.model.BaseResponse
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.*
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.exception.*
+import com.ringoid.report.log.SentryUtil
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
@@ -73,6 +72,7 @@ private fun expBackoffFlowableImpl(
                     is RepeatRequestAfterSecException -> {
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
+                            DebugLogUtil.e(error, message = "Repeat after delay exceeded time threshold", tag = tag)
                             SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = SentryUtil.Level.WARNING, tag = tag, extras = extras)
                             exception = ThresholdExceededException()  // abort retry and fallback
                         }
@@ -84,6 +84,7 @@ private fun expBackoffFlowableImpl(
                     is InvalidAccessTokenApiException,
                     is OldAppVersionApiException,
                     is WrongRequestParamsClientApiException -> {
+                        DebugLogUtil.e(error, message = error.message ?: "", tag = tag)
                         SentryUtil.capture(error, message = error.message, tag = tag, extras = extras)
                         exception = error  // abort retry and fallback
                         0L  // delay in ms
@@ -93,8 +94,9 @@ private fun expBackoffFlowableImpl(
                     }
                     is NetworkUnexpected -> {
                         when (error.code) {
-                            ERROR_CONNECTION_INSECURE -> delay * attemptNumber * 2  // linear delay
+                            NetworkUnexpected.ERROR_CONNECTION_INSECURE -> delay * attemptNumber * 2  // linear delay
                             else -> {
+                                DebugLogUtil.e(error, message = error.message ?: "", tag = tag)
                                 SentryUtil.capture(error, message = error.message, tag = tag, extras = extras)
                                 exception = error  // abort retry and fallback
                                 0L  // delay in ms
@@ -108,6 +110,7 @@ private fun expBackoffFlowableImpl(
                      * Exponential delay exceeds threshold, and this is not 'RepeatRequestAfterSecException'
                      * (because Server-side value for delay is just 800 ms, which is less than threshold).
                      */
+                    DebugLogUtil.e(error, "Common retry after delay exceeded time threshold", tag = tag)
                     SentryUtil.capture(error, message = "Common retry after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms")
                     exception = ThresholdExceededException()  // abort retry and fallback, in common case
                 }
@@ -125,6 +128,7 @@ private fun expBackoffFlowableImpl(
                                 if (error is RepeatRequestAfterSecException) {
 //                                  SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
                                     if (attemptNumber >= 3) {
+                                        DebugLogUtil.e(error, message = "Repeat after delay 3+ times in a row", tag = tag)
                                         SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row",
                                                            level = SentryUtil.Level.WARNING, tag = tag,
                                                            extras = extras)
@@ -140,7 +144,10 @@ private fun expBackoffFlowableImpl(
                                 if (attemptNumber >= count) {
                                     trace?.putAttribute("result", "failed")
                                     extraTraces.forEach { it.putAttribute("result", "failed") }
-                                    throw error.also { SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras) }
+                                    throw error.also {
+                                        DebugLogUtil.e(error, message = "Failed to retry: all attempts have exhausted")
+                                        SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras)
+                                    }
                                 }
                             }
             }
@@ -200,7 +207,7 @@ inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = 
 private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer<in T> =
     Consumer {
         if (!it.unexpected.isNullOrBlank()) {
-            throw NetworkUnexpected(it.unexpected!!)
+            throw NetworkUnexpected.from(it.unexpected!!)
         }
         if (!it.errorCode.isNullOrBlank()) {
             val apiError = when (it.errorCode) {
@@ -298,10 +305,10 @@ inline fun <reified T : BaseResponse> onNetErrorObservable(tag: String? = null):
 // --------------------------------------------------------------------------------------------
 fun Completable.handleErrorNoRetry(tag: String? = null): Completable = withNetError(tag)
 fun Completable.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Completable =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Completable =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
@@ -312,10 +319,10 @@ fun Completable.handleError(
 inline fun <reified T : BaseResponse> Maybe<T>.handleErrorNoRetry(tag: String? = null): Maybe<T> =
     withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Maybe<T>.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Maybe<T> =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Maybe<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
@@ -326,24 +333,29 @@ inline fun <reified T : BaseResponse> Maybe<T>.handleError(
 inline fun <reified T : BaseResponse> Single<T>.handleErrorNoRetry(tag: String? = null): Single<T> =
     withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Single<T>.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Single<T> =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Single<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
             val source = if (count > 0) it.withRetry(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces) else it
             source.doOnSubscribe { trace.start() }.doFinally { trace.stop() }
         }
+inline fun <reified T : BaseResponse> Single<T>.handleErrorNoTrace(
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null): Single<T> =
+    handleErrorNoRetry(tag).compose { if (count > 0) it.withRetry(count = count, delay = delay, tag = tag) else it }
 
 inline fun <reified T : BaseResponse> Flowable<T>.handleErrorNoRetry(tag: String? = null): Flowable<T> =
     withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Flowable<T>.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Flowable<T> =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Flowable<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)
@@ -354,10 +366,10 @@ inline fun <reified T : BaseResponse> Flowable<T>.handleError(
 inline fun <reified T : BaseResponse> Observable<T>.handleErrorNoRetry(tag: String? = null): Observable<T> =
     withApiError(tag).withNetError(tag)
 inline fun <reified T : BaseResponse> Observable<T>.handleError(
-    count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
-    delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
-    tag: String? = null, traceTag: String = tag ?: "",
-    extraTraces: Collection<Trace> = emptyList()): Observable<T> =
+        count: Int = BuildConfig.DEFAULT_RETRY_COUNT,
+        delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
+        tag: String? = null, traceTag: String = tag ?: "",
+        extraTraces: Collection<Trace> = emptyList()): Observable<T> =
     handleErrorNoRetry(tag)
         .compose {
             val trace = FirebasePerformance.getInstance().newTrace(traceTag)

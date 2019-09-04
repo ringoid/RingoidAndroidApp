@@ -68,26 +68,24 @@
             app:layout_constraintStart_toStartOf="@+id/et_year_of_birth"
             app:layout_constraintEnd_toEndOf="@+id/et_year_of_birth">
 
-            <TextView
+            <com.ringoid.origin.auth.widget.SelectableTextView
                 android:id="@+id/tv_sex_male"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/sex_bg_selector"
-                android:clickable="true"
                 android:drawableTop="@drawable/ic_sex_male_blue_60dp"
                 android:padding="@dimen/std_margin_16"
                 android:text="@string/common_sex_male"
                 android:textColor="@color/male_blue"
                 style="@style/StdText"/>
 
-            <TextView
+            <com.ringoid.origin.auth.widget.SelectableTextView
                 android:id="@+id/tv_sex_female"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/sex_bg_selector"
-                android:clickable="true"
                 android:drawableTop="@drawable/ic_sex_female_red_60dp"
                 android:padding="@dimen/std_margin_16"
                 android:text="@string/common_sex_female"

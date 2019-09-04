@@ -3,13 +3,15 @@ package com.ringoid.origin.feed.view
 import android.app.Application
 import android.content.Intent
 import android.os.Build
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -43,7 +45,19 @@ abstract class FeedViewModel(
     private val userInMemoryCache: IUserInMemoryCache, app: Application)
     : BasePermissionViewModel(app) {
 
-    val refreshOnPush by lazy { MutableLiveData<Boolean>() }
+    protected val discardProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
+    protected val needShowFiltersOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val noImagesInUserProfileOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val refreshOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val refreshOnLocationPermissionOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
+    internal fun discardProfileOneShot(): LiveData<OneShot<String>> = discardProfileOneShot
+    internal fun needShowFiltersOneShot(): LiveData<OneShot<Boolean>> = needShowFiltersOneShot
+    internal fun noImagesInUserProfileOneShot(): LiveData<OneShot<Boolean>> = noImagesInUserProfileOneShot
+    internal fun refreshOneShot(): LiveData<OneShot<Boolean>> = refreshOneShot
+    internal fun refreshOnLocationPermissionOneShot(): LiveData<OneShot<Boolean>> = refreshOnLocationPermissionOneShot
+    internal fun refreshOnPush(): LiveData<Boolean> = refreshOnPush
+    internal fun isRefreshOnPush(): Boolean = refreshOnPush.value == true
 
     private var verticalPrevRange: EqualRange<ProfileImageVO>? = null
     private val horizontalPrevRanges = mutableMapOf<String, EqualRange<ProfileImageVO>>()  // profileId : range
@@ -59,11 +73,9 @@ abstract class FeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onBeforeTabSelect() {
         super.onBeforeTabSelect()
-        viewState.value
-            .takeIf { it is ViewState.CLEAR }
-            ?.let { it as ViewState.CLEAR }
-            ?.takeIf { it.mode == ViewState.CLEAR.MODE_EMPTY_DATA }
-            ?.let { viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_NEED_REFRESH) }
+        viewState.value.takeIf { it is ViewState.CLEAR }?.let { it as ViewState.CLEAR }
+            ?.takeIf { it.mode == ViewState.CLEAR.MODE_EMPTY_DATA }  // before tab select there was no data
+            ?.let { viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_NEED_REFRESH) }  // before tab select change clear mode
     }
 
     /* Lifecycle */
@@ -142,19 +154,19 @@ abstract class FeedViewModel(
 
     override fun onLocationPermissionDeniedAction(handleCode: Int) {
         super.onLocationPermissionDeniedAction(handleCode)
-        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+        viewState.value = ViewState.CLEAR(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // location permission denied
     }
 
     override fun onLocationReceived(handleCode: Int) {
         super.onLocationReceived(handleCode)
-        onRefresh()  // request for feed data with potentially updated location data
+        refreshOnLocationPermissionOneShot.value = OneShot(true)
     }
 
     internal fun onStartRefresh() {
         analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to getFeedName())
     }
 
-    protected open fun onRefresh() {
+    internal open fun onRefresh() {
         advanceAndPushViewObjects()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
@@ -165,7 +177,7 @@ abstract class FeedViewModel(
                             viewActionObjectBackup.clear()
                             getFeed()
                         } else {
-                            viewState.value = ViewState.DONE(NO_IMAGES_IN_USER_PROFILE)
+                            noImagesInUserProfileOneShot.value = OneShot(true)
                         }
                     })
             .autoDisposable(this)
@@ -179,7 +191,8 @@ abstract class FeedViewModel(
     protected open fun checkImagesCount(count: Int): Boolean = count > 0
 
     internal fun refresh() {
-        viewState.value = ViewState.DONE(REFRESH)
+        DebugLogUtil.d("Refreshing Feed [${getFeedName()}]")
+        refreshOneShot.value = OneShot(true)
     }
 
     /* Action Objects */
@@ -187,7 +200,7 @@ abstract class FeedViewModel(
     internal fun onBeforeLike(): Boolean =
         if (userInMemoryCache.userImagesCount() > 0) true
         else {
-            viewState.value = ViewState.DONE(NO_IMAGES_IN_USER_PROFILE)
+            noImagesInUserProfileOneShot.value = OneShot(true)
             false
         }
 
@@ -216,7 +229,7 @@ abstract class FeedViewModel(
     internal open fun onChatOpen(profileId: String, imageId: String) {
         /**
          * Need to mark profile as seen before opening chat, because it then malfunctions when
-         * feed screen goes background while chat is opening: basically transition to [ViewState.DONE]
+         * feed screen goes background while chat is opening: basically setting [viewState] liveData
          * does not work during background. So, as a workaround, such transition should be done here
          * while feed screen is on foreground and chat not yet opened.
          */
@@ -249,16 +262,16 @@ abstract class FeedViewModel(
 
         // remove profile from feed, filter it from backend responses in future
         cacheBlockedProfileIdUseCase.source(params = Params().put("profileId", profileId))
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // cache blocked peer id failed
             .autoDisposable(this)
             .subscribe({
                 ChatInMemoryCache.dropPositionForProfile(profileId = profileId)
-                viewState.value = ViewState.DONE(DISCARD_PROFILE(profileId = profileId))
+                discardProfileOneShot.value = OneShot(profileId)
             }, DebugLogUtil::e)
 
         // remove all messages for blocked profile, to exclude them from messages counting
         clearMessagesForChatUseCase.source(params = Params().put("chatId", profileId))
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // clear local chat for blocked peer failed
             .autoDisposable(this)
             .subscribe({ ChatInMemoryCache.deleteProfile(profileId) }, DebugLogUtil::e)
 

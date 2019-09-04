@@ -14,16 +14,16 @@ import com.ncapdevi.fragnav.FragNavTransactionOptions
 import com.ncapdevi.fragnav.tabhistory.UnlimitedTabHistoryStrategy
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.view.base.BasePermissionActivity
 import com.ringoid.origin.view.particles.ParticleAnimator
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.checkForNull
 import com.ringoid.utility.collection.toJsonObject
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -89,6 +89,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             }
         }
 
+        Timber.i("Cold start")
         processExtras(intent, savedInstanceState)
         DebugLogUtil.clear()  // clear debug logs when recreate Main screen
     }
@@ -102,7 +103,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
      */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        processExtras(intent, savedInstanceState)
+        Timber.i("Warm start")
+        processExtras(intent, savedInstanceState)  // app's warm start
     }
 
     override fun onStart() {
@@ -114,22 +116,18 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         super.onSaveInstanceState(outState)
         fragNav.onSaveInstanceState(outState)
         outState.putSerializable(BUNDLE_KEY_CURRENT_TAB, bottom_bar.selectedItem)
-        (fragNav.currentFrag as? BaseFragment<*>)?.onActivitySaveInstanceState(outState)
     }
 
     private fun processExtras(intent: Intent, savedInstanceState: Bundle?) {
         fun openExploreTab() {
-            tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
             openTabByName(tabName = NavigateFrom.MAIN_TAB_EXPLORE)
         }
 
         fun openLikesTab() {
-            tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
             openTabByName(tabName = NavigateFrom.MAIN_TAB_LIKES)
         }
 
         fun openMessagesTab() {
-            tabPayload = Payload.PAYLOAD_FEED_NEED_REFRESH
             openTabByName(tabName = NavigateFrom.MAIN_TAB_MESSAGES)
         }
 
@@ -145,12 +143,13 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         }
 
         fun openProfileTab() {
+            tabPayload = Payload.PAYLOAD_PROFILE_CHECK_NO_IMAGES_AND_REQUEST_ADD_IMAGE
             openTabByName(tabName = NavigateFrom.MAIN_TAB_PROFILE)
         }
 
         fun openMainTab(tab: NavTab? = null) {
-            if (tab == null) {
-                openExploreTab()
+            if (tab == null) {  // open default tab
+                openProfileTab()
                 return
             }
 
@@ -171,21 +170,38 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
         Timber.d("Intent data: ${intent.extras?.toJsonObject()}")
         intent.extras?.apply {
-            Timber.v("Process extras[$savedInstanceState]: $this")
+            Timber.v("Process extras[${checkForNull(savedInstanceState)}]: $this")
+            // in-app navigation
             getString("tab")?.let { tabName ->
                 Timber.v("In-App extras: $tabName")
                 tabPayload = getString("tabPayload")
+                Timber.i("Open $tabName for in-app navigation")
                 openTabByName(tabName)
             }
+            // app is opened from notification
             ?: getString("type")?.let { type ->
                 Timber.v("Push extras: $type")
                 vm.onPushOpen()
                 LcNavTab.fromPushType(pushType = type)
-                    ?.let { openLcTab(lcTab = it) }
-                    ?: run { openInitialTab() }
+                    ?.let {
+                        Timber.i("Open ${it.feedName} tab (by notification)")
+                        openLcTab(lcTab = it)
+                    }
+                    ?: run {
+                        Timber.i("Open init tab (unknown notification type)")
+                        openInitialTab()  // unknown notification type
+                    }
             }
-            ?: run { openInitialTab() }
-        } ?: run { openInitialTab() }
+            ?: run {
+                // neither in-app navigation nor open from notification, possibly clicking on launcher icon
+                Timber.i("Open init tab (splash)")
+                openInitialTab()
+            }
+        } ?: run {
+            // app's cold start
+            Timber.i("Open init tab (no extra)")
+            openInitialTab()
+        }
     }
 
     override fun onStop() {
@@ -232,7 +248,6 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     @DebugOnly
     protected fun showDebugView() {
         debug_view.changeVisibility(isVisible = spm.isDebugLogEnabled())
-        debug_info_view.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
     // --------------------------------------------------------------------------------------------

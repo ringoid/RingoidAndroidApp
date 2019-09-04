@@ -5,10 +5,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.KeyEvent
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -18,11 +15,13 @@ import com.ringoid.base.observe
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.IBaseActivity
 import com.ringoid.base.view.ViewState
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
+import com.ringoid.origin.messenger.OriginR_string
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.WidgetR_style
 import com.ringoid.origin.messenger.adapter.ChatAdapter
@@ -48,9 +47,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         private const val BUNDLE_KEY_PAYLOAD = "bundle_key_payload"
         private const val BUNDLE_KEY_TAG = "bundle_key_tag"
 
-        fun newInstance(peerId: String, payload: ChatPayload = ChatPayload(
-            peerId = peerId
-        ), tag: String = TAG): ChatFragment =
+        fun newInstance(peerId: String, payload: ChatPayload = ChatPayload(peerId = peerId), tag: String = TAG): ChatFragment =
             ChatFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_PEER_ID, peerId)
@@ -95,6 +92,12 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         chatAdapter = ChatAdapter().apply {
             itemDoubleClickListener = { _, _ -> closeChat() }
             onMessageInsertListener = { _ -> scrollToLastItem() }
+            onMessageLongClickListener = { message ->
+                context?.let {
+                    it.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_CHAT_MESSAGE, value = message.text)
+                    it.toast(OriginR_string.common_clipboard, gravity = Gravity.CENTER)
+                }
+            }
         }
     }
 
@@ -104,11 +107,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.messages, chatAdapter::submitList)
-            observe(vm.newMessages, chatAdapter::prependAll)
-            observe(vm.sentMessage, chatAdapter::prepend)
-            observe(vm.onlineStatus, ::showOnlineStatus)
-            observe(vm.peerName) { peerName -> tv_peer_name?.text = peerName }
+            observe(vm.messages(), chatAdapter::submitList)
+            observe(vm.newMessages(), chatAdapter::prependAll)
+            observe(vm.sentMessage(), chatAdapter::prepend)
+            observe(vm.onlineStatus(), ::showOnlineStatus)
+            observe(vm.peerName()) { peerName -> tv_peer_name?.text = peerName }
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)

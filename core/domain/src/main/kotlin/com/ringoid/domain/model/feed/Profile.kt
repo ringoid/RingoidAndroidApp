@@ -8,6 +8,7 @@ import com.ringoid.utility.randomString
 data class Profile(
     override val id: String,
     override val distanceText: String? = null,
+    override val totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     override val images: List<IImage>,
     override val lastOnlineStatus: String? = null,
     override val lastOnlineText: String? = null,
@@ -26,6 +27,7 @@ data class Profile(
     override val name: String? = null,
     override val instagram: String? = null,
     override val tiktok: String? = null,
+    override val status: String? = null,
     override val university: String? = null,
     override val whereFrom: String? = null,
     override val whereLive: String? = null,

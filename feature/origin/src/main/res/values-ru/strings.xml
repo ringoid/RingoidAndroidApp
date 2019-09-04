@@ -33,6 +33,7 @@
     <string name="error_connection">Ошибка соединения. Пожалуйста повторите.</string>
     <string name="error_crop_image">Не удалось загрузить фото</string>
     <string name="error_invalid_referral_code">Код неверен</string>
+    <string name="error_support">Обратитесь в поддержку</string>
 
     <string name="value_cm">см</string>
 
@@ -103,6 +104,7 @@
 
     <!-- Profile screen -->
     <string name="profile_button_delete_image">Удалить фото</string>
+    <string name="profile_dialog_image_another_common_title">Добавить еще фото?</string>
     <string name="profile_dialog_image_another_button_add">Добавить еще фото</string>
     <string name="profile_dialog_image_another_button_cancel">Искать новых пользователей</string>
     <string name="profile_dialog_image_another_title">Что дальше?</string>
@@ -111,6 +113,7 @@
     <string name="profile_dialog_image_delete_title">Удалить фото?</string>
     <string name="profile_dialog_simulate_particles_title">Эмулировать иконки</string>
     <string name="profile_empty_images">Добавь фото, чтобы\nполучать лайки</string>
+    <string name="profile_empty_images_dialog">Добавь фото, чтобы получать лайки</string>
     <string name="profile_empty_title">Профиль</string>
     <string name="profile_label_coins">%s монет</string>
 
@@ -164,10 +167,12 @@
     <string name="settings_profile_item_custom_property_company_placeholder">Название фирмы или индустрии</string>
     <string name="settings_profile_item_custom_property_job_title">Должность</string>
     <string name="settings_profile_item_custom_property_name">Имя</string>
+    <string name="settings_profile_item_custom_property_status">Статус</string>
     <string name="settings_profile_item_custom_property_instagram">Instagram</string>
     <string name="settings_profile_item_custom_property_instagram_placeholder">\&#64;username</string>
     <string name="settings_profile_item_custom_property_tiktok">TikTok</string>
     <string name="settings_profile_item_custom_property_tiktok_placeholder">\&#64;username</string>
+    <string name="settings_profile_item_custom_property_status_stub">Привет! &#128525; Это мой статус&#8230; &#128075;</string>
     <string name="settings_profile_item_custom_property_university">Место учебы</string>
     <string name="settings_profile_item_custom_property_university_placeholder">Университет, колледж. Год выпуска</string>
     <string name="settings_profile_item_custom_property_where_live">Город</string>

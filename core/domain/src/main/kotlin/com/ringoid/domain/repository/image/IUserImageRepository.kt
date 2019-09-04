@@ -1,9 +1,9 @@
 package com.ringoid.domain.repository.image
 
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

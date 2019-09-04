@@ -2,23 +2,20 @@ package com.ringoid.origin.feed.view.lc.base
 
 import android.app.Application
 import android.os.Bundle
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.view.FATAL_ERROR
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
+import com.ringoid.report.exception.ErrorConnectionTimedOut
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLcUseCase
-import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
@@ -27,12 +24,10 @@ import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
-import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.ON_TRANSFER_PROFILE_COMPLETE
-import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
+import com.ringoid.origin.feed.view.lc.FeedCounts
+import com.ringoid.origin.feed.view.lc.SeenAllFeed
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
-import com.ringoid.utility.runOnUiThread
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -59,7 +54,16 @@ abstract class BaseLcFeedViewModel(
         countUserImagesUseCase,
         filtersSource, userInMemoryCache, app) {
 
-    val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+    private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
+    private val feedCountsOneShot by lazy { MutableLiveData<OneShot<FeedCounts>>() }
+    private val lmmLoadFailedOneShot by lazy { MutableLiveData<OneShot<Throwable>>() }
+    private val seenAllFeedItemsOneShot by lazy { MutableLiveData<OneShot<SeenAllFeed>>() }
+    private val transferProfileCompleteOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    internal fun feed(): LiveData<List<FeedItemVO>> = feed
+    internal fun feedCountsOneShot(): MutableLiveData<OneShot<FeedCounts>> = feedCountsOneShot
+    internal fun lmmLoadFailedOneShot(): LiveData<OneShot<Throwable>> = lmmLoadFailedOneShot
+    internal fun seenAllFeedItemsOneShot(): LiveData<OneShot<SeenAllFeed>> = seenAllFeedItemsOneShot
+    internal fun transferProfileCompleteOneShot(): LiveData<OneShot<Boolean>> = transferProfileCompleteOneShot
 
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
@@ -81,8 +85,8 @@ abstract class BaseLcFeedViewModel(
             .doOnNext {
                 val emptyDueToFilters = filtersSource.hasFiltersApplied() && it.totalNotFilteredCount > 0
                 setLcItems(items = it.items, totalNotFilteredCount = it.totalNotFilteredCount,
-                           clearMode = if (emptyDueToFilters) ViewState.CLEAR.MODE_CHANGE_FILTERS
-                                       else ViewState.CLEAR.MODE_EMPTY_DATA)
+                           clearMode = if (emptyDueToFilters) ViewState.CLEAR.MODE_CHANGE_FILTERS  // set empty LC due to filters
+                                       else ViewState.CLEAR.MODE_EMPTY_DATA)  // set empty LC (no filters)
             }
             .map { it.items }
             .doAfterNext {
@@ -104,15 +108,23 @@ abstract class BaseLcFeedViewModel(
 
         // notify UI about unexpected fatal errors
         getLcUseCase.repository.lmmLoadFailed
+            .filter { it is ErrorConnectionTimedOut }  // handle only connection timeout error, ignore other connection errors
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { analyticsManager.fire(Analytics.CONNECTION_TIMEOUT, "sourceFeed" to getFeedName()) }
             .autoDisposable(this)
-            .subscribe({ viewState.value = ViewState.DONE(FATAL_ERROR) }, DebugLogUtil::e)
+            .subscribe({ lmmLoadFailedOneShot.value = OneShot(it) }, DebugLogUtil::e)
+    }
+
+    /* Lifecycle */
+    // --------------------------------------------------------------------------------------------
+    override fun onRecreate(savedInstanceState: Bundle) {
+        super.onRecreate(savedInstanceState)
+        refreshIfUserHasImages()  // TODO: do proper state restore
     }
 
     // --------------------------------------------------------------------------------------------
     protected abstract fun countNotSeen(feed: List<FeedItem>): List<String>
 
-    protected abstract fun getFeedFlag(): Int
     protected abstract fun sourceBadge(): Observable<Boolean>
     protected abstract fun sourceFeed(): Observable<LmmSlice>
 
@@ -123,8 +135,8 @@ abstract class BaseLcFeedViewModel(
                              .put(filters)
 
         getLcUseCase.source(params = params)
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // load LC feed items progress
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // load LC feed items failed
             .autoDisposable(this)
             .subscribe({}, DebugLogUtil::e)
     }
@@ -155,7 +167,7 @@ abstract class BaseLcFeedViewModel(
                 feed.value = list  // prepended list
 
                 if (list.isNotEmpty()) {
-                    viewState.value = ViewState.IDLE
+                    viewState.value = ViewState.IDLE  // LC feed is no longer empty after transfer profile
                 }
             }
             .autoDisposable(this)
@@ -166,14 +178,14 @@ abstract class BaseLcFeedViewModel(
         discardedFeedItemIds.clear()
         notSeenFeedItemIds.clear()  // clear list of not seen profiles every time Feed is refreshed
 
-        viewState.value = ViewState.DONE(LC_FEED_COUNTS(show = items.size, hidden = totalNotFilteredCount - items.size))
+        feedCountsOneShot.value = OneShot(FeedCounts(show = items.size, hidden = totalNotFilteredCount - items.size))
 
         if (items.isEmpty()) {
             feed.value = emptyList()
-            viewState.value = ViewState.CLEAR(mode = clearMode)
+            viewState.value = ViewState.CLEAR(mode = clearMode)  // LC feed is empty
         } else {
             feed.value = items.map { FeedItemVO(it) }
-            viewState.value = ViewState.IDLE
+            viewState.value = ViewState.IDLE  // set LC feed items success
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
         }
@@ -233,10 +245,7 @@ abstract class BaseLcFeedViewModel(
             DebugLogUtil.b("Seen [${feedItemId.substring(0..3)}]. Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
             if (notSeenFeedItemIds.isEmpty()) {
                 DebugLogUtil.b("All seen [${getFeedName()}]")
-                runOnUiThread {
-                    viewState.value = ViewState.DONE(SEEN_ALL_FEED(getFeedFlag()))
-                    viewState.value = ViewState.IDLE
-                }
+                seenAllFeedItemsOneShot.value = OneShot(SeenAllFeed(getSourceFeed()))
             }
         }
     }
@@ -318,7 +327,7 @@ abstract class BaseLcFeedViewModel(
         val destinationFeed = event.payload.getSerializable("destinationFeed") as LcNavTab
         if (destinationFeed == getSourceFeed()) {
             prependProfileOnTransfer(profileId = event.profileId, destinationFeed = destinationFeed, payload = event.payload) {
-                viewState.value = ViewState.DONE(ON_TRANSFER_PROFILE_COMPLETE)
+                transferProfileCompleteOneShot.value = OneShot(true)
             }
         }
     }

@@ -4,7 +4,6 @@ import com.google.firebase.perf.FirebasePerformance
 import com.ringoid.data.remote.checkLastActionTime
 import com.ringoid.data.remote.debug.keepDataForDebug
 import com.ringoid.data.remote.debug.keepResultForDebug
-import com.ringoid.data.remote.logRequest
 import com.ringoid.data.remote.logResponse
 import com.ringoid.data.remote.model.FilterEssence
 import com.ringoid.data.remote.toBody
@@ -17,8 +16,9 @@ import com.ringoid.datainterface.remote.model.image.UserImageListResponse
 import com.ringoid.datainterface.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.datainterface.remote.model.user.UserSettingsResponse
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.ICloudDebug
-import com.ringoid.domain.log.breadcrumb
+import com.ringoid.data.remote.logRequest
+import com.ringoid.debug.ICloudDebug
+import com.ringoid.report.log.breadcrumb
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence

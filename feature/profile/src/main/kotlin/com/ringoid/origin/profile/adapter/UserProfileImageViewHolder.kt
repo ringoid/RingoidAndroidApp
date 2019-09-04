@@ -4,8 +4,8 @@ import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.model.image.UserImage
+import com.ringoid.imageloader.ImageLoader
 import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.image.ImageLoader
 import kotlinx.android.synthetic.main.rv_item_user_profile_image.view.*
 
 
@@ -17,9 +17,10 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
         itemView.tv_image_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
+    @Suppress("SetTextI18n")
     override fun bind(model: UserImage) {
         ImageLoader.load(uri = model.uri, thumbnailUri = model.uriLocal ?: model.thumbnailUri,
-                         iv = itemView.iv_image)
+                         iv = itemView.iv_image, extra = listOf("userId" to "current user"))
 
         itemView.tv_likes_count.text = "${model.numberOfLikes}"
 

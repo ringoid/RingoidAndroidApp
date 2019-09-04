@@ -10,13 +10,9 @@ import com.ringoid.datainterface.local.image.IImageRequestDbFacade
 import com.ringoid.datainterface.local.user.IUserImageDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.image.UserImageEntity
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.exception.SimulatedException
-import com.ringoid.domain.exception.isFatalApiError
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.image.*
@@ -25,8 +21,12 @@ import com.ringoid.domain.model.image.ImageRequest
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.image.IUserImageRepository
+import com.ringoid.report.exception.SimulatedException
+import com.ringoid.report.exception.isFatalApiError
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.repository.BaseRepository
 import com.ringoid.repository.UserInMemoryCache
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.uriString
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -308,9 +308,12 @@ class UserImageRepository @Inject constructor(
         }
 
         return cloud.getImageUploadUrl(essence)
+            .handleError(count = retryCount, tag = "createImage", traceTag = "image/get_presigned")
             .flatMap { image ->
                 if (image.imageUri.isNullOrBlank()) {
-                    Single.error(NullPointerException("Upload uri is null: $image"))
+                    val e = NullPointerException("Upload uri is null: $image")
+                    SentryUtil.capture(e)
+                    Single.error(e)
                 } else {
                     /**
                      * Update [UserImageDbo.originId] and [UserImageDbo.uri] with remote-generated id and uri
@@ -325,9 +328,9 @@ class UserImageRepository @Inject constructor(
             .flatMap {
                 val imageFile = File(imageFilePath)
                 cloud.uploadImage(url = it.imageUri!!, image = imageFile)
+                     .handleError(count = retryCount, tag = "uploadImage", traceTag = "image/upload")
                      .andThen(Single.just(it))
             }
-            .handleError(count = retryCount, tag = "createImage", traceTag = "image/get_presigned")
             .doOnDispose {
                 DebugLogUtil.i("Cancelled image create and upload")
                 addPendingCreateImageRequest(imageFilePath)

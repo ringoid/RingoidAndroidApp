@@ -2,18 +2,38 @@ package com.ringoid.origin.view.splash
 
 import android.app.Application
 import android.content.Intent
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.debug.DebugLogUtil
+import com.ringoid.domain.interactor.base.Params
+import com.ringoid.report.log.SentryUtil
+import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.origin.error.DynamicLinkNotExistsException
 import com.ringoid.origin.utils.ReferralUtils
+import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
 class SplashViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
+
+    private val accessToken: MutableLiveData<OneShot<AccessToken?>> by lazy { MutableLiveData<OneShot<AccessToken?>>() }
+    internal fun accessToken(): LiveData<OneShot<AccessToken?>> = accessToken
+
+    internal fun getAccessToken() {
+        accessToken.value = OneShot(spm.accessToken())
+    }
+
+    internal fun obtainAccessToken() {
+        getUserAccessTokenUseCase.source(Params.EMPTY)
+            .autoDisposable(this)
+            .subscribe({ accessToken.value = OneShot(it) },
+                       { accessToken.value = OneShot(null) })
+    }
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

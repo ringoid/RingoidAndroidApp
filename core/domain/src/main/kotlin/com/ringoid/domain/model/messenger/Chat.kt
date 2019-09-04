@@ -10,6 +10,7 @@ import com.ringoid.domain.model.print
 class Chat(
     id: String,
     distanceText: String? = null,
+    totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     images: List<IImage>,
     messages: List<Message>,
     lastOnlineStatus: String? = null,
@@ -29,6 +30,7 @@ class Chat(
     name: String? = null,
     instagram: String? = null,
     tiktok: String? = null,
+    status: String? = null,
     university: String? = null,
     whereFrom: String? = null,
     whereLive: String? = null,
@@ -38,6 +40,7 @@ class Chat(
     : FeedItem(
         id = id,
         distanceText = distanceText,
+        totalLikes = totalLikes,
         images = images,
         messages = messages,
         lastOnlineStatus = lastOnlineStatus,
@@ -57,6 +60,7 @@ class Chat(
         name = name,
         instagram = instagram,
         tiktok = tiktok,
+        status = status,
         university = university,
         whereFrom = whereFrom,
         whereLive = whereLive,
@@ -67,6 +71,7 @@ class Chat(
         : this(
             id = feedItem.id,
             distanceText = feedItem.distanceText,
+            totalLikes = feedItem.totalLikes,
             images = feedItem.images,
             messages = feedItem.messages,
             lastOnlineStatus = feedItem.lastOnlineStatus,
@@ -86,6 +91,7 @@ class Chat(
             name = feedItem.name,
             instagram = feedItem.instagram,
             tiktok = feedItem.tiktok,
+            status = feedItem.status,
             university = feedItem.university,
             whereFrom = feedItem.whereFrom,
             whereLive = feedItem.whereLive,
@@ -96,6 +102,7 @@ class Chat(
         Chat(
             id = id,
             distanceText = distanceText,
+            totalLikes = totalLikes,
             images = images,
             messages = messages.toMutableList(),
             lastOnlineStatus = lastOnlineStatus,
@@ -115,6 +122,7 @@ class Chat(
             name = name,
             instagram = instagram,
             tiktok = tiktok,
+            status = status,
             university = university,
             whereFrom = whereFrom,
             whereLive = whereLive,

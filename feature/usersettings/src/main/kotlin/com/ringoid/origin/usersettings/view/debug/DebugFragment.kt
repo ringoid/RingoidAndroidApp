@@ -6,12 +6,12 @@ import android.view.ViewConfiguration
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.origin.error.handleOnView
@@ -45,7 +45,6 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
-            is ViewState.DONE -> { context?.toast("Success!") ; onIdleState() }
             is ViewState.LOADING -> pb_debug.changeVisibility(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
         }
@@ -53,6 +52,11 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeOneShot(vm.completeOneShot()) { context?.toast("Success!") }
+    }
+
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,6 +65,7 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
             setTitle(OriginR_string.debug_title)
         }
 
+        item_debug_handle_error_stream.clicks().compose(clickDebounce()).subscribe { vm.debugHandleErrorStream() }
         item_error_http.clicks().compose(clickDebounce()).subscribe { vm.requestWithNotSuccessResponse() }
         item_error_http_404.clicks().compose(clickDebounce()).subscribe { vm.requestWith404Response() }
         item_error_token.clicks().compose(clickDebounce()).subscribe { vm.requestWithInvalidAccessToken() }

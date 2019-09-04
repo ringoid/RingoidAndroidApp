@@ -14,6 +14,7 @@
         style="@style/ProgressBar.Horizontal"/>
 
     <ScrollView
+        android:id="@+id/scroll_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -27,7 +28,18 @@
             android:paddingBottom="@dimen/std_margin_32">
 
             <!-- Custom Properties -->
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
+                android:id="@+id/item_profile_custom_property_status"
+                android:layout_marginTop="@dimen/std_margin_16"
+                app:icon_item_icon="?refDrawableProfilePropertyStatus"
+                app:icon_item_text="@string/settings_profile_item_custom_property_status"
+                app:edit_text_icon_item_select_all_on_focus="true"
+                app:edit_text_icon_item_with_counter="true"
+                app:text_icon_item_text_max_length="30"
+                app:text_icon_item_wrap_content="false"
+                style="?attr/textIconItemView"/>
+
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_name"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyName"
@@ -36,9 +48,7 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_where_live"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyLocation"
@@ -46,8 +56,6 @@
                 app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_where_live_placeholder"
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.TextIconItemView
                 android:id="@+id/item_profile_custom_property_about"
@@ -60,9 +68,7 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_instagram"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyInstagram"
@@ -71,9 +77,7 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_tiktok"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyTikTok"
@@ -82,9 +86,7 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_job_title"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyCompany"
@@ -92,9 +94,7 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_company"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyCompany"
@@ -103,9 +103,7 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_university"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyEducation"
@@ -114,20 +112,17 @@
                 app:text_icon_item_wrap_content="false"
                 style="?attr/textIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <!-- Properties -->
-            <com.ringoid.widget.view.item_view.TextIconItemView
+            <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_property_height"
                 android:layout_marginTop="@dimen/std_margin_16"
+                android:inputType="number"
                 app:icon_item_icon="?refDrawableProfilePropertyHeight"
                 app:icon_item_text="@string/profile_property_height"
                 app:text_icon_item_text_gravity="center"
                 app:text_icon_item_text_max_length="3"
                 app:text_icon_item_side_padding="0dp"
                 style="?attr/textIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_hair_color"
@@ -136,16 +131,12 @@
                 app:icon_item_text="@string/profile_property_hair_color"
                 style="?attr/spinnerIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_education"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyEducation"
                 app:icon_item_text="@string/profile_property_education"
                 style="?attr/spinnerIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_children"
@@ -154,16 +145,12 @@
                 app:icon_item_text="@string/profile_property_children"
                 style="?attr/spinnerIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_income"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyIncome"
                 app:icon_item_text="@string/profile_property_income"
                 style="?attr/spinnerIconItemView"/>
-
-            <View style="@style/Underscore"/>
 
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_property"
@@ -172,23 +159,12 @@
                 app:icon_item_text="@string/profile_property_property"
                 style="?attr/spinnerIconItemView"/>
 
-            <View style="@style/Underscore"/>
-
             <com.ringoid.widget.view.item_view.SpinnerIconItemView
                 android:id="@+id/item_profile_property_transport"
                 android:layout_marginTop="@dimen/std_margin_16"
                 app:icon_item_icon="?refDrawableProfilePropertyTransport"
                 app:icon_item_text="@string/profile_property_transport"
                 style="?attr/spinnerIconItemView"/>
-
-            <View style="@style/Underscore"/>
-
-            <com.ringoid.widget.view.item_view.IconItemView
-                android:id="@+id/item_suggest_improvements"
-                android:layout_marginTop="@dimen/std_margin_32"
-                app:icon_item_hide_icon="true"
-                app:icon_item_text="@string/settings_suggest_improvements"
-                style="?attr/iconItemView"/>
 
             <TextView
                 android:id="@+id/tv_support"

@@ -56,6 +56,7 @@
         <item name="refDrawableProfilePropertyLocation">@drawable/ic_location_marker_black_24dp</item>
         <item name="refDrawableProfilePropertyName">@drawable/ic_person_black_24dp</item>
         <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_black_24dp</item>
+        <item name="refDrawableProfilePropertyStatus">@drawable/ic_status_announce_black_24dp</item>
         <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_black_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_black_24dp</item>
         <item name="refDrawableSettingsFilters">@drawable/ic_tune_black_24dp</item>
@@ -96,6 +97,7 @@
         <item name="refDrawableProfilePropertyLocation">@drawable/ic_location_marker_white_24dp</item>
         <item name="refDrawableProfilePropertyName">@drawable/ic_person_white_24dp</item>
         <item name="refDrawableProfilePropertyProperty">@drawable/ic_home_property_white_24dp</item>
+        <item name="refDrawableProfilePropertyStatus">@drawable/ic_status_announce_white_24dp</item>
         <item name="refDrawableProfilePropertyTikTok">@drawable/ic_tiktok_white_24dp</item>
         <item name="refDrawableProfilePropertyTransport">@drawable/ic_transport_white_24dp</item>
         <item name="refDrawableSettingsFilters">@drawable/ic_tune_white_24dp</item>

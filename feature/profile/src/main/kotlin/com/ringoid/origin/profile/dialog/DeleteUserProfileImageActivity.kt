@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.origin.view.base.SimpleBaseDialogActivity
+import com.ringoid.utility.DebugOnly
 
 @AppNav("delete_image")
 class DeleteUserProfileImageActivity : SimpleBaseDialogActivity(), IDeleteUserProfileImageActivity {
@@ -47,8 +47,7 @@ class DeleteUserProfileImageActivity : SimpleBaseDialogActivity(), IDeleteUserPr
     // --------------------------------------------------------------------------------------------
     private fun createDeleteUserImageDialogIfNeed() {
         if (deleteUserImageDialog == null) {
-            val needWarn = intent.extras?.getString("needWarn")?.toBoolean() ?: false
-            deleteUserImageDialog = DeleteUserProfileImageDialog.newInstance(needWarn)
+            deleteUserImageDialog = DeleteUserProfileImageDialog.newInstance()
                 .also { it.showNow(supportFragmentManager, DeleteUserProfileImageDialog.TAG) }
         }
     }

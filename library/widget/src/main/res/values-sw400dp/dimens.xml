@@ -23,6 +23,7 @@
     <dimen name="std_margin_40">40dp</dimen>
     <dimen name="std_margin_48">48dp</dimen>
     <dimen name="std_margin_64">64dp</dimen>
+    <dimen name="std_margin_100">100dp</dimen>
     <dimen name="std_screen_10">40dp</dimen>
     <dimen name="std_screen_20">80dp</dimen>
     <dimen name="std_screen_w">368dp</dimen>
@@ -35,6 +36,7 @@
     <dimen name="std_text_20">20sp</dimen>
     <dimen name="std_text_22">22sp</dimen>
     <dimen name="std_text_30">30sp</dimen>
+    <dimen name="std_text_34">34sp</dimen>
     <dimen name="std_text_36">36sp</dimen>
     <dimen name="std_toolbar_height">52dp</dimen>
 

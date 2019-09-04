@@ -13,8 +13,6 @@ static String listToJavaArray(List<String> list) {
 }
 
 android {
-    baseFeature true
-
     sourceSets {
         main {
             res.srcDirs = ['src/main/res', 'src/main/res-screen',
@@ -46,17 +44,9 @@ dependencies {
     androidTestOriginDeps.each {
         add(it.configuration, it.dependency, it.options)
     }
-
-    application project(':app')
-    feature project(":feature:auth")
-    feature project(":feature:feed")
-    feature project(":feature:imagepreview")
-    feature project(":feature:messenger")
-    feature project(":feature:profile")
-    feature project(":feature:usersettings")
 }
 
-android.featureVariants.all { variant ->
+android.libraryVariants.all { variant ->
     variant.mergeResources.doFirst {
         File tmpResDir = file(buildDir.absolutePath + '/tmp/res')
         if (!tmpResDir.exists()) {

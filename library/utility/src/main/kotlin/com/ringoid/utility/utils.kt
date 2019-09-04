@@ -2,6 +2,7 @@ package com.ringoid.utility
 
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import timber.log.Timber
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -21,6 +22,8 @@ const val LOCATION_EPS = 0.000001
 
 /* Misc */
 // ------------------------------------------------------------------------------------------------
+fun checkForNull(state: Bundle?): String? = state?.let { "saved state" }
+
 inline fun <reified T> Collection<T>.cloneAsList(): List<T> = ArrayList(this.map { it })
 
 fun Uri.extension(): String =
@@ -84,4 +87,15 @@ fun tagLine(prefix: String = "") {
             else tag.substring(0, MAX_TAG_LENGTH)
         }
         ?.also { tag -> Timber.tag("$prefix$tag") }
+}
+
+object SysTimber {
+
+    fun d(msg: String) { println(msg) }
+    fun d(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
+    fun i(msg: String) { println(msg) }
+    fun i(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
+    fun e(e: Throwable) { println("${e.javaClass.simpleName}: ${e.message}") }
+    fun v(msg: String) { println(msg) }
+    fun v(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
 }

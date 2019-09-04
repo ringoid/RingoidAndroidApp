@@ -39,18 +39,17 @@ open class IconItemView : LinearLayout {
 
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
-        context.obtainStyledAttributes(attributes, R.styleable.IconItemView, defStyleAttr, R.style.IconItemView)
-            .apply {
-                hideIcon = getBoolean(R.styleable.IconItemView_icon_item_hide_icon, true)
-                setIconColorRes(colorResId = getResourceId(R.styleable.IconItemView_icon_item_icon_color, R.color.icons))
-                setTextColorRes(colorResId = getResourceId(R.styleable.IconItemView_icon_item_text_color, R.color.secondary_text))
-                setIcon(resId = getResourceId(R.styleable.IconItemView_icon_item_icon, 0))
-                getResourceId(R.styleable.IconItemView_icon_item_text, 0)
-                    .takeIf { it != 0 }?.let { setText(resId = it) }
-                    ?: run { setText(text = getString(R.styleable.IconItemView_icon_item_text)) }
+        with (context.obtainStyledAttributes(attributes, R.styleable.IconItemView, defStyleAttr, R.style.IconItemView)) {
+            hideIcon = getBoolean(R.styleable.IconItemView_icon_item_hide_icon, true)
+            setIconColorRes(colorResId = getResourceId(R.styleable.IconItemView_icon_item_icon_color, R.color.icons))
+            setTextColorRes(colorResId = getResourceId(R.styleable.IconItemView_icon_item_text_color, R.color.secondary_text))
+            setIcon(resId = getResourceId(R.styleable.IconItemView_icon_item_icon, 0))
+            getResourceId(R.styleable.IconItemView_icon_item_text, 0)
+                .takeIf { it != 0 }?.let { setText(resId = it) }
+                ?: run { setText(text = getString(R.styleable.IconItemView_icon_item_text)) }
 
-                recycle()
-            }
+            recycle()
+        }
     }
 
     /* API */

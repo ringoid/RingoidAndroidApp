@@ -3,7 +3,7 @@ package com.ringoid.origin.feed.view.widget
 import android.view.View
 import com.github.techisfun.android.topsheet.TopSheetBehavior
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EvictingQueue

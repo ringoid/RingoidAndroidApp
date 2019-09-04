@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
@@ -13,26 +14,28 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
+import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.Onboarding
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.Gender
+import com.ringoid.domain.misc.UserProfileEditablePropertyId
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.domain.model.image.IImage
-import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
+import com.ringoid.origin.profile.WidgetR_attrs
+import com.ringoid.origin.profile.WidgetR_color
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
-import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
-import com.ringoid.origin.view.base.BasePermissionFragment
 import com.ringoid.origin.view.common.EmptyFragment
+import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
@@ -41,12 +44,12 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.utility.*
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
-import kotlinx.android.synthetic.main.fragment_profile_2.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 import java.util.*
 
-class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>() {
+class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmptyScreenCallback {
 
     companion object {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
@@ -58,6 +61,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     private var currentImagePosition: Int = 0
     private var cropImageAfterLogin: Boolean = false  // for Onboarding.ADD_IMAGE
     private var handleRequestToAddImage: Boolean = false
+    private var handleRequestToCheckNoImagesAndAddImage: Boolean = false
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
     private val pageSelectListener = object : RecyclerView.OnScrollListener() {
@@ -70,12 +74,14 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
     }
 
-    private var withAbout: Boolean = false
-    @DebugOnly private var debugAddImage: Boolean = false
+    private var withAbout: Boolean = false  // 'about' property is not empty
+    private var withLabel: Boolean = false  // profile has at least one property (excluding 'about')
+    @DebugOnly
+    private var debugAddImage: Boolean = false
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
-    override fun getLayoutId(): Int = R.layout.fragment_profile_2
+    override fun getLayoutId(): Int = R.layout.fragment_profile
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
@@ -97,24 +103,10 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                     ViewState.CLEAR.MODE_CHANGE_FILTERS -> showNoImageStub(true)
                 }
             }
-            is ViewState.DONE -> {
-                onIdleState()
-                updateReferralLabel()
-                when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> {
-                        val handleCode = (newState.residual as ASK_TO_ENABLE_LOCATION_SERVICE).handleCode
-                        when (handleCode) {
-                            HC_REFRESH -> vm.onRefresh()  // TODO: use cached
-                        }
-                    }
-                    is REFERRAL_CODE_ACCEPTED -> Dialogs.showTextDialog(activity, title = String.format(resources.getString(OriginR_string.referral_dialog_reward_message), "5"), description = null, positiveBtnLabelResId = OriginR_string.button_ok)
-                    is REFERRAL_CODE_DECLINED -> Dialogs.showTextDialog(activity, titleResId = OriginR_string.error_invalid_referral_code, description = null)
-                    is REQUEST_TO_ADD_IMAGE -> onAddImageNoPermission()
-                }
-            }
             is ViewState.IDLE -> onIdleState()
             is ViewState.LOADING -> onLoadingState()
-            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState)
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onIdleState) { onRefresh() }
+            else -> { /* no-op */ }
         }
     }
 
@@ -123,6 +115,13 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         super.onTabTransaction(payload)
         payload?.let {
             when (it) {
+                Payload.PAYLOAD_PROFILE_CHECK_NO_IMAGES_AND_REQUEST_ADD_IMAGE -> {
+                    if (isAdded && isViewModelInitialized) {
+                        vm.countUserImages()
+                    } else {
+                        handleRequestToCheckNoImagesAndAddImage = true
+                    }
+                }
                 Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }  // for Onboarding.ADD_IMAGE
                 Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> {
                     if (isAdded) {
@@ -195,17 +194,53 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        /**
+         * Asks to add first photo to user profile.
+         */
+        fun askForImage(count: Int) {
+            Dialogs.showTextDialog(activity,
+                descriptionResId = OriginR_string.profile_empty_images_dialog,
+                positiveBtnLabelResId = OriginR_string.button_add_photo,
+                negativeBtnLabelResId = OriginR_string.button_later,
+                positiveListener = { _, _ -> onAddImage() },
+                isCancellable = false)
+        }
+
+        /**
+         * Asks to add another photo to user profile.
+         */
+        fun askForAnotherImage() {
+            Dialogs.showTextDialog(activity,
+                titleResId = OriginR_string.profile_dialog_image_another_common_title, descriptionResId = 0,
+                positiveBtnLabelResId = OriginR_string.button_add_photo,
+                negativeBtnLabelResId = OriginR_string.button_later,
+                positiveListener = { _, _ -> onAddImage() })
+        }
+
+        /**
+         * Asks to add another photo to user profile or navigate on Explore feed screen instead.
+         *
+         * @note: for Onboarding.ADD_IMAGE.
+         */
+        fun askForAnotherImageAfterLogin() {
+            Dialogs.showTextDialog(activity,
+                titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
+                positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
+                negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
+                positiveListener = { _, _ -> cropImageAfterLogin = true ; onAddImage() },
+                negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}") })
+        }
+
         fun onCropFailed(e: Throwable) {
             Timber.e(e, "Image crop has failed")
-            context?.toast(OriginR_string.error_crop_image)
+            Dialogs.supportDialog(this@UserProfileFragment, OriginR_string.error_crop_image)
             debugAddImage = false
-            // on crop error after login
-            if (!cropImageAfterLogin) {
-                return
-            }
 
-            cropImageAfterLogin = false  // ask only once per session
-            showNoImageStub(needShow = true)
+            if (cropImageAfterLogin) {  // for Onboarding.ADD_IMAGE
+                // on crop error after login
+                cropImageAfterLogin = false  // ask only once per session
+                showNoImageStub(needShow = true)
+            }
         }
 
         fun onCropSuccess(croppedUri: Uri) {
@@ -216,17 +251,14 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
                 vm.uploadImage(uri = croppedUri)
             }
             debugAddImage = false
-            // on crop success after login
-            if (!cropImageAfterLogin) {
-                return
-            }
 
-            cropImageAfterLogin = false  // ask only once per session
-            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_another_title, descriptionResId = 0,
-                positiveBtnLabelResId = OriginR_string.profile_dialog_image_another_button_add,
-                negativeBtnLabelResId = OriginR_string.profile_dialog_image_another_button_cancel,
-                positiveListener = { _, _ -> cropImageAfterLogin = true ; onAddImage() },
-                negativeListener = { _, _ -> navigate(this@UserProfileFragment, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}") })
+            if (cropImageAfterLogin) {  // for Onboarding.ADD_IMAGE
+                // on crop success after login
+                cropImageAfterLogin = false  // ask only once per session
+                askForAnotherImageAfterLogin()
+            } else {
+                askForAnotherImage()
+            }
         }
 
         fun addLabelView(
@@ -247,50 +279,57 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             }
         }
 
+        fun onProfilePropertiesUpdate(properties: UserProfileProperties) {
+            val age = maxOf(0, calendar.get(Calendar.YEAR) - spm.currentUserYearOfBirth())
+            val gender = spm.currentUserGender()
+            val showDefault = properties.isAllUnknown()
+
+            withLabel = UserProfileScreenUtils.hasAtLeastOneProperty(properties)
+            properties.about().let { about ->
+                withAbout = about.isNotBlank()
+                tv_about.text = about.trim()
+            }
+            properties.status().let { status ->
+                tv_status.text = status.trim()
+            }
+
+            mutableListOf<String>().apply {
+                properties.name()
+                    .takeIf { it.isNotBlank() }
+                    ?.let { name -> add(name) }
+                    ?: run { add(resources.getString(OriginR_string.settings_profile_item_custom_property_name)) }
+
+                if (spm.hasUserYearOfBirth()) {
+                    age.takeIf { it >= 18 }?.let { age -> add("$age") }
+                }
+            }
+            .let { tv_name_age.text = it.joinToString() }
+
+            ll_left_section?.let { containerView ->
+                containerView.removeAllViews()
+                when (gender) {
+                    Gender.FEMALE -> UserProfileScreenUtils.propertiesFemale
+                    else -> UserProfileScreenUtils.propertiesMale
+                }
+                .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
+            }
+            ll_right_section?.let { containerView ->
+                containerView.removeAllViews()
+                UserProfileScreenUtils.propertiesRight
+                    .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
+            }
+            onImageSelect(position = currentImagePosition)
+        }
+
+        // --------------------------------------
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.imageBlocked, ::doOnBlockedImage)
-            observe(vm.imageCreated, imagesAdapter::prepend)
-            observe(vm.imageDeleted, imagesAdapter::remove)
-            observe(vm.images, imagesAdapter::submitList)
-            observe(vm.profile) { properties ->
-                val age = maxOf(0, calendar.get(Calendar.YEAR) - spm.currentUserYearOfBirth())
-                val gender = spm.currentUserGender()
-                val showDefault = properties.isAllUnknown()
-
-                properties.about()
-                    .takeIf { it.isNotBlank() }
-                    ?.let { tv_about.text = it.trim() }
-
-                withAbout = properties.about().isNotBlank()
-
-                mutableListOf<String>().apply {
-                    properties.name()
-                        .takeIf { it.isNotBlank() }
-                        ?.let { name -> add(name) }
-                        ?: run { add(resources.getString(OriginR_string.settings_profile_item_custom_property_name)) }
-
-                    if (spm.hasUserYearOfBirth()) {
-                        age.takeIf { it >= 18 }?.let { age -> add("$age") }
-                    }
-                }
-                .let { tv_name_age.text = it.joinToString() }
-
-                ll_left_section?.let { containerView ->
-                    containerView.removeAllViews()
-                    when (gender) {
-                        Gender.FEMALE -> UserProfileScreenUtils.propertiesFemale
-                        else -> UserProfileScreenUtils.propertiesMale
-                    }
-                    .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
-                }
-                ll_right_section?.let { containerView ->
-                    containerView.removeAllViews()
-                    UserProfileScreenUtils.propertiesRight
-                        .forEach { propertyId -> addLabelView(containerView, gender, propertyId, properties, showDefault) }
-                }
-                onImageSelect(position = currentImagePosition)
-            }
+            observe(vm.imageBlocked(), ::doOnBlockedImage)
+            observe(vm.imageCreated(), imagesAdapter::prepend)
+            observe(vm.imageDeleted(), imagesAdapter::remove)
+            observe(vm.images(), imagesAdapter::submitList)
+            observe(vm.profile(), ::onProfilePropertiesUpdate)
+            observeOneShot(vm.requestToAddImageOneShot(), ::askForImage)
         }
 
         showBeginStub()  // empty stub will be replaced after adapter's filled
@@ -305,6 +344,8 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
          *
          * If image cropping has finished before this place (i.e. prior to Profile screen's created),
          * get that image from the global in-memory cache and show on Profile screen.
+         * The image will be immediately passed into [onCropSuccess] callback upon subscribed
+         * (at the moment of call [IImagePreviewReceiver.subscribe]).
          */
         globalImagePreviewReceiver()
             ?.doOnError(::onCropFailed)
@@ -322,16 +363,25 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
              *
              * If image has not been prepared yet after cropping, but Profile screen had already
              * been created, so we are actually at this place, subscribe to get image once it's ready.
+             * The image will be passed into [onCropSuccess] callback.
+             *
+             * If image has already been prepared before this place, call [IImagePreviewReceiver.subscribe]
+             * will immediately pass it into [onCropSuccess] callback.
              */
             globalImagePreviewReceiver()?.subscribe()  // get last prepared image, if any
         } else {
             // refresh Profile screen for already logged in user on a fresh app's start
-            permissionManager.askForLocationPermission(this, handleCode = HC_REFRESH)
+            onRefresh()
         }
 
         if (handleRequestToAddImage) {  // postponed handling to ensure initialization
-            handleRequestToAddImage = false
-            onAddImage()  // redirect from other screen
+            handleRequestToAddImage = false  // don't reuse flag
+            // redirect from other screen (in-app navigation with PAYLOAD_PROFILE_REQUEST_ADD_IMAGE payload)
+            onAddImage()
+        }
+        if (handleRequestToCheckNoImagesAndAddImage) {
+            handleRequestToCheckNoImagesAndAddImage = false
+            vm.countUserImages()
         }
     }
 
@@ -339,17 +389,6 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adjustViews()
-        btn_referral.apply {
-            updateReferralLabel()
-            clicks().compose(clickDebounce()).subscribe {
-                if (!spm.hasReferralCode()) {
-                    Dialogs.showEditTextDialog(activity, titleResId = OriginR_string.referral_dialog_title,
-                        positiveBtnLabelResId = OriginR_string.button_apply,
-                        negativeBtnLabelResId = OriginR_string.button_close,
-                        positiveListener = { _, _, inputText -> vm.applyReferralCode(code = inputText) })
-                }
-            }
-        }
         ibtn_add_image.clicks().compose(clickDebounce())
             .subscribe {
                 if (!connectionManager.isNetworkAvailable()) {
@@ -373,8 +412,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
 
             imageOnViewPort()?.let { image ->
                 showControls(isVisible = false)
-                val needWarn = ((image as? UserImage)?.numberOfLikes ?: 0) > 0
-                navigate(this, path = "/delete_image?imageId=${image.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
+                navigate(this, path = "/delete_image?imageId=${image.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
             }
         }
         ibtn_profile_edit.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile") }
@@ -397,6 +435,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             addOnScrollListener(pageSelectListener)
         }
         tv_app_title.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
+        tv_status.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile?focus=${UserProfileEditablePropertyId.STATUS}") }
     }
 
     override fun onDestroyView() {
@@ -427,25 +466,18 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             noConnection(this@UserProfileFragment)
         } else {
             imageOnViewPortId = imageOnViewPort()?.id ?: DomainUtil.BAD_ID
-            vm.onRefresh()
+            vm.refresh()
         }
     }
 
     // ------------------------------------------
     private fun onAddImage() {
-        /**
-         * Asks for location permission, and if granted - callback will then handle
-         * opening Gallery to pick image.
-         */
-        permissionManager.askForLocationPermission(this, handleCode = HC_ADD_IMAGE)
-    }
-
-    private fun onAddImageNoPermission() {
         ExternalNavigator.openGalleryToGetImageFragment(this)
     }
 
     private fun doOnBlockedImage(imageId: String) {
-        Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_blocked_title, descriptionResId = 0,
+        Dialogs.showTextDialog(activity,
+            titleResId = OriginR_string.profile_dialog_image_blocked_title, descriptionResId = 0,
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_blocked_button,
             negativeBtnLabelResId = OriginR_string.button_close,
             positiveListener = { _, _ -> navigate(this, path = "/webpage?url=${AppRes.WEB_URL_TERMS}") })
@@ -487,34 +519,24 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         val startIndex = page * UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
         val endIndex = startIndex + UserProfileScreenUtils.COUNT_LABELS_ON_PAGE
 
-        if (withAbout) {
-            when (spm.currentUserGender()) {
-                Gender.FEMALE -> {
-                    when (position) {
-                        1 -> showAbout()
-                        else -> showLabels(startIndex, endIndex)
-                    }
-                }
-                else -> {
-                    when (position) {
-                        0 -> showAbout()
-                        else -> showLabels(startIndex, endIndex)
-                    }
-                }
-            }
+        if (isAboutPage(position)) {
+            showAbout()  // show 'about' on predefined position, if any
         } else {
             showLabels(startIndex, endIndex)
         }
     }
 
-    private fun isAboutVisible(): Boolean {
-        val isOnPageAbout =
-            when (spm.currentUserGender()) {
-                Gender.FEMALE -> currentImagePosition == 1
-                else -> currentImagePosition == 0
-            }
-        return withAbout && isOnPageAbout
+    private fun isAboutPage(page: Int): Boolean {
+        /**
+         * Calculates page on which 'about' property should be displayed.
+         * @note: This method must be called inside 'if (withAbout)' block.
+         */
+        fun positionForAboutIfPresent(): Int = if (withLabel) 1 else 0
+
+        return if (withAbout) page == positionForAboutIfPresent() else false
     }
+
+    private fun isAboutVisible(): Boolean = isAboutPage(page = currentImagePosition)
 
     // ------------------------------------------
     private fun showBeginStub() {  // empty stub without labels, plain clean stub
@@ -522,7 +544,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
     }
 
     private fun showNoImageStub(needShow: Boolean) {  // empty stub with label 'Add photo to receive likes'
-        showEmptyStub(needShow, input = EmptyFragment.Companion.Input(emptyTextResId = OriginR_string.profile_empty_images))
+        showEmptyStub(needShow, input =
+            EmptyFragment.Companion.Input(
+                emptyTextResId = OriginR_string.profile_empty_images,
+                labelTextColor = context?.getAttributeColor(WidgetR_attrs.refTextColorPrimary) ?: ContextCompat.getColor(context!!, WidgetR_color.primary_text),
+                isLabelClickable = true))
         communicator(IBaseMainActivity::class.java)?.showBadgeWarningOnProfile(isVisible = needShow)
     }
 
@@ -547,6 +573,11 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         }
     }
 
+    override fun onEmptyLabelClick() {
+        // click on empty screen label should open Gallery to choose image
+        onAddImage()
+    }
+
     // ------------------------------------------
     private fun globalImagePreviewReceiver(): IImagePreviewReceiver? =
         this@UserProfileFragment.communicator(IBaseRingoidApplication::class.java)?.imagePreviewReceiver
@@ -557,10 +588,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
             ?.let { imagesAdapter.getModel(it) }
 
     private fun scrollToPosition(position: Int) {
-        rv_items?.post {
-            rv_items?.scrollToPosition(position)
-            onImageSelect(position)
-        }
+        rv_items?.post { rv_items?.scrollToPosition(position)?.also { onImageSelect(position) } }
     }
 
     private fun showControls(isVisible: Boolean) {
@@ -578,11 +606,7 @@ class UserProfileFragment : BasePermissionFragment<UserProfileFragmentViewModel>
         ll_left_container.changeVisibility(isVisible = isVisible)
         ll_right_section.changeVisibility(isVisible = isVisible)
         tv_about.changeVisibility(isVisible = isVisible && isAboutVisible())
-    }
-
-    // ------------------------------------------
-    private fun updateReferralLabel() {
-        btn_referral.text = String.format(resources.getString(OriginR_string.profile_label_coins), if (spm.hasReferralCode()) "5" else "0")
+        tv_status.changeVisibility(isVisible = isVisible)
     }
 
     // --------------------------------------------------------------------------------------------

@@ -9,8 +9,7 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
-import com.ringoid.base.view.ViewState
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.base.observeOneShot
 import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_string
 import com.ringoid.main.OriginR_style
@@ -20,6 +19,7 @@ import com.ringoid.origin.utils.AppUtils
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.particles.*
+import com.ringoid.utility.DebugOnly
 
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
@@ -37,29 +37,19 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
 
     override fun getListOfRootFragments(): List<Fragment> = listOfMainScreens()
 
-    // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE ->
-                when (newState.residual) {
-                    is CLOSE_DEBUG_VIEW -> askToCloseDebugView()
-                }
-        }
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currentLocale = app.localeManager.getLang()
         currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme_Dark)
-        observe(vm.badgeLikes, ::showBadgeOnLikes)
-        observe(vm.badgeMessages, ::showBadgeOnMessages)
-        observe(vm.badgeWarningProfile, ::showBadgeWarningOnProfile)
-        observe(vm.newLikesCount) { showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = it) }
-        observe(vm.newMatchesCount) { showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = it) }
-        observe(vm.newMessagesCount) { showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = it) }
+        observe(vm.badgeLikes(), ::showBadgeOnLikes)
+        observe(vm.badgeMessages(), ::showBadgeOnMessages)
+        observe(vm.badgeWarningProfile(), ::showBadgeWarningOnProfile)
+        observe(vm.newLikesCount()) { showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = it) }
+        observe(vm.newMatchesCount()) { showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = it) }
+        observe(vm.newMessagesCount()) { showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = it) }
+        observeOneShot(vm.closeDebugViewOneShot()) { askToCloseDebugView() }
 
         AppUtils.checkForGooglePlayServices(this)
         initializeFirebase()

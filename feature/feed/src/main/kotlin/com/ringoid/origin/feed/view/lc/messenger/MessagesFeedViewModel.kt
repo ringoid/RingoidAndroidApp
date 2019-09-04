@@ -1,24 +1,19 @@
 package com.ringoid.origin.feed.view.lc.messenger
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
-import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
-import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
-import com.ringoid.domain.interactor.feed.GetLcUseCase
-import com.ringoid.domain.interactor.feed.property.GetCachedFeedItemByIdUseCase
-import com.ringoid.domain.interactor.feed.property.TransferFeedItemUseCase
-import com.ringoid.domain.interactor.feed.property.UpdateFeedItemAsSeenUseCase
+import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatOnlyUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -26,13 +21,10 @@ import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
 import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MATCHES_TOTAL
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES_TOTAL
-import com.ringoid.origin.feed.view.lc.SEEN_ALL_FEED
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.utility.vibrate
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -75,8 +67,16 @@ class MessagesFeedViewModel @Inject constructor(
     private val incomingPushMatchEffect = PublishSubject.create<Long>()
     private val incomingPushMessages = PublishSubject.create<BusEvent>()
     private val incomingPushMessagesEffect = PublishSubject.create<Long>()
-    internal val pushNewMatch by lazy { MutableLiveData<Long>() }
-    internal val pushNewMessage by lazy { MutableLiveData<Long>() }
+    private val pushNewMatch by lazy { MutableLiveData<Long>() }
+    private val pushNewMessage by lazy { MutableLiveData<Long>() }
+    private val pushMatchesBadgeOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val pushMessagesBadgeOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val pushMessageUpdateProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
+    internal fun pushNewMatch(): LiveData<Long> = pushNewMatch
+    internal fun pushNewMessage(): LiveData<Long> = pushNewMessage
+    internal fun pushMatchesBadgeOneShot(): LiveData<OneShot<Boolean>> = pushMatchesBadgeOneShot
+    internal fun pushMessagesBadgeOneShot(): LiveData<OneShot<Boolean>> = pushMessagesBadgeOneShot
+    internal fun pushMessageUpdateProfileOneShot(): LiveData<OneShot<String>> = pushMessageUpdateProfileOneShot
 
     private var shouldVibrate: Boolean = true
 
@@ -87,7 +87,7 @@ class MessagesFeedViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({
                 // show badge on Messages LC tab (as being for new Matches)
-                viewState.value = ViewState.DONE(PUSH_NEW_MATCHES_TOTAL)
+                pushMatchesBadgeOneShot.value = OneShot(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)
@@ -114,12 +114,12 @@ class MessagesFeedViewModel @Inject constructor(
                     .onErrorResumeNext { Single.just(EmptyChat) }
                     .map { peerId }
             }  // use case will deliver it's result to Main thread
-            .doOnNext { viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES(profileId = it)) }
+            .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = OneShot(profileId) }
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({
                 // show badge on Messages LC tab
-                viewState.value = ViewState.DONE(PUSH_NEW_MESSAGES_TOTAL)
+                pushMessagesBadgeOneShot.value = OneShot(true)
                 // show 'tap-to-refresh' popup on Feed screen
                 refreshOnPush.value = true
             }, DebugLogUtil::e)
@@ -152,10 +152,7 @@ class MessagesFeedViewModel @Inject constructor(
     private fun checkFlagAndDrop(): Boolean = compareFlag.getAndSet(true)
 
     // ------------------------------------------
-    override fun getFeedFlag(): Int = SEEN_ALL_FEED.FEED_MESSENGER
-
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
-
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
 
     override fun sourceBadge(): Observable<Boolean> =
@@ -176,13 +173,13 @@ class MessagesFeedViewModel @Inject constructor(
             if (badgeIsOn) {  /** has new feed items */
                 analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
             }
-            shouldVibrate = spm.getUserSettingVibrationPushEnabled()
+            shouldVibrate = spm.getUserPushSettings().pushVibration
         }
     }
 
     override fun onStart() {
         super.onStart()
-        shouldVibrate = spm.getUserSettingVibrationPushEnabled()
+        shouldVibrate = spm.getUserPushSettings().pushVibration
     }
 
     // --------------------------------------------------------------------------------------------

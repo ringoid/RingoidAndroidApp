@@ -32,21 +32,24 @@ open class SwitchIconItemView : IconItemView {
 
     override fun setOnClickListener(l: OnClickListener?) {
         fun call(l: OnClickListener?) {
+            setOnCheckedChangeListener(null)
             setChecked(!switcher.isChecked)
+            setOnCheckedChangeListener(listener)
             l?.onClick(switcher)
         }
 
         if (l == null) {
+            listener = null
             setOnCheckedChangeListener(null)
             super.setOnClickListener(null)
         } else {
+            listener = { l.onClick(switcher) }
             setOnCheckedChangeListener { l.onClick(switcher) }
             super.setOnClickListener { call(l) }
         }
     }
 
     private fun setOnCheckedChangeListener(l: ((isChecked: Boolean) -> Unit)?) {
-        listener = l
         switcher.setOnCheckedChangeListener { _, isChecked -> l?.invoke(isChecked) }
     }
 }

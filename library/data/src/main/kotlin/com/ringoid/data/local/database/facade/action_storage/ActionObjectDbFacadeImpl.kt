@@ -6,7 +6,10 @@ import com.ringoid.datainterface.local.action_storage.IActionObjectDbFacade
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.mapList
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,6 +18,21 @@ class ActionObjectDbFacadeImpl @Inject constructor(
     private val dao: ActionObjectDao,
     private val mapper: ActionObjectDboMapper) : IActionObjectDbFacade {
 
+    init { init() }
+
+    @Suppress("CheckResult")
+    private fun init() {
+        // refine legacy db removing invalid action objects, if any
+        dao.actionObjects()
+            .subscribeOn(Schedulers.io())
+            .flatMapObservable { Observable.fromIterable(it) }
+            .filter { !it.isValid() }
+            .toList()
+            .flatMapCompletable { Completable.fromCallable { dao.deleteActionObjects(it) } }
+            .subscribe({}, Timber::e)
+    }
+
+    // ------------------------------------------
     override fun actionObjects(): Single<List<OriginActionObject>> =
         dao.actionObjects().map { it.mapList() }
 
@@ -27,11 +45,11 @@ class ActionObjectDbFacadeImpl @Inject constructor(
             }
 
     override fun addActionObject(aobj: OriginActionObject) {
-        mapper.map(aobj).also { dao.addActionObject(it) }
+        aobj.takeIf { it.isValid() }?.let { a -> mapper.map(a).also { dao.addActionObject(it) } }
     }
 
     override fun addActionObjects(objects: Collection<OriginActionObject>) {
-        objects.map(mapper::map).also { dao.addActionObjects(it) }
+        objects.filter { it.isValid() }.map(mapper::map).also { dao.addActionObjects(it) }
     }
 
     override fun countActionObjects(): Single<Int> = dao.countActionObjects()

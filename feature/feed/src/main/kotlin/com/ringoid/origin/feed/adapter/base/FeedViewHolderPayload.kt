@@ -5,10 +5,8 @@ import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 sealed class FeedViewHolderPayload
 sealed class FeedViewHolderAnimatePayload
 
+object FeedViewHolderRebind : FeedViewHolderPayload()
 object FeedItemViewHolderAnimateLike : FeedViewHolderAnimatePayload()
-
-object FeedViewHolderHideControls : FeedViewHolderPayload()
-object FeedViewHolderShowControls : FeedViewHolderPayload()
 
 object FeedViewHolderHideAboutOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowAboutOnScroll : FeedViewHolderPayload()
@@ -20,8 +18,12 @@ object FeedViewHolderHideOnlineStatusOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowOnlineStatusOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideSettingsBtnOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowSettingsBtnOnScroll : FeedViewHolderPayload()
-object FeedViewHolderShowTabsIndicatorOnScroll : FeedViewHolderPayload()
+object FeedViewHolderHideStatusOnScroll : FeedViewHolderPayload()
+object FeedViewHolderShowStatusOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideTabsIndicatorOnScroll : FeedViewHolderPayload()
+object FeedViewHolderShowTabsIndicatorOnScroll : FeedViewHolderPayload()
+object FeedViewHolderHideTotalLikesCountOnScroll : FeedViewHolderPayload()
+object FeedViewHolderShowTotalLikesCountOnScroll : FeedViewHolderPayload()
 
 object FeedFooterViewHolderHideControls : FeedViewHolderPayload()
 object FeedFooterViewHolderShowControls : FeedViewHolderPayload()

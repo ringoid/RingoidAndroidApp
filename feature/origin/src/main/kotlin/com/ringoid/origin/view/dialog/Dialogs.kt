@@ -292,11 +292,28 @@ object Dialogs {
                     .apply { dialog?.setOnDismissListener { registry.remove(hash) } }
             }
 
+    private fun getSupportDialog(activity: FragmentActivity?, @StringRes descriptionResId: Int) =
+        activity
+            ?.takeIf { !it.isActivityDestroyed() }
+            ?.let {
+                val hash = randomLong().also { registry.add(it) }
+                SupportDialog.newInstance(titleResId = R.string.error_common, descriptionResId = descriptionResId)
+                    .apply { dialog?.setOnDismissListener { registry.remove(hash) } }
+            }
+
     fun errorDialog(activity: FragmentActivity?, e: Throwable? = null) {
         getErrorDialog(activity, e)?.also { it.show(activity!!.supportFragmentManager, StatusDialog.TAG) }
     }
 
     fun errorDialog(fragment: Fragment, e: Throwable? = null) {
         getErrorDialog(fragment.activity, e)?.also { it.show(fragment.childFragmentManager, StatusDialog.TAG) }
+    }
+
+    fun supportDialog(activity: FragmentActivity?, @StringRes descriptionResId: Int) {
+        getSupportDialog(activity, descriptionResId)?.also { it.show(activity!!.supportFragmentManager, SupportDialog.TAG) }
+    }
+
+    fun supportDialog(fragment: Fragment, @StringRes descriptionResId: Int) {
+        getSupportDialog(fragment.activity, descriptionResId)?.also { it.show(fragment.childFragmentManager, SupportDialog.TAG) }
     }
 }

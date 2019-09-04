@@ -12,6 +12,7 @@
         android:contentDescription="@null"/>
 
     <LinearLayout
+        android:id="@+id/ll_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -31,17 +32,16 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/et_input"
+                android:id="@+id/tv_input"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:background="@drawable/rect_round_secondary_stroke"
                 android:gravity="center"
-                android:inputType="number"
+                android:inputType="text|textCapSentences"
                 android:maxLength="3"
-                android:minHeight="@dimen/std_btn_height"
+                android:minHeight="@dimen/std_margin_32"
                 android:padding="4dp"
-                android:textColor="?attr/refTextColorPrimary"/>
+                style="@style/StdText.Primary"/>
 
             <TextView
                 android:id="@+id/tv_suffix"
@@ -49,9 +49,28 @@
                 style="@style/StdText.Primary"/>
 
             <Space
+                android:id="@+id/space"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_count_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tv_chars_count"
+                style="@style/StdText.Secondary"/>
         </LinearLayout>
     </LinearLayout>
 </merge>

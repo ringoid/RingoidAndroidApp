@@ -63,7 +63,7 @@ static String getVersionName(Environment env, int major, int minor, int build) {
 }
 
 ext {
-    env = Environment.STAGING  // change it when need to switch environment
+    env = Environment.STAGING
     onboarding = Onboarding.DIRECT  // change it to alter onboarding process
 
     appName = getAppName(env)
@@ -78,6 +78,7 @@ ext {
 
     debounceClickMs = "500L"
     debounceInputMs = "200L"
+    debounceInputNetworkMs = "500L"
     postDelayMs = "1000L"
     requestTimeThreshold = "6000L"  // repeat request up to this threshold
     responseTimeThreshold = "2000L"  // alert if network responded later
@@ -85,9 +86,7 @@ ext {
     retryDelayMs = "54L"
 }
 
-buildscript { 
-    ext.kotlin_version = '1.3.41'
-
+buildscript {
     apply from: 'buildsystem/version.gradle'
 
     repositories {
@@ -107,7 +106,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:${kotlinVersion}"
         classpath 'io.fabric.tools:gradle:1.+'
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
+    }
 }
 
 allprojects {
@@ -120,7 +119,7 @@ allprojects {
     ext {
         majorVersion = 3
         minorVersion = 0
-        buildVersion = 226
+        buildVersion = 234
 
         androidApplicationId = getAppId(env)
         androidVersionCode = buildVersion

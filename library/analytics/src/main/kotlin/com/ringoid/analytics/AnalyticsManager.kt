@@ -7,8 +7,8 @@ import com.facebook.appevents.AppEventsLogger
 import com.flurry.android.Constants
 import com.flurry.android.FlurryAgent
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import org.json.JSONException

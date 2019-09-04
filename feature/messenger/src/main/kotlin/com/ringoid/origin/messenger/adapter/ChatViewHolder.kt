@@ -2,8 +2,8 @@ package com.ringoid.origin.messenger.adapter
 
 import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.utility.DebugOnly
 import kotlinx.android.synthetic.main.rv_item_chat_item.view.*
 
 abstract class BaseChatViewHolder(view: View) : BaseViewHolder<Message>(view) {
@@ -22,10 +22,12 @@ abstract class DebugBaseChatViewHolder(view: View) : BaseChatViewHolder(view) {
 }
 
 class MyChatViewHolder(view: View) : BaseChatViewHolder(view)
-@DebugOnly class DebugMyChatViewHolder(view: View) : DebugBaseChatViewHolder(view)
+@DebugOnly
+class DebugMyChatViewHolder(view: View) : DebugBaseChatViewHolder(view)
 
 class PeerChatViewHolder(view: View) : BaseChatViewHolder(view)
-@DebugOnly class DebugPeerChatViewHolder(view: View) : DebugBaseChatViewHolder(view)
+@DebugOnly
+class DebugPeerChatViewHolder(view: View) : DebugBaseChatViewHolder(view)
 
 class HeaderChatViewHolder(view: View) : BaseChatViewHolder(view) {
 

@@ -6,13 +6,13 @@ import android.os.HandlerThread
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
-import com.ringoid.domain.debug.IBarrierLogDaoHelper
-import com.ringoid.domain.debug.IDebugLogDaoHelper
+import com.ringoid.debug.IBarrierLogDaoHelper
+import com.ringoid.debug.IDebugLogDaoHelper
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.dating.app.RingoidApplication
-import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetActivityModule
 import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetDialogModule
+import com.ringoid.origin.feed.view.dialog.di.FeedItemContextMenuActivityModule
 import com.ringoid.origin.feed.view.dialog.di.ReportBottomSheetDialogModule
 import com.ringoid.origin.feed.view.explore.di.ExploreFragmentModule
 import com.ringoid.origin.feed.view.lc.like.di.LikesFeedFragmentModule
@@ -41,6 +41,7 @@ import com.ringoid.origin.usersettings.view.settings.di.SettingsActivityModule
 import com.ringoid.origin.usersettings.view.settings.di.SettingsFragmentModule
 import com.ringoid.origin.view.dialog.di.BigEditTextDialogModule
 import com.ringoid.origin.view.dialog.di.StatusDialogModule
+import com.ringoid.origin.view.dialog.di.SupportDialogModule
 import com.ringoid.origin.view.error.di.NoNetworkConnectionActivityModule
 import com.ringoid.origin.view.error.di.OldAppVersionActivityModule
 import com.ringoid.origin.view.filters.di.FiltersFragmentModule
@@ -57,7 +58,7 @@ import javax.inject.Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class, DeeplinkDiModule::class,
                       /** Screen modules */
                       AboutDialogModule::class, BigEditTextDialogModule::class,
-                      BlockBottomSheetActivityModule::class, BlockBottomSheetDialogModule::class,
+                      FeedItemContextMenuActivityModule::class, BlockBottomSheetDialogModule::class,
                       DeleteUserProfileImageActivityModule::class, DeleteUserProfileImageDialogModule::class,
                       ReportBottomSheetDialogModule::class, ChatHostActivityModule::class, ChatFragmentModule::class,
                       DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
@@ -72,7 +73,7 @@ import javax.inject.Singleton
                       SettingsLangActivityModule::class, SettingsLangFragmentModule::class,
                       SettingsProfileActivityModule::class, SettingsProfileFragmentModule::class,
                       SettingsPushActivityModule::class, SettingsPushFragmentModule::class,
-                      SplashActivityModule::class, StatusDialogModule::class,
+                      SplashActivityModule::class, StatusDialogModule::class, SupportDialogModule::class,
                       WebPageActivityModule::class, WebPageFragmentModule::class])
 interface ApplicationComponent : AndroidInjector<RingoidApplication> {
 

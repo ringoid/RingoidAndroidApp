@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.TriggerStrategy
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.IEssence
+import com.ringoid.utility.DebugOnly
 
 sealed class BaseActionObject
 
@@ -21,6 +21,8 @@ open class OriginActionObject(
     val triggerStrategies: List<TriggerStrategy> = emptyList())
     : BaseActionObject(), IEssence {
 
+    open fun isValid(): Boolean = true
+
     protected open fun propertyString(): String? = null
 
     override fun toString(): String {
@@ -30,7 +32,8 @@ open class OriginActionObject(
 
     open fun toActionString(): String = "$actionType(${propertyString()},aT=${actionTime % 1000000})"
 
-    @DebugOnly override fun toDebugPayload(): String = toActionString()
+    @DebugOnly
+    override fun toDebugPayload(): String = toActionString()
     override fun toSentryPayload(): String = toActionString()
 }
 

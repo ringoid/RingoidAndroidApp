@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.core.content.ContextCompat
-import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
@@ -19,18 +19,13 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.WidgetR_attrs
 import com.ringoid.origin.feed.WidgetR_color
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderRebind
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
-import com.ringoid.origin.feed.view.lc.LC_FEED_COUNTS
-import com.ringoid.origin.feed.view.lc.ON_TRANSFER_PROFILE_COMPLETE
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MATCHES_TOTAL
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES
-import com.ringoid.origin.feed.view.lc.PUSH_NEW_MESSAGES_TOTAL
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
@@ -86,42 +81,6 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_messages_title
 
     // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is LC_FEED_COUNTS ->
-                        (newState.residual as LC_FEED_COUNTS).let {
-                            setToolbarTitleWithLcCounts(show = it.show, hidden = it.hidden)
-                        }
-                    is ON_TRANSFER_PROFILE_COMPLETE -> {
-                        requestFiltersForUpdateOnChangeLcFeed()
-                        setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
-                    }
-                    is PUSH_NEW_MESSAGES -> {
-                        val profileId = (newState.residual as PUSH_NEW_MESSAGES).profileId
-
-                        feedAdapter.findModelAndPosition { it.id == profileId }?.let { (position, feedItem) ->
-                            with (feedItem.messagesReflection) {
-                                /**
-                                * New messages have been received from push notification for profile with id [BusEvent.PushNewMessage.peerId],
-                                * so need to update corresponding feed item, if any, to visually reflect change in unread messages count.
-                                 * It's enough to achieve peer messages count to be greater than count in cache.
-                                */
-                                ChatInMemoryCache.setPeerMessagesCount(profileId = profileId, count = 0)
-                                add(peerMessage(chatId = profileId))
-                            }
-                            feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
-                        }
-                    }
-                    is PUSH_NEW_MATCHES_TOTAL,
-                    is PUSH_NEW_MESSAGES_TOTAL -> communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = true)
-                }
-            }
-        }
-    }
-
     override fun setDefaultToolbarTitle() {
         toolbar.setTitle(OriginR_string.feed_messages_title)
     }
@@ -151,8 +110,15 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.pushNewMatch) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
-            observe(vm.pushNewMessage) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
+            observe(vm.pushNewMatch()) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MATCH) }
+            observe(vm.pushNewMessage()) { communicator(IBaseMainActivity::class.java)?.showParticleAnimation(PARTICLE_TYPE_MESSAGE) }
+            observeOneShot(vm.pushMatchesBadgeOneShot()) { communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = true) }
+            observeOneShot(vm.pushMessagesBadgeOneShot()) { communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(isVisible = true) }
+            observeOneShot(vm.transferProfileCompleteOneShot()) {
+                requestFiltersForUpdateOnChangeLcFeed()
+                setToolbarTitleWithLcCounts(++lcCountShow, lcCountHidden)
+            }
+            observeOneShot(vm.pushMessageUpdateProfileOneShot(), ::updateChatForProfile)
         }
     }
 
@@ -214,7 +180,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                                 }
                                 feedItem.setOnlineStatus(it.onlineStatus)
                             }
-                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderRebind)
                             trackScrollOffsetForPosition(it.position)
                         }
                     }
@@ -242,6 +208,27 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
+        }
+    }
+
+    // ------------------------------------------
+    private fun updateChatForProfile(profileId: String) {
+        feedAdapter.findModelAndPosition { it.id == profileId }?.let { (position, feedItem) ->
+            with (feedItem.messagesReflection) {
+                /**
+                 * New messages have been received from push notification for profile with id [profileId],
+                 * so need to update corresponding feed item, if any, to visually reflect change in
+                 * unread messages count. To achieve that, it's enough to set peer messages count
+                 * in memory-cache to '0' that it will be less than count in local cache.
+                 */
+                ChatInMemoryCache.setPeerMessagesCount(profileId = profileId, count = 0)
+                /**
+                 * Adding synthetic message to feed item model make the feed item to change it's
+                 * appearance.
+                 */
+                add(peerMessage(chatId = profileId))
+            }
+            feedAdapter.notifyItemChanged(position, FeedViewHolderRebind)
         }
     }
 

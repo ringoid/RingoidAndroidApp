@@ -2,11 +2,13 @@ package com.ringoid.origin.auth.view
 
 import android.app.Application
 import android.os.Build
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.ClearCachedImageRequestsUseCase
@@ -14,13 +16,13 @@ import com.ringoid.domain.interactor.image.ClearCachedUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesUseCase
 import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
-import com.ringoid.origin.style.APP_THEME
+import com.ringoid.origin.style.AppTheme
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
@@ -44,8 +46,14 @@ class LoginViewModel @Inject constructor(
 
     private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
-    val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
-    val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
+    private val changeThemeOneShot by lazy { MutableLiveData<OneShot<AppTheme>>() }
+    private val loginUserOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val loginButtonEnableState by lazy { MutableLiveData<Boolean>() }
+    private val yearOfBirthEntryState by lazy { MutableLiveData<WidgetState>() }
+    internal fun changeThemeOneShot(): LiveData<OneShot<AppTheme>> = changeThemeOneShot
+    internal fun loginUserOneShot(): LiveData<OneShot<Boolean>> = loginUserOneShot
+    internal fun loginButtonEnableState(): LiveData<Boolean> = loginButtonEnableState
+    internal fun yearOfBirthEntryState(): LiveData<WidgetState> = yearOfBirthEntryState
 
     var gender: Gender? = null
         private set (value) {
@@ -73,9 +81,9 @@ class LoginViewModel @Inject constructor(
             settings = app.userSettingsManager.getUserSettings())
 
         createUserProfileUseCase.source(params = Params().put(essence))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.CLOSE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // sign up new user progress
+            .doOnSuccess { loginUserOneShot.value = OneShot(true) }  // sign up new user success
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // sign up new user failed
             .autoDisposable(this)
             .subscribe({
                 Timber.d("Successfully signed up, current user: $it")
@@ -131,8 +139,7 @@ class LoginViewModel @Inject constructor(
     // ------------------------------------------
     fun switchTheme() {
         val newTheme = ThemeUtils.switchTheme(spm)
-        viewState.value = ViewState.DONE(APP_THEME(newTheme))
-        viewState.value = ViewState.IDLE
+        changeThemeOneShot.value = OneShot(AppTheme(newTheme))
     }
 
     // --------------------------------------------------------------------------------------------

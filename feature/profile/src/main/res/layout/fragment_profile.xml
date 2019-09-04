@@ -2,25 +2,59 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-    <FrameLayout
-        android:id="@+id/fl_empty_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <LinearLayout
+        android:id="@+id/ll_profile_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/profile_header_height"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.ringoid.widget.view.ExtendImageButton
+            android:id="@+id/ibtn_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/std_margin_16"
+            app:xbtnSrc="?refDrawableProfileMenuSettings"/>
+
+        <TextView
+            android:id="@+id/tv_app_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/app_name"
+            android:textSize="@dimen/std_text_30"
+            android:textStyle="bold"
+            style="@style/StdText.Primary"/>
+
+        <com.ringoid.widget.view.ExtendImageButton
+            android:id="@+id/ibtn_add_image_debug"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/std_margin_16"
+            android:visibility="gone"
+            app:xbtnSrc="@drawable/ic_plus_debug_36dp"/>
+
+        <com.ringoid.widget.view.ExtendImageButton
+            android:id="@+id/ibtn_add_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/std_margin_16"
+            app:xbtnSrc="?refDrawableProfileMenuAddImage"/>
+    </LinearLayout>
 
     <com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="@dimen/std_image_height"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -32,60 +66,167 @@
 
     </com.ringoid.widget.view.OnlyVerticalSwipeRefreshLayout>
 
-    <Button
-        android:id="@+id/btn_referral"
-        android:textColor="?refTextColorPrimary"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout"
+    <View
+        android:id="@+id/gradient"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/rect_gradient"
+        app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
+        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"/>
+
+    <FrameLayout
+        android:id="@+id/fl_empty_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        style="@style/FlatButton"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <me.relex.circleindicator.CircleIndicator2
-        android:id="@+id/tabs"
+        android:id="@+id/tabs2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/profile_tab_layout_height"
-        android:layout_marginTop="@dimen/std_margin_16"
-        android:layout_marginStart="@dimen/std_margin_8"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:ci_gravity="center_vertical|start"/>
-
-    <com.ringoid.widget.view.ExtendImageButton
-        android:id="@+id/ibtn_add_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/std_margin_32"
-        android:paddingBottom="@dimen/std_margin_16"
-        android:paddingStart="@dimen/std_margin_32"
-        android:paddingEnd="@dimen/std_margin_16"
+        android:layout_marginBottom="@dimen/std_margin_16"
         app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_add_white"/>
+        app:ci_gravity="center"/>
 
-    <com.ringoid.widget.view.ExtendImageButton
-        android:id="@+id/ibtn_settings"
+    <com.ringoid.widget.view.LabelView
+        android:id="@+id/label_online_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/std_margin_16"
+        android:layout_marginTop="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_16"
+        app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:label_icon="@drawable/online_status_oval"
+        app:label_icon_size="@dimen/std_icon_12"
+        app:label_min_height="@dimen/std_icon_36"
+        app:label_text="@string/common_online"
+        app:label_text_size="@dimen/std_text_18"/>
+
+    <com.ringoid.widget.view.ExtendImageButton
+        android:id="@+id/ibtn_profile_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/std_margin_24"
         android:paddingBottom="@dimen/std_margin_32"
         android:paddingStart="@dimen/std_margin_32"
         android:paddingEnd="@dimen/std_margin_16"
-        app:layout_constraintTop_toTopOf="@id/swipe_refresh_layout"
+        android:contentDescription="@null"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_settings_white"/>
+        app:xbtnSrc="@drawable/ic_edit_white_36dp"/>
+
+    <View
+        android:id="@+id/anchor"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_about"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:maxLines="3"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        android:textSize="@dimen/std_text_14"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In maximus, magna non finibus ultrices, nunc lacus facilisis ligula, vitae placerat ex ante id lorem. Maecenas ornare malesuada tincidunt. Nullam pulvinar nisi in lorem dictum imperdiet. Donec tincidunt lacus a tincidunt imperdiet."
+        app:layout_constraintBottom_toTopOf="@id/anchor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/StdText.Primary"/>
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="@dimen/profile_status_max_width"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:clickable="true"
+        android:gravity="start|center_vertical"
+        android:maxLines="6"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:fontFamily="@font/status_font"
+        style="@style/StatusText"/>
+
+    <LinearLayout
+        android:id="@+id/ll_left_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_8"
+        android:orientation="vertical"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintBottom_toTopOf="@id/tv_about"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ll_right_container">
+
+        <TextView
+            android:id="@+id/tv_name_age"
+            android:ellipsize="end"
+            android:shadowColor="@color/text_shadow"
+            android:shadowRadius="6"
+            android:textSize="@dimen/std_text_22"
+            android:textStyle="bold"
+            tools:text="Maxim, 29"
+            style="@style/StdText.Primary"/>
+
+        <LinearLayout
+            android:id="@+id/ll_left_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_right_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/std_margin_32"
+        android:layout_marginStart="@dimen/std_margin_8"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+        app:layout_constraintStart_toEndOf="@id/ll_left_container"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:id="@+id/ll_right_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </LinearLayout>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_delete_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/std_margin_32"
+        android:paddingTop="@dimen/std_margin_24"
         android:paddingBottom="@dimen/std_margin_32"
         android:paddingStart="@dimen/std_margin_32"
         android:paddingEnd="@dimen/std_margin_16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/swipe_refresh_layout"
+        app:layout_constraintTop_toBottomOf="@id/ll_profile_header"
         app:layout_constraintEnd_toEndOf="parent"
-        app:xbtnSrc="@drawable/ic_delete_white"/>
+        app:xbtnSrc="@drawable/ic_more_white"/>
 
     <ProgressBar
         android:id="@+id/pb_profile"

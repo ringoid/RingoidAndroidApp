@@ -2,6 +2,7 @@ package com.ringoid.domain.model.user
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.ringoid.domain.misc.PushSettingsRaw
 
 data class UserSettings(
     @Expose @SerializedName(COLUMN_LOCALE) val locale: String? = null,
@@ -20,5 +21,13 @@ data class UserSettings(
         const val COLUMN_PUSH_MESSAGES = "pushNewMessage"
         const val COLUMN_PUSH_VIBRATION = "vibration"
         const val COLUMN_TIMEZONE = "timeZone"
+
+        fun from(properties: PushSettingsRaw): UserSettings =
+            UserSettings(
+                push = properties.push,
+                pushLikes = properties.pushLikes,
+                pushMatches = properties.pushMatches,
+                pushMessages = properties.pushMessages,
+                pushVibration = properties.pushVibration)
     }
 }

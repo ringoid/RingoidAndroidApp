@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ringoid.base.adapter.BaseViewHolder
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.origin.AppInMemory
@@ -20,6 +20,7 @@ import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
+import com.ringoid.widget.view.LabelView
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -70,7 +71,8 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     internal val profileImageAdapter = ProfileImageAdapter()
 
     private val snapHelper = EnhancedPagerSnapHelper(duration = 30)
-    private var withAbout: Boolean = false
+    private var withAbout: Boolean = false  // 'about' property is not empty
+    private var withLabel: Boolean = false  // model has at least one property (excluding 'about')
 
     init {
         itemView.rv_items.apply {
@@ -128,8 +130,10 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
 //                .also { listener -> addOnScrollListener(listener) }
         }
         itemView.tv_profile_id.changeVisibility(isVisible = BuildConfig.IS_STAGING)
+        itemView.tv_with_info.changeVisibility(isVisible = BuildConfig.IS_STAGING)
     }
 
+    @Suppress("SetTextI18n")
     override fun bind(model: FeedItemVO) {
         showControls()  // cancel any effect caused by applied payloads
         showOnlineStatus(model)  // apply updates, if any
@@ -158,19 +162,36 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     override fun bind(model: FeedItemVO, payloads: List<Any>) {
+        /**
+         * Visibility zones are used to trigger visibility of labels and other content on feed item
+         * when offset scroll strategy is applied. Number of zones is equal to the number of lines in
+         * left / right section, maximum of these two, and up to '2'.
+         */
         fun showLabelInZone(container: ViewGroup, zone: Int, isVisible: Boolean) {
             val alpha = if (isVisible) 1.0f else 0.0f
             with (container) {
-                (zone - (2 - countLabelsOnPosition(container, model.positionOfImage)))
+                (zone - (2 /** max */ - countLabelsOnPosition(container, model.positionOfImage)))
                     .takeIf { it >= 0 }
                     ?.let { it + fixupPage(model.positionOfImage) * FeedScreenUtils.COUNT_LABELS_ON_PAGE }
                     ?.let { getChildAt(it)?.alpha = alpha }
             }
         }
 
+        /**
+         * Calculate offset scroll zone where 'name-age' label is visible / invisible.
+         *
+         * That depends on presence of 'about' property and number of it's lines, because
+         * the more lines in 'about', the higher 'name-age' label is placed, so that it could
+         * potentially reside in any of available visibility zones.
+         *
+         * If the current page, given by [FeedItemVO.positionOfImage], does not contain 'about'
+         * (this is defined by [isAboutPage] method), then visibility zone for 'name-age'
+         * label is controlled by the number zones, occupied by other property labels inside
+         * the left section container.
+         */
         fun showNameInZone(zone: Int, isVisible: Boolean) {
             val alpha = if (isVisible) 1.0f else 0.0f
-            if (isAboutPage(model)) {
+            if (isAboutPage(page = model.positionOfImage)) {
                 model.about()  // approximate number of lines
                     ?.let { minOf(3, it.length / 50 + 1) }
                     ?.takeIf { zone == it - 1 }
@@ -202,11 +223,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         // --------------------------------------
         showOnlineStatus(model)  // apply updates, if any
 
-        if (payloads.contains(FeedViewHolderHideControls)) {
-            hideControls()
-            return
-        }
-        if (payloads.contains(FeedViewHolderShowControls)) {
+        if (payloads.contains(FeedViewHolderRebind)) {
             showControls()
             return
         }
@@ -217,6 +234,18 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
         if (payloads.contains(FeedViewHolderShowAboutOnScroll)) {
             itemView.tv_about.alpha = 1.0f
+        }
+        if (payloads.contains(FeedViewHolderHideStatusOnScroll)) {
+            itemView.tv_status.alpha = 0.0f
+        }
+        if (payloads.contains(FeedViewHolderShowStatusOnScroll)) {
+            itemView.tv_status.alpha = 1.0f
+        }
+        if (payloads.contains(FeedViewHolderHideTotalLikesCountOnScroll)) {
+            itemView.tv_total_likes.alpha = 0.0f
+        }
+        if (payloads.contains(FeedViewHolderShowTotalLikesCountOnScroll)) {
+            itemView.tv_total_likes.alpha = 1.0f
         }
         if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
             itemView.label_online_status.changeVisibility(isVisible = false, soft = true)
@@ -283,26 +312,23 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     // ------------------------------------------------------------------------
-    protected open fun hideControls() {
-        itemView.apply {
-            tabs.changeVisibility(isVisible = false)
-            ibtn_settings.changeVisibility(isVisible = false)
-            label_online_status.changeVisibility(isVisible = false)
-            ll_left_container.changeVisibility(isVisible = false)
-            ll_right_container.changeVisibility(isVisible = false)
-        }
-        profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
-    }
-
     protected open fun showControls() {
         itemView.apply {
+            tv_about.alpha = 1.0f
+            tv_status.alpha = 1.0f
+            tv_name_age.alpha = 1.0f
+            tv_total_likes.alpha = 1.0f
             tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
             label_online_status.changeVisibility(isVisible = true)
             ll_left_container.changeVisibility(isVisible = true)
             ll_right_container.changeVisibility(isVisible = true)
         }
-        profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
+        /**
+         * Here possibly rebind item in nested [profileImageAdapter], like:
+         *
+         *     profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderRebind)
+         */
     }
 
     private fun showOnlineStatus(model: FeedItemVO) {
@@ -360,39 +386,44 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         val startIndex = page * FeedScreenUtils.COUNT_LABELS_ON_PAGE
         val endIndex = startIndex + FeedScreenUtils.COUNT_LABELS_ON_PAGE
 
-        if (withAbout) {
-            when (AppInMemory.oppositeUserGender()) {
-                Gender.FEMALE -> {
-                    when (positionOfImage) {
-                        0 -> showAbout()
-                        else -> showLabels(startIndex, endIndex)
-                    }
-                }
-                else -> {
-                    when (positionOfImage) {
-                        1 -> showAbout()
-                        else -> showLabels(startIndex, endIndex)
-                    }
-                }
-            }
+        /**
+         * When image at [positionOfImage] comes into viewport, check whether [FeedItemVO.about]
+         * is not empty (given by [withAbout] flag) and show it if [positionOfImage] is equal to
+         * the position that is predefined for 'about' property by Product Design. Then show property
+         * labels on each of the rest of pages until exhausted.
+         */
+        if (isAboutPage(positionOfImage)) {
+            showAbout()  // show 'about' on predefined position, if any
         } else {
             showLabels(startIndex, endIndex)
         }
     }
 
-    private fun isAboutPage(model: FeedItemVO): Boolean =
-        if (withAbout) {
-            when (model.gender) {
-                Gender.FEMALE -> model.positionOfImage == 0
-                else -> model.positionOfImage == 1
-            }
-        } else false
+    /**
+     * Given [FeedItemVO.positionOfImage] (page), defines whether that page should display
+     * 'about' property field, if the latter is not empty.
+     */
+    private fun isAboutPage(page: Int): Boolean {
+        /**
+         * Calculates page on which 'about' property should be displayed.
+         * @note: This method must be called inside 'if (withAbout)' block.
+         */
+        fun positionForAboutIfPresent(): Int = if (withLabel) 1 else 0
+
+        return if (withAbout) page == positionForAboutIfPresent() else false
+    }
 
     private fun fixupPage(positionOfImage: Int): Int =
         if (withAbout) maxOf(0, positionOfImage - 1)
         else positionOfImage
 
+    @Suppress("SetTextI18n")
     private fun setPropertyFields(model: FeedItemVO) {
+        /**
+         * Creates [LabelView] for property given by [propertyId] from [properties],
+         * and then adds that view into [containerView]. If no such property found
+         * in [properties], then resulting [LabelView] is null and not added.
+         */
         fun addLabelView(
                 containerView: ViewGroup,
                 propertyId: UserProfilePropertyId,
@@ -409,12 +440,23 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // --------------------------------------
+        // total likes
+        itemView.tv_total_likes.text = model.totalLikes()
+
+        // about
         model.about()
-            .takeIf { !it.isNullOrBlank() }
+            ?.takeIf { it.isNotBlank() }
             ?.let { itemView.tv_about.text = it.trim() }
+            ?: run { itemView.tv_about.text = "" }
 
         withAbout = !model.about().isNullOrBlank()
+        withLabel = FeedScreenUtils.hasAtLeastOneProperty(model)
 
+        if (BuildConfig.IS_STAGING) {
+            itemView.tv_with_info.text = "about=$withAbout, lb=$withLabel"
+        }
+
+        // name, age
         (model.name()?.takeIf { it.isNotBlank() } ?: AppInMemory.genderString(model.gender))
             ?.let { name ->
                 mutableListOf<String>().apply {
@@ -424,6 +466,13 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
                 .let { itemView.tv_name_age.text = it.joinToString() }
             }
 
+        // status
+        model.status()
+            ?.takeIf { it.isNotBlank() }
+            ?.let { itemView.tv_status.text = it.trim() }
+            ?: run { itemView.tv_status.text = "" }
+
+        // labels in sections
         itemView.ll_left_section?.let { containerView ->
             containerView.removeAllViews()
             when (model.gender) {

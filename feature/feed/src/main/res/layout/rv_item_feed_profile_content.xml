@@ -19,6 +19,15 @@
         app:layout_constraintTop_toTopOf="@id/rv_items"
         app:layout_constraintBottom_toBottomOf="@id/rv_items"/>
 
+    <View
+        android:id="@+id/anchor0"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/tabs"
         android:layout_width="match_parent"
@@ -37,11 +46,23 @@
         android:paddingStart="@dimen/std_margin_32"
         android:paddingEnd="@dimen/std_margin_16"
         android:contentDescription="@null"
-        app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/anchor0"
         app:layout_constraintEnd_toEndOf="parent"
         app:xbtnSrc="@drawable/ic_like_outline_white_36dp"/>
+
+    <TextView
+        android:id="@+id/tv_total_likes"
+        android:layout_marginTop="@dimen/std_margin_64"
+        android:paddingStart="@dimen/std_margin_32"
+        android:paddingEnd="@dimen/std_margin_16"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        android:singleLine="true"
+        android:textSize="@dimen/std_text_22"
+        app:layout_constraintTop_toTopOf="@id/anchor0"
+        app:layout_constraintStart_toStartOf="@id/ibtn_like"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/StdText.White"/>
 
     <com.ringoid.widget.view.ExtendImageButton
         android:id="@+id/ibtn_settings"
@@ -91,6 +112,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/StdText.Primary"/>
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="@dimen/feed_item_status_max_width"
+        android:layout_marginStart="@dimen/std_margin_16"
+        android:gravity="start|center_vertical"
+        android:maxLines="6"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:fontFamily="@font/status_font"
+        style="@style/StatusText"/>
 
     <LinearLayout
         android:id="@+id/ll_left_container"
@@ -152,14 +188,32 @@
 
     <TextView
         android:id="@+id/tv_profile_id"
-        android:layout_marginStart="@dimen/std_margin_16"
+        android:layout_marginEnd="@dimen/std_margin_16"
         android:ellipsize="end"
         android:maxLines="1"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
         android:textSize="@dimen/std_text_22"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.55"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Debug profile id"
+        style="@style/StdText.White"/>
+
+    <TextView
+        android:id="@+id/tv_with_info"
+        android:layout_marginEnd="@dimen/std_margin_16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:shadowColor="@color/text_shadow"
+        android:shadowRadius="6"
+        android:textColor="@color/grass"
+        android:textSize="@dimen/std_text_22"
+        android:visibility="gone"
+        app:layout_constraintVertical_bias="0.6"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Debug profile id"

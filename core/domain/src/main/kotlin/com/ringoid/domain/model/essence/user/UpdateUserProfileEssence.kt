@@ -42,6 +42,7 @@ data class UpdateUserProfileEssence(
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_NAME) val name: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM) val instagram: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK) val tiktok: String = "",
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_STATUS_TEXT) var statusText: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_UNIVERSITY) val university: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_FROM) val whereFrom: String = "",
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_LIVE) val whereLive: String = "") : IEssence {
@@ -61,6 +62,7 @@ data class UpdateUserProfileEssence(
         const val COLUMN_PROPERTY_CUSTOM_NAME = "name"
         const val COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM = "instagram"
         const val COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK = "tikTok"
+        const val COLUMN_PROPERTY_CUSTOM_STATUS_TEXT = "statusText"
         const val COLUMN_PROPERTY_CUSTOM_UNIVERSITY = "education"
         const val COLUMN_PROPERTY_CUSTOM_WHERE_FROM = "whereFrom"
         const val COLUMN_PROPERTY_CUSTOM_WHERE_LIVE = "whereLive"
@@ -79,6 +81,7 @@ data class UpdateUserProfileEssence(
                 company = essence.company,
                 jobTitle = essence.jobTitle,
                 name = essence.name,
+                statusText = essence.statusText,
                 instagram = essence.socialInstagram,
                 tiktok = essence.socialTikTok,
                 university = essence.university,
@@ -86,5 +89,5 @@ data class UpdateUserProfileEssence(
                 whereLive = essence.whereLive)
     }
 
-    override fun toDebugPayload(): String = "[children=$children,education=$education,hairColor=$hairColor,height=$height,income=$income,property=$property,transport=$transport,about=$about,company=$company,jobTitle=$jobTitle,name=$name,instagram=$instagram,tiktok=$tiktok,university=$university,whereFrom=$whereFrom,whereLive=$whereLive]"
+    override fun toDebugPayload(): String = "[children=$children,education=$education,hairColor=$hairColor,height=$height,income=$income,property=$property,transport=$transport,about=$about,company=$company,jobTitle=$jobTitle,name=$name,statusText=$statusText,instagram=$instagram,tiktok=$tiktok,university=$university,whereFrom=$whereFrom,whereLive=$whereLive]"
 }

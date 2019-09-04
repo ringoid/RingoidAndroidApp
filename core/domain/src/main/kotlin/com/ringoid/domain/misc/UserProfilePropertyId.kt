@@ -13,5 +13,21 @@ enum class UserProfilePropertyId {
     SOCIAL_TIKTOK,
     TRANSPORT,
     UNIVERSITY,
+    WHERE_LIVE;
+
+    companion object {
+        val values = values()
+    }
+}
+
+enum class UserProfileEditablePropertyId {
+    COMPANY,
+    JOB_TITLE,
+    HEIGHT,
+    NAME,
+    SOCIAL_INSTAGRAM,
+    SOCIAL_TIKTOK,
+    STATUS,
+    UNIVERSITY,
     WHERE_LIVE
 }

@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.base.manager.permission.PermissionManager
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.base.view.ViewState
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.view.dialog.Dialogs
@@ -19,22 +19,16 @@ abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragmen
 
     @Inject protected lateinit var permissionManager: PermissionManager
 
-    // --------------------------------------------------------------------------------------------
-    override fun onViewStateChange(newState: ViewState) {
-        super.onViewStateChange(newState)
-        when (newState) {
-            is ViewState.DONE ->
-                when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> askToEnableLocationService()
-                }
-        }
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         registerPermissionCaller(PermissionManager.RC_PERMISSION_LOCATION, locationPermissionCaller)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeOneShot(vm.askToEnableLocationServiceOneShot(), ::askToEnableLocationService)
     }
 
     override fun onDestroyView() {
@@ -80,7 +74,7 @@ abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragmen
         }
     }
 
-    private fun askToEnableLocationService() {
+    private fun askToEnableLocationService(handleCode: Int) {
         Dialogs.showTextDialog(activity, titleResId = R.string.permission_location_dialog_enable_location_service, descriptionResId = 0,
             positiveBtnLabelResId = R.string.button_settings,
             negativeBtnLabelResId = R.string.button_later,

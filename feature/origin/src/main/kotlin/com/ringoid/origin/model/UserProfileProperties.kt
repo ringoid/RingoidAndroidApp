@@ -18,6 +18,7 @@ data class UserProfileProperties(
     internal var name: String = "",
     internal var socialInstagram: String = "",
     internal var socialTikTok: String = "",
+    internal var statusText: String = "",
     internal var university: String = "",
     internal var whereFrom: String = "",
     internal var whereLive: String = "")
@@ -39,6 +40,7 @@ data class UserProfileProperties(
                 name = raw.name,
                 socialInstagram = raw.socialInstagram,
                 socialTikTok = raw.socialTikTok,
+                statusText = raw.statusText,
                 university = raw.university,
                 whereFrom = raw.whereFrom,
                 whereLive = raw.whereLive)
@@ -58,6 +60,7 @@ data class UserProfileProperties(
         // name is not included
         socialInstagram.isBlank() &&
         socialTikTok.isBlank() &&
+        statusText.isBlank() &&
         university.isBlank() &&
         whereFrom.isBlank() &&
         whereLive.isBlank()
@@ -77,6 +80,7 @@ data class UserProfileProperties(
             name = name,
             socialInstagram = socialInstagram,
             socialTikTok = socialTikTok,
+            statusText = statusText,
             university = university,
             whereFrom = whereFrom,
             whereLive = whereLive)
@@ -90,6 +94,8 @@ data class UserProfileProperties(
     fun jobTitle(value: String) { jobTitle = value }
     fun name(): String = if (name != DomainUtil.BAD_PROPERTY) name else ""
     fun name(value: String) { name = value }
+    fun status(): String = if (statusText != DomainUtil.BAD_PROPERTY) statusText else ""
+    fun status(value: String) { statusText = value }
     fun instagram(): String = if (socialInstagram != DomainUtil.BAD_PROPERTY) socialInstagram else ""
     fun instagram(value: String) { socialInstagram = value }
     fun tiktok(): String = if (socialTikTok != DomainUtil.BAD_PROPERTY) socialTikTok else ""

@@ -30,6 +30,7 @@ ext {
             lifecycleExt:      "androidx.lifecycle:lifecycle-extensions:${archComponentsVersion}",
             lifecycleRx:       "androidx.lifecycle:lifecycle-reactivestreams:${archComponentsVersion}",
             lifedata:          "androidx.lifecycle:lifecycle-livedata:${archComponentsVersion}",
+            savedState:        "androidx.lifecycle:lifecycle-viewmodel-savedstate:${archComponentsSavedStateVersion}",
             viewmodel:         "androidx.lifecycle:lifecycle-viewmodel:${archComponentsVersion}",
 
             paging:       "androidx.paging:paging-common:${archComponentsVersion}",
@@ -82,6 +83,7 @@ ext {
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
             fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
             fresco:         "com.facebook.fresco:fresco:${frescoVersion}",
+            frescoOkHttp:   "com.facebook.fresco:imagepipeline-okhttp3:${frescoVersion}",
             gson:           "com.google.code.gson:gson:${gsonVersion}",
             jobQueue:       "com.birbit:android-priority-jobqueue:${jobQueueVersion}",
             jodaTime:       "net.danlew:android.joda:${jodaTimeVersion}",
@@ -162,10 +164,14 @@ ext {
             analytcis: ':library:analytics',
             base:      ':core:base',       //  ^- [ :base ]
 
-            data:    ':library:data',                  // -+- [ :data ]
+            config:         ':library:config',
+            data:           ':library:data',           // -+- [ :data ]
             datainterface:  ':library:datainterface',  //  ^- [ :datainterface ] -+-
-            repository: ':library:repository',         //  |  [ :repository ] ----^
-            domain:  ':core:domain',                //  ^- [ :domain ]---------^
+            debug:          ':library:debug',
+            imageloader:    ':library:imageloader',
+            report:         ':library:report',
+            repository:     ':library:repository',     //  |  [ :repository ] ----^
+            domain:         ':core:domain',            //  ^- [ :domain ]---------^
 
             utility: ':library:utility',
             widget:  ':library:widget',
@@ -187,15 +193,19 @@ ext {
     def Analytics = [[configuration: "implementation", dependency: project(modules.analytcis)]]
     def Base = [[configuration: "implementation", dependency: project(modules.base)]]
 
+    def Config = [[configuration: "implementation", dependency: project(modules.config)]]
     def Data = [[configuration: "implementation", dependency: project(modules.data)]]
     def DataInterface = [[configuration: "implementation", dependency: project(modules.datainterface)]]
+    def Debug = [[configuration: "implementation", dependency: project(modules.debug)]]
+    def ImageLoader = [[configuration: "implementation", dependency: project(modules.imageloader)]]
+    def Report = [[configuration: "implementation", dependency: project(modules.report)]]
     def Repository = [[configuration: "implementation", dependency: project(modules.repository)]]
     def Domain = [[configuration: "implementation", dependency: project(modules.domain)]]
 
     def Utility = [[configuration: "implementation", dependency: project(modules.utility)]]
     def Widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
-    def Develop = Base + Domain + Utility + Widget
+    def Develop = Base + Config + Debug + Domain + Utility + Widget
     def AllFeatures = Auth + Feed + ImagePreview + Messenger + Profile + UserSettings + Origin
 
     /* Plugins */
@@ -237,6 +247,7 @@ ext {
             [configuration: "implementation", dependency: d_arch.lifecycleExt],
             [configuration: "implementation", dependency: d_arch.lifecycleRx],
             [configuration: "implementation", dependency: d_arch.lifedata],
+            [configuration: "implementation", dependency: d_arch.savedState],
             [configuration: "implementation", dependency: d_arch.viewmodel],
 //            [configuration: "implementation", dependency: d_arch.paging],
     ]
@@ -356,12 +367,13 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.flurry],
         [configuration: "implementation", dependency: d_libs.fresco],
+        [configuration: "implementation", dependency: d_libs.frescoOkHttp],
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop + Repository +
-                       android + androidView + autoDispose + dagger + deeplink + fragnav +
-                       kotlin + leaks + log + net + room + support
+    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop + ImageLoader +
+                       Report + Repository + android + androidView + autoDispose + dagger + deeplink +
+                       fragnav + kotlin + leaks + log + net + room + support
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -384,7 +396,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.firebase],
     ]
-    mainDependencies += AllFeatures + Develop + Analytics + android + arch + autoDispose +
+    mainDependencies += AllFeatures + Develop + Analytics + Report + android + arch + autoDispose +
                         dagger + deeplink + fragnav + kotlin + log + rx + rxBind
 
     androidTestMainDeps = androidTest
@@ -401,14 +413,14 @@ ext {
     userSettingsDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    userSettingsDependencies += Origin + Develop + Analytics + android + arch + autoDispose +
+    userSettingsDependencies += Origin + Develop + Analytics + Report + android + arch + autoDispose +
                                 dagger + deeplink + kotlin + leaks + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test
 
     userSettingsPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -417,14 +429,14 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += Origin + Analytics + Develop + android + arch + autoDispose +
+    authDependencies += Origin + Analytics + Develop + Report + android + arch + autoDispose +
                         dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
     testAuthDependencies = test
 
     authPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -437,7 +449,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
     ]
-    feedDependencies += Messenger + Origin + Analytics + Develop +
+    feedDependencies += Messenger + Origin + Analytics + Develop + ImageLoader + Report +
                         android + androidView + arch + autoDispose +
                         dagger + deeplink + gson + kotlin + log + rx + rxBind + view
 
@@ -445,7 +457,7 @@ ext {
     testFeedDependencies = test
 
     feedPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -456,14 +468,14 @@ ext {
     imagePreviewDependencies = [
         [configuration: "implementation", dependency: project(modules.cropiwa)]
     ]
-    imagePreviewDependencies += Origin + Analytics + Develop + android + arch + autoDispose +
+    imagePreviewDependencies += Origin + Analytics + Develop + Report + android + arch + autoDispose +
                                 dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
     testImagePreviewDependencies = test
 
     imagePreviewPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -475,14 +487,14 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
     ]
-    messengerDependencies += Origin + Develop + Analytics + android + androidView + arch + autoDispose +
-                             dagger + deeplink + gson + kotlin + log + rx + rxBind
+    messengerDependencies += Origin + Develop + Analytics + ImageLoader + android + androidView +
+                             arch + autoDispose + dagger + deeplink + gson + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest
     testMessengerDependencies = test
 
     messengerPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -495,14 +507,14 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
     ]
-    profileDependencies += Origin + Develop + Analytics + android + androidView + arch + autoDispose +
-                           dagger + deeplink + kotlin + log + rx + rxBind + view
+    profileDependencies += Origin + Develop + Analytics + ImageLoader + Report + android + androidView +
+                           arch + autoDispose + dagger + deeplink + kotlin + log + rx + rxBind + view
 
     androidTestProfileDeps = androidTest
     testProfileDependencies = test
 
     profilePlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -520,7 +532,7 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += Develop + Analytics + android + androidView + arch + autoDispose +
+    originDependencies += Develop + Analytics + Report + android + androidView + arch + autoDispose +
                           dagger + deeplink + fragnav + gson + kotlin + log + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
@@ -533,7 +545,7 @@ ext {
     ]
 
     originPlugins = [
-        xPlugins.androidFeature,
+        xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,
         xPlugins.kotlinAnnotation,
@@ -546,7 +558,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebase],
         [configuration: "implementation", dependency: d_libs.flurry],
     ]
-    analyticsDependencies += Domain + android + dagger + kotlin + log
+    analyticsDependencies += Debug + Domain + android + dagger + kotlin + log
     testAnalyticsDependencies = test
 
     analyticsPlugins = [
@@ -560,8 +572,9 @@ ext {
     baseDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    baseDependencies += Analytics + Domain + Utility + Widget + android + androidView + arch + autoDispose +
-                        dagger + deeplink + google + kotlin + leaks + log + rx + rxBind
+    baseDependencies += Analytics + Config + Debug + Domain + Utility + Widget + android +
+                        androidView + arch + autoDispose +
+                        dagger + deeplink + kotlin + leaks + log + rx + rxBind
 
     androidTestBaseDeps = androidTest
     testBaseDependencies = test
@@ -573,13 +586,24 @@ ext {
         xPlugins.kotlinAnnotation,
     ]
 
+    /* Config */
+    // ------------------------------------------
+    configDependencies = []
+    configDependencies += kotlin
+    testConfigDependencies = test
+
+    configPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+    ]
+
     /* Data */
     // ------------------------------------------
     dataDependencies = [
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    dataDependencies += DataInterface + Domain + Utility + autoDispose + dagger + gson + kotlin +
+    dataDependencies += Config + DataInterface + Debug + Domain + Report + Utility + autoDispose + dagger + gson + kotlin +
                         log + net + room + rx
     testDataDependencies = test
 
@@ -592,7 +616,7 @@ ext {
     /* Data Interface */
     // ------------------------------------------
     dataInterfaceDependencies = []
-    dataInterfaceDependencies += Domain + dagger + gson + kotlin + rx
+    dataInterfaceDependencies += Domain + Report + dagger + gson + kotlin + rx
     testDataInterfaceDependencies = test
 
     dataInterfacePlugins = [
@@ -601,12 +625,21 @@ ext {
         xPlugins.kotlinAnnotation,
     ]
 
+    /* Debug */
+    // ------------------------------------------
+    debugDependencies = []
+    debugDependencies = Utility + Config + kotlin + log + rx
+    testDebugDependencies = test
+
+    debugPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid
+    ]
+
     /* Domain */
     // ------------------------------------------
-    domainDependencies = [
-        [configuration: "implementation", dependency: d_support.sentry]
-    ]
-    domainDependencies += Utility + autoDispose + dagger + gson + kotlin + log + rx
+    domainDependencies = []
+    domainDependencies += Utility + Debug + Report + autoDispose + dagger + gson + kotlin + log + rx
     testDomainDependencies = test
 
     domainPlugins = [
@@ -615,13 +648,39 @@ ext {
         xPlugins.kotlinAnnotation,
     ]
 
+    /* Image Loader */
+    // ------------------------------------------
+    imageloaderDependencies = [
+        [configuration: "implementation", dependency: d_libs.fresco]
+    ]
+    imageloaderDependencies += Utility + Config + Report + android + kotlin + log
+    testImageloaderDependencies = test
+
+    imageloaderPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+    ]
+
+    /* Report */
+    // ------------------------------------------
+    reportDependencies = [
+        [configuration: "implementation", dependency: d_support.sentry]
+    ]
+    reportDependencies += Utility + kotlin + log + rx
+    testReportDependencies = test
+
+    reportPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+    ]
+
     /* Repository */
     // ------------------------------------------
     repositoryDependencies = [
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    repositoryDependencies += Data + DataInterface + Domain + Utility + dagger + kotlin + log + rx
+    repositoryDependencies += Data + DataInterface + Debug + Domain + Report + Utility + dagger + kotlin + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [
@@ -633,7 +692,6 @@ ext {
     /* Utility */
     // ------------------------------------------
     utilityDependencies = [
-        [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.jodaTime],
     ]
     utilityDependencies += android + androidView + kotlin + log + rx

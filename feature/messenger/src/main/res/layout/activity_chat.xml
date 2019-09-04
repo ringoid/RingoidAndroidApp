@@ -9,4 +9,5 @@
     fresco:actualImageScaleType="centerCrop"
     fresco:fadeDuration="0"
     fresco:overlayImage="@color/semitransparent_mid"
-    fresco:retryImage="@drawable/ic_no_photo_placeholder_grey_96dp"/>
+    fresco:failureImage="@drawable/ic_no_photo_placeholder_grey_96dp"
+    fresco:retryImage="@drawable/ic_refresh_photo_placeholder_grey_96dp"/>

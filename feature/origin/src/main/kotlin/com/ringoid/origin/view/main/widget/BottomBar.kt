@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding3.view.clicks
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.origin.view.main.NavTab
 import com.ringoid.utility.changeVisibility

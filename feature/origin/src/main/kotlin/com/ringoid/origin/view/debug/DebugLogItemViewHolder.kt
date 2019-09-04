@@ -3,7 +3,7 @@ package com.ringoid.origin.view.debug
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.ringoid.base.adapter.BaseViewHolder
-import com.ringoid.domain.debug.DebugLogLevel
+import com.ringoid.debug.DebugLogLevel
 import com.ringoid.origin.WidgetR_color
 import kotlinx.android.synthetic.main.rv_item_debug_log.view.*
 

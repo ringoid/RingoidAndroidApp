@@ -1,9 +1,9 @@
 package com.ringoid.data.local.database.dao.debug
 
-import com.ringoid.domain.debug.DebugLogItem
-import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.debug.IDebugLogDaoHelper
+import com.ringoid.debug.DebugLogItem
+import com.ringoid.debug.IDebugLogDaoHelper
 import com.ringoid.domain.model.mapList
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton

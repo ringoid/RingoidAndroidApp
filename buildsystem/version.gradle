@@ -23,10 +23,11 @@ buildscript {
 
         archComponentsVersion = '2.0.0'
         archComponentsVersionExp = '2.0.0'
+        archComponentsSavedStateVersion = '1.0.0-alpha03'
 
-        kotlinVersion = '1.3.41'
+        kotlinVersion = '1.3.50'
         kotlinCoroutinesVersion = '1.3.0-RC2'
-        kotlinReflectVersion = '1.3.41'
+        kotlinReflectVersion = '1.3.50'
 
         daggerVersion = '2.16'
 
@@ -79,7 +80,7 @@ buildscript {
         testVersion = '1.1.0'
         testCoreVersion = '1.0.0'
 
-        buildGradleVersion = '3.5.0-rc03'
+        buildGradleVersion = '3.5.0'
         crashlyticsVersion = '2.10.1@aar'
         googleServicesVersion = '4.0.1'
         gradleVersionsPluginVersion = '0.22.0'

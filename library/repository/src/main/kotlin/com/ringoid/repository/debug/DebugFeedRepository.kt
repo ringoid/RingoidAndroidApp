@@ -16,13 +16,13 @@ import com.ringoid.datainterface.remote.model.image.ImageEntity
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
 import com.ringoid.repository.FeedSharedPrefs
 import com.ringoid.repository.feed.FeedRepository
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Single

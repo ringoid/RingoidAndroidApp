@@ -7,19 +7,16 @@ import com.google.gson.Gson
 import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.exception.InvalidAccessTokenException
-import com.ringoid.domain.exception.SilentFatalException
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
-import com.ringoid.domain.misc.Gender
-import com.ringoid.domain.misc.GpsLocation
-import com.ringoid.domain.misc.UserProfileCustomPropertiesRaw
-import com.ringoid.domain.misc.UserProfilePropertiesRaw
+import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.user.AccessToken
+import com.ringoid.report.exception.InvalidAccessTokenException
+import com.ringoid.report.exception.SilentFatalException
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
 import io.reactivex.*
@@ -32,6 +29,7 @@ import kotlin.math.abs
 class SharedPrefsManager @Inject constructor(context: Context, private val config: RuntimeConfig)
     : ISharedPrefsManager {
 
+    private val gson = Gson()
     private val sharedPreferences: SharedPreferences
     private val backupSharedPreferences: SharedPreferences
 
@@ -47,6 +45,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
         DebugLogUtil.setConfig(config)
         checkAndFixFilters()
+        migrateUserPushSettings()
     }
 
     companion object {
@@ -57,8 +56,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         private const val SP_KEY_APP_FIRST_LAUNCH = "sp_key_app_first_launch"
         private const val SP_KEY_APP_UID = "sp_key_app_uid"
         private const val SP_KEY_THEME = "sp_key_theme"
-        @DebugOnly private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
-        @DebugOnly private const val SP_KEY_DEVELOPER_MODE = "sp_key_developer_mode"
+        @DebugOnly
+        private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
+        @DebugOnly
+        private const val SP_KEY_DEVELOPER_MODE = "sp_key_developer_mode"
 
         /* Auth */
         // --------------------------------------
@@ -89,12 +90,6 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
         /* User Settings */
         // --------------------------------------
-        const val SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED = "sp_key_user_settings_daily_push_enabled"
-        const val SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED = "sp_key_user_settings_likes_push_enabled"
-        const val SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED = "sp_key_user_settings_matches_push_enabled"
-        const val SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED = "sp_key_user_settings_messages_push_enabled"
-        const val SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED = "sp_key_user_settings_vibration_push_enabled"
-
         const val SP_KEY_USER_PROFILE_PROPERTY_CHILDREN = "sp_key_user_profile_property_children"
         const val SP_KEY_USER_PROFILE_PROPERTY_EDUCATION  = "sp_key_user_profile_property_education"
         const val SP_KEY_USER_PROFILE_PROPERTY_HAIR_COLOR = "sp_key_user_profile_property_hair_color"
@@ -107,18 +102,22 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY = "sp_key_user_profile_custom_property_company"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE = "sp_key_user_profile_custom_property_job_title"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME = "sp_key_user_profile_custom_property_name"
+        const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_STATUS_TEXT = "sp_key_user_profile_custom_property_status_text"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM = "sp_key_user_profile_custom_property_social_instagram"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK = "sp_key_user_profile_custom_property_social_tiktok"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY = "sp_key_user_profile_custom_property_university"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_FROM = "sp_key_user_profile_custom_property_where_from"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_WHERE_LIVE = "sp_key_user_profile_custom_property_where_live"
 
+        const val SP_KEY_USER_PUSH_SETTINGS = "sp_key_user_push_settings"
         const val SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT = "sp_key_user_profile_custom_properties_unsaved_input"
 
         /* Misc */
         // --------------------------------------
         const val SP_KEY_BIG_EDIT_TEXT = "sp_key_big_edit_text"
         const val SP_KEY_FLAG_NEED_SHOW_FILTERS = "sp_key_flag_need_show_filters"
+        const val SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC = "sp_key_flag_need_show_filters_on_lc"
+        const val SP_KEY_FLAG_NEED_SHOW_STUB_STATUS = "sp_key_flag_need_show_stub_status"
     }
 
     // --------------------------------------------------------------------------------------------
@@ -171,13 +170,6 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     override fun switchDebugLogEnabled() {
         val currentFlag = isDebugLogEnabled()
         enableDebugLog(isEnabled = !currentFlag)
-    }
-
-    @DebugOnly
-    override fun testBackup() {
-        Timber.d("Test Backup: accessToken=${accessToken()}, userId=${currentUserId()}, %s backup[%s]",
-            "lastActionTime=${getLastActionTime()}, themeId=${getThemeResId()}, debugLog=${isDebugLogEnabled()}",
-                "privateKey=${getPrivateKey()}, referralId=${getReferralCode()}")
     }
 
     override fun isDeveloperModeEnabled(): Boolean =
@@ -256,7 +248,11 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         dropFilters()  // forget saved filters on logout
         dropUserProfileProperties()  // forget profile properties for previous user
         dropUserProfileCustomPropertiesUnsavedInput()  // forget unsaved input profile properties
-        sharedPreferences.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, true).apply()
+        sharedPreferences.edit()
+            .putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, true)
+            .putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC, true)
+            .putBoolean(SP_KEY_FLAG_NEED_SHOW_STUB_STATUS, true)
+            .apply()
     }
 
     /* Filters */
@@ -283,7 +279,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun getFilters(): Filters =
         sharedPreferences.getString(SP_KEY_FILTERS, null)
-            ?.let { Gson().fromJson(it, Filters::class.java) }
+            ?.let { gson.fromJson(it, Filters::class.java) }
             ?: NoFilters
 
     override fun setFilters(filters: Filters) {
@@ -372,30 +368,17 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     /* User Settings */
     // --------------------------------------------------------------------------------------------
-    override fun getUserSettingDailyPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, true)
-    override fun getUserSettingLikesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, true)
-    override fun getUserSettingMatchesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, true)
-    override fun getUserSettingMessagesPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, true)
-    override fun getUserSettingVibrationPushEnabled(): Boolean = sharedPreferences.getBoolean(SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED, true)
+    override fun getUserPushSettings(): PushSettingsRaw =
+        sharedPreferences.getString(SP_KEY_USER_PUSH_SETTINGS, null)
+            ?.let { gson.fromJson(it, PushSettingsRaw::class.java) }
+            ?: PushSettingsRaw()
 
-    override fun setUserSettingDailyPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_DAILY_PUSH_ENABLED, pushEnabled).apply()
+    override fun setUserPushSettings(settingsRaw: PushSettingsRaw) {
+        sharedPreferences.edit().putString(SP_KEY_USER_PUSH_SETTINGS, settingsRaw.toJson()).apply()
     }
 
-    override fun setUserSettingLikesPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_LIKES_PUSH_ENABLED, pushEnabled).apply()
-    }
-
-    override fun setUserSettingMatchesPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MATCHES_PUSH_ENABLED, pushEnabled).apply()
-    }
-
-    override fun setUserSettingMessagesPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_MESSAGES_PUSH_ENABLED, pushEnabled).apply()
-    }
-
-    override fun setUserSettingVibrationPushEnabled(pushEnabled: Boolean) {
-        sharedPreferences.edit().putBoolean(SP_KEY_USER_SETTINGS_VIBRATION_PUSH_ENABLED, pushEnabled).apply()
+    override fun dropUserPushSettings() {
+        sharedPreferences.edit().remove(SP_KEY_USER_PUSH_SETTINGS).apply()
     }
 
     // ------------------------------------------
@@ -413,6 +396,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
                 company = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY, "") ?: "",
                 jobTitle = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE, "") ?: "",
                 name = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME, "") ?: "",
+                statusText = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_STATUS_TEXT, "") ?: "",
                 socialInstagram = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM, "") ?: "",
                 socialTikTok = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK, "") ?: "",
                 university = getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY, "") ?: "",
@@ -433,6 +417,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY, propertiesRaw.company)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE, propertiesRaw.jobTitle)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME, propertiesRaw.name)
+            .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_STATUS_TEXT, propertiesRaw.statusText)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM, propertiesRaw.socialInstagram)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK, propertiesRaw.socialTikTok)
             .putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY, propertiesRaw.university)
@@ -454,6 +439,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_COMPANY)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_JOB_TITLE)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_NAME)
+            .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_STATUS_TEXT)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_INSTAGRAM)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_SOCIAL_TIKTOK)
             .remove(SP_KEY_USER_PROFILE_CUSTOM_PROPERTY_UNIVERSITY)
@@ -462,12 +448,12 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             .apply()
     }
 
-    override fun getUserProfileCustomPropertiesUnsavedInput(): UserProfileCustomPropertiesRaw =
+    override fun getUserProfileCustomPropertiesUnsavedInput(): UserProfileCustomPropertiesUnsavedInput =
         sharedPreferences.getString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT, null)
-            ?.let { Gson().fromJson(it, UserProfileCustomPropertiesRaw::class.java) }
-            ?: UserProfileCustomPropertiesRaw()
+            ?.let { gson.fromJson(it, UserProfileCustomPropertiesUnsavedInput::class.java) }
+            ?: UserProfileCustomPropertiesUnsavedInput()
 
-    override fun setUserProfileCustomPropertiesUnsavedInput(unsavedInput: UserProfileCustomPropertiesRaw) {
+    override fun setUserProfileCustomPropertiesUnsavedInput(unsavedInput: UserProfileCustomPropertiesUnsavedInput) {
         sharedPreferences.edit().putString(SP_KEY_USER_PROFILE_CUSTOM_PROPERTIES_UNSAVED_INPUT, unsavedInput.toJson()).apply()
     }
 
@@ -494,6 +480,68 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             it.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, false).apply()
             flag
         }
+
+    override fun needShowFiltersOnLc(): Boolean =
+        sharedPreferences.let {
+            val flag = it.getBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC, true)
+            it.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC, false).apply()
+            flag
+        }
+
+    override fun getNeedShowStubStatus(): Boolean =
+        sharedPreferences.getBoolean(SP_KEY_FLAG_NEED_SHOW_STUB_STATUS, true)
+
+    override fun dropNeedShowStubStatus() {
+        sharedPreferences.edit().putBoolean(SP_KEY_FLAG_NEED_SHOW_STUB_STATUS, false).apply()
+    }
+
+    /* Migration */
+    // --------------------------------------------------------------------------------------------
+    private fun migrateUserPushSettings() {
+        with (sharedPreferences) {
+            if (contains(SP_KEY_USER_PUSH_SETTINGS)) {
+                return  // have some push settings already
+            }
+
+            Timber.v("*** Migration user push settings STARTED ***")
+            val editor = edit()
+            val pushSettings = PushSettingsRaw()
+
+            "sp_key_user_settings_daily_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.push = getBoolean(key, true)
+                    editor.remove(key)
+                }
+            "sp_key_user_settings_likes_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.pushLikes = getBoolean(key, true)
+                    editor.remove(key)
+                }
+            "sp_key_user_settings_matches_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.pushMatches = getBoolean(key, true)
+                    editor.remove(key)
+                }
+            "sp_key_user_settings_messages_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.pushMessages = getBoolean(key, true)
+                    editor.remove(key)
+                }
+            "sp_key_user_settings_vibration_push_enabled".takeIf { key -> contains(key) }
+                ?.let { key ->
+                    Timber.v("Migrate [$key]")
+                    pushSettings.pushVibration = getBoolean(key, true)
+                    editor.remove(key)
+                }
+
+            editor.putString(SP_KEY_USER_PUSH_SETTINGS, pushSettings.toJson()).apply()
+            Timber.v("*** Migration user push settings FINISHED ***")
+        }
+    }
 }
 
 // --------------------------------------------------------------------------------------------

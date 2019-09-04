@@ -1,6 +1,6 @@
 package com.ringoid.origin.profile.dialog
 
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.ICommunicator
 
 interface IDeleteUserProfileImageActivity : ICommunicator {

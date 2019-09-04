@@ -1,5 +1,6 @@
 package com.ringoid.base
 
+import android.content.res.Resources
 import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
 import com.ringoid.domain.manager.IUserSettingsManager
 import com.ringoid.domain.memory.ILoginInMemoryCache
@@ -18,4 +19,6 @@ interface IBaseRingoidApplication : IAppCommunicator {
     val updatePushTokenUseCase: UpdatePushTokenUseCase
 
     val calendar: Calendar
+
+    fun getRes(): Resources
 }

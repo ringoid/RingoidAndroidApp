@@ -1,8 +1,8 @@
 package com.ringoid.origin.feed.view.explore.di
 
 import androidx.fragment.app.Fragment
-import com.ringoid.origin.feed.view.explore.ExploreFiltersFragment
-import com.ringoid.origin.feed.view.explore.ExploreFragment
+import com.ringoid.origin.feed.view.explore.ExploreFeedFragment
+import com.ringoid.origin.feed.view.explore.ExploreFeedFiltersFragment
 import dagger.Binds
 import dagger.Module
 import dagger.android.AndroidInjector
@@ -13,9 +13,9 @@ import dagger.multibindings.IntoMap
 @Module(subcomponents = [ExploreFragmentSubcomponent::class])
 abstract class ExploreFragmentModule {
 
-    @Binds @IntoMap @FragmentKey(ExploreFragment::class)
-    abstract fun bindExploreFragmentInjectorFactory(builder: ExploreFragmentSubcomponent.Builder): AndroidInjector.Factory<out Fragment>
+    @Binds @IntoMap @FragmentKey(ExploreFeedFragment::class)
+    abstract fun bindExploreFeedFragmentInjectorFactory(builder: ExploreFragmentSubcomponent.Builder): AndroidInjector.Factory<out Fragment>
 
     @ContributesAndroidInjector
-    abstract fun contributeExploreFiltersFragmentInjector(): ExploreFiltersFragment
+    abstract fun contributeExploreFeedFiltersFragmentInjector(): ExploreFeedFiltersFragment
 }

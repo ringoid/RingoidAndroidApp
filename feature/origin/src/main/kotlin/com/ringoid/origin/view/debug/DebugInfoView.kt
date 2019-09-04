@@ -36,7 +36,8 @@ class DebugInfoView : LinearLayout {
         init(context)
     }
 
-    @LayoutRes private fun getLayoutId(): Int = R.layout.widget_debug_info
+    @LayoutRes
+    private fun getLayoutId(): Int = R.layout.widget_debug_info
 
     private fun init(context: Context) {
         val size = context.resources.getDimensionPixelSize(WidgetR_dimen.std_margin_8)

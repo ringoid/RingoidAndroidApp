@@ -11,10 +11,11 @@ import com.github.techisfun.android.topsheet.TopSheetBehavior
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.debug.DebugLogUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
@@ -28,7 +29,6 @@ import com.ringoid.origin.feed.view.widget.FiltersPopupWidget
 import com.ringoid.origin.feed.view.widget.ToolbarWidget
 import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.*
-import com.ringoid.origin.view.base.ASK_TO_ENABLE_LOCATION_SERVICE
 import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.IEmptyScreenCallback
@@ -70,40 +70,18 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         fun onErrorState() {
-            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // error state on Feed
         }
 
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.CLEAR -> onClearState(mode = newState.mode)
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is ASK_TO_ENABLE_LOCATION_SERVICE -> onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
-                    is DISCARD_PROFILE -> onDiscardProfileState(profileId = (newState.residual as DISCARD_PROFILE).profileId)
-                    is NO_IMAGES_IN_USER_PROFILE -> {
-                        Dialogs.showTextDialog(activity,
-                            descriptionResId = getAddPhotoDialogDescriptionResId(),
-                            positiveBtnLabelResId = OriginR_string.button_add_photo,
-                            negativeBtnLabelResId = OriginR_string.button_later,
-                            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") },
-                            isCancellable = false)
-
-                        showLoading(isVisible = false)
-                    }
-                    is REFRESH -> {
-                        // purge feed on refresh, before fetching a new one
-                        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
-                        showLoading(isVisible = true)
-                        onRefresh()
-                    }
-                }
-            }
             is ViewState.IDLE -> {
                 fl_empty_container?.changeVisibility(isVisible = false)
                 showLoading(isVisible = false)
             }
             is ViewState.LOADING -> showLoading(isVisible = true)
-            is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState)
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState) { vm.refresh() }
         }
     }
 
@@ -168,10 +146,15 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     }
 
     protected open fun onDiscardAllProfiles() {
-        onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)
+        onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)  // discard all profiles in Feed
     }
 
-    protected open fun onDiscardProfileState(profileId: String): FeedItemVO? =
+    /**
+     * User discards profile manually (via transition (LIKE) or block (BLOCK / REPORT),
+     * so need to handle VIEW aobjs for profiles that comes into viewport after removal
+     * animation finishes.
+     */
+    protected open fun onDiscardProfile(profileId: String): FeedItemVO? =
         feedAdapter.findModel { it.id == profileId }
             ?.also { _ ->
                 val count = feedAdapter.getModelsCount()
@@ -209,6 +192,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 vm.onDiscardProfile(profileId)
             }
 
+    private fun onDiscardProfileRef(profileId: String) {
+        onDiscardProfile(profileId)
+    }
+
     protected fun onDiscardMultipleProfilesState(profileIds: Collection<String>) {
 //        val prevIds = getVisibleItemIds()  // record ids of visible items before remove
 //        with (feedAdapter) {
@@ -231,6 +218,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onEmptyLabelClick() {
         // click on empty screen label should open filters popup
         filtersPopupWidget?.show()
+    }
+
+    protected open fun onNoImagesInUserProfile(dummy: Boolean) {
+        Dialogs.showTextDialog(activity,
+            descriptionResId = getAddPhotoDialogDescriptionResId(),
+            positiveBtnLabelResId = OriginR_string.button_add_photo,
+            negativeBtnLabelResId = OriginR_string.button_later,
+            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") },
+            isCancellable = false)
+
+        showLoading(isVisible = false)
     }
 
     internal fun showLoading(isVisible: Boolean) {
@@ -295,28 +293,50 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        fun onBeforeRefresh() {
+            // purge feed on refresh, before fetching a new one
+            onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed while refreshing by state
+            showLoading(isVisible = true)
+        }
+
+        // --------------------------------------
         super.onActivityCreated(savedInstanceState)
         feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
         imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
         feedAdapter.trackingBus = imagesTrackingBus
+        observeOneShot(vm.askToEnableLocationServiceOneShot()) {  // ask to enable location services
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge Feed while displaying ask to enable GPS popup
+        }
+        observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
+        observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
+        observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
+        observeOneShot(vm.refreshOneShot()) {
+            onBeforeRefresh()
+            onRefresh()
+        }
+        observeOneShot(vm.refreshOnLocationPermissionOneShot()) {
+            onBeforeRefresh()
+            onRefresh(askForLocation = false)
+        }
     }
 
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fun onExpandFilters() {
             toolbarWidget?.collapse()
-            overlay.changeVisibility(isVisible = true)
+            overlay?.changeVisibility(isVisible = true)
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
         }
 
         fun onHideFilters() {
             toolbarWidget?.expand()
-            overlay.changeVisibility(isVisible = false)
+            overlay?.changeVisibility(isVisible = false)
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
         }
 
         super.onViewCreated(view, savedInstanceState)
         filtersPopupWidget = FiltersPopupWidget(view) {
+            onShowFiltersPopup()
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)
                 ?.let { it as? BaseFiltersFragment<*> }
                 ?.requestFiltersForUpdate()
@@ -374,7 +394,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
         // top sheet
-        overlay.clicks().compose(clickDebounce()).subscribe { filtersPopupWidget?.hide() }
+        overlay?.clicks()?.compose(clickDebounce())?.subscribe { filtersPopupWidget?.hide() }
         if (savedInstanceState == null) {
             childFragmentManager
                 .beginTransaction()
@@ -427,30 +447,38 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     protected open fun onRefreshGesture() {
         DebugLogUtil.i("PULL to REFRESH")
         // purge feed on refresh, before fetching a new one
-        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)
+        onClearState(mode = ViewState.CLEAR.MODE_DEFAULT)  // purge Feed on manual refresh
         onRefresh()  // should be the last action in subclasses, if overridden
     }
 
-    private fun onRefresh(): Boolean =
+    private fun onRefresh(askForLocation: Boolean = true): Boolean =
         if (!connectionManager.isNetworkAvailable()) {
-            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no connection on refresh
             noConnection(this@FeedFragment)
             false
         } else {
             feedTrackingBus.allowSingleUnchanged()
             invalidateScrollCaches()
-            /**
-             * Asks for location permission, and if granted - callback will then handle
-             * to call refreshing procedure.
-             */
-            if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
-                onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)
+            if (askForLocation) {
+                /**
+                 * Asks for location permission, and if granted - callback will then handle
+                 * to call refreshing procedure.
+                 */
+                if (!permissionManager.askForLocationPermission(this@FeedFragment)) {
+                    onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no location permission on refresh
+                }
+            } else {
+                vm.onRefresh()  // refresh without asking for location permission
             }
             true
         }
 
     protected fun showRefreshPopup(isVisible: Boolean) {
-        btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.refreshOnPush.value == true)
+        btn_refresh_popup.changeVisibility(isVisible = isVisible && vm.isRefreshOnPush())
+    }
+
+    protected open fun onShowFiltersPopup() {
+        // override in subclasses
     }
 
     /* Scroll listeners */
@@ -487,6 +515,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                OffsetScrollStrategy(tag = "online bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_ONLINE_STATUS_BOTTOM, hide = FeedViewHolderHideOnlineStatusOnScroll, show = FeedViewHolderShowOnlineStatusOnScroll),
                OffsetScrollStrategy(tag = "settings bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_SETTINGS_BTN_BOTTOM, hide = FeedViewHolderHideSettingsBtnOnScroll, show = FeedViewHolderShowSettingsBtnOnScroll),
                OffsetScrollStrategy(tag = "prop about bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_ABOUT_BOTTOM, hide = FeedViewHolderHideAboutOnScroll, show = FeedViewHolderShowAboutOnScroll),
+               OffsetScrollStrategy(tag = "prop status bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_STATUS_BOTTOM, hide = FeedViewHolderHideStatusOnScroll, show = FeedViewHolderShowStatusOnScroll),
                OffsetScrollStrategy(tag = "prop 0 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_0, hide = FeedViewHolderHideOnScroll(1), show = FeedViewHolderShowOnScroll(1)),
                OffsetScrollStrategy(tag = "prop 1 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_1, hide = FeedViewHolderHideOnScroll(0), show = FeedViewHolderShowOnScroll(0)),
                OffsetScrollStrategy(tag = "prop name 0 bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_PROPERTY_BOTTOM_0, hide = FeedViewHolderHideNameOnScroll(0, type = OffsetScrollStrategy.Type.BOTTOM), show = FeedViewHolderShowNameOnScroll(0, type = OffsetScrollStrategy.Type.BOTTOM)),

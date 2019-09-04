@@ -16,10 +16,10 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.ICloudDebug
+import com.ringoid.config.IRuntimeConfig
+import com.ringoid.debug.DebugLogUtil
+import com.ringoid.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
-import com.ringoid.domain.manager.IRuntimeConfig
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.view.StateBottomSheetDialog
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
@@ -111,9 +111,10 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
             // tie observer to view's lifecycle rather than Fragment's one
             with(viewLifecycleOwner) {
                 subscribeOnBusEvents()
-                observe(viewState, this@BaseDialogFragment::onViewStateChange)
+                observe(viewState(), this@BaseDialogFragment::onViewStateChange)
             }
         }
+        vm.onCreate(savedInstanceState)  // for Fragments
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

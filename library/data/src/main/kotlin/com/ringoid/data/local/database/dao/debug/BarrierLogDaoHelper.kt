@@ -1,10 +1,10 @@
 package com.ringoid.data.local.database.dao.debug
 
 import com.ringoid.data.local.database.model.debug.BarrierLogItemDbo
-import com.ringoid.domain.debug.BarrierLogItem
-import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.debug.IBarrierLogDaoHelper
+import com.ringoid.debug.BarrierLogItem
+import com.ringoid.debug.IBarrierLogDaoHelper
 import com.ringoid.domain.model.mapList
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers

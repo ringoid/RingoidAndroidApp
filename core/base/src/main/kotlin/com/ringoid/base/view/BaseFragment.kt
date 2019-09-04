@@ -16,10 +16,10 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
-import com.ringoid.domain.manager.IRuntimeConfig
+import com.ringoid.config.IRuntimeConfig
+import com.ringoid.debug.DebugLogUtil
+import com.ringoid.debug.ICloudDebug
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.scope.LocalScopeProvider
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
@@ -63,7 +63,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     // --------------------------------------------------------------------------------------------
     protected open fun onViewStateChange(newState: ViewState) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.v("View State transition to: $newState")
+        Timber.d("View State transition to: $newState")
         DebugLogUtil.lifecycle(this, "onViewStateChange: $newState")
         // override in subclasses
     }
@@ -107,11 +107,6 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         // override in subclasses
     }
 
-    open fun onActivitySaveInstanceState(outState: Bundle) {
-        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.v("onActivitySaveInstanceState: $outState")
-    }
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         val changed = userVisibleHint != isVisibleToUser
         super.setUserVisibleHint(isVisibleToUser)
@@ -124,6 +119,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     protected fun doPostponedTabTransaction() {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.d("Perform postponed tab transaction with payload: $lastTabTransactionPayload")
         onTabTransaction(payload = lastTabTransactionPayload)
     }
 
@@ -179,11 +176,12 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
             // tie observer to view's lifecycle rather than Fragment's one
             with(viewLifecycleOwner) {
                 subscribeOnBusEvents()
-                observe(viewState, this@BaseFragment::onViewStateChange)
+                observe(viewState(), this@BaseFragment::onViewStateChange)
             }
         }
         isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
+        vm.onCreate(savedInstanceState)  // for Fragments
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -13,6 +13,7 @@ import com.ringoid.domain.model.Mappable
  *   "lastOnlineText": "18мин назад",
  *   "lastOnlineFlag": "online",
  *   "distanceText": "unknown",
+ *   "totalLikes":0,
  *   "photos": [
  *     {
  *       "photoId": "480x640_sfsdfsdfsdf",
@@ -37,6 +38,7 @@ import com.ringoid.domain.model.Mappable
  *   "about":"Nice person",
  *   "instagram":"unknown",
  *   "tikTok":"unknown",
+ *   "statusText":"This is my status!",
  *   "whereLive":"St.Petersburg",
  *   "whereFrom":"Leningrad"
  * }
@@ -45,6 +47,7 @@ abstract class BaseProfileEntity<T>(
     @Expose @SerializedName(COLUMN_ID) val id: String,
     @Expose @SerializedName(COLUMN_DEFAULT_SORT_POSITION) val sortPosition: Int,
     @Expose @SerializedName(COLUMN_DISTANCE_TEXT) val distanceText: String? = null,
+    @Expose @SerializedName(COLUMN_TOTAL_LIKES) val totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     @Expose @SerializedName(COLUMN_IMAGES) val images: List<ImageEntity> = emptyList(),
     @Expose @SerializedName(COLUMN_LAST_ONLINE_STATUS) val lastOnlineStatus: String? = null,
     @Expose @SerializedName(COLUMN_LAST_ONLINE_TEXT) val lastOnlineText: String? = null,
@@ -63,6 +66,7 @@ abstract class BaseProfileEntity<T>(
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_NAME) val name: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM) val instagram: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK) val tiktok: String? = null,
+    @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_STATUS_TEXT) val status: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_UNIVERSITY) val university: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_FROM) val whereFrom: String? = null,
     @Expose @SerializedName(COLUMN_PROPERTY_CUSTOM_WHERE_LIVE) val whereLive: String? = null)
@@ -72,6 +76,7 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_ID = "userId"
         const val COLUMN_DEFAULT_SORT_POSITION = "defaultSortingOrderPosition"
         const val COLUMN_DISTANCE_TEXT = "distanceText"
+        const val COLUMN_TOTAL_LIKES = "totalLikes"
         const val COLUMN_IMAGES = "photos"
         const val COLUMN_LAST_ONLINE_STATUS = "lastOnlineFlag"
         const val COLUMN_LAST_ONLINE_TEXT = "lastOnlineText"
@@ -90,10 +95,11 @@ abstract class BaseProfileEntity<T>(
         const val COLUMN_PROPERTY_CUSTOM_NAME = "name"
         const val COLUMN_PROPERTY_CUSTOM_SOCIAL_INSTAGRAM = "instagram"
         const val COLUMN_PROPERTY_CUSTOM_SOCIAL_TIKTOK = "tikTok"
+        const val COLUMN_PROPERTY_CUSTOM_STATUS_TEXT = "statusText"
         const val COLUMN_PROPERTY_CUSTOM_UNIVERSITY = "education"
         const val COLUMN_PROPERTY_CUSTOM_WHERE_FROM = "whereFrom"
         const val COLUMN_PROPERTY_CUSTOM_WHERE_LIVE = "whereLive"
     }
 
-    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, children=$children, gender='$gender', education=$education, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport)"
+    override fun toString(): String = "BaseProfileEntity(id='$id', sortPosition=$sortPosition, distanceText=$distanceText, totalLikes=$totalLikes, images=$images, lastOnlineStatus=$lastOnlineStatus, lastOnlineText=$lastOnlineText, age=$age, children=$children, education=$education, gender=$gender, hairColor=$hairColor, height=$height, income=$income, property=$property, transport=$transport, about=$about, company=$company, jobTitle=$jobTitle, name=$name, instagram=$instagram, tiktok=$tiktok, status=$status, university=$university, whereFrom=$whereFrom, whereLive=$whereLive)"
 }

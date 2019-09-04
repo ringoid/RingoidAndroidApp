@@ -1,5 +1,6 @@
 package com.ringoid.utility
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -69,6 +70,11 @@ fun Context.pasteFromClipboard(): String {
 
 /* Keyboard */
 // --------------------------------------------------------------------------------------------
+fun Activity.hideKeyboard() {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
+}
+
 fun EditText.showKeyboard() {
     requestFocus()
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -84,6 +90,11 @@ fun Window.showKeyboard() {
     setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 }
 
+fun Window.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(decorView.windowToken, 0)
+}
+
 /* Span */
 // --------------------------------------------------------------------------------------------
 fun TextView.highlightFrom(start: Int, textColor: Int) {
@@ -93,4 +104,21 @@ fun TextView.highlightFrom(start: Int, textColor: Int) {
             text = this
         }
     }
+}
+
+/* String */
+// --------------------------------------------------------------------------------------------
+fun String.splitBySegments(segmentSize: Int): List<String> {
+    if (segmentSize >= length) return listOf(this)
+    if (segmentSize <= 0) throw IllegalArgumentException("Segment size must be greater than 0")
+    val l = mutableListOf<String>()
+    var start = 0
+    var left = length
+    do {
+        val s = substring(start, start + minOf(segmentSize, left))
+        l.add(s)
+        start += segmentSize
+        left -= segmentSize
+    } while (left > 0)
+    return l
 }

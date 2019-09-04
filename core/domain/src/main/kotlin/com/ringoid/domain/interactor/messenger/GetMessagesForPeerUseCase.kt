@@ -1,6 +1,6 @@
 package com.ringoid.domain.interactor.messenger
 
-import com.ringoid.domain.exception.MissingRequiredParamsException
+import com.ringoid.report.exception.MissingRequiredParamsException
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.Params

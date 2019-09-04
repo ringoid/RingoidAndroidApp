@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ringoid.domain.model.Mappable
 import com.ringoid.domain.model.actions.*
+import com.ringoid.utility.ValueUtils
 
 @Entity(tableName = ActionObjectDbo.TABLE_NAME)
 data class ActionObjectDbo(
@@ -52,6 +53,12 @@ data class ActionObjectDbo(
         fun from(aobj: OriginActionObject): ActionObjectDbo =
             ActionObjectDbo(actionTime = aobj.actionTime, actionType = aobj.actionType)
     }
+
+    internal fun isValid(): Boolean =
+        when (actionType) {
+            ActionObject.ACTION_TYPE_LOCATION -> ValueUtils.isValidLocation(latitude = latitude, longitude = longitude)
+            else -> true
+        }
 
     override fun map(): OriginActionObject =
         when (actionType) {

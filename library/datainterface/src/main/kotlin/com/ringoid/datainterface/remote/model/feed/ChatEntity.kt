@@ -13,6 +13,7 @@ import com.ringoid.domain.model.messenger.Chat
  *   "lastOnlineFlag": "online",
  *   "distanceText": "unknown",
  *   "notSeen": false,
+ *   "totalLikes":0,
  *   "photos": [
  *     {
  *       "photoId": "480x640_f34fe06440021c07b4dd3ad77e12475a0cb3640f",
@@ -51,6 +52,7 @@ class ChatEntity(
     id: String,
     sortPosition: Int,
     distanceText: String? = null,
+    totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     images: List<ImageEntity> = emptyList(),
     messages: List<MessageEntity> = emptyList(),
     isNotSeen: Boolean,
@@ -71,6 +73,7 @@ class ChatEntity(
     name: String? = null,
     instagram: String? = null,
     tiktok: String? = null,
+    status: String? = null,
     university: String? = null,
     whereFrom: String? = null,
     whereLive: String? = null)
@@ -78,6 +81,7 @@ class ChatEntity(
         id = id,
         sortPosition = sortPosition,
         distanceText = distanceText,
+        totalLikes = totalLikes,
         images = images,
         messages = messages,
         isNotSeen = isNotSeen,
@@ -98,6 +102,7 @@ class ChatEntity(
         name = name,
         instagram = instagram,
         tiktok = tiktok,
+        status = status,
         university = university,
         whereFrom = whereFrom,
         whereLive = whereLive) {

@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.ringoid.utility.DebugOnly
 import com.ringoid.data.local.database.model.debug.BarrierLogItemDbo
-import com.ringoid.domain.debug.DebugOnly
 import io.reactivex.Single
 
 @Dao @DebugOnly

@@ -17,16 +17,19 @@ import com.ringoid.datainterface.local.user.IUserFeedDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.feed.FeedResponse
 import com.ringoid.datainterface.remote.model.feed.LmmResponse
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.NetworkUnexpected
-import com.ringoid.domain.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.*
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.repository.feed.IFeedRepository
+import com.ringoid.report.exception.InvalidAccessTokenApiException
+import com.ringoid.report.exception.NetworkUnexpected
+import com.ringoid.report.exception.OldAppVersionApiException
+import com.ringoid.report.exception.WrongRequestParamsClientApiException
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.repository.BaseRepository
 import com.ringoid.repository.FeedSharedPrefs
 import io.reactivex.Completable
@@ -132,7 +135,6 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getDiscover(it.accessToken, resolution, limit, filters, lastActionTime)
                 .handleError(tag = "getDiscover($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/discover", extraTraces = extraTraces)
-                .doOnSuccess { if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for Discover") }
                 .filterOutDuplicateProfilesFeed()
                 .filterOutAlreadySeenProfilesFeed()
                 .filterOutBlockedProfilesFeed()
@@ -239,11 +241,19 @@ open class FeedRepository @Inject constructor(
             .flatMap { getLcOnly(resolution, limit, filters, source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
-                SentryUtil.capture(it, message = "Fallback to get cached LC", level = SentryUtil.Level.WARNING)
-                if (it is NetworkUnexpected) {
-                    lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
+                when (it) {
+                    // unrecoverable errors
+                    is OldAppVersionApiException,
+                    is InvalidAccessTokenApiException,
+                    is WrongRequestParamsClientApiException -> Single.error<Lmm>(it)
+                    else -> {
+                        if (it is NetworkUnexpected) {
+                            lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
+                        }
+                        SentryUtil.capture(it, message = "Fallback to get cached LC", level = SentryUtil.Level.WARNING)
+                        getCachedLc()  // recover with cache
+                    }
                 }
-                getCachedLc()
             }
             .doFinally { trace.stop() }
     }

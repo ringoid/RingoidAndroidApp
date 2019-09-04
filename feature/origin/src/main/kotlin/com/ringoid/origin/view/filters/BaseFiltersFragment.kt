@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.innovattic.rangeseekbar.RangeSeekBar
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.feed.Filters
@@ -31,8 +32,8 @@ abstract class BaseFiltersFragment<VM : BaseFiltersViewModel> : BaseFragment<VM>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.filters, ::displayFilters)
-            observe(vm.oneShot) { communicator(IFiltersHost::class.java)?.onFiltersChange() }
+            observe(vm.filters(), ::displayFilters)
+            observeOneShot(vm.filtersChangeOneShot()) { communicator(IFiltersHost::class.java)?.onFiltersChange() }
         }
     }
 

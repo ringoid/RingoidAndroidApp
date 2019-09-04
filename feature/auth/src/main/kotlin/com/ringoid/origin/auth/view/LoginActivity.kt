@@ -10,6 +10,7 @@ import com.ringoid.base.IImagePreviewReceiver
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.Onboarding
@@ -20,7 +21,6 @@ import com.ringoid.origin.auth.WidgetR_drawable
 import com.ringoid.origin.auth.memory.LoginInMemoryCache
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
-import com.ringoid.origin.style.APP_THEME
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.utility.AutoLinkMovementMethod
 import com.ringoid.utility.changeVisibility
@@ -56,18 +56,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onViewStateChange(newState)
         when (newState) {
             is ViewState.IDLE -> onIdleState()
-            is ViewState.CLOSE -> {
-                loginInMemoryCache.setNewUser(true)
-                when (Onboarding.current()) {
-                    Onboarding.ADD_IMAGE -> ExternalNavigator.openGalleryToGetImage(this)
-                    Onboarding.DIRECT -> navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}&tabPayload=${Payload.PAYLOAD_FEED_NEED_REFRESH}")
-                }
-            }
-            is ViewState.DONE -> {
-                when (newState.residual) {
-                    is APP_THEME -> recreate()
-                }
-            }
             is ViewState.LOADING -> {
                 btn_login.changeVisibility(isVisible = false, soft = true)
                 pb_login.changeVisibility(isVisible = true)
@@ -129,8 +117,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             }
         }
 
-        observe(vm.loginButtonEnableState) { btn_login.isEnabled = it }
-        observe(vm.yearOfBirthEntryState) {
+        observe(vm.loginButtonEnableState()) { btn_login.isEnabled = it }
+        observe(vm.yearOfBirthEntryState()) {
             when (it) {
                 WidgetState.NORMAL -> {
                     et_year_of_birth.setBackgroundResource(WidgetR_drawable.rect_round_grey)
@@ -153,20 +141,18 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
                 else -> { /* no-op */ }
             }
         }
+        observeOneShot(vm.changeThemeOneShot()) { recreate() }
+        observeOneShot(vm.loginUserOneShot()) {
+            loginInMemoryCache.setNewUser(true)
+            when (Onboarding.current()) {
+                Onboarding.ADD_IMAGE -> ExternalNavigator.openGalleryToGetImage(this)
+                Onboarding.DIRECT -> navigateAndClose(this, path = "/main?tab=${NavigateFrom.MAIN_TAB_EXPLORE}")
+            }
+        }
 
         savedInstanceState?.let {
             (it.getSerializable(BUNDLE_KEY_SELECTED_GENDER) as? Gender)
-                ?.let { gender ->
-                    when (gender) {
-                        Gender.MALE -> tv_sex_male.isSelected = true
-                        Gender.FEMALE -> tv_sex_female.isSelected = true
-                        Gender.UNKNOWN -> {
-                            tv_sex_male.isSelected = false
-                            tv_sex_female.isSelected = false
-                        }
-                    }
-                    vm.onGenderSelect(gender)
-                }
+                ?.let { gender -> vm.onGenderSelect(gender) }
         }
     }
 

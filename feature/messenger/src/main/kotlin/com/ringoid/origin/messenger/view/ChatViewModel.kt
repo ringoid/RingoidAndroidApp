@@ -1,13 +1,14 @@
 package com.ringoid.origin.messenger.view
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
 import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
@@ -41,11 +42,16 @@ class ChatViewModel @Inject constructor(
 
     private data class ChatData(val chatId: String)
 
-    val messages by lazy { MutableLiveData<List<Message>>() }
-    val newMessages by lazy { MutableLiveData<List<Message>>() }
-    val sentMessage by lazy { MutableLiveData<Message>() }
-    val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
-    val peerName by lazy { MutableLiveData<String>() }
+    private val messages by lazy { MutableLiveData<List<Message>>() }
+    private val newMessages by lazy { MutableLiveData<List<Message>>() }
+    private val sentMessage by lazy { MutableLiveData<Message>() }
+    private val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
+    private val peerName by lazy { MutableLiveData<String>() }
+    internal fun messages(): LiveData<List<Message>> = messages
+    internal fun newMessages(): LiveData<List<Message>> = newMessages
+    internal fun sentMessage(): LiveData<Message> = sentMessage
+    internal fun onlineStatus(): LiveData<OnlineStatus> = onlineStatus
+    internal fun peerName(): LiveData<String> = peerName
 
     private var chatData: ChatData? = null
     private var currentMessageList: List<Message> = emptyList()
@@ -82,9 +88,9 @@ class ChatViewModel @Inject constructor(
         chatData = ChatData(chatId = profileId)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
         getMessagesForPeerUseCase.source(params = Params().put("chatId", profileId))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // get chat for peer progress
+            .doOnSuccess { viewState.value = ViewState.IDLE }  // get chat for peer success
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // get chat for peer failed
             .autoDisposable(this)
             .subscribe({ msgs ->
                 ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = countPeerMessages(msgs))
@@ -106,9 +112,9 @@ class ChatViewModel @Inject constructor(
         val message = MessageEssence(peerId = peerId, text = text.trim(), aObjEssence = essence)
 
         sendMessageToPeerUseCase.source(params = Params().put(message))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }
-            .doOnSuccess { viewState.value = ViewState.IDLE }
-            .doOnError { viewState.value = ViewState.ERROR(it) }
+            .doOnSubscribe { viewState.value = ViewState.LOADING }  // send message to peer in chat progress
+            .doOnSuccess { viewState.value = ViewState.IDLE }  // send message to peer in chat success
+            .doOnError { viewState.value = ViewState.ERROR(it) }  // send message to peer in chat failed
             .autoDisposable(this)
             .subscribe({
                 ChatInMemoryCache.addUserMessagesCount(chatId = peerId, count = 1)

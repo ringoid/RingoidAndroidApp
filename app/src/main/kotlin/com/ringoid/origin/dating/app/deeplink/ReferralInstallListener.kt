@@ -3,7 +3,7 @@ package com.ringoid.origin.dating.app.deeplink
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.origin.utils.ReferralUtils
 import dagger.android.AndroidInjection
@@ -22,8 +22,8 @@ class ReferralInstallListener : BroadcastReceiver() {
             SentryUtil.i("Referral Code received on App install",
                          listOf("referralId" to "$referralId", "link" to intent.dataString))
         }
-        SentryUtil.i("Referral Install callback",
-                     listOf("referralId" to "$referralId", "data" to "$intent"))
+//        SentryUtil.i("Referral Install callback",
+//                     listOf("referralId" to "$referralId", "data" to "$intent"))
         spm.setReferralCode(referralId, dontOverride = !referralId.isNullOrBlank())  // save input referral code (or null)
     }
 }

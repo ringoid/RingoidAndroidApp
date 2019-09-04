@@ -14,6 +14,7 @@ import java.util.*
 data class FeedItemVO(
     override val id: String,
     override val distanceText: String? = null,
+    override val totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     override val images: List<IImage>,
     override val messages: List<Message> = emptyList(),
     var messagesReflection: MutableList<Message> = mutableListOf(),
@@ -35,6 +36,7 @@ data class FeedItemVO(
     override val name: String? = null,
     override val instagram: String? = null,
     override val tiktok: String? = null,
+    override val status: String? = null,
     override val university: String? = null,
     override val whereFrom: String? = null,
     override val whereLive: String? = null,
@@ -45,6 +47,7 @@ data class FeedItemVO(
     constructor(feedItem: FeedItem): this(
         id = feedItem.id,
         distanceText = feedItem.distanceText,
+        totalLikes = feedItem.totalLikes,
         images = feedItem.images,
         messages = feedItem.messages,
         messagesReflection = ArrayList(feedItem.messages),
@@ -67,6 +70,7 @@ data class FeedItemVO(
         name = feedItem.name,
         instagram = feedItem.instagram,
         tiktok = feedItem.tiktok,
+        status = feedItem.status,
         university = feedItem.university,
         whereFrom = feedItem.whereFrom,
         whereLive = feedItem.whereLive)
@@ -74,6 +78,7 @@ data class FeedItemVO(
     constructor(profile: Profile): this(
         id = profile.id,
         distanceText = profile.distanceText,
+        totalLikes = profile.totalLikes,
         images = profile.images,
         lastOnlineStatusX = OnlineStatus.from(profile.lastOnlineStatus),
         lastOnlineStatus = profile.lastOnlineStatus,
@@ -93,6 +98,7 @@ data class FeedItemVO(
         name = profile.name,
         instagram = profile.instagram,
         tiktok = profile.tiktok,
+        status = profile.status,
         university = profile.university,
         whereFrom = profile.whereFrom,
         whereLive = profile.whereLive)
@@ -112,6 +118,8 @@ data class FeedItemVO(
     fun income(): IncomeProfileProperty = IncomeProfileProperty.from(income)
     fun property(): PropertyProfileProperty = PropertyProfileProperty.from(property)
     fun transport(): TransportProfileProperty = TransportProfileProperty.from(transport)
+
+    fun totalLikes(): String = if (totalLikes > 0) "$totalLikes" else ""
 
     fun hashIdWithFirst4(): String = "${idWithFirstN()}_${getModelId()}"
 }

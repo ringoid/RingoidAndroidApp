@@ -24,11 +24,6 @@ class LikesFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? =
     }
 
     // ------------------------------------------------------------------------
-    override fun hideControls() {
-        super.hideControls()
-        itemView.ibtn_like.changeVisibility(isVisible = false)
-    }
-
     override fun showControls() {
         super.showControls()
         itemView.ibtn_like.changeVisibility(isVisible = true)

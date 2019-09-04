@@ -7,7 +7,7 @@ import com.github.jinatonic.confetti.ConfettiManager
 import com.github.jinatonic.confetti.ConfettiSource
 import com.github.jinatonic.confetti.confetto.Confetto
 import com.ringoid.base.isInPowerSafeMode
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.origin.AppRes
 import dagger.Reusable
 import java.util.*

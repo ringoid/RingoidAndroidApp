@@ -10,6 +10,7 @@ import com.ringoid.domain.model.feed.FeedItem
 data class FeedItemDbo(
     @PrimaryKey @ColumnInfo(name = COLUMN_ID, index = true) val id: String,
     @ColumnInfo(name = COLUMN_DISTANCE_TEXT) val distanceText: String? = null,
+    @ColumnInfo(name = COLUMN_TOTAL_LIKES) val totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     @ColumnInfo(name = COLUMN_FLAG_NOT_SEEN) val isNotSeen: Boolean = false,
     @ColumnInfo(name = COLUMN_LAST_ONLINE_STATUS) val lastOnlineStatus: String? = null,
     @ColumnInfo(name = COLUMN_LAST_ONLINE_TEXT) val lastOnlineText: String? = null,
@@ -28,6 +29,7 @@ data class FeedItemDbo(
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_NAME) val name: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_INSTAGRAM) val instagram: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_TIKTOK) val tiktok: String? = null,
+    @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_STATUS_TEXT) val status: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_UNIVERSITY) val university: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_WHERE_FROM) val whereFrom: String? = null,
     @ColumnInfo(name = COLUMN_CUSTOM_PROPERTY_WHERE_LIVE) val whereLive: String? = null,
@@ -36,6 +38,7 @@ data class FeedItemDbo(
     companion object {
         const val COLUMN_ID = "id"
         const val COLUMN_DISTANCE_TEXT = "distanceText"
+        const val COLUMN_TOTAL_LIKES = "totalLikes"
         const val COLUMN_FLAG_NOT_SEEN = "notSeen"
         const val COLUMN_LAST_ONLINE_STATUS = "lastOnlineFlag"
         const val COLUMN_LAST_ONLINE_TEXT = "lastOnlineText"
@@ -54,6 +57,7 @@ data class FeedItemDbo(
         const val COLUMN_CUSTOM_PROPERTY_NAME = "name"
         const val COLUMN_CUSTOM_PROPERTY_INSTAGRAM = "instagram"
         const val COLUMN_CUSTOM_PROPERTY_TIKTOK = "tiktok"
+        const val COLUMN_CUSTOM_PROPERTY_STATUS_TEXT = "statusText"
         const val COLUMN_CUSTOM_PROPERTY_UNIVERSITY = "university"
         const val COLUMN_CUSTOM_PROPERTY_WHERE_FROM = "whereFrom"
         const val COLUMN_CUSTOM_PROPERTY_WHERE_LIVE = "whereLive"
@@ -65,6 +69,7 @@ data class FeedItemDbo(
             FeedItemDbo(
                 id = feedItem.id,
                 distanceText = feedItem.distanceText,
+                totalLikes = feedItem.totalLikes,
                 lastOnlineStatus = feedItem.lastOnlineStatus,
                 lastOnlineText = feedItem.lastOnlineText,
                 age = feedItem.age,
@@ -82,6 +87,7 @@ data class FeedItemDbo(
                 name = feedItem.name,
                 instagram = feedItem.instagram,
                 tiktok = feedItem.tiktok,
+                status = feedItem.status,
                 university = feedItem.university,
                 whereFrom = feedItem.whereFrom,
                 whereLive = feedItem.whereLive,

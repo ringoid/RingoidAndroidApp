@@ -1,13 +1,14 @@
 package com.ringoid.origin
 
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.StrictMode
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
 import com.ringoid.domain.manager.IUserSettingsManager
 import com.ringoid.domain.memory.ILoginInMemoryCache
@@ -32,6 +33,8 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     @Inject override lateinit var userScopeProvider: UserScopeProvider
     @Inject override lateinit var userSettingsManager: IUserSettingsManager
     @Inject override lateinit var updatePushTokenUseCase: UpdatePushTokenUseCase
+
+    override fun getRes(): Resources = resources
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

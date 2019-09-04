@@ -51,6 +51,7 @@ data class FullFeedItemDbo(
             name = feedItem.name,
             instagram = feedItem.instagram,
             tiktok = feedItem.tiktok,
+            status = feedItem.status,
             university = feedItem.university,
             whereFrom = feedItem.whereFrom,
             whereLive = feedItem.whereLive,

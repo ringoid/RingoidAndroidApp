@@ -1,18 +1,28 @@
 package com.ringoid.origin.view.error
 
 import android.app.Application
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.utility.delay
 import javax.inject.Inject
 
 class NoNetworkConnectionViewModel @Inject constructor(app: Application) : BaseViewModel(app) {
 
-    fun onPageReload() {
-        viewState.value = ViewState.LOADING
+    private val connectionRestoreOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    internal fun connectionRestoreOneShot(): LiveData<OneShot<Boolean>> = connectionRestoreOneShot
+
+    internal fun onPageReload() {
+        viewState.value = ViewState.LOADING  // checking for net connection progress
         delay {
-            if (connectionManager.isNetworkAvailable()) viewState.value = ViewState.CLOSE
-            else viewState.value = ViewState.IDLE
+            if (connectionManager.isNetworkAvailable()) {
+                // checking for net connection success
+                connectionRestoreOneShot.value = OneShot(true)
+            } else {
+                viewState.value = ViewState.IDLE  // checking for net connection failed
+            }
         }
     }
 }
