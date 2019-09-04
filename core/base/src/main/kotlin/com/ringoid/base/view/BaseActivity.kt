@@ -17,7 +17,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
-import com.ringoid.domain.manager.IRuntimeConfig
+import com.ringoid.config.IRuntimeConfig
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.utility.checkForNull
 import com.ringoid.utility.manager.KeyboardManager

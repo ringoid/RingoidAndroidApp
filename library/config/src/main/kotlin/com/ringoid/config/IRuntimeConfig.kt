@@ -1,4 +1,4 @@
-package com.ringoid.domain.manager
+package com.ringoid.config
 
 interface IRuntimeConfig {
 

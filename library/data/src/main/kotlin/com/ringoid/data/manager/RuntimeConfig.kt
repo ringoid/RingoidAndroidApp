@@ -1,7 +1,7 @@
 package com.ringoid.data.manager
 
+import com.ringoid.config.IRuntimeConfig
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.manager.IRuntimeConfig
 import javax.inject.Inject
 import javax.inject.Singleton
 

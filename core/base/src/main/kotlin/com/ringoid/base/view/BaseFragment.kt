@@ -19,7 +19,7 @@ import com.ringoid.base.viewmodel.DaggerViewModelFactory
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.ICloudDebug
 import com.ringoid.domain.manager.IConnectionManager
-import com.ringoid.domain.manager.IRuntimeConfig
+import com.ringoid.config.IRuntimeConfig
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.scope.LocalScopeProvider
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider

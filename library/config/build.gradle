@@ -1,0 +1,17 @@
+rootProject.configPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def configDependencies = rootProject.ext.configDependencies
+    def testConfigDependencies = rootProject.ext.testConfigDependencies
+
+    configDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testConfigDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

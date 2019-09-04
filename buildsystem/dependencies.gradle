@@ -164,6 +164,7 @@ ext {
             analytcis: ':library:analytics',
             base:      ':core:base',       //  ^- [ :base ]
 
+            config:         ':library:config',
             data:           ':library:data',           // -+- [ :data ]
             datainterface:  ':library:datainterface',  //  ^- [ :datainterface ] -+-
             imageloader:    ':library:imageloader',
@@ -191,6 +192,7 @@ ext {
     def Analytics = [[configuration: "implementation", dependency: project(modules.analytcis)]]
     def Base = [[configuration: "implementation", dependency: project(modules.base)]]
 
+    def Config = [[configuration: "implementation", dependency: project(modules.config)]]
     def Data = [[configuration: "implementation", dependency: project(modules.data)]]
     def DataInterface = [[configuration: "implementation", dependency: project(modules.datainterface)]]
     def ImageLoader = [[configuration: "implementation", dependency: project(modules.imageloader)]]
@@ -367,7 +369,7 @@ ext {
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop + ImageLoader +
+    appDependencies += AllFeatures + Main + Analytics + Config + Data + DataInterface + Develop + ImageLoader +
                        Report + Repository + android + androidView + autoDispose + dagger + deeplink +
                        fragnav + kotlin + leaks + log + net + room + support
 
@@ -568,7 +570,7 @@ ext {
     baseDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    baseDependencies += Analytics + Domain + Utility + Widget + android + androidView + arch + autoDispose +
+    baseDependencies += Analytics + Config + Domain + Utility + Widget + android + androidView + arch + autoDispose +
                         dagger + deeplink + kotlin + leaks + log + rx + rxBind
 
     androidTestBaseDeps = androidTest
@@ -581,13 +583,24 @@ ext {
         xPlugins.kotlinAnnotation,
     ]
 
+    /* Config */
+    // ------------------------------------------
+    configDependencies = []
+    configDependencies += kotlin
+    testConfigDependencies = test
+
+    configPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+    ]
+
     /* Data */
     // ------------------------------------------
     dataDependencies = [
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    dataDependencies += DataInterface + Domain + Utility + autoDispose + dagger + gson + kotlin +
+    dataDependencies += Config + DataInterface + Domain + Utility + autoDispose + dagger + gson + kotlin +
                         log + net + room + rx
     testDataDependencies = test
 
