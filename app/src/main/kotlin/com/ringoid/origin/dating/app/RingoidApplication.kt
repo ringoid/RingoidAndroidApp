@@ -10,8 +10,8 @@ import com.ringoid.data.remote.di.DaggerImageCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.BarrierLogUtil
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.BarrierLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.dating.app.di.ApplicationComponent
 import com.ringoid.origin.dating.app.di.DaggerApplicationComponent

@@ -2,7 +2,7 @@ package com.ringoid.origin.usersettings.view.language
 
 import android.app.Application
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized

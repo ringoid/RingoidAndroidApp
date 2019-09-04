@@ -1,4 +1,4 @@
-package com.ringoid.domain.debug
+package com.ringoid.debug
 
 data class BarrierLogItem(
     val log: String,

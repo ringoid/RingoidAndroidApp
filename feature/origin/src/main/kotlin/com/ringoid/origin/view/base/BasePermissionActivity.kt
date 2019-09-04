@@ -5,7 +5,7 @@ import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseActivity
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.view.dialog.Dialogs

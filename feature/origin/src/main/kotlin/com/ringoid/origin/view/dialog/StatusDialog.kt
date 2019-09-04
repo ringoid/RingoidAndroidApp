@@ -2,7 +2,7 @@ package com.ringoid.origin.view.dialog
 
 import android.os.Bundle
 import androidx.annotation.StringRes
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.utility.readFromUrl
 import com.uber.autodispose.lifecycle.autoDisposable

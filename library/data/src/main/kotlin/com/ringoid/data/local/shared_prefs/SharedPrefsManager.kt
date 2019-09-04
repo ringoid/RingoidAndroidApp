@@ -7,7 +7,7 @@ import com.google.gson.Gson
 import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.feed.EmptyFilters

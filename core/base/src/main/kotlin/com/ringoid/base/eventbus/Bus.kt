@@ -1,7 +1,7 @@
 package com.ringoid.base.eventbus
 
 import android.os.Bundle
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.utility.DebugOnly
 import org.greenrobot.eventbus.EventBus
 

@@ -11,7 +11,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.report.exception.ErrorConnectionTimedOut
 import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params

@@ -9,7 +9,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.report.exception.ErrorConnectionTimedOut
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*

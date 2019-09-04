@@ -1,4 +1,4 @@
-package com.ringoid.domain.debug
+package com.ringoid.debug
 
 import com.ringoid.utility.randomString
 import com.ringoid.utility.time

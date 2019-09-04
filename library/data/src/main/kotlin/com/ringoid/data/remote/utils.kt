@@ -2,8 +2,6 @@ package com.ringoid.data.remote
 
 import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogLevel
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.model.IEssence
 import io.reactivex.*

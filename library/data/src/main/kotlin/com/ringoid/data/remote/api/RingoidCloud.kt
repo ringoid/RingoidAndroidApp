@@ -16,7 +16,8 @@ import com.ringoid.datainterface.remote.model.image.UserImageListResponse
 import com.ringoid.datainterface.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.datainterface.remote.model.user.UserSettingsResponse
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.ICloudDebug
+import com.ringoid.data.remote.logRequest
+import com.ringoid.debug.ICloudDebug
 import com.ringoid.report.log.breadcrumb
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence

@@ -5,8 +5,8 @@ import android.location.*
 import android.os.Bundle
 import android.os.HandlerThread
 import com.ringoid.base.manager.location.LocationUtils.LocationManager_FUSED_PROVIDER
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.GpsLocation
 import com.ringoid.domain.model.actions.LocationActionObject

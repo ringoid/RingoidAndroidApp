@@ -20,7 +20,6 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.Onboarding
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfileEditablePropertyId
 import com.ringoid.domain.misc.UserProfilePropertyId

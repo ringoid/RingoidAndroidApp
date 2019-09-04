@@ -1,7 +1,7 @@
 package com.ringoid.data.remote.network
 
 import com.ringoid.datainterface.remote.model.BaseResponse
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.report.exception.NetworkUnexpected
 import com.ringoid.report.log.SentryUtil
 import okhttp3.Interceptor

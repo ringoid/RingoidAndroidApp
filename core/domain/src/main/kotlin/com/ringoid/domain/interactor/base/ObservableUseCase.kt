@@ -1,6 +1,6 @@
 package com.ringoid.domain.interactor.base
 
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
 import io.reactivex.Observable

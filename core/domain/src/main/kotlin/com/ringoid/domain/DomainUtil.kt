@@ -1,6 +1,6 @@
 package com.ringoid.domain
 
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.utility.DebugOnly
 
 object DomainUtil {

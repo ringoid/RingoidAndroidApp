@@ -205,7 +205,7 @@ ext {
     def Utility = [[configuration: "implementation", dependency: project(modules.utility)]]
     def Widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
-    def Develop = Base + Domain + Utility + Widget
+    def Develop = Base + Debug + Domain + Utility + Widget
     def AllFeatures = Auth + Feed + ImagePreview + Messenger + Profile + UserSettings + Origin
 
     /* Plugins */
@@ -429,7 +429,7 @@ ext {
     /* Feature Auth */
     // ------------------------------------------
     authDependencies = []
-    authDependencies += Origin + Analytics + Develop + android + arch + autoDispose +
+    authDependencies += Origin + Analytics + Develop + Report + android + arch + autoDispose +
                         dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestAuthDeps = androidTest
@@ -572,7 +572,7 @@ ext {
     baseDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    baseDependencies += Analytics + Config + Domain + Utility + Widget + android + androidView + arch + autoDispose +
+    baseDependencies += Analytics + Config + Debug + Domain + Utility + Widget + android + androidView + arch + autoDispose +
                         dagger + deeplink + kotlin + leaks + log + rx + rxBind
 
     androidTestBaseDeps = androidTest
@@ -602,7 +602,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    dataDependencies += Config + DataInterface + Domain + Report + Utility + autoDispose + dagger + gson + kotlin +
+    dataDependencies += Config + DataInterface + Debug + Domain + Report + Utility + autoDispose + dagger + gson + kotlin +
                         log + net + room + rx
     testDataDependencies = test
 
@@ -627,7 +627,7 @@ ext {
     /* Debug */
     // ------------------------------------------
     debugDependencies = []
-    debugDependencies = Utility + Config + log + rx
+    debugDependencies = Utility + Config + kotlin + log + rx
     testDebugDependencies = test
 
     debugPlugins = [
@@ -638,7 +638,7 @@ ext {
     /* Domain */
     // ------------------------------------------
     domainDependencies = []
-    domainDependencies += Utility + Report + autoDispose + dagger + gson + kotlin + log + rx
+    domainDependencies += Utility + Debug + Report + autoDispose + dagger + gson + kotlin + log + rx
     testDomainDependencies = test
 
     domainPlugins = [
@@ -679,7 +679,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    repositoryDependencies += Data + DataInterface + Domain + Report + Utility + dagger + kotlin + log + rx
+    repositoryDependencies += Data + DataInterface + Debug + Domain + Report + Utility + dagger + kotlin + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [

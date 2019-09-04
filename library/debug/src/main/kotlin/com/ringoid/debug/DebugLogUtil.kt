@@ -1,4 +1,4 @@
-package com.ringoid.domain.debug
+package com.ringoid.debug
 
 import com.ringoid.config.IRuntimeConfig
 import com.ringoid.utility.DebugOnly
@@ -7,7 +7,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.ReplaySubject
-import io.sentry.event.Event
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -33,15 +32,15 @@ object DebugLogUtil {
     fun e(e: Throwable, message: String, tag: String? = null) =
         log(log = "${e.javaClass.simpleName}[$tag]: $message ${e.message.orEmpty()}".trim(), level = DebugLogLevel.ERROR)
 
-    fun log(log: String, level: Event.Level) {
-        when (level) {
-            Event.Level.DEBUG -> d(log)
-            Event.Level.INFO -> i(log)
-            Event.Level.WARNING -> w(log)
-            Event.Level.ERROR -> e(log)
-            Event.Level.FATAL -> e(log)
-        }
-    }
+//    fun log(log: String, level: Event.Level) {
+//        when (level) {
+//            Event.Level.DEBUG -> d(log)
+//            Event.Level.INFO -> i(log)
+//            Event.Level.WARNING -> w(log)
+//            Event.Level.ERROR -> e(log)
+//            Event.Level.FATAL -> e(log)
+//        }
+//    }
 
     @Synchronized
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {

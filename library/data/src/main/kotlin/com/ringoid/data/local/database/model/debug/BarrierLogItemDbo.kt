@@ -3,9 +3,9 @@ package com.ringoid.data.local.database.model.debug
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ringoid.domain.debug.BarrierLogItem
-import com.ringoid.utility.DebugOnly
+import com.ringoid.debug.BarrierLogItem
 import com.ringoid.domain.model.Mappable
+import com.ringoid.utility.DebugOnly
 
 @DebugOnly
 @Entity(tableName = BarrierLogItemDbo.TABLE_NAME)

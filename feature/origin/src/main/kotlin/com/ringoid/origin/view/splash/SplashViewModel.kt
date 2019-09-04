@@ -9,7 +9,7 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.model.user.AccessToken

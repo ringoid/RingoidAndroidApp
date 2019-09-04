@@ -8,7 +8,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.ringoid.base.IBaseRingoidApplication
 import com.ringoid.base.IImagePreviewReceiver
-import com.ringoid.domain.debug.DebugLogUtil
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.push.UpdatePushTokenUseCase
 import com.ringoid.domain.manager.IUserSettingsManager
 import com.ringoid.domain.memory.ILoginInMemoryCache

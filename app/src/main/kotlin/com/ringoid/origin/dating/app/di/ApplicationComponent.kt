@@ -6,8 +6,8 @@ import android.os.HandlerThread
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
-import com.ringoid.domain.debug.IBarrierLogDaoHelper
-import com.ringoid.domain.debug.IDebugLogDaoHelper
+import com.ringoid.debug.IBarrierLogDaoHelper
+import com.ringoid.debug.IDebugLogDaoHelper
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.dating.app.RingoidApplication

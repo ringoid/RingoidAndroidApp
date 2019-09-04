@@ -14,11 +14,11 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.ContextUtil
 import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
+import com.ringoid.debug.DebugLogLevel
+import com.ringoid.debug.DebugLogUtil
+import com.ringoid.debug.EmptyDebugLogItem
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.domain.debug.DebugLogLevel
-import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.EmptyDebugLogItem
 import com.ringoid.origin.R
 import com.ringoid.origin.WidgetR_drawable
 import com.ringoid.utility.*

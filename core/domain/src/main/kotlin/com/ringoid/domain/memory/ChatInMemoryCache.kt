@@ -1,8 +1,8 @@
 package com.ringoid.domain.memory
 
 import android.os.Bundle
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import org.json.JSONException
 import org.json.JSONObject

@@ -1,7 +1,7 @@
 package com.ringoid.data.remote.debug
 
+import com.ringoid.debug.ICloudDebug
 import com.ringoid.utility.DebugOnly
-import com.ringoid.domain.debug.ICloudDebug
 import io.reactivex.*
 import javax.inject.Inject
 import javax.inject.Singleton
