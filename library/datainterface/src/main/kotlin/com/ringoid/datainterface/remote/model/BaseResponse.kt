@@ -3,6 +3,7 @@ package com.ringoid.datainterface.remote.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.model.IEssence
+import com.ringoid.utility.notBlankOf
 
 /**
  * {
@@ -26,9 +27,12 @@ open class BaseResponse(
         const val COLUMN_UNEXPECTED = "unexpected"
     }
 
-    fun isSuccessful(): Boolean = (errorCode.isNullOrBlank() || errorCode == "null") && (errorMessage.isNullOrBlank() || errorMessage == "null")
+    fun isSuccessful(): Boolean =
+        (errorCode.isNullOrBlank() || errorCode == "null") &&
+        (errorMessage.isNullOrBlank() || errorMessage == "null") &&
+        (unexpected.isNullOrBlank() || unexpected == "null")
 
-    fun errorString(): String = if (!isSuccessful()) errorMessage else ""
+    fun errorString(): String = if (!isSuccessful()) notBlankOf(errorMessage, unexpected) else ""
     open fun toLogString(): String = ""
 
     override fun toString(): String =

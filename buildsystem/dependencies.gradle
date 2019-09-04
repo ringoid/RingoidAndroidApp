@@ -616,7 +616,7 @@ ext {
     /* Data Interface */
     // ------------------------------------------
     dataInterfaceDependencies = []
-    dataInterfaceDependencies += Domain + Report + dagger + gson + kotlin + rx
+    dataInterfaceDependencies += Utility + Domain + Report + dagger + gson + kotlin + rx
     testDataInterfaceDependencies = test
 
     dataInterfacePlugins = [

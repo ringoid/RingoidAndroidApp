@@ -53,6 +53,7 @@ object SentryUtil {
     }
 
     fun breadcrumb(message: String, vararg data: Pair<String, String>) {
+        Timber.v("Breadcrumb: $message")
         try {
             val breadcrumb = BreadcrumbBuilder()
                 .setData(data.toMap())

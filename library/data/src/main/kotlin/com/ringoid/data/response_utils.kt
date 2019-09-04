@@ -39,7 +39,7 @@ inline fun <reified T : BaseResponse> Single<T>.withRetry(
     delay: Long = BuildConfig.DEFAULT_RETRY_DELAY,
     tag: String? = null, trace: Trace? = null,
     extraTraces: Collection<Trace> = emptyList()): Single<T> =
-        doOnError { Timber.w("Retry [$tag] on error $count") }
+        doOnError { Timber.w("Retry [$tag] up to $count times on error [${it.javaClass.simpleName}: ${it.message}]") }
         .compose(expBackoffSingle(count = count, delay = delay, tag = tag, trace = trace, extraTraces = extraTraces))
 
 inline fun <reified T : BaseResponse> Flowable<T>.withRetry(
