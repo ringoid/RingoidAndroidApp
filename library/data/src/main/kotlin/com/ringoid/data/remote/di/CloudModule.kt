@@ -5,7 +5,10 @@ import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.ringoid.data.BuildConfig
-import com.ringoid.data.remote.network.*
+import com.ringoid.data.remote.network.IRequestHeaderInterceptor
+import com.ringoid.data.remote.network.IResponseErrorInterceptor
+import com.ringoid.data.remote.network.RequestHeaderInterceptor
+import com.ringoid.data.remote.network.ResponseErrorInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -41,19 +44,14 @@ class CloudModule(private val appVersion: Int) {
         RequestHeaderInterceptor(appVersion = appVersion)
 
     @Provides @Singleton
-    fun provideRequestUrlInterceptor(): IRequestUrlInterceptor = RequestUrlInterceptor()
-
-    @Provides @Singleton
     fun provideResponseErrorInterceptor(): IResponseErrorInterceptor = ResponseErrorInterceptor()
 
     @Provides @Singleton
     fun provideOkHttpClient(requestInterceptor: IRequestHeaderInterceptor,
-                            requestUrlInterceptor: IRequestUrlInterceptor,
                             responseInterceptor: IResponseErrorInterceptor,
                             logInterceptor: LoggingInterceptor): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(requestInterceptor)
-            .addInterceptor(requestUrlInterceptor)
             .addInterceptor(responseInterceptor)
             .addInterceptor(logInterceptor)
             .readTimeout(12, TimeUnit.SECONDS)
