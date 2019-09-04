@@ -441,6 +441,9 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         }
 
         // --------------------------------------
+        // total likes
+        itemView.tv_total_likes.text = model.totalLikes()
+
         // about
         model.about()
             ?.takeIf { it.isNotBlank() }

@@ -119,6 +119,8 @@ data class FeedItemVO(
     fun property(): PropertyProfileProperty = PropertyProfileProperty.from(property)
     fun transport(): TransportProfileProperty = TransportProfileProperty.from(transport)
 
+    fun totalLikes(): String = if (totalLikes > 0) "$totalLikes" else ""
+
     fun hashIdWithFirst4(): String = "${idWithFirstN()}_${getModelId()}"
 }
 
