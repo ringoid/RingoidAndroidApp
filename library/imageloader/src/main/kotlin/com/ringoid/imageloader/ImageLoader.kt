@@ -23,8 +23,6 @@ object ImageLoader {
 
     const val RETRY_COUNT = 5
 
-    private var notFoundDrawable: Drawable? = null
-
     /**
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
@@ -35,7 +33,6 @@ object ImageLoader {
         }
         val imageViewRef = WeakReference(iv)
         return imageViewRef.get()
-            ?.also { initResources(it.context) }
             ?.let { it as? SimpleDraweeView }
             ?.let {
                 it.tag = 0  // depth of retry recursion
@@ -50,11 +47,8 @@ object ImageLoader {
     }
 
     // ------------------------------------------
-    private fun initResources(context: Context) {
-        if (notFoundDrawable == null) {
-            notFoundDrawable = ContextCompat.getDrawable(context, UtilityR_drawable.ic_not_found_photo_placeholder_grey_96dp)
-        }
-    }
+    private fun notFoundDrawable(context: Context): Drawable? =
+        ContextCompat.getDrawable(context, UtilityR_drawable.ic_not_found_photo_placeholder_grey_96dp)
 
     // --------------------------------------------------------------------------------------------
     private fun createRecursiveImageController(
@@ -78,7 +72,7 @@ object ImageLoader {
                         // resource at uri not found, retry one more time and then stop
                         if (throwable is FileNotFoundException || throwable.isNotFoundNetworkError()) {
                             if (!BuildConfig.IS_STAGING) {  // not on staging
-                                imageView.hierarchy.setFailureImage(notFoundDrawable)
+                                imageView.hierarchy.setFailureImage(notFoundDrawable(imageView.context))
                             }
                             if (depth >= RETRY_COUNT) {
                                 SentryUtil.capture(throwable, "Image not found (http error 404)",
