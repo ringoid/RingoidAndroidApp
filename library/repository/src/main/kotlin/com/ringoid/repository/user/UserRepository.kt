@@ -39,7 +39,7 @@ class UserRepository @Inject constructor(
                  spm.saveUserProfile(userId = it.userId, userGender = Gender.from(essence.sex),
                                      userYearOfBirth = essence.yearOfBirth, accessToken = it.accessToken)
                  local.addUserProfile(userId = it.userId)
-                 SentryUtil.setUser(spm)
+                 SentryUtil.setUser(spm.currentUserId())
              }
              .map { it.map() }
 

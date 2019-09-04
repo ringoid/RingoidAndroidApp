@@ -2,10 +2,8 @@ package com.ringoid.domain.log
 
 import android.os.Build
 import android.util.Log
-import com.ringoid.domain.BuildConfig
-import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.exception.ApiException
-import com.ringoid.domain.manager.ISharedPrefsManager
+import com.ringoid.utility.BuildConfig
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -61,7 +59,6 @@ object SentryUtil {
                 .setType(Breadcrumb.Type.DEFAULT)
                 .build()
             Sentry.getContext().recordBreadcrumb(breadcrumb)
-            DebugLogUtil.v("Breadcrumb: $message")
         } catch (e: Throwable) {
             capture(e, "Failed to record breadcrumb: $message")
         }
@@ -76,7 +73,6 @@ object SentryUtil {
     fun capture(e: Throwable, message: String? = null, level: Level = Level.ERROR,
                 tag: String? = null, extras: List<Pair<String, String>>? = null) {
         Timber.log(level.toLogPriority(), e, message)
-        DebugLogUtil.e(e, message.orEmpty(), tag = tag)  // capture exception to debug logs
         val fullExtras = mutableListOf<Pair<String, String>>()
             .apply {
                 add(e.javaClass.simpleName to e.stackTraceString())
@@ -85,15 +81,16 @@ object SentryUtil {
         capture(e, message = message ?: e.message ?: e.javaClass.simpleName, level = level, `object` = null, tag = tag, extras = fullExtras)
     }
 
-    fun setUser(spm: ISharedPrefsManager) {
-        spm.currentUserId()?.let {
+    // ------------------------------------------
+    private var userId: String? = null
+
+    fun setUser(currentUserId: String?) {
+        currentUserId?.let {
             userId = it
             val data = mutableMapOf<String, Any>()//.apply { put("accessToken", spm.accessToken()?.accessToken ?: "null") }
             Sentry.getContext().user = UserBuilder().setId(it).setData(data).build()
         }
     }
-
-    private var userId: String? = null
 
     fun clear() {
         userId = null
@@ -135,7 +132,7 @@ object SentryUtil {
             .withRelease(BuildConfig.VERSION_NAME)
             .withTimestamp(Date())
             .withExtra("userId", user?.id ?: userId)
-            .withExtra("appVersion", BuildConfig.BUILD_NUMBER)
+            .withExtra("appVersion", BuildConfig.VERSION_CODE)
         if (`object` != null) {
             builder.withTag(`object`.javaClass.simpleName, `object`.hashCode().toString())
         }

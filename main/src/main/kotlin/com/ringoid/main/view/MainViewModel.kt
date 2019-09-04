@@ -122,7 +122,7 @@ class MainViewModel @Inject constructor(
 
         analyticsManager.setUser(spm)
         FiltersInMemoryCache.restore(spm)
-        SentryUtil.setUser(spm)
+        SentryUtil.setUser(spm.currentUserId())
 
         // filters not set, use default ones
         if (filtersSource.getFilters() == NoFilters) {
