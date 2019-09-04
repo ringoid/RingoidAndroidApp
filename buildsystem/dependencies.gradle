@@ -505,7 +505,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.glideRecycler, options: { transitive = true }],
     ]
-    profileDependencies += Origin + Develop + Analytics + ImageLoader + android + androidView +
+    profileDependencies += Origin + Develop + Analytics + ImageLoader + Report + android + androidView +
                            arch + autoDispose + dagger + deeplink + kotlin + log + rx + rxBind + view
 
     androidTestProfileDeps = androidTest
