@@ -13,6 +13,7 @@ open class MessagesFeedAdapter : BaseLmmAdapter() {
         MessagesFeedViewHolder(view, viewPool = imagesViewPool)
             .also { vh ->
                 vh.itemView.ibtn_like.changeVisibility(isVisible = false)
+                vh.itemView.tv_total_likes.changeVisibility(isVisible = false)
                 vh.profileImageAdapter.also { adapter ->
                     adapter.isLikeEnabled = false  // avoid like action by double click on profile image
                     adapter.itemClickListener = wrapOnImageClickListenerByFeedItem(vh, onImageToOpenChatClickListener)
