@@ -53,7 +53,7 @@ class CloudModule(private val appVersion: Int) {
         OkHttpClient.Builder()
             .addInterceptor(requestInterceptor)
             .addInterceptor(responseInterceptor)
-            .addInterceptor(logInterceptor)
+            .let { if (BuildConfig.DEBUG) it.addInterceptor(logInterceptor) else it }
             .readTimeout(12, TimeUnit.SECONDS)
             .connectTimeout(12, TimeUnit.SECONDS)
             .writeTimeout(12, TimeUnit.SECONDS)
