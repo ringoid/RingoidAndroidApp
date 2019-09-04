@@ -25,7 +25,6 @@ import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfileEditablePropertyId
 import com.ringoid.domain.misc.UserProfilePropertyId
 import com.ringoid.domain.model.image.IImage
-import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.UserProfileProperties
@@ -413,8 +412,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
 
             imageOnViewPort()?.let { image ->
                 showControls(isVisible = false)
-                val needWarn = ((image as? UserImage)?.numberOfLikes ?: 0) > 0
-                navigate(this, path = "/delete_image?imageId=${image.id}&needWarn=$needWarn", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
+                navigate(this, path = "/delete_image?imageId=${image.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
             }
         }
         ibtn_profile_edit.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile") }

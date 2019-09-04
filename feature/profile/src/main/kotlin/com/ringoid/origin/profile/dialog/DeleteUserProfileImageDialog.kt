@@ -22,26 +22,14 @@ class DeleteUserProfileImageDialog : SimpleBaseDialogFragment() {
     companion object {
         const val TAG = "DeleteUserProfileImage_tag"
 
-        private const val BUNDLE_KEY_NEED_WARN = "bundle_key_need_warn"
-
-        fun newInstance(needWarn: Boolean): DeleteUserProfileImageDialog =
-            DeleteUserProfileImageDialog().apply {
-                arguments = Bundle().apply { putBoolean(BUNDLE_KEY_NEED_WARN, needWarn) }
-            }
+        fun newInstance(): DeleteUserProfileImageDialog = DeleteUserProfileImageDialog()
     }
-
-    private var needWarn: Boolean = false
 
     @LayoutRes
     override fun getLayoutId(): Int = R.layout.dialog_delete_user_profile_image
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        needWarn = arguments?.getBoolean(BUNDLE_KEY_NEED_WARN) ?: false
-    }
-
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,14 +63,12 @@ class DeleteUserProfileImageDialog : SimpleBaseDialogFragment() {
             close()
         }
 
-        if (needWarn) {
-            Dialogs.showTextDialog(activity, titleResId = OriginR_string.profile_dialog_image_delete_title,
-                descriptionResId = OriginR_string.common_uncancellable,
-                positiveBtnLabelResId = OriginR_string.button_delete, negativeBtnLabelResId = OriginR_string.button_cancel,
-                positiveListener = { dialog, _ -> dialog.dismiss() ; deleteImageAndClose() },
-                negativeListener = { dialog, _ -> dialog.dismiss() ; onCancel(dialog)})
-        } else {
-            deleteImageAndClose()
-        }
+        Dialogs.showTextDialog(activity,
+            titleResId = OriginR_string.profile_dialog_image_delete_title,
+            descriptionResId = OriginR_string.common_uncancellable,
+            positiveBtnLabelResId = OriginR_string.button_delete,
+            negativeBtnLabelResId = OriginR_string.button_cancel,
+            positiveListener = { dialog, _ -> dialog.dismiss() ; deleteImageAndClose() },
+            negativeListener = { dialog, _ -> dialog.dismiss() ; onCancel(dialog)})
     }
 }
