@@ -1,0 +1,17 @@
+rootProject.debugPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def debugDependencies = rootProject.ext.debugDependencies
+    def testDebugDependencies = rootProject.ext.testDebugDependencies
+
+    debugDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testDebugDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

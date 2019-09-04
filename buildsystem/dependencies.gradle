@@ -167,6 +167,7 @@ ext {
             config:         ':library:config',
             data:           ':library:data',           // -+- [ :data ]
             datainterface:  ':library:datainterface',  //  ^- [ :datainterface ] -+-
+            debug:          ':library:debug',
             imageloader:    ':library:imageloader',
             report:         ':library:report',
             repository:     ':library:repository',     //  |  [ :repository ] ----^
@@ -195,6 +196,7 @@ ext {
     def Config = [[configuration: "implementation", dependency: project(modules.config)]]
     def Data = [[configuration: "implementation", dependency: project(modules.data)]]
     def DataInterface = [[configuration: "implementation", dependency: project(modules.datainterface)]]
+    def Debug = [[configuration: "implementation", dependency: project(modules.debug)]]
     def ImageLoader = [[configuration: "implementation", dependency: project(modules.imageloader)]]
     def Report = [[configuration: "implementation", dependency: project(modules.report)]]
     def Repository = [[configuration: "implementation", dependency: project(modules.repository)]]
@@ -620,6 +622,17 @@ ext {
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAnnotation,
+    ]
+
+    /* Debug */
+    // ------------------------------------------
+    debugDependencies = []
+    debugDependencies = Utility + Config + log + rx
+    testDebugDependencies = test
+
+    debugPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid
     ]
 
     /* Domain */
