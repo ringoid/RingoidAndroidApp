@@ -23,7 +23,9 @@ class RequestHeaderInterceptor(private val appVersion: Int) : IRequestHeaderInte
             return chain.proceed(request)
         } catch (e: Throwable) {
             DebugLogUtil.d("Request: chain failed [$requestUrl]: ${e.message}")
-            SentryUtil.capture(e, "Chain proceed has failed", extras = listOf("url" to requestUrl, "cause" to (e.message ?: "")))
+            SentryUtil.capture(e, "Chain proceed has failed",
+                               extras = listOf("url" to requestUrl, "cause" to (e.message ?: ""),
+                                               "from" to javaClass.simpleName))
             throw IOException("Chain proceed has failed", e)
         }
     }

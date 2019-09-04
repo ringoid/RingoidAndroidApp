@@ -10,6 +10,7 @@ import okhttp3.Protocol
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import timber.log.Timber
+import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
@@ -27,7 +28,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         DebugLogUtil.d2("Response: chain prepare START")
 
         val request = chain.request()
-        val requestUrl = request.url
+        val requestUrl = request.url.toString()
         val errorMessage: String
         val unexpected: String?
 
@@ -53,9 +54,13 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
             unexpected = NetworkUnexpected.ERROR_NO_CONNECTION
             logError(e, errorMessage)
         } catch (e: Throwable) {
-            errorMessage = "Other error"
-            unexpected = null
-            logError(e, errorMessage)
+            errorMessage = "Response: chain failed [$requestUrl]: ${e.message}"
+            DebugLogUtil.d(errorMessage)
+            SentryUtil.capture(e, "Chain proceed has failed",
+                               extras = listOf("url" to requestUrl, "cause" to (e.message ?: ""),
+                                               "from" to javaClass.simpleName))
+            throw IOException("Chain proceed has failed", e)
+            // TODO: maybe set some flag to return Single.error(e) in calling rx-chain to handle and release locks, if any
         }
 
         val body = BaseResponse(requestUrl = request.url.toString(), unexpected = unexpected)
