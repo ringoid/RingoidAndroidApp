@@ -66,7 +66,8 @@ class FeedItemContextMenuActivity : SimpleBaseActivity(), IBlockBottomSheetActiv
         intent.extras?.let {
             val payloadJson = it.getString("payload") ?: "{}"
             val payload = Gson().fromJson(payloadJson, BlockReportPayload::class.java)
-            ImageLoader.load(uri = payload.profileImageUri, thumbnailUri = payload.profileThumbnailUri, iv = iv_profile_image)
+            ImageLoader.load(uri = payload.profileImageUri, thumbnailUri = payload.profileThumbnailUri,
+                             iv = iv_profile_image)
         }
     }
 

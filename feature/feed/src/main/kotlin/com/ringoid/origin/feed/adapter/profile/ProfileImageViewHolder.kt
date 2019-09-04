@@ -25,7 +25,8 @@ class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
 
     @Suppress("SetTextI18n")
     override fun bind(model: ProfileImageVO) {
-        ImageLoader.load(uri = model.image.uri, thumbnailUri = model.image.thumbnailUri, iv = itemView.iv_image)
+        ImageLoader.load(uri = model.image.uri, thumbnailUri = model.image.thumbnailUri,
+                         iv = itemView.iv_image, extra = listOf("userId" to model.profileId))
             // TODO: remove in PROD
             .takeIf { it == ImageLoadRequestStatus.InvalidImageViewRef }
             ?.let { itemView.iv_image?.setImageDrawable(DebugImageLoadDrawable(RuntimeException("Invalid imageView reference!"))) }

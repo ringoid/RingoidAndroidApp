@@ -653,7 +653,7 @@ ext {
     imageloaderDependencies = [
         [configuration: "implementation", dependency: d_libs.fresco]
     ]
-    imageloaderDependencies += Utility + android + kotlin + log
+    imageloaderDependencies += Utility + Config + Report + android + kotlin + log
     testImageloaderDependencies = test
 
     imageloaderPlugins = [

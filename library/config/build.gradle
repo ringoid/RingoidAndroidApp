@@ -2,6 +2,12 @@ rootProject.configPlugins.each {
     apply plugin: it
 }
 
+android {
+    defaultConfig {
+        buildConfigField 'boolean', 'IS_STAGING', "$rootProject.ext.isStaging"
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

@@ -11,6 +11,8 @@ import com.facebook.drawee.controller.BaseControllerListener
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
+import com.ringoid.config.BuildConfig
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.utility.delay
 import com.ringoid.utility.isNotFoundNetworkError
 import timber.log.Timber
@@ -26,7 +28,8 @@ object ImageLoader {
     /**
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
-    fun load(uri: String?, thumbnailUri: String? = null, iv: ImageView): ImageLoadRequestStatus {
+    fun load(uri: String?, thumbnailUri: String? = null, iv: ImageView,
+             extra: List<Pair<String, String>> = emptyList()): ImageLoadRequestStatus {
         if (uri.isNullOrBlank()) {
             return ImageLoadRequestStatus.NoImageUri  // no image data to load
         }
@@ -37,7 +40,7 @@ object ImageLoader {
             ?.let {
                 it.tag = 0  // depth of retry recursion
                 it.hierarchy.setProgressBarImage(CircularImageProgressBarDrawable())
-                it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef).build()
+                it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef, extra).build()
                 ImageLoadRequestStatus.Ok
             }
             ?: run {
@@ -54,21 +57,35 @@ object ImageLoader {
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun createRecursiveImageController(uri: String, thumbnailUri: String?, imageViewRef: WeakReference<ImageView>)
+    private fun createRecursiveImageController(
+            uri: String, thumbnailUri: String?,
+            imageViewRef: WeakReference<ImageView>,
+            extra: List<Pair<String, String>> = emptyList())
             : PipelineDraweeControllerBuilder =
+        // method body
         imageViewRef.get()?.let { it as? SimpleDraweeView }?.let { imageView ->
             createFlatImageController(uri, thumbnailUri)
                 .setOldController(imageView.controller)
                 .setControllerListener(object : BaseControllerListener<ImageInfo>() {
-                    // TODO: remove logs and debug drawable on PROD
                     override fun onFailure(id: String, throwable: Throwable) {
                         super.onFailure(id, throwable)
-                        val depth = imageView.tag as Int
+                        var depth = imageView.tag as Int
                         imageView.loge(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
-                        imageView.hierarchy.setFailureImage(DebugImageLoadDrawable(cause = throwable))  // TODO: remove for prod
+
+                        if (BuildConfig.IS_STAGING) {
+                            imageView.hierarchy.setFailureImage(DebugImageLoadDrawable(cause = throwable))
+                        }
+                        // resource at uri not found, retry one more time and then stop
                         if (throwable is FileNotFoundException || throwable.isNotFoundNetworkError()) {
-//                            imageView.hierarchy.setFailureImage(notFoundDrawable)  // TODO: uncomment for prod
-                            return  // resource at uri not found, don't retry
+                            if (!BuildConfig.IS_STAGING) {  // not on staging
+                                imageView.hierarchy.setFailureImage(notFoundDrawable)
+                            }
+                            if (depth >= RETRY_COUNT) {
+                                SentryUtil.capture(throwable, "Image not found (http error 404)",
+                                                   extras = mutableListOf("imageUrl" to uri).apply { addAll(extra) })
+                                return  // no more attempts
+                            }
+                            depth = RETRY_COUNT - 1  // one more retry
                         }
 
                         if (depth >= RETRY_COUNT) {
