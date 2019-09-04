@@ -1,4 +1,4 @@
-package com.ringoid.domain.exception
+package com.ringoid.report.exception
 
 import timber.log.Timber
 

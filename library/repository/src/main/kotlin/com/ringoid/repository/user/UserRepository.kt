@@ -6,7 +6,7 @@ import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.local.user.IUserDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.*

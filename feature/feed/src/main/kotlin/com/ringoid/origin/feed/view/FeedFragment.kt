@@ -15,7 +15,7 @@ import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView

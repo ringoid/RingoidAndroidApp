@@ -5,8 +5,8 @@ import com.google.firebase.perf.metrics.Trace
 import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.exception.*
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.exception.*
+import com.ringoid.report.log.SentryUtil
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer

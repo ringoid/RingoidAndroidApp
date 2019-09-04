@@ -16,7 +16,7 @@ import com.ringoid.domain.interactor.image.ClearCachedUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesUseCase
 import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.misc.Gender

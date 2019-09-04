@@ -3,7 +3,7 @@ package com.ringoid.origin.view.common
 import android.content.Context
 import android.net.Uri
 import com.ringoid.base.IImagePreviewReceiver
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver
 import com.steelkiwi.cropiwa.util.CropException
 import timber.log.Timber

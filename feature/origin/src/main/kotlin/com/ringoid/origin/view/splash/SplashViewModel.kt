@@ -11,7 +11,7 @@ import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.origin.error.DynamicLinkNotExistsException
 import com.ringoid.origin.utils.ReferralUtils

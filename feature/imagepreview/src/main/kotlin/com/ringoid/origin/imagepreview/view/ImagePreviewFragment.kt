@@ -9,7 +9,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.origin.imagepreview.OriginR_id
 import com.ringoid.origin.imagepreview.OriginR_menu
 import com.ringoid.origin.imagepreview.OriginR_string

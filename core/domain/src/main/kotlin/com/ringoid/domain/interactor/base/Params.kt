@@ -1,6 +1,6 @@
 package com.ringoid.domain.interactor.base
 
-import com.ringoid.domain.exception.MissingRequiredParamsException
+import com.ringoid.report.exception.MissingRequiredParamsException
 import io.reactivex.*
 
 class Params {

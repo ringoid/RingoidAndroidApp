@@ -1,8 +1,8 @@
-package com.ringoid.domain.log
+package com.ringoid.report.log
 
 import android.os.Build
 import android.util.Log
-import com.ringoid.domain.exception.ApiException
+import com.ringoid.report.exception.ApiException
 import com.ringoid.utility.BuildConfig
 import com.ringoid.utility.stackTraceString
 import io.reactivex.Completable

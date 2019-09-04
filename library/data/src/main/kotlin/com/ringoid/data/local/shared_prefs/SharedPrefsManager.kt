@@ -9,8 +9,8 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
 import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.exception.InvalidAccessTokenException
-import com.ringoid.domain.exception.SilentFatalException
+import com.ringoid.report.exception.InvalidAccessTokenException
+import com.ringoid.report.exception.SilentFatalException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.feed.EmptyFilters

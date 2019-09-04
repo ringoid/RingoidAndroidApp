@@ -2,10 +2,10 @@ package com.ringoid.origin.error
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.ringoid.domain.exception.ErrorConnectionTimedOut
-import com.ringoid.domain.exception.InvalidAccessTokenApiException
-import com.ringoid.domain.exception.NetworkUnexpected
-import com.ringoid.domain.exception.OldAppVersionApiException
+import com.ringoid.report.exception.ErrorConnectionTimedOut
+import com.ringoid.report.exception.InvalidAccessTokenApiException
+import com.ringoid.report.exception.NetworkUnexpected
+import com.ringoid.report.exception.OldAppVersionApiException
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.blockingErrorScreen
 import com.ringoid.origin.navigation.logout

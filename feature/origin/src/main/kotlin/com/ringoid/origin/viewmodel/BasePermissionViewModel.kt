@@ -8,7 +8,7 @@ import com.ringoid.base.manager.location.LocationServiceUnavailableException
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject

@@ -15,7 +15,7 @@ import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.*
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage

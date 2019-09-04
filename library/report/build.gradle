@@ -1,0 +1,17 @@
+rootProject.reportPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def reportDependencies = rootProject.ext.reportDependencies
+    def testReportDependencies = rootProject.ext.testReportDependencies
+
+    reportDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testReportDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

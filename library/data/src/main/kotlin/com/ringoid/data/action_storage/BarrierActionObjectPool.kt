@@ -4,7 +4,7 @@ import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import io.reactivex.Single
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicLong

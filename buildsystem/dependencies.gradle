@@ -167,6 +167,7 @@ ext {
             data:           ':library:data',           // -+- [ :data ]
             datainterface:  ':library:datainterface',  //  ^- [ :datainterface ] -+-
             imageloader:    ':library:imageloader',
+            report:         ':library:report',
             repository:     ':library:repository',     //  |  [ :repository ] ----^
             domain:         ':core:domain',            //  ^- [ :domain ]---------^
 
@@ -193,6 +194,7 @@ ext {
     def Data = [[configuration: "implementation", dependency: project(modules.data)]]
     def DataInterface = [[configuration: "implementation", dependency: project(modules.datainterface)]]
     def ImageLoader = [[configuration: "implementation", dependency: project(modules.imageloader)]]
+    def Report = [[configuration: "implementation", dependency: project(modules.report)]]
     def Repository = [[configuration: "implementation", dependency: project(modules.repository)]]
     def Domain = [[configuration: "implementation", dependency: project(modules.domain)]]
 
@@ -366,8 +368,8 @@ ext {
         [configuration: "implementation", dependency: d_support.sentry],
     ]
     appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop + ImageLoader +
-                       Repository + android + androidView + autoDispose + dagger + deeplink + fragnav +
-                       kotlin + leaks + log + net + room + support
+                       Report + Repository + android + androidView + autoDispose + dagger + deeplink +
+                       fragnav + kotlin + leaks + log + net + room + support
 
     androidTestAppDeps = androidTest
     testAppDependencies = test
@@ -390,7 +392,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.firebase],
     ]
-    mainDependencies += AllFeatures + Develop + Analytics + android + arch + autoDispose +
+    mainDependencies += AllFeatures + Develop + Analytics + Report + android + arch + autoDispose +
                         dagger + deeplink + fragnav + kotlin + log + rx + rxBind
 
     androidTestMainDeps = androidTest
@@ -443,7 +445,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
     ]
-    feedDependencies += Messenger + Origin + Analytics + Develop + ImageLoader +
+    feedDependencies += Messenger + Origin + Analytics + Develop + ImageLoader + Report +
                         android + androidView + arch + autoDispose +
                         dagger + deeplink + gson + kotlin + log + rx + rxBind + view
 
@@ -462,7 +464,7 @@ ext {
     imagePreviewDependencies = [
         [configuration: "implementation", dependency: project(modules.cropiwa)]
     ]
-    imagePreviewDependencies += Origin + Analytics + Develop + android + arch + autoDispose +
+    imagePreviewDependencies += Origin + Analytics + Develop + Report + android + arch + autoDispose +
                                 dagger + deeplink + kotlin + log + rx + rxBind
 
     androidTestImagePreviewDeps = androidTest
@@ -526,7 +528,7 @@ ext {
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
-    originDependencies += Develop + Analytics + android + androidView + arch + autoDispose +
+    originDependencies += Develop + Analytics + Report + android + androidView + arch + autoDispose +
                           dagger + deeplink + fragnav + gson + kotlin + log + rx + rxBind + support + view
 
     androidTestOriginDeps = androidTest
@@ -598,7 +600,7 @@ ext {
     /* Data Interface */
     // ------------------------------------------
     dataInterfaceDependencies = []
-    dataInterfaceDependencies += Domain + dagger + gson + kotlin + rx
+    dataInterfaceDependencies += Domain + Report + dagger + gson + kotlin + rx
     testDataInterfaceDependencies = test
 
     dataInterfacePlugins = [
@@ -609,10 +611,8 @@ ext {
 
     /* Domain */
     // ------------------------------------------
-    domainDependencies = [
-        [configuration: "implementation", dependency: d_support.sentry]
-    ]
-    domainDependencies += Utility + autoDispose + dagger + gson + kotlin + log + rx
+    domainDependencies = []
+    domainDependencies += Utility + Report + autoDispose + dagger + gson + kotlin + log + rx
     testDomainDependencies = test
 
     domainPlugins = [
@@ -634,13 +634,26 @@ ext {
         xPlugins.kotlinAndroid,
     ]
 
+    /* Report */
+    // ------------------------------------------
+    reportDependencies = [
+        [configuration: "implementation", dependency: d_support.sentry]
+    ]
+    reportDependencies += Utility + kotlin + log + rx
+    testReportDependencies = test
+
+    reportPlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+    ]
+
     /* Repository */
     // ------------------------------------------
     repositoryDependencies = [
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    repositoryDependencies += Data + DataInterface + Domain + Utility + dagger + kotlin + log + rx
+    repositoryDependencies += Data + DataInterface + Domain + Report + Utility + dagger + kotlin + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [

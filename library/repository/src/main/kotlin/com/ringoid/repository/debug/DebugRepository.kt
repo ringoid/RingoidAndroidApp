@@ -14,8 +14,8 @@ import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.domain.exception.SimulatedException
-import com.ringoid.domain.log.breadcrumb
+import com.ringoid.report.exception.SimulatedException
+import com.ringoid.report.log.breadcrumb
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence

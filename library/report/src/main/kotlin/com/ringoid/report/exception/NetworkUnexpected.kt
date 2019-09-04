@@ -1,4 +1,4 @@
-package com.ringoid.domain.exception
+package com.ringoid.report.exception
 
 sealed class NetworkUnexpected(val code: String) : RuntimeException("Fatal network exception: $code") {
 

@@ -3,7 +3,7 @@ package com.ringoid.origin.dating.app.deeplink
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.ringoid.domain.log.SentryUtil
+import com.ringoid.report.log.SentryUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.origin.utils.ReferralUtils
 import dagger.android.AndroidInjection
