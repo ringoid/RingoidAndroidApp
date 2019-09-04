@@ -6,14 +6,11 @@ import androidx.core.content.ContextCompat
 import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
-import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.WidgetR_attrs
 import com.ringoid.origin.feed.WidgetR_color
-import com.ringoid.origin.feed.adapter.base.BaseFeedAdapter
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideLikeBtnOnScroll
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowLikeBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.*
 import com.ringoid.origin.feed.adapter.explore.ExploreFeedAdapter
 import com.ringoid.origin.feed.exception.LoadMoreFailedException
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
@@ -23,6 +20,7 @@ import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
+import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.getAttributeColor
 
@@ -139,5 +137,6 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
             .apply {
                 addAll(super.getOffsetScrollStrategies())
                 add(OffsetScrollStrategy(tag = "like btn bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_BOTTOM, hide = FeedViewHolderHideLikeBtnOnScroll, show = FeedViewHolderShowLikeBtnOnScroll))
+                add(OffsetScrollStrategy(tag = "total likes bottom", type = OffsetScrollStrategy.Type.BOTTOM, deltaOffset = AppRes.FEED_ITEM_BIAS_BTN_LABEL_BOTTOM, hide = FeedViewHolderHideTotalLikesCountOnScroll, show = FeedViewHolderShowTotalLikesCountOnScroll))
             }
 }

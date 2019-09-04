@@ -241,6 +241,12 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         if (payloads.contains(FeedViewHolderShowStatusOnScroll)) {
             itemView.tv_status.alpha = 1.0f
         }
+        if (payloads.contains(FeedViewHolderHideTotalLikesCountOnScroll)) {
+            itemView.tv_total_likes.alpha = 0.0f
+        }
+        if (payloads.contains(FeedViewHolderShowTotalLikesCountOnScroll)) {
+            itemView.tv_total_likes.alpha = 1.0f
+        }
         if (payloads.contains(FeedViewHolderHideOnlineStatusOnScroll)) {
             itemView.label_online_status.changeVisibility(isVisible = false, soft = true)
         }

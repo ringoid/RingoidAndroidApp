@@ -22,6 +22,8 @@ object FeedViewHolderHideStatusOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowStatusOnScroll : FeedViewHolderPayload()
 object FeedViewHolderHideTabsIndicatorOnScroll : FeedViewHolderPayload()
 object FeedViewHolderShowTabsIndicatorOnScroll : FeedViewHolderPayload()
+object FeedViewHolderHideTotalLikesCountOnScroll : FeedViewHolderPayload()
+object FeedViewHolderShowTotalLikesCountOnScroll : FeedViewHolderPayload()
 
 object FeedFooterViewHolderHideControls : FeedViewHolderPayload()
 object FeedFooterViewHolderShowControls : FeedViewHolderPayload()
