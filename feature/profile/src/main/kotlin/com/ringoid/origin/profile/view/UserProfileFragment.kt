@@ -17,6 +17,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.Onboarding

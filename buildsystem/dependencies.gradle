@@ -205,7 +205,7 @@ ext {
     def Utility = [[configuration: "implementation", dependency: project(modules.utility)]]
     def Widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
-    def Develop = Base + Debug + Domain + Utility + Widget
+    def Develop = Base + Config + Debug + Domain + Utility + Widget
     def AllFeatures = Auth + Feed + ImagePreview + Messenger + Profile + UserSettings + Origin
 
     /* Plugins */
@@ -371,7 +371,7 @@ ext {
         [configuration: "implementation", dependency: d_android.install],
         [configuration: "implementation", dependency: d_support.sentry],
     ]
-    appDependencies += AllFeatures + Main + Analytics + Config + Data + DataInterface + Develop + ImageLoader +
+    appDependencies += AllFeatures + Main + Analytics + Data + DataInterface + Develop + ImageLoader +
                        Report + Repository + android + androidView + autoDispose + dagger + deeplink +
                        fragnav + kotlin + leaks + log + net + room + support
 
@@ -572,7 +572,8 @@ ext {
     baseDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    baseDependencies += Analytics + Config + Debug + Domain + Utility + Widget + android + androidView + arch + autoDispose +
+    baseDependencies += Analytics + Config + Debug + Domain + Utility + Widget + android +
+                        androidView + arch + autoDispose +
                         dagger + deeplink + kotlin + leaks + log + rx + rxBind
 
     androidTestBaseDeps = androidTest
