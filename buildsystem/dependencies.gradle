@@ -558,7 +558,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebase],
         [configuration: "implementation", dependency: d_libs.flurry],
     ]
-    analyticsDependencies += Domain + android + dagger + kotlin + log
+    analyticsDependencies += Debug + Domain + android + dagger + kotlin + log
     testAnalyticsDependencies = test
 
     analyticsPlugins = [
