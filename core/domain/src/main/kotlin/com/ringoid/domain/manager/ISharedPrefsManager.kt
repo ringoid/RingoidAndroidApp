@@ -1,10 +1,10 @@
 package com.ringoid.domain.manager
 
 import androidx.annotation.StyleRes
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.user.AccessToken
+import com.ringoid.utility.DebugOnly
 
 interface ISharedPrefsManager : IFiltersSource {
 
@@ -22,14 +22,9 @@ interface ISharedPrefsManager : IFiltersSource {
     fun saveThemeResId(@StyleRes themeResId: Int)
 
     // ------------------------------------------
-    @DebugOnly
-    fun isDebugLogEnabled(): Boolean
-
-    @DebugOnly
-    fun enableDebugLog(isEnabled: Boolean)
-
-    @DebugOnly
-    fun switchDebugLogEnabled()
+    @DebugOnly fun isDebugLogEnabled(): Boolean
+    @DebugOnly fun enableDebugLog(isEnabled: Boolean)
+    @DebugOnly fun switchDebugLogEnabled()
 
     fun isDeveloperModeEnabled(): Boolean
     fun enableDeveloperMode()

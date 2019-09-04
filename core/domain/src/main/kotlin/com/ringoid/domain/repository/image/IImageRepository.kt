@@ -1,9 +1,9 @@
 package com.ringoid.domain.repository.image
 
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.model.essence.image.IImageUploadUrlEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
 import com.ringoid.domain.model.image.Image
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.io.File

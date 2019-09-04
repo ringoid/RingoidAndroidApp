@@ -8,15 +8,15 @@ import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
-import com.ringoid.report.exception.InvalidAccessTokenException
-import com.ringoid.report.exception.SilentFatalException
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.user.AccessToken
+import com.ringoid.report.exception.InvalidAccessTokenException
+import com.ringoid.report.exception.SilentFatalException
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
 import io.reactivex.*
@@ -56,8 +56,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         private const val SP_KEY_APP_FIRST_LAUNCH = "sp_key_app_first_launch"
         private const val SP_KEY_APP_UID = "sp_key_app_uid"
         private const val SP_KEY_THEME = "sp_key_theme"
-        @DebugOnly private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
-        @DebugOnly private const val SP_KEY_DEVELOPER_MODE = "sp_key_developer_mode"
+        @DebugOnly
+        private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
+        @DebugOnly
+        private const val SP_KEY_DEVELOPER_MODE = "sp_key_developer_mode"
 
         /* Auth */
         // --------------------------------------

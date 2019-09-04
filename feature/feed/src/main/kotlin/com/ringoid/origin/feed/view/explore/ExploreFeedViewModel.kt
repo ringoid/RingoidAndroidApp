@@ -12,7 +12,6 @@ import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.report.exception.ErrorConnectionTimedOut
 import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
@@ -28,6 +27,7 @@ import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
+import com.ringoid.utility.DebugOnly
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe

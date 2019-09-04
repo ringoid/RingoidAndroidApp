@@ -1,6 +1,6 @@
 package com.ringoid.domain.model.debug
 
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.randomLong
 
 const val DEFAULT_SIZE = 200

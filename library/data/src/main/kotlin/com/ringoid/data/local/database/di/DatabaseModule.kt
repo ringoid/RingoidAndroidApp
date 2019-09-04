@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.ringoid.data.local.database.*
 import com.ringoid.data.local.database.dao.messenger.MessageMigration_9_10
 import com.ringoid.data.local.database.migration.*
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

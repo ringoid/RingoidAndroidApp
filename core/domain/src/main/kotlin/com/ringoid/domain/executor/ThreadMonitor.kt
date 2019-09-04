@@ -3,7 +3,7 @@ package com.ringoid.domain.executor
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 import timber.log.Timber
 import kotlin.math.min
 

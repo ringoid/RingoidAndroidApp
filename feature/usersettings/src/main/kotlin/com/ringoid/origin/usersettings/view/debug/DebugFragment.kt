@@ -12,7 +12,6 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.origin.error.handleOnView

@@ -18,7 +18,6 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogLevel
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.debug.EmptyDebugLogItem
 import com.ringoid.origin.R
 import com.ringoid.origin.WidgetR_drawable

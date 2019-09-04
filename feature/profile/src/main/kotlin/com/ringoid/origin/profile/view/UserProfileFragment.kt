@@ -21,7 +21,6 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.Onboarding
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.misc.UserProfileEditablePropertyId
 import com.ringoid.domain.misc.UserProfilePropertyId
@@ -78,7 +77,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
 
     private var withAbout: Boolean = false  // 'about' property is not empty
     private var withLabel: Boolean = false  // profile has at least one property (excluding 'about')
-    @DebugOnly private var debugAddImage: Boolean = false
+    @DebugOnly
+    private var debugAddImage: Boolean = false
 
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 

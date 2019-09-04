@@ -1,12 +1,12 @@
 package com.ringoid.domain.interactor.feed
 
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.base.SingleUseCase
 import com.ringoid.domain.model.feed.Feed
 import com.ringoid.domain.repository.debug.IDebugFeedRepository
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Single
 import javax.inject.Inject
 

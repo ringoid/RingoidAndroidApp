@@ -10,7 +10,6 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_string
 import com.ringoid.main.OriginR_style
@@ -20,6 +19,7 @@ import com.ringoid.origin.utils.AppUtils
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.particles.*
+import com.ringoid.utility.DebugOnly
 
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {

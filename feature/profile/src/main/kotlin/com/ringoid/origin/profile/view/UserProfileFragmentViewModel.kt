@@ -11,7 +11,6 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.debug.DebugLogUtil
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.*
@@ -22,6 +21,7 @@ import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.utils.ScreenHelper
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable

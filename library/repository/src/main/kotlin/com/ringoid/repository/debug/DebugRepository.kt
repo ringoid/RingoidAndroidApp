@@ -1,7 +1,6 @@
 package com.ringoid.repository.debug
 
 import com.ringoid.data.handleError
-import com.ringoid.data.handleErrorNoRetry
 import com.ringoid.data.local.shared_prefs.accessCompletable
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.DaggerCloudComponent
@@ -13,7 +12,6 @@ import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.debug.DebugOnly
 import com.ringoid.report.exception.SimulatedException
 import com.ringoid.report.log.breadcrumb
 import com.ringoid.domain.manager.ISharedPrefsManager
@@ -26,6 +24,7 @@ import com.ringoid.domain.model.feed.Profile
 import com.ringoid.domain.model.image.Image
 import com.ringoid.domain.repository.debug.IDebugRepository
 import com.ringoid.repository.BaseRepository
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

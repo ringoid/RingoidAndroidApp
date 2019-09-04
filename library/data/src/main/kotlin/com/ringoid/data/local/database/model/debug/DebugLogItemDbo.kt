@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ringoid.domain.debug.DebugLogItem
 import com.ringoid.domain.debug.DebugLogLevel
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 import com.ringoid.domain.model.Mappable
 
 @DebugOnly

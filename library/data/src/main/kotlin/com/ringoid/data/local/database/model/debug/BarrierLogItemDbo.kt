@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ringoid.domain.debug.BarrierLogItem
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 import com.ringoid.domain.model.Mappable
 
 @DebugOnly

@@ -14,7 +14,7 @@ import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.datainterface.di.*
-import com.ringoid.domain.debug.DebugOnly
+import com.ringoid.utility.DebugOnly
 import com.ringoid.domain.debug.IBarrierLogDaoHelper
 import com.ringoid.domain.debug.IDebugLogDaoHelper
 import dagger.Module
