@@ -25,6 +25,7 @@ object DebugLogUtil {
     fun b(log: String) = log(log, DebugLogLevel.BUS)
     fun v(log: String) = log(log, DebugLogLevel.VERBOSE)
     fun d(log: String) = log(log, DebugLogLevel.DEBUG)
+    fun d2(log: String) = log(log, DebugLogLevel.DEBUG2)
     fun i(log: String) = log(log, DebugLogLevel.INFO)
     fun w(log: String) = log(log, DebugLogLevel.WARNING)
     fun e(log: String) = log(log, DebugLogLevel.ERROR)
