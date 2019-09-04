@@ -1,6 +1,5 @@
 package com.ringoid.data.remote.di
 
-import com.google.firebase.remoteconfig.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
