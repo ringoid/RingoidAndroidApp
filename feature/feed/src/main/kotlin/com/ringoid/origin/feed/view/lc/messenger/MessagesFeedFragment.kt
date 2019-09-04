@@ -19,8 +19,8 @@ import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.WidgetR_attrs
 import com.ringoid.origin.feed.WidgetR_color
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderHideChatBtnOnScroll
+import com.ringoid.origin.feed.adapter.base.FeedViewHolderRebind
 import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowChatBtnOnScroll
-import com.ringoid.origin.feed.adapter.base.FeedViewHolderShowControls
 import com.ringoid.origin.feed.adapter.lmm.BaseLmmAdapter
 import com.ringoid.origin.feed.adapter.lmm.MessagesFeedAdapter
 import com.ringoid.origin.feed.misc.OffsetScrollStrategy
@@ -180,7 +180,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                                 }
                                 feedItem.setOnlineStatus(it.onlineStatus)
                             }
-                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderShowControls)
+                            feedAdapter.notifyItemChanged(it.position, FeedViewHolderRebind)
                             trackScrollOffsetForPosition(it.position)
                         }
                     }
@@ -228,7 +228,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                  */
                 add(peerMessage(chatId = profileId))
             }
-            feedAdapter.notifyItemChanged(position, FeedViewHolderShowControls)
+            feedAdapter.notifyItemChanged(position, FeedViewHolderRebind)
         }
     }
 

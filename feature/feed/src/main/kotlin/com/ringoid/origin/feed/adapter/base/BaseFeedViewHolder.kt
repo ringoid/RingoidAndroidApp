@@ -223,11 +223,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         // --------------------------------------
         showOnlineStatus(model)  // apply updates, if any
 
-        if (payloads.contains(FeedViewHolderHideControls)) {
-            hideControls()
-            return
-        }
-        if (payloads.contains(FeedViewHolderShowControls)) {
+        if (payloads.contains(FeedViewHolderRebind)) {
             showControls()
             return
         }
@@ -310,26 +306,23 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
     }
 
     // ------------------------------------------------------------------------
-    protected open fun hideControls() {
-        itemView.apply {
-            tabs.changeVisibility(isVisible = false)
-            ibtn_settings.changeVisibility(isVisible = false)
-            label_online_status.changeVisibility(isVisible = false)
-            ll_left_container.changeVisibility(isVisible = false)
-            ll_right_container.changeVisibility(isVisible = false)
-        }
-        profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderHideControls)
-    }
-
     protected open fun showControls() {
         itemView.apply {
+            tv_about.alpha = 1.0f
+            tv_status.alpha = 1.0f
+            tv_name_age.alpha = 1.0f
+            tv_total_likes.alpha = 1.0f
             tabs.changeVisibility(isVisible = true)
             ibtn_settings.changeVisibility(isVisible = true)
             label_online_status.changeVisibility(isVisible = true)
             ll_left_container.changeVisibility(isVisible = true)
             ll_right_container.changeVisibility(isVisible = true)
         }
-        profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderShowControls)
+        /**
+         * Here possibly rebind item in nested [profileImageAdapter], like:
+         *
+         *     profileImageAdapter.notifyItemChanged(getCurrentImagePosition(), FeedViewHolderRebind)
+         */
     }
 
     private fun showOnlineStatus(model: FeedItemVO) {

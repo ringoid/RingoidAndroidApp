@@ -32,11 +32,6 @@ class MessagesFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool
     }
 
     // ------------------------------------------------------------------------
-    override fun hideControls() {
-        super.hideControls()
-        itemView.iv_message.changeVisibility(isVisible = false)
-    }
-
     override fun showControls() {
         super.showControls()
         itemView.iv_message.changeVisibility(isVisible = true)
