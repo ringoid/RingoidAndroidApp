@@ -10,6 +10,7 @@ import com.ringoid.domain.model.print
 class Chat(
     id: String,
     distanceText: String? = null,
+    totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     images: List<IImage>,
     messages: List<Message>,
     lastOnlineStatus: String? = null,
@@ -39,6 +40,7 @@ class Chat(
     : FeedItem(
         id = id,
         distanceText = distanceText,
+        totalLikes = totalLikes,
         images = images,
         messages = messages,
         lastOnlineStatus = lastOnlineStatus,
@@ -69,6 +71,7 @@ class Chat(
         : this(
             id = feedItem.id,
             distanceText = feedItem.distanceText,
+            totalLikes = feedItem.totalLikes,
             images = feedItem.images,
             messages = feedItem.messages,
             lastOnlineStatus = feedItem.lastOnlineStatus,
@@ -99,6 +102,7 @@ class Chat(
         Chat(
             id = id,
             distanceText = distanceText,
+            totalLikes = totalLikes,
             images = images,
             messages = messages.toMutableList(),
             lastOnlineStatus = lastOnlineStatus,

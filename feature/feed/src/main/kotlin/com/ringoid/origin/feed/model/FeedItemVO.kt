@@ -14,6 +14,7 @@ import java.util.*
 data class FeedItemVO(
     override val id: String,
     override val distanceText: String? = null,
+    override val totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     override val images: List<IImage>,
     override val messages: List<Message> = emptyList(),
     var messagesReflection: MutableList<Message> = mutableListOf(),
@@ -46,6 +47,7 @@ data class FeedItemVO(
     constructor(feedItem: FeedItem): this(
         id = feedItem.id,
         distanceText = feedItem.distanceText,
+        totalLikes = feedItem.totalLikes,
         images = feedItem.images,
         messages = feedItem.messages,
         messagesReflection = ArrayList(feedItem.messages),
@@ -76,6 +78,7 @@ data class FeedItemVO(
     constructor(profile: Profile): this(
         id = profile.id,
         distanceText = profile.distanceText,
+        totalLikes = profile.totalLikes,
         images = profile.images,
         lastOnlineStatusX = OnlineStatus.from(profile.lastOnlineStatus),
         lastOnlineStatus = profile.lastOnlineStatus,

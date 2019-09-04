@@ -9,6 +9,7 @@ import com.ringoid.utility.randomString
 open class FeedItem(
     override val id: String,
     override val distanceText: String? = null,
+    override val totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     override val images: List<IImage>,
     override val messages: List<Message>,
     override val lastOnlineStatus: String? = null,

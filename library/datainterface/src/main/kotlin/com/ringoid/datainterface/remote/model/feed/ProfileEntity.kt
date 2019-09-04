@@ -9,6 +9,7 @@ import com.ringoid.domain.model.feed.Profile
  * {
  *   "userId":"9091127b2a88b002fad4ef55beb0264222c1ebb7",
  *   "defaultSortingOrderPosition":0,
+ *   "totalLikes":0,
  *   "photos": [
  *     {
  *       "photoId": "480x640_sfsdfsdfsdf",
@@ -31,6 +32,7 @@ class ProfileEntity(
     id: String,
     sortPosition: Int = 0,
     distanceText: String? = null,
+    totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     images: List<ImageEntity> = emptyList(),
     lastOnlineStatus: String? = null,
     lastOnlineText: String? = null,
@@ -57,6 +59,7 @@ class ProfileEntity(
         id = id,
         sortPosition = sortPosition,
         distanceText = distanceText,
+        totalLikes = totalLikes,
         images = images,
         lastOnlineStatus = lastOnlineStatus,
         lastOnlineText = lastOnlineText,
@@ -84,6 +87,7 @@ class ProfileEntity(
         Profile(
             id = id,
             distanceText = distanceText,
+            totalLikes = totalLikes,
             images = images.map { it.map() },
             lastOnlineStatus = lastOnlineStatus,
             lastOnlineText = lastOnlineText,

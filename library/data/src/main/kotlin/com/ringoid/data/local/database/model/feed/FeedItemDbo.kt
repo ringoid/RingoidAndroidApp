@@ -10,6 +10,7 @@ import com.ringoid.domain.model.feed.FeedItem
 data class FeedItemDbo(
     @PrimaryKey @ColumnInfo(name = COLUMN_ID, index = true) val id: String,
     @ColumnInfo(name = COLUMN_DISTANCE_TEXT) val distanceText: String? = null,
+    @ColumnInfo(name = COLUMN_TOTAL_LIKES) val totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     @ColumnInfo(name = COLUMN_FLAG_NOT_SEEN) val isNotSeen: Boolean = false,
     @ColumnInfo(name = COLUMN_LAST_ONLINE_STATUS) val lastOnlineStatus: String? = null,
     @ColumnInfo(name = COLUMN_LAST_ONLINE_TEXT) val lastOnlineText: String? = null,
@@ -37,6 +38,7 @@ data class FeedItemDbo(
     companion object {
         const val COLUMN_ID = "id"
         const val COLUMN_DISTANCE_TEXT = "distanceText"
+        const val COLUMN_TOTAL_LIKES = "totalLikes"
         const val COLUMN_FLAG_NOT_SEEN = "notSeen"
         const val COLUMN_LAST_ONLINE_STATUS = "lastOnlineFlag"
         const val COLUMN_LAST_ONLINE_TEXT = "lastOnlineText"
@@ -67,6 +69,7 @@ data class FeedItemDbo(
             FeedItemDbo(
                 id = feedItem.id,
                 distanceText = feedItem.distanceText,
+                totalLikes = feedItem.totalLikes,
                 lastOnlineStatus = feedItem.lastOnlineStatus,
                 lastOnlineText = feedItem.lastOnlineText,
                 age = feedItem.age,

@@ -15,6 +15,7 @@ import com.ringoid.domain.model.messenger.Message
  *   "userId":"9091127b2a88b002fad4ef55beb0264222c1ebb7",
  *   "defaultSortingOrderPosition":0,
  *   "notSeen":true,
+ *   "totalLikes":0,
  *   "messages":[...],
  *   "photos": [
  *     {
@@ -48,6 +49,7 @@ open class FeedItemEntity(
     id: String,
     sortPosition: Int,
     distanceText: String? = null,
+    totalLikes: Int = DomainUtil.UNKNOWN_VALUE,
     images: List<ImageEntity> = emptyList(),
     @Expose @SerializedName(COLUMN_MESSAGES) val messages: List<MessageEntity> = emptyList(),
     @Expose @SerializedName(COLUMN_FLAG_NOT_SEEN) val isNotSeen: Boolean,
@@ -76,6 +78,7 @@ open class FeedItemEntity(
         id = id,
         sortPosition = sortPosition,
         distanceText = distanceText,
+        totalLikes = totalLikes,
         images = images,
         lastOnlineStatus = lastOnlineStatus,
         lastOnlineText = lastOnlineText,
@@ -108,6 +111,7 @@ open class FeedItemEntity(
         FeedItem(
             id = id,
             distanceText = distanceText,
+            totalLikes = totalLikes,
             images = images.mapList(),
             messages = messages.map { message ->
                 val peerId = id.takeIf { !message.isCurrentUser } ?: DomainUtil.CURRENT_USER_ID
