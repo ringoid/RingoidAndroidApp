@@ -1,5 +1,6 @@
 package com.ringoid.data.remote.di
 
+import com.google.firebase.remoteconfig.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
@@ -12,10 +13,12 @@ import com.ringoid.data.remote.network.ResponseErrorInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.internal.platform.Platform
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -51,6 +54,7 @@ class CloudModule(private val appVersion: Int) {
                             responseInterceptor: IResponseErrorInterceptor,
                             logInterceptor: LoggingInterceptor): OkHttpClient =
         OkHttpClient.Builder()
+            .protocols(Collections.singletonList(Protocol.HTTP_1_1))
             .addInterceptor(requestInterceptor)
             .addInterceptor(responseInterceptor)
             .let { if (BuildConfig.DEBUG) it.addInterceptor(logInterceptor) else it }
