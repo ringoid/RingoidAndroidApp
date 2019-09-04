@@ -37,7 +37,8 @@ object ImageLoader {
             ?.let {
                 it.tag = 0  // depth of retry recursion
                 it.hierarchy.setProgressBarImage(CircularImageProgressBarDrawable())
-                it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef, extra).build()
+//                it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef, extra).build()
+                it.controller = createFlatImageController(uri, thumbnailUri).setOldController(it.controller).build()
                 ImageLoadRequestStatus.Ok
             }
             ?: run {
