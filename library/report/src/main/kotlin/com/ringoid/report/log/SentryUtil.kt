@@ -4,7 +4,7 @@ import android.os.Build
 import android.util.Log
 import com.ringoid.report.exception.ApiException
 import com.ringoid.utility.BuildConfig
-import com.ringoid.utility.stackTraceString
+import com.ringoid.utility.stackTraceStringN
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.sentry.Sentry
@@ -13,6 +13,8 @@ import timber.log.Timber
 import java.util.*
 
 object SentryUtil {
+
+    private const val MAX_BREADCRUMB_LENGTH = 400
 
     enum class Level(val lvl: Event.Level) {
         VERBOSE(Event.Level.DEBUG),
@@ -75,8 +77,8 @@ object SentryUtil {
         Timber.log(level.toLogPriority(), e, message)
         val fullExtras = mutableListOf<Pair<String, String>>()
             .apply {
-                add(e.javaClass.simpleName to e.stackTraceString())
                 extras?.let { addAll(it) }
+                add(e.javaClass.simpleName to e.stackTraceStringN(MAX_BREADCRUMB_LENGTH))
             }
         capture(e, message = message ?: e.message ?: e.javaClass.simpleName, level = level, `object` = null, tag = tag, extras = fullExtras)
     }

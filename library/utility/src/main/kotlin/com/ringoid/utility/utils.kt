@@ -46,12 +46,16 @@ fun randomLong(): Long = randomInt().toLong()
 fun randomString(): String = UUID.randomUUID().toString()
 fun randomString(length: Int): String = randomString().substring(0 until length)
 
+fun String.upToNChar(n: Int): String = substring(0, minOf(length, n))
+
 fun Throwable.stackTraceString(): String {
     val sw = StringWriter()
     val pw = PrintWriter(sw, true)
     printStackTrace(pw)
     return sw.buffer.toString()
 }
+
+fun Throwable.stackTraceStringN(n: Int): String = stackTraceString().upToNChar(n)
 
 fun <K, V> Map<K, V>.ForEach(action: (key: K, value: V) -> Unit) {
     entries.forEach { action(it.key, it.value) }
