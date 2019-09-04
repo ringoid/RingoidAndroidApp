@@ -52,13 +52,13 @@
 
     <TextView
         android:id="@+id/tv_total_likes"
-        android:layout_marginTop="@dimen/std_margin_8"
-        android:layout_marginEnd="@dimen/std_margin_16"
+        android:layout_marginTop="@dimen/std_margin_64"
+        android:layout_marginEnd="@dimen/std_margin_24"
         android:shadowColor="@color/text_shadow"
         android:shadowRadius="6"
         android:singleLine="true"
         android:textSize="@dimen/std_text_22"
-        app:layout_constraintTop_toBottomOf="@id/ibtn_like"
+        app:layout_constraintTop_toTopOf="@id/anchor0"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/StdText.White"/>
 
