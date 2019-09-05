@@ -3,7 +3,7 @@ package com.ringoid.report.log
 import android.util.Log
 import io.sentry.event.Event
 
-enum class Level(val lvl: Event.Level) {
+enum class ReportLevel(val lvl: Event.Level) {
     VERBOSE(Event.Level.DEBUG),
     DEBUG(Event.Level.DEBUG),
     INFO(Event.Level.INFO),

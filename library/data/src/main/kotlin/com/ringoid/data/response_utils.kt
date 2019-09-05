@@ -6,7 +6,7 @@ import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.report.exception.*
-import com.ringoid.report.log.Level
+import com.ringoid.report.log.ReportLevel
 import com.ringoid.report.log.SentryUtil
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
@@ -74,7 +74,7 @@ private fun expBackoffFlowableImpl(
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
                             DebugLogUtil.e(error, message = "Repeat after delay exceeded time threshold", tag = tag)
-                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = Level.WARNING, tag = tag, extras = extras)
+                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = ReportLevel.WARNING, tag = tag, extras = extras)
                             exception = ThresholdExceededException()  // abort retry and fallback
                         }
                         elapsedTimes.add(error.delay)
@@ -131,7 +131,7 @@ private fun expBackoffFlowableImpl(
                                     if (attemptNumber >= 3) {
                                         DebugLogUtil.e(error, message = "Repeat after delay 3+ times in a row", tag = tag)
                                         SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row",
-                                                           level = Level.WARNING, tag = tag,
+                                                           level = ReportLevel.WARNING, tag = tag,
                                                            extras = extras)
                                     }
                                     trace?.incrementMetric("repeatRequestAfter", 1L)

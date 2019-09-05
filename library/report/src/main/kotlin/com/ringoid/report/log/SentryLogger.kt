@@ -30,13 +30,13 @@ class SentryLogger : ILoggerDelegate {
         }
     }
 
-    override fun d(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = Level.DEBUG, extras = extras)
-    override fun i(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = Level.INFO, extras = extras)
-    override fun w(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = Level.WARNING, extras = extras)
-    override fun e(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = Level.ERROR, extras = extras)
-    override fun a(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = Level.FATAL, extras = extras)
+    override fun d(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = ReportLevel.DEBUG, extras = extras)
+    override fun i(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = ReportLevel.INFO, extras = extras)
+    override fun w(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = ReportLevel.WARNING, extras = extras)
+    override fun e(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = ReportLevel.ERROR, extras = extras)
+    override fun a(message: String, extras: List<Pair<String, String>>?) = log(message = message, level = ReportLevel.FATAL, extras = extras)
 
-    override fun capture(e: Throwable, message: String?, level: Level,
+    override fun capture(e: Throwable, message: String?, level: ReportLevel,
                          `object`: Any?, tag: String?, extras: List<Pair<String, String>>?) {
         Timber.log(level.toLogPriority(), e, message)
         val fullExtras = mutableListOf<Pair<String, String>>()
@@ -65,13 +65,13 @@ class SentryLogger : ILoggerDelegate {
 
     /* Internal */
     // --------------------------------------------------------------------------------------------
-    private fun log(message: String, level: Level, `object`: Any? = null,
+    private fun log(message: String, level: ReportLevel, `object`: Any? = null,
                     extras: List<Pair<String, String>>? = null) {
         Timber.log(level.toLogPriority(), message)
         Sentry.capture(createEvent(message = message, level = level, `object` = `object`, extras = extras))
     }
 
-    private fun captureImpl(e: Throwable, message: String? = null, level: Level = Level.ERROR,
+    private fun captureImpl(e: Throwable, message: String? = null, level: ReportLevel = ReportLevel.ERROR,
                             `object`: Any? = null, tag: String? = null, extras: List<Pair<String, String>>? = null) {
         breadcrumb("Captured exception", "exception" to e.javaClass.canonicalName, "message" to "$message",
                    "exception message" to "${e.message}", "tag" to "$tag", "extras" to "${extras?.joinToString { "[${it.first}:${it.second}]" }}")
@@ -88,7 +88,7 @@ class SentryLogger : ILoggerDelegate {
         }
     }
 
-    private fun createEvent(message: String, level: Level, `object`: Any? = null,
+    private fun createEvent(message: String, level: ReportLevel, `object`: Any? = null,
                             extras: List<Pair<String, String>>? = null): Event {
         val user: User? = Sentry.getContext().user
         val builder = EventBuilder()

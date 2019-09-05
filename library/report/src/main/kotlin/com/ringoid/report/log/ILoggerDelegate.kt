@@ -10,7 +10,7 @@ interface ILoggerDelegate {
     fun e(message: String, extras: List<Pair<String, String>>? = null)
     fun a(message: String, extras: List<Pair<String, String>>? = null)
 
-    fun capture(e: Throwable, message: String? = null, level: Level = Level.ERROR,
+    fun capture(e: Throwable, message: String? = null, level: ReportLevel = ReportLevel.ERROR,
                 `object`: Any? = null, tag: String? = null, extras: List<Pair<String, String>>? = null)
 
     // ------------------------------------------

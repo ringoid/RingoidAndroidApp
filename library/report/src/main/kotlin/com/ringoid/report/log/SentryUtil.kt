@@ -17,7 +17,7 @@ object SentryUtil : ILoggerDelegate {
     override fun e(message: String, extras: List<Pair<String, String>>?) = delegate.e(message = message, extras = extras)
     override fun a(message: String, extras: List<Pair<String, String>>?) = delegate.a(message = message, extras = extras)
 
-    override fun capture(e: Throwable, message: String?, level: Level, `object`: Any?,
+    override fun capture(e: Throwable, message: String?, level: ReportLevel, `object`: Any?,
                          tag: String?, extras: List<Pair<String, String>>?) {
         delegate.capture(e = e, message = message, level = level, `object` = `object`, tag = tag, extras = extras)
     }
