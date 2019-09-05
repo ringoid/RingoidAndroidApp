@@ -6,11 +6,10 @@ import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.report.exception.*
-import com.ringoid.report.log.ReportLevel
 import com.ringoid.report.log.Report
+import com.ringoid.report.log.ReportLevel
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import timber.log.Timber
@@ -73,8 +72,11 @@ private fun expBackoffFlowableImpl(
                     is RepeatRequestAfterSecException -> {
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
-                            DebugLogUtil.e(error, message = "Repeat after delay exceeded time threshold", tag = tag)
-                            Report.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = ReportLevel.WARNING, tag = tag, extras = extras)
+                            "Repeat after delay exceeded time threshold".let { msg ->
+                                DebugLogUtil.e(error, message = msg, tag = tag)
+                                Report.capture(error, message = "$msg ${BuildConfig.REQUEST_TIME_THRESHOLD} ms",
+                                               level = ReportLevel.WARNING, tag = tag, extras = extras)
+                            }
                             exception = ThresholdExceededException()  // abort retry and fallback
                         }
                         elapsedTimes.add(error.delay)
@@ -111,8 +113,10 @@ private fun expBackoffFlowableImpl(
                      * Exponential delay exceeds threshold, and this is not 'RepeatRequestAfterSecException'
                      * (because Server-side value for delay is just 800 ms, which is less than threshold).
                      */
-                    DebugLogUtil.e(error, "Common retry after delay exceeded time threshold", tag = tag)
-                    Report.capture(error, message = "Common retry after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms")
+                    "Common retry after delay exceeded time threshold".let { msg ->
+                        DebugLogUtil.e(error, msg, tag = tag)
+                        Report.capture(error, message = "$msg ${BuildConfig.REQUEST_TIME_THRESHOLD} ms")
+                    }
                     exception = ThresholdExceededException()  // abort retry and fallback, in common case
                 }
 
@@ -129,10 +133,11 @@ private fun expBackoffFlowableImpl(
                                 if (error is RepeatRequestAfterSecException) {
 //                                  SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
                                     if (attemptNumber >= 3) {
-                                        DebugLogUtil.e(error, message = "Repeat after delay 3+ times in a row", tag = tag)
-                                        Report.capture(error, message = "Repeat after delay 3+ times in a row",
-                                                           level = ReportLevel.WARNING, tag = tag,
-                                                           extras = extras)
+                                        "Repeat after delay 3+ times in a row".let { msg ->
+                                            DebugLogUtil.e(error, message = msg, tag = tag)
+                                            Report.capture(error, message = msg, level = ReportLevel.WARNING,
+                                                           tag = tag, extras = extras)
+                                        }
                                     }
                                     trace?.incrementMetric("repeatRequestAfter", 1L)
                                     extraTraces.forEach { it.incrementMetric("repeatRequestAfter", 1L) }
@@ -141,15 +146,16 @@ private fun expBackoffFlowableImpl(
                                     extraTraces.forEach { it.incrementMetric("retry", 1L) }
                                 }
                             }
-                            .doOnComplete {
+                            .flatMap {
                                 if (attemptNumber >= count) {
                                     trace?.putAttribute("result", "failed")
-                                    extraTraces.forEach { it.putAttribute("result", "failed") }
-                                    throw error.also {
-                                        DebugLogUtil.e(error, message = "Failed to retry: all attempts have exhausted")
-                                        Report.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras)
+                                    extraTraces.forEach { trace -> trace.putAttribute("result", "failed") }
+                                    "Failed to retry: all attempts have exhausted".let { msg ->
+                                        DebugLogUtil.e(error, message = msg, tag = tag)
+                                        Report.capture(error, message = msg, tag = tag, extras = extras)
                                     }
-                                }
+                                    Flowable.error<Long>(error)
+                                } else Flowable.just(it)
                             }
             }
     }
@@ -205,38 +211,47 @@ inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = 
     compose(onApiErrorObservable(tag))
 
 // ----------------------------------------------
-private fun <T : BaseResponse> onApiErrorConsumer(tag: String? = null): Consumer<in T> =
-    Consumer {
-        if (!it.unexpected.isNullOrBlank()) {
-            throw NetworkUnexpected.from(it.unexpected!!)
+private fun <T : BaseResponse> T.checkApiError(tag: String? = null): Throwable? {
+    var error: Throwable? = null
+    try {
+        if (!unexpected.isNullOrBlank()) {
+            error = NetworkUnexpected.from(unexpected!!)
         }
-        if (!it.errorCode.isNullOrBlank()) {
-            val apiError = when (it.errorCode) {
-                ApiException.OLD_APP_VERSION -> OldAppVersionApiException(message = it.errorMessage, tag = tag)
-                ApiException.INVALID_ACCESS_TOKEN -> InvalidAccessTokenApiException( message = it.errorMessage, tag = tag)
+        if (!errorCode.isNullOrBlank()) {
+            val apiError = when (errorCode) {
+                ApiException.OLD_APP_VERSION -> OldAppVersionApiException(message = errorMessage, tag = tag)
+                ApiException.INVALID_ACCESS_TOKEN -> InvalidAccessTokenApiException( message = errorMessage, tag = tag)
                 ApiException.CLIENT_ERROR, ApiException.CLIENT_PARAM_ERROR_SEX ->
-                    WrongRequestParamsClientApiException(message = it.errorMessage, tag = tag)
-                ApiException.SERVER_ERROR -> InternalServerErrorApiException(message = it.errorMessage, tag = tag)
-                else -> ApiException(code = it.errorCode, message = it.errorMessage, tag = tag)
+                    WrongRequestParamsClientApiException(message = errorMessage, tag = tag)
+                ApiException.SERVER_ERROR -> InternalServerErrorApiException(message = errorMessage, tag = tag)
+                else -> ApiException(code = errorCode, message = errorMessage, tag = tag)
             }
-            throw apiError
+            error = apiError
         }
-        if (it.repeatRequestAfter > 0) {
-            throw RepeatRequestAfterSecException(delay = it.repeatRequestAfter)
+        if (repeatRequestAfter > 0) {
+            error = RepeatRequestAfterSecException(delay = repeatRequestAfter)
         }
+    } catch (e: Throwable) {
+        "Unexpected error during api error parsing".let {
+            DebugLogUtil.e(e, it, tag = tag)
+            Report.capture(e, it, tag = tag, extras = listOf("response" to toString()))
+        }
+        error = e
     }
+    return error
+}
 
 fun <T : BaseResponse> onApiErrorMaybe(tag: String? = null): MaybeTransformer<T, T> =
-    MaybeTransformer { it.doOnSuccess(onApiErrorConsumer(tag)) }
+    MaybeTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Maybe.error(e)} ?: source } }
 
 fun <T : BaseResponse> onApiErrorSingle(tag: String? = null): SingleTransformer<T, T> =
-    SingleTransformer { it.doOnSuccess(onApiErrorConsumer(tag)) }
+    SingleTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Single.error(e)} ?: source } }
 
 fun <T : BaseResponse> onApiErrorFlowable(tag: String? = null): FlowableTransformer<T, T> =
-    FlowableTransformer { it.doOnNext(onApiErrorConsumer(tag)) }
+    FlowableTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Flowable.error(e)} ?: source } }
 
 fun <T : BaseResponse> onApiErrorObservable(tag: String? = null): ObservableTransformer<T, T> =
-    ObservableTransformer { it.doOnNext(onApiErrorConsumer(tag)) }
+    ObservableTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Observable.error(e)} ?: source } }
 
 /* Network Error */
 // --------------------------------------------------------------------------------------------
