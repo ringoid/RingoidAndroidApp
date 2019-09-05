@@ -3,28 +3,27 @@ package com.ringoid.debug.barrier
 import com.ringoid.debug.DebugLogLevel
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.utility.DebugOnly
-import java.util.concurrent.atomic.AtomicBoolean
 
 @DebugOnly
 object SimpleBarrierLogUtil {
 
-    private var isEnabled = AtomicBoolean(false)
+    private var isEnabled = false
 
     private val headers = ArrayList<String>()
     private val footers = ArrayList<String>()
     private val logs = ArrayList<String>(1000)
 
-    internal fun isEnabled(): Boolean = isEnabled.get()
+    internal fun isEnabled(): Boolean = isEnabled
 
     @Synchronized
     fun enable(msg: String) {
-        isEnabled.set(true)
+        isEnabled = true
         headers.add("-=== Thread ${Thread.currentThread().name} [id=${Thread.currentThread().id}]: $msg ===-")
     }
 
     @Synchronized
     fun disable(msg: String) {
-        isEnabled.set(false)
+        isEnabled = false
         footers.add("-=== Thread ${Thread.currentThread().name} [id=${Thread.currentThread().id}]: $msg ===-")
         logs.clear()
     }
