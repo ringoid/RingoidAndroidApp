@@ -1,6 +1,8 @@
 package com.ringoid.debug
 
 import com.ringoid.config.IRuntimeConfig
+import com.ringoid.debug.model.DebugLogItem
+import com.ringoid.debug.model.EmptyDebugLogItem
 import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.tagLine
 import io.reactivex.Single

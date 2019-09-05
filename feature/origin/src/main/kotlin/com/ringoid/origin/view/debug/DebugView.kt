@@ -16,7 +16,7 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.debug.DebugLogLevel
 import com.ringoid.debug.DebugLogUtil
-import com.ringoid.debug.EmptyDebugLogItem
+import com.ringoid.debug.model.EmptyDebugLogItem
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.origin.R

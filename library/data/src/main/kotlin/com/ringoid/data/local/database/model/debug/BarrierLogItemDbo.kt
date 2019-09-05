@@ -3,7 +3,7 @@ package com.ringoid.data.local.database.model.debug
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ringoid.debug.BarrierLogItem
+import com.ringoid.debug.model.BarrierLogItem
 import com.ringoid.domain.model.Mappable
 import com.ringoid.utility.DebugOnly
 

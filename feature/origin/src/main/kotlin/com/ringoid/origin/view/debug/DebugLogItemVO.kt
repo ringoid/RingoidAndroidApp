@@ -1,7 +1,7 @@
 package com.ringoid.origin.view.debug
 
-import com.ringoid.debug.DebugLogItem
-import com.ringoid.debug.EmptyDebugLogItem
+import com.ringoid.debug.model.DebugLogItem
+import com.ringoid.debug.model.EmptyDebugLogItem
 import com.ringoid.domain.model.IListModel
 
 data class DebugLogItemVO(val log: DebugLogItem) : IListModel {

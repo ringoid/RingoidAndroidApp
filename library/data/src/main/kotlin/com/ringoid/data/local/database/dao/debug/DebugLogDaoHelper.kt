@@ -1,6 +1,6 @@
 package com.ringoid.data.local.database.dao.debug
 
-import com.ringoid.debug.DebugLogItem
+import com.ringoid.debug.model.DebugLogItem
 import com.ringoid.debug.IDebugLogDaoHelper
 import com.ringoid.domain.model.mapList
 import com.ringoid.utility.DebugOnly

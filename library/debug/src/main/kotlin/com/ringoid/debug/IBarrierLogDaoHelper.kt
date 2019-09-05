@@ -1,5 +1,6 @@
 package com.ringoid.debug
 
+import com.ringoid.debug.model.BarrierLogItem
 import io.reactivex.Single
 
 interface IBarrierLogDaoHelper {

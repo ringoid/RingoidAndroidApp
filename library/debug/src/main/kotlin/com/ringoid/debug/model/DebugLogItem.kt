@@ -1,5 +1,6 @@
-package com.ringoid.debug
+package com.ringoid.debug.model
 
+import com.ringoid.debug.DebugLogLevel
 import com.ringoid.utility.randomString
 import com.ringoid.utility.time
 import com.ringoid.utility.wrapMillisUnit

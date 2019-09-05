@@ -1,5 +1,6 @@
 package com.ringoid.debug
 
+import com.ringoid.debug.model.BarrierLogItem
 import com.ringoid.utility.DebugOnly
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -9,8 +10,6 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
-import kotlin.collections.isNotEmpty
-import kotlin.collections.toList
 
 /**
  * Designed to be accessed from single thread, that actually acquired and still holds mutex.
