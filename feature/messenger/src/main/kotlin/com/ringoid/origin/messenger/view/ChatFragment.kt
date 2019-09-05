@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.ringoid.base.observe
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.base.view.IBaseActivity
 import com.ringoid.base.view.ViewState
+import com.ringoid.debug.DebugLogUtil
+import com.ringoid.debug.timer.TimeKeeper
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.DomainUtil.BAD_ID
-import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
@@ -60,7 +62,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
     private var inputText: CharSequence = ""
     private var peerId: String = BAD_ID
     private var payload: ChatPayload? = null
+
     private lateinit var chatAdapter: ChatAdapter
+    private val timeKeeper = TimeKeeper()
 
     override fun getVmClass(): Class<ChatViewModel> = ChatViewModel::class.java
 
@@ -99,6 +103,8 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
                 }
             }
         }
+
+        timeKeeper.registerCallback { context?.toast(OriginR_string.time_keeper_interval_alert_load) }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
@@ -112,6 +118,9 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             observe(vm.sentMessage(), chatAdapter::prepend)
             observe(vm.onlineStatus(), ::showOnlineStatus)
             observe(vm.peerName()) { peerName -> tv_peer_name?.text = peerName }
+            observeOneShot(vm.notifyOnMessagesLoadOneShot()) { started ->
+                if (started) timeKeeper.start() else timeKeeper.stop()
+            }
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)
@@ -213,6 +222,11 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
         payload?.isChatEmpty = chatAdapter.isEmpty() && payload?.isChatEmpty == true
         val tag = arguments?.getString(BUNDLE_KEY_TAG, TAG) ?: TAG
         communicator(IDialogCallback::class.java)?.onDialogDismiss(tag = tag, payload = payload)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timeKeeper.unregisterCallback()
     }
 
     // --------------------------------------------------------------------------------------------

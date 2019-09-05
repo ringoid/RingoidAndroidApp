@@ -7,8 +7,9 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.BaseViewModel
-import com.ringoid.domain.DomainUtil
+import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
 import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
@@ -47,11 +48,13 @@ class ChatViewModel @Inject constructor(
     private val sentMessage by lazy { MutableLiveData<Message>() }
     private val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
     private val peerName by lazy { MutableLiveData<String>() }
+    private val notifyOnMessagesLoadOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun messages(): LiveData<List<Message>> = messages
     internal fun newMessages(): LiveData<List<Message>> = newMessages
     internal fun sentMessage(): LiveData<Message> = sentMessage
     internal fun onlineStatus(): LiveData<OnlineStatus> = onlineStatus
     internal fun peerName(): LiveData<String> = peerName
+    internal fun notifyOnMessagesLoadOneShot(): LiveData<OneShot<Boolean>> = notifyOnMessagesLoadOneShot
 
     private var chatData: ChatData? = null
     private var currentMessageList: List<Message> = emptyList()
@@ -88,8 +91,14 @@ class ChatViewModel @Inject constructor(
         chatData = ChatData(chatId = profileId)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
         getMessagesForPeerUseCase.source(params = Params().put("chatId", profileId))
-            .doOnSubscribe { viewState.value = ViewState.LOADING }  // get chat for peer progress
-            .doOnSuccess { viewState.value = ViewState.IDLE }  // get chat for peer success
+            .doOnSubscribe {
+                viewState.value = ViewState.LOADING  // get chat for peer progress
+                notifyOnMessagesLoadOneShot.value = OneShot(true)
+            }
+            .doOnSuccess {
+                viewState.value = ViewState.IDLE  // get chat for peer success
+                notifyOnMessagesLoadOneShot.value = OneShot(false)
+            }
             .doOnError { viewState.value = ViewState.ERROR(it) }  // get chat for peer failed
             .autoDisposable(this)
             .subscribe({ msgs ->
