@@ -628,7 +628,7 @@ ext {
     /* Debug */
     // ------------------------------------------
     debugDependencies = []
-    debugDependencies = Utility + Config + kotlin + log + rx
+    debugDependencies = Utility + Config + autoDispose + kotlin + log + rx
     testDebugDependencies = test
 
     debugPlugins = [
