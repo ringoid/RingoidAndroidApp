@@ -20,10 +20,6 @@ class RequestHeaderInterceptor(private val appVersion: Int) : IRequestHeaderInte
         DebugLogUtil.d("Request: $requestUrl")
         Report.breadcrumb("Request", "url" to requestUrl)
 
-        try {
-            return chain.proceed(request)
-        } catch (e: Throwable) {
-            throw e.reportNetworkInterceptionErrorAndThrow(requestUrl, from = javaClass.simpleName)
-        }
+        return chain.proceed(request)
     }
 }
