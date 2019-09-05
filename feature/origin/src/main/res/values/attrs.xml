@@ -35,4 +35,8 @@
         <attr name="refDrawableSettingsProfile" format="reference"/>
         <attr name="refDrawableThemeSwitch" format="reference"/>
     </declare-styleable>
+
+    <declare-styleable name="DebugView">
+        <attr name="debug_view_padding_bottom" format="reference"/>
+    </declare-styleable>
 </resources>

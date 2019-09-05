@@ -62,13 +62,13 @@ class DebugView : ConstraintLayout {
     constructor(context: Context, attributes: AttributeSet?): this(context, attributes, 0)
 
     constructor(context: Context, attributes: AttributeSet?, defStyleAttr: Int): super(context, attributes, defStyleAttr) {
-        init(context)
+        init(context, attributes, defStyleAttr)
     }
 
     @LayoutRes private fun getLayoutId(): Int = R.layout.widget_debug
 
     @Suppress("CheckResult")
-    private fun init(context: Context) {
+    private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
         if (BG_SOLID == null) BG_SOLID = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white)
         if (BG_TRANS == null) BG_TRANS = ContextCompat.getDrawable(context, WidgetR_drawable.rect_white_70_opaque)
         if (MIN_HEIGHT == -1) MIN_HEIGHT = resources.getDimensionPixelSize(R.dimen.widget_debug_height)
@@ -79,7 +79,18 @@ class DebugView : ConstraintLayout {
         background = BG_SOLID
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
-        rv_debug_items.apply {
+        with (context.obtainStyledAttributes(attributes, R.styleable.DebugView, defStyleAttr, 0)) {
+            getResourceId(R.styleable.DebugView_debug_view_padding_bottom, 0)
+                .takeIf { it != 0 }
+                ?.let { resId -> context.resources.getDimensionPixelSize(resId) }
+                ?.let { paddingBottom ->
+                    with (rv_debug_items) {
+                        setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+                    }
+                }
+        }
+
+        with (rv_debug_items) {
             adapter = debugLogItemAdapter
             layoutManager = LinearLayoutManager(context).also { it.stackFromEnd = true }
         }
