@@ -12,6 +12,8 @@ class RequestHeaderInterceptor(private val appVersion: Int) : IRequestHeaderInte
         val request = chain.request().newBuilder()
             .addHeader("x-ringoid-android-buildnum", "$appVersion")
             .addHeader("Content-Type", "application/json")
+            .addHeader("Accept-Encoding", "identity")  // always present, can be omitted
+            .addHeader("Connection","close")  // 'keep-alive' is default for HTTP/1.1 so change this to 'close'
             .build()
 
         val requestUrl = request.url.toString()
