@@ -3,6 +3,7 @@ package com.ringoid.data.action_storage
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.debug.barrier.SimpleBarrierLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.report.log.Report
 import io.reactivex.Single
@@ -25,6 +26,7 @@ abstract class BarrierActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPr
                 tcount.incrementAndGet()
                 DebugLogUtil.v("Acquiring permission to commit actions by ${threadStr(thread)}")
                 triggerInProgress.acquireUninterruptibly()  // acquire permission to continue, or block on a barrier otherwise
+                SimpleBarrierLogUtil.enable(msg = "Acquired lock")
                 DebugLogUtil.v("Permission's been acquired to commit actions by ${threadStr(thread)}")
                 triggerSourceImpl()
                     .doOnSubscribe { DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}") }
@@ -38,6 +40,7 @@ abstract class BarrierActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPr
     @Synchronized
     private fun finishTriggerSource() {
         triggerInProgress.release()
+        SimpleBarrierLogUtil.disable(msg = "Released lock")
         tcount.decrementAndGet()
         Report.breadcrumb("Released lock by thread: ${threadInfo()}")
     }

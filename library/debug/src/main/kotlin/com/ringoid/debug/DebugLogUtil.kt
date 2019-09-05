@@ -1,6 +1,7 @@
 package com.ringoid.debug
 
 import com.ringoid.config.IRuntimeConfig
+import com.ringoid.debug.barrier.SimpleBarrierLogUtil
 import com.ringoid.debug.model.DebugLogItem
 import com.ringoid.debug.model.EmptyDebugLogItem
 import com.ringoid.utility.DebugOnly
@@ -37,21 +38,14 @@ object DebugLogUtil {
     fun e(e: Throwable, message: String, tag: String? = null) =
         log(log = "${e.javaClass.simpleName}[$tag]: $message ${e.message.orEmpty()}".trim(), level = DebugLogLevel.ERROR)
 
-//    fun log(log: String, level: Event.Level) {
-//        when (level) {
-//            Event.Level.DEBUG -> d(log)
-//            Event.Level.INFO -> i(log)
-//            Event.Level.WARNING -> w(log)
-//            Event.Level.ERROR -> e(log)
-//            Event.Level.FATAL -> e(log)
-//        }
-//    }
-
     @Synchronized
     fun log(log: String, level: DebugLogLevel = DebugLogLevel.DEBUG) {
-        tagLine(prefix = " {Debug Log} ")
-        Timber.log(level.priority, log)
+        if (SimpleBarrierLogUtil.isEnabled()) {
+            SimpleBarrierLogUtil.log(log = log)
+        }
         if (config.isDeveloper() && config.collectDebugLogs()) {
+            tagLine(prefix = " {Debug Log} ")
+            Timber.log(level.priority, log)
             val logItem = DebugLogItem(log = log, level = level)
             logger.onNext(logItem)
             dao?.addDebugLog(logItem)

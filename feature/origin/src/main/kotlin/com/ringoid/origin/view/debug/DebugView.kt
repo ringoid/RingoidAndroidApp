@@ -16,6 +16,7 @@ import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.debug.DebugLogLevel
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.debug.barrier.SimpleBarrierLogUtil
 import com.ringoid.debug.model.EmptyDebugLogItem
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
@@ -81,6 +82,16 @@ class DebugView : ConstraintLayout {
             layoutManager = LinearLayoutManager(context).also { it.stackFromEnd = true }
         }
 
+        ibtn_barrier_log.clicks().compose(clickDebounce()).subscribe {
+            clear()
+            line()
+            line()
+            DebugLogUtil.i("BEGIN barrier logs")
+            SimpleBarrierLogUtil.printDebugLog()
+            DebugLogUtil.i("END barrier logs")
+            line()
+            line()
+        }
         ibtn_bg_flip_debug.clicks().compose(clickDebounce()).subscribe { bgToggle = !bgToggle }
         ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { clear() }
         ibtn_close_debug.clicks().compose(clickDebounce()).subscribe { Bus.post(BusEvent.CloseDebugView) }
@@ -89,9 +100,7 @@ class DebugView : ConstraintLayout {
         ibtn_resize_debug.clicks().compose(clickDebounce()).subscribe {
             if (sizeToggle) minimize() else maximize()
         }
-        ibtn_separator_debug.clicks().compose(clickDebounce()).subscribe {
-            DebugLogUtil.w("------------------------------------------------------------------------------------\n")
-        }
+        ibtn_separator_debug.clicks().compose(clickDebounce()).subscribe { line() }
         ibtn_share_debug.clicks().compose(clickDebounce()).subscribe {
             context.copyToClipboard(key = DomainUtil.CLIPBOARD_KEY_DEBUG, value = DebugLogUtil.extractLog())
             context.toast(R.string.common_clipboard)
@@ -126,6 +135,10 @@ class DebugView : ConstraintLayout {
 
     private fun clear() {
         debugLogItemAdapter.clear()
+    }
+
+    private fun line() {
+        DebugLogUtil.w("------------------------------------------------------------------------------------\n")
     }
 
     private fun maximize() {
