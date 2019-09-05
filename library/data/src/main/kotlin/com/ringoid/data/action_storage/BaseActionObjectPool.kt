@@ -138,6 +138,10 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
     override fun lastActionTime(): Long = lastActionTimeValue.get()
 
     protected fun updateLastActionTime(lastActionTime: Long) {
+        val prev = lastActionTime()
+        if (prev > lastActionTime) {
+            SentryUtil.w("Update last action time for lesser value", extras = listOf("lAt" to "$lastActionTime", "prev lAt" to "$prev"))
+        }
         lastActionTimeValue.set(lastActionTime)
         if (lastActionTime == 0L) {
             spm.deleteLastActionTime()
