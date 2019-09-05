@@ -3,7 +3,6 @@ package com.ringoid.data.remote.network
 import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.report.exception.NetworkUnexpected
-import com.ringoid.report.log.Report
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Protocol
@@ -17,13 +16,6 @@ import javax.net.ssl.SSLHandshakeException
 class ResponseErrorInterceptor : IResponseErrorInterceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        fun logError(e: Throwable, errorMessage: String) {
-            Timber.e(e, errorMessage)
-            DebugLogUtil.e(e, errorMessage)
-            Report.capture(e, errorMessage)
-        }
-
-        // --------------------------------------
         DebugLogUtil.d2("Response: chain prepare START")
 
         val request = chain.request()
@@ -43,15 +35,15 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         } catch (e: SocketTimeoutException) {
             errorMessage = "Connection timed out"
             unexpected = NetworkUnexpected.ERROR_CONNECTION_TIMED_OUT
-            logError(e, errorMessage)
+            DebugLogUtil.e(e, errorMessage)
         } catch (e: SSLHandshakeException) {
             errorMessage = "Connection is not secure"
             unexpected = NetworkUnexpected.ERROR_CONNECTION_INSECURE
-            logError(e, errorMessage)
+            DebugLogUtil.e(e, errorMessage)
         } catch (e: UnknownHostException) {
             errorMessage = "No network connection"
             unexpected = NetworkUnexpected.ERROR_NO_CONNECTION
-            logError(e, errorMessage)
+            DebugLogUtil.e(e, errorMessage)
         } catch (e: Throwable) {
             errorMessage = "Response: chain failed [$requestUrl]: ${e.message}"
             throw e.reportNetworkInterceptionErrorAndThrow(requestUrl, from = javaClass.simpleName)
