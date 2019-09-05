@@ -115,6 +115,10 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
         notifyDataSetChanged()  // fix possible 'inconsistency detected' error
     }
 
+    fun safeClear() {
+        clear()
+    }
+
     fun error() {
         isInErrorState = true
         noMoreItems(emptyList()) { false }
@@ -138,6 +142,12 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             submitList(mutableListOf<T>().apply { addAll(helper.currentList) }.also { it.addAll(list) })
         }
         noMoreItems(list, isThereMore)
+    }
+
+    fun safeAppend(item: T): Int {
+        val position = helper.currentList.size
+        append(item)
+        return position
     }
 
     fun prepend(item: T) {
