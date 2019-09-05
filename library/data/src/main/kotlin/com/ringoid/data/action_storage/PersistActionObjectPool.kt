@@ -122,7 +122,7 @@ class PersistActionObjectPool @Inject constructor(
             }
             .doOnError {
                 Report.breadcrumb("Commit actions error",
-                    "exception" to "${it.javaClass}", "message" to "${it.message}")
+                             "exception" to "${it.javaClass}", "message" to "${it.message}")
                 DebugLogUtil.e("Commit actions error: $it ;; ${threadInfo()}")
             }
             .doOnSubscribe { dropStrategyData() }
