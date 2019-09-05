@@ -11,7 +11,7 @@ import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.BuildConfig
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.origin.error.DynamicLinkNotExistsException
 import com.ringoid.origin.utils.ReferralUtils
@@ -40,7 +40,7 @@ class SplashViewModel @Inject constructor(app: Application) : BaseViewModel(app)
     override fun onFreshStart() {
         super.onFreshStart()
         DebugLogUtil.v("Fresh start App, init logs")
-        SentryUtil.breadcrumb("App Version", "code" to "${BuildConfig.VERSION_CODE}", "version" to "${BuildConfig.VERSION_NAME}")
+        Report.breadcrumb("App Version", "code" to "${BuildConfig.VERSION_CODE}", "version" to "${BuildConfig.VERSION_NAME}")
     }
 
     override fun onStart() {
@@ -109,7 +109,7 @@ class SplashViewModel @Inject constructor(app: Application) : BaseViewModel(app)
     private fun setReferralCode(referralCode: String, vararg extras: Pair<String, String>) {
         if (referralCode.isNotBlank()) {
             Timber.v("Referral Code on link open: $referralCode")
-            SentryUtil.i("Referral Code received on link open", extras.toList())
+            Report.i("Referral Code received on link open", extras.toList())
         }
         spm.setReferralCode(referralCode)  // save input referral code (or null)
     }

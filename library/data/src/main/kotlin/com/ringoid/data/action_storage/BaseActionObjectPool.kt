@@ -6,7 +6,7 @@ import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.actions.OriginActionObject
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
@@ -129,7 +129,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
     // --------------------------------------------------------------------------------------------
     override fun finalizePool() {
         Timber.v("Finalizing pool")
-        SentryUtil.breadcrumb("Finalized pool")
+        Report.breadcrumb("Finalized pool")
         updateLastActionTime(0L)  // drop 'lastActionTime' upon dispose, normally when 'user scope' is out
     }
 
@@ -140,7 +140,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
     protected fun updateLastActionTime(lastActionTime: Long) {
         val prev = lastActionTime()
         if (prev > lastActionTime) {
-            SentryUtil.w("Update last action time for lesser value", extras = listOf("lAt" to "$lastActionTime", "prev lAt" to "$prev"))
+            Report.w("Update last action time for lesser value", extras = listOf("lAt" to "$lastActionTime", "prev lAt" to "$prev"))
         }
         lastActionTimeValue.set(lastActionTime)
         if (lastActionTime == 0L) {
@@ -148,6 +148,6 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
         } else {
             spm.saveLastActionTime(lastActionTime)
         }
-        SentryUtil.breadcrumb("Commit actions success", "lastActionTime" to "$lastActionTime")
+        Report.breadcrumb("Commit actions success", "lastActionTime" to "$lastActionTime")
     }
 }

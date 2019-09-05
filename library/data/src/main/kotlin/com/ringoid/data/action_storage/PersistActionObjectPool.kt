@@ -10,7 +10,7 @@ import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -121,7 +121,7 @@ class PersistActionObjectPool @Inject constructor(
                 }
             }
             .doOnError {
-                SentryUtil.breadcrumb("Commit actions error",
+                Report.breadcrumb("Commit actions error",
                     "exception" to "${it.javaClass}", "message" to "${it.message}")
                 DebugLogUtil.e("Commit actions error: $it ;; ${threadInfo()}")
             }

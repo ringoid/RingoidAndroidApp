@@ -3,7 +3,7 @@ package com.ringoid.data.remote.network
 import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.report.exception.NetworkUnexpected
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Protocol
@@ -21,7 +21,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         fun logError(e: Throwable, errorMessage: String) {
             Timber.e(e, errorMessage)
             DebugLogUtil.e(e, errorMessage)
-            SentryUtil.capture(e, errorMessage)
+            Report.capture(e, errorMessage)
         }
 
         // --------------------------------------
@@ -56,7 +56,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
         } catch (e: Throwable) {
             errorMessage = "Response: chain failed [$requestUrl]: ${e.message}"
             DebugLogUtil.d(errorMessage)
-            SentryUtil.capture(e, "Chain proceed has failed",
+            Report.capture(e, "Chain proceed has failed",
                                extras = listOf("url" to requestUrl, "cause" to (e.message ?: ""),
                                                "from" to javaClass.simpleName))
             throw IOException("Chain proceed has failed", e)

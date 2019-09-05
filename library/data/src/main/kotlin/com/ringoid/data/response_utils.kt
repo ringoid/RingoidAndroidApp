@@ -7,7 +7,7 @@ import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.report.exception.*
 import com.ringoid.report.log.ReportLevel
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
@@ -74,7 +74,7 @@ private fun expBackoffFlowableImpl(
                         val elapsedTime = elapsedTimes.takeIf { it.isNotEmpty() }?.let { it.reduce { acc, l -> acc + l } } ?: 0L
                         if ((error.delay + elapsedTime) > BuildConfig.REQUEST_TIME_THRESHOLD) {
                             DebugLogUtil.e(error, message = "Repeat after delay exceeded time threshold", tag = tag)
-                            SentryUtil.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = ReportLevel.WARNING, tag = tag, extras = extras)
+                            Report.capture(error, message = "Repeat after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms", level = ReportLevel.WARNING, tag = tag, extras = extras)
                             exception = ThresholdExceededException()  // abort retry and fallback
                         }
                         elapsedTimes.add(error.delay)
@@ -86,7 +86,7 @@ private fun expBackoffFlowableImpl(
                     is OldAppVersionApiException,
                     is WrongRequestParamsClientApiException -> {
                         DebugLogUtil.e(error, message = error.message ?: "", tag = tag)
-                        SentryUtil.capture(error, message = error.message, tag = tag, extras = extras)
+                        Report.capture(error, message = error.message, tag = tag, extras = extras)
                         exception = error  // abort retry and fallback
                         0L  // delay in ms
                     }
@@ -98,7 +98,7 @@ private fun expBackoffFlowableImpl(
                             NetworkUnexpected.ERROR_CONNECTION_INSECURE -> delay * attemptNumber * 2  // linear delay
                             else -> {
                                 DebugLogUtil.e(error, message = error.message ?: "", tag = tag)
-                                SentryUtil.capture(error, message = error.message, tag = tag, extras = extras)
+                                Report.capture(error, message = error.message, tag = tag, extras = extras)
                                 exception = error  // abort retry and fallback
                                 0L  // delay in ms
                             }
@@ -112,7 +112,7 @@ private fun expBackoffFlowableImpl(
                      * (because Server-side value for delay is just 800 ms, which is less than threshold).
                      */
                     DebugLogUtil.e(error, "Common retry after delay exceeded time threshold", tag = tag)
-                    SentryUtil.capture(error, message = "Common retry after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms")
+                    Report.capture(error, message = "Common retry after delay exceeded time threshold ${BuildConfig.REQUEST_TIME_THRESHOLD} ms")
                     exception = ThresholdExceededException()  // abort retry and fallback, in common case
                 }
 
@@ -120,7 +120,7 @@ private fun expBackoffFlowableImpl(
                     ?: Flowable.timer(delayTime, TimeUnit.MILLISECONDS, Schedulers.io())
                             .doOnSubscribe {
                                 DebugLogUtil.w("Retry [$tag] [$attemptNumber / $count] on: ${error.message}")
-                                SentryUtil.breadcrumb("Retry attempt", "tag" to "$tag",
+                                Report.breadcrumb("Retry attempt", "tag" to "$tag",
                                     "attemptNumber" to "$attemptNumber", "count" to "$count",
                                     "exception" to error.javaClass.canonicalName, "message" to "${error.message}",
                                     "exception message" to "${error.message}")
@@ -130,7 +130,7 @@ private fun expBackoffFlowableImpl(
 //                                  SentryUtil.capture(error, message = "Repeat after delay", level = Event.Level.WARNING, tag = tag, extras = extras)
                                     if (attemptNumber >= 3) {
                                         DebugLogUtil.e(error, message = "Repeat after delay 3+ times in a row", tag = tag)
-                                        SentryUtil.capture(error, message = "Repeat after delay 3+ times in a row",
+                                        Report.capture(error, message = "Repeat after delay 3+ times in a row",
                                                            level = ReportLevel.WARNING, tag = tag,
                                                            extras = extras)
                                     }
@@ -147,7 +147,7 @@ private fun expBackoffFlowableImpl(
                                     extraTraces.forEach { it.putAttribute("result", "failed") }
                                     throw error.also {
                                         DebugLogUtil.e(error, message = "Failed to retry: all attempts have exhausted")
-                                        SentryUtil.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras)
+                                        Report.capture(error, message = "Failed to retry: all attempts have exhausted", tag = tag, extras = extras)
                                     }
                                 }
                             }

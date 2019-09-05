@@ -9,7 +9,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.origin.imagepreview.OriginR_id
 import com.ringoid.origin.imagepreview.OriginR_menu
 import com.ringoid.origin.imagepreview.OriginR_string
@@ -70,7 +70,7 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
                     }
                     contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 } catch (e: SecurityException) {
-                    SentryUtil.capture(e, "No persistable permission grants found")
+                    Report.capture(e, "No persistable permission grants found")
                     uri = null  // preventing from further getting content by input uri
                 }
             }

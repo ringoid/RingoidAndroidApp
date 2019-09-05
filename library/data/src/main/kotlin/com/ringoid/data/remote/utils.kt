@@ -5,7 +5,7 @@ import com.ringoid.debug.DebugLogLevel
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.model.IEssence
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import io.reactivex.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -42,13 +42,13 @@ fun logBaseRequest(tag: String = "", vararg data: Pair<String, String>) {
 // ----------------------------------------------
 private fun logBaseResponse(tag: String = "", startTime: Long, vararg data: Pair<String, String>) {
     val elapsedTime = System.currentTimeMillis() - startTime
-    SentryUtil.breadcrumb("Response [$tag]", "elapsedTime" to "$elapsedTime ms")
+    Report.breadcrumb("Response [$tag]", "elapsedTime" to "$elapsedTime ms")
     DebugLogUtil.d("<== [$tag][$elapsedTime ms]: ${data.joinToString()}".trim())
 }
 
 inline fun <reified T : BaseResponse> logBaseResponse(it: T, tag: String = "", startTime: Long, vararg data: Pair<String, String>) {
     val elapsedTime = System.currentTimeMillis() - startTime
-    SentryUtil.breadcrumb("Response [$tag]", "elapsedTime" to "$elapsedTime ms", "error code" to it.errorCode,
+    Report.breadcrumb("Response [$tag]", "elapsedTime" to "$elapsedTime ms", "error code" to it.errorCode,
         "error message" to it.errorMessage, "repeat after" to "${it.repeatRequestAfter}",
         "request url" to (it.requestUrl ?: ""), "unexpected" to (it.unexpected ?: ""), "raw" to it.toString())
     DebugLogUtil.log("<== [$tag][$elapsedTime ms]: ${it.toLogString()} ${data.joinToString()} ${it.errorString()}".trim(),
@@ -113,15 +113,15 @@ fun checkElapsedTimeAndWarn(startTime: Long, tag: String = DEFAULT_TAG) {
 }
 
 fun Completable.checkLastActionTime(tag: String, lastActionTime: Long): Completable =
-    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+    doOnSubscribe { if (lastActionTime == 0L) Report.w("Last Action Time == 0", listOf("tag" to tag)) }
 inline fun <reified T : BaseResponse> Maybe<T>.checkLastActionTime(tag: String, lastActionTime: Long): Maybe<T> =
-    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+    doOnSubscribe { if (lastActionTime == 0L) Report.w("Last Action Time == 0", listOf("tag" to tag)) }
 inline fun <reified T : BaseResponse> Single<T>.checkLastActionTime(tag: String, lastActionTime: Long): Single<T> =
-    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+    doOnSubscribe { if (lastActionTime == 0L) Report.w("Last Action Time == 0", listOf("tag" to tag)) }
 inline fun <reified T : BaseResponse> Flowable<T>.checkLastActionTime(tag: String, lastActionTime: Long): Flowable<T> =
-    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+    doOnSubscribe { if (lastActionTime == 0L) Report.w("Last Action Time == 0", listOf("tag" to tag)) }
 inline fun <reified T : BaseResponse> Observable<T>.checkLastActionTime(tag: String, lastActionTime: Long): Observable<T> =
-    doOnSubscribe { if (lastActionTime == 0L) SentryUtil.w("Last Action Time == 0", listOf("tag" to tag)) }
+    doOnSubscribe { if (lastActionTime == 0L) Report.w("Last Action Time == 0", listOf("tag" to tag)) }
 
 inline fun <reified T : BaseResponse> Single<T>.withTimeout(timeout: Long = BuildConfig.REQUEST_TIME_THRESHOLD): Single<T> =
     timeout(timeout, TimeUnit.MILLISECONDS)

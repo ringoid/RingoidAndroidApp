@@ -11,7 +11,7 @@ import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -122,7 +122,7 @@ class ActionObjectPool @Inject constructor(
             Timber.d("Successfully committed all [${queue.size}] actions, triggering has finished")
             if (localLastActionTime != it.lastActionTime) {
                 Timber.w("Last action times differ: server=${it.lastActionTime}, client=${lastActionTime()}, delta=${it.lastActionTime - lastActionTime()}")
-                SentryUtil.w("Last action time from Server differs from Client",
+                Report.w("Last action time from Server differs from Client",
                     listOf("server last action time" to "${it.lastActionTime}",
                            "client last action time" to "${lastActionTime()}"))
             }

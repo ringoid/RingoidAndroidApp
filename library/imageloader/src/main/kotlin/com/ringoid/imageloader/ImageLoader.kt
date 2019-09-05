@@ -12,7 +12,7 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
 import com.ringoid.config.BuildConfig
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.utility.delay
 import com.ringoid.utility.isNotFoundNetworkError
 import timber.log.Timber
@@ -77,7 +77,7 @@ object ImageLoader {
                                 imageView.hierarchy.setFailureImage(notFoundDrawable(imageView.context))
                             }
                             if (depth >= RETRY_COUNT) {
-                                SentryUtil.capture(throwable, "Image not found (http error 404)",
+                                Report.capture(throwable, "Image not found (http error 404)",
                                                    extras = mutableListOf("imageUrl" to uri).apply { addAll(extra) })
                                 return  // no more attempts
                             }

@@ -1,7 +1,7 @@
 package com.ringoid.data.remote.network
 
 import com.ringoid.debug.DebugLogUtil
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -19,13 +19,13 @@ class RequestHeaderInterceptor(private val appVersion: Int) : IRequestHeaderInte
         val requestUrl = request.url.toString()
 
         DebugLogUtil.d("Request: $requestUrl")
-        SentryUtil.breadcrumb("Request", "url" to requestUrl)
+        Report.breadcrumb("Request", "url" to requestUrl)
 
         try {
             return chain.proceed(request)
         } catch (e: Throwable) {
             DebugLogUtil.d("Request: chain failed [$requestUrl]: ${e.message}")
-            SentryUtil.capture(e, "Chain proceed has failed",
+            Report.capture(e, "Chain proceed has failed",
                                extras = listOf("url" to requestUrl, "cause" to (e.message ?: ""),
                                                "from" to javaClass.simpleName))
             throw IOException("Chain proceed has failed", e)

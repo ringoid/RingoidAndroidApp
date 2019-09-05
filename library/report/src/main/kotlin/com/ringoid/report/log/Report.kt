@@ -3,7 +3,7 @@ package com.ringoid.report.log
 import io.reactivex.Completable
 import io.reactivex.Single
 
-object SentryUtil : ILoggerDelegate {
+object Report : ILoggerDelegate {
 
     private val delegate = SentryLogger()
 
@@ -33,7 +33,7 @@ object SentryUtil : ILoggerDelegate {
 }
 
 fun Completable.breadcrumb(message: String, vararg data: Pair<String, String>): Completable =
-    doOnSubscribe { SentryUtil.breadcrumb(message, *data) }
+    doOnSubscribe { Report.breadcrumb(message, *data) }
 
 inline fun <reified T> Single<T>.breadcrumb(message: String, vararg data: Pair<String, String>): Single<T> =
-    doOnSubscribe { SentryUtil.breadcrumb(message, *data) }
+    doOnSubscribe { Report.breadcrumb(message, *data) }

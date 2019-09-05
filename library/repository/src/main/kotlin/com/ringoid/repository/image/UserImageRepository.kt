@@ -23,7 +23,7 @@ import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.domain.repository.image.IUserImageRepository
 import com.ringoid.report.exception.SimulatedException
 import com.ringoid.report.exception.isFatalApiError
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.repository.BaseRepository
 import com.ringoid.repository.UserInMemoryCache
 import com.ringoid.utility.DebugOnly
@@ -199,7 +199,7 @@ class UserImageRepository @Inject constructor(
         }
 
         return if (localImage.originId.isNullOrBlank()) {
-            SentryUtil.w("Deleted local image that has no remote pair")
+            Report.w("Deleted local image that has no remote pair")
             Completable.complete()
         } else {
             spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
@@ -225,7 +225,7 @@ class UserImageRepository @Inject constructor(
         local.userImage(id = essence.imageId)
             .flatMap { localImage ->
                 if (localImage.originId.isNullOrBlank()) {
-                    SentryUtil.w("Deleted local image that has no remote pair")
+                    Report.w("Deleted local image that has no remote pair")
                     Single.just(0L)
                 } else {
                     spm.accessSingle { cloud.deleteUserImage(essence.copyWith(imageId = localImage.originId)) }
@@ -312,7 +312,7 @@ class UserImageRepository @Inject constructor(
             .flatMap { image ->
                 if (image.imageUri.isNullOrBlank()) {
                     val e = NullPointerException("Upload uri is null: $image")
-                    SentryUtil.capture(e)
+                    Report.capture(e)
                     Single.error(e)
                 } else {
                     /**

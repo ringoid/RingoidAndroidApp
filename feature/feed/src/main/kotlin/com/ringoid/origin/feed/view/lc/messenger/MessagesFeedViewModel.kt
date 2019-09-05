@@ -24,7 +24,7 @@ import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.utility.vibrate
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
@@ -193,7 +193,7 @@ class MessagesFeedViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMatches()
         incomingPushMatch.onNext(event)  // for 'tap-to-refresh' popup
         incomingPushMatchEffect.onNext(0L)
@@ -202,7 +202,7 @@ class MessagesFeedViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMessages()
         incomingPushMessages.onNext(event)
         if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {

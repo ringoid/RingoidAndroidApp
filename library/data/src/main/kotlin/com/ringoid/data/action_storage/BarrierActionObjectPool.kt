@@ -4,7 +4,7 @@ import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import io.reactivex.Single
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicLong
@@ -39,7 +39,7 @@ abstract class BarrierActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPr
     private fun finishTriggerSource() {
         triggerInProgress.release()
         tcount.decrementAndGet()
-        SentryUtil.breadcrumb("Released lock by thread: ${threadInfo()}")
+        Report.breadcrumb("Released lock by thread: ${threadInfo()}")
     }
 
     // ------------------------------------------

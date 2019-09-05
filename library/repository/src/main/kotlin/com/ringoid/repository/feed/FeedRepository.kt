@@ -29,7 +29,7 @@ import com.ringoid.report.exception.InvalidAccessTokenApiException
 import com.ringoid.report.exception.NetworkUnexpected
 import com.ringoid.report.exception.OldAppVersionApiException
 import com.ringoid.report.exception.WrongRequestParamsClientApiException
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.repository.BaseRepository
 import com.ringoid.repository.FeedSharedPrefs
 import io.reactivex.Completable
@@ -160,7 +160,7 @@ open class FeedRepository @Inject constructor(
         spm.accessSingle {
             cloud.getNewFaces(it.accessToken, resolution, limit, lastActionTime)
                  .handleError(tag = "getNewFaces($resolution,$limit,lat=$lastActionTime)", traceTag = "feeds/get_new_faces", extraTraces = extraTraces)
-                 .doOnSuccess { if (it.profiles.isEmpty()) SentryUtil.w("No profiles received for NewFaces") }
+                 .doOnSuccess { if (it.profiles.isEmpty()) Report.w("No profiles received for NewFaces") }
                  .filterOutDuplicateProfilesFeed()
                  .filterOutAlreadySeenProfilesFeed()
                  .filterOutBlockedProfilesFeed()
@@ -180,7 +180,7 @@ open class FeedRepository @Inject constructor(
             .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
-                SentryUtil.capture(it, message = "Fallback to get cached Lmm", level = SentryUtil.Level.WARNING)
+                Report.capture(it, message = "Fallback to get cached Lmm", level = Report.Level.WARNING)
                 if (it is NetworkUnexpected) {
                     lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
                 }
@@ -250,7 +250,7 @@ open class FeedRepository @Inject constructor(
                         if (it is NetworkUnexpected) {
                             lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
                         }
-                        SentryUtil.capture(it, message = "Fallback to get cached LC", level = SentryUtil.Level.WARNING)
+                        Report.capture(it, message = "Fallback to get cached LC", level = Report.Level.WARNING)
                         getCachedLc()  // recover with cache
                     }
                 }
@@ -314,7 +314,7 @@ open class FeedRepository @Inject constructor(
                 val totalNotFilteredMessages = feedSharedPrefs.getTotalNotFilteredMessages()
                 if (totalNotFilteredLikes == DomainUtil.BAD_VALUE ||
                     totalNotFilteredMessages == DomainUtil.BAD_VALUE) {
-                    SentryUtil.w("Cached LC has invalid total counts",
+                    Report.w("Cached LC has invalid total counts",
                                  listOf("totalLikes" to "$totalNotFilteredLikes",
                                         "totalMessages" to "$totalNotFilteredMessages",
                                         "likesSize" to "${likes.size}",
@@ -351,7 +351,7 @@ open class FeedRepository @Inject constructor(
     private fun Single<FeedResponse>.filterOutDuplicateProfilesFeed(): Single<FeedResponse> =
         flatMap { response ->
             val filterFeed = response.profiles.distinctBy { it.id }
-                .also { if (it.size != response.profiles.size) SentryUtil.w("Duplicate profiles detected for NewFaces", listOf("size in response" to "${response.profiles.size}", "filtered size" to "${it.size}")) }
+                .also { if (it.size != response.profiles.size) Report.w("Duplicate profiles detected for NewFaces", listOf("size in response" to "${response.profiles.size}", "filtered size" to "${it.size}")) }
             Single.just(response.copyWith(profiles = filterFeed))
         }
 
@@ -366,7 +366,7 @@ open class FeedRepository @Inject constructor(
                 .distinct().size
 
             if (totalSize != totalSizeDistinct) {
-                SentryUtil.e("Collision for profiles in LMM")
+                Report.e("Collision for profiles in LMM")
             }
         }
 
@@ -404,11 +404,11 @@ open class FeedRepository @Inject constructor(
         flatMap { response ->
             val message = "Duplicate profiles detected for "
             val filterLikes = response.likes.distinctBy { it.id }
-                .also { if (it.size != response.likes.size) SentryUtil.w("$message LikesYou", listOf("size in response" to "${response.likes.size}", "filtered size" to "${it.size}")) }
+                .also { if (it.size != response.likes.size) Report.w("$message LikesYou", listOf("size in response" to "${response.likes.size}", "filtered size" to "${it.size}")) }
             val filterMatches = response.matches.distinctBy { it.id }
-                .also { if (it.size != response.matches.size) SentryUtil.w("$message Matches", listOf("size in response" to "${response.matches.size}", "filtered size" to "${it.size}")) }
+                .also { if (it.size != response.matches.size) Report.w("$message Matches", listOf("size in response" to "${response.matches.size}", "filtered size" to "${it.size}")) }
             val filterMessenger = response.messages.distinctBy { it.id }
-                .also { if (it.size != response.messages.size) SentryUtil.w("$message Messages", listOf("size in response" to "${response.messages.size}", "filtered size" to "${it.size}")) }
+                .also { if (it.size != response.messages.size) Report.w("$message Messages", listOf("size in response" to "${response.messages.size}", "filtered size" to "${it.size}")) }
             Single.just(response.copyWith(likes = filterLikes, matches = filterMatches, messages = filterMessenger))
         }
 

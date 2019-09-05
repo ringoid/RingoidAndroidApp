@@ -15,7 +15,7 @@ import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.DomainUtil
 import com.ringoid.debug.DebugLogUtil
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
@@ -273,7 +273,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         when (requestCode) {
             RequestCode.RC_BLOCK_DIALOG -> {
                 if (data == null) {
-                    SentryUtil.w("No output from Block/Report dialog")
+                    Report.w("No output from Block/Report dialog")
                     return
                 }
 

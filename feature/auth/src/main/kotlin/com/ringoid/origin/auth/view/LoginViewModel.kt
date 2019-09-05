@@ -16,7 +16,7 @@ import com.ringoid.domain.interactor.image.ClearCachedUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesUseCase
 import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.misc.Gender
@@ -118,7 +118,7 @@ class LoginViewModel @Inject constructor(
                 ChatInMemoryCache.clear()
                 DebugLogUtil.clear()
                 FiltersInMemoryCache.clear()
-                SentryUtil.clear()
+                Report.clear()
                 spm.onLogout()  // clean-up on logout
                 actionObjectPool.finalizePool()  // clear state of pool, if any
                 analyticsManager.exitUserScope(spm)  // clear analytics manager data for the current user

@@ -8,7 +8,7 @@ import com.ringoid.base.manager.location.LocationServiceUnavailableException
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.debug.DebugLogUtil
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -37,7 +37,7 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
                 DebugLogUtil.d("Location [client]: start get at $start")
             }
             .doOnSuccess { DebugLogUtil.d("Location [client]: success [$it]") }
-            .doOnError { SentryUtil.capture(it, "Location get failed") }
+            .doOnError { Report.capture(it, "Location get failed") }
             .doFinally {
                 val elapsed = System.currentTimeMillis() - start
                 DebugLogUtil.d("Location [client]: obtain location has taken $elapsed ms")

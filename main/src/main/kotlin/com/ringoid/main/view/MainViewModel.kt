@@ -28,7 +28,7 @@ import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.view.main.BaseMainViewModel
 import com.ringoid.report.exception.WrongRequestParamsClientApiException
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.age
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -122,7 +122,7 @@ class MainViewModel @Inject constructor(
 
         analyticsManager.setUser(spm)
         FiltersInMemoryCache.restore(spm)
-        SentryUtil.setUser(spm.currentUserId())
+        Report.setUser(spm.currentUserId())
 
         // filters not set, use default ones
         if (filtersSource.getFilters() == NoFilters) {
@@ -170,14 +170,14 @@ class MainViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventCloseDebugView(event: BusEvent.CloseDebugView) {
         Timber.d("Received bus event: $event")
-        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         closeDebugViewOneShot.value = OneShot(true)
     }
 
     @DebugOnly
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventDebugInfo(event: BusEvent.DebugInfo) {
-        SentryUtil.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         Timber.d("Received bus event: $event")
         countActionObjectsCachedInPoolUseCase.source()
             .autoDisposable(this)

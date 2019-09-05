@@ -6,7 +6,7 @@ import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.local.user.IUserDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.report.log.SentryUtil
+import com.ringoid.report.log.Report
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.essence.user.*
@@ -39,7 +39,7 @@ class UserRepository @Inject constructor(
                  spm.saveUserProfile(userId = it.userId, userGender = Gender.from(essence.sex),
                                      userYearOfBirth = essence.yearOfBirth, accessToken = it.accessToken)
                  local.addUserProfile(userId = it.userId)
-                 SentryUtil.setUser(spm.currentUserId())
+                 Report.setUser(spm.currentUserId())
              }
              .map { it.map() }
 
