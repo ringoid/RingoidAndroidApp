@@ -8,14 +8,12 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
-import com.ringoid.domain.DomainUtil
 import com.ringoid.debug.DebugLogUtil
-import com.ringoid.report.exception.ErrorConnectionTimedOut
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.report.log.Report
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
@@ -28,6 +26,8 @@ import com.ringoid.origin.feed.view.lc.FeedCounts
 import com.ringoid.origin.feed.view.lc.SeenAllFeed
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.report.exception.ErrorConnectionTimedOut
+import com.ringoid.report.log.Report
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -119,7 +119,7 @@ abstract class BaseLcFeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onRecreate(savedInstanceState: Bundle) {
         super.onRecreate(savedInstanceState)
-        refreshIfUserHasImages()  // TODO: do proper state restore
+        refreshIfUserHasImages()  // refresh on state restore // TODO: do proper state restore
     }
 
     // --------------------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ abstract class BaseLcFeedViewModel(
             .doOnSubscribe { viewState.value = ViewState.LOADING }  // load LC feed items progress
             .doOnError { viewState.value = ViewState.ERROR(it) }  // load LC feed items failed
             .autoDisposable(this)
-            .subscribe({}, DebugLogUtil::e)
+            .subscribe({ notifyOnFeedLoadFinishOneShot.value = OneShot(true) }, DebugLogUtil::e)
     }
 
     private fun prependProfileOnTransfer(profileId: String, destinationFeed: LcNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {
@@ -256,7 +256,7 @@ abstract class BaseLcFeedViewModel(
             .subscribe({
                 if (it > 0) {
                     dropFilters()
-                    refresh()
+                    refresh()  // refresh when user has images in profile
                 }
             }, DebugLogUtil::e)
     }
@@ -291,7 +291,7 @@ abstract class BaseLcFeedViewModel(
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application fresh start [${getFeedName()}]")
-        refreshIfUserHasImages()
+        refreshIfUserHasImages()  // refresh on app fresh start
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -299,7 +299,7 @@ abstract class BaseLcFeedViewModel(
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application recreate while running [${getFeedName()}]")
-        refreshIfUserHasImages()
+        refreshIfUserHasImages()  // refresh on recreate
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)

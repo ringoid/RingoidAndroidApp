@@ -79,7 +79,10 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
                     }
                 }
             }
-            is ViewState.PAGING -> feedAdapter.loading()
+            is ViewState.PAGING -> {
+                timeKeeper.start()
+                feedAdapter.loading()
+            }
         }
         super.onViewStateChange(newState)
     }

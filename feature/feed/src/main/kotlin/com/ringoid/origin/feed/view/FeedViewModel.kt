@@ -8,10 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.CacheBlockedProfileIdUseCase
 import com.ringoid.domain.interactor.feed.ClearCachedAlreadySeenProfileIdsUseCase
@@ -48,12 +48,14 @@ abstract class FeedViewModel(
     protected val discardProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
     protected val needShowFiltersOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val noImagesInUserProfileOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    protected val notifyOnFeedLoadFinishOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val refreshOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val refreshOnLocationPermissionOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
     internal fun discardProfileOneShot(): LiveData<OneShot<String>> = discardProfileOneShot
     internal fun needShowFiltersOneShot(): LiveData<OneShot<Boolean>> = needShowFiltersOneShot
     internal fun noImagesInUserProfileOneShot(): LiveData<OneShot<Boolean>> = noImagesInUserProfileOneShot
+    internal fun notifyOnFeedLoadFinishOneShot(): LiveData<OneShot<Boolean>> = notifyOnFeedLoadFinishOneShot
     internal fun refreshOneShot(): LiveData<OneShot<Boolean>> = refreshOneShot
     internal fun refreshOnLocationPermissionOneShot(): LiveData<OneShot<Boolean>> = refreshOnLocationPermissionOneShot
     internal fun refreshOnPush(): LiveData<Boolean> = refreshOnPush
@@ -115,7 +117,7 @@ abstract class FeedViewModel(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            ExternalNavigator.RC_SETTINGS_LOCATION -> refresh()
+            ExternalNavigator.RC_SETTINGS_LOCATION -> refresh()  // refresh on change location settings
         }
     }
 

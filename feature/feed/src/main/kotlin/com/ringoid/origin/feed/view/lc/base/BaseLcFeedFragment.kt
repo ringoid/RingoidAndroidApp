@@ -109,7 +109,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             observeOneShot(vm.feedCountsOneShot(), ::updateFeedCounts)
             observeOneShot(vm.seenAllFeedItemsOneShot(), ::onSeenAllFeed)
             observeOneShot(vm.lmmLoadFailedOneShot()) {
-                it.handleOnView(this@BaseLcFeedFragment, {}) { vm.refresh() }
+                it.handleOnView(this@BaseLcFeedFragment, {}) { vm.refresh() /** refresh on connection timeout */ }
             }
         }
     }

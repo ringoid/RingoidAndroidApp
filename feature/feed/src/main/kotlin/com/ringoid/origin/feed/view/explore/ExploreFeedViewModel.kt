@@ -9,16 +9,13 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.IListScrollCallback
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.debug.DebugLogUtil
-import com.ringoid.report.exception.ErrorConnectionTimedOut
-import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.report.log.Report
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.Feed
@@ -27,6 +24,9 @@ import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.common.visual.LikeVisualEffect
 import com.ringoid.origin.view.common.visual.VisualEffectManager
+import com.ringoid.report.exception.ErrorConnectionTimedOut
+import com.ringoid.report.exception.ThresholdExceededException
+import com.ringoid.report.log.Report
 import com.ringoid.utility.DebugOnly
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -92,7 +92,7 @@ class ExploreFeedViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun onRecreate(savedInstanceState: Bundle) {
         super.onRecreate(savedInstanceState)
-        refresh()  // TODO: do proper state restore
+        refresh()  // refresh on state restore //TODO: do proper state restore
     }
 
     // --------------------------------------------------------------------------------------------
@@ -125,7 +125,10 @@ class ExploreFeedViewModel @Inject constructor(
                 }
             }
             .autoDisposable(this)
-            .subscribe({ feed.value = it }, DebugLogUtil::e)
+            .subscribe({
+                feed.value = it
+                notifyOnFeedLoadFinishOneShot.value = OneShot(true)
+            }, DebugLogUtil::e)
     }
 
     private fun getMoreFeed() {
@@ -151,7 +154,10 @@ class ExploreFeedViewModel @Inject constructor(
             }
             .doFinally { isLoadingMore = false }
             .autoDisposable(this)
-            .subscribe({ feed.value = it }, DebugLogUtil::e)
+            .subscribe({
+                feed.value = it
+                notifyOnFeedLoadFinishOneShot.value = OneShot(true)
+            }, DebugLogUtil::e)
     }
 
     // ------------------------------------------
@@ -234,7 +240,7 @@ class ExploreFeedViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get Discover on Application fresh start [${getFeedName()}]")
-        refresh()
+        refresh()  // refresh on app fresh start
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -242,7 +248,7 @@ class ExploreFeedViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get Discover on Application recreate while running [${getFeedName()}]")
-        refresh()
+        refresh()  // refresh on recreate
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -259,7 +265,7 @@ class ExploreFeedViewModel @Inject constructor(
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Explore...")
-            refresh()  // app reopen leads Explore screen to refresh as well
+            refresh()  // app reopen after time threshold leads Explore screen to refresh
         }
     }
 

@@ -13,9 +13,9 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
-import com.ringoid.domain.DomainUtil
 import com.ringoid.debug.DebugLogUtil
-import com.ringoid.report.log.Report
+import com.ringoid.debug.timer.TimeKeeper
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
@@ -35,11 +35,9 @@ import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.filters.BaseFiltersFragment
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
+import com.ringoid.report.log.Report
+import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
-import com.ringoid.utility.isVisible
-import com.ringoid.utility.linearLayoutManager
 import com.ringoid.widget.view.swipes
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.functions.Consumer
@@ -55,6 +53,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     protected var filtersPopupWidget: FiltersPopupWidget? = null
     protected var toolbarWidget: ToolbarWidget? = null
+
+    protected val timeKeeper = TimeKeeper()
 
     // ------------------------------------------
     override fun getLayoutId(): Int = R.layout.fragment_feed
@@ -81,7 +81,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 showLoading(isVisible = false)
             }
             is ViewState.LOADING -> showLoading(isVisible = true)
-            is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState) { vm.refresh() }
+            is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState) { vm.refresh() /** refresh on connection timeout */ }
         }
     }
 
@@ -266,6 +266,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             }
         }
         invalidateScrollCaches()
+        timeKeeper.registerCallback { context?.toast(OriginR_string.time_keeper_interval_alert_load) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -310,6 +311,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
         observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
+        observeOneShot(vm.notifyOnFeedLoadFinishOneShot()) { timeKeeper.stop() }
         observeOneShot(vm.refreshOneShot()) {
             onBeforeRefresh()
             onRefresh()
@@ -440,6 +442,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     override fun onDestroy() {
         super.onDestroy()
+        timeKeeper.unregisterCallback()
         feedAdapter.dispose()
     }
 
@@ -468,6 +471,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no location permission on refresh
                 }
             } else {
+                timeKeeper.start()  // refresh has just started
                 vm.onRefresh()  // refresh without asking for location permission
             }
             true
