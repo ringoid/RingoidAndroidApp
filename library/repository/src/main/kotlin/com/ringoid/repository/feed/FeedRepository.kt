@@ -30,6 +30,7 @@ import com.ringoid.report.exception.NetworkUnexpected
 import com.ringoid.report.exception.OldAppVersionApiException
 import com.ringoid.report.exception.WrongRequestParamsClientApiException
 import com.ringoid.report.log.Report
+import com.ringoid.report.log.ReportLevel
 import com.ringoid.repository.BaseRepository
 import com.ringoid.repository.FeedSharedPrefs
 import io.reactivex.Completable
@@ -180,7 +181,7 @@ open class FeedRepository @Inject constructor(
             .flatMap { getLmmOnly(resolution, source = source, lastActionTime = it, extraTraces = listOf(trace)) }
             .onErrorResumeNext {
                 Timber.e(it)
-                Report.capture(it, message = "Fallback to get cached Lmm", level = Report.Level.WARNING)
+                Report.capture(it, message = "Fallback to get cached Lmm", level = ReportLevel.WARNING)
                 if (it is NetworkUnexpected) {
                     lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
                 }
@@ -250,7 +251,7 @@ open class FeedRepository @Inject constructor(
                         if (it is NetworkUnexpected) {
                             lmmLoadFailed.onNext(it)  // deliver error to anyone who subscribed to handle it
                         }
-                        Report.capture(it, message = "Fallback to get cached LC", level = Report.Level.WARNING)
+                        Report.capture(it, message = "Fallback to get cached LC", level = ReportLevel.WARNING)
                         getCachedLc()  // recover with cache
                     }
                 }
