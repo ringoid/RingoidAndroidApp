@@ -36,18 +36,10 @@ abstract class SimpleListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     override fun getItemCount(): Int = models.size
 
     fun append(item: T) {
-        val position = appendOnly(item)
-        notifyItemInserted(position)
-        insertCb?.invoke(models.size)  /* total count */
-    }
-
-    @Synchronized
-    fun safeAppend(item: T): Int = appendOnly(item)
-
-    private fun appendOnly(item: T): Int {
         val position = models.size
         models.add(item)
-        return position
+        notifyItemInserted(position)
+        insertCb?.invoke(models.size)  /* total count */
     }
 
     fun appendBuffer(item: T) {
@@ -63,16 +55,7 @@ abstract class SimpleListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     }
 
     fun clear() {
-        clearOnly()
-        notifyDataSetChanged()
-    }
-
-    @Synchronized
-    fun safeClear() {
-        clearOnly()
-    }
-
-    private fun clearOnly() {
         models.clear()
+        notifyDataSetChanged()
     }
 }

@@ -101,29 +101,20 @@ class DebugView : ConstraintLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         DebugLogUtil.logger
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { DebugLogUtil.d("${Date().date()} :: ${BuildConfig.VERSION_NAME}\n\n${ContextUtil.deviceInfo()}\n\n") }
             .doOnDispose { Timber.v("Disposed DebugView") }
-            .map {  // offload calculations from UI thread
+            .`as`(autoDisposable(scope()))
+            .subscribe({
                 if (it == EmptyDebugLogItem) {
-                    debugLogItemAdapter.safeClear()
-                    DomainUtil.UNKNOWN_VALUE
+                    clear()
                 } else {
+//                    Timber.v("DebugView item: ${it.log}")
                     if (it.level == DebugLogLevel.LIFECYCLE && !lifecycleToggle) {
                         // ignore LIFECYCLE logs if they are turned off
-                        DomainUtil.BAD_POSITION
                     } else {
-                        val viewObject = DebugLogItemVO.from(it)
-                        debugLogItemAdapter.safeAppend(viewObject)
+                        debugLogItemAdapter.append(DebugLogItemVO.from(it))
                     }
-                }
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .`as`(autoDisposable(scope()))
-            .subscribe({ position ->
-                when (position) {
-                    DomainUtil.UNKNOWN_VALUE -> debugLogItemAdapter.notifyDataSetChanged()
-                    DomainUtil.BAD_POSITION -> { /* no-op */ }
-                    else -> debugLogItemAdapter.notifyDataSetChanged()
                 }
             }, DebugLogUtil::e)
     }
