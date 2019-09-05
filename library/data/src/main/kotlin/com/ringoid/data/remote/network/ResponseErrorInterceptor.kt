@@ -46,8 +46,8 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
             DebugLogUtil.e(e, errorMessage)
         } catch (e: Throwable) {
             errorMessage = "Response: chain failed [$requestUrl]: ${e.message}"
-            throw e.reportNetworkInterceptionErrorAndThrow(requestUrl, from = javaClass.simpleName)
-            // TODO: maybe set some flag to return Single.error(e) in calling rx-chain to handle and release locks, if any
+            unexpected = NetworkUnexpected.ERROR_CONNECTION_FATAL
+            e.reportNetworkInterceptionError(requestUrl, from = javaClass.simpleName)
         }
 
         val body = BaseResponse(requestUrl = request.url.toString(), unexpected = unexpected)
