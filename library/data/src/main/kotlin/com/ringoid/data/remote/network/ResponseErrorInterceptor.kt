@@ -10,7 +10,6 @@ import okhttp3.Protocol
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import timber.log.Timber
-import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
@@ -55,11 +54,7 @@ class ResponseErrorInterceptor : IResponseErrorInterceptor {
             logError(e, errorMessage)
         } catch (e: Throwable) {
             errorMessage = "Response: chain failed [$requestUrl]: ${e.message}"
-            DebugLogUtil.d(errorMessage)
-            Report.capture(e, "Chain proceed has failed",
-                               extras = listOf("url" to requestUrl, "cause" to (e.message ?: ""),
-                                               "from" to javaClass.simpleName))
-            throw IOException("Chain proceed has failed", e)
+            throw e.reportNetworkInterceptionErrorAndThrow(requestUrl, from = javaClass.simpleName)
             // TODO: maybe set some flag to return Single.error(e) in calling rx-chain to handle and release locks, if any
         }
 
