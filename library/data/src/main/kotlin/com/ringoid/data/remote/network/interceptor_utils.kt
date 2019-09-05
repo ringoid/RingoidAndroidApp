@@ -5,7 +5,7 @@ import com.ringoid.report.log.Report
 import java.io.IOException
 
 fun Throwable.reportNetworkInterceptionError(requestUrl: String, from: String) {
-    DebugLogUtil.d("Chain failed [$requestUrl]: $message")
+    DebugLogUtil.e(this, "Chain failed [$requestUrl]: $message")
     Report.capture(this, "Chain proceed has failed",
         extras = listOf("url" to requestUrl, "cause" to (message ?: ""),
                         "inner cause" to "${cause?.javaClass?.simpleName}",
