@@ -6,7 +6,7 @@ import com.ringoid.domain.model.IListModel
 
 data class DebugLogItemVO(val log: DebugLogItem) : IListModel {
 
-    override fun getModelId(): Long = log.id.hashCode().toLong()
+    override fun getModelId(): Long = log.tick
 
     companion object {
         fun from(log: DebugLogItem): DebugLogItemVO = DebugLogItemVO(log)

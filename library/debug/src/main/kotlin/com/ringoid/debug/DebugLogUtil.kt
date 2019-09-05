@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit
 @DebugOnly
 object DebugLogUtil {
 
+    internal var GLOBAL_TICK: Long = 1L
+
     val logger = ReplaySubject.createWithTimeAndSize<DebugLogItem>(15, TimeUnit.SECONDS, Schedulers.newThread(), 10)
     private lateinit var config: IRuntimeConfig
     private var dao: IDebugLogDaoHelper? = null
