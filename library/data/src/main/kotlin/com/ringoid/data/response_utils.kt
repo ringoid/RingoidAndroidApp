@@ -242,16 +242,16 @@ private fun <T : BaseResponse> T.checkApiError(tag: String? = null): Throwable? 
 }
 
 fun <T : BaseResponse> onApiErrorMaybe(tag: String? = null): MaybeTransformer<T, T> =
-    MaybeTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Maybe.error(e)} ?: source } }
+    MaybeTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Maybe.error<T>(e)} ?: source } }
 
 fun <T : BaseResponse> onApiErrorSingle(tag: String? = null): SingleTransformer<T, T> =
-    SingleTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Single.error(e)} ?: source } }
+    SingleTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Single.error<T>(e)} ?: source } }
 
 fun <T : BaseResponse> onApiErrorFlowable(tag: String? = null): FlowableTransformer<T, T> =
-    FlowableTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Flowable.error(e)} ?: source } }
+    FlowableTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Flowable.error<T>(e)} ?: source } }
 
 fun <T : BaseResponse> onApiErrorObservable(tag: String? = null): ObservableTransformer<T, T> =
-    ObservableTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Observable.error(e)} ?: source } }
+    ObservableTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Observable.error<T>(e)} ?: source } }
 
 /* Network Error */
 // --------------------------------------------------------------------------------------------
