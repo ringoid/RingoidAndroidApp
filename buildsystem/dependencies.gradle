@@ -413,8 +413,8 @@ ext {
     userSettingsDependencies = [
         [configuration: "implementation", dependency: d_libs.eventBus],
     ]
-    userSettingsDependencies += Origin + Develop + Analytics + Report + android + arch + autoDispose +
-                                dagger + deeplink + kotlin + leaks + log + rx + rxBind
+    userSettingsDependencies += Origin + Develop + Analytics + Report + android + androidView + arch +
+                                autoDispose + dagger + deeplink + kotlin + leaks + log + rx + rxBind
 
     androidTestUserSettingsDeps = androidTest
     testUserSettingsDependencies = test

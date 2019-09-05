@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -44,6 +45,7 @@ class DebugView : ConstraintLayout {
             field = value
             DebugLogUtil.w("Lifecycle logs has been turned ${if (value) "ON" else "OFF"}")
         }
+    private var onCloseListener: ((view: View) -> Unit)? = null
     private var sizeToggle = false
 
     companion object {
@@ -82,19 +84,12 @@ class DebugView : ConstraintLayout {
             layoutManager = LinearLayoutManager(context).also { it.stackFromEnd = true }
         }
 
-        ibtn_barrier_log.clicks().compose(clickDebounce()).subscribe {
-            clear()
-            line()
-            line()
-            DebugLogUtil.i("BEGIN barrier logs")
-            SimpleBarrierLogUtil.printDebugLog()
-            DebugLogUtil.i("END barrier logs")
-            line()
-            line()
-        }
+        ibtn_barrier_log.clicks().compose(clickDebounce()).subscribe { barrierLogs() }
         ibtn_bg_flip_debug.clicks().compose(clickDebounce()).subscribe { bgToggle = !bgToggle }
         ibtn_clear_debug.clicks().compose(clickDebounce()).subscribe { clear() }
-        ibtn_close_debug.clicks().compose(clickDebounce()).subscribe { Bus.post(BusEvent.CloseDebugView) }
+        ibtn_close_debug.clicks().compose(clickDebounce()).subscribe {
+            onCloseListener?.invoke(this@DebugView) ?: run { Bus.post(BusEvent.CloseDebugView) }
+        }
         ibtn_error_debug.clicks().compose(clickDebounce()).subscribe { }
         ibtn_lifecycle_debug.clicks().compose(clickDebounce()).subscribe { lifecycleToggle = !lifecycleToggle }
         ibtn_resize_debug.clicks().compose(clickDebounce()).subscribe {
@@ -131,6 +126,22 @@ class DebugView : ConstraintLayout {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         Timber.v("DebugView has been detached from Window")
+    }
+
+    fun setOnCloseListener(l: ((view: View) -> Unit)?) {
+        onCloseListener = l
+    }
+
+    // --------------------------------------------------------------------------------------------
+    fun barrierLogs() {
+        clear()
+        line()
+        line()
+        DebugLogUtil.i("BEGIN barrier logs")
+        SimpleBarrierLogUtil.printDebugLog()
+        DebugLogUtil.i("END barrier logs")
+        line()
+        line()
     }
 
     private fun clear() {

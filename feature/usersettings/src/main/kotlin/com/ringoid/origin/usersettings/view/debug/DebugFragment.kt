@@ -9,9 +9,9 @@ import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.model.feed.EmptyFilters
 import com.ringoid.origin.error.handleOnView
@@ -65,6 +65,15 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
             setTitle(OriginR_string.debug_title)
         }
 
+        debug_view.setOnCloseListener { it.changeVisibility(isVisible = false) }
+        item_barrier_log.clicks().compose(clickDebounce()).subscribe {
+            with (debug_view) {
+                if (!isVisible()) {
+                    changeVisibility(isVisible = true)
+                    barrierLogs()  // display barrier logs
+                }
+            }
+        }
         item_debug_handle_error_stream.clicks().compose(clickDebounce()).subscribe { vm.debugHandleErrorStream() }
         item_error_http.clicks().compose(clickDebounce()).subscribe { vm.requestWithNotSuccessResponse() }
         item_error_http_404.clicks().compose(clickDebounce()).subscribe { vm.requestWith404Response() }

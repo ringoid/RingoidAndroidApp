@@ -68,6 +68,26 @@
                     style="@style/RaisedButton"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
+
+                <com.ringoid.widget.view.item_view.SwitchIconItemView
+                    android:id="@+id/item_barrier_log"
+                    app:icon_item_text="@string/debug_item_barrier_log"
+                    app:icon_item_text_color="?refColorAccent"
+                    style="?attr/iconItemView"/>
+
+                <com.ringoid.origin.view.debug.DebugView
+                    android:id="@+id/debug_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/widget_debug_height"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
             <com.ringoid.widget.view.item_view.SwitchIconItemView
                 android:id="@+id/item_developer_mode"
                 app:icon_item_text="@string/debug_item_switch_developer_mode"
