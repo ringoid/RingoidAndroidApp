@@ -7,8 +7,8 @@ import android.os.Parcelable
 import com.google.gson.Gson
 import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.view.SimpleBaseActivity
-import com.ringoid.domain.DomainUtil
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.domain.DomainUtil
 import com.ringoid.imageloader.ImageLoader
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.model.ChatPayload
@@ -67,7 +67,7 @@ class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
                 ChatFragment.newInstance(peerId = peerId, payload = payload, tag = tag).show(supportFragmentManager, tag)
             }
             ImageLoader.load(uri = payload.peerImageUri, thumbnailUri = payload.peerThumbnailUri,
-                             iv = iv_chat_image)
+                             iv = iv_chat_image, extra = listOf("profileId" to payload.peerId))
         }
     }
 }
