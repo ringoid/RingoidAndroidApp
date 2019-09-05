@@ -1,4 +1,4 @@
-package com.ringoid.debug
+package com.ringoid.debug.barrier
 
 import com.ringoid.debug.model.BarrierLogItem
 import io.reactivex.Single

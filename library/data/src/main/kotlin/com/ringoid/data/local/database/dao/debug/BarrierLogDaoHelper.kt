@@ -1,8 +1,8 @@
 package com.ringoid.data.local.database.dao.debug
 
 import com.ringoid.data.local.database.model.debug.BarrierLogItemDbo
+import com.ringoid.debug.barrier.IBarrierLogDaoHelper
 import com.ringoid.debug.model.BarrierLogItem
-import com.ringoid.debug.IBarrierLogDaoHelper
 import com.ringoid.domain.model.mapList
 import com.ringoid.utility.DebugOnly
 import io.reactivex.Completable
