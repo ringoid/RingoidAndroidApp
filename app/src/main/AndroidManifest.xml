@@ -12,7 +12,8 @@
         android:icon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:theme="@style/AppTheme.Dark">
+        android:theme="@style/AppTheme.Dark"
+        android:vmSafeMode="true">
 
         <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
