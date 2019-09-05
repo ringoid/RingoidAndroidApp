@@ -104,7 +104,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             }
         }
 
-        timeKeeper.registerCallback { context?.toast(OriginR_string.time_keeper_interval_alert_load) }
+        timeKeeper.registerCallback { runOnUiThread { context?.toast(OriginR_string.time_keeper_interval_alert_load) } }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =

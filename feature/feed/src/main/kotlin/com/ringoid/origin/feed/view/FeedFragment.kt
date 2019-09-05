@@ -266,7 +266,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             }
         }
         invalidateScrollCaches()
-        timeKeeper.registerCallback { context?.toast(OriginR_string.time_keeper_interval_alert_load) }
+        timeKeeper.registerCallback { runOnUiThread { context?.toast(OriginR_string.time_keeper_interval_alert_load) } }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
