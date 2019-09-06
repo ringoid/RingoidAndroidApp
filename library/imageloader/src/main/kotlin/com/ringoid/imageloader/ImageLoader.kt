@@ -66,7 +66,7 @@ object ImageLoader {
                     override fun onFailure(id: String, throwable: Throwable) {
                         super.onFailure(id, throwable)
                         var depth = imageView.tag as Int
-                        imageView.loge(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
+                        //imageView.loge(throwable, "ImageLoader: Failed to load image [$uri], retry ${depth + 1} / $RETRY_COUNT")
 
                         if (BuildConfig.IS_STAGING) {
                             imageView.hierarchy.setFailureImage(DebugImageLoadDrawable(cause = throwable))
@@ -85,14 +85,14 @@ object ImageLoader {
                         }
 
                         if (depth >= RETRY_COUNT) {
-                            imageView.logv("ImageLoader: All retries have exhausted, fallback to manual retry")
+                            //imageView.logv("ImageLoader: All retries have exhausted, fallback to manual retry")
                             val controller = createFlatImageController(uri, thumbnailUri)
                                 .setOldController(imageView.controller)
                                 .setTapToRetryEnabled(true)  // enable manual retry on tap
                                 .build()
                             imageView.let { it.post { it.controller = controller } }
                         } else {
-                            imageView.logv("ImageLoader: Retry load image: [${depth + 1} / $RETRY_COUNT]")
+                            //imageView.logv("ImageLoader: Retry load image: [${depth + 1} / $RETRY_COUNT]")
                             imageView.tag = depth + 1
                             delay(2000L) {
                                 val controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef)
