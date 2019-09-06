@@ -329,7 +329,6 @@ class MessengerRepository @Inject constructor(
             .subscribe({ it.forEach { message -> keepSentMessage(message) } }, Timber::e)
     }
 
-    @Synchronized
     private fun keepSentMessage(sentMessage: Message) {
         if (!sentMessages.containsKey(sentMessage.chatId)) {
             sentMessages[sentMessage.chatId] = Collections.newSetFromMap(ConcurrentHashMap())
