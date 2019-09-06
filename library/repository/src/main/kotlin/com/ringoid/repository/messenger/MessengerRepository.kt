@@ -223,8 +223,7 @@ class MessengerRepository @Inject constructor(
 
     private fun Single<Chat>.cacheUnconsumedSentLocalMessages(chatId: String): Single<Chat> =
         flatMap { chat ->
-            sentMessagesLocal.countChatMessages(chatId)
-                .map { count -> count to chat }
+            sentMessagesLocal.countChatMessages(chatId).map { count -> count to chat }
         }
         .flatMap { (count, chat) ->
             if (count > 0) {
