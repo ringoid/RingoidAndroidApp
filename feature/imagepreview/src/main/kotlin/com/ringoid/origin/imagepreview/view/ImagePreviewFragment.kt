@@ -69,7 +69,8 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
                     }
                     contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 } catch (e: SecurityException) {
-                    Report.capture(e, "No persistable permission grants found")
+                    Report.capture(e, "No persistable permission grants found",
+                                   extras = listOf("uri" to "$it"))
                     uri = null  // preventing from further getting content by input uri
                 }
             }
@@ -127,6 +128,8 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     }
 
     // --------------------------------------------------------------------------------------------
+    private var cropInProgress = false
+
     private fun cropImage() {
         if (isLoading) {
             return
@@ -136,6 +139,12 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
             return
         }
 
+        if (cropInProgress) {
+            return
+        }
+        cropInProgress = true
+
+        Timber.v("Perform image cropping...")
         context?.let {
             val destinationFile = File(it.filesDir, "${randomString()}.jpg")
             crop_view.let { view ->
@@ -163,11 +172,13 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     // ------------------------------------------
     override fun onSuccess(uri: Uri) {
         isLoading = false
+        cropInProgress = false
         pb_image_preview?.changeVisibility(isVisible = false)
     }
 
     override fun onFailure(e: Throwable) {
         isLoading = false
+        cropInProgress = false
         pb_image_preview?.changeVisibility(isVisible = false)
         context?.toast(OriginR_string.error_crop_image)
         onClose()  // failed to load image to crop - close without retry
