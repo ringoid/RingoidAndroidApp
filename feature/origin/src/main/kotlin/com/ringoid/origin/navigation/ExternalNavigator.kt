@@ -101,7 +101,9 @@ object ExternalNavigator {
     }
 
     private fun openGalleryToGetImageIntent(): Intent =
-        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+            type = "image/*"
+        }
 
     /* Google Play */
     // --------------------------------------------------------------------------------------------
