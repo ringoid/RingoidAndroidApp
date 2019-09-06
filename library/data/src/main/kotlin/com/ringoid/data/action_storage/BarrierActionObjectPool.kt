@@ -18,7 +18,8 @@ abstract class BarrierActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPr
     protected abstract fun triggerSourceImpl(): Single<Long>
 
     /**
-     * Not synchronized method, because synchronization is achieved via semaphore.
+     * First thread acquires lock [triggerInProgress] and performs [triggerSourceImpl],
+     * others should wait on that lock until released.
      */
     override fun triggerSource(): Single<Long> =
         Single.just(ProcessingPayload())
