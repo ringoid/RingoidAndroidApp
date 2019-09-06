@@ -141,12 +141,13 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
         val prev = lastActionTime()
         if (prev > lastActionTime) {
             Report.w("Update last action time for lesser value", extras = listOf("lAt" to "$lastActionTime", "prev lAt" to "$prev"))
-        }
-        lastActionTimeValue.set(lastActionTime)
+        } else if (prev < lastActionTime) {
+            lastActionTimeValue.set(lastActionTime)
+            spm.saveLastActionTime(lastActionTime)
+        }  // no-op on equal
+
         if (lastActionTime == 0L) {
             spm.deleteLastActionTime()
-        } else {
-            spm.saveLastActionTime(lastActionTime)
         }
         Report.breadcrumb("Commit actions success", "lastActionTime" to "$lastActionTime")
     }
