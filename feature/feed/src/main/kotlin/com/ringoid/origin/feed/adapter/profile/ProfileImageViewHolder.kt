@@ -8,12 +8,7 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.rv_item_profile_image.view.*
 
-abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view) {
-
-    open fun cleanUp() {
-        // no-op
-    }
-}
+abstract class BaseProfileImageViewHolder(view: View) : BaseViewHolder<ProfileImageVO>(view)
 
 class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
 
@@ -34,8 +29,8 @@ class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
     override fun cleanUp() {
         super.cleanUp()
         with (itemView.iv_image) {
-            setImageBitmap(null)
-            setImageDrawable(null)
+            controller?.onDetach()
+            topLevelDrawable?.callback = null
         }
     }
 }

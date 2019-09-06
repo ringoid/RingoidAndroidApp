@@ -56,4 +56,8 @@ abstract class BaseViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
             gestureDetector.onTouchEvent(event)
         }
     }
+
+    open fun cleanUp() {
+        // no-op
+    }
 }
