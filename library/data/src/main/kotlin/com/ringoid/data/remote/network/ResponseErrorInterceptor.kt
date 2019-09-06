@@ -3,6 +3,7 @@ package com.ringoid.data.remote.network
 import com.ringoid.datainterface.remote.model.BaseResponse
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.report.exception.NetworkUnexpected
+import dagger.Reusable
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Protocol
@@ -11,9 +12,11 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import javax.inject.Inject
 import javax.net.ssl.SSLHandshakeException
 
-class ResponseErrorInterceptor : IResponseErrorInterceptor {
+@Reusable
+class ResponseErrorInterceptor @Inject constructor() : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         DebugLogUtil.d2("Response: chain prepare START")

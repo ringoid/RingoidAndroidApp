@@ -5,12 +5,12 @@ import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.ringoid.data.BuildConfig
-import com.ringoid.data.remote.network.IRequestHeaderInterceptor
-import com.ringoid.data.remote.network.IResponseErrorInterceptor
 import com.ringoid.data.remote.network.RequestHeaderInterceptor
 import com.ringoid.data.remote.network.ResponseErrorInterceptor
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.internal.platform.Platform
@@ -19,6 +19,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -31,8 +32,8 @@ class CloudModule(private val appVersion: Int) {
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             .create()
 
-    @Provides @Singleton
-    fun provideHttpLoggingInterceptor(): LoggingInterceptor =
+    @Provides @Reusable @Named("Logging")
+    fun provideHttpLoggingInterceptor(): Interceptor =
         LoggingInterceptor.Builder()
             .loggable(BuildConfig.DEBUG)
             .setLevel(Level.BASIC)
@@ -42,17 +43,19 @@ class CloudModule(private val appVersion: Int) {
             .enableAndroidStudio_v3_LogsHack(true)
             .build()
 
-    @Provides @Singleton
-    fun provideRequestHeaderInterceptor(): IRequestHeaderInterceptor =
+    @Provides @Reusable @Named("RequestHeaders")
+    fun provideRequestHeaderInterceptor(): Interceptor =
         RequestHeaderInterceptor(appVersion = appVersion)
 
-    @Provides @Singleton
-    fun provideResponseErrorInterceptor(): IResponseErrorInterceptor = ResponseErrorInterceptor()
+    @Provides @Reusable @Named("ResponseErrors")
+    fun provideResponseErrorInterceptor(interceptor: ResponseErrorInterceptor): Interceptor = interceptor
 
     @Provides @Singleton
-    fun provideOkHttpClient(requestInterceptor: IRequestHeaderInterceptor,
-                            responseInterceptor: IResponseErrorInterceptor,
-                            logInterceptor: LoggingInterceptor): OkHttpClient =
+    fun provideOkHttpClient(
+            @Named("RequestHeaders") requestInterceptor: Interceptor,
+            @Named("ResponseErrors") responseInterceptor: Interceptor,
+            @Named("Logging") logInterceptor: Interceptor)
+            : OkHttpClient =
         OkHttpClient.Builder()
             .protocols(Collections.singletonList(Protocol.HTTP_1_1))
             .addInterceptor(requestInterceptor)

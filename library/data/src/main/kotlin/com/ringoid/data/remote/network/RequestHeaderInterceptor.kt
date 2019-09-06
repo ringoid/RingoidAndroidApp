@@ -5,7 +5,7 @@ import com.ringoid.report.log.Report
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class RequestHeaderInterceptor(private val appVersion: Int) : IRequestHeaderInterceptor {
+class RequestHeaderInterceptor(private val appVersion: Int) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()

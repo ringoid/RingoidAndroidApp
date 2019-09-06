@@ -37,9 +37,9 @@ object ImageLoader {
             ?.let {
                 it.tag = 0  // depth of retry recursion
                 it.hierarchy.setProgressBarImage(CircularImageProgressBarDrawable())
-//                it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef, extra).build()
+                it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef, extra).build()
 //                it.controller = createFlatImageController(uri, thumbnailUri).setOldController(it.controller).build()
-                it.setImageURI(uri)
+//                it.setImageURI(uri)
                 ImageLoadRequestStatus.Ok
             }
             ?: run {
@@ -78,7 +78,7 @@ object ImageLoader {
                             }
                             if (depth >= RETRY_COUNT) {
                                 Report.capture(throwable, "Image not found (http error 404)",
-                                                   extras = mutableListOf("imageUrl" to uri).apply { addAll(extra) })
+                                               extras = mutableListOf("imageUrl" to uri).apply { addAll(extra) })
                                 return  // no more attempts
                             }
                             depth = RETRY_COUNT - 1  // one more retry
