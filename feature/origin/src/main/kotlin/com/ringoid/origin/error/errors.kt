@@ -2,15 +2,12 @@ package com.ringoid.origin.error
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.ringoid.report.exception.ErrorConnectionTimedOut
-import com.ringoid.report.exception.InvalidAccessTokenApiException
-import com.ringoid.report.exception.NetworkUnexpected
-import com.ringoid.report.exception.OldAppVersionApiException
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.blockingErrorScreen
 import com.ringoid.origin.navigation.logout
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.report.exception.*
 import com.ringoid.utility.delay
 
 private fun showConnectionTimeoutErrorDialog(activity: FragmentActivity?, onRefresh: (() -> Unit)? = null) {
@@ -36,13 +33,17 @@ fun Throwable.handleOnView(activity: FragmentActivity, onErrorState: () -> Unit 
         is OldAppVersionApiException -> blockingErrorScreen(activity, path = "/old_version")
         is InvalidAccessTokenApiException -> logout(activity)
         is NetworkUnexpected -> {
-            if (onRefresh != null) {
-                when (this) {
-                    is ErrorConnectionTimedOut -> showConnectionTimeoutErrorDialog(activity, onRefresh)
-                    else -> noConnectionState(activity)
+            when (this) {
+                is ErrorConnectionTimedOut -> {
+                    if (onRefresh != null) {
+                        showConnectionTimeoutErrorDialog(activity, onRefresh)
+                    } else {
+                        noConnectionState(activity)
+                    }
                 }
-            } else {
-                noConnectionState(activity)
+                is ErrorConnectionInsecure,
+                is ErrorNoConnection -> noConnectionState(activity)
+                else -> errorState(this)
             }
         }
         else -> errorState(this)  // default error handling
@@ -64,13 +65,17 @@ fun Throwable.handleOnView(fragment: Fragment, onErrorState: () -> Unit = {}, on
         is OldAppVersionApiException -> blockingErrorScreen(fragment, path = "/old_version")
         is InvalidAccessTokenApiException -> logout(fragment)
         is NetworkUnexpected -> {
-            if (onRefresh != null) {
-                when (this) {
-                    is ErrorConnectionTimedOut -> showConnectionTimeoutErrorDialog(fragment.activity, onRefresh)
-                    else -> noConnectionState(fragment)
+            when (this) {
+                is ErrorConnectionTimedOut -> {
+                    if (onRefresh != null) {
+                        showConnectionTimeoutErrorDialog(fragment.activity, onRefresh)
+                    } else {
+                        noConnectionState(fragment)
+                    }
                 }
-            } else {
-                noConnectionState(fragment)
+                is ErrorConnectionInsecure,
+                is ErrorNoConnection -> noConnectionState(fragment)
+                else -> errorState(this)
             }
         }
         else -> errorState(this)  // default error handling
