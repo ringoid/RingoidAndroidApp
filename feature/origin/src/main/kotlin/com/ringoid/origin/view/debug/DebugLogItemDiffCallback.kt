@@ -5,8 +5,8 @@ import com.ringoid.base.adapter.BaseDiffCallback
 class DebugLogItemDiffCallback : BaseDiffCallback<DebugLogItemVO>() {
 
     override fun areItemsTheSame(oldItem: DebugLogItemVO, newItem: DebugLogItemVO): Boolean =
-        oldItem.log.id == newItem.log.id
+        oldItem.log.tick == newItem.log.tick
 
     override fun areContentsTheSame(oldItem: DebugLogItemVO, newItem: DebugLogItemVO): Boolean =
-        oldItem.log == newItem.log
+        oldItem.log.tick == newItem.log.tick
 }
