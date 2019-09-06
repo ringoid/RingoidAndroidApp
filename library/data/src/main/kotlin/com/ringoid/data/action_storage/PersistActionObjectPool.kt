@@ -41,7 +41,7 @@ class PersistActionObjectPool @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { onComplete?.invoke() }
             .autoDisposable(userScopeProvider)
-            .subscribe({ DebugLogUtil.v("Put single aobj completed") }, Timber::e)
+            .subscribe({ DebugLogUtil.v("Put single aobj completed ${aobj.actionType}") }, Timber::e)
     }
 
     @Suppress("CheckResult")
@@ -51,7 +51,7 @@ class PersistActionObjectPool @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { onComplete?.invoke() }
             .autoDisposable(userScopeProvider)
-            .subscribe({ DebugLogUtil.v("Put aobjs completed $aobjs") }, Timber::e)
+            .subscribe({ DebugLogUtil.v("Put ${aobjs.size} aobjs completed ${aobjs.joinToString { it.actionType }}") }, Timber::e)
     }
 
     private fun putSource(aobj: OriginActionObject): Completable =
@@ -123,7 +123,7 @@ class PersistActionObjectPool @Inject constructor(
             .doOnError {
                 Report.breadcrumb("Commit actions error",
                              "exception" to "${it.javaClass}", "message" to "${it.message}")
-                DebugLogUtil.e("Commit actions error: $it ;; ${threadInfo()}")
+                DebugLogUtil.e("Commit actions error: $it")
             }
             .doOnSubscribe { dropStrategyData() }
             .doOnSuccess { updateLastActionTime(it.lastActionTime) }

@@ -48,6 +48,6 @@ abstract class BarrierActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPr
     // ------------------------------------------
     private var tcount: AtomicLong = AtomicLong(0L)  // count of threads
 
-    protected fun threadInfo(): String = if (BuildConfig.IS_STAGING) "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount (${triggerInProgress.queueLength})]" else "[t=${Thread.currentThread().name} / $tcount]"
+    private fun threadInfo(): String = if (BuildConfig.IS_STAGING) "[t=${Thread.currentThread().id} n=${Thread.currentThread().name} / $tcount (${triggerInProgress.queueLength})]" else "[t=${Thread.currentThread().name} / $tcount]"
     private fun threadStr(thread: ProcessingPayload) = if (BuildConfig.IS_STAGING) "${threadInfo()} at ${thread.startTime} ms" else "[t=${Thread.currentThread().name} / $tcount]"
 }
