@@ -3,8 +3,6 @@ package com.ringoid.origin.feed.adapter.profile
 import android.view.View
 import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.BuildConfig
-import com.ringoid.imageloader.DebugImageLoadDrawable
-import com.ringoid.imageloader.ImageLoadRequestStatus
 import com.ringoid.imageloader.ImageLoader
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.utility.changeVisibility
@@ -27,9 +25,6 @@ class ProfileImageViewHolder(view: View) : BaseProfileImageViewHolder(view) {
     override fun bind(model: ProfileImageVO) {
         ImageLoader.load(uri = model.image.uri, thumbnailUri = model.image.thumbnailUri,
                          iv = itemView.iv_image, extra = listOf("profileId" to model.profileId))
-            // TODO: remove in PROD
-            .takeIf { it == ImageLoadRequestStatus.InvalidImageViewRef }
-            ?.let { itemView.iv_image?.setImageDrawable(DebugImageLoadDrawable(RuntimeException("Invalid imageView reference!"))) }
 
         if (BuildConfig.IS_STAGING) {
             itemView.tv_image_id.text = "Image: ${model.image.idWithFirstN()}"
