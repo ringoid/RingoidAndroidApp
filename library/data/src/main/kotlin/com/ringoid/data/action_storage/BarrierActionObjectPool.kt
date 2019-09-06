@@ -7,6 +7,7 @@ import com.ringoid.debug.barrier.SimpleBarrierLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.report.log.Report
 import io.reactivex.Single
+import timber.log.Timber
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicLong
 
@@ -25,16 +26,27 @@ abstract class BarrierActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPr
             .flatMap { thread ->
                 tcount.incrementAndGet()
                 DebugLogUtil.v("Acquiring permission to commit actions by ${threadStr(thread)}")
-                triggerInProgress.acquireUninterruptibly()  // acquire permission to continue, or block on a barrier otherwise
-                SimpleBarrierLogUtil.enable(msg = "Acquired lock")
-                DebugLogUtil.v("Permission's been acquired to commit actions by ${threadStr(thread)}")
-                triggerSourceImpl()
-                    .doOnSubscribe { DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}") }
-                    .doOnError { DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)} with $it") }
-                    .doFinally {
-                        finishTriggerSource()  // 'doFinally' must be thread-safe
-                        DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.startTime} ms")
+                try {
+                    triggerInProgress.acquire()  // acquire permission to continue, or block on a barrier otherwise
+                    SimpleBarrierLogUtil.enable(msg = "Acquired lock")
+                    DebugLogUtil.v("Permission's been acquired to commit actions by ${threadStr(thread)}")
+                    triggerSourceImpl()
+                        .doOnSubscribe { DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}") }
+                        .doOnError { DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)} with $it") }
+                        .doFinally {
+                            finishTriggerSource()  // 'doFinally' must be thread-safe
+                            DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.startTime} ms")
+                        }
+                } catch (e: InterruptedException) {
+                    finishTriggerSource()  // release lock
+                    "Interruption while commit actions".let {
+                        Timber.e(e, it)
+                        DebugLogUtil.e(e, it, tag = "commitActions internal")
+                        Report.capture(e, it, tag = "commitActions internal")
                     }
+                    Thread.currentThread().interrupt()
+                    Single.error<Long>(e)
+                }
             }
 
     @Synchronized
