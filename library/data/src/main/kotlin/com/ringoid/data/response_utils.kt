@@ -202,16 +202,16 @@ fun <T : BaseResponse> expBackoffObservable(count: Int, delay: Long, tag: String
 /** Completable.withApiError() cannot be provided because [BaseResponse] is required to extract [BaseResponse.errorCode],
  *  which is not the case for [Completable] responses due to lack of response body. So no API error is that case. */
 inline fun <reified T : BaseResponse> Maybe<T>.withApiError(tag: String? = null): Maybe<T> =
-    compose(onApiErrorMaybe(tag))
+    flatMap { it.checkApiError(tag)?.let { e -> Maybe.error<T>(e)} ?: Maybe.just(it) }
 inline fun <reified T : BaseResponse> Single<T>.withApiError(tag: String? = null): Single<T> =
-    compose(onApiErrorSingle(tag))
+    flatMap { it.checkApiError(tag)?.let { e -> Single.error<T>(e)} ?: Single.just(it) }
 inline fun <reified T : BaseResponse> Flowable<T>.withApiError(tag: String? = null): Flowable<T> =
-    compose(onApiErrorFlowable(tag))
+    flatMap { it.checkApiError(tag)?.let { e -> Flowable.error<T>(e)} ?: Flowable.just(it) }
 inline fun <reified T : BaseResponse> Observable<T>.withApiError(tag: String? = null): Observable<T> =
-    compose(onApiErrorObservable(tag))
+    flatMap { it.checkApiError(tag)?.let { e -> Observable.error<T>(e)} ?: Observable.just(it) }
 
 // ----------------------------------------------
-private fun <T : BaseResponse> T.checkApiError(tag: String? = null): Throwable? {
+inline fun <reified T : BaseResponse> T.checkApiError(tag: String? = null): Throwable? {
     var error: Throwable? = null
     try {
         if (!unexpected.isNullOrBlank()) {
@@ -240,18 +240,6 @@ private fun <T : BaseResponse> T.checkApiError(tag: String? = null): Throwable? 
     }
     return error
 }
-
-fun <T : BaseResponse> onApiErrorMaybe(tag: String? = null): MaybeTransformer<T, T> =
-    MaybeTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Maybe.error<T>(e)} ?: source } }
-
-fun <T : BaseResponse> onApiErrorSingle(tag: String? = null): SingleTransformer<T, T> =
-    SingleTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Single.error<T>(e)} ?: source } }
-
-fun <T : BaseResponse> onApiErrorFlowable(tag: String? = null): FlowableTransformer<T, T> =
-    FlowableTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Flowable.error<T>(e)} ?: source } }
-
-fun <T : BaseResponse> onApiErrorObservable(tag: String? = null): ObservableTransformer<T, T> =
-    ObservableTransformer { source -> source.flatMap { it.checkApiError(tag)?.let { e -> Observable.error<T>(e)} ?: source } }
 
 /* Network Error */
 // --------------------------------------------------------------------------------------------
