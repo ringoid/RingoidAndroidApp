@@ -82,7 +82,7 @@ class LikesFeedViewModel @Inject constructor(
             .doOnNext { pushNewLike.value = 0L }  // for particle animation
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)
+            .subscribe({ if (!isStopped && shouldVibrate) app.vibrate() }, DebugLogUtil::e)
     }
 
     // ------------------------------------------
