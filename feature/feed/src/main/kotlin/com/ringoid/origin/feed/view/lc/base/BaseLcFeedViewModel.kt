@@ -29,6 +29,7 @@ import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.report.exception.ErrorConnectionTimedOut
 import com.ringoid.report.log.Report
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
@@ -128,17 +129,17 @@ abstract class BaseLcFeedViewModel(
     protected abstract fun sourceBadge(): Observable<Boolean>
     protected abstract fun sourceFeed(): Observable<LmmSlice>
 
-    override fun getFeed() {
+    override fun getFeed(): Completable {
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                              .put("limit", DomainUtil.LIMIT_PER_PAGE)
                              .put("source", getFeedName())
                              .put(filters)
 
-        getLcUseCase.source(params = params)
+        return getLcUseCase.source(params = params)
             .doOnSubscribe { viewState.value = ViewState.LOADING }  // load LC feed items progress
+            .doOnSuccess { notifyOnFeedLoadFinishOneShot.value = OneShot(true) }
             .doOnError { viewState.value = ViewState.ERROR(it) }  // load LC feed items failed
-            .autoDisposable(this)
-            .subscribe({ notifyOnFeedLoadFinishOneShot.value = OneShot(true) }, DebugLogUtil::e)
+            .ignoreElement()
     }
 
     private fun prependProfileOnTransfer(profileId: String, destinationFeed: LcNavTab, payload: Bundle? = null, action: (() -> Unit)? = null) {

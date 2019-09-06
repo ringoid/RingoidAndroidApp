@@ -29,6 +29,7 @@ import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.report.log.Report
 import com.ringoid.utility.DebugOnly
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -96,15 +97,16 @@ class ExploreFeedViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun getFeed() {
+    override fun getFeed(): Completable {
 //        debugGetNewFacesUseCase.source(params = prepareDebugFeedParams())
 //        debugGetNewFacesFailedUseCase.source()
 //        debugGetNewFacesRepeatAfterDelayForPageUseCase.source(params = prepareDebugFeedParamsRepeatAfterDelay())
 //        debugGetNewFacesRetryNTimesForPageUseCase.source(params = prepareDebugFeedParamsRetryNTimes())
 //        debugGetNewFacesThresholdExceed.source(params = prepareDebugFeedParamsThresholdExceed(failPage = 0))
-        getDiscoverUseCase.source(params = prepareFeedParams())
+        return getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }  // load feed items progress
             .doOnSuccess {
+                feed.value = it  // update feed content
                 viewState.value = if (it.isEmpty()) {
                     if (hasFiltersApplied()) {
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)  // set empty Explore feed due to filters
@@ -117,6 +119,7 @@ class ExploreFeedViewModel @Inject constructor(
                 if (spm.needShowFilters()) {
                     needShowFiltersOneShot.value = OneShot(true)
                 }
+                notifyOnFeedLoadFinishOneShot.value = OneShot(true)
             }
             .doOnError {
                 viewState.value = ViewState.ERROR(it)  // load feed items failed
@@ -124,11 +127,7 @@ class ExploreFeedViewModel @Inject constructor(
                     is ErrorConnectionTimedOut -> analyticsManager.fire(Analytics.CONNECTION_TIMEOUT, "sourceFeed" to getFeedName())
                 }
             }
-            .autoDisposable(this)
-            .subscribe({
-                feed.value = it
-                notifyOnFeedLoadFinishOneShot.value = OneShot(true)
-            }, DebugLogUtil::e)
+            .ignoreElement()
     }
 
     private fun getMoreFeed() {

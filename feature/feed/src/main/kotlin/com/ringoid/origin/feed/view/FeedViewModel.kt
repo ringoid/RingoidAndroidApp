@@ -34,6 +34,7 @@ import com.ringoid.utility.cloneAsList
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.targetVersion
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.Completable
 import timber.log.Timber
 
 abstract class FeedViewModel(
@@ -69,7 +70,7 @@ abstract class FeedViewModel(
     private val openChatTimers = mutableMapOf<Pair<String, String>, Long>()
     private var willRestart: Boolean = false
 
-    abstract fun getFeed()
+    abstract fun getFeed(): Completable
     abstract fun getFeedName(): String
 
     // --------------------------------------------------------------------------------------------
@@ -172,16 +173,16 @@ abstract class FeedViewModel(
         advanceAndPushViewObjects()
 
         clearCachedAlreadySeenProfileIdsUseCase.source()
-            .andThen(
-                countUserImagesUseCase.source()
-                    .doOnSuccess {
-                        if (checkImagesCount(it)) {
-                            viewActionObjectBackup.clear()
-                            getFeed()
-                        } else {
-                            noImagesInUserProfileOneShot.value = OneShot(true)
-                        }
-                    })
+            .andThen(countUserImagesUseCase.source())
+            .flatMapCompletable { count ->
+                if (checkImagesCount(count)) {
+                    viewActionObjectBackup.clear()
+                    getFeed()
+                } else {
+                    noImagesInUserProfileOneShot.value = OneShot(true)
+                    Completable.complete()
+                }
+            }
             .autoDisposable(this)
             .subscribe({}, DebugLogUtil::e)
     }
