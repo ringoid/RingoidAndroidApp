@@ -33,11 +33,12 @@ abstract class DelayActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPref
                     }
                     triggerInProgress.get() ->  // job is in progress by some other thread
                         Single.just(0L)
+                              .doOnSubscribe { DebugLogUtil.v("Waiting for commit actions to finish...") }
                               .delay(DELAY_TRIGGER, TimeUnit.MILLISECONDS)
                               .flatMap { triggerSource() }
                     else -> triggerSourceImpl()  // this thread should do the job
-                        .doOnSubscribe { triggerInProgress.set(true) }
-                        .doFinally { triggerInProgress.set(false) }
+                        .doOnSubscribe { triggerInProgress.set(true) }  // acquire non-blocking 'lock'
+                        .doFinally { triggerInProgress.set(false) }  // release non-blocking 'lock'
                 }
             }
 }
