@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.*
 import androidx.appcompat.widget.Toolbar
+import com.jakewharton.rxbinding3.appcompat.itemClicks
+import com.jakewharton.rxbinding3.appcompat.navigationClicks
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.utility.changeVisibility
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.toast
 import kotlinx.android.synthetic.main.fragment_web.*
@@ -39,25 +42,24 @@ class WebPageFragment : BaseFragment<WebPageViewModel>() {
         webUrl = arguments?.getString(BUNDLE_KEY_WEB_URL)
     }
 
+    @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (toolbar as Toolbar).apply {
+        with (toolbar as Toolbar) {
             val titleResId = when (webUrl) {
                 AppRes.WEB_URL_LICENSES -> R.string.web_page_licenses
                 AppRes.WEB_URL_PRIVACY -> R.string.web_page_privacy
                 AppRes.WEB_URL_TERMS -> R.string.web_page_terms
                 else -> R.string.app_name
             }
-
+            setTitle(titleResId)
             inflateMenu(R.menu.menu_internet)
-            setOnMenuItemClickListener {
+            itemClicks().compose(clickDebounce()).subscribe {
                 when (it.itemId) {
                     R.id.menu_internet -> ExternalNavigator.openBrowser(activity, webUrl)
                 }
-                true
             }
-            setNavigationOnClickListener { activity?.onBackPressed() }
-            setTitle(titleResId)
+            navigationClicks().compose(clickDebounce()).subscribe { activity?.onBackPressed() }
         }
 
         wv_link.apply {

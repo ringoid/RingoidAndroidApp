@@ -3,6 +3,7 @@ package com.ringoid.origin.usersettings.view.info
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import com.jakewharton.rxbinding3.appcompat.navigationClicks
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
@@ -53,8 +54,8 @@ class SettingsAppInfoFragment : BaseFragment<SettingsAppInfoViewModel>() {
 
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
-            setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(OriginR_string.settings_info_title)
+            navigationClicks().compose(clickDebounce()).subscribe { activity?.onBackPressed() }
         }
 
         btn_developer.clicks().compose(clickDebounce()).subscribe {

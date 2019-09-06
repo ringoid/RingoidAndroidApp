@@ -7,9 +7,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import com.jakewharton.rxbinding3.appcompat.itemClicks
+import com.jakewharton.rxbinding3.appcompat.navigationClicks
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseFragment
-import com.ringoid.report.log.Report
 import com.ringoid.origin.imagepreview.OriginR_id
 import com.ringoid.origin.imagepreview.OriginR_menu
 import com.ringoid.origin.imagepreview.OriginR_string
@@ -18,10 +19,8 @@ import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.navigateAndClose
 import com.ringoid.origin.navigation.noConnection
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.communicator
-import com.ringoid.utility.randomString
-import com.ringoid.utility.toast
+import com.ringoid.report.log.Report
+import com.ringoid.utility.*
 import com.steelkiwi.cropiwa.OnImageLoadListener
 import com.steelkiwi.cropiwa.config.CropIwaSaveConfig
 import kotlinx.android.synthetic.main.fragment_image_preview.*
@@ -92,15 +91,14 @@ class ImagePreviewFragment : BaseFragment<ImagePreviewViewModel>(), OnImageLoadL
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (toolbar as Toolbar).apply {
+        with (toolbar as Toolbar) {
             inflateMenu(OriginR_menu.menu_done)
-            setOnMenuItemClickListener {
+            itemClicks().compose(clickDebounce()).subscribe {
                 when (it.itemId) {
-                    OriginR_id.menu_done -> { cropImage() ; true }
-                    else -> false
+                    OriginR_id.menu_done -> cropImage()
                 }
             }
-            setNavigationOnClickListener { onNavigateBack() }
+            navigationClicks().compose(clickDebounce()).subscribe { onNavigateBack() }
         }
 
         crop_view.setOnImageLoadListener(this)

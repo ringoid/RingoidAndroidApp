@@ -3,6 +3,7 @@ package com.ringoid.origin.usersettings.view.push
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import com.jakewharton.rxbinding3.appcompat.navigationClicks
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
@@ -62,8 +63,8 @@ class SettingsPushFragment : BaseSettingsFragment<SettingsPushViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
-            setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(OriginR_string.settings_push)
+            navigationClicks().compose(clickDebounce()).subscribe { activity?.onBackPressed() }
         }
 
         with (item_push_daily) {

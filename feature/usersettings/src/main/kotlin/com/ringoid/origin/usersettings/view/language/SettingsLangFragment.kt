@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding3.appcompat.navigationClicks
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.BaseFragment
@@ -14,6 +15,7 @@ import com.ringoid.origin.usersettings.WidgetR_attrs
 import com.ringoid.origin.usersettings.view.language.adapter.LanguageItemVO
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangAdapter
 import com.ringoid.origin.usersettings.view.language.adapter.SettingsLangViewHolderIsChecked
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.highlightFrom
 import com.ringoid.utility.manager.LocaleManager
@@ -45,11 +47,12 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
     override fun appScreen(): AppScreen = AppScreen.SETTINGS_LANGUAGE
 
     // --------------------------------------------------------------------------------------------
+    @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
-            setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(OriginR_string.settings_language)
+            navigationClicks().compose(clickDebounce()).subscribe { activity?.onBackPressed() }
         }
 
         rv_items.apply {

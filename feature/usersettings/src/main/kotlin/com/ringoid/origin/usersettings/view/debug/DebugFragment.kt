@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.appcompat.widget.Toolbar
+import com.jakewharton.rxbinding3.appcompat.navigationClicks
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observeOneShot
@@ -61,8 +62,8 @@ class DebugFragment : BaseFragment<DebugViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
-            setNavigationOnClickListener { activity?.onBackPressed() }
             setTitle(OriginR_string.debug_title)
+            navigationClicks().compose(clickDebounce()).subscribe { activity?.onBackPressed() }
         }
 
         debug_view.setOnCloseListener { it.changeVisibility(isVisible = false) }

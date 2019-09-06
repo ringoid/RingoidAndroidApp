@@ -3,6 +3,8 @@ package com.ringoid.origin.usersettings.view.profile
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import com.jakewharton.rxbinding3.appcompat.itemClicks
+import com.jakewharton.rxbinding3.appcompat.navigationClicks
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
@@ -90,15 +92,14 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (toolbar as Toolbar).apply {
+            setTitle(OriginR_string.settings_profile)
             inflateMenu(OriginR_menu.menu_done)
-            setOnMenuItemClickListener {
+            itemClicks().compose(clickDebounce()).subscribe {
                 when (it.itemId) {
-                    OriginR_id.menu_done -> { activity?.onBackPressed(); true }
-                    else -> false
+                    OriginR_id.menu_done -> activity?.onBackPressed()
                 }
             }
-            setNavigationOnClickListener { activity?.onBackPressed() }
-            setTitle(OriginR_string.settings_profile)
+            navigationClicks().compose(clickDebounce()).subscribe { activity?.onBackPressed() }
         }
 
         // properties
