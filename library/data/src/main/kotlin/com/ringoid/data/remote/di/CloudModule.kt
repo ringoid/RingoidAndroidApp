@@ -39,6 +39,7 @@ class CloudModule(private val appVersion: Int) {
             .log(Platform.INFO)
             .request("Request")
             .response("Response")
+            .enableAndroidStudio_v3_LogsHack(true)
             .build()
 
     @Provides @Singleton
