@@ -31,6 +31,49 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Read and Write operations on messages local cache are guarded with semaphore, one for each distinguish
+ * 'chatId'. Thus it's allowed to Read for one 'chatId' and Write for another 'chatId' at the same time
+ * in the same messages local cache (database). If any Read or Write attempt fails to acquire lock,
+ * it then terminates with [SkipThisTryException].
+ *
+ * Special cases are [pollChatNew] and [getMessages].
+ *
+ * ----------------------------------------------
+ * Case [getMessages]:
+ *
+ * Given 'chatId', retrieves messages only from the local cache, no remote calls performed.
+ * As usual, if Read for that particular 'chatId' is restricted at the moment of call [getMessages],
+ * it's internal implementation [getMessagesImpl] will terminate with [SkipThisTryException] and then
+ * [getMessages] will retry after short delay.
+ *
+ * Here is the special case, when Write messages for that 'chatId' is performing while [getMessages]
+ * is called. This normally happens when push notification for that 'chatId' comes and it's handled
+ * actually requests to update messages local cache, doing Write operation to it. In this case
+ * [getMessages] have to wait for short delay and retry, as described above, and when it succeeds,
+ * it will return the most actual messages from the local cache, being written there from push notification.
+ * While [getMessages] is waiting for the local cache to be released, client code can experience some
+ * visual delay and should handle it properly, showing some loading state.
+ *
+ * Actually, such external Write request, possibly from push notification handler,
+ * will normally call [getChat] and either acquire lock for Write or terminate with
+ * [SkipThisTryException].
+ *
+ * ----------------------------------------------
+ * Case [pollChatNew]:
+ *
+ * Given 'chatId', fetches messages from the remote cloud only, also setting
+ * [pollingDelay] value to perform next fetch after that delay. Then it repeats fetching with that
+ * delay, which is updated every time. Once data is fetched, Write to the local cache is then performed.
+ * As usual, if Write for that particular 'chatId' is restricted at the moment of Write to the local
+ * cache operation call, internals of [pollChatNew] will terminate with [SkipThisTryException] and
+ * then [pollChatNew] will retry (instead of repeat) it's attempt to fetch the remote cloud and cache
+ * the result locally again in [pollingDelay] time passed.
+ *
+ * If some external Write request, such as push notification handler, has occurred while polling chat,
+ * it will normally call [getChat] and either acquire lock for Write or terminate with
+ * [SkipThisTryException].
+ */
 @Singleton
 class MessengerRepository @Inject constructor(
     private val local: IMessageDbFacade,
@@ -219,6 +262,9 @@ class MessengerRepository @Inject constructor(
 
     // ------------------------------------------
     // messages cached since last network request + sent user messages (cache locally)
+    /**
+     * Retrieves messages from the local cache only.
+     */
     override fun getMessages(chatId: String): Single<List<Message>> =
         getMessagesOnly(chatId)
             .retryWhen { errorSource ->
