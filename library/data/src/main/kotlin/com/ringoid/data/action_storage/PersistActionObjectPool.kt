@@ -26,7 +26,7 @@ class PersistActionObjectPool @Inject constructor(
     private val local: IActionObjectDbFacade,
     private val userScopeProvider: UserScopeProvider,
     cloud: IRingoidCloudFacade, spm: SharedPrefsManager)
-    : BarrierActionObjectPool(cloud, spm) {
+    : DelayActionObjectPool(cloud, spm) {
 
     // ------------------------------------------------------------------------
     override fun getTotalQueueSize(): Int = 0  // don't trigger by capacity hit
