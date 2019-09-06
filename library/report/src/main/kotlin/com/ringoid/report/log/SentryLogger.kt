@@ -38,7 +38,7 @@ class SentryLogger : ILoggerDelegate {
 
     override fun capture(e: Throwable, message: String?, level: ReportLevel,
                          `object`: Any?, tag: String?, extras: List<Pair<String, String>>?) {
-        Timber.log(level.toLogPriority(), e, message)
+        Timber.log(level.toLogPriority(), e, "$message ${extras?.joinToString(", ", "[", "]", transform = { "${it.first}:${it.second}" })}".trim())
         val fullExtras = mutableListOf<Pair<String, String>>()
             .apply {
                 extras?.let { addAll(it) }
