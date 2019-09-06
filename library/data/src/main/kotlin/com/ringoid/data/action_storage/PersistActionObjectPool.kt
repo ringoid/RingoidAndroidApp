@@ -85,7 +85,7 @@ class PersistActionObjectPool @Inject constructor(
     @Suppress("CheckResult")
     override fun trigger() {
         Timber.d("Trigger standalone")
-        local.countActionObjects()
+        countActionObjects()
             .subscribeOn(Schedulers.newThread())
             .flatMap { count ->
                 if (count <= 0) {
@@ -100,10 +100,10 @@ class PersistActionObjectPool @Inject constructor(
     }
 
     override fun triggerSourceImpl(): Single<Long> =
-        local.countActionObjects()
+        countActionObjects()
             .flatMap { count ->
                 if (count <= 0) {
-                    DebugLogUtil.d("No actions to commit, lAt is up-to-date [chained]")
+                    DebugLogUtil.d("No actions to commit, lAt is up-to-date [implementation]")
                     Single.just(CommitActionsResponse(lastActionTime()))  // do nothing on empty queue
                 } else {
                     local.actionObjectsMarkAsUsed()

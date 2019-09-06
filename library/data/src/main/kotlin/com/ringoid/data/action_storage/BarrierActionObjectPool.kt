@@ -21,22 +21,36 @@ abstract class BarrierActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPr
      * First thread acquires lock [triggerInProgress] and performs [triggerSourceImpl],
      * others should wait on that lock until released.
      */
-    override fun triggerSource(): Single<Long> =
-        Single.just(ProcessingPayload())
-            .flatMap { thread ->
-                tcount.incrementAndGet()
-                DebugLogUtil.v("Acquiring permission to commit actions by ${threadStr(thread)}")
-                triggerInProgress.acquireUninterruptibly()  // acquire permission to continue, or block on a barrier otherwise
-                SimpleBarrierLogUtil.enable(msg = "Acquired lock")
-                DebugLogUtil.v("Permission's been acquired to commit actions by ${threadStr(thread)}")
-                triggerSourceImpl()
-                    .doOnSubscribe { DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}") }
-                    .doOnError { DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)} with $it") }
-                    .doFinally {
-                        finishTriggerSource()  // 'doFinally' must be thread-safe
-                        DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.startTime} ms")
-                    }
+    override fun triggerSource(): Single<Long> {
+        fun blockingTriggerSource() =
+            Single.just(ProcessingPayload())
+                .flatMap { thread ->
+                    tcount.incrementAndGet()
+                    DebugLogUtil.v("Acquiring permission to commit actions by ${threadStr(thread)}")
+                    triggerInProgress.acquireUninterruptibly()  // acquire permission to continue, or block on a barrier otherwise
+                    SimpleBarrierLogUtil.enable(msg = "Acquired lock")
+                    DebugLogUtil.v("Permission's been acquired to commit actions by ${threadStr(thread)}")
+
+                    triggerSourceImpl()
+                        .doOnSubscribe { DebugLogUtil.v("Commit actions has started by ${threadStr(thread)}") }
+                        .doOnError { DebugLogUtil.e("Commit actions has failed by ${threadStr(thread)} with $it") }
+                        .doFinally {
+                            finishTriggerSource()  // 'doFinally' must be thread-safe
+                            DebugLogUtil.v("Commit actions has finished by ${threadStr(thread)}, elapsed time ${System.currentTimeMillis() - thread.startTime} ms")
+                        }
+                }
+
+        // --------------------------------------
+        return countActionObjects()
+            .flatMap { count ->
+                if (count <= 0) {
+                    DebugLogUtil.d("No actions to commit, lAt is up-to-date [chained]")
+                    Single.just(lastActionTime())
+                } else {
+                    blockingTriggerSource()
+                }
             }
+    }
 
     @Synchronized
     private fun finishTriggerSource() {
