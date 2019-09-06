@@ -235,7 +235,7 @@ class MessengerRepository @Inject constructor(
         .flatMap { chat ->
             if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
                 Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!, unread = 0) }
-                .toSingleDefault(chat)
+                           .toSingleDefault(chat)
             } else Single.just(chat)
         }
 
