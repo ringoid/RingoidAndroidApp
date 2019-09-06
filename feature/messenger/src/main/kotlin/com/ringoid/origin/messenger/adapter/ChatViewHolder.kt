@@ -16,6 +16,7 @@ abstract class BaseChatViewHolder(view: View) : BaseViewHolder<Message>(view) {
 @DebugOnly
 abstract class DebugBaseChatViewHolder(view: View) : BaseChatViewHolder(view) {
 
+    @Suppress("SetTextI18n")
     override fun bind(model: Message) {
         itemView.tv_chat_message.text = "${model.text}(${model.id.substring(0..3)}, ${model.clientId.substring(0..3)})"
     }
