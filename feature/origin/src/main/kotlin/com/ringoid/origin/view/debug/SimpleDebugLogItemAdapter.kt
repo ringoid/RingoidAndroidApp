@@ -23,11 +23,10 @@ class SimpleDebugLogItemAdapter(insertCb: ((total: Int) -> Unit)? = null)
     override fun append(item: DebugLogItemVO) {
         buffer.add(item)
         if (buffer.size >= BUFFER_LIMIT) {
-            val position = models.size
-            buffer.sortBy { it.log.tick }
             models.addAll(buffer)
+            models.sortBy { it.log.tick }
             buffer.clear()
-            notifyItemRangeInserted(position, buffer.size)
+            notifyDataSetChanged()
             insertCb?.invoke(models.size)  // total size
         }
     }
