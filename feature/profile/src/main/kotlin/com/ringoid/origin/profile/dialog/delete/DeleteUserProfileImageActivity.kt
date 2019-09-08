@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.dialog
+package com.ringoid.origin.profile.dialog.delete
 
 import android.app.Activity
 import android.content.Intent

@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".dialog.DeleteUserProfileImageActivity"
+            android:name=".dialog.delete.DeleteUserProfileImageActivity"
             android:theme="@style/AppTheme.Dark.SemiTransparent"/>
     </application>
 </manifest>

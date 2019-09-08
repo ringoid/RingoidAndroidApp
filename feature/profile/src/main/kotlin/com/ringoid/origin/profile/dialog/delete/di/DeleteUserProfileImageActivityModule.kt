@@ -1,6 +1,6 @@
-package com.ringoid.origin.profile.dialog.di
+package com.ringoid.origin.profile.dialog.delete.di
 
-import com.ringoid.origin.profile.dialog.DeleteUserProfileImageActivity
+import com.ringoid.origin.profile.dialog.delete.DeleteUserProfileImageActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
