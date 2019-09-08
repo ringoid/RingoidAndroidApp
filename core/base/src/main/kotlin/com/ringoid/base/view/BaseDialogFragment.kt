@@ -173,6 +173,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onDestroy")
         vm.unsubscribeFromBusEvents()
+        vm.onDestroy()
         AppWatcher.objectWatcher.watch(this)
     }
 

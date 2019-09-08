@@ -16,10 +16,10 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
-import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.config.IRuntimeConfig
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.debug.ICloudDebug
+import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.scope.LocalScopeProvider
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
@@ -248,10 +248,11 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        vm.unsubscribeFromBusEvents()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onDestroy")
         DebugLogUtil.lifecycle(this, "onDestroy")
+        vm.unsubscribeFromBusEvents()
+        vm.onDestroy()
         AppWatcher.objectWatcher.watch(this)
     }
 

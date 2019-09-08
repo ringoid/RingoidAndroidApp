@@ -23,6 +23,8 @@ import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.lc.FeedCounts
+import com.ringoid.origin.feed.view.lc.LcCoordinator
+import com.ringoid.origin.feed.view.lc.LcDataListener
 import com.ringoid.origin.feed.view.lc.SeenAllFeed
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
@@ -37,6 +39,7 @@ import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
 
 abstract class BaseLcFeedViewModel(
     protected val getLcUseCase: GetLcUseCase,
@@ -53,7 +56,7 @@ abstract class BaseLcFeedViewModel(
         clearMessagesForChatUseCase,
         cacheBlockedProfileIdUseCase,
         countUserImagesUseCase,
-        filtersSource, userInMemoryCache, app) {
+        filtersSource, userInMemoryCache, app), LcCoordinator.LcDataListener {
 
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
     private val feedCountsOneShot by lazy { MutableLiveData<OneShot<FeedCounts>>() }
@@ -66,6 +69,7 @@ abstract class BaseLcFeedViewModel(
     internal fun seenAllFeedItemsOneShot(): LiveData<OneShot<SeenAllFeed>> = seenAllFeedItemsOneShot
     internal fun transferProfileCompleteOneShot(): LiveData<OneShot<Boolean>> = transferProfileCompleteOneShot
 
+    @Inject protected lateinit var coordinator: LcCoordinator
     protected var badgeIsOn: Boolean = false  // indicates that there are new feed items
         private set
     protected var filters: Filters = NoFilters
@@ -118,9 +122,19 @@ abstract class BaseLcFeedViewModel(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        coordinator.registerListener(this)
+    }
+
     override fun onRecreate(savedInstanceState: Bundle) {
         super.onRecreate(savedInstanceState)
         refreshIfUserHasImages()  // refresh on state restore // TODO: do proper state restore
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coordinator.unregisterListener(this)
     }
 
     // --------------------------------------------------------------------------------------------
@@ -130,6 +144,7 @@ abstract class BaseLcFeedViewModel(
     protected abstract fun sourceFeed(): Observable<LmmSlice>
 
     override fun getFeed(): Completable {
+        // TODO: when some LC feed has been requested to refresh, show loading UI on another feed until data arrives into Subject
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                              .put("limit", DomainUtil.LIMIT_PER_PAGE)
                              .put("source", getFeedName())
@@ -195,11 +210,13 @@ abstract class BaseLcFeedViewModel(
     // ------------------------------------------
     internal fun onApplyFilters() {
         filters = filtersSource.getFilters()
+        coordinator.onApplyFilters()
         refresh()  // apply filters and refresh
     }
 
     internal fun dropFilters() {
         filters = NoFilters
+        coordinator.dropFilters()
     }
 
     internal fun onShowAllWithoutFilters() {
@@ -287,40 +304,6 @@ abstract class BaseLcFeedViewModel(
 
     /* Event Bus */
     // --------------------------------------------------------------------------------------------
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventAppFreshStart(event: BusEvent.AppFreshStart) {
-        Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        DebugLogUtil.i("Get LC on Application fresh start [${getFeedName()}]")
-        refreshIfUserHasImages()  // refresh on app fresh start
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventRecreateMainScreen(event: BusEvent.RecreateMainScreen) {
-        Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        DebugLogUtil.i("Get LC on Application recreate while running [${getFeedName()}]")
-        refreshIfUserHasImages()  // refresh on recreate
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
-        Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        DebugLogUtil.i("Get LC on Application reopen [${getFeedName()}]")
-        refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
-        Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        if (event.msElapsed in 300000L..1557989300340L) {
-            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC [${getFeedName()}]")
-            refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventTransferProfile(event: BusEvent.TransferProfile) {
         Timber.d("Received bus event: $event")

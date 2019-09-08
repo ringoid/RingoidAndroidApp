@@ -174,11 +174,11 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
     }
 
     override fun onDestroy() {
+        isDestroying = true
+        super.onDestroy()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onDestroy")
         DebugLogUtil.lifecycle(this, "onDestroy")
-        isDestroying = true
-        super.onDestroy()
         vm.unsubscribeFromBusEvents()
         vm.onDestroy()
         AppWatcher.objectWatcher.watch(this)
