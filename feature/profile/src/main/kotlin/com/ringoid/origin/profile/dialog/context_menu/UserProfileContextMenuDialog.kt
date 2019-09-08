@@ -1,5 +1,6 @@
 package com.ringoid.origin.profile.dialog.context_menu
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
@@ -44,6 +45,11 @@ class UserProfileContextMenuDialog : SimpleBaseDialogFragment() {
                 btn_open_social_tiktok.text = String.format(resources.getString(OriginR_string.profile_button_open_social_tiktok, tiktokUserId))
             } ?: run { btn_open_social_tiktok.changeVisibility(isVisible = false) }
         }
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        close()
     }
 
     // ------------------------------------------
