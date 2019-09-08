@@ -19,6 +19,7 @@ import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.Payload
+import com.ringoid.origin.style.ThemeUtils.printThemes
 import com.ringoid.origin.view.base.BasePermissionActivity
 import com.ringoid.origin.view.particles.ParticleAnimator
 import com.ringoid.utility.DebugOnly
@@ -54,6 +55,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
+        printThemes()  // for debug
         super.onCreate(savedInstanceState)
         fragNav = FragNavController(supportFragmentManager, R.id.fl_container)
             .apply {
