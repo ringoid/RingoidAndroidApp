@@ -71,7 +71,7 @@ class ExploreFeedViewModel @Inject constructor(
 
     init {
         // discard profiles that appear in Lmm from Explore feed
-        getDiscoverUseCase.repository.lmmLoadFinish
+        getDiscoverUseCase.repository.lmmLoadFinishSource()
             .flatMap { getCachedLmmFeedItemIdsUseCase.source().toObservable() }
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)

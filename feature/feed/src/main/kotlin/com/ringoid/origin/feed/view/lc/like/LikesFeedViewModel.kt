@@ -94,14 +94,14 @@ class LikesFeedViewModel @Inject constructor(
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_LIKES
 
     override fun sourceBadge(): Observable<Boolean> =
-        getLcUseCase.repository.badgeLikes
+        getLcUseCase.repository.badgeLikesSource()
             .doAfterNext {
                 if (it && getUserVisibleHint()) {
                     analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to getFeedName())
                 }
             }
 
-    override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedLikes
+    override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedLikesSource()
         .doAfterNext {
             runOnUiThread {
                 if (it.totalNotFilteredCount >= 15 && getUserVisibleHint() &&

@@ -156,14 +156,14 @@ class MessagesFeedViewModel @Inject constructor(
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
 
     override fun sourceBadge(): Observable<Boolean> =
-        getLcUseCase.repository.badgeMessenger
+        getLcUseCase.repository.badgeMessengerSource()
             .doAfterNext {
                 if (it && getUserVisibleHint()) {
                     analyticsManager.fireOnce(Analytics.AHA_FIRST_MESSAGE_RECEIVED, "sourceFeed" to getFeedName())
                 }
             }
 
-    override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedMessages
+    override fun sourceFeed(): Observable<LmmSlice> = getLcUseCase.repository.feedMessagesSource()
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------

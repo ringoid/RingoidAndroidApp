@@ -48,10 +48,14 @@ class UserImageRepository @Inject constructor(
     cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IUserImageRepository {
 
-    override val imageBlocked = PublishSubject.create<String>()
-    override val imageCreated = PublishSubject.create<String>()
-    override val imageDeleted = PublishSubject.create<String>()
-    override val totalUserImages = PublishSubject.create<Int>()
+    private val imageBlocked = PublishSubject.create<String>()
+    private val imageCreated = PublishSubject.create<String>()
+    private val imageDeleted = PublishSubject.create<String>()
+    private val totalUserImages = PublishSubject.create<Int>()
+    override fun imageBlockedSource(): Observable<String> = imageBlocked.hide()
+    override fun imageCreatedSource(): Observable<String> = imageCreated.hide()
+    override fun imageDeletedSource(): Observable<String> = imageDeleted.hide()
+    override fun totalUserImagesSource(): Observable<Int> = totalUserImages.hide()
 
     override fun countUserImages(): Single<Int> =
         local.countUserImages()

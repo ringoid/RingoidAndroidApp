@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.dialog
+package com.ringoid.origin.profile.dialog.delete
 
 import android.content.DialogInterface
 import android.os.Bundle
@@ -16,7 +16,7 @@ import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.dialog_delete_user_profile_image.*
 
-@BottomSheet(true)
+@BottomSheet(true) @Deprecated("Replaced with context menu")
 class DeleteUserProfileImageDialog : SimpleBaseDialogFragment() {
 
     companion object {

@@ -3,8 +3,8 @@ package com.ringoid.domain.repository.feed
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.feed.*
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.subjects.PublishSubject
 
 interface IFeedRepository {
 
@@ -33,19 +33,18 @@ interface IFeedRepository {
     fun transferFeedItem(feedItemId: String, destinationFeed: String): Completable
 
     // --------------------------------------------------------------------------------------------
-    val badgeLikes: PublishSubject<Boolean>  // LMM contains new likes
-    val badgeMatches: PublishSubject<Boolean>  // LMM contains new matches
-    val badgeMessenger: PublishSubject<Boolean>  // LMM contains new messages
-    val feedLikes: PublishSubject<LmmSlice>
-    @Deprecated("LMM -> LC")
-    val feedMatches: PublishSubject<LmmSlice>  // deprecated, 'matches' are part of 'chats' in LC
-    val feedMessages: PublishSubject<LmmSlice>
-    val lmmChanged: PublishSubject<Boolean>  // LMM contains new data
-    val lmmLoadFinish: PublishSubject<Int>  // LMM load finished, contains LMM's total count
-    val lmmLoadFailed: PublishSubject<Throwable>  // LMM load failed, fallback to cache
-    val newLikesCount: PublishSubject<Int>  // for particle animation
-    val newMatchesCount: PublishSubject<Int>  // for particle animation
-    val newMessagesCount: PublishSubject<Int>  // for particle animation
+    fun badgeLikesSource(): Observable<Boolean>
+    fun badgeMatchesSource(): Observable<Boolean>
+    fun badgeMessengerSource(): Observable<Boolean>
+    fun feedLikesSource(): Observable<LmmSlice>
+    fun feedMatchesSource(): Observable<LmmSlice>
+    fun feedMessagesSource(): Observable<LmmSlice>
+    fun lmmChangedSource(): Observable<Boolean>
+    fun lmmLoadFinishSource(): Observable<Int>
+    fun lmmLoadFailedSource(): Observable<Throwable>
+    fun newLikesCountSource(): Observable<Int>
+    fun newMatchesCountSource(): Observable<Int>
+    fun newMessagesCountSource(): Observable<Int>
 
     fun getDiscover(resolution: ImageResolution, limit: Int?, filters: Filters?): Single<Feed>
 

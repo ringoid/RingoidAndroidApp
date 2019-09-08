@@ -26,7 +26,7 @@ abstract class LcFeedFiltersViewModel(
     abstract fun getFeedName(): String
 
     init {
-        filtersChanged  // performs on main thread
+        filtersChangedSource()  // performs on main thread
             .compose(inputDebounce())
             .map {
                 DebugLogUtil.d("Filters changed on [${getFeedName()}]")

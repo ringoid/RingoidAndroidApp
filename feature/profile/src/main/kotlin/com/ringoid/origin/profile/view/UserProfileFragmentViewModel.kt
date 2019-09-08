@@ -57,12 +57,12 @@ class UserProfileFragmentViewModel @Inject constructor(
     internal fun requestToAddImageOneShot(): LiveData<OneShot<Int>> = requestToAddImageOneShot
 
     init {
-        createUserImageUseCase.repository.imageBlocked  // debounce to handle image blocked just once
+        createUserImageUseCase.repository.imageBlockedSource()  // debounce to handle image blocked just once
             .debounce(500L, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
             .subscribe({ imageBlocked.value = it }, DebugLogUtil::e)
 
-        createUserImageUseCase.repository.imageCreated
+        createUserImageUseCase.repository.imageCreatedSource()
             .autoDisposable(this)
             .subscribe {
                 getUserImageByIdUseCase.source(Params().put("id", it))
@@ -70,7 +70,7 @@ class UserProfileFragmentViewModel @Inject constructor(
                     .subscribe({ imageCreated.value = it }, DebugLogUtil::e)
             }
 
-        createUserImageUseCase.repository.imageDeleted
+        createUserImageUseCase.repository.imageDeletedSource()
             .observeOn(AndroidSchedulers.mainThread())  // touch LiveData on main thread only
             .autoDisposable(this)
             .subscribe({ imageDeleted.value = it }, DebugLogUtil::e)

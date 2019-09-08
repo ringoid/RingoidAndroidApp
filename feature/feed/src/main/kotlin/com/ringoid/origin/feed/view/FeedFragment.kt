@@ -170,7 +170,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                      */
                     rv_items.itemAnimator
                         .let { it as FeedItemAnimator }
-                        .removeAnimationSubject
+                        .removeAnimationFinishedSource()
                         .take(1)  // single-shot subscription
                         .doOnSubscribe { localScopeProvider.start() }
                         .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription") }

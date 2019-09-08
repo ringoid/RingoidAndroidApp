@@ -143,7 +143,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             clear()  // clear old items, preventing animator to animate change upon async diff calc finishes
 
             subscription?.dispose()
-            subscription = insertSubject
+            subscription = insertItemsSource()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     itemView.rv_items.linearLayoutManager()?.scrollToPosition(positionOfImage)

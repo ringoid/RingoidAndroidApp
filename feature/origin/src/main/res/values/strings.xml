@@ -109,7 +109,12 @@
     <string name="login_year_of_birth_et_hint">Year of Birth</string>
 
     <!-- Profile screen -->
+    <string name="profile_button_add_image">Add photo</string>
     <string name="profile_button_delete_image">Delete photo</string>
+    <string name="profile_button_edit_profile">Edit Profile</string>
+    <string name="profile_button_edit_profile_status">Edit Status</string>
+    <string name="profile_button_open_social_instagram">Open Instagram: %s</string>
+    <string name="profile_button_open_social_tiktok">Open Tiktok: %s</string>
     <string name="profile_dialog_image_another_common_title">Add another photo?</string>
     <string name="profile_dialog_image_another_button_add">Add another photo</string>
     <string name="profile_dialog_image_another_button_cancel">Discover new users</string>

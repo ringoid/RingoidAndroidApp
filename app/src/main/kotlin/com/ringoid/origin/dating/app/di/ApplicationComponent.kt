@@ -21,8 +21,10 @@ import com.ringoid.origin.imagepreview.di.ImagePreviewActivityModule
 import com.ringoid.origin.imagepreview.di.ImagePreviewFragmentModule
 import com.ringoid.origin.messenger.di.ChatFragmentModule
 import com.ringoid.origin.messenger.di.ChatHostActivityModule
-import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageActivityModule
-import com.ringoid.origin.profile.dialog.di.DeleteUserProfileImageDialogModule
+import com.ringoid.origin.profile.dialog.context_menu.di.UserProfileContextMenuActivityModule
+import com.ringoid.origin.profile.dialog.context_menu.di.UserProfileContextMenuDialogModule
+import com.ringoid.origin.profile.dialog.delete.di.DeleteUserProfileImageActivityModule
+import com.ringoid.origin.profile.dialog.delete.di.DeleteUserProfileImageDialogModule
 import com.ringoid.origin.profile.view.di.UserProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
@@ -67,6 +69,7 @@ import javax.inject.Singleton
                       LoginActivityModule::class, MainActivityModule::class,
                       MessagesFeedFragmentModule::class, NoNetworkConnectionActivityModule::class,
                       OldAppVersionActivityModule::class, UserProfileFragmentModule::class,
+                      UserProfileContextMenuActivityModule::class, UserProfileContextMenuDialogModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
                       SettingsFiltersActivityModule::class, SettingsFiltersFragmentModule::class,

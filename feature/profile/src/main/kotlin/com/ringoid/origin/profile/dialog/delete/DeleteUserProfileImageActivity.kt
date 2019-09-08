@@ -1,4 +1,4 @@
-package com.ringoid.origin.profile.dialog
+package com.ringoid.origin.profile.dialog.delete
 
 import android.app.Activity
 import android.content.Intent
@@ -7,7 +7,7 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.origin.view.base.SimpleBaseDialogActivity
 import com.ringoid.utility.DebugOnly
 
-@AppNav("delete_image")
+@AppNav("delete_image")  @Deprecated("Replaced with context menu")
 class DeleteUserProfileImageActivity : SimpleBaseDialogActivity(), IDeleteUserProfileImageActivity {
 
     private var deleteUserImageDialog: DeleteUserProfileImageDialog? = null
@@ -46,7 +46,7 @@ class DeleteUserProfileImageActivity : SimpleBaseDialogActivity(), IDeleteUserPr
 
     // --------------------------------------------------------------------------------------------
     private fun createDeleteUserImageDialogIfNeed() {
-        if (deleteUserImageDialog == null) {
+        deleteUserImageDialog ?: run {
             deleteUserImageDialog = DeleteUserProfileImageDialog.newInstance()
                 .also { it.showNow(supportFragmentManager, DeleteUserProfileImageDialog.TAG) }
         }

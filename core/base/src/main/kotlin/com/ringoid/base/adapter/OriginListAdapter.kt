@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IListModel
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
@@ -68,10 +69,14 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     protected open fun getOnMovedCb(): ((fromPosition: Int, toPosition: Int) -> Unit)? = null
     protected open fun getOnChangedCb(): ((position: Int, count: Int) -> Unit)? = null
 
-    val insertSubject = PublishSubject.create<Pair<Int, Int>>()
-    val removeSubject = PublishSubject.create<Pair<Int, Int>>()
-    val moveSubject = PublishSubject.create<Pair<Int, Int>>()
-    val changeSubject = PublishSubject.create<Pair<Int, Int>>()
+    private val insertSubject = PublishSubject.create<Pair<Int, Int>>()
+    private val removeSubject = PublishSubject.create<Pair<Int, Int>>()
+    private val moveSubject = PublishSubject.create<Pair<Int, Int>>()
+    private val changeSubject = PublishSubject.create<Pair<Int, Int>>()
+    fun insertItemsSource(): Observable<Pair<Int, Int>> = insertSubject.hide()
+    fun removeItemsSource(): Observable<Pair<Int, Int>> = removeSubject.hide()
+    fun moveItemSource(): Observable<Pair<Int, Int>> = moveSubject.hide()
+    fun changeItemSource(): Observable<Pair<Int, Int>> = changeSubject.hide()
 
     private var insertDisposable: Disposable? = null
     private var removeDisposable: Disposable? = null
