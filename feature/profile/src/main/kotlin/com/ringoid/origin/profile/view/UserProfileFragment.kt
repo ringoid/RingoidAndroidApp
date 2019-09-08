@@ -41,6 +41,7 @@ import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
+import com.ringoid.report.log.Report
 import com.ringoid.utility.*
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view.swipes
@@ -175,12 +176,25 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                     Activity.RESULT_OK -> navigate(this, path = "/imagepreview", rc = RC_IMAGE_PREVIEW, payload = data)
                 }
             }
+            RequestCode.RC_CONTEXT_MENU_USER_PROFILE -> {
+                showControls(isVisible = true)
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data == null) {
+                        "No output from Context Menu dialog - this is an error!".let { msg ->
+                            Timber.e(msg); Report.e(msg)
+                        }
+                    }
+
+                    // TODO: handle ContextMenuAction
+                }
+            }
             RequestCode.RC_DELETE_IMAGE_DIALOG -> {
                 showControls(isVisible = true)
                 if (resultCode == Activity.RESULT_OK) {
                     if (data == null) {
-                        val e = NullPointerException("No output image id from Delete Image dialog - this is an error!")
-                        Timber.e(e) ; throw e
+                        "No output image id from Delete Image dialog - this is an error!".let { msg ->
+                            Timber.e(msg); Report.e(msg)
+                        }
                     }
 
                     if (data.hasExtra("debug")) {  // DebugOnly

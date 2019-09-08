@@ -21,6 +21,7 @@ class FeedItemContextMenuActivity : SimpleBaseActivity(), IBlockBottomSheetActiv
 
     private var blockDialog: BlockBottomSheetDialog? = null
     private var reportDialog: ReportBottomSheetDialog? = null
+
     private lateinit var outputData: Intent
 
     override fun getLayoutId(): Int = R.layout.activity_bottom_sheet_block
@@ -50,8 +51,9 @@ class FeedItemContextMenuActivity : SimpleBaseActivity(), IBlockBottomSheetActiv
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        outputData = savedInstanceState?.let { it.getParcelable<Intent>(BUNDLE_KEY_OUTPUT_DATA) }
+        outputData = savedInstanceState?.getParcelable(BUNDLE_KEY_OUTPUT_DATA)
             ?: Intent().putExtras(intent.extras!!)
+
         savedInstanceState ?: run {
             if (intent.dataString?.contains("block_dialog") == true) {
                 createBlockDialogIfNeed()

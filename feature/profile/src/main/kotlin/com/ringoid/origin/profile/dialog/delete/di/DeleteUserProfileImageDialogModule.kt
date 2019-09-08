@@ -4,7 +4,7 @@ import com.ringoid.origin.profile.dialog.delete.DeleteUserProfileImageDialog
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-@Module
+@Module  @Deprecated("Replaced with context menu")
 abstract class DeleteUserProfileImageDialogModule {
 
     @ContributesAndroidInjector

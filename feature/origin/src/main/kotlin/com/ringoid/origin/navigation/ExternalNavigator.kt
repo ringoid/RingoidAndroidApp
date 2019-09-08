@@ -141,4 +141,14 @@ object ExternalNavigator {
                 ?.let { fragment.startActivityForResult(it, RC_SETTINGS_LOCATION) }
         }
     }
+
+    /* Social */
+    // --------------------------------------------------------------------------------------------
+    fun openSocialInstagram(instagramUserId: String) {
+        // TODO
+    }
+
+    fun openSocialTiktok(tiktokUserId: String) {
+        // TODO
+    }
 }
