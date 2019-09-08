@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/feed_item_gradient"
+        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="@id/rv_items"
         app:layout_constraintBottom_toBottomOf="@id/rv_items"/>
 
