@@ -7,6 +7,7 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.model.*
 import com.ringoid.origin.profile.OriginR_drawable
 import com.ringoid.origin.profile.OriginR_string
+import com.ringoid.utility.ValueUtils.atCharSocialId
 import com.ringoid.widget.view.LabelView
 
 internal object UserProfileScreenUtils {
@@ -170,7 +171,7 @@ internal object UserProfileScreenUtils {
                 if (instagram.isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
-                        setText("Instagram: ${instagram.trim()}")
+                        setText("Instagram: ${atCharSocialId(instagram)}")
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {
@@ -184,7 +185,7 @@ internal object UserProfileScreenUtils {
                 if (tiktok.isNotBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
-                        setText("TikTok: ${tiktok.trim()}")
+                        setText("TikTok: ${atCharSocialId(tiktok)}")
                     }
                 } else if (useDefault) {
                     LabelView(container.context).apply {

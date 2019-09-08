@@ -8,6 +8,7 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_drawable
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.model.*
+import com.ringoid.utility.ValueUtils
 import com.ringoid.widget.view.LabelView
 
 internal object FeedScreenUtils {
@@ -144,7 +145,7 @@ internal object FeedScreenUtils {
                 if (!instagram.isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_instagram_white_18dp)
-                        setText("Instagram: ${instagram.trim()}")
+                        setText("Instagram: ${ValueUtils.atCharSocialId(instagram)}")
                     }
                 } else null
             }
@@ -153,7 +154,7 @@ internal object FeedScreenUtils {
                 if (!tiktok.isNullOrBlank()) {
                     LabelView(container.context).apply {
                         setIcon(OriginR_drawable.ic_tiktok_white_18dp)
-                        setText("TikTok: ${tiktok.trim()}")
+                        setText("TikTok: ${ValueUtils.atCharSocialId(tiktok)}")
                     }
                 } else null
             }
