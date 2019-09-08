@@ -27,32 +27,32 @@ class UserProfileContextMenuActivity : SimpleBaseDialogActivity(), IUserProfileC
     }
 
     override fun onAddImage() {
-        outputData.putExtra(ContextMenuExtras.EXTRA_ADD_IMAGE, ContextMenuAction.ADD_IMAGE)
+        outputData.putExtra(ContextMenuExtras.EXTRA_ACTION, ContextMenuAction.ADD_IMAGE)
         setResultExposed(Activity.RESULT_OK, outputData)
     }
 
     override fun onDeleteImage() {
-        outputData.putExtra(ContextMenuExtras.EXTRA_DELETE_IMAGE, ContextMenuAction.DELETE_IMAGE)
+        outputData.putExtra(ContextMenuExtras.EXTRA_ACTION, ContextMenuAction.DELETE_IMAGE)
         setResultExposed(Activity.RESULT_OK, outputData)
     }
 
     override fun onEditProfile() {
-        outputData.putExtra(ContextMenuExtras.EXTRA_EDIT_PROFILE, ContextMenuAction.EDIT_PROFILE)
+        outputData.putExtra(ContextMenuExtras.EXTRA_ACTION, ContextMenuAction.EDIT_PROFILE)
         setResultExposed(Activity.RESULT_OK, outputData)
     }
 
     override fun onEditStatus() {
-        outputData.putExtra(ContextMenuExtras.EXTRA_EDIT_STATUS, ContextMenuAction.EDIT_STATUS)
+        outputData.putExtra(ContextMenuExtras.EXTRA_ACTION, ContextMenuAction.EDIT_STATUS)
         setResultExposed(Activity.RESULT_OK, outputData)
     }
 
     override fun openSocialInstagram() {
-        ExternalNavigator.openSocialInstagram(instagramUserId = spm.getUserProfileProperties().socialInstagram)
+        ExternalNavigator.openSocialInstagram(this, instagramUserId = spm.getUserProfileProperties().socialInstagram)
         finish()
     }
 
     override fun openSocialTiktok() {
-        ExternalNavigator.openSocialTiktok(tiktokUserId = spm.getUserProfileProperties().socialTikTok)
+        ExternalNavigator.openSocialTiktok(this, tiktokUserId = spm.getUserProfileProperties().socialTikTok)
         finish()
     }
 

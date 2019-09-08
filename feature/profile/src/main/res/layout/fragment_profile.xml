@@ -217,7 +217,7 @@
     </LinearLayout>
 
     <com.ringoid.widget.view.ExtendImageButton
-        android:id="@+id/ibtn_delete_image"
+        android:id="@+id/ibtn_context_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/std_margin_24"

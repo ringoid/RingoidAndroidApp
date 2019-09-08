@@ -144,11 +144,30 @@ object ExternalNavigator {
 
     /* Social */
     // --------------------------------------------------------------------------------------------
-    fun openSocialInstagram(instagramUserId: String) {
-        // TODO
+    /**
+     * - @username
+     * - username
+     * - https://instagram.com/username
+     * - instagram.com/username
+     *
+     * @see https://stackoverflow.com/questions/15497261/open-instagram-user-profile?lq=1
+     */
+    fun openSocialInstagram(activity: Activity, instagramUserId: String) {
+        instagramUserId.takeIf { it.isNotBlank() }
+            ?.let {
+                // TODO
+            }
     }
 
-    fun openSocialTiktok(tiktokUserId: String) {
-        // TODO
+    /**
+     * @see https://stackoverflow.com/questions/53344812/open-user-page-in-tiktok-app-on-android-with-intent
+     */
+    fun openSocialTiktok(activity: Activity, tiktokUserId: String) {
+        tiktokUserId.takeIf { it.isNotBlank() }
+            ?.let { activity.packageManager.getLaunchIntentForPackage("com.zhiliaoapp.musically") }
+            ?.takeIf { it.resolveActivity(activity.packageManager) != null }
+            ?.let { Uri.parse("http://vm.tiktok.com/$tiktokUserId") }
+            ?.let { uri -> Intent(Intent.ACTION_VIEW, uri) }
+            ?.let { intent -> activity.startActivity(intent) }
     }
 }

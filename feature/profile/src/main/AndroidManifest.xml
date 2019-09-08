@@ -5,5 +5,9 @@
         <activity
             android:name=".dialog.delete.DeleteUserProfileImageActivity"
             android:theme="@style/AppTheme.Dark.SemiTransparent"/>
+
+        <activity
+            android:name=".dialog.context_menu.UserProfileContextMenuActivity"
+            android:theme="@style/AppTheme.Dark.SemiTransparent"/>
     </application>
 </manifest>

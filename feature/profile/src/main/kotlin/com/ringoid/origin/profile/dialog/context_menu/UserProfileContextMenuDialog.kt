@@ -8,6 +8,7 @@ import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.dialog_user_profile_context_menu.*
@@ -34,6 +35,15 @@ class UserProfileContextMenuDialog : SimpleBaseDialogFragment() {
         btn_edit_status.clicks().compose(clickDebounce()).subscribe { onEditStatus() }
         btn_open_social_instagram.clicks().compose(clickDebounce()).subscribe { openSocialInstagram() }
         btn_open_social_tiktok.clicks().compose(clickDebounce()).subscribe { openSocialTiktok() }
+
+        with (spm.getUserProfileProperties()) {
+            socialInstagram.takeIf { it.isNotBlank() }?.let { instagramUserId ->
+                btn_open_social_instagram.text = String.format(resources.getString(OriginR_string.profile_button_open_social_instagram, instagramUserId))
+            } ?: run { btn_open_social_instagram.changeVisibility(isVisible = false) }
+            socialTikTok.takeIf { it.isNotBlank() }?.let { tiktokUserId ->
+                btn_open_social_tiktok.text = String.format(resources.getString(OriginR_string.profile_button_open_social_tiktok, tiktokUserId))
+            } ?: run { btn_open_social_tiktok.changeVisibility(isVisible = false) }
+        }
     }
 
     // ------------------------------------------

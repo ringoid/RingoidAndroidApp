@@ -34,6 +34,8 @@ import com.ringoid.origin.profile.R
 import com.ringoid.origin.profile.WidgetR_attrs
 import com.ringoid.origin.profile.WidgetR_color
 import com.ringoid.origin.profile.adapter.UserProfileImageAdapter
+import com.ringoid.origin.profile.context_menu.ContextMenuAction
+import com.ringoid.origin.profile.context_menu.ContextMenuExtras
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.dialog.Dialogs
@@ -164,7 +166,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                     showNoImageStub(needShow = empty)
                     showDotTabs(isVisible = true)
                 }
-                itemClickListener = { _, _ -> navigate(this@UserProfileFragment, path = "/settings_profile") }
+                itemClickListener = { _, _ -> openSettingsProfileScreen() }
             }
     }
 
@@ -179,28 +181,35 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             RequestCode.RC_CONTEXT_MENU_USER_PROFILE -> {
                 showControls(isVisible = true)
                 if (resultCode == Activity.RESULT_OK) {
-                    if (data == null) {
+                    data?.let {
+                        (data.extras!!.getSerializable(ContextMenuExtras.EXTRA_ACTION) as? ContextMenuAction)?.let { action ->
+                            when (action) {
+                                ContextMenuAction.ADD_IMAGE -> onAddImage()
+                                ContextMenuAction.DELETE_IMAGE -> vm.deleteImage(id = data.getStringExtra("imageId"))
+                                ContextMenuAction.EDIT_PROFILE -> openSettingsProfileScreen()
+                                ContextMenuAction.EDIT_STATUS -> openSettingsProfileScreenForStatus()
+                            }
+                        }
+                    } ?: run {
                         "No output from Context Menu dialog - this is an error!".let { msg ->
                             Timber.e(msg); Report.e(msg)
                         }
                     }
-
-                    // TODO: handle ContextMenuAction
                 }
             }
             RequestCode.RC_DELETE_IMAGE_DIALOG -> {
                 showControls(isVisible = true)
                 if (resultCode == Activity.RESULT_OK) {
-                    if (data == null) {
+                    data?.let {
+                        if (data.hasExtra("debug")) {  // DebugOnly
+                            vm.deleteImageDebug(id = data.getStringExtra("imageId"))
+                        } else {
+                            vm.deleteImage(id = data.getStringExtra("imageId"))
+                        }
+                    } ?: run {
                         "No output image id from Delete Image dialog - this is an error!".let { msg ->
                             Timber.e(msg); Report.e(msg)
                         }
-                    }
-
-                    if (data.hasExtra("debug")) {  // DebugOnly
-                        vm.deleteImageDebug(id = data.getStringExtra("imageId"))
-                    } else {
-                        vm.deleteImage(id = data.getStringExtra("imageId"))
                     }
                 }
             }
@@ -303,9 +312,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 withAbout = about.isNotBlank()
                 tv_about.text = about.trim()
             }
-            properties.status().let { status ->
-                tv_status.text = status.trim()
-            }
+            properties.status().let { status -> tv_status.text = status.trim() }
 
             mutableListOf<String>().apply {
                 properties.name()
@@ -403,14 +410,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adjustViews()
-        ibtn_add_image.clicks().compose(clickDebounce())
-            .subscribe {
-                if (!connectionManager.isNetworkAvailable()) {
-                    noConnection(this)
-                    return@subscribe
-                }
-                onAddImage()
-            }
+        ibtn_add_image.clicks().compose(clickDebounce()).subscribe { onAddImage() }
         with (ibtn_add_image_debug) {
             changeVisibility(isVisible = BuildConfig.DEBUG)
             clicks().compose(clickDebounce()).subscribe {
@@ -418,18 +418,18 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 onAddImage()
             }
         }
-        ibtn_delete_image.clicks().compose(clickDebounce()).subscribe {
+        ibtn_context_menu.clicks().compose(clickDebounce()).subscribe {
             if (!connectionManager.isNetworkAvailable()) {
                 noConnection(this)
                 return@subscribe
             }
 
-            imageOnViewPort()?.let { image ->
-                showControls(isVisible = false)
-                navigate(this, path = "/delete_image?imageId=${image.id}", rc = RequestCode.RC_DELETE_IMAGE_DIALOG)
-            }
+            val imageIdPayload = imageOnViewPort()?.let { image -> "?imageId=${image.id}" } ?: ""
+
+            showControls(isVisible = false)
+            navigate(this, path = "/user_profile_context_menu$imageIdPayload", rc = RequestCode.RC_CONTEXT_MENU_USER_PROFILE)
         }
-        ibtn_profile_edit.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile") }
+        ibtn_profile_edit.clicks().compose(clickDebounce()).subscribe { openSettingsProfileScreen() }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
@@ -449,7 +449,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             addOnScrollListener(pageSelectListener)
         }
         tv_app_title.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
-        tv_status.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings_profile?focus=${UserProfileEditablePropertyId.STATUS}") }
+        tv_status.clicks().compose(clickDebounce()).subscribe { openSettingsProfileScreenForStatus() }
     }
 
     override fun onDestroyView() {
@@ -486,6 +486,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
 
     // ------------------------------------------
     private fun onAddImage() {
+        if (!connectionManager.isNetworkAvailable()) {
+            noConnection(this)
+            return
+        }
+
         ExternalNavigator.openGalleryToGetImageFragment(this)
     }
 
@@ -552,6 +557,14 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
 
     private fun isAboutVisible(): Boolean = isAboutPage(page = currentImagePosition)
 
+    private fun openSettingsProfileScreen() {
+        navigate(this, path = "/settings_profile")
+    }
+
+    private fun openSettingsProfileScreenForStatus() {
+        navigate(this, path = "/settings_profile?focus=${UserProfileEditablePropertyId.STATUS}")
+    }
+
     // ------------------------------------------
     private fun showBeginStub() {  // empty stub without labels, plain clean stub
         showEmptyStub(needShow = true, input = EmptyFragment.Companion.Input())
@@ -614,7 +627,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     private fun showImageControls(isVisible: Boolean) {
-        ibtn_delete_image.changeVisibility(isVisible = isVisible)
+        ibtn_context_menu.changeVisibility(isVisible = isVisible)
         ibtn_profile_edit.changeVisibility(isVisible = isVisible)
         label_online_status.changeVisibility(isVisible = isVisible)
         ll_left_container.changeVisibility(isVisible = isVisible)

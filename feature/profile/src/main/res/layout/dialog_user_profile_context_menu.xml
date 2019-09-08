@@ -17,35 +17,35 @@
     <Button
         android:id="@+id/btn_add_image"
         android:layout_width="match_parent"
-        android:text="@string/profile_button_delete_image"
+        android:text="@string/profile_button_add_image"
         android:textColor="@color/flat_button_text_color_primary"
         style="@style/FlatButton.Tall"/>
 
     <Button
         android:id="@+id/btn_edit_status"
         android:layout_width="match_parent"
-        android:text="@string/profile_button_delete_image"
+        android:text="@string/profile_button_edit_profile_status"
         android:textColor="@color/flat_button_text_color_primary"
         style="@style/FlatButton.Tall"/>
 
     <Button
         android:id="@+id/btn_edit_profile"
         android:layout_width="match_parent"
-        android:text="@string/profile_button_delete_image"
+        android:text="@string/profile_button_edit_profile"
         android:textColor="@color/flat_button_text_color_primary"
         style="@style/FlatButton.Tall"/>
 
     <Button
         android:id="@+id/btn_open_social_instagram"
         android:layout_width="match_parent"
-        android:text="@string/profile_button_delete_image"
+        android:text="@string/profile_button_open_social_instagram"
         android:textColor="@color/flat_button_text_color_primary"
         style="@style/FlatButton.Tall"/>
 
     <Button
         android:id="@+id/btn_open_social_tiktok"
         android:layout_width="match_parent"
-        android:text="@string/profile_button_delete_image"
+        android:text="@string/profile_button_open_social_tiktok"
         android:textColor="@color/flat_button_text_color_primary"
         style="@style/FlatButton.Tall"/>
 </LinearLayout>
