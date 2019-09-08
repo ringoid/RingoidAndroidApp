@@ -64,43 +64,43 @@ class MainViewModel @Inject constructor(
     @DebugOnly internal fun closeDebugViewOneShot(): LiveData<OneShot<Boolean>> = closeDebugViewOneShot
 
     init {
-        getLcUseCase.repository.badgeLikes
+        getLcUseCase.repository.badgeLikesSource()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeLikes.value = it }, Timber::e)
 
-        getLcUseCase.repository.badgeMessenger
+        getLcUseCase.repository.badgeMessengerSource()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeMessages.value = it }, Timber::e)
 
-        getLcUseCase.repository.lmmLoadFinish
+        getLcUseCase.repository.lmmLoadFinishSource()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ HandledPushDataInMemory.dropCountsOfHandledPush() }, Timber::e)
 
-        getLcUseCase.repository.newLikesCount
+        getLcUseCase.repository.newLikesCountSource()
             .observeOn(AndroidSchedulers.mainThread())
             .map { it - HandledPushDataInMemory.getCountOfHandledPushLikes() }
             .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newLikesCount.value = it }, Timber::e)
 
-        getLcUseCase.repository.newMatchesCount
+        getLcUseCase.repository.newMatchesCountSource()
             .observeOn(AndroidSchedulers.mainThread())
             .map { it - HandledPushDataInMemory.getCountOfHandledPushMatches() }
             .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newMatchesCount.value = it }, Timber::e)
 
-        getLcUseCase.repository.newMessagesCount
+        getLcUseCase.repository.newMessagesCountSource()
             .observeOn(AndroidSchedulers.mainThread())
             .map { it - HandledPushDataInMemory.getCountOfHandledPushMessages() }
             .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newMessagesCount.value = it }, Timber::e)
 
-        getUserImagesUseCase.repository.totalUserImages
+        getUserImagesUseCase.repository.totalUserImagesSource()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeWarningProfile.value = it == 0 }, Timber::e)

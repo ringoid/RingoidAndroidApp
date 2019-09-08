@@ -7,14 +7,13 @@ import com.ringoid.utility.DebugOnly
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.subjects.PublishSubject
 
 interface IUserImageRepository : IImageRepository {
 
-    val imageBlocked: PublishSubject<String>
-    val imageCreated: PublishSubject<String>
-    val imageDeleted: PublishSubject<String>
-    val totalUserImages: PublishSubject<Int>
+    fun imageBlockedSource(): Observable<String>
+    fun imageCreatedSource(): Observable<String>
+    fun imageDeletedSource(): Observable<String>
+    fun totalUserImagesSource(): Observable<Int>
 
     // --------------------------------------------------------------------------------------------
     fun countUserImages(): Single<Int>

@@ -6,6 +6,7 @@ import com.ringoid.debug.model.DebugLogItem
 import com.ringoid.debug.model.EmptyDebugLogItem
 import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.tagLine
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -18,7 +19,9 @@ object DebugLogUtil {
 
     internal var GLOBAL_TICK: Long = 1L
 
-    val logger = ReplaySubject.createWithTimeAndSize<DebugLogItem>(15, TimeUnit.SECONDS, Schedulers.newThread(), 10)
+    private val logger = ReplaySubject.createWithTimeAndSize<DebugLogItem>(15, TimeUnit.SECONDS, Schedulers.newThread(), 10)
+    fun loggerSource(): Observable<DebugLogItem> = logger.hide()
+
     private lateinit var config: IRuntimeConfig
     private var dao: IDebugLogDaoHelper? = null
 

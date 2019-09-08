@@ -115,7 +115,7 @@ class DebugView : ConstraintLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        DebugLogUtil.logger
+        DebugLogUtil.loggerSource()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { DebugLogUtil.d("${Date().date()} :: ${BuildConfig.VERSION_NAME}\n\n${ContextUtil.deviceInfo()}\n\n") }
             .doOnDispose { Timber.v("Disposed DebugView") }

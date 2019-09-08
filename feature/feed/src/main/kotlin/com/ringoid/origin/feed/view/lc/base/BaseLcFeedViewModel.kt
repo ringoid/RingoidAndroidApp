@@ -111,7 +111,7 @@ abstract class BaseLcFeedViewModel(
             .subscribe({}, DebugLogUtil::e)
 
         // notify UI about unexpected fatal errors
-        getLcUseCase.repository.lmmLoadFailed
+        getLcUseCase.repository.lmmLoadFailedSource()
             .filter { it is ErrorConnectionTimedOut }  // handle only connection timeout error, ignore other connection errors
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { analyticsManager.fire(Analytics.CONNECTION_TIMEOUT, "sourceFeed" to getFeedName()) }

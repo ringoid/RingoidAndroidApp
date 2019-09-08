@@ -7,6 +7,7 @@ import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.model.feed.Filters
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,7 +20,8 @@ open class BaseFiltersViewModel @Inject constructor(
     internal fun filters(): LiveData<Filters> = filters
     internal fun filtersChangeOneShot(): LiveData<OneShot<Boolean>> = filtersChangeOneShot
 
-    protected val filtersChanged = PublishSubject.create<Boolean>()
+    private val filtersChanged = PublishSubject.create<Boolean>()
+    protected fun filtersChangedSource(): Observable<Boolean> = filtersChanged.hide()
 
     private fun setUpFilters() {
         val filtersValue = filtersSource.getFilters()

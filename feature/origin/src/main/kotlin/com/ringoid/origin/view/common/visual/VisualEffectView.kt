@@ -23,7 +23,7 @@ class VisualEffectView : FrameLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         Timber.v("VisualEffect: view attached")
-        VisualEffectManager.effect
+        VisualEffectManager.effectSource()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnDispose { Timber.v("VisualEffect: disposed") }
             .`as`(AutoDispose.autoDisposable(scope()))

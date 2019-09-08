@@ -107,18 +107,31 @@ open class FeedRepository @Inject constructor(
         Completable.fromCallable { local.updateSourceFeed(feedItemId, destinationFeed) }
 
     // --------------------------------------------------------------------------------------------
-    override val badgeLikes = PublishSubject.create<Boolean>()
-    override val badgeMatches = PublishSubject.create<Boolean>()
-    override val badgeMessenger = PublishSubject.create<Boolean>()
-    override val feedLikes = PublishSubject.create<LmmSlice>()
-    override val feedMatches = PublishSubject.create<LmmSlice>()
-    override val feedMessages = PublishSubject.create<LmmSlice>()
-    override val lmmChanged = PublishSubject.create<Boolean>()
-    override val lmmLoadFinish = PublishSubject.create<Int>()
-    override val lmmLoadFailed = PublishSubject.create<Throwable>()
-    override val newLikesCount = PublishSubject.create<Int>()
-    override val newMatchesCount = PublishSubject.create<Int>()
-    override val newMessagesCount = PublishSubject.create<Int>()
+    private val badgeLikes = PublishSubject.create<Boolean>()  // LMM contains new likes
+    private val badgeMatches = PublishSubject.create<Boolean>()  // LMM contains new matches
+    private val badgeMessenger = PublishSubject.create<Boolean>()  // LMM contains new messages
+    private val feedLikes = PublishSubject.create<LmmSlice>()
+    @Deprecated("LMM -> LC")
+    private val feedMatches = PublishSubject.create<LmmSlice>()  // deprecated, 'matches' are part of 'chats' in LC
+    private val feedMessages = PublishSubject.create<LmmSlice>()
+    private val lmmChanged = PublishSubject.create<Boolean>()  // LMM contains new data
+    private val lmmLoadFinish = PublishSubject.create<Int>()  // LMM load finished, contains LMM's total count
+    private val lmmLoadFailed = PublishSubject.create<Throwable>()  // LMM load failed, fallback to cache
+    private val newLikesCount = PublishSubject.create<Int>()  // for particle animation
+    private val newMatchesCount = PublishSubject.create<Int>()  // for particle animation
+    private val newMessagesCount = PublishSubject.create<Int>()  // for particle animation
+    override fun badgeLikesSource(): Observable<Boolean> = badgeLikes.hide()
+    override fun badgeMatchesSource(): Observable<Boolean> = badgeMatches.hide()
+    override fun badgeMessengerSource(): Observable<Boolean> = badgeMessenger.hide()
+    override fun feedLikesSource(): Observable<LmmSlice> = feedLikes.hide()
+    override fun feedMatchesSource(): Observable<LmmSlice> = feedMatches.hide()
+    override fun feedMessagesSource(): Observable<LmmSlice> = feedMessages.hide()
+    override fun lmmChangedSource(): Observable<Boolean> = lmmChanged.hide()
+    override fun lmmLoadFinishSource(): Observable<Int> = lmmLoadFinish.hide()
+    override fun lmmLoadFailedSource(): Observable<Throwable> = lmmLoadFailed.hide()
+    override fun newLikesCountSource(): Observable<Int> = newLikesCount.hide()
+    override fun newMatchesCountSource(): Observable<Int> = newMatchesCount.hide()
+    override fun newMessagesCountSource(): Observable<Int> = newMessagesCount.hide()
 
     /* Discover (former New Faces) */
     // ------------------------------------------
