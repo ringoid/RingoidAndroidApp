@@ -1,5 +1,6 @@
 package com.ringoid.debug.timer
 
+import com.ringoid.debug.BuildConfig
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import timber.log.Timber
@@ -27,6 +28,10 @@ class TimeKeeper(private val interval: Long = TIME_KEEP_INTERVAL) {
     }
 
     fun start() {
+        if (!BuildConfig.DEBUG) {
+            return
+        }
+
         if (startBit.get()) {
             if (requestedToStopBit.get()) {
                 Timber.e("Time keeper has been requested to stop, but it didn't stop yet")
