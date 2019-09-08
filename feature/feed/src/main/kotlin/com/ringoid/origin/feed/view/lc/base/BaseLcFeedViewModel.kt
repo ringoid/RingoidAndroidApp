@@ -24,7 +24,6 @@ import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.lc.FeedCounts
 import com.ringoid.origin.feed.view.lc.LcCoordinator
-import com.ringoid.origin.feed.view.lc.LcDataListener
 import com.ringoid.origin.feed.view.lc.SeenAllFeed
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
@@ -227,6 +226,17 @@ abstract class BaseLcFeedViewModel(
     override fun onRefresh() {
         super.onRefresh()
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
+    }
+
+    /**
+     * Called by [LcCoordinator] that has been requested to load LC data. This [BaseLcFeedViewModel]
+     * is recipient of that data, and it should display loading state here. Once data is loaded,
+     * method [BaseLcFeedViewModel.setLcItems] will be called and it will then handle further change
+     * of state.
+     */
+    override fun onStartLcDataLoading() {
+        viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_DEFAULT)
+        viewState.value = ViewState.LOADING
     }
 
     internal fun onTapToRefreshClick() {
