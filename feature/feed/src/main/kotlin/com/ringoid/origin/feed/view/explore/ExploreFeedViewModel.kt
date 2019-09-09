@@ -66,6 +66,7 @@ class ExploreFeedViewModel @Inject constructor(
 
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
+    private val distinctIds = mutableSetOf<String>()
 
     override fun getFeedName(): String = DomainUtil.SOURCE_FEED_EXPLORE
 
@@ -106,7 +107,12 @@ class ExploreFeedViewModel @Inject constructor(
         return getDiscoverUseCase.source(params = prepareFeedParams())
             .doOnSubscribe { viewState.value = ViewState.LOADING }  // load feed items progress
             .doOnSuccess {
-                feed.value = it  // update feed content
+                // distinction is guaranteed by [GetDiscoverUseCase] implementation, so no duplicates here for 'feed'
+                distinctIds.addAll(it.profiles.map { it.id })
+                feed.value = it  // update feed content, no duplicates
+                /**
+                 * Notify state changed on new feed content.
+                 */
                 viewState.value = if (it.isEmpty()) {
                     if (hasFiltersApplied()) {
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_CHANGE_FILTERS)  // set empty Explore feed due to filters
@@ -115,7 +121,9 @@ class ExploreFeedViewModel @Inject constructor(
                         ViewState.CLEAR(mode = ViewState.CLEAR.MODE_EMPTY_DATA)  // set empty Explore feed (no filters)
                     }
                 } else ViewState.IDLE  // load feed items success
-
+                /**
+                 * Side-effects on new feed content.
+                 */
                 if (spm.needShowFilters()) {
                     needShowFiltersOneShot.value = OneShot(true)
                 }
@@ -152,9 +160,19 @@ class ExploreFeedViewModel @Inject constructor(
                 }
             }
             .doFinally { isLoadingMore = false }
+            .map {
+                val distinctIdsOnPage = it.profiles.map { it.id }.minus(distinctIds)
+                if (distinctIdsOnPage.size != it.profiles.size) {
+                    // there are duplicates detected on this page with all the previous pages
+                    Report.i("Skip duplicates for this page with all the previous pages on Discover",
+                             extras = listOf("original feed size" to "${it.profiles.size}", "new feed size" to "${distinctIdsOnPage.size}"))
+                    val newProfiles = it.profiles.toMutableList().apply { retainAll { it.id in distinctIdsOnPage } }
+                    it.copyWith(newProfiles)  // retain only items that didn't clash with all the previous items
+                } else it  // all items on this page are unique with all the previous pages
+            }
             .autoDisposable(this)
             .subscribe({
-                feed.value = it
+                feed.value = it  // feed could be empty, UI will handle this case gracefully
                 notifyOnFeedLoadFinishOneShot.value = OneShot(true)
             }, DebugLogUtil::e)
     }
