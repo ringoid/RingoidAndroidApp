@@ -19,6 +19,7 @@ import com.ringoid.report.exception.SilentFatalException
 import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
+import com.ringoid.utility.theme.ThemeId
 import io.reactivex.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -146,11 +147,11 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
     }
 
     // ------------------------------------------
-    @StyleRes
-    override fun getThemeResId(@StyleRes defaultThemeResId: Int): Int = sharedPreferences.getInt(SP_KEY_THEME, defaultThemeResId)
+    override fun getThemeId(defaultTheme: ThemeId): ThemeId =
+        sharedPreferences.getString(SP_KEY_THEME, defaultTheme.name).let { ThemeId.valueOf(it) }
 
-    override fun saveThemeResId(@StyleRes themeResId: Int) {
-        sharedPreferences.edit().putInt(SP_KEY_THEME, themeResId).apply()
+    override fun saveThemeId(theme: ThemeId) {
+        sharedPreferences.edit().putString(SP_KEY_THEME, theme.name).apply()
     }
 
     // ------------------------------------------

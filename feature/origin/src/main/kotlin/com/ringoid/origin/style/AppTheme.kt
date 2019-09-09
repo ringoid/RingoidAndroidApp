@@ -1,5 +1,5 @@
 package com.ringoid.origin.style
 
-import androidx.annotation.StyleRes
+import com.ringoid.utility.theme.ThemeId
 
-data class AppTheme(@StyleRes val themeResId: Int)
+data class AppTheme(val theme: ThemeId)

@@ -2,7 +2,6 @@ package com.ringoid.main.view
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ringoid.base.deeplink.AppNav
@@ -12,7 +11,6 @@ import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
 import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_string
-import com.ringoid.main.OriginR_style
 import com.ringoid.main.listOfMainScreens
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.utils.AppUtils
@@ -20,6 +18,7 @@ import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.particles.*
 import com.ringoid.utility.DebugOnly
+import com.ringoid.utility.theme.ThemeId
 
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
@@ -29,7 +28,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     }
 
     private var currentLocale: String? = null
-    @StyleRes private var currentThemeResId: Int = 0
+    private var currentTheme: ThemeId = ThemeId.UNKNOWN
 
     private var markForRecreation: Boolean = false
 
@@ -42,7 +41,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currentLocale = app.localeManager.getLang()
-        currentThemeResId = spm.getThemeResId(defaultThemeResId = OriginR_style.AppTheme_Dark)
+        currentTheme = spm.getThemeId(defaultTheme = ThemeId.DARK)
         observe(vm.badgeLikes(), ::showBadgeOnLikes)
         observe(vm.badgeMessages(), ::showBadgeOnMessages)
         observe(vm.badgeWarningProfile(), ::showBadgeWarningOnProfile)
@@ -74,7 +73,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
             Bus.post(BusEvent.RecreateMainScreen)
         }
         if (currentLocale != app.localeManager.getLang() ||
-            currentThemeResId != spm.getThemeResId(defaultThemeResId = currentThemeResId)) {
+            currentTheme != spm.getThemeId(defaultTheme = currentTheme)) {
             AppRes.initTranslatableStrings(resources)  // translate strings if locale has changed
             markForRecreation = true
             recreate()  // locale or theme has changed outside, in some another Activity

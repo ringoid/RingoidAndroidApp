@@ -1,10 +1,10 @@
 package com.ringoid.domain.manager
 
-import androidx.annotation.StyleRes
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.DebugOnly
+import com.ringoid.utility.theme.ThemeId
 
 interface ISharedPrefsManager : IFiltersSource {
 
@@ -18,8 +18,8 @@ interface ISharedPrefsManager : IFiltersSource {
     fun deleteByKey(key: String)
 
     // ------------------------------------------
-    fun getThemeResId(@StyleRes defaultThemeResId: Int = 0): Int
-    fun saveThemeResId(@StyleRes themeResId: Int)
+    fun getThemeId(defaultTheme: ThemeId = ThemeId.DARK): ThemeId
+    fun saveThemeId(theme: ThemeId)
 
     // ------------------------------------------
     @DebugOnly fun isDebugLogEnabled(): Boolean
