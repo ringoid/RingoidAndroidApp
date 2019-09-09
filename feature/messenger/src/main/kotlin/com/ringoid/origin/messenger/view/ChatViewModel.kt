@@ -104,7 +104,7 @@ class ChatViewModel @Inject constructor(
                 ChatInMemoryCache.setUserMessagesCountIfChanged(chatId = profileId, count = countUserMessages(msgs))
                 currentMessageList = msgs.toMutableList().apply { removeAll { it.isLocal() } }
                 messages.value = msgs
-                startPollingChat(profileId = profileId, delay = 50L)
+                startPollingChat(profileId = profileId, initialDelay = 50L)
             }, DebugLogUtil::e)
     }
 
@@ -140,8 +140,8 @@ class ChatViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun startPollingChat(profileId: String, delay: Long) {
-        Flowable.timer(delay, TimeUnit.MILLISECONDS)
+    private fun startPollingChat(profileId: String, initialDelay: Long) {
+        Flowable.timer(initialDelay, TimeUnit.MILLISECONDS)
             .flatMap {
                 pollChatNewMessagesUseCase.source(params = prepareGetChatParams(profileId))
                     .takeUntil { isStopped }  // stop polling if Chat screen was hidden
