@@ -47,8 +47,10 @@ object DebugLogUtil {
             SimpleBarrierLogUtil.log(log = log)
         }
         if (config.isDeveloper() && config.collectDebugLogs()) {
-            tagLine(prefix = " {Debug Log} ")
-            Timber.log(level.priority, log)
+            if (BuildConfig.DEBUG) {
+                tagLine(prefix = " {Debug Log} ")
+                Timber.log(level.priority, log)
+            }
             val logItem = DebugLogItem(log = log, level = level)
             logger.onNext(logItem)
             dao?.addDebugLog(logItem)
