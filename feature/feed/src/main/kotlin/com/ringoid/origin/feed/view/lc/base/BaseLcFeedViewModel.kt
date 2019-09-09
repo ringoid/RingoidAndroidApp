@@ -149,14 +149,16 @@ abstract class BaseLcFeedViewModel(
     protected abstract fun sourceFeed(): Observable<LmmSlice>
 
     override fun getFeed(): Completable {
-        // TODO: when some LC feed has been requested to refresh, show loading UI on another feed until data arrives into Subject
         val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                              .put("limit", DomainUtil.LIMIT_PER_PAGE)
                              .put("source", getFeedName())
                              .put(filters)
 
         return getLcUseCase.source(params = params)
-            .doOnSubscribe { viewState.value = ViewState.LOADING }  // load LC feed items progress
+            .doOnSubscribe {
+                coordinator.notifyOnRefresh(this)  // notify other listeners that refresh occurs on this feed
+                viewState.value = ViewState.LOADING  // load LC feed items progress
+            }
             .doOnSuccess { notifyOnFeedLoadFinishOneShot.value = OneShot(true) }
             .doOnError { viewState.value = ViewState.ERROR(it) }  // load LC feed items failed
             .ignoreElement()

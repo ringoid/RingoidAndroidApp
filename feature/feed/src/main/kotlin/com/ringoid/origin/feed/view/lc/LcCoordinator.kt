@@ -64,12 +64,31 @@ class LcCoordinator @Inject constructor(
     }
 
     // ------------------------------------------
+    internal fun onApplyFilters() {
+        // update filters value to use in future coordination
+        filters = filtersSource.getFilters()
+    }
+
+    internal fun dropFilters() {
+        filters = NoFilters
+    }
+
+    /**
+     * Refresh has been initiated from [source] listener, so one can notify all other listeners.
+     * If [source] is 'null', all listeners will be notified.
+     */
+    internal fun notifyOnRefresh(source: LcDataListener?) {
+        // notify all listeners except 'source' to display some refreshing UI
+        listeners.forEach { if (it != source) it.onStartLcDataLoading() }
+    }
+
     @Suppress("CheckResult")
     private fun refreshIfUserHasImages() {
         countUserImagesUseCase.source()
             .flatMapCompletable { countOfImages ->
                 if (countOfImages > 0) {
-                    listeners.forEach { it.onStartLcDataLoading() }  // notify listeners to display some refreshing UI
+                    // notify listeners to display some refreshing UI
+                    listeners.forEach { it.onStartLcDataLoading() }
                     getLcUseCase.source(prepareGetLcParams())
                                 .ignoreElement()  // convert to Completable
                 } else {
@@ -78,15 +97,6 @@ class LcCoordinator @Inject constructor(
             }
             .autoDisposable(scopeProvider)
             .subscribe({}, DebugLogUtil::e)
-    }
-
-    internal fun onApplyFilters() {
-        // update filters value to use in future coordination
-        filters = filtersSource.getFilters()
-    }
-
-    internal fun dropFilters() {
-        filters = NoFilters
     }
 
     // ------------------------------------------
