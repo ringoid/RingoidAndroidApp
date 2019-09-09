@@ -35,6 +35,7 @@ class LcCoordinator @Inject constructor(
     private val countUserImagesUseCase: CountUserImagesUseCase) {
 
     interface LcDataListener {
+        fun onErrorLcDataLoading(e: Throwable)
         fun onStartLcDataLoading()
     }
 
@@ -71,6 +72,11 @@ class LcCoordinator @Inject constructor(
 
     internal fun dropFilters() {
         filters = NoFilters
+    }
+
+    internal fun notifyOnError(e: Throwable) {
+        // notify all listeners to display some error UI
+        listeners.forEach { it.onErrorLcDataLoading(e) }
     }
 
     /**

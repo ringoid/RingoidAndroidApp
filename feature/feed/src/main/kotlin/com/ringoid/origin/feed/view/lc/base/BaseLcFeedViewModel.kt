@@ -160,7 +160,7 @@ abstract class BaseLcFeedViewModel(
                 viewState.value = ViewState.LOADING  // load LC feed items progress
             }
             .doOnSuccess { notifyOnFeedLoadFinishOneShot.value = OneShot(true) }
-            .doOnError { viewState.value = ViewState.ERROR(it) }  // load LC feed items failed
+            .doOnError { coordinator.notifyOnError(it) }  // load LC feed items failed
             .ignoreElement()
     }
 
@@ -234,6 +234,13 @@ abstract class BaseLcFeedViewModel(
     override fun onRefresh() {
         super.onRefresh()
         refreshOnPush.value = false  // hide 'tap-to-refresh' upon manual refresh
+    }
+
+    /**
+     * Called by [LcCoordinator] that has been requested to load LC data and failed to do so.
+     */
+    override fun onErrorLcDataLoading(e: Throwable) {
+        viewState.value = ViewState.ERROR(e)
     }
 
     /**
