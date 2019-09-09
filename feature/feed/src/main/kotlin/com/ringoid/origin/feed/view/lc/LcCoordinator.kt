@@ -13,6 +13,7 @@ import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.report.log.Report
+import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -39,8 +40,10 @@ class LcCoordinator @Inject constructor(
 
     private var filters: Filters = NoFilters
     private val listeners: MutableList<LcDataListener> = mutableListOf()
+    private val scopeProvider = LcCoordinatorScopeProvider()
 
     internal fun init() {
+        scopeProvider.activate()
         Bus.subscribeOnBusEvents(subscriber = this)
     }
 
@@ -48,6 +51,7 @@ class LcCoordinator @Inject constructor(
         if (Bus.isSubscribed(subscriber = this)) {
             Bus.unsubscribeFromBusEvents(subscriber = this)
         }
+        scopeProvider.dispose()
     }
 
     // ------------------------------------------
@@ -63,7 +67,6 @@ class LcCoordinator @Inject constructor(
     @Suppress("CheckResult")
     private fun refreshIfUserHasImages() {
         countUserImagesUseCase.source()
-            // TODO: autoDispose
             .flatMapCompletable { countOfImages ->
                 if (countOfImages > 0) {
                     listeners.forEach { it.onStartLcDataLoading() }  // notify listeners to display some refreshing UI
@@ -73,6 +76,7 @@ class LcCoordinator @Inject constructor(
                     Completable.complete()
                 }
             }
+            .autoDisposable(scopeProvider)
             .subscribe({}, DebugLogUtil::e)
     }
 
