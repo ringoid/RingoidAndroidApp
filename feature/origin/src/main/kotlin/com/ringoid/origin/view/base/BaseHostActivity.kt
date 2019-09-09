@@ -2,10 +2,10 @@ package com.ringoid.origin.view.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.origin.R
+import com.ringoid.origin.view.base.theme.ThemedSimpleBaseActivity
 
-abstract class BaseHostActivity : SimpleBaseActivity() {
+abstract class BaseHostActivity : ThemedSimpleBaseActivity() {
 
     override fun getLayoutId(): Int? = R.layout.activity_container
 

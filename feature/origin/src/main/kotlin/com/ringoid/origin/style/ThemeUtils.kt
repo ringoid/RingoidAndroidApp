@@ -1,17 +1,15 @@
 package com.ringoid.origin.style
 
 import androidx.annotation.StyleRes
-import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.origin.R
-import com.ringoid.utility.theme.ThemeId
 import timber.log.Timber
 
 object ThemeUtils {
 
     private val defaultTheme: ThemeId = ThemeId.DARK
 
-    fun isDefaultTheme(spm: ISharedPrefsManager): Boolean = spm.getThemeId(defaultTheme) == defaultTheme
-    fun isDarkTheme(spm: ISharedPrefsManager): Boolean =
+    fun isDefaultTheme(spm: StyleSharedPrefsManager): Boolean = spm.getThemeId(defaultTheme) == defaultTheme
+    fun isDarkTheme(spm: StyleSharedPrefsManager): Boolean =
         spm.getThemeId(defaultTheme).let { it == ThemeId.DARK || it == ThemeId.DARK_SEMITRANSPARENT }
 
     fun printThemes() {
@@ -32,7 +30,7 @@ object ThemeUtils {
             else -> R.style.AppTheme_Dark  // default if not unknown
         }
 
-    fun switchTheme(spm: ISharedPrefsManager): ThemeId {
+    fun switchTheme(spm: StyleSharedPrefsManager): ThemeId {
         val newTheme = when (spm.getThemeId()) {
             ThemeId.DARK -> ThemeId.LIGHT
             ThemeId.DARK_SEMITRANSPARENT -> ThemeId.LIGHT_SEMITRANSPARENT

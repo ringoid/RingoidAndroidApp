@@ -2,12 +2,11 @@ package com.ringoid.data.local.shared_prefs
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.annotation.StyleRes
 import com.google.gson.Gson
 import com.ringoid.data.manager.RuntimeConfig
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
-import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.feed.EmptyFilters
@@ -19,7 +18,6 @@ import com.ringoid.report.exception.SilentFatalException
 import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
-import com.ringoid.utility.theme.ThemeId
 import io.reactivex.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -56,7 +54,6 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         private const val SP_KEY_BUILD_CODE = "sp_key_build_code"
         private const val SP_KEY_APP_FIRST_LAUNCH = "sp_key_app_first_launch"
         private const val SP_KEY_APP_UID = "sp_key_app_uid"
-        private const val SP_KEY_THEME = "sp_key_theme"
         @DebugOnly
         private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
         @DebugOnly
@@ -144,14 +141,6 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     override fun deleteByKey(key: String) {
         sharedPreferences.edit().remove(key).apply()
-    }
-
-    // ------------------------------------------
-    override fun getThemeId(defaultTheme: ThemeId): ThemeId =
-        sharedPreferences.getString(SP_KEY_THEME, defaultTheme.name).let { ThemeId.valueOf(it) }
-
-    override fun saveThemeId(theme: ThemeId) {
-        sharedPreferences.edit().putString(SP_KEY_THEME, theme.name).apply()
     }
 
     // ------------------------------------------

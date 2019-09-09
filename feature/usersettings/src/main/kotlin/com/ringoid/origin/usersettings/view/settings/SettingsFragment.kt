@@ -96,7 +96,7 @@ class SettingsFragment : BaseSettingsFragment<SettingsViewModel>() {
         }
         item_suggest_improvements.clicks().compose(clickDebounce()).subscribe { openSuggestImprovementsDialog("SuggestFromSettings") }
         item_theme.apply {
-            setChecked(!ThemeUtils.isDefaultTheme(spm))
+            setChecked(!ThemeUtils.isDefaultTheme(styleSpm))
             clicks().compose(clickDebounce()).subscribe { vm.switchTheme() }
         }
     }

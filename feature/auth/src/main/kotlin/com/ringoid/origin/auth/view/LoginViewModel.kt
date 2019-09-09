@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
-import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
@@ -16,7 +15,6 @@ import com.ringoid.domain.interactor.image.ClearCachedUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesUseCase
 import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
-import com.ringoid.report.log.Report
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.misc.Gender
@@ -24,6 +22,8 @@ import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.style.AppTheme
 import com.ringoid.origin.style.ThemeUtils
+import com.ringoid.origin.view.base.theme.ThemedBaseViewModel
+import com.ringoid.report.log.Report
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -42,7 +42,7 @@ class LoginViewModel @Inject constructor(
     private val clearCachedUserImagesUseCase: ClearCachedUserImagesUseCase,
     private val clearCachedImageRequestsUseCase: ClearCachedImageRequestsUseCase,
     private val clearMessagesUseCase: ClearMessagesUseCase,
-    app: Application) : BaseViewModel(app) {
+    app: Application) : ThemedBaseViewModel(app) {
 
     private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
 
@@ -138,7 +138,7 @@ class LoginViewModel @Inject constructor(
 
     // ------------------------------------------
     fun switchTheme() {
-        val newTheme = ThemeUtils.switchTheme(spm)
+        val newTheme = ThemeUtils.switchTheme(styleSpm)
         changeThemeOneShot.value = OneShot(AppTheme(newTheme))
     }
 

@@ -2,12 +2,13 @@ package com.ringoid.origin.usersettings.view.base
 
 import android.os.Bundle
 import com.ringoid.base.observeOneShot
-import com.ringoid.base.view.BaseFragment
 import com.ringoid.origin.usersettings.OriginR_string
+import com.ringoid.origin.view.base.theme.ThemedBaseFragment
 import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.origin.view.dialog.Dialogs
 
-abstract class BaseSettingsFragment<VM : BaseSettingsViewModel> : BaseFragment<VM>(), BigEditTextDialog.IBigEditTextDialogDone {
+abstract class BaseSettingsFragment<VM : BaseSettingsViewModel> :
+    ThemedBaseFragment<VM>(), BigEditTextDialog.IBigEditTextDialogDone {
 
     private var dialog: Dialogs.HashAlertDialog? = null
 

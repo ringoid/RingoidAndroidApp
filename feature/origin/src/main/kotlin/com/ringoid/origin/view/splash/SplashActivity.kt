@@ -3,17 +3,17 @@ package com.ringoid.origin.view.splash
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
-import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.splash
+import com.ringoid.origin.view.base.theme.ThemedBaseActivity
 import com.ringoid.utility.getScreenWidth
 import io.branch.referral.Branch
 import io.branch.referral.BranchError
 import org.json.JSONObject
 import timber.log.Timber
 
-class SplashActivity : BaseActivity<SplashViewModel>() {
+class SplashActivity : ThemedBaseActivity<SplashViewModel>() {
 
     override fun getVmClass(): Class<SplashViewModel> = SplashViewModel::class.java
 

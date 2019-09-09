@@ -7,10 +7,10 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.profile.context_menu.ContextMenuAction
 import com.ringoid.origin.profile.context_menu.ContextMenuExtras
-import com.ringoid.origin.view.base.SimpleBaseDialogActivity
+import com.ringoid.origin.view.base.theme.ThemedSimpleBaseDialogActivity
 
 @AppNav("user_profile_context_menu")
-class UserProfileContextMenuActivity : SimpleBaseDialogActivity(), IUserProfileContextMenuActivity {
+class UserProfileContextMenuActivity : ThemedSimpleBaseDialogActivity(), IUserProfileContextMenuActivity {
 
     companion object {
         private const val BUNDLE_KEY_OUTPUT_DATA = "bundle_key_output_data"

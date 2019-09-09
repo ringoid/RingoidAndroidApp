@@ -6,17 +6,17 @@ import android.os.Bundle
 import android.os.Parcelable
 import com.google.gson.Gson
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
 import com.ringoid.imageloader.ImageLoader
 import com.ringoid.origin.messenger.R
 import com.ringoid.origin.messenger.model.ChatPayload
+import com.ringoid.origin.view.base.theme.ThemedSimpleBaseActivity
 import com.ringoid.origin.view.dialog.IDialogCallback
 import kotlinx.android.synthetic.main.activity_chat.*
 
 @AppNav("chat")
-class ChatHostActivity : SimpleBaseActivity(), IChatHost, IDialogCallback {
+class ChatHostActivity : ThemedSimpleBaseActivity(), IChatHost, IDialogCallback {
 
     override fun getLayoutId(): Int = R.layout.activity_chat
 

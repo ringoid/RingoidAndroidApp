@@ -11,7 +11,6 @@ import com.ringoid.base.deeplink.AppNav
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
-import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.domain.Onboarding
 import com.ringoid.domain.misc.Gender
@@ -22,6 +21,7 @@ import com.ringoid.origin.auth.memory.LoginInMemoryCache
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.style.ThemeUtils
+import com.ringoid.origin.view.base.theme.ThemedBaseActivity
 import com.ringoid.utility.AutoLinkMovementMethod
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -30,7 +30,7 @@ import com.ringoid.widget.WidgetState
 import kotlinx.android.synthetic.main.activity_login.*
 
 @AppNav("login")
-class LoginActivity : BaseActivity<LoginViewModel>() {
+class LoginActivity : ThemedBaseActivity<LoginViewModel>() {
 
     companion object {
         private const val BUNDLE_KEY_SELECTED_GENDER = "bundle_key_selected_gender"
@@ -94,7 +94,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         }
         switch_theme.apply {
             setOnCheckedChangeListener(null)
-            isChecked = !ThemeUtils.isDefaultTheme(spm)
+            isChecked = !ThemeUtils.isDefaultTheme(styleSpm)
             setOnCheckedChangeListener { _, _ -> vm.switchTheme() }
         }
         tv_sex_male.clicks().compose(clickDebounce()).subscribe {

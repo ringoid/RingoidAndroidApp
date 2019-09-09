@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.origin.view.base.SimpleBaseDialogActivity
+import com.ringoid.origin.view.base.theme.ThemedSimpleBaseDialogActivity
 import com.ringoid.utility.DebugOnly
 
 @AppNav("delete_image")  @Deprecated("Replaced with context menu")
-class DeleteUserProfileImageActivity : SimpleBaseDialogActivity(), IDeleteUserProfileImageActivity {
+class DeleteUserProfileImageActivity : ThemedSimpleBaseDialogActivity(), IDeleteUserProfileImageActivity {
 
     private var deleteUserImageDialog: DeleteUserProfileImageDialog? = null
 

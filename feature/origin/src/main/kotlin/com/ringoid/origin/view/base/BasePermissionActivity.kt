@@ -4,15 +4,15 @@ import android.os.Bundle
 import com.ringoid.base.manager.permission.IPermissionCaller
 import com.ringoid.base.manager.permission.PermissionManager
 import com.ringoid.base.observeOneShot
-import com.ringoid.base.view.BaseActivity
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
+import com.ringoid.origin.view.base.theme.ThemedBaseActivity
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
 import javax.inject.Inject
 
-abstract class BasePermissionActivity<T : BasePermissionViewModel> : BaseActivity<T>() {
+abstract class BasePermissionActivity<T : BasePermissionViewModel> : ThemedBaseActivity<T>() {
 
     @Inject protected lateinit var permissionManager: PermissionManager
 

@@ -5,15 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import com.google.gson.Gson
 import com.ringoid.base.deeplink.AppNav
-import com.ringoid.base.view.SimpleBaseActivity
 import com.ringoid.imageloader.ImageLoader
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.model.BlockReportPayload
 import com.ringoid.origin.navigation.Extras
+import com.ringoid.origin.view.base.theme.ThemedSimpleBaseActivity
 import kotlinx.android.synthetic.main.activity_bottom_sheet_block.*
 
 @AppNav("block_dialog", "report_dialog")
-class FeedItemContextMenuActivity : SimpleBaseActivity(), IBlockBottomSheetActivity {
+class FeedItemContextMenuActivity : ThemedSimpleBaseActivity(), IBlockBottomSheetActivity {
 
     companion object {
         private const val BUNDLE_KEY_OUTPUT_DATA = "bundle_key_output_data"

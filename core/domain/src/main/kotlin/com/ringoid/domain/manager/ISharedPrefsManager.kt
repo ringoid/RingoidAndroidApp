@@ -4,7 +4,6 @@ import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.utility.DebugOnly
-import com.ringoid.utility.theme.ThemeId
 
 interface ISharedPrefsManager : IFiltersSource {
 
@@ -16,10 +15,6 @@ interface ISharedPrefsManager : IFiltersSource {
     fun getByKey(key: String): String?
     fun saveByKey(key: String, json: String)
     fun deleteByKey(key: String)
-
-    // ------------------------------------------
-    fun getThemeId(defaultTheme: ThemeId = ThemeId.DARK): ThemeId
-    fun saveThemeId(theme: ThemeId)
 
     // ------------------------------------------
     @DebugOnly fun isDebugLogEnabled(): Boolean

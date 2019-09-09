@@ -13,12 +13,12 @@ import com.ringoid.main.OriginR_id
 import com.ringoid.main.OriginR_string
 import com.ringoid.main.listOfMainScreens
 import com.ringoid.origin.AppRes
+import com.ringoid.origin.style.ThemeId
 import com.ringoid.origin.utils.AppUtils
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.BaseMainActivity
 import com.ringoid.origin.view.particles.*
 import com.ringoid.utility.DebugOnly
-import com.ringoid.utility.theme.ThemeId
 
 @AppNav("main")
 class MainActivity : BaseMainActivity<MainViewModel>() {
@@ -41,7 +41,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currentLocale = app.localeManager.getLang()
-        currentTheme = spm.getThemeId(defaultTheme = ThemeId.DARK)
+        currentTheme = styleSpm.getThemeId(defaultTheme = ThemeId.DARK)
         observe(vm.badgeLikes(), ::showBadgeOnLikes)
         observe(vm.badgeMessages(), ::showBadgeOnMessages)
         observe(vm.badgeWarningProfile(), ::showBadgeWarningOnProfile)
@@ -73,7 +73,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
             Bus.post(BusEvent.RecreateMainScreen)
         }
         if (currentLocale != app.localeManager.getLang() ||
-            currentTheme != spm.getThemeId(defaultTheme = currentTheme)) {
+            currentTheme != styleSpm.getThemeId(defaultTheme = currentTheme)) {
             AppRes.initTranslatableStrings(resources)  // translate strings if locale has changed
             markForRecreation = true
             recreate()  // locale or theme has changed outside, in some another Activity

@@ -23,7 +23,6 @@ import com.ringoid.utility.checkForNull
 import com.ringoid.utility.manager.KeyboardManager
 import com.ringoid.utility.manager.KeyboardStatus
 import com.ringoid.utility.manager.LocaleManager
-import com.ringoid.utility.theme.ThemeId
 import com.ringoid.utility.toast
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import dagger.android.AndroidInjection
@@ -87,7 +86,6 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         DebugLogUtil.lifecycle(this, "onBeforeCreate")
         app.localeManager.setLocale(this)
         LocaleManager.resetActivityTitle(this)
-        spm.getThemeId().takeIf { it != ThemeId.UNKNOWN }//?.let { setTheme(ThemeUtils.getThemeById(it)) }
         // override in subclasses
     }
 

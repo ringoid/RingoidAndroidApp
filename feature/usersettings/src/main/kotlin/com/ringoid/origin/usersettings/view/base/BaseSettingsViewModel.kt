@@ -4,20 +4,20 @@ import android.app.Application
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.misc.Gender
+import com.ringoid.origin.view.base.theme.ThemedBaseViewModel
 import com.ringoid.utility.daysAgo
 import com.ringoid.utility.fromTs
 import com.uber.autodispose.lifecycle.autoDisposable
 import java.util.*
 
 abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlackUseCase, app: Application)
-    : BaseViewModel(app) {
+    : ThemedBaseViewModel(app) {
 
     private val suggestImprovementsOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun suggestImprovementsOneShot(): LiveData<OneShot<Boolean>> = suggestImprovementsOneShot

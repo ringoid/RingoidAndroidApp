@@ -10,6 +10,7 @@ import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.base.view.ViewState
 import com.ringoid.origin.R
+import com.ringoid.origin.view.base.theme.ThemedBaseActivity
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.connectivityManager
@@ -17,7 +18,7 @@ import com.ringoid.utility.targetVersion
 import kotlinx.android.synthetic.main.activity_no_network_connection.*
 
 @AppNav("no_net_conn")
-class NoNetworkConnectionActivity : BaseActivity<NoNetworkConnectionViewModel>() {
+class NoNetworkConnectionActivity : ThemedBaseActivity<NoNetworkConnectionViewModel>() {
 
     override fun getLayoutId(): Int = R.layout.activity_no_network_connection
 

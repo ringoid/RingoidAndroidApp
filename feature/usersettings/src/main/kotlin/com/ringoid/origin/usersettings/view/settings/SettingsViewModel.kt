@@ -40,7 +40,7 @@ class SettingsViewModel @Inject constructor(
 
     // ------------------------------------------
     fun switchTheme() {
-        val newTheme = ThemeUtils.switchTheme(spm)
+        val newTheme = ThemeUtils.switchTheme(styleSpm)
         changeThemeOneShot.value = OneShot(AppTheme(newTheme))
     }
 }

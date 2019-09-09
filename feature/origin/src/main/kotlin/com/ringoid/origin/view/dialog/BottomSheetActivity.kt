@@ -2,9 +2,9 @@ package com.ringoid.origin.view.dialog
 
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import com.ringoid.base.view.SimpleBaseActivity
+import com.ringoid.origin.view.base.theme.ThemedSimpleBaseActivity
 
-abstract class BottomSheetActivity : SimpleBaseActivity() {
+abstract class BottomSheetActivity : ThemedSimpleBaseActivity() {
 
     protected abstract fun getFragmentTag(): String
     protected abstract fun instantiateFragment(): DialogFragment
