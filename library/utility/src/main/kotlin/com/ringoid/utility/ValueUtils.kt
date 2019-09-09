@@ -11,9 +11,8 @@ object ValueUtils {
         if (URLUtil.isValidUrl(socialId)) {
             socialId  // don't prefix uri
         } else {
-            socialId.firstOrNull()
+            socialId.trim().firstOrNull()
                 ?.let { c -> c.takeIf { it == '@' }?.let { socialId } ?: "@$socialId" }
-                ?.trim()
                 ?: ""
         }
 }

@@ -8,12 +8,15 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
+import android.util.Patterns
 import android.webkit.URLUtil
 import androidx.fragment.app.Fragment
 import com.ringoid.base.ContextUtil
 import com.ringoid.origin.AppRes
+import com.ringoid.origin.R
 import com.ringoid.utility.toast
 import timber.log.Timber
+import java.util.*
 
 object ExternalNavigator {
 
@@ -145,29 +148,48 @@ object ExternalNavigator {
     /* Social */
     // --------------------------------------------------------------------------------------------
     /**
-     * - @username
-     * - username
-     * - https://instagram.com/username
-     * - instagram.com/username
-     *
      * @see https://stackoverflow.com/questions/15497261/open-instagram-user-profile?lq=1
+     * @see https://stackoverflow.com/questions/21505941/intent-to-open-instagram-user-profile-on-android/23511180#23511180
      */
     fun openSocialInstagram(activity: Activity, instagramUserId: String) {
-        instagramUserId.takeIf { it.isNotBlank() }
-            ?.let {
-                // TODO
-            }
+        openSocial(activity, social = "instagram", host = "http://instagram.com/_u", socialUserId = instagramUserId)
     }
 
     /**
      * @see https://stackoverflow.com/questions/53344812/open-user-page-in-tiktok-app-on-android-with-intent
      */
     fun openSocialTiktok(activity: Activity, tiktokUserId: String) {
-        tiktokUserId.takeIf { it.isNotBlank() }
-            ?.let { activity.packageManager.getLaunchIntentForPackage("com.zhiliaoapp.musically") }
-            ?.takeIf { it.resolveActivity(activity.packageManager) != null }
-            ?.let { Uri.parse("http://vm.tiktok.com/$tiktokUserId") }
+        openSocial(activity, social = "tiktok", host = "http://vm.tiktok.com", socialUserId = tiktokUserId)
+    }
+
+    /**
+     * Handles the following patterns for [socialUserId]:
+     *
+     * - @username
+     * - username
+     * - https://instagram.com/username
+     * - instagram.com/username
+     */
+    private fun openSocial(activity: Activity, social: String, host: String, socialUserId: String) {
+        socialUserId
+            .toLowerCase(Locale.getDefault())
+            .removePrefix("@")  // prefix could be outer
+            .removeSurrounding(prefix = "$social.com/", suffix = "")  // refine uri if schema is omitted
+            .removePrefix("@")  // prefix could be inner
+            .trim()
+            .takeIf { it.isNotBlank() }
+            ?.let {
+                if (it.contains(social, ignoreCase = true) &&
+                    URLUtil.isValidUrl(it) &&
+                    Patterns.WEB_URL.matcher(it).matches()) {
+                    Uri.parse(it)
+                } else {
+                    Uri.parse("$host/$it")
+                }
+            }
             ?.let { uri -> Intent(Intent.ACTION_VIEW, uri) }
+            ?.takeIf { it.resolveActivity(activity.packageManager) != null }
             ?.let { intent -> activity.startActivity(intent) }
+            ?: run { activity.toast(R.string.error_common) }
     }
 }
