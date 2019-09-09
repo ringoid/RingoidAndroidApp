@@ -365,8 +365,10 @@ open class FeedRepository @Inject constructor(
     private fun Single<FeedResponse>.filterOutDuplicateProfilesFeed(): Single<FeedResponse> =
         flatMap { response ->
             val filterFeed = response.profiles.distinctBy { it.id }
-                .also { if (it.size != response.profiles.size) Report.w("Duplicate profiles detected for NewFaces", listOf("size in response" to "${response.profiles.size}", "filtered size" to "${it.size}")) }
-            Single.just(response.copyWith(profiles = filterFeed))
+            if (filterFeed.size != response.profiles.size) {
+                Report.w("Duplicate profiles detected for NewFaces", listOf("size in response" to "${response.profiles.size}", "filtered size" to "${filterFeed.size}"))
+                Single.just(response.copyWith(profiles = filterFeed))
+            } else Single.just(response)
         }
 
     // ------------------------------------------
@@ -416,14 +418,30 @@ open class FeedRepository @Inject constructor(
 
     private fun Single<LmmResponse>.filterOutDuplicateProfilesLmmResponse(): Single<LmmResponse> =
         flatMap { response ->
+            var changed = false
             val message = "Duplicate profiles detected for "
+
             val filterLikes = response.likes.distinctBy { it.id }
-                .also { if (it.size != response.likes.size) Report.w("$message LikesYou", listOf("size in response" to "${response.likes.size}", "filtered size" to "${it.size}")) }
+            if (filterLikes.size != response.likes.size) {
+                Report.w("$message LikesYou", listOf("size in response" to "${response.likes.size}", "filtered size" to "${filterLikes.size}"))
+                changed = true
+            }
+
             val filterMatches = response.matches.distinctBy { it.id }
-                .also { if (it.size != response.matches.size) Report.w("$message Matches", listOf("size in response" to "${response.matches.size}", "filtered size" to "${it.size}")) }
+            if (filterMatches.size != response.matches.size) {
+                Report.w("$message Matches", listOf("size in response" to "${response.matches.size}", "filtered size" to "${filterMatches.size}"))
+                changed = true
+            }
+
             val filterMessenger = response.messages.distinctBy { it.id }
-                .also { if (it.size != response.messages.size) Report.w("$message Messages", listOf("size in response" to "${response.messages.size}", "filtered size" to "${it.size}")) }
-            Single.just(response.copyWith(likes = filterLikes, matches = filterMatches, messages = filterMessenger))
+            if (filterMessenger.size != response.messages.size) {
+                Report.w("$message Messages", listOf("size in response" to "${response.messages.size}", "filtered size" to "${filterMessenger.size}"))
+                changed = true
+            }
+
+            if (changed) {
+                Single.just(response.copyWith(likes = filterLikes, matches = filterMatches, messages = filterMessenger))
+            } else Single.just(response)
         }
 
     // --------------------------------------------------------------------------------------------

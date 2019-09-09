@@ -29,7 +29,8 @@ class LmmResponse(
     errorCode: String = "", errorMessage: String = "", repeatAfterSec: Long = 0L)
     : BaseResponse(errorCode, errorMessage, repeatAfterSec), Mappable<Lmm> {
 
-    fun copyWith(likes: List<FeedItemEntity> = this.likes, matches: List<FeedItemEntity> = this.matches,
+    fun copyWith(likes: List<FeedItemEntity> = this.likes,
+                 matches: List<FeedItemEntity> = this.matches,
                  messages: List<FeedItemEntity> = this.messages): LmmResponse =
         LmmResponse(likes = likes, matches = matches, messages = messages,
                     totalNotFilteredLikes = totalNotFilteredLikes,
