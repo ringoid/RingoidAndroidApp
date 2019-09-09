@@ -6,6 +6,7 @@ import com.ringoid.debug.DebugLogUtil
 import io.reactivex.Single
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 abstract class DelayActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPrefsManager)
     : BaseActionObjectPool(cloud, spm) {
@@ -14,6 +15,7 @@ abstract class DelayActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPref
         const val DELAY_TRIGGER = 200L  // ms
     }
 
+    private var tcount = AtomicInteger(1)  // count of threads
     private val triggerInProgress = AtomicBoolean(false)
 
     protected abstract fun triggerSourceImpl(): Single<Long>
@@ -33,11 +35,17 @@ abstract class DelayActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPref
                     }
                     triggerInProgress.get() ->  // job is in progress by some other thread
                         Single.just(0L)
-                              .doOnSubscribe { DebugLogUtil.v("Waiting for commit actions to finish...") }
+                              .doOnSubscribe {
+                                  val tasksCount = tcount.incrementAndGet()
+                                  DebugLogUtil.v("Waiting for commit actions to finish [$tasksCount]...")
+                              }
                               .delay(DELAY_TRIGGER, TimeUnit.MILLISECONDS)
                               .flatMap { triggerSource() }
                     else -> triggerSourceImpl()  // this thread should do the job
-                        .doOnSubscribe { triggerInProgress.set(true) }  // acquire non-blocking 'lock'
+                        .doOnSubscribe {
+                            triggerInProgress.set(true)  // acquire non-blocking 'lock'
+                            tcount.decrementAndGet()
+                        }
                         .doFinally { triggerInProgress.set(false) }  // release non-blocking 'lock'
                 }
             }
