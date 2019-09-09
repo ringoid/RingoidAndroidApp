@@ -209,14 +209,16 @@ class MessengerRepository @Inject constructor(
     private fun Single<Chat>.concatWithUnconsumedSentLocalMessages(chatId: String): Single<Chat> =
         map { chat ->
             if (sentMessages.containsKey(chatId)) {
-                val unconsumedSentMessages = mutableListOf<Message>().apply { addAll(sentMessages[chatId]!!) }  // order can change here
                 chat.messages.forEach { message ->
                     if (message.isUserMessage()) {
-                        unconsumedSentMessages.removeAll { it.id == message.clientId || it.clientId == message.clientId }
+                        sentMessages[chatId]!!.removeAll { it.id == message.clientId || it.clientId == message.clientId }
                     }
                 }
+                // retain unconsumed sent local messages only
+                val unconsumedSentMessages = mutableListOf<Message>()
+                    .apply { addAll(sentMessages[chatId]!!) }  // order can change here
+
                 chat.unconsumedSentLocalMessages.addAll(unconsumedSentMessages.sortedBy { it.ts })
-                sentMessages[chatId]!!.retainAll(unconsumedSentMessages)
             }
             chat  // result value
         }
