@@ -9,6 +9,7 @@ import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.origin.view.dialog.Dialogs
+import com.ringoid.utility.ValueUtils.atCharSocialId
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
@@ -39,10 +40,11 @@ class UserProfileContextMenuDialog : SimpleBaseDialogFragment() {
 
         with (spm.getUserProfileProperties()) {
             socialInstagram.takeIf { it.isNotBlank() }?.let { instagramUserId ->
-                btn_open_social_instagram.text = String.format(resources.getString(OriginR_string.profile_button_open_social_instagram, instagramUserId))
+                btn_open_social_instagram.text = String.format(resources.getString(OriginR_string.profile_button_open_social_instagram, atCharSocialId(instagramUserId)))
             } ?: run { btn_open_social_instagram.changeVisibility(isVisible = false) }
+
             socialTikTok.takeIf { it.isNotBlank() }?.let { tiktokUserId ->
-                btn_open_social_tiktok.text = String.format(resources.getString(OriginR_string.profile_button_open_social_tiktok, tiktokUserId))
+                btn_open_social_tiktok.text = String.format(resources.getString(OriginR_string.profile_button_open_social_tiktok, atCharSocialId(tiktokUserId)))
             } ?: run { btn_open_social_tiktok.changeVisibility(isVisible = false) }
         }
     }
