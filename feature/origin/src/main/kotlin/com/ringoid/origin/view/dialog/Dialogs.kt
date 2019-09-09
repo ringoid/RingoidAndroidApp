@@ -9,12 +9,13 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.ringoid.base.isActivityDestroyed
 import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
-import com.ringoid.utility.randomLong
 import com.ringoid.utility.showKeyboard
 import kotlinx.android.synthetic.main.dialog_edit_text.view.*
 
@@ -283,37 +284,49 @@ object Dialogs {
         activity?.takeIf { !it.isActivityDestroyed() }?.let { getSingleChoiceDialog(activity, items, l)?.show() }
 
     // --------------------------------------------------------------------------------------------
+    private fun showDialogIfNotAlreadyShown(fm: FragmentManager, dialog: DialogFragment, tag: String) {
+        registry.takeIf { !it.contains(tag.hashCode().toLong()) }
+                ?.add(tag.hashCode().toLong())
+                ?.also { dialog.show(fm, tag) }
+    }
+
     private fun getErrorDialog(activity: FragmentActivity?, e: Throwable? = null) =
         activity
             ?.takeIf { !it.isActivityDestroyed() }
             ?.let {
-                val hash = randomLong().also { registry.add(it) }
                 StatusDialog.newInstance(titleResId = R.string.error_common)
-                    .apply { dialog?.setOnDismissListener { registry.remove(hash) } }
+                    .apply { setOnDismissListener { registry.remove(StatusDialog.TAG.hashCode().toLong()) } }
             }
 
     private fun getSupportDialog(activity: FragmentActivity?, @StringRes descriptionResId: Int) =
         activity
             ?.takeIf { !it.isActivityDestroyed() }
             ?.let {
-                val hash = randomLong().also { registry.add(it) }
                 SupportDialog.newInstance(titleResId = R.string.error_common, descriptionResId = descriptionResId)
-                    .apply { dialog?.setOnDismissListener { registry.remove(hash) } }
+                    .apply { setOnDismissListener { registry.remove(SupportDialog.TAG.hashCode().toLong()) } }
             }
 
     fun errorDialog(activity: FragmentActivity?, e: Throwable? = null) {
-        getErrorDialog(activity, e)?.also { it.show(activity!!.supportFragmentManager, StatusDialog.TAG) }
+        getErrorDialog(activity, e)?.let { dialog ->
+            showDialogIfNotAlreadyShown(activity!!.supportFragmentManager, dialog, StatusDialog.TAG)
+        }
     }
 
     fun errorDialog(fragment: Fragment, e: Throwable? = null) {
-        getErrorDialog(fragment.activity, e)?.also { it.show(fragment.childFragmentManager, StatusDialog.TAG) }
+        getErrorDialog(fragment.activity, e)?.let { dialog ->
+            showDialogIfNotAlreadyShown(fragment.childFragmentManager, dialog, StatusDialog.TAG)
+        }
     }
 
     fun supportDialog(activity: FragmentActivity?, @StringRes descriptionResId: Int) {
-        getSupportDialog(activity, descriptionResId)?.also { it.show(activity!!.supportFragmentManager, SupportDialog.TAG) }
+        getSupportDialog(activity, descriptionResId)?.let { dialog ->
+            showDialogIfNotAlreadyShown(activity!!.supportFragmentManager, dialog, SupportDialog.TAG)
+        }
     }
 
     fun supportDialog(fragment: Fragment, @StringRes descriptionResId: Int) {
-        getSupportDialog(fragment.activity, descriptionResId)?.also { it.show(fragment.childFragmentManager, SupportDialog.TAG) }
+        getSupportDialog(fragment.activity, descriptionResId)?.let { dialog ->
+            showDialogIfNotAlreadyShown(fragment.childFragmentManager, dialog, SupportDialog.TAG)
+        }
     }
 }

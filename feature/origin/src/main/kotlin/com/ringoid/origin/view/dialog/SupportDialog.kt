@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -28,8 +29,14 @@ open class SupportDialog : SimpleBaseDialogFragment() {
             }
     }
 
+    private var onDismissListener: ((dialog: DialogInterface) -> Unit)? = null
+
     @LayoutRes
     override fun getLayoutId(): Int = R.layout.dialog_status
+
+    fun setOnDismissListener(l: ((dialog: DialogInterface) -> Unit)?) {
+        onDismissListener = l
+    }
 
     protected open fun showDescription() {
         tv_dialog_status.setText(arguments?.getInt(BUNDLE_KEY_DESCRIPTION_RES_ID) ?: R.string.error_support)
@@ -51,5 +58,10 @@ open class SupportDialog : SimpleBaseDialogFragment() {
         }
         tv_dialog_title.setText(arguments?.getInt(BUNDLE_KEY_TITLE_RES_ID) ?: R.string.error_common)
         showDescription()  // custom content
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismissListener?.invoke(dialog)
     }
 }
