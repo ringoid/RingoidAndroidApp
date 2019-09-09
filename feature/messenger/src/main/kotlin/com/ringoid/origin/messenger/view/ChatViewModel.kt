@@ -44,13 +44,11 @@ class ChatViewModel @Inject constructor(
     private data class ChatData(val chatId: String)
 
     private val messages by lazy { MutableLiveData<List<Message>>() }
-    private val newMessages by lazy { MutableLiveData<List<Message>>() }
     private val sentMessage by lazy { MutableLiveData<Message>() }
     private val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
     private val peerName by lazy { MutableLiveData<String>() }
     private val notifyOnMessagesLoadOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun messages(): LiveData<List<Message>> = messages
-    internal fun newMessages(): LiveData<List<Message>> = newMessages
     internal fun sentMessage(): LiveData<Message> = sentMessage
     internal fun onlineStatus(): LiveData<OnlineStatus> = onlineStatus
     internal fun peerName(): LiveData<String> = peerName
