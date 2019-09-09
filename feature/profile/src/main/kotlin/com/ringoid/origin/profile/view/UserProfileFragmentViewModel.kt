@@ -14,13 +14,13 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.image.*
-import com.ringoid.report.log.Report
 import com.ringoid.domain.model.essence.image.ImageDeleteEssenceUnauthorized
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssenceUnauthorized
 import com.ringoid.domain.model.image.UserImage
 import com.ringoid.origin.model.UserProfileProperties
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.utils.ScreenHelper
+import com.ringoid.report.log.Report
 import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.extension
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -97,7 +97,7 @@ class UserProfileFragmentViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
         refresh()  // app reopen leads Profile screen to refresh
     }
 

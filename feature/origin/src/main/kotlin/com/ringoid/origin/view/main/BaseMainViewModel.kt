@@ -14,8 +14,9 @@ abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app
     open fun onPushOpen() {
         Bus.post(event = BusEvent.ReOpenAppOnPush)
         /**
-         * Since [BusEvent.ReOpenAppOnPush] has been sent, consume time elapsed since previous app stop
-         * in order to mitigate to send [BusEvent.ReStartWithTime] in the following [onStart].
+         * Since [BusEvent.ReOpenAppOnPush] has just been sent, consume time elapsed since previous
+         * app stop in order to mitigate side effects of sending [BusEvent.ReStartWithTime]
+         * in the following [onStart].
          */
         stopAppTs = System.currentTimeMillis()
     }

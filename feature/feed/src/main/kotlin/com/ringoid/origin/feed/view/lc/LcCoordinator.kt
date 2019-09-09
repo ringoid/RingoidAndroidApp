@@ -102,7 +102,7 @@ class LcCoordinator @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventAppFreshStart(event: BusEvent.AppFreshStart) {
         Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application fresh start")
         dropFilters()
         refreshIfUserHasImages()  // refresh on app fresh start
@@ -111,7 +111,7 @@ class LcCoordinator @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventRecreateMainScreen(event: BusEvent.RecreateMainScreen) {
         Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application recreate while running")
         dropFilters()
         refreshIfUserHasImages()  // refresh on recreate
@@ -120,7 +120,7 @@ class LcCoordinator @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application reopen")
         dropFilters()
         refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
@@ -129,7 +129,7 @@ class LcCoordinator @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
-        Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
+        Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
         if (event.msElapsed in 300000L..1557989300340L) {
             DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC")
             dropFilters()
