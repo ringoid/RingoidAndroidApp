@@ -32,7 +32,9 @@ abstract class BaseMainViewModel(app: Application) : BasePermissionViewModel(app
     override fun onStart() {
         super.onStart()
         val elapsed = System.currentTimeMillis() - stopAppTs
-        Bus.post(event = BusEvent.ReStartWithTime(elapsed))
+        if (elapsed >= 300000L) {  // app reopen after more than 5 minutes of inactive
+            Bus.post(event = BusEvent.ReStartWithTime(elapsed))
+        }
     }
 
     override fun onStop() {

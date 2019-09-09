@@ -251,7 +251,7 @@ class ExploreFeedViewModel @Inject constructor(
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
+    fun onEventReOpenAppOnPush(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get Discover on Application reopen [${getFeedName()}]")
@@ -262,16 +262,14 @@ class ExploreFeedViewModel @Inject constructor(
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
-        if (event.msElapsed in 300000L..1557989300340L) {
-            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Explore...")
-            refresh()  // app reopen after time threshold leads Explore screen to refresh
-        }
+        DebugLogUtil.i("App last open was more than 5 minutes ago, refresh Explore")
+        refresh()  // app reopen after time threshold leads Explore screen to refresh
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEventFiltersChangesInSettings(event: BusEvent.FiltersChangesInSettings) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
-        onApplyFilters()
+        onApplyFilters()  // apply any changes in global filters on Explore screen
     }
 }

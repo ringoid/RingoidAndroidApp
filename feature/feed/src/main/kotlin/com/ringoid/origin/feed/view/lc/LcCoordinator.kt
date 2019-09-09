@@ -118,7 +118,7 @@ class LcCoordinator @Inject constructor(
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onEventReOpenApp(event: BusEvent.ReOpenAppOnPush) {
+    fun onEventReOpenAppOnPush(event: BusEvent.ReOpenAppOnPush) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
         DebugLogUtil.i("Get LC on Application reopen")
@@ -130,10 +130,10 @@ class LcCoordinator @Inject constructor(
     fun onEventReStartWithTime(event: BusEvent.ReStartWithTime) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName} on ${javaClass.simpleName}", "event" to "$event")
-        if (event.msElapsed in 300000L..1557989300340L) {
-            DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC")
-            dropFilters()
-            refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
-        }
+        DebugLogUtil.i("App last open was more than 5 minutes ago, refresh LC")
+        dropFilters()
+        refreshIfUserHasImages()  // app reopen leads LC screen to refresh as well
     }
+
+    // note that change global filters doesn't lead LC data to reload
 }
