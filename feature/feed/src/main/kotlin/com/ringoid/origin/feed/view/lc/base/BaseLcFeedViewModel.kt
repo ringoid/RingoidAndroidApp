@@ -123,6 +123,7 @@ abstract class BaseLcFeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        coordinator.init()
         coordinator.registerListener(this)
     }
 
@@ -134,6 +135,11 @@ abstract class BaseLcFeedViewModel(
     override fun onDestroy() {
         super.onDestroy()
         coordinator.unregisterListener(this)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        coordinator.deinit()
     }
 
     // --------------------------------------------------------------------------------------------

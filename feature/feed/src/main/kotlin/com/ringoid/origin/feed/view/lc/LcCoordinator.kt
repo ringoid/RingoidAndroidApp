@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.lc
 
 import android.content.Context
+import com.ringoid.base.eventbus.Bus
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
@@ -38,6 +39,16 @@ class LcCoordinator @Inject constructor(
 
     private var filters: Filters = NoFilters
     private val listeners: MutableList<LcDataListener> = mutableListOf()
+
+    internal fun init() {
+        Bus.subscribeOnBusEvents(subscriber = this)
+    }
+
+    internal fun deinit() {
+        if (Bus.isSubscribed(subscriber = this)) {
+            Bus.unsubscribeFromBusEvents(subscriber = this)
+        }
+    }
 
     // ------------------------------------------
     internal fun registerListener(l: LcDataListener) {
@@ -78,8 +89,9 @@ class LcCoordinator @Inject constructor(
     private fun prepareGetLcParams(): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
+                // no source feed can be specified for coordinator, use some to avoid 'WrongRequestParamsClientError'
+                .put("source", DomainUtil.SOURCE_FEED_LIKES)
                 .put(filters)
-                // no source feed can be specified for coordinator
 
     /* Event Bus */
     // --------------------------------------------------------------------------------------------
