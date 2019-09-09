@@ -11,10 +11,7 @@ import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.messenger.GetChatNewMessagesUseCase
-import com.ringoid.domain.interactor.messenger.GetMessagesForPeerUseCase
-import com.ringoid.domain.interactor.messenger.PollChatNewMessagesUseCase
-import com.ringoid.domain.interactor.messenger.SendMessageToPeerUseCase
+import com.ringoid.domain.interactor.messenger.*
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.model.essence.action.ActionObjectEssence
 import com.ringoid.domain.model.essence.messenger.MessageEssence
@@ -25,6 +22,7 @@ import com.ringoid.origin.AppRes
 import com.ringoid.origin.model.OnlineStatus
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.report.log.Report
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Flowable
 import io.reactivex.subjects.PublishSubject
@@ -37,6 +35,7 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val getChatNewMessagesUseCase: GetChatNewMessagesUseCase,
     private val getMessagesForPeerUseCase: GetMessagesForPeerUseCase,
+    private val fixSentLocalMessagesCacheUseCase: FixSentLocalMessagesCacheUseCase,
     private val pollChatNewMessagesUseCase: PollChatNewMessagesUseCase,
     private val sendMessageToPeerUseCase: SendMessageToPeerUseCase,
     app: Application) : BaseViewModel(app) {
@@ -165,12 +164,35 @@ class ChatViewModel @Inject constructor(
     private fun handleChatUpdate(chat: Chat) {
         ChatInMemoryCache.addPeerMessagesCount(profileId = chat.id, count = countPeerMessages(chat.messages))
         ChatInMemoryCache.addUserMessagesCount(chatId = chat.id, count = countUserMessages(chat.messages))
-
+        /**
+         * Full chat messages list, consisting of concatenation of new messages and all the old ones.
+         */
         val list = mutableListOf<Message>()
             .apply {
                 addAll(chat.messages.reversed())  // add new messages
                 addAll(currentMessageList)  // add all the old messages
             }
+        /**
+         * Analyze full chat messages list before appending unconsumed sent local messages to it,
+         * and remove messages that have been consumed already (i.e. contained in full list)
+         * from the unconsumed list. This normally should not happen, but if there is a bug in
+         * repository, such filtering will fix that and will be reported as well.
+         */
+        chat.unconsumedSentLocalMessages.let { unconsumed ->
+            val listIds = list.map { it.clientId }
+            unconsumed.removeAll { it.clientId in listIds }
+        }
+        .takeIf { it }
+        ?.let {
+            Report.w("Duplicate unconsumed sent local messages")
+            val params = Params().put("chatId", chat.id)
+                                 .put("unconsumedClientIds", chat.unconsumedSentLocalMessages.map { it.clientId })
+            fixSentLocalMessagesCacheUseCase.source(params = params)
+                .doOnSubscribe { Timber.i("Fix source of duplicate unconsumed sent local messages") }
+                .autoDisposable(this)
+                .subscribe({}, DebugLogUtil::e)
+        }
+
         currentMessageList = ArrayList(list)  // clone list to avoid further modifications
         messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
         onlineStatus.value = OnlineStatus.from(chat.lastOnlineStatus, label = chat.lastOnlineText)

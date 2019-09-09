@@ -487,7 +487,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
     ]
-    messengerDependencies += Origin + Develop + Analytics + ImageLoader + android + androidView +
+    messengerDependencies += Origin + Develop + Analytics + ImageLoader + Report + android + androidView +
                              arch + autoDispose + dagger + deeplink + gson + kotlin + log + rx + rxBind
 
     androidTestMessengerDeps = androidTest

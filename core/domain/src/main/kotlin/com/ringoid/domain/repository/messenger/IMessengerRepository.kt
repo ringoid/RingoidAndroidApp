@@ -30,4 +30,6 @@ interface IMessengerRepository {
     fun getMessages(chatId: String): Single<List<Message>>
 
     fun sendMessage(essence: MessageEssence): Single<Message>
+
+    fun fixSentLocalMessagesCache(chatId: String, unconsumedClientIds: List<String>): Completable
 }

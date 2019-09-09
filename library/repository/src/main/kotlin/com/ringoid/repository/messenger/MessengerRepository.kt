@@ -322,6 +322,14 @@ class MessengerRepository @Inject constructor(
             .toSingleDefault(sentMessage)
     }
 
+    // ------------------------------------------
+    override fun fixSentLocalMessagesCache(chatId: String, unconsumedClientIds: List<String>): Completable =
+        Completable.fromAction {
+            if (sentMessages.containsKey(chatId)) {
+                sentMessages[chatId]!!.retainAll { it.clientId in unconsumedClientIds }
+            }
+        }
+
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
     private fun restoreCachedSentMessagesLocal() {
