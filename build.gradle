@@ -117,7 +117,7 @@ allprojects {
     }
 
     ext {
-        majorVersion = 3
+        majorVersion = 4
         minorVersion = 0
         buildVersion = 242
 
