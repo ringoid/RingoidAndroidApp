@@ -168,8 +168,8 @@ class ChatViewModel @Inject constructor(
 
         val list = mutableListOf<Message>()
             .apply {
-                addAll(chat.messages.reversed())
-                addAll(currentMessageList)
+                addAll(chat.messages.reversed())  // add new messages
+                addAll(currentMessageList)  // add all the old messages
             }
         currentMessageList = ArrayList(list)  // clone list to avoid further modifications
         messages.value = list.apply { addAll(0, chat.unconsumedSentLocalMessages.reversed()) }
