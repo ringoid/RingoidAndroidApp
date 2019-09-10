@@ -46,9 +46,9 @@ abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledV
     override var snapPositionListener: ((snapPosition: Int) -> Unit)? = null
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
 
-    internal var scrollListener: RecyclerView.OnScrollListener? = null
-    internal var imagePreloadListener: RecyclerView.OnScrollListener? = null
-    internal var subscription: Disposable? = null
+    protected var scrollListener: RecyclerView.OnScrollListener? = null
+    protected var imagePreloadListener: RecyclerView.OnScrollListener? = null
+    protected var subscription: Disposable? = null
 
     override fun getCurrentImagePosition(): Int = 0
 }
