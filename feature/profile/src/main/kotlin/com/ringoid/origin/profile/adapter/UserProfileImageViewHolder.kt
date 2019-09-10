@@ -28,14 +28,6 @@ class UserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(vi
             itemView.tv_image_id.text = "Image: ${model.idWithFirstN()}"
         }
     }
-
-    override fun cleanUp() {
-        super.cleanUp()
-        with (itemView.iv_image) {
-            controller?.onDetach()
-            topLevelDrawable?.callback = null
-        }
-    }
 }
 
 class HeaderUserProfileImageViewHolder(view: View) : BaseUserProfileImageViewHolder(view) {
