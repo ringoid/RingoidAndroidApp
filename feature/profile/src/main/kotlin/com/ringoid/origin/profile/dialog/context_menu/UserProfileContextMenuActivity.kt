@@ -61,7 +61,8 @@ class UserProfileContextMenuActivity : ThemedSimpleBaseDialogActivity(), IUserPr
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         outputData = savedInstanceState?.getParcelable(BUNDLE_KEY_OUTPUT_DATA)
-            ?: Intent().putExtras(intent.extras!!)
+            ?: intent.extras?.let { extras -> Intent().putExtras(extras) }
+            ?: intent
 
         savedInstanceState ?: run { createUserProfileContextMenuDialogIfNeed() }
     }
