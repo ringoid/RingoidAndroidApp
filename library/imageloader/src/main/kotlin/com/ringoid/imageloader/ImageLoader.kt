@@ -15,12 +15,12 @@ import com.ringoid.config.BuildConfig
 import com.ringoid.report.log.Report
 import com.ringoid.utility.delay
 import com.ringoid.utility.isNotFoundNetworkError
-import com.ringoid.utility.model.StrongReference
 import timber.log.Timber
 import java.io.FileNotFoundException
+import java.lang.ref.WeakReference
 
-//typealias ImageReference<T> = WeakReference<T>
-typealias ImageReference<T> = StrongReference<T>
+typealias ImageReference<T> = WeakReference<T>
+//typealias ImageReference<T> = StrongReference<T>
 
 object ImageLoader {
 
