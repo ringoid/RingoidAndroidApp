@@ -1,7 +1,7 @@
 package com.ringoid.data.remote.di
 
 import com.ringoid.data.remote.network.ImageHttpRequestInterceptor
-import com.ringoid.domain.di.ImageLoader
+import com.ringoid.domain.di.ImageLoad
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -22,7 +22,7 @@ class ImageCloudModule {
     /**
      * @see https://github.com/facebook/fresco/issues/385
      */
-    @Provides @ImageLoader
+    @Provides @ImageLoad
     fun provideOkHttpClient(
             @Named("ImageResponseErrors") responseInterceptor: Interceptor)
             : OkHttpClient =

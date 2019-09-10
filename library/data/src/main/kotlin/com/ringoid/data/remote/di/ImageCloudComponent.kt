@@ -1,10 +1,10 @@
 package com.ringoid.data.remote.di
 
-import com.ringoid.domain.di.ImageLoader
+import com.ringoid.domain.di.ImageLoad
 import dagger.Component
 import okhttp3.OkHttpClient
 
-@ImageLoader
+@ImageLoad
 @Component(modules = [ImageCloudModule::class])
 interface ImageCloudComponent {
 
