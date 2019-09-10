@@ -46,7 +46,7 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.report.log.Report
 import com.ringoid.utility.*
 import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
-import com.ringoid.widget.view.swipes
+import com.ringoid.widget.view._swipes
 import kotlinx.android.synthetic.main.fragment_profile.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -437,7 +437,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         swipe_refresh_layout.apply {
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             refreshes().compose(clickDebounce()).subscribe { onRefresh() }
-            swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
+            _swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
         ll_left_container.clicks().compose(clickDebounce()).subscribe { openContextMenu() }
         ll_right_container.clicks().compose(clickDebounce()).subscribe { openContextMenu() }

@@ -80,7 +80,7 @@ class OnlyVerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : Sw
     }
 }
 
-fun OnlyVerticalSwipeRefreshLayout.swipes(): Observable<Unit> =
+fun OnlyVerticalSwipeRefreshLayout._swipes(): Observable<Unit> =
     OnlyVerticalSwipeRefreshLayoutRefreshObservable(this)
 
 class OnlyVerticalSwipeRefreshLayoutRefreshObservable(val view: OnlyVerticalSwipeRefreshLayout) : Observable<Unit>() {

@@ -18,7 +18,7 @@ import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
 import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.utility.*
 import com.ringoid.widget.model.ListItem
-import com.ringoid.widget.view.item_view.textChanges
+import com.ringoid.widget.view.item_view._textChanges
 import kotlinx.android.synthetic.main.fragment_settings_profile.*
 import kotlinx.android.synthetic.main.fragment_settings_push.pb_loading
 import kotlinx.android.synthetic.main.fragment_settings_push.toolbar
@@ -138,38 +138,38 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
                     tag = ABOUT_PROPERTY_DIALOG_TAG)
                 .show(childFragmentManager, BigEditTextDialog.TAG)
             }
-            textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounce()).subscribe(::onAboutTextChange)
         }
         with (item_profile_custom_property_company) {
-            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onCompanyTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onCompanyTextChange)
         }
         with (item_profile_custom_property_job_title) {
-            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onJobTitleTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onJobTitleTextChange)
         }
         with (item_profile_property_height) {
             setSuffix(OriginR_string.value_cm)
-            textChanges().skipInitialValue().compose(inputDebounce())
+            _textChanges().skipInitialValue().compose(inputDebounce())
                 .map { it.toString() }
                 .map { text -> handleInputHeight(text).takeIf { it > 0 }?.toString() ?: "" }
                 .subscribe(::onHeightTextChange)
         }
         with (item_profile_custom_property_name) {
-            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onNameTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onNameTextChange)
         }
         with (item_profile_custom_property_status) {
-            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onStatusTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onStatusTextChange)
         }
         with (item_profile_custom_property_instagram) {
-            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onSocialInstagramTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onSocialInstagramTextChange)
         }
         with (item_profile_custom_property_tiktok) {
-            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onSocialTikTokTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onSocialTikTokTextChange)
         }
         with (item_profile_custom_property_university) {
-            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onUniversityTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onUniversityTextChange)
         }
         with (item_profile_custom_property_where_live) {
-            textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onWhereLiveTextChange)
+            _textChanges().skipInitialValue().compose(inputDebounceNet()).subscribe(::onWhereLiveTextChange)
         }
 
         // other

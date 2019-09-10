@@ -38,7 +38,7 @@ import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.report.log.Report
 import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
-import com.ringoid.widget.view.swipes
+import com.ringoid.widget.view._swipes
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -392,7 +392,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 //            setColorSchemeResources(*resources.getIntArray(R.array.swipe_refresh_colors))
             setProgressViewEndTarget(false, resources.getDimensionPixelSize(R.dimen.feed_swipe_refresh_layout_spinner_end_offset))
             refreshes().compose(clickDebounce()).subscribe { onRefreshGesture() }
-            swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
+            _swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
 
         // top sheet
