@@ -104,8 +104,8 @@
     <string name="login_year_of_birth_et_hint">Год рождения</string>
 
     <!-- Profile screen -->
-    <string name="profile_button_add_image">Добавить фото</string>
-    <string name="profile_button_delete_image">Удалить фото</string>
+    <string name="profile_button_add_image">Добавить Фото</string>
+    <string name="profile_button_delete_image">Удалить Фото</string>
     <string name="profile_button_edit_profile">Редактировать профиль</string>
     <string name="profile_button_edit_profile_status">Редактировать статус</string>
     <string name="profile_button_open_social_instagram">Открыть Instagram: %s</string>

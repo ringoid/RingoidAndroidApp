@@ -9,9 +9,8 @@
     <Button
         android:id="@+id/btn_delete_image"
         android:layout_width="match_parent"
-        android:background="@drawable/flat_button_debug_bg"
         android:text="@string/profile_button_delete_image"
-        android:textColor="@color/flat_button_text_color_primary"
+        android:textColor="@color/flat_button_text_color_alert"
         style="@style/FlatButton.Tall"/>
 
     <Button
