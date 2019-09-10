@@ -14,10 +14,8 @@
     <View
         android:id="@+id/gradient"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="200dp"
         android:background="@drawable/feed_item_gradient"
-        android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="@id/rv_items"
         app:layout_constraintBottom_toBottomOf="@id/rv_items"/>
 
     <View

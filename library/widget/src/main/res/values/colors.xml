@@ -52,6 +52,7 @@
     <color name="semitransparent_75">#bf000000</color>
     <color name="semitransparent_mid">#4e000000</color>
     <color name="semitransparent_soft">#1d000000</color>
+    <color name="semitransparent_soft2">#2d000000</color>
     <color name="semitransparent_tab">#92000000</color>
     <color name="sky">#27a4dd</color>
     <color name="steel">#75888e</color>
