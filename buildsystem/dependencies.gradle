@@ -75,9 +75,10 @@ ext {
             deeplinkProcessor: "com.github.airbnb.DeepLinkDispatch:deeplinkdispatch-processor:eb7e520d87",
             facebook:          "com.facebook.android:facebook-android-sdk:${facebookVersion}",
             firebase:          "com.google.firebase:firebase-core:${firebaseVersion}",
+            firebaseAnalytics: "com.google.firebase:firebase-analytics:${firebaseAnalyticsVersion}",
+            firebaseDynLink:   "com.google.firebase:firebase-dynamic-links:${firebaseDynLinkVersion}",
             firebaseMessaging: "com.google.firebase:firebase-messaging:$firebaseMessagingVersion",
             firebasePerformance: "com.google.firebase:firebase-perf:${firebasePerformanceVersion}",
-            firebaseReferral:  "com.google.firebase:firebase-dynamic-links:${firebaseReferralVersion}",
             flurry:            "com.flurry.android:analytics:${flurryVersion}",
 
             eventBus:       "org.greenrobot:eventbus:${eventBusVersion}",
@@ -365,6 +366,7 @@ ext {
         [configuration: "implementation", dependency: project(modules.cropiwa)],
         [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_libs.eventBus],
+        [configuration: "implementation", dependency: d_libs.firebase],
         [configuration: "implementation", dependency: d_libs.flurry],
         [configuration: "implementation", dependency: d_libs.fresco],
         [configuration: "implementation", dependency: d_libs.frescoOkHttp],
@@ -528,7 +530,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.branch],
         [configuration: "implementation", dependency: d_libs.confetti],
         [configuration: "implementation", dependency: d_libs.firebaseMessaging],
-        [configuration: "implementation", dependency: d_libs.firebaseReferral],
+        [configuration: "implementation", dependency: d_libs.firebaseDynLink],
         [configuration: "implementation", dependency: d_view.rangeSeekbar],
         [configuration: "implementation", dependency: d_view.seekbar],
     ]
@@ -555,7 +557,7 @@ ext {
     // ------------------------------------------
     analyticsDependencies = [
         [configuration: "implementation", dependency: d_libs.facebook],
-        [configuration: "implementation", dependency: d_libs.firebase],
+        [configuration: "implementation", dependency: d_libs.firebaseAnalytics],
         [configuration: "implementation", dependency: d_libs.flurry],
     ]
     analyticsDependencies += Debug + Domain + android + dagger + kotlin + log

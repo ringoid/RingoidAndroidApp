@@ -45,11 +45,12 @@ buildscript {
 
         branchVersion = '4.0.0'
         facebookVersion = '[4,5)'
-        firebaseVersion = '16.0.8'
-        firebaseMessagingVersion = '17.3.3'
-        firebasePerformanceVersion = '16.2.5'
+        firebaseVersion = '17.2.0'
+        firebaseAnalyticsVersion = '17.2.0'
+        firebaseDynLinkVersion = '19.0.0'
+        firebaseMessagingVersion = '19.0.0'
+        firebasePerformanceVersion = '18.0.1'
         firebasePerformancePluginVersion = '1.2.1'
-        firebaseReferralVersion = '17.0.0'
         flurryVersion = '11.7.1@aar'
         googlePlayServicesVersion = '15.0.1'
 
