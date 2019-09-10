@@ -14,23 +14,22 @@ import timber.log.Timber
 
 class PushNotificationService : FirebaseMessagingService() {
 
-    override fun onMessageReceived(message: RemoteMessage?) {
+    override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        Timber.d("PUSH: Received push notification [id: ${message?.messageId}] from: ${message?.from}, notification: [${message?.notification?.title}:${message?.notification?.body}]")
-        message?.data
-            ?.let { map -> DebugLogUtil.i("PUSH: $map")
-                val peerId = map["oppositeUserId"] ?: ""
-                map["type"]
-                    ?.let { type ->
-                        when (type) {
-                            PushNotificationData.TYPE_LIKE -> BusEvent.PushNewLike(peerId)
-                            PushNotificationData.TYPE_MATCH -> BusEvent.PushNewMatch(peerId)
-                            PushNotificationData.TYPE_MESSAGE -> BusEvent.PushNewMessage(peerId)
-                            else -> null
-                        }
-                    }
-                    ?.let { Bus.post(it) }
+        Timber.d("PUSH: Received push notification [id: ${message.messageId}] from: ${message?.from}, notification: [${message?.notification?.title}:${message?.notification?.body}]")
+        message.data.let { map ->
+            DebugLogUtil.i("PUSH: $map")
+            val peerId = map["oppositeUserId"] ?: ""
+            map["type"]?.let { type ->
+                when (type) {
+                    PushNotificationData.TYPE_LIKE -> BusEvent.PushNewLike(peerId)
+                    PushNotificationData.TYPE_MATCH -> BusEvent.PushNewMatch(peerId)
+                    PushNotificationData.TYPE_MESSAGE -> BusEvent.PushNewMessage(peerId)
+                    else -> null
+                }
             }
+            ?.let { Bus.post(it) }
+        }
     }
 
     @Suppress("CheckResult")
