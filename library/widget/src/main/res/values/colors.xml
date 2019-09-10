@@ -35,6 +35,7 @@
     <color name="inactive">#cacaca</color>
     <color name="light_grey">#f0f2f5</color>
     <color name="light_grey_2">#b6b6b6</color>
+    <color name="light_grey_2_semi">#3db6b6b6</color>
     <color name="lavender">#c588e5</color>
     <color name="launcher">#21C9E5</color>
     <color name="lime">#d9ec44</color>
