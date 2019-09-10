@@ -431,17 +431,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 onAddImage()
             }
         }
-        ibtn_context_menu.clicks().compose(clickDebounce()).subscribe {
-            if (!connectionManager.isNetworkAvailable()) {
-                noConnection(this)
-                return@subscribe
-            }
-
-            val imageIdPayload = imageOnViewPort()?.let { image -> "?imageId=${image.id}" } ?: ""
-
-            showControls(isVisible = false)
-            navigate(this, path = "/user_profile_context_menu$imageIdPayload", rc = RequestCode.RC_CONTEXT_MENU_USER_PROFILE)
-        }
+        ibtn_context_menu.clicks().compose(clickDebounce()).subscribe { openContextMenu() }
         ibtn_profile_edit.clicks().compose(clickDebounce()).subscribe { openSettingsProfileScreen() }
         ibtn_settings.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         swipe_refresh_layout.apply {
@@ -449,6 +439,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             refreshes().compose(clickDebounce()).subscribe { onRefresh() }
             swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
+        ll_left_container.clicks().compose(clickDebounce()).subscribe { openContextMenu() }
+        ll_right_container.clicks().compose(clickDebounce()).subscribe { openContextMenu() }
         val snapHelper = EnhancedPagerSnapHelper(duration = 30)
         rv_items.apply {
             adapter = imagesAdapter.also { it.tabsObserver = tabs2.adapterDataObserver }
@@ -461,6 +453,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(pageSelectListener)
         }
+        tv_about.clicks().compose(clickDebounce()).subscribe { openContextMenu() }
         tv_app_title.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         tv_status.clicks().compose(clickDebounce()).subscribe { openSettingsProfileScreenForStatus() }
     }
@@ -569,6 +562,18 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     private fun isAboutVisible(): Boolean = isAboutPage(page = currentImagePosition)
+
+    private fun openContextMenu() {
+        if (!connectionManager.isNetworkAvailable()) {
+            noConnection(this)
+            return
+        }
+
+        val imageIdPayload = imageOnViewPort()?.let { image -> "?imageId=${image.id}" } ?: ""
+
+        showControls(isVisible = false)
+        navigate(this, path = "/user_profile_context_menu$imageIdPayload", rc = RequestCode.RC_CONTEXT_MENU_USER_PROFILE)
+    }
 
     private fun openSettingsProfileScreen() {
         navigate(this, path = "/settings_profile")
