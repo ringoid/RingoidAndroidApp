@@ -15,9 +15,12 @@ import com.ringoid.config.BuildConfig
 import com.ringoid.report.log.Report
 import com.ringoid.utility.delay
 import com.ringoid.utility.isNotFoundNetworkError
+import com.ringoid.utility.model.StrongReference
 import timber.log.Timber
 import java.io.FileNotFoundException
-import java.lang.ref.WeakReference
+
+//typealias ImageReference<T> = WeakReference<T>
+typealias ImageReference<T> = StrongReference<T>
 
 object ImageLoader {
 
@@ -31,7 +34,7 @@ object ImageLoader {
         if (uri.isNullOrBlank()) {
             return ImageLoadRequestStatus.NoImageUri  // no image data to load
         }
-        val imageViewRef = WeakReference(iv)
+        val imageViewRef = ImageReference(iv)
         return imageViewRef.get()
             ?.let { it as? SimpleDraweeView }
             ?.let {
@@ -55,7 +58,7 @@ object ImageLoader {
     // --------------------------------------------------------------------------------------------
     private fun createRecursiveImageController(
             uri: String, thumbnailUri: String?,
-            imageViewRef: WeakReference<ImageView>,
+            imageViewRef: ImageReference<ImageView>,
             extra: List<Pair<String, String>> = emptyList())
             : PipelineDraweeControllerBuilder =
         // method body
