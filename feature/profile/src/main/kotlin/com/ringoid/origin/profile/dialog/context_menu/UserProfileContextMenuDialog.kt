@@ -8,7 +8,6 @@ import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
-import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.utility.ValueUtils.atCharSocialId
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -66,18 +65,8 @@ class UserProfileContextMenuDialog : SimpleBaseDialogFragment() {
     }
 
     private fun onDeleteImage() {
-        fun deleteImageAndClose() {
-            communicator(IUserProfileContextMenuActivity::class.java)?.onDeleteImage()
-            close()
-        }
-
-        Dialogs.showTextDialog(activity,
-            titleResId = OriginR_string.profile_dialog_image_delete_title,
-            descriptionResId = OriginR_string.common_uncancellable,
-            positiveBtnLabelResId = OriginR_string.button_delete,
-            negativeBtnLabelResId = OriginR_string.button_cancel,
-            positiveListener = { dialog, _ -> dialog.dismiss() ; deleteImageAndClose() },
-            negativeListener = { dialog, _ -> dialog.dismiss() ; onCancel(dialog)})
+        communicator(IUserProfileContextMenuActivity::class.java)?.onDeleteImage()
+        close()
     }
 
     private fun onEditProfile() {

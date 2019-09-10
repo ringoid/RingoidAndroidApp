@@ -171,6 +171,19 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        fun askToDeleteImage(imageId: String) {
+            Dialogs.showTextDialog(activity,
+                titleResId = OriginR_string.profile_dialog_image_delete_title,
+                descriptionResId = OriginR_string.common_uncancellable,
+                positiveBtnLabelResId = OriginR_string.button_delete,
+                negativeBtnLabelResId = OriginR_string.button_cancel,
+                positiveListener = { dialog, _ ->
+                    vm.deleteImage(id = imageId)
+                    dialog.dismiss()
+                })
+        }
+
+        // --------------------------------------
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             ExternalNavigator.RC_GALLERY_GET_IMAGE -> {
@@ -185,7 +198,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                         (data.extras!!.getSerializable(ContextMenuExtras.EXTRA_ACTION) as? ContextMenuAction)?.let { action ->
                             when (action) {
                                 ContextMenuAction.ADD_IMAGE -> onAddImage()
-                                ContextMenuAction.DELETE_IMAGE -> vm.deleteImage(id = data.getStringExtra("imageId"))
+                                ContextMenuAction.DELETE_IMAGE -> askToDeleteImage(imageId = data.getStringExtra("imageId"))
                                 ContextMenuAction.EDIT_PROFILE -> openSettingsProfileScreen()
                                 ContextMenuAction.EDIT_STATUS -> openSettingsProfileScreenForStatus()
                             }
