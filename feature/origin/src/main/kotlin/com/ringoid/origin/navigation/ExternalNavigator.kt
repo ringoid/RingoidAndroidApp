@@ -159,7 +159,7 @@ object ExternalNavigator {
      * @see https://stackoverflow.com/questions/53344812/open-user-page-in-tiktok-app-on-android-with-intent
      */
     fun openSocialTiktok(activity: Activity, tiktokUserId: String) {
-        openSocial(activity, social = "tiktok", host = "http://vm.tiktok.com", socialUserId = tiktokUserId)
+        openSocial(activity, social = "tiktok", host = "http://www.tiktok.com", host4raw = "http://vm.tiktok.com", socialUserId = tiktokUserId, prefix = "@")
     }
 
     /**
@@ -170,7 +170,7 @@ object ExternalNavigator {
      * - https://instagram.com/username
      * - instagram.com/username
      */
-    private fun openSocial(activity: Activity, social: String, host: String, socialUserId: String) {
+    private fun openSocial(activity: Activity, social: String, host: String, host4raw: String = host, socialUserId: String, prefix: String = "") {
         socialUserId
             .toLowerCase(Locale.getDefault())
             .removePrefix("@")  // prefix could be outer
@@ -184,7 +184,11 @@ object ExternalNavigator {
                     Patterns.WEB_URL.matcher(it).matches()) {
                     Uri.parse(it)
                 } else {
-                    Uri.parse("$host/$it")
+                    if (prefix == "@") {
+                        Uri.parse("$host/$prefix$it")
+                    } else {
+                        Uri.parse("$host4raw/$it")
+                    }
                 }
             }
             ?.let { uri -> Intent(Intent.ACTION_VIEW, uri) }
