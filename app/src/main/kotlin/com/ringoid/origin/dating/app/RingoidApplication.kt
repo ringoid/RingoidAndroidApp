@@ -2,6 +2,8 @@ package com.ringoid.origin.dating.app
 
 import android.os.HandlerThread
 import android.util.Log
+import com.facebook.cache.disk.DiskCacheConfig
+import com.facebook.common.util.ByteConstants
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory
 import com.flurry.android.FlurryAgent
@@ -9,9 +11,9 @@ import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.DaggerImageCloudComponent
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
-import com.ringoid.domain.BuildConfig
-import com.ringoid.debug.barrier.BarrierLogUtil
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.debug.barrier.BarrierLogUtil
+import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.dating.app.di.ApplicationComponent
 import com.ringoid.origin.dating.app.di.DaggerApplicationComponent
@@ -64,12 +66,19 @@ class RingoidApplication : BaseRingoidApplication() {
     }
 
     private fun initializeImageLoader() {
+        val diskCacheConfig = DiskCacheConfig.newBuilder(this)
+            .setMaxCacheSize(100L * ByteConstants.MB)
+            .setMaxCacheSizeOnLowDiskSpace(25L * ByteConstants.MB)
+            .setMaxCacheSizeOnVeryLowDiskSpace(5L * ByteConstants.MB)
+            .build()
+
         val networkClient = DaggerImageCloudComponent.create()
             .networkClientForImageLoader()
 
         val frescoConfig =
             OkHttpImagePipelineConfigFactory.newBuilder(this, networkClient)
 //                .setImageCacheStatsTracker(ImageCacheTracker())
+                .setMainDiskCacheConfig(diskCacheConfig)
                 .experiment()
                 .setBitmapPrepareToDraw(true, 0, Integer.MAX_VALUE, true)
                 .experiment()
