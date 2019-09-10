@@ -71,6 +71,7 @@
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_instagram"
                 android:layout_marginTop="@dimen/std_margin_16"
+                android:inputType="text|textEmailAddress"
                 app:icon_item_icon="?refDrawableProfilePropertyInstagram"
                 app:icon_item_text="@string/settings_profile_item_custom_property_instagram"
                 app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_instagram_placeholder"
@@ -80,6 +81,7 @@
             <com.ringoid.widget.view.item_view.EditTextIconItemView
                 android:id="@+id/item_profile_custom_property_tiktok"
                 android:layout_marginTop="@dimen/std_margin_16"
+                android:inputType="text|textEmailAddress"
                 app:icon_item_icon="?refDrawableProfilePropertyTikTok"
                 app:icon_item_text="@string/settings_profile_item_custom_property_tiktok"
                 app:text_icon_item_text_hint="@string/settings_profile_item_custom_property_tiktok_placeholder"
