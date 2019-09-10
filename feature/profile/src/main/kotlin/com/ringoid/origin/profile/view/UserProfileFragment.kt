@@ -45,8 +45,8 @@ import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.report.log.Report
 import com.ringoid.utility.*
-import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import com.ringoid.widget.view._swipes
+import com.ringoid.widget.view.rv.EnhancedPagerSnapHelper
 import kotlinx.android.synthetic.main.fragment_profile.*
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
@@ -405,7 +405,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             globalImagePreviewReceiver()?.subscribe()  // get last prepared image, if any
         } else {
             // refresh Profile screen for already logged in user on a fresh app's start
-            onRefresh()
+            onRefresh(checkConnection = false)
         }
 
         if (handleRequestToAddImage) {  // postponed handling to ensure initialization
@@ -480,8 +480,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     // --------------------------------------------------------------------------------------------
-    private fun onRefresh() {
-        if (!connectionManager.isNetworkAvailable()) {
+    private fun onRefresh(checkConnection: Boolean = true) {
+        if (checkConnection && !connectionManager.isNetworkAvailable()) {
             swipe_refresh_layout.isRefreshing = false
             noConnection(this@UserProfileFragment)
         } else {
