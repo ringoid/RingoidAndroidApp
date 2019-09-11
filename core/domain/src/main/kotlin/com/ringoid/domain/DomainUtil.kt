@@ -18,7 +18,7 @@ object DomainUtil {
     const val DEBOUNCE_PUSH = 300L
     const val LIMIT_PER_PAGE = 40
     const val LIMIT_PER_PAGE_LMM = 5
-    const val LOAD_MORE_THRESHOLD = 1  // items left to end
+    const val LOAD_MORE_THRESHOLD = 7  // items left to end
 
     const val CLIPBOARD_KEY_CHAT_MESSAGE = "chatMessage"
     const val CLIPBOARD_KEY_CUSTOMER_ID = "customerId"
