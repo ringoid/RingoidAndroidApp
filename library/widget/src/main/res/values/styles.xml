@@ -84,6 +84,10 @@
         <item name="android:textColor">?refColorAccent</item>
     </style>
 
+    <style name="StdText.Error">
+        <item name="android:textColor">@color/red_alert</item>
+    </style>
+
     <style name="StdText.Primary">
         <item name="android:textColor">?refTextColorPrimary</item>
     </style>

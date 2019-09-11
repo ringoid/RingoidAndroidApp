@@ -18,6 +18,8 @@
     <color name="aquamarine">#5df2d6</color>
     <color name="black">#000000</color>
     <color name="black_half">#aa000000</color>
+    <color name="blue">#0000ff</color>
+    <color name="blue_semi">#4d0000ff</color>
     <color name="brown">#282828</color>
     <color name="brown_half">#aa282828</color>
     <color name="brown_70">#b3282828</color>
@@ -27,6 +29,7 @@
     <color name="grass">#64aa0a</color>
     <color name="grass_semi">#aa54aa0a</color>
     <color name="green">#00c853</color>
+    <color name="green_semi">#4d00c853</color>
     <color name="green_check">#71da6a</color>
     <color name="grey">#1f262c</color>
     <color name="grey_middle">#bdc1c6</color>
@@ -47,6 +50,7 @@
     <color name="raspberry">#ff5771</color>
     <color name="raspberry_saturated">#E91E63</color>
     <color name="red_alert">#ff0000</color>
+    <color name="red_alert_semi">#4dff0000</color>
     <color name="red_love">#FF0339</color>
     <color name="semitransparent">#7f000000</color>
     <color name="semitransparent_75">#bf000000</color>

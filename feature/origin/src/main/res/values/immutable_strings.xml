@@ -23,6 +23,11 @@
     <string name="debug_item_copy_debug_log_button_label" translatable="false">Copy Log</string>
     <string name="debug_title" translatable="false">Debug Menu</string>
 
+    <!-- Feed screen -->
+    <string name="debug_alert_image_view_not_visible" translatable="false">ImageView not visible</string>
+    <string name="debug_alert_image_view_visibility_enter" translatable="false">Attach</string>
+    <string name="debug_alert_image_view_visibility_exit" translatable="false">Detach</string>
+
     <!-- Main screen -->
     <string name="main_bottom_bar_menu_feed" translatable="false">New Faces</string>
     <string name="main_bottom_bar_menu_lmm" translatable="false">Likes</string>
