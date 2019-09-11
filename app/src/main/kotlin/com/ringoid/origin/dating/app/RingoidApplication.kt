@@ -78,7 +78,7 @@ class RingoidApplication : BaseRingoidApplication() {
         val frescoConfig =
             OkHttpImagePipelineConfigFactory.newBuilder(this, networkClient)
 //                .setImageCacheStatsTracker(ImageCacheTracker())
-                .setMainDiskCacheConfig(diskCacheConfig)
+//                .setMainDiskCacheConfig(diskCacheConfig)
                 .experiment()
                 .setBitmapPrepareToDraw(true, 0, Integer.MAX_VALUE, true)
                 .experiment()
