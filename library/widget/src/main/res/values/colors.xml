@@ -42,6 +42,7 @@
     <color name="lavender">#c588e5</color>
     <color name="launcher">#21C9E5</color>
     <color name="lime">#d9ec44</color>
+    <color name="lime_semi">#4dd9ec44</color>
     <color name="male_blue">#60A6E8</color>
     <color name="mango">#ffab30</color>
     <color name="midBlue">#27a4bb</color>
@@ -49,6 +50,7 @@
     <color name="orange_dark">#ff9900</color>
     <color name="raspberry">#ff5771</color>
     <color name="raspberry_saturated">#E91E63</color>
+    <color name="raspberry_saturated_semi">#8dE91E63</color>
     <color name="red_alert">#ff0000</color>
     <color name="red_alert_semi">#4dff0000</color>
     <color name="red_love">#FF0339</color>
