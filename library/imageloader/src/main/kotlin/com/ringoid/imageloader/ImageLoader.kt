@@ -39,7 +39,7 @@ object ImageLoader {
             ?.let { it as? SimpleDraweeView }
             ?.let {
                 it.tag = 0  // depth of retry recursion
-                it.hierarchy.setProgressBarImage(CircularImageProgressBarDrawable())
+//                it.hierarchy.setProgressBarImage(CircularImageProgressBarDrawable())
                 it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef, extra).build()
 //                it.controller = createFlatImageController(uri, thumbnailUri).setOldController(it.controller).build()
 //                it.setImageURI(uri)
