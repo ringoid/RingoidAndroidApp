@@ -54,12 +54,8 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
                 vh.trackingBus = this@BaseFeedAdapter.trackingBus
                 val wrapSettingsClickListener: ((model: FeedItemVO, position: Int) -> Unit)? =
                     { model: FeedItemVO, position: Int -> settingsClickListener?.invoke(model, position, vh.getCurrentImagePosition()) }
-                val wrapWrapSettingsClickListener = wrapOnItemClickListener(vh, wrapSettingsClickListener)
                 vh.itemView.ibtn_settings.clicks().compose(clickDebounce())
-                    .subscribe { wrapWrapSettingsClickListener.onClick(vh.itemView.ibtn_settings) }
-                vh.itemView.tv_about.clicks().compose(clickDebounce()).subscribe { wrapWrapSettingsClickListener.onClick(vh.itemView.tv_about) }
-                vh.itemView.ll_left_container.clicks().compose(clickDebounce()).subscribe { wrapWrapSettingsClickListener.onClick(vh.itemView.ll_left_container) }
-                vh.itemView.ll_right_container.clicks().compose(clickDebounce()).subscribe { wrapWrapSettingsClickListener.onClick(vh.itemView.ll_right_container) }
+                    .subscribe { wrapOnItemClickListener(vh, wrapSettingsClickListener).onClick(vh.itemView.ibtn_settings) }
                 vh.setOnClickListener(null)  // clicks on the whole feed's item is no-op
             }
             ?.takeIf { it is BaseFeedViewHolder }
