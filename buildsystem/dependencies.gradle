@@ -385,7 +385,7 @@ ext {
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAnnotation,
         xPlugins.fabric,
-//        xPlugins.firebasePerf,  // ruled via property parameter
+//        xPlugins.firebasePerf,  // ruled via property parameter 'disable-firebase-performance-plugin' (see root build.gradle)
     ]
 
     appPluginsAtBottom = [
