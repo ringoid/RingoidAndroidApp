@@ -30,9 +30,9 @@ object ImageLoader {
      * @see https://proandroiddev.com/progressive-image-loading-with-rxjava-64bd2b973690
      */
     fun load(uri: String?, thumbnailUri: String? = null, iv: ImageView,
-             extra: List<Pair<String, String>> = emptyList()): ImageLoadRequestStatus {
+             extra: List<Pair<String, String>> = emptyList()): ImageLoadStatus {
         if (uri.isNullOrBlank()) {
-            return ImageLoadRequestStatus.NoImageUri  // no image data to load
+            return ImageLoadStatus(ImageLoadRequestStatus.NoImageUri)  // no image data to load
         }
         val imageViewRef = ImageReference(iv)
         return imageViewRef.get()
@@ -43,11 +43,11 @@ object ImageLoader {
                 it.controller = createRecursiveImageController(uri, thumbnailUri, imageViewRef, extra).build()
 //                it.controller = createFlatImageController(uri, thumbnailUri).setOldController(it.controller).build()
 //                it.setImageURI(uri)
-                ImageLoadRequestStatus.Ok
+                ImageLoadStatus(ImageLoadRequestStatus.Ok,  controller = it.controller)
             }
             ?: run {
                 Timber.e("ImageLoader: Either ImageView is not Fresco DraweeView or it's GC'ed (ref is null)")
-                ImageLoadRequestStatus.InvalidImageViewRef
+                ImageLoadStatus(ImageLoadRequestStatus.InvalidImageViewRef)
             }
     }
 
