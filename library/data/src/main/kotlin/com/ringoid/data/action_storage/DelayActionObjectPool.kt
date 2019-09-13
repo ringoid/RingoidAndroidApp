@@ -12,7 +12,8 @@ abstract class DelayActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPref
     : BaseActionObjectPool(cloud, spm) {
 
     companion object {
-        const val DELAY_TRIGGER = 200L  // ms
+        const val MIN_DELAY_TRIGGER = 100L  // ms
+        const val MAX_DELAY_TRIGGER = 200L  // ms
     }
 
     private var tcount = AtomicInteger(1)  // count of threads
@@ -39,7 +40,7 @@ abstract class DelayActionObjectPool(cloud: IRingoidCloudFacade, spm: SharedPref
                                   val tasksCount = tcount.incrementAndGet()
                                   DebugLogUtil.v("Waiting for commit actions to finish [$tasksCount]...")
                               }
-                              .delay(DELAY_TRIGGER, TimeUnit.MILLISECONDS)
+                              .delay((MIN_DELAY_TRIGGER..MAX_DELAY_TRIGGER).random(), TimeUnit.MILLISECONDS)
                               .flatMap { triggerSource() }
                     else -> triggerSourceImpl()  // this thread should do the job
                         .doOnSubscribe {
