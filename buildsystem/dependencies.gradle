@@ -112,6 +112,7 @@ ext {
             rxBindRecycler:  "com.jakewharton.rxbinding3:rxbinding-recyclerview:${rxBindingVersion}",
             rxBindSwipe:     "com.jakewharton.rxbinding3:rxbinding-swiperefreshlayout:${rxBindingVersion}",
             rxBindViewPager: "com.jakewharton.rxbinding3:rxbinding-viewpager:${rxBindingVersion}",
+            rxExtensions:    "com.github.akarnokd:rxjava2-extensions:${rxJaveExtensionsVersion}",
             autoDispose:     "com.uber.autodispose:autodispose-android-ktx:${autoDisposeVersion}",
             autoDisposeAC:   "com.uber.autodispose:autodispose-android-archcomponents:${autoDisposeVersion}",
             autoDisposeKt:   "com.uber.autodispose:autodispose-lifecycle-ktx:${autoDisposeVersion}",
@@ -312,6 +313,7 @@ ext {
     def rx = [
             [configuration: "implementation", dependency: d_rx.rx],
             [configuration: "implementation", dependency: d_rx.rxAndroid],
+            [configuration: "implementation", dependency: d_rx.rxExtensions],
     ]
 
     def rxBind = [

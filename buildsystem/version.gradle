@@ -68,6 +68,7 @@ buildscript {
         retrofitVersion = '2.6.1'
 
         rxJavaVersion = '2.2.11'
+        rxJaveExtensionsVersion = '0.20.10'
         rxAndroidVersion = '2.1.1'
         rxKotlinVersion = '2.4.0'
         rxBindingVersion = '3.0.0'
