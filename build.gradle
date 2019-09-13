@@ -35,7 +35,7 @@ static String getFlurryApiKey(Environment env) {
             break
         case Environment.DEVELOP:
         case Environment.STAGING:
-        default:
+        default:  // fallthrough by intention
             apiKey = '"KQ4JMH9TGM89SJD2XR5C"'
             break
     }
@@ -50,7 +50,7 @@ static String getSentryDsn(Environment env) {
             break
         case Environment.DEVELOP:
         case Environment.STAGING:
-        default:
+        default:  // fallthrough by intention
             dsn = '"https://e71e66c6bcfd4cbb8541f9a5536b0d9f@sentry.io/1387000"'
             break
     }
