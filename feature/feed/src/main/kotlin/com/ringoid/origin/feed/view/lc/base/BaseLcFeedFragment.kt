@@ -54,7 +54,9 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
 
     override fun onNoImagesInUserProfile(redirectBackOnFeedScreen: Boolean) {
         super.onNoImagesInUserProfile(redirectBackOnFeedScreen)
-        onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge LC feed when user has no images in profile
+        if (!redirectBackOnFeedScreen) {
+            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge LC feed when user has no images in profile
+        }
     }
 
     override fun onRefreshGesture() {
