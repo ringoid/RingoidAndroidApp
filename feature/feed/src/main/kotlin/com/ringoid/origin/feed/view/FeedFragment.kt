@@ -226,12 +226,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             positiveBtnLabelResId = OriginR_string.button_add_photo,
             negativeBtnLabelResId = OriginR_string.button_later,
             positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") },
+            negativeListener = { dialog, _ -> vm.onCancelNoImagesInUserProfileDialog(); dialog.dismiss() },
             isCancellable = false)
 
         showLoading(isVisible = false)
     }
 
-    internal fun showLoading(isVisible: Boolean) {
+    private fun showLoading(isVisible: Boolean) {
         swipe_refresh_layout
             ?.takeIf { isVisible != it.isRefreshing }  // change visibility w/o interruption of animation, if any
             ?.let { it.isRefreshing = isVisible }
@@ -253,7 +254,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter().apply {
-            onBeforeLikeListener = { vm.onBeforeLike() }
+            onBeforeLikeListener = { vm.onBeforeLike(position = it) }
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
             onScrollHorizontalListener = { showRefreshPopup(isVisible = false) }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->

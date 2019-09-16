@@ -30,7 +30,7 @@ import timber.log.Timber
 
 interface IFeedViewHolder {
 
-    var onBeforeLikeListener: (() -> Boolean)?
+    var onBeforeLikeListener: ((position: Int) -> Boolean)?
     var onImageTouchListener: ((x: Float, y: Float) -> Unit)?
     var snapPositionListener: ((snapPosition: Int) -> Unit)?
     var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>?
@@ -41,7 +41,7 @@ interface IFeedViewHolder {
 abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : BaseViewHolder<FeedItemVO>(view), IFeedViewHolder {
 
-    override var onBeforeLikeListener: (() -> Boolean)? = null
+    override var onBeforeLikeListener: ((position: Int) -> Boolean)? = null
     override var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
     override var snapPositionListener: ((snapPosition: Int) -> Unit)? = null
     override var trackingBus: TrackingBus<EqualRange<ProfileImageVO>>? = null
@@ -56,10 +56,13 @@ abstract class OriginFeedViewHolder(view: View, viewPool: RecyclerView.RecycledV
 abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledViewPool? = null)
     : OriginFeedViewHolder(view, viewPool) {
 
-    override var onBeforeLikeListener: (() -> Boolean)? = null
+    private fun wrapOnBeforeClickListener(l: ((position: Int) -> Boolean)?): (() -> Boolean)? =
+        l?.let { /** lambda */ { it.invoke(adapterPosition) } } /** or null */
+
+    override var onBeforeLikeListener: ((position: Int) -> Boolean)? = null
         set(value) {
             field = value
-            profileImageAdapter.onBeforeLikeListener = value
+            profileImageAdapter.onBeforeLikeListener = wrapOnBeforeClickListener(l = value)
         }
 
     override var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
@@ -78,7 +81,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
         itemView.rv_items.apply {
             adapter = profileImageAdapter
                 .also {
-                    it.onBeforeLikeListener = onBeforeLikeListener
+                    it.onBeforeLikeListener = wrapOnBeforeClickListener(l = onBeforeLikeListener)
                     it.onImageTouchListener = onImageTouchListener
                     it.tabsObserver = itemView.tabs.adapterDataObserver
                 }

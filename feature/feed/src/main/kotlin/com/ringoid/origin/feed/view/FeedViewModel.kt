@@ -200,13 +200,22 @@ abstract class FeedViewModel(
 
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
-    internal fun onBeforeLike(): Boolean =
-        if (userInMemoryCache.userImagesCount() > 0) true
-        else {
+    protected fun hasUserImages(): Boolean = userInMemoryCache.userImagesCount() > 0
+
+    // ------------------------------------------
+    internal open fun onBeforeLike(position: Int): Boolean =
+        if (hasUserImages()) {
+            true
+        } else {
             noImagesInUserProfileOneShot.value = OneShot(true)
             false
         }
 
+    internal open fun onCancelNoImagesInUserProfileDialog() {
+        // override in subclasses
+    }
+
+    // ------------------------------------------
     internal open fun onImageTouch(x: Float, y: Float) {
         Timber.v("On touch feed item at ($x, $y)")
         // override in subclasses

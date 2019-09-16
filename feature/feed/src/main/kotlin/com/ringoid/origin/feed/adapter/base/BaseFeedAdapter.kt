@@ -11,12 +11,13 @@ import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.view.common.visibility_tracker.TrackingBus
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.collection.EqualRange
+import com.ringoid.utility.linearLayoutManager
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
 abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows: Int = 0)
     : BaseListAdapter<FeedItemVO, OriginFeedViewHolder>(diffCb, headerRows = headerRows) {
 
-    var onBeforeLikeListener: (() -> Boolean)? = null
+    var onBeforeLikeListener: ((position: Int) -> Boolean)? = null
     var onImageTouchListener: ((x: Float, y: Float) -> Unit)? = null
     var onLikeImageListener: ((model: ProfileImageVO, position: Int) -> Unit)? = null
     var onScrollHorizontalListener: (() -> Unit)? = null
@@ -29,8 +30,8 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
         fun onLike(vh: BaseFeedViewHolder): Boolean =
             vh.adapterPosition
                 .takeIf { it != RecyclerView.NO_POSITION }
-                ?.let {
-                    if (onBeforeLikeListener?.invoke() != false) {
+                ?.let { position ->
+                    if (onBeforeLikeListener?.invoke(position) != false) {
                         val imagePosition = vh.getCurrentImagePosition()
                         val image = vh.profileImageAdapter.getModel(imagePosition)
                         onLikeImageListener?.invoke(image, imagePosition)
@@ -94,4 +95,10 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
     protected fun wrapOnImageClickListenerByFeedItem(vh: OriginFeedViewHolder, l: ((model: ProfileImageVO, position: Int) -> Unit)?)
             : ((model: ProfileImageVO, position: Int) -> Unit)? =
         { model: ProfileImageVO, _ -> vh.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { l?.invoke(model, it) } }
+
+    internal fun performClickOnLikeButtonAtPosition(rv: RecyclerView, position: Int) {
+        if (position != RecyclerView.NO_POSITION) {  // same as DomainUtil.BAD_POSITION
+            rv.linearLayoutManager()?.findViewByPosition(position)?.ibtn_like?.performClick()
+        }
+    }
 }
