@@ -3,6 +3,7 @@ package com.ringoid.utility
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import org.json.JSONObject
 import timber.log.Timber
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -72,6 +73,11 @@ fun <T> MutableCollection<T>.RemoveIf(predicate: (it: T) -> Boolean): Boolean {
     }
     return removed
 }
+
+/* Json */
+// ------------------------------------------------------------------------------------------------
+fun String.extractJsonProperty(key: String): String? =
+    JSONObject(trim().replace('"', '\"')).optString(key)
 
 /* Log utils */
 // ------------------------------------------------------------------------------------------------

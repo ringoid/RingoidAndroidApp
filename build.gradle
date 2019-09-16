@@ -65,6 +65,7 @@ static String getVersionName(Environment env, int major, int minor, int build) {
 ext {
     env = Environment.STAGING
     onboarding = Onboarding.DIRECT  // change it to alter onboarding process
+    onboardingExt = true  // enable or disable extension for onboarding process
 
     appName = getAppName(env)
     apiUrl = getApiUrl(env)

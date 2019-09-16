@@ -42,7 +42,8 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     private val powerSafeModeReceiver = PowerSafeModeBroadcastReceiver()
     private val loginInMemoryCache: ILoginInMemoryCache by lazy { app.loginInMemoryCache }
 
-    private var tabPayload: String? = null  // payload to pass to subscreen on tab switch
+    private var tabPayload: String? = null  // payload to pass onto subscreen on tab switch
+    private var tabExtras: String? = null  // additional data to pass along with payload mentioned above
 
     // ------------------------------------------
     override fun getLayoutId(): Int = R.layout.activity_main
@@ -78,9 +79,10 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
         bottom_bar.apply {
             setOnNavigationItemSelectedListener {
-                (fragNav.currentFrag as? BaseFragment<*>)?.let {
-                    it.onBeforeTabSelect()
-                    it.setLastTabTransactionPayload(tabPayload)
+                (fragNav.currentFrag as? BaseFragment<*>)?.let { fragment ->
+                    fragment.onBeforeTabSelect()
+                    fragment.setLastTabTransactionPayload(tabPayload)
+                    fragment.setLastTabTransactionExtras(tabExtras)
                 }
                 fragNav.switchTab(it.ordinal)
             }
@@ -175,6 +177,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             getString("tab")?.let { tabName ->
                 Timber.v("In-App extras: $tabName")
                 tabPayload = getString("tabPayload")
+                tabExtras = getString("tabExtras")
                 Timber.i("Open $tabName for in-app navigation")
                 openTabByName(tabName)
             }
@@ -219,9 +222,10 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
-        Timber.v("Switched tab[$index]: ${fragment?.javaClass?.simpleName}, payload: $tabPayload")
-        (fragment as? BaseFragment<*>)?.onTabTransaction(payload = tabPayload)
-        tabPayload = null  // consume tab payload on the opened tab
+        Timber.v("Switched tab[$index]: ${fragment?.javaClass?.simpleName}, payload: $tabPayload, extras: $tabExtras")
+        (fragment as? BaseFragment<*>)?.onTabTransaction(payload = tabPayload, extras = tabExtras)
+        tabPayload = null  // consume tab payload on the tab opened
+        tabExtras = null  // consume tab extras on the tab opened
     }
 
     private fun openTabByName(tabName: String) {

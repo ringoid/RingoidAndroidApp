@@ -1,11 +1,13 @@
 package com.ringoid.origin.navigation
 
+import com.ringoid.domain.DomainUtil
+
 object NavigateFrom {
 
-    const val MAIN_TAB_EXPLORE = "explore"
-    const val MAIN_TAB_LIKES = "likes"
-    const val MAIN_TAB_MESSAGES = "messages"
-    const val MAIN_TAB_PROFILE = "profile"
+    const val MAIN_TAB_EXPLORE = DomainUtil.SOURCE_SCREEN_FEED_EXPLORE
+    const val MAIN_TAB_LIKES = DomainUtil.SOURCE_SCREEN_FEED_LIKES
+    const val MAIN_TAB_MESSAGES = DomainUtil.SOURCE_SCREEN_FEED_MESSAGES
+    const val MAIN_TAB_PROFILE = DomainUtil.SOURCE_SCREEN_PROFILE
 
     const val SCREEN_LOGIN = "login"
 }
@@ -26,4 +28,5 @@ object RequestCode {
     @Deprecated("Replaced with context menu")
     const val RC_DELETE_IMAGE_DIALOG = 11001
     const val RC_SETTINGS_LANG = 11100
+    const val RC_SETTINGS_PROFILE = 11101
 }

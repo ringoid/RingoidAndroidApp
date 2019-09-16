@@ -240,9 +240,9 @@ open class FeedRepository @Inject constructor(
     @Deprecated("LMM -> LC")
     private fun getCachedLmmOnly(): Single<Lmm> =
         Single.zip(
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES),
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MATCHES),
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES),
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_SCREEN_FEED_LIKES),
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_SCREEN_FEED_MATCHES),
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_SCREEN_FEED_MESSAGES),
             Function3 { likes, matches, messages -> Lmm(likes, matches, messages) })
 
     /* LC (replacing LMM) */
@@ -321,8 +321,8 @@ open class FeedRepository @Inject constructor(
 
     private fun getCachedLcOnly(): Single<Lmm> =
         Single.zip(
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_LIKES),
-            local.feedItems(sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES),
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_SCREEN_FEED_LIKES),
+            local.feedItems(sourceFeed = DomainUtil.SOURCE_SCREEN_FEED_MESSAGES),
             BiFunction { likes, messages ->
                 val totalNotFilteredLikes = feedSharedPrefs.getTotalNotFilteredLikes()
                 val totalNotFilteredMessages = feedSharedPrefs.getTotalNotFilteredMessages()
@@ -469,9 +469,9 @@ open class FeedRepository @Inject constructor(
                 .flatMap { Single.fromCallable { imagesLocal.deleteImages() } }
                 .flatMap {
                     Single.fromCallable {
-                        local.addFeedItems(lmm.likes, sourceFeed = DomainUtil.SOURCE_FEED_LIKES)
-                        local.addFeedItems(lmm.matches, sourceFeed = DomainUtil.SOURCE_FEED_MATCHES)
-                        local.addFeedItems(lmm.messages, sourceFeed = DomainUtil.SOURCE_FEED_MESSAGES)
+                        local.addFeedItems(lmm.likes, sourceFeed = DomainUtil.SOURCE_SCREEN_FEED_LIKES)
+                        local.addFeedItems(lmm.matches, sourceFeed = DomainUtil.SOURCE_SCREEN_FEED_MATCHES)
+                        local.addFeedItems(lmm.messages, sourceFeed = DomainUtil.SOURCE_SCREEN_FEED_MESSAGES)
                     }
                 }
                 .flatMap {

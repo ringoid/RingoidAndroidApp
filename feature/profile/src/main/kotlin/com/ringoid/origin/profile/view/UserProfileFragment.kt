@@ -65,6 +65,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     private var cropImageAfterLogin: Boolean = false  // for Onboarding.ADD_IMAGE
     private var handleRequestToAddImage: Boolean = false
     private var handleRequestToCheckNoImagesAndAddImage: Boolean = false
+    private var redirectOnFeedScreen: String? = null  // name of feed to redirect on after some action being done
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
     private val pageSelectListener = object : RecyclerView.OnScrollListener() {
@@ -114,8 +115,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     // ------------------------------------------
-    override fun onTabTransaction(payload: String?) {
-        super.onTabTransaction(payload)
+    override fun onTabTransaction(payload: String?, extras: String?) {
+        super.onTabTransaction(payload, extras)
         payload?.let {
             when (it) {
                 Payload.PAYLOAD_PROFILE_CHECK_NO_IMAGES_AND_REQUEST_ADD_IMAGE -> {
@@ -127,6 +128,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 }
                 Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }  // for Onboarding.ADD_IMAGE
                 Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> {
+                    redirectOnFeedScreen = extras?.extractJsonProperty("backOnFeed")
                     if (isAdded) {
                         onAddImage()
                     } else {
@@ -166,7 +168,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                     showNoImageStub(needShow = empty)
                     showDotTabs(isVisible = true)
                 }
-                itemClickListener = { _, _ -> openSettingsProfileScreen() }
+                itemClickListener = { _, _ -> openSettingsProfileScreen() }  // click on any image
             }
     }
 
@@ -226,6 +228,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                     }
                 }
             }
+            RequestCode.RC_SETTINGS_PROFILE -> openRedirectFeedScreenIfAny()
         }
     }
 
@@ -246,11 +249,22 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
          * Asks to add another photo to user profile.
          */
         fun askForAnotherImage() {
+            fun onDenyAddAnotherImage() {
+                if (com.ringoid.origin.profile.BuildConfig.ONBOARDING_EXT &&
+                    openSettingsProfileScreenToFillEmptyFields()) {
+                    return
+                }
+
+                openRedirectFeedScreenIfAny()
+            }
+
             Dialogs.showTextDialog(activity,
                 titleResId = OriginR_string.profile_dialog_image_another_common_title, descriptionResId = 0,
                 positiveBtnLabelResId = OriginR_string.button_add_photo,
                 negativeBtnLabelResId = OriginR_string.button_later,
-                positiveListener = { _, _ -> onAddImage() })
+                positiveListener = { _, _ -> onAddImage() },
+                negativeListener = { _, _ -> onDenyAddAnotherImage() })
+                .also { it.dialog.setOnCancelListener { onDenyAddAnotherImage() } }
         }
 
         /**
@@ -575,12 +589,30 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         navigate(this, path = "/user_profile_context_menu$imageIdPayload", rc = RequestCode.RC_CONTEXT_MENU_USER_PROFILE)
     }
 
+    private fun openRedirectFeedScreenIfAny() {
+        redirectOnFeedScreen?.let {
+            redirectOnFeedScreen = null  // don't reuse value
+            navigate(this@UserProfileFragment, path="/main?tab=$it")
+        }
+    }
+
     private fun openSettingsProfileScreen() {
-        navigate(this, path = "/settings_profile")
+        // open settings profile screen and focus on whatever field should be focused by default
+        navigate(this, path = "/settings_profile", rc = RequestCode.RC_SETTINGS_PROFILE)
     }
 
     private fun openSettingsProfileScreenForStatus() {
-        navigate(this, path = "/settings_profile?focus=${UserProfileEditablePropertyId.STATUS}")
+        // open settings profile screen and focus on status field
+        navigate(this, path = "/settings_profile?focus=${UserProfileEditablePropertyId.STATUS}", rc = RequestCode.RC_SETTINGS_PROFILE)
+    }
+
+    private fun openSettingsProfileScreenToFillEmptyFields(): Boolean {
+        val properties = UserProfileProperties.from(spm.getUserProfileProperties())
+        val check = properties.name().isBlank() || properties.whereLive().isBlank()
+        if (check) {
+            openSettingsProfileScreen()
+        }
+        return check
     }
 
     // ------------------------------------------

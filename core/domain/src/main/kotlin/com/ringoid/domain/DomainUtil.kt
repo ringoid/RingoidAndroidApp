@@ -30,11 +30,11 @@ object DomainUtil {
     const val FILTER_MIN_DISTANCE = 1000
     const val FILTER_MAX_DISTANCE = 150_000
 
-    const val SOURCE_FEED_EXPLORE = "new_faces"
-    const val SOURCE_FEED_LIKES = "who_liked_me"
-    const val SOURCE_FEED_MATCHES = "matches"
-    const val SOURCE_FEED_MESSAGES = "messages"
-    const val SOURCE_FEED_PROFILE = "profile"
+    const val SOURCE_SCREEN_FEED_EXPLORE = "new_faces"
+    const val SOURCE_SCREEN_FEED_LIKES = "who_liked_me"
+    const val SOURCE_SCREEN_FEED_MATCHES = "matches"
+    const val SOURCE_SCREEN_FEED_MESSAGES = "messages"
+    const val SOURCE_SCREEN_PROFILE = "profile"
 
     // ------------------------------------------
     @DebugOnly private var withError: Boolean = false

@@ -220,18 +220,21 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         filtersPopupWidget?.show()
     }
 
-    protected open fun onNoImagesInUserProfile(dummy: Boolean) {
+    protected open fun onNoImagesInUserProfile(redirectBackOnFeedScreen: Boolean) {
+        val extras = if (redirectBackOnFeedScreen) "&tabExtras={\"backOnFeed\":\"${vm.getFeedName()}\"}" else ""
+
         Dialogs.showTextDialog(activity,
             descriptionResId = getAddPhotoDialogDescriptionResId(),
             positiveBtnLabelResId = OriginR_string.button_add_photo,
             negativeBtnLabelResId = OriginR_string.button_later,
-            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") },
+            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}$extras") },
+            negativeListener = { dialog, _ -> vm.onCancelNoImagesInUserProfileDialog(); dialog.dismiss() },
             isCancellable = false)
 
         showLoading(isVisible = false)
     }
 
-    internal fun showLoading(isVisible: Boolean) {
+    private fun showLoading(isVisible: Boolean) {
         swipe_refresh_layout
             ?.takeIf { isVisible != it.isRefreshing }  // change visibility w/o interruption of animation, if any
             ?.let { it.isRefreshing = isVisible }
@@ -243,9 +246,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         filtersPopupWidget?.hide()
     }
 
-    override fun onTabTransaction(payload: String?) {
-        super.onTabTransaction(payload)
+    override fun onTabTransaction(payload: String?, extras: String?) {
+        super.onTabTransaction(payload, extras)
         toolbarWidget?.show(isVisible = true)  // switch back on any Feed should show toolbar, if was hide
+        /**
+         * If user has intended to like someone's profile (feed item) and had no images in her Profile,
+         * such intention is memorized. Next time user navigates on Explore screen, such intention should
+         * be fulfilled in case it was actually interrupted by asking to add image on Profile.
+         */
+        if (isViewModelInitialized) {
+            vm.doPendingLikeInAny()
+        }
     }
 
     /* Lifecycle */
@@ -253,7 +264,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         feedAdapter = createFeedAdapter().apply {
-            onBeforeLikeListener = { vm.onBeforeLike() }
+            onBeforeLikeListener = { vm.onBeforeLike(position = it) }
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
             onScrollHorizontalListener = { showRefreshPopup(isVisible = false) }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
@@ -309,6 +320,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge Feed while displaying ask to enable GPS popup
         }
         observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
+        observeOneShot(vm.likeProfileOneShot()) { feedAdapter.performClickOnLikeButtonAtPosition(rv_items, position = it) }
         observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
         observeOneShot(vm.notifyOnFeedLoadFinishOneShot()) { timeKeeper.stop() }

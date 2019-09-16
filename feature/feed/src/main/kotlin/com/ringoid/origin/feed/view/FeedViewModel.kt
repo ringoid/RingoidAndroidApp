@@ -47,6 +47,7 @@ abstract class FeedViewModel(
     : BasePermissionViewModel(app) {
 
     protected val discardProfileOneShot by lazy { MutableLiveData<OneShot<String>>() }
+    private val likeProfileOneShot by lazy { MutableLiveData<OneShot<Int>>() }
     protected val needShowFiltersOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val noImagesInUserProfileOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     protected val notifyOnFeedLoadFinishOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
@@ -54,6 +55,7 @@ abstract class FeedViewModel(
     private val refreshOnLocationPermissionOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     protected val refreshOnPush by lazy { MutableLiveData<Boolean>() }
     internal fun discardProfileOneShot(): LiveData<OneShot<String>> = discardProfileOneShot
+    internal fun likeProfileOneShot(): LiveData<OneShot<Int>> = likeProfileOneShot
     internal fun needShowFiltersOneShot(): LiveData<OneShot<Boolean>> = needShowFiltersOneShot
     internal fun noImagesInUserProfileOneShot(): LiveData<OneShot<Boolean>> = noImagesInUserProfileOneShot
     internal fun notifyOnFeedLoadFinishOneShot(): LiveData<OneShot<Boolean>> = notifyOnFeedLoadFinishOneShot
@@ -179,7 +181,7 @@ abstract class FeedViewModel(
                     viewActionObjectBackup.clear()
                     getFeed()
                 } else {
-                    noImagesInUserProfileOneShot.value = OneShot(true)
+                    noImagesInUserProfileOneShot.value = OneShot(false)
                     Completable.complete()
                 }
             }
@@ -200,13 +202,49 @@ abstract class FeedViewModel(
 
     /* Action Objects */
     // --------------------------------------------------------------------------------------------
-    internal fun onBeforeLike(): Boolean =
-        if (userInMemoryCache.userImagesCount() > 0) true
-        else {
+    private fun hasUserImages(): Boolean = userInMemoryCache.userImagesCount() > 0
+
+    // ------------------------------------------
+    private var feedItemToLikePosition: Int = DomainUtil.BAD_POSITION
+
+    internal fun onBeforeLike(position: Int): Boolean =
+        if (hasUserImages()) {
+            true
+        } else {
+            feedItemToLikePosition = position
             noImagesInUserProfileOneShot.value = OneShot(true)
             false
         }
 
+    internal fun onCancelNoImagesInUserProfileDialog() {
+        dropFeedItemToLikePosition()
+    }
+
+    internal fun doPendingLikeInAny() {
+        if (feedItemToLikePosition == DomainUtil.BAD_POSITION) {
+            return  // no pending like to perform
+        }
+
+        if (!hasUserImages()) {
+            /**
+             * User has intended to like someone's profile but was interrupted by asking to add image
+             * on Profile. If user still has no images in her profile and has just navigated back on
+             * this Feed screen - forget that intention.
+             */
+            dropFeedItemToLikePosition()
+            return  // do pending like only if user has some images in profile
+        }
+        if (feedItemToLikePosition != DomainUtil.BAD_POSITION) {
+            likeProfileOneShot.value = OneShot(feedItemToLikePosition)
+            dropFeedItemToLikePosition()
+        }
+    }
+
+    private fun dropFeedItemToLikePosition() {
+        feedItemToLikePosition = DomainUtil.BAD_POSITION
+    }
+
+    // ------------------------------------------
     internal open fun onImageTouch(x: Float, y: Float) {
         Timber.v("On touch feed item at ($x, $y)")
         // override in subclasses
@@ -222,9 +260,9 @@ abstract class FeedViewModel(
             val sourceFeed = getFeedName()
             fire(Analytics.ACTION_USER_LIKE_PHOTO, "sourceFeed" to sourceFeed)
             when (sourceFeed) {
-                DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_LIKES)
-                DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MATCHES)
-                DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MESSAGES)
+                DomainUtil.SOURCE_SCREEN_FEED_LIKES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_LIKES)
+                DomainUtil.SOURCE_SCREEN_FEED_MATCHES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MATCHES)
+                DomainUtil.SOURCE_SCREEN_FEED_MESSAGES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MESSAGES)
             }
         }
     }

@@ -27,8 +27,8 @@ enum class NavTab(val tabName: String) {
 }
 
 enum class LcNavTab(val feedName: String) {
-    LIKES(DomainUtil.SOURCE_FEED_LIKES),
-    MESSAGES(DomainUtil.SOURCE_FEED_MESSAGES);  // order matters
+    LIKES(DomainUtil.SOURCE_SCREEN_FEED_LIKES),
+    MESSAGES(DomainUtil.SOURCE_SCREEN_FEED_MESSAGES);  // order matters
 
     companion object {
         val values: Array<LcNavTab> = values()
@@ -37,9 +37,9 @@ enum class LcNavTab(val feedName: String) {
 
         fun from(sourceFeed: String?): LcNavTab? =
             when (sourceFeed) {
-                DomainUtil.SOURCE_FEED_LIKES -> LIKES
-                DomainUtil.SOURCE_FEED_MATCHES,
-                DomainUtil.SOURCE_FEED_MESSAGES -> MESSAGES
+                DomainUtil.SOURCE_SCREEN_FEED_LIKES -> LIKES
+                DomainUtil.SOURCE_SCREEN_FEED_MATCHES,
+                DomainUtil.SOURCE_SCREEN_FEED_MESSAGES -> MESSAGES
                 else -> null
             }
 
@@ -55,9 +55,9 @@ enum class LcNavTab(val feedName: String) {
 
 @Deprecated("LMM -> LC")
 enum class LmmNavTab(val feedName: String) {
-    LIKES(DomainUtil.SOURCE_FEED_LIKES),
-    MATCHES(DomainUtil.SOURCE_FEED_MATCHES),
-    MESSAGES(DomainUtil.SOURCE_FEED_MESSAGES);  // order matters
+    LIKES(DomainUtil.SOURCE_SCREEN_FEED_LIKES),
+    MATCHES(DomainUtil.SOURCE_SCREEN_FEED_MATCHES),
+    MESSAGES(DomainUtil.SOURCE_SCREEN_FEED_MESSAGES);  // order matters
 
     fun page(): Int = ordinal
 
@@ -74,9 +74,9 @@ enum class LmmNavTab(val feedName: String) {
 
         fun from(sourceFeed: String?): LmmNavTab? =
             when (sourceFeed) {
-                DomainUtil.SOURCE_FEED_LIKES -> LIKES
-                DomainUtil.SOURCE_FEED_MATCHES -> MATCHES
-                DomainUtil.SOURCE_FEED_MESSAGES -> MESSAGES
+                DomainUtil.SOURCE_SCREEN_FEED_LIKES -> LIKES
+                DomainUtil.SOURCE_SCREEN_FEED_MATCHES -> MATCHES
+                DomainUtil.SOURCE_SCREEN_FEED_MESSAGES -> MESSAGES
                 else -> null
             }
 
