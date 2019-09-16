@@ -524,7 +524,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
             "sp_key_user_settings_vibration_push_enabled".takeIf { key -> contains(key) }
                 ?.let { key ->
                     Timber.v("Migrate [$key]")
-                    pushSettings.pushVibration = getBoolean(key, true)
+                    pushSettings.pushVibration = getBoolean(key, false)
                     editor.remove(key)
                 }
 

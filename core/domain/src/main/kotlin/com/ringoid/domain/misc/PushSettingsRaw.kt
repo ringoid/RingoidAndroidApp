@@ -9,7 +9,7 @@ data class PushSettingsRaw(
     @Expose @SerializedName(COLUMN_PUSH_LIKES) var pushLikes: Boolean = true,
     @Expose @SerializedName(COLUMN_PUSH_MATCHES) var pushMatches: Boolean = true,
     @Expose @SerializedName(COLUMN_PUSH_MESSAGES) var pushMessages: Boolean = true,
-    @Expose @SerializedName(COLUMN_PUSH_VIBRATION) var pushVibration: Boolean = true) : IEssence {
+    @Expose @SerializedName(COLUMN_PUSH_VIBRATION) var pushVibration: Boolean = false) : IEssence {
 
     companion object {
         const val COLUMN_PUSH = "push"
