@@ -109,8 +109,8 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
     }
 
     // ------------------------------------------
-    override fun onTabTransaction(payload: String?) {
-        super.onTabTransaction(payload)
+    override fun onTabTransaction(payload: String?, extras: String?) {
+        super.onTabTransaction(payload, extras)
         /**
          * If user has intended to like someone's profile (feed item) and had no images in her Profile,
          * such intention is memorized. Next time user navigates on Explore screen, such intention should

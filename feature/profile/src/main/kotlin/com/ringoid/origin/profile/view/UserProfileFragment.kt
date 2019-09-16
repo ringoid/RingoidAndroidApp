@@ -114,8 +114,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     // ------------------------------------------
-    override fun onTabTransaction(payload: String?) {
-        super.onTabTransaction(payload)
+    override fun onTabTransaction(payload: String?, extras: String?) {
+        super.onTabTransaction(payload, extras)
         payload?.let {
             when (it) {
                 Payload.PAYLOAD_PROFILE_CHECK_NO_IMAGES_AND_REQUEST_ADD_IMAGE -> {

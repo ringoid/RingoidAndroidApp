@@ -49,6 +49,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     protected var isViewModelInitialized = false
         private set
     private var lastTabTransactionPayload: String? = null
+    private var lastTabTransactionExtras: String? = null
 
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
@@ -58,6 +59,10 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     fun setLastTabTransactionPayload(payload: String?) {
         lastTabTransactionPayload = payload
+    }
+
+    fun setLastTabTransactionExtras(extras: String?) {
+        lastTabTransactionExtras = extras
     }
 
     // --------------------------------------------------------------------------------------------
@@ -98,11 +103,12 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     /**
      * Called upon switching on new [Fragment] by tab.
      */
-    open fun onTabTransaction(payload: String?) {
+    open fun onTabTransaction(payload: String?, extras: String?) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onTabTransaction, payload: $payload")
         DebugLogUtil.lifecycle(this, "onTabTransaction")
         lastTabTransactionPayload = payload
+        lastTabTransactionExtras = extras
         if (!userVisibleHint) userVisibleHint = true
         // override in subclasses
     }
@@ -120,8 +126,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     protected fun doPostponedTabTransaction() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.d("Perform postponed tab transaction with payload: $lastTabTransactionPayload")
-        onTabTransaction(payload = lastTabTransactionPayload)
+        Timber.d("Perform postponed tab transaction with payload: $lastTabTransactionPayload and extras: $lastTabTransactionExtras")
+        onTabTransaction(payload = lastTabTransactionPayload, extras = lastTabTransactionExtras)
     }
 
     /* Lifecycle */
