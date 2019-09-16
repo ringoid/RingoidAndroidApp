@@ -2,6 +2,12 @@ rootProject.profilePlugins.each {
     apply plugin: it
 }
 
+android {
+    defaultConfig {
+        buildConfigField 'boolean', 'ONBOARDING_EXT', "$rootProject.ext.onboardingExt"
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
