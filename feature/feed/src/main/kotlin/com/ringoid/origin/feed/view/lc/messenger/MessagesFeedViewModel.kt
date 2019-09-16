@@ -153,7 +153,7 @@ class MessagesFeedViewModel @Inject constructor(
 
     // ------------------------------------------
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
-    override fun getFeedName(): String = DomainUtil.SOURCE_FEED_MESSAGES
+    override fun getFeedName(): String = DomainUtil.SOURCE_SCREEN_FEED_MESSAGES
 
     override fun sourceBadge(): Observable<Boolean> =
         getLcUseCase.repository.badgeMessengerSource()

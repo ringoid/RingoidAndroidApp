@@ -158,7 +158,7 @@ class RingoidCloud @Inject constructor(private val restAdapter: RingoidRestAdapt
 
     fun getDiscover(accessToken: String, resolution: ImageResolution, limit: Int?, filter: Filters?,
                     lastActionTime: Long = 0L): Single<FeedResponse> {
-        val body = prepareFeedRequestBody(accessToken, resolution, limit, filter, source = DomainUtil.SOURCE_FEED_EXPLORE, lastActionTime = lastActionTime)
+        val body = prepareFeedRequestBody(accessToken, resolution, limit, filter, source = DomainUtil.SOURCE_SCREEN_FEED_EXPLORE, lastActionTime = lastActionTime)
         return restAdapter.getDiscover(body)
             .checkLastActionTime("getDiscover", lastActionTime)
             .keepDataForDebug(cloudDebug, "request" to "getDiscover", "resolution" to "$resolution", "lastActionTime" to "$lastActionTime")

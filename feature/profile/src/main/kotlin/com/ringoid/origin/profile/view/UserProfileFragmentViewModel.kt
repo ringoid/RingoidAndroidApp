@@ -180,7 +180,7 @@ class UserProfileFragmentViewModel @Inject constructor(
 
     // ------------------------------------------
     internal fun onStartRefresh() {
-        analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to DomainUtil.SOURCE_FEED_PROFILE)
+        analyticsManager.fire(Analytics.PULL_TO_REFRESH, "sourceFeed" to DomainUtil.SOURCE_SCREEN_PROFILE)
     }
 
     internal fun refresh() {

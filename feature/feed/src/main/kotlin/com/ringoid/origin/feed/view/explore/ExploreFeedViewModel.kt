@@ -70,7 +70,7 @@ class ExploreFeedViewModel @Inject constructor(
     private var nextPage: Int = 0
     private val distinctIds = mutableSetOf<String>()
 
-    override fun getFeedName(): String = DomainUtil.SOURCE_FEED_EXPLORE
+    override fun getFeedName(): String = DomainUtil.SOURCE_SCREEN_FEED_EXPLORE
 
     init {
         // discard profiles that appear in Lmm from Explore feed

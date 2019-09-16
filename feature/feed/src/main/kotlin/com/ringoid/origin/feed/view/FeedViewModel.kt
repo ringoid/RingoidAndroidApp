@@ -231,9 +231,9 @@ abstract class FeedViewModel(
             val sourceFeed = getFeedName()
             fire(Analytics.ACTION_USER_LIKE_PHOTO, "sourceFeed" to sourceFeed)
             when (sourceFeed) {
-                DomainUtil.SOURCE_FEED_LIKES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_LIKES)
-                DomainUtil.SOURCE_FEED_MATCHES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MATCHES)
-                DomainUtil.SOURCE_FEED_MESSAGES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MESSAGES)
+                DomainUtil.SOURCE_SCREEN_FEED_LIKES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_LIKES)
+                DomainUtil.SOURCE_SCREEN_FEED_MATCHES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MATCHES)
+                DomainUtil.SOURCE_SCREEN_FEED_MESSAGES -> fire(Analytics.ACTION_USER_LIKE_PHOTO_FROM_MESSAGES)
             }
         }
     }

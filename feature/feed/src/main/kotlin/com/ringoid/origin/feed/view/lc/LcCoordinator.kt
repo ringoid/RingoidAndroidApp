@@ -110,7 +110,7 @@ class LcCoordinator @Inject constructor(
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("limit", DomainUtil.LIMIT_PER_PAGE)
                 // no source feed can be specified for coordinator, use some to avoid 'WrongRequestParamsClientError'
-                .put("source", DomainUtil.SOURCE_FEED_LIKES)
+                .put("source", DomainUtil.SOURCE_SCREEN_FEED_LIKES)
                 .put(filters)
 
     /* Event Bus */
