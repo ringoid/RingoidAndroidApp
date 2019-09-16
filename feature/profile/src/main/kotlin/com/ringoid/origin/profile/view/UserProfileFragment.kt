@@ -168,7 +168,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                     showNoImageStub(needShow = empty)
                     showDotTabs(isVisible = true)
                 }
-                itemClickListener = { _, _ -> openSettingsProfileScreen() }
+                itemClickListener = { _, _ -> openSettingsProfileScreen() }  // click on any image
             }
     }
 
@@ -228,6 +228,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                     }
                 }
             }
+            RequestCode.RC_SETTINGS_PROFILE -> openRedirectFeedScreenIfAny()
         }
     }
 
@@ -248,11 +249,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
          * Asks to add another photo to user profile.
          */
         fun askForAnotherImage() {
-            fun redirectOnFeedScreen() {
-                redirectOnFeedScreen?.let {
-                    redirectOnFeedScreen = null  // don't reuse value
-                    navigate(this@UserProfileFragment, path="/main?tab=$it")
+            fun onDenyAddAnotherImage() {
+                if (com.ringoid.origin.profile.BuildConfig.ONBOARDING_EXT &&
+                    openSettingsProfileScreenToFillEmptyFields()) {
+                    return
                 }
+
+                openRedirectFeedScreenIfAny()
             }
 
             Dialogs.showTextDialog(activity,
@@ -260,8 +263,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 positiveBtnLabelResId = OriginR_string.button_add_photo,
                 negativeBtnLabelResId = OriginR_string.button_later,
                 positiveListener = { _, _ -> onAddImage() },
-                negativeListener = { dialog, _ -> redirectOnFeedScreen(); dialog.dismiss() })
-                .also { it.dialog.setOnCancelListener { redirectOnFeedScreen() } }
+                negativeListener = { _, _ -> onDenyAddAnotherImage() })
+                .also { it.dialog.setOnCancelListener { onDenyAddAnotherImage() } }
         }
 
         /**
@@ -586,12 +589,30 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         navigate(this, path = "/user_profile_context_menu$imageIdPayload", rc = RequestCode.RC_CONTEXT_MENU_USER_PROFILE)
     }
 
+    private fun openRedirectFeedScreenIfAny() {
+        redirectOnFeedScreen?.let {
+            redirectOnFeedScreen = null  // don't reuse value
+            navigate(this@UserProfileFragment, path="/main?tab=$it")
+        }
+    }
+
     private fun openSettingsProfileScreen() {
-        navigate(this, path = "/settings_profile")
+        // open settings profile screen and focus on whatever field should be focused by default
+        navigate(this, path = "/settings_profile", rc = RequestCode.RC_SETTINGS_PROFILE)
     }
 
     private fun openSettingsProfileScreenForStatus() {
-        navigate(this, path = "/settings_profile?focus=${UserProfileEditablePropertyId.STATUS}")
+        // open settings profile screen and focus on status field
+        navigate(this, path = "/settings_profile?focus=${UserProfileEditablePropertyId.STATUS}", rc = RequestCode.RC_SETTINGS_PROFILE)
+    }
+
+    private fun openSettingsProfileScreenToFillEmptyFields(): Boolean {
+        val properties = UserProfileProperties.from(spm.getUserProfileProperties())
+        val check = properties.name().isBlank() || properties.whereLive().isBlank()
+        if (check) {
+            openSettingsProfileScreen()
+        }
+        return check
     }
 
     // ------------------------------------------

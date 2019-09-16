@@ -28,4 +28,5 @@ object RequestCode {
     @Deprecated("Replaced with context menu")
     const val RC_DELETE_IMAGE_DIALOG = 11001
     const val RC_SETTINGS_LANG = 11100
+    const val RC_SETTINGS_PROFILE = 11101
 }
