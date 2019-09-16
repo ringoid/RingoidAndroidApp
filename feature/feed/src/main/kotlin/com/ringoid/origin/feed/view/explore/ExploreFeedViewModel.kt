@@ -61,10 +61,8 @@ class ExploreFeedViewModel @Inject constructor(
 
     private val feed by lazy { MutableLiveData<Feed>() }
     private val discardProfilesOneShot by lazy { MutableLiveData<OneShot<Collection<String>>>() }
-    private val likeProfileOneShot by lazy { MutableLiveData<OneShot<Int>>() }
     internal fun feed(): LiveData<Feed> = feed
     internal fun discardProfilesOneShot(): LiveData<OneShot<Collection<String>>> = discardProfilesOneShot
-    internal fun likeProfileOneShot(): LiveData<OneShot<Int>> = likeProfileOneShot
 
     private var isLoadingMore: Boolean = false
     private var nextPage: Int = 0
@@ -212,49 +210,10 @@ class ExploreFeedViewModel @Inject constructor(
                 .put("failPage", failPage)
 
     // --------------------------------------------------------------------------------------------
-    private var feedItemToLikePosition: Int = DomainUtil.BAD_POSITION
-
-    override fun onBeforeLike(position: Int): Boolean =
-        super.onBeforeLike(position)
-            .also { result ->
-                if (!result) {
-                    feedItemToLikePosition = position
-                }
-            }
-
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
         // discard profile from feed after like
         discardProfileOneShot.value = OneShot(profileId)
-    }
-
-    internal fun doPendingLikeInAny() {
-        if (feedItemToLikePosition == DomainUtil.BAD_POSITION) {
-            return  // no pending like to perform
-        }
-
-        if (!hasUserImages()) {
-            /**
-             * User has intended to like someone's profile but was interrupted by asking to add image
-             * on Profile. If user still has no images in her profile and has just navigated back on
-             * this Feed screen - forget that intention.
-             */
-            dropFeedItemToLikePosition()
-            return  // do pending like only if user has some images in profile
-        }
-        if (feedItemToLikePosition != DomainUtil.BAD_POSITION) {
-            likeProfileOneShot.value = OneShot(feedItemToLikePosition)
-            dropFeedItemToLikePosition()
-        }
-    }
-
-    override fun onCancelNoImagesInUserProfileDialog() {
-        super.onCancelNoImagesInUserProfileDialog()
-        dropFeedItemToLikePosition()
-    }
-
-    private fun dropFeedItemToLikePosition() {
-        feedItemToLikePosition = DomainUtil.BAD_POSITION
     }
 
     // ------------------------------------------

@@ -249,6 +249,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onTabTransaction(payload: String?, extras: String?) {
         super.onTabTransaction(payload, extras)
         toolbarWidget?.show(isVisible = true)  // switch back on any Feed should show toolbar, if was hide
+        /**
+         * If user has intended to like someone's profile (feed item) and had no images in her Profile,
+         * such intention is memorized. Next time user navigates on Explore screen, such intention should
+         * be fulfilled in case it was actually interrupted by asking to add image on Profile.
+         */
+        if (isViewModelInitialized) {
+            vm.doPendingLikeInAny()
+        }
     }
 
     /* Lifecycle */
@@ -312,6 +320,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge Feed while displaying ask to enable GPS popup
         }
         observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
+        observeOneShot(vm.likeProfileOneShot()) { feedAdapter.performClickOnLikeButtonAtPosition(rv_items, position = it) }
         observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }
         observeOneShot(vm.noImagesInUserProfileOneShot(), ::onNoImagesInUserProfile)
         observeOneShot(vm.notifyOnFeedLoadFinishOneShot()) { timeKeeper.stop() }

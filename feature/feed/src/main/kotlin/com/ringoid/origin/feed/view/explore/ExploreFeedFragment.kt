@@ -23,7 +23,6 @@ import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.getAttributeColor
-import kotlinx.android.synthetic.main.fragment_feed.*
 
 class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
 
@@ -108,19 +107,6 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
         }
     }
 
-    // ------------------------------------------
-    override fun onTabTransaction(payload: String?, extras: String?) {
-        super.onTabTransaction(payload, extras)
-        /**
-         * If user has intended to like someone's profile (feed item) and had no images in her Profile,
-         * such intention is memorized. Next time user navigates on Explore screen, such intention should
-         * be fulfilled in case it was actually interrupted by asking to add image on Profile.
-         */
-        if (isViewModelInitialized) {
-            vm.doPendingLikeInAny()
-        }
-    }
-
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -133,7 +119,6 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
                 feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
             }
             observeOneShot(vm.discardProfilesOneShot()) { onDiscardMultipleProfilesState(profileIds = it) }
-            observeOneShot(vm.likeProfileOneShot()) { feedAdapter.performClickOnLikeButtonAtPosition(rv_items, position = it) }
         }
     }
 
