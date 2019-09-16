@@ -220,12 +220,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         filtersPopupWidget?.show()
     }
 
-    protected open fun onNoImagesInUserProfile(dummy: Boolean) {
+    protected open fun onNoImagesInUserProfile(redirectBackOnFeedScreen: Boolean) {
+        val extras = if (redirectBackOnFeedScreen) "&tabExtras={\"backOnFeed\":\"${vm.getFeedName()}\"}" else ""
+
         Dialogs.showTextDialog(activity,
             descriptionResId = getAddPhotoDialogDescriptionResId(),
             positiveBtnLabelResId = OriginR_string.button_add_photo,
             negativeBtnLabelResId = OriginR_string.button_later,
-            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}") },
+            positiveListener = { _, _ -> navigate(this@FeedFragment, path="/main?tab=${NavigateFrom.MAIN_TAB_PROFILE}&tabPayload=${Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE}$extras") },
             negativeListener = { dialog, _ -> vm.onCancelNoImagesInUserProfileDialog(); dialog.dismiss() },
             isCancellable = false)
 

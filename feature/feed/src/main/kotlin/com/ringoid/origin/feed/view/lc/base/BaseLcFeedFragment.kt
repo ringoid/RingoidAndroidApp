@@ -52,8 +52,8 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             setToolbarTitleWithLcCounts(--lcCountShow, lcCountHidden)
         }
 
-    override fun onNoImagesInUserProfile(dummy: Boolean) {
-        super.onNoImagesInUserProfile(dummy)
+    override fun onNoImagesInUserProfile(redirectBackOnFeedScreen: Boolean) {
+        super.onNoImagesInUserProfile(redirectBackOnFeedScreen)
         onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge LC feed when user has no images in profile
     }
 

@@ -179,7 +179,7 @@ abstract class FeedViewModel(
                     viewActionObjectBackup.clear()
                     getFeed()
                 } else {
-                    noImagesInUserProfileOneShot.value = OneShot(true)
+                    noImagesInUserProfileOneShot.value = OneShot(false)
                     Completable.complete()
                 }
             }

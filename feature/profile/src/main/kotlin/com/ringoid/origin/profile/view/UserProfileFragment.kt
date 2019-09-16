@@ -65,6 +65,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     private var cropImageAfterLogin: Boolean = false  // for Onboarding.ADD_IMAGE
     private var handleRequestToAddImage: Boolean = false
     private var handleRequestToCheckNoImagesAndAddImage: Boolean = false
+    private var redirectOnFeedScreen: String? = null  // name of feed to redirect on after some action being done
 
     private lateinit var imagesAdapter: UserProfileImageAdapter
     private val pageSelectListener = object : RecyclerView.OnScrollListener() {
@@ -127,6 +128,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 }
                 Payload.PAYLOAD_PROFILE_LOGIN_IMAGE_ADDED -> { cropImageAfterLogin = true }  // for Onboarding.ADD_IMAGE
                 Payload.PAYLOAD_PROFILE_REQUEST_ADD_IMAGE -> {
+                    redirectOnFeedScreen = extras?.extractJsonProperty("backOnFeed")
                     if (isAdded) {
                         onAddImage()
                     } else {
@@ -246,11 +248,20 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
          * Asks to add another photo to user profile.
          */
         fun askForAnotherImage() {
+            fun redirectOnFeedScreen() {
+                redirectOnFeedScreen?.let {
+                    redirectOnFeedScreen = null  // don't reuse value
+                    navigate(this@UserProfileFragment, path="/main?tab=$it")
+                }
+            }
+
             Dialogs.showTextDialog(activity,
                 titleResId = OriginR_string.profile_dialog_image_another_common_title, descriptionResId = 0,
                 positiveBtnLabelResId = OriginR_string.button_add_photo,
                 negativeBtnLabelResId = OriginR_string.button_later,
-                positiveListener = { _, _ -> onAddImage() })
+                positiveListener = { _, _ -> onAddImage() },
+                negativeListener = { dialog, _ -> redirectOnFeedScreen(); dialog.dismiss() })
+                .also { it.dialog.setOnCancelListener { redirectOnFeedScreen() } }
         }
 
         /**

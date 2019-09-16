@@ -101,8 +101,8 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
         // don't call 'super', completely overridden method
     }
 
-    override fun onNoImagesInUserProfile(dummy: Boolean) {
-        super.onNoImagesInUserProfile(dummy)
+    override fun onNoImagesInUserProfile(redirectBackOnFeedScreen: Boolean) {
+        super.onNoImagesInUserProfile(redirectBackOnFeedScreen)
         if (feedAdapter.isEmpty()) {
             onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // no images in Profile
         }
