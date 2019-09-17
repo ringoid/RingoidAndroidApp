@@ -68,6 +68,7 @@ open class ActionObject(
         const val ACTION_TYPE_LIKE = "LIKE"
         const val ACTION_TYPE_LOCATION = "LOCATION"
         const val ACTION_TYPE_MESSAGE = "MESSAGE"
+        const val ACTION_TYPE_MESSAGE_READ = "READ_MESSAGE"
         const val ACTION_TYPE_OPEN_CHAT = "OPEN_CHAT"
         const val ACTION_TYPE_UNLIKE = "UNLIKE"
         const val ACTION_TYPE_VIEW = "VIEW"
