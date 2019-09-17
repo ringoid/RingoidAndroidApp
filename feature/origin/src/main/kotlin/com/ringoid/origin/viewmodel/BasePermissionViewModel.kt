@@ -17,7 +17,7 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
 
     @Inject lateinit var locationProvider: ILocationProvider
     private val askToEnableLocationServiceOneShot by lazy { MutableLiveData<OneShot<Int>>() }
-    fun askToEnableLocationServiceOneShot(): LiveData<OneShot<Int>> = askToEnableLocationServiceOneShot
+    internal fun askToEnableLocationServiceOneShot(): LiveData<OneShot<Int>> = askToEnableLocationServiceOneShot
 
     protected open fun onLocationPermissionGrantedAction(handleCode: Int) {}
     protected open fun onLocationPermissionDeniedAction(handleCode: Int) {}

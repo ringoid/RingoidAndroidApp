@@ -145,6 +145,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             }
     }
 
+    override fun onAskToEnableLocationService() {
+        super.onAskToEnableLocationService()
+        onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge Feed while displaying ask to enable GPS popup
+    }
+
     protected open fun onDiscardAllProfiles() {
         onClearState(ViewState.CLEAR.MODE_EMPTY_DATA)  // discard all profiles in Feed
     }
@@ -316,9 +321,6 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewVertical), onError = Consumer(Timber::e))
         imagesTrackingBus = TrackingBus(onSuccess = Consumer(vm::onViewHorizontal), onError = Consumer(Timber::e))
         feedAdapter.trackingBus = imagesTrackingBus
-        observeOneShot(vm.askToEnableLocationServiceOneShot()) {  // ask to enable location services
-            onClearState(mode = ViewState.CLEAR.MODE_NEED_REFRESH)  // purge Feed while displaying ask to enable GPS popup
-        }
         observeOneShot(vm.discardProfileOneShot(), ::onDiscardProfileRef)
         observeOneShot(vm.likeProfileOneShot()) { feedAdapter.performClickOnLikeButtonAtPosition(rv_items, position = it) }
         observeOneShot(vm.needShowFiltersOneShot()) { filtersPopupWidget?.show() }

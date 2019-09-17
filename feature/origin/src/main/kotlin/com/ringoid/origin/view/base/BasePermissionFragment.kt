@@ -80,5 +80,11 @@ abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragmen
             negativeBtnLabelResId = R.string.button_later,
             positiveListener = { _, _ -> ExternalNavigator.openLocationSettingsForResult(this@BasePermissionFragment) },
             isCancellable = false)
+
+        onAskToEnableLocationService()
+    }
+
+    protected open fun onAskToEnableLocationService() {
+        // sie-effect upon asking to enable location service, override in subclasses
     }
 }
