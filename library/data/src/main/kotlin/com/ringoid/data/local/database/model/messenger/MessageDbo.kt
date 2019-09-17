@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.ringoid.domain.model.Mappable
 import com.ringoid.domain.model.messenger.IMessage
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.utility.asInt
 
 @Entity(tableName = MessageDbo.TABLE_NAME)
 data class MessageDbo(
@@ -32,7 +33,7 @@ data class MessageDbo(
 
         const val TABLE_NAME = "Messages"
 
-        fun from(message: Message, unread: Int = 1): MessageDbo =
+        fun from(message: Message, unread: Int = true.asInt()): MessageDbo =
             MessageDbo(
                 id = message.id,
                 chatId = message.chatId,

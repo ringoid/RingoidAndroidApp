@@ -8,9 +8,7 @@ interface IMessageDbFacade {
 
     fun addMessage(message: Message)
 
-    fun addMessages(messages: Collection<Message>)
-
-    fun addMessages(messages: Collection<Message>, unread: Int)
+    fun addMessages(messages: Collection<Message>, unread: Boolean = true)
 
     fun countChatMessages(): Single<Int>
 
@@ -26,9 +24,7 @@ interface IMessageDbFacade {
 
     fun deleteMessages(chatId: String)
 
-    fun insertMessages(messages: Collection<Message>)
-
-    fun insertMessages(messages: Collection<Message>, unread: Int)
+    fun insertMessages(messages: Collection<Message>, unread: Boolean = true)
 
     fun markMessagesAsRead(chatId: String): Int
 

@@ -5,6 +5,7 @@ import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.datainterface.local.messenger.IMessageDbFacade
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.utility.asInt
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
@@ -14,15 +15,11 @@ import javax.inject.Singleton
 class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMessageDbFacade {
 
     override fun addMessage(message: Message) {
-        MessageDbo.from(message, unread = 0).also { dao.addMessage(it) }
+        MessageDbo.from(message, unread = false.asInt()).also { dao.addMessage(it) }
     }
 
-    override fun addMessages(messages: Collection<Message>) {
-        messages.map { MessageDbo.from(it) }.also { dao.addMessages(it) }
-    }
-
-    override fun addMessages(messages: Collection<Message>, unread: Int) {
-        messages.map { MessageDbo.from(it, unread = unread) }.also { dao.addMessages(it) }
+    override fun addMessages(messages: Collection<Message>, unread: Boolean) {
+        messages.map { MessageDbo.from(it, unread = unread.asInt()) }.also { dao.addMessages(it) }
     }
 
     override fun countChatMessages(): Single<Int> = dao.countChatMessages()
@@ -39,12 +36,8 @@ class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMe
 
     override fun deleteMessages(chatId: String) = dao.deleteMessages(chatId)
 
-    override fun insertMessages(messages: Collection<Message>) {
-        messages.map { MessageDbo.from(it) }.also { dao.insertMessages(it) }
-    }
-
-    override fun insertMessages(messages: Collection<Message>, unread: Int) {
-        messages.map { MessageDbo.from(it, unread = unread) }.also { dao.insertMessages(it) }
+    override fun insertMessages(messages: Collection<Message>, unread: Boolean) {
+        messages.map { MessageDbo.from(it, unread = unread.asInt()) }.also { dao.insertMessages(it) }
     }
 
     override fun markMessagesAsRead(chatId: String): Int = dao.markMessagesAsRead(chatId)

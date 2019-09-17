@@ -180,7 +180,7 @@ class MessengerRepository @Inject constructor(
     // ------------------------------------------
     private fun Single<Chat>.cacheMessagesFromChat(): Single<Chat> =
         flatMap { chat ->
-            Completable.fromCallable { local.insertMessages(chat.messages, unread = 0) }
+            Completable.fromCallable { local.insertMessages(chat.messages, unread = false) }
                        .toSingleDefault(chat)
         }
 
@@ -235,7 +235,7 @@ class MessengerRepository @Inject constructor(
         }
         .flatMap { chat ->
             if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
-                Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!, unread = 0) }
+                Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!, unread = false) }
                            .toSingleDefault(chat)
             } else Single.just(chat)
         }
