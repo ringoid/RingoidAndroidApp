@@ -13,6 +13,7 @@ import com.ringoid.domain.model.actions.MessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.report.exception.SkipThisTryException
 import com.ringoid.repository.BaseRepository
@@ -180,7 +181,9 @@ class MessengerRepository @Inject constructor(
     // ------------------------------------------
     private fun Single<Chat>.cacheMessagesFromChat(): Single<Chat> =
         flatMap { chat ->
-            Completable.fromCallable { local.insertMessages(chat.messages, unread = false) }
+            // TODO: for push - don't convert, but if in Chat already - convert
+            // TODO: compose READ_MESSAGE for unread_by_user msg before marking as 'read'
+            Completable.fromCallable { local.insertMessages(chat.messages, convertToReadByUser = true) }
                        .toSingleDefault(chat)
         }
 
@@ -235,7 +238,7 @@ class MessengerRepository @Inject constructor(
         }
         .flatMap { chat ->
             if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
-                Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!, unread = false) }
+                Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!) }
                            .toSingleDefault(chat)
             } else Single.just(chat)
         }
@@ -302,7 +305,8 @@ class MessengerRepository @Inject constructor(
             id = "_${randomString()}_${essence.peerId}",  // client-side id
             chatId = essence.peerId,
             /** 'clientId' equals to 'id' */
-            peerId = DomainUtil.CURRENT_USER_ID,
+            peerId = DomainUtil.CURRENT_USER_ID,  // message sent by the current user
+            readStatus = MessageReadStatus.UnreadByPeer,  // just sent message is unread by peer
             text = essence.text,
             ts = System.currentTimeMillis())  // ts at sending message
 

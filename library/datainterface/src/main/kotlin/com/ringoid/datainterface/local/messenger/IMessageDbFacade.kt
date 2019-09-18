@@ -1,6 +1,7 @@
 package com.ringoid.datainterface.local.messenger
 
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.domain.model.messenger.MessageReadStatus
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -8,7 +9,7 @@ interface IMessageDbFacade {
 
     fun addMessage(message: Message)
 
-    fun addMessages(messages: Collection<Message>, unread: Boolean = true)
+    fun addMessages(messages: Collection<Message>)
 
     fun countChatMessages(): Single<Int>
 
@@ -16,19 +17,29 @@ interface IMessageDbFacade {
 
     fun countPeerMessages(): Single<Int>
 
-    fun countPeerMessages(peerId: String): Single<Int>
+    fun countPeerMessages(chatId: String): Single<Int>
 
-    fun countUnreadMessages(): Single<Int>
+    fun countUserMessages(): Single<Int>
+
+    fun countUserMessages(chatId: String): Single<Int>
+
+    fun countUnreadByUserMessages(): Single<Int>
 
     fun deleteMessages()
 
     fun deleteMessages(chatId: String)
 
-    fun insertMessages(messages: Collection<Message>, unread: Boolean = true)
+    fun insertMessages(messages: Collection<Message>, convertToReadByUser: Boolean = false)
 
-    fun markMessagesAsRead(chatId: String): Int
+    fun markMessagesAsReadByUser(chatId: String): Int
 
     fun messages(): Maybe<List<Message>>
 
     fun messages(chatId: String): Maybe<List<Message>>
+
+    fun messages(chatId: String, peerId: String, readStatus: MessageReadStatus): Maybe<List<Message>>
+
+    fun messagesPeer(chatId: String, readStatus: MessageReadStatus): Maybe<List<Message>>
+
+    fun messagesUser(chatId: String, readStatus: MessageReadStatus): Maybe<List<Message>>
 }
