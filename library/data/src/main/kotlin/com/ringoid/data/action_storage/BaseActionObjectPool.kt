@@ -43,8 +43,9 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
 
     /**
      * Analyze every incoming [ActionObject], in particular it's [ActionObject.triggerStrategies]
-     * and fulfill some criteria when to call [trigger] based on those strategies.
-     * Not that data structures that keep some data for this are not actually persisted,
+     * and when some criteria fulfilled then call to [trigger] based on those strategies will occur.
+     *
+     * Note that data structures that keep some data for this are not actually persisted,
      * but some implementations of [BaseActionObjectPool] could persist the queue of [ActionObject]s.
      * This data is lost on app restart, so in order to launch that strategies again,
      * a new [ActionObject] should be put into this pool, and no [ActionObject]s that was persisted
@@ -52,6 +53,10 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
      */
     @Synchronized
     protected fun analyzeActionObject(aobj: OriginActionObject) {
+        if (aobj.triggerStrategies.contains(NoAction)) {
+            return  // don't analyze and let some another caller to trigger
+        }
+
         if (getTotalQueueSize() >= CAPACITY || aobj.triggerStrategies.contains(Immediate)) {
             Timber.v("Trigger immediately at $aobj")
             DebugLogUtil.v("# Trigger by strategy: Immediate")
@@ -59,7 +64,12 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
             return
         }
 
+        // start analyze action object with some more complex trigger strategies
         aobj.javaClass.let { key ->
+            /**
+             * Increment count of action objects of type as the current one.
+             * This could be used for [CountFromLast] trigger strategy criterion.
+             */
             numbers.takeIf { !it.containsKey(key) }
                 ?.let { it[key] = 1 }  // first object of that type
                 ?: run { numbers[key] = (numbers[key] ?: 0) + 1 }
@@ -82,7 +92,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
              */
             strategies[key]  // previously stored strategies
                 ?.find { it is CountFromLast }?.let { it as CountFromLast }
-                ?.takeIf { it.count <= numbers[key] ?: 0 }  // test hit the threshold
+                ?.takeIf { it.count <= (numbers[key] ?: 0) }  // test hit the threshold
                 ?.let {
                     Timber.v("Count strategy has just satisfied at $aobj")
                     DebugLogUtil.v("# Trigger by strategy: CountFromLast")
