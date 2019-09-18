@@ -10,6 +10,7 @@ import javax.inject.Singleton
 class MessageMigration_9_10 @Inject constructor() : Migration(9, 10) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE ${MessageDbo.TABLE_NAME} ADD COLUMN ${MessageDbo.COLUMN_UNREAD} INTEGER NOT NULL DEFAULT 1")
+        // TODO: legacy apps have 0 and 1 for 'unread' in Db
+        database.execSQL("ALTER TABLE ${MessageDbo.TABLE_NAME} ADD COLUMN ${MessageDbo.COLUMN_READ_STATUS} INTEGER NOT NULL DEFAULT 1")
     }
 }
