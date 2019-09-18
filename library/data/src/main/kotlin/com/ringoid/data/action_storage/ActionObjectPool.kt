@@ -60,10 +60,17 @@ class ActionObjectPool @Inject constructor(
         DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
         aobjs.forEach { aobj ->
             queue.offer(aobj)
-            analyzeActionObject(aobj)
+            analyzeActionObject(aobj)  // TODO: don't spam trigger if all objects have Immediate or same strategies
         }
         onComplete?.invoke()
     }
+
+    override fun putSource(aobj: OriginActionObject): Completable =
+        Completable.fromCallable { put(aobj) }
+
+    override fun putSource(aobjs: Collection<OriginActionObject>): Completable =
+        if (aobjs.isEmpty()) Completable.complete()
+        else Completable.fromCallable { put(aobjs) }
 
     // ------------------------------------------
     override fun commitNow(aobj: OriginActionObject): Single<Long> {
