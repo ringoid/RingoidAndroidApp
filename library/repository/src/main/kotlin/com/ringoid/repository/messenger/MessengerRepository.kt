@@ -7,9 +7,11 @@ import com.ringoid.datainterface.local.messenger.IMessageDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
+import com.ringoid.domain.action_storage.NoAction
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
+import com.ringoid.domain.model.actions.ReadMessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
@@ -20,7 +22,6 @@ import com.ringoid.repository.BaseRepository
 import com.ringoid.utility.randomString
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
@@ -285,7 +286,7 @@ class MessengerRepository @Inject constructor(
         Single.just(0L)
             .flatMap {
                 if (tryAcquireLock(chatId)) {
-                    getMessagesImpl(chatId).doFinally { releaseLock(chatId) }
+                    getMessagesAndMarkAsReadByUser(chatId).doFinally { releaseLock(chatId) }
                 } else {
                     Timber.w("Cache is busy, retry get local messages")
                     Single.error(SkipThisTryException())
@@ -293,11 +294,23 @@ class MessengerRepository @Inject constructor(
             }
 
     private fun getMessagesImpl(chatId: String): Single<List<Message>> =
-        Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId) }
-            .flatMap { local.messages(chatId = chatId) }
+        local.messages(chatId = chatId)
             .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<Message>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.reversed() }
+
+    /**
+     * Retrieves local messages for chat, given by [chatId], and also marks unread by the current user
+     * ones as read ones, composing and committing action objects for that. Run these tasks in parallel.
+     */
+    private fun getMessagesAndMarkAsReadByUser(chatId: String): Single<List<Message>> =
+        getMessagesImpl(chatId)
+            .mergeWith(readMessagesFromPeer(chatId).toSingleDefault(emptyList()))
+            .parallel(2)
+            .runOn(Schedulers.io())
+            .sequential()
+            .filter { it.isNotEmpty() }
+            .singleOrError()
 
     // ------------------------------------------
     override fun sendMessage(essence: MessageEssence): Single<Message> {
@@ -333,6 +346,21 @@ class MessengerRepository @Inject constructor(
                 sentMessages[chatId]!!.retainAll { it.clientId in unconsumedClientIds }
             }
         }
+
+    /**
+     * Compose [ReadMessageActionObject] action objects for each message from peer
+     * in the chat, given by [chatId], and commit them to the remote cloud to mark
+     * these messages as 'read' by the current user for the peer in that chat.
+     *
+     * @note: [chatId] is equal to 'peerId', since only peer's messages are retrieved here.
+     */
+    private fun readMessagesFromPeer(chatId: String): Completable =
+        local.messagesPeer(chatId = chatId, readStatus = MessageReadStatus.UnreadByUser)
+            .map { it.map { message -> ReadMessageActionObject(messageId = message.id, peerId = message.chatId, triggerStrategies = listOf(NoAction)) } }
+            .flatMapCompletable(aObjPool::putSource)
+            .andThen(aObjPool.triggerSource().ignoreElement())
+            .andThen(Completable.fromAction { local.markMessagesAsReadByUser(chatId = chatId) })
+            .doOnSubscribe { Timber.v("Start reading messages from peer by current user, for chat: $chatId") }
 
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")
