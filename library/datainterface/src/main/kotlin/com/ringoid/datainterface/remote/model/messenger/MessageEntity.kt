@@ -2,6 +2,7 @@ package com.ringoid.datainterface.remote.model.messenger
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.ringoid.domain.model.messenger.MessageReadStatus
 
 /**
  * {
@@ -20,6 +21,21 @@ data class MessageEntity(
     @Expose @SerializedName(COLUMN_FLAG_READ_BY_PEER) val isReadByPeer: Boolean,
     @Expose @SerializedName(COLUMN_TEXT) val text: String,
     @Expose @SerializedName(COLUMN_TIMESTAMP) val ts: Long) {
+
+    internal fun getReadStatus(): MessageReadStatus =
+        if (isCurrentUser) {  // your message (from current user)
+            if (isReadByPeer) {
+                MessageReadStatus.ReadByPeer
+            } else {  // peer has NOT read your message yet
+                MessageReadStatus.UnreadByPeer
+            }
+        } else {  // messages from peer (opposite user)
+            if (isReadByPeer) {
+                MessageReadStatus.ReadByUser
+            } else {  // you have NOT read peer's message yet
+                MessageReadStatus.UnreadByUser
+            }
+        }
 
     companion object {
         const val COLUMN_ID = "msgId"
