@@ -42,8 +42,8 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
     }
 
     /**
-     * Analyze every incoming [ActionObject], in particular it's [ActionObject.triggerStrategies]
-     * and when some criteria fulfilled then call to [trigger] based on those strategies will occur.
+     * Analyzes every incoming [ActionObject], in particular it's [ActionObject.triggerStrategies]
+     * and when some criteria fulfilled then calls to [trigger] based on those strategies.
      *
      * Note that data structures that keep some data for this are not actually persisted,
      * but some implementations of [BaseActionObjectPool] could persist the queue of [ActionObject]s.
