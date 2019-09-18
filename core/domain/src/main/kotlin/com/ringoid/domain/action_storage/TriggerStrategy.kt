@@ -25,7 +25,7 @@ object Immediate : TriggerStrategy()
 /**
  * [IActionObjectPool] will commit action objects when there are at least [count] items have been put into.
  */
-class CountFromLast(val count: Int = LIKE_COUNT_ON_TRIGGER) : TriggerStrategy() {
+class CountFromLast(val count: Int = COUNT_ON_TRIGGER) : TriggerStrategy() {
 
     override fun toString(): String = "${super.toString()}(count=$count)"
 }
@@ -34,11 +34,11 @@ class CountFromLast(val count: Int = LIKE_COUNT_ON_TRIGGER) : TriggerStrategy() 
  * [IActionObjectPool] will commit action objects when a specific [delay] will have been passed since
  * the moment the first action object with such strategy has been put into.
  */
-class DelayFromLast(val delay: Long = LIKE_DELAY_ON_TRIGGER) : TriggerStrategy() {  // in seconds
+class DelayFromLast(val delay: Long = DELAY_ON_TRIGGER) : TriggerStrategy() {  // in seconds
 
     override fun toString(): String = "${super.toString()}(delay=$delay)"
 }
 
-const val LIKE_COUNT_ON_TRIGGER = 5
-const val LIKE_DELAY_ON_TRIGGER = 3L  // in seconds
+const val COUNT_ON_TRIGGER = 5
+const val DELAY_ON_TRIGGER = 3L  // in seconds
 const val VIEW_DELAY_ON_TRIGGER = 2L  // in seconds
