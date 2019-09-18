@@ -356,7 +356,10 @@ class MessengerRepository @Inject constructor(
      */
     private fun readMessagesFromPeer(chatId: String): Completable =
         local.messagesPeer(chatId = chatId, readStatus = MessageReadStatus.UnreadByUser)
-            .map { it.map { message -> ReadMessageActionObject(messageId = message.id, peerId = message.chatId, triggerStrategies = listOf(NoAction)) } }
+            .map { it.map { message ->
+                ReadMessageActionObject(messageId = message.id, peerId = message.chatId,
+                                        triggerStrategies = listOf(NoAction))
+            } }
             .flatMapCompletable(aObjPool::putSource)
             .andThen(aObjPool.triggerSource().ignoreElement())
             .andThen(Completable.fromAction { local.markMessagesAsReadByUser(chatId = chatId) })
