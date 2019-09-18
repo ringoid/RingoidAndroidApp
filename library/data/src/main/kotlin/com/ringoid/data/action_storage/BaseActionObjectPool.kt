@@ -136,6 +136,11 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
         }
     }
 
+    @Synchronized
+    protected fun analyzeActionObjects(aobjs: Collection<OriginActionObject>) {
+        // TODO
+    }
+
     // --------------------------------------------------------------------------------------------
     override fun finalizePool() {
         Timber.v("Finalizing pool")

@@ -70,7 +70,7 @@ class PersistActionObjectPool @Inject constructor(
         } else {
             Completable.fromCallable {
                 local.addActionObjects(aobjs)
-                aobjs.forEach { analyzeActionObject(it) }  // TODO: don't spam trigger if all objects have Immediate or same strategies
+                analyzeActionObjects(aobjs)
             }.doOnSubscribe {
                 Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
                 DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")

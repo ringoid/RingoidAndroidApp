@@ -58,10 +58,8 @@ class ActionObjectPool @Inject constructor(
     override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
         Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
         DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
-        aobjs.forEach { aobj ->
-            queue.offer(aobj)
-            analyzeActionObject(aobj)  // TODO: don't spam trigger if all objects have Immediate or same strategies
-        }
+        aobjs.forEach { queue.offer(it) }
+        analyzeActionObjects(aobjs)
         onComplete?.invoke()
     }
 
