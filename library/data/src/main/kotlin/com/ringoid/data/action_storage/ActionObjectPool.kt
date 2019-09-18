@@ -74,7 +74,7 @@ class ActionObjectPool @Inject constructor(
 
     // ------------------------------------------
     override fun commitNow(aobj: OriginActionObject): Single<Long> {
-        put(aobj)
+        put(aobj)  // no need to analyze trigger strategies
         return triggerSource()
     }
 

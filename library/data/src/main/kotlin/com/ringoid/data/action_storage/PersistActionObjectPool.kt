@@ -82,6 +82,7 @@ class PersistActionObjectPool @Inject constructor(
         Single.fromCallable {
             DebugLogUtil.v("Put and commit action object: ${aobj.actionType}")
             local.addActionObject(aobj)
+            // no need to analyze trigger strategies
         }
         .flatMap { triggerSource() }
 
