@@ -138,7 +138,18 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
 
     @Synchronized
     protected fun analyzeActionObjects(aobjs: Collection<OriginActionObject>) {
-        // TODO
+        aobjs.filter { aobj -> aobj.triggerStrategies.isNotEmpty() && !aobj.triggerStrategies.all { it is NoAction } }
+             .let { list ->
+                 list.find { it.triggerStrategies.contains(Immediate) }
+                     ?.let {
+                         Timber.v("Trigger batch immediately at $it")
+                         DebugLogUtil.v("# Trigger batch by strategy: Immediate")
+                         trigger()  // trigger the whole batch immediately
+                         emptyList<OriginActionObject>()  // nothing to analyze further
+                     } ?: list  // all aobjs have some more complex trigger strategies to be analyzed
+             }
+             // doesn't iterate over empty list
+             .forEach { aobj -> analyzeActionObject(aobj) }  // analyze each aobj separately
     }
 
     // --------------------------------------------------------------------------------------------
