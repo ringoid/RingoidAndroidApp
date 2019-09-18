@@ -155,6 +155,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
     protected fun updateLastActionTime(lastActionTime: Long) {
         val prev = lastActionTime()
         if (prev > lastActionTime) {
+            DebugLogUtil.v("Update last action time for lesser value")
 //            Report.d("Update last action time for lesser value", extras = listOf("lAt" to "$lastActionTime", "prev lAt" to "$prev"))
         } else if (prev < lastActionTime) {
             lastActionTimeValue.set(lastActionTime)
