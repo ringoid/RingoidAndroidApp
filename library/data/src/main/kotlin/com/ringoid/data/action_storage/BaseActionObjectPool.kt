@@ -53,7 +53,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
      */
     @Synchronized
     protected fun analyzeActionObject(aobj: OriginActionObject) {
-        if (aobj.triggerStrategies.isEmpty() || aobj.triggerStrategies.contains(NoAction)) {
+        if (aobj.triggerStrategies.isEmpty() || aobj.triggerStrategies.all { it is NoAction }) {
             return  // don't analyze and let some another caller to trigger
         }
 
