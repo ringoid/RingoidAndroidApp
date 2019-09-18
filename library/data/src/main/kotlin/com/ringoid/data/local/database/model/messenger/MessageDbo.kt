@@ -26,7 +26,7 @@ data class MessageDbo(
         const val COLUMN_CHAT_ID = "chatId"
         const val COLUMN_CLIENT_ID = "clientId"
         const val COLUMN_PEER_ID = "peerId"
-        const val COLUMN_READ_STATUS = "unread"  // TODO: rename column
+        const val COLUMN_READ_STATUS = "unread"  // Android 27 runs SQLite 3.19 that lacks RENAME COLUMN TO statement (since 3.25)
         const val COLUMN_SOURCE_FEED = "sourceFeed"  // deprecated, left to avoid migration
         const val COLUMN_TEXT = "text"
         const val COLUMN_TIMESTAMP = "ts"
