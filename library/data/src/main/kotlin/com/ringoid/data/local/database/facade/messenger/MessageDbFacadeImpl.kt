@@ -41,9 +41,8 @@ class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMe
 
     override fun deleteMessages(chatId: String) = dao.deleteMessages(chatId)
 
-    override fun insertMessages(messages: Collection<Message>, convertToReadByUser: Boolean) {
-        messages.map { MessageDbo.from(it, readStatus = it.readStatus.convertToReadByUser(convertToReadByUser)) }
-                .also { dao.insertMessages(it) }
+    override fun insertMessages(messages: Collection<Message>) {
+        messages.map { MessageDbo.from(it) }.also { dao.insertMessages(it) }
     }
 
     override fun markMessagesAsReadByUser(chatId: String): Int = dao.markMessagesAsReadByUser(chatId)

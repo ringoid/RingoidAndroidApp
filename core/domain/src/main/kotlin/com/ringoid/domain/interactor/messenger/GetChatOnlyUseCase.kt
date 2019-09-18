@@ -1,6 +1,5 @@
 package com.ringoid.domain.interactor.messenger
 
-import com.ringoid.report.exception.MissingRequiredParamsException
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
 import com.ringoid.domain.interactor.base.Params
@@ -9,6 +8,7 @@ import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.repository.messenger.IMessengerRepository
+import com.ringoid.report.exception.MissingRequiredParamsException
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -22,12 +22,13 @@ class GetChatOnlyUseCase @Inject constructor(private val repository: IMessengerR
 
     override fun sourceImpl(params: Params): Single<Chat> {
         val chatId = params.get<String>("chatId")
+        val isChatOpen = params.get<Boolean>("isChatOpen") ?: false
 
         return if (chatId.isNullOrBlank()) {
             Single.error(MissingRequiredParamsException())
         } else {
             params.processSingle(ImageResolution::class.java) {
-                repository.getChatOnly(chatId = chatId, resolution = it)
+                repository.getChatOnly(chatId = chatId, resolution = it, isChatOpen = isChatOpen)
             }
         }
     }

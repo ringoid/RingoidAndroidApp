@@ -12,14 +12,6 @@ enum class MessageReadStatus(val value: Int) {
     UnreadByPeer(UNREAD_BY_PEER),
     UnreadByUser(UNREAD_BY_USER);
 
-    fun convertToReadByUser(convert: Boolean): MessageReadStatus =
-        if (convert) {
-            when (this) {
-                UnreadByUser -> ReadByUser
-                else -> this
-            }
-        } else this  // do not convert
-
     companion object {
         private val values = values().associateBy(MessageReadStatus::value)
         fun from(value: Int): MessageReadStatus = values[value] ?: ReadByUser

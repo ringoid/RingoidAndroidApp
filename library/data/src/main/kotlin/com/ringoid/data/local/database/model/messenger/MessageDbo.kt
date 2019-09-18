@@ -33,13 +33,13 @@ data class MessageDbo(
 
         const val TABLE_NAME = "Messages"
 
-        fun from(message: Message, readStatus: MessageReadStatus = message.readStatus): MessageDbo =
+        fun from(message: Message): MessageDbo =
             MessageDbo(
                 id = message.id,
                 chatId = message.chatId,
                 clientId = message.clientId,
                 peerId = message.peerId,
-                readStatus = readStatus.value,  // argument allows to override value from Message model
+                readStatus = message.readStatus.value,
                 text = message.text,
                 ts = message.ts)
     }

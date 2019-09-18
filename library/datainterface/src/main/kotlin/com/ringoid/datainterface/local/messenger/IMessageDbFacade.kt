@@ -29,7 +29,7 @@ interface IMessageDbFacade {
 
     fun deleteMessages(chatId: String)
 
-    fun insertMessages(messages: Collection<Message>, convertToReadByUser: Boolean = false)
+    fun insertMessages(messages: Collection<Message>)
 
     fun markMessagesAsReadByUser(chatId: String): Int
 

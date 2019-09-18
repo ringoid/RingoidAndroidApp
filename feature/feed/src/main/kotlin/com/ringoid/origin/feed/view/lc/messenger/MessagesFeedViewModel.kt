@@ -109,6 +109,7 @@ class MessagesFeedViewModel @Inject constructor(
             .flatMapSingle { peerId ->
                 val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                                      .put("chatId", peerId)
+                                     .put("isChatOpen", ChatInMemoryCache.isChatOpen(chatId = peerId))
                 getChatUseCase.source(params = params)
                     .doOnSuccess { markFeedItemAsNotSeen(feedItemId = peerId) }
                     .onErrorResumeNext { Single.just(EmptyChat) }
