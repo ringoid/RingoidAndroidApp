@@ -149,9 +149,11 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
                 ?.let {
                     // schedule timer to trigger after delay
                     Observable.timer(it.delay, TimeUnit.SECONDS)
-                        .doOnComplete { DebugLogUtil.v("# Trigger by strategy: DelayFromLast") }
-                        .doOnComplete(this::trigger)
-                        .subscribe({ Timber.v("Delay strategy has just satisfied at $aobj") }, Timber::e)
+                        .doOnComplete {
+                            Timber.v("Delay strategy has just satisfied at $aobj")
+                            DebugLogUtil.v("# Trigger by strategy: DelayFromLast")
+                        }
+                        .subscribe({ trigger() }, Timber::e)
                 }
         }
     }
