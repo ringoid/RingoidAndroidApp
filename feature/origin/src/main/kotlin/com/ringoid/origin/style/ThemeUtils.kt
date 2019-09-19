@@ -27,7 +27,6 @@ object ThemeUtils {
             ThemeId.LIGHT -> R.style.AppTheme_Light
             ThemeId.LIGHT_SEMITRANSPARENT -> R.style.AppTheme_Light_SemiTransparent
             ThemeId.UNKNOWN -> 0
-            else -> R.style.AppTheme_Dark  // default if not unknown
         }
 
     fun switchTheme(spm: StyleSharedPrefsManager): ThemeId {

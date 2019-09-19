@@ -237,6 +237,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
          * Asks to add first photo to user profile.
          */
         fun askForImage(count: Int) {
+            Timber.v("Ask for image, total count: $count")
             Dialogs.showTextDialog(activity,
                 descriptionResId = OriginR_string.profile_empty_images_dialog,
                 positiveBtnLabelResId = OriginR_string.button_add_photo,
@@ -515,6 +516,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     private fun doOnBlockedImage(imageId: String) {
+        Timber.v("Image has been blocked by moderator: $imageId")
         Dialogs.showTextDialog(activity,
             titleResId = OriginR_string.profile_dialog_image_blocked_title, descriptionResId = 0,
             positiveBtnLabelResId = OriginR_string.profile_dialog_image_blocked_button,

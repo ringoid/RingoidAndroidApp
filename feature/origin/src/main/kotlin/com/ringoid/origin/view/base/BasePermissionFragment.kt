@@ -13,6 +13,7 @@ import com.ringoid.origin.R
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.viewmodel.BasePermissionViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragment<T>() {
@@ -75,6 +76,7 @@ abstract class BasePermissionFragment<T : BasePermissionViewModel> : BaseFragmen
     }
 
     private fun askToEnableLocationService(handleCode: Int) {
+        Timber.v("Ask to enable location service: hc=$handleCode")
         Dialogs.showTextDialog(activity, titleResId = R.string.permission_location_dialog_enable_location_service, descriptionResId = 0,
             positiveBtnLabelResId = R.string.button_settings,
             negativeBtnLabelResId = R.string.button_later,

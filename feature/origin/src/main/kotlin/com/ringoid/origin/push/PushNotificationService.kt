@@ -16,7 +16,7 @@ class PushNotificationService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        Timber.d("PUSH: Received push notification [id: ${message.messageId}] from: ${message?.from}, notification: [${message?.notification?.title}:${message?.notification?.body}]")
+        Timber.d("PUSH: Received push notification [id: ${message.messageId}] from: ${message.from}, notification: [${message.notification?.title}:${message.notification?.body}]")
         message.data.let { map ->
             DebugLogUtil.i("PUSH: $map")
             val peerId = map["oppositeUserId"] ?: ""

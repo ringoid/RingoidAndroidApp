@@ -152,11 +152,11 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
 
     // --------------------------------------------------------------------------------------------
     override fun onBlockFromChat(tag: String, payload: ChatPayload) {
-        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeedCompat.feedName, fromChat = true)
+        vm.onBlock(profileId = payload.peerId, imageId = payload.peerImageId, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
     }
 
     override fun onReportFromChat(tag: String, payload: ChatPayload, reasonNumber: Int) {
-        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeedCompat.feedName, fromChat = true)
+        vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
     }
 
     override fun onDialogDismiss(tag: String, payload: Parcelable?) {
