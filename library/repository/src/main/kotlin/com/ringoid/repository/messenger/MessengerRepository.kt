@@ -1,5 +1,6 @@
 package com.ringoid.repository.messenger
 
+import com.ringoid.config.AppMigrationFrom
 import com.ringoid.data.handleError
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.datainterface.di.PerUser
@@ -89,6 +90,7 @@ class MessengerRepository @Inject constructor(
 
     init {
         restoreCachedSentMessagesLocal()
+        migrateMarkAllUserMessagesAsReadByPeer()
     }
 
     /* Concurrency */
@@ -391,17 +393,35 @@ class MessengerRepository @Inject constructor(
         .andThen(Completable.fromAction { local.markMessagesAsReadByUser(chatId = chatId) })
 
     // --------------------------------------------------------------------------------------------
-    @Suppress("CheckResult")
-    private fun restoreCachedSentMessagesLocal() {
-        sentMessagesLocal.messages()
-            .subscribeOn(Schedulers.io())
-            .subscribe({ it.forEach { message -> keepSentMessage(message) } }, Timber::e)
-    }
-
     private fun keepSentMessage(sentMessage: Message) {
         if (!sentMessages.containsKey(sentMessage.chatId)) {
             sentMessages[sentMessage.chatId] = Collections.newSetFromMap(ConcurrentHashMap())
         }
         sentMessages[sentMessage.chatId]!!.add(sentMessage)  // will be sorted by ts
+    }
+
+    @AppMigrationFrom(version = 255)
+    private fun migrateMarkAllUserMessagesAsReadByPeer() {
+        fun runMigration() {
+            Completable.fromAction { local.migrateMarkAllUserMessagesAsReadByPeer() }
+                .doOnSubscribe { Timber.d("MessengerRepository's started running migration") }
+                .doOnComplete { Timber.d("MessengerRepository's finished migration") }
+                .subscribeOn(Schedulers.io())
+                .subscribe({}, Timber::e)
+        }
+
+        // --------------------------------------
+        "migrate_once_mark_all_peer_messages_read_by_user".let { key ->
+            spm.getByKey(key)
+                ?.let { Timber.d("MessengerRepository has been migrate already") }
+                ?: run { spm.saveByKey(key, "done"); runMigration() }
+        }
+    }
+
+    @Suppress("CheckResult")
+    private fun restoreCachedSentMessagesLocal() {
+        sentMessagesLocal.messages()
+            .subscribeOn(Schedulers.io())
+            .subscribe({ it.forEach { message -> keepSentMessage(message) } }, Timber::e)
     }
 }

@@ -1,5 +1,6 @@
 package com.ringoid.data.local.database.facade.messenger
 
+import com.ringoid.config.AppMigrationFrom
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.datainterface.local.messenger.IMessageDbFacade
@@ -83,5 +84,12 @@ class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMe
                     else -> { /* no-op */ }
                 }
         }
+    }
+
+    // App migration
+    // --------------------------------------------------------------------------------------------
+    @AppMigrationFrom(version = 255)
+    override fun migrateMarkAllUserMessagesAsReadByPeer() {
+        dao.migrateMarkAllUserMessagesAsReadByPeer()
     }
 }

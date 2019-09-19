@@ -1,5 +1,6 @@
 package com.ringoid.datainterface.local.messenger
 
+import com.ringoid.config.AppMigrationFrom
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.model.messenger.MessageReadStatus
 import io.reactivex.Maybe
@@ -42,4 +43,9 @@ interface IMessageDbFacade {
     fun messagesPeer(chatId: String, readStatus: MessageReadStatus): Maybe<List<Message>>
 
     fun messagesUser(chatId: String, readStatus: MessageReadStatus): Maybe<List<Message>>
+
+    // App migration
+    // --------------------------------------------------------------------------------------------
+    @AppMigrationFrom(version = 255)
+    fun migrateMarkAllUserMessagesAsReadByPeer()
 }

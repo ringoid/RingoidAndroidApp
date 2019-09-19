@@ -1,9 +1,11 @@
 package com.ringoid.data.local.database.dao.messenger
 
 import androidx.room.*
+import com.ringoid.config.AppMigrationFrom
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.messenger.MessageReadStatus
+import com.ringoid.domain.model.messenger.READ_BY_PEER
 import com.ringoid.domain.model.messenger.READ_BY_USER
 import com.ringoid.domain.model.messenger.UNREAD_BY_USER
 import io.reactivex.Maybe
@@ -122,4 +124,10 @@ interface MessageDao {
 
     @Delete
     fun deleteMessages(messages: Collection<MessageDbo>)
+
+    // App migration
+    // --------------------------------------------------------------------------------------------
+    @AppMigrationFrom(version = 255)
+    @Query("UPDATE ${MessageDbo.TABLE_NAME} SET ${MessageDbo.COLUMN_READ_STATUS} = $READ_BY_PEER WHERE ${MessageDbo.COLUMN_PEER_ID} = '${DomainUtil.CURRENT_USER_ID}'")
+    fun migrateMarkAllUserMessagesAsReadByPeer()
 }

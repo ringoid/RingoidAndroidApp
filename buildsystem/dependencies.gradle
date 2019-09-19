@@ -620,7 +620,7 @@ ext {
     /* Data Interface */
     // ------------------------------------------
     dataInterfaceDependencies = []
-    dataInterfaceDependencies += Utility + Domain + Report + dagger + gson + kotlin + rx
+    dataInterfaceDependencies += Utility + Config + Domain + Report + dagger + gson + kotlin + rx
     testDataInterfaceDependencies = test
 
     dataInterfacePlugins = [
@@ -684,7 +684,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.firebasePerformance],
         [configuration: "implementation", dependency: d_rx.rxKotlin]
     ]
-    repositoryDependencies += Data + DataInterface + Debug + Domain + Report + Utility + dagger + kotlin + log + rx
+    repositoryDependencies += Config + Data + DataInterface + Debug + Domain + Report + Utility + dagger + kotlin + log + rx
     testRepositoryDependencies = test
 
     repositoryPlugins = [
