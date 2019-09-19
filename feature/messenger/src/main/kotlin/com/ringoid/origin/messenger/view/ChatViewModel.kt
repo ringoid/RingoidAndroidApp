@@ -92,11 +92,9 @@ class ChatViewModel @Inject constructor(
                 viewState.value = ViewState.LOADING  // get chat for peer progress
                 notifyOnMessagesLoadOneShot.value = OneShot(true)
             }
-            .doOnSuccess {
-                viewState.value = ViewState.IDLE  // get chat for peer success
-                notifyOnMessagesLoadOneShot.value = OneShot(false)
-            }
+            .doOnSuccess { viewState.value = ViewState.IDLE }  // get chat for peer success
             .doOnError { viewState.value = ViewState.ERROR(it) }  // get chat for peer failed
+            .doFinally { notifyOnMessagesLoadOneShot.value = OneShot(false) }
             .autoDisposable(this)
             .subscribe({ msgs ->
                 ChatInMemoryCache.setPeerMessagesCountIfChanged(profileId = profileId, count = countPeerMessages(msgs))
