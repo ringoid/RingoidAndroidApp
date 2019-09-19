@@ -4,6 +4,10 @@ import android.content.Context
 import android.location.*
 import android.os.Bundle
 import android.os.HandlerThread
+import com.ringoid.base.manager.location.LocationServiceUnavailableException.Companion.STATUS_NO_CRITERIA_BY_PRECISION
+import com.ringoid.base.manager.location.LocationServiceUnavailableException.Companion.STATUS_NO_CRITERIA_BY_PROVIDER
+import com.ringoid.base.manager.location.LocationServiceUnavailableException.Companion.STATUS_SERVICE_DISABLED_BY_USER
+import com.ringoid.base.manager.location.LocationServiceUnavailableException.Companion.STATUS_SERVICE_TURNED_OFF
 import com.ringoid.base.manager.location.LocationUtils.LocationManager_FUSED_PROVIDER
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -68,7 +72,7 @@ class SingleShotLocationProvider @Inject constructor(
                             Single.error<GpsLocation>(e)
                         }
                     }
-                    ?: Single.error(LocationServiceUnavailableException("any", status = -4))
+                    ?: Single.error(LocationServiceUnavailableException("any", status = STATUS_SERVICE_TURNED_OFF))
             } ?: Single.error(NullPointerException("No location service available"))
 
     /**
@@ -108,7 +112,7 @@ class SingleShotLocationProvider @Inject constructor(
                 getLocationCriteriaByPrecision(locationManager, precision)
                     ?.also { DebugLogUtil.v("Location [service]: request for location for precision '$precision' and criteria: $it") }
                     ?.let { criteria -> requestLocationWithManagerAndCriteria(locationManager, criteria) }
-                    ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(getLocationProviderForPrecision(precision), status = -3)) }
+                    ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(getLocationProviderForPrecision(precision), status = STATUS_NO_CRITERIA_BY_PRECISION)) }
             } ?: Single.error(NullPointerException("No location service available"))
 
     private fun requestLocation(provider: String): Single<GpsLocation> =
@@ -117,7 +121,7 @@ class SingleShotLocationProvider @Inject constructor(
                 getLocationCriteriaByProvider(provider)
                     ?.also { DebugLogUtil.v("Location [service]: request for location with provider '$provider' and criteria: $it") }
                     ?.let { criteria -> requestLocationWithManagerAndCriteria(locationManager, criteria) }
-                    ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(provider, status = -2)) }
+                    ?: run { Single.error<GpsLocation>(LocationServiceUnavailableException(provider, status = STATUS_NO_CRITERIA_BY_PROVIDER)) }
             } ?: Single.error(NullPointerException("No location service available"))
 
     // --------------------------------------------------------------------------------------------
@@ -181,7 +185,7 @@ class SingleShotLocationProvider @Inject constructor(
 
                 override fun onProviderDisabled(provider: String) {
                     DebugLogUtil.v("Location service has been disabled by user, provider: '$provider'")
-                    emitter.onError(LocationServiceUnavailableException(provider, status = -1))
+                    emitter.onError(LocationServiceUnavailableException(provider, status = STATUS_SERVICE_DISABLED_BY_USER))
                 }
 
                 override fun onProviderEnabled(provider: String) {
