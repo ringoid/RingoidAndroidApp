@@ -6,8 +6,8 @@ import android.os.HandlerThread
 import com.ringoid.data.remote.di.CloudModule
 import com.ringoid.data.remote.di.RingoidCloudModule
 import com.ringoid.data.remote.di.SystemCloudModule
-import com.ringoid.debug.barrier.IBarrierLogDaoHelper
 import com.ringoid.debug.IDebugLogDaoHelper
+import com.ringoid.debug.barrier.IBarrierLogDaoHelper
 import com.ringoid.main.di.MainActivityModule
 import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.dating.app.RingoidApplication
@@ -23,8 +23,6 @@ import com.ringoid.origin.messenger.di.ChatFragmentModule
 import com.ringoid.origin.messenger.di.ChatHostActivityModule
 import com.ringoid.origin.profile.dialog.context_menu.di.UserProfileContextMenuActivityModule
 import com.ringoid.origin.profile.dialog.context_menu.di.UserProfileContextMenuDialogModule
-import com.ringoid.origin.profile.dialog.delete.di.DeleteUserProfileImageActivityModule
-import com.ringoid.origin.profile.dialog.delete.di.DeleteUserProfileImageDialogModule
 import com.ringoid.origin.profile.view.di.UserProfileFragmentModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
@@ -61,7 +59,6 @@ import javax.inject.Singleton
                       /** Screen modules */
                       AboutDialogModule::class, BigEditTextDialogModule::class,
                       FeedItemContextMenuActivityModule::class, BlockBottomSheetDialogModule::class,
-                      DeleteUserProfileImageActivityModule::class, DeleteUserProfileImageDialogModule::class,
                       ReportBottomSheetDialogModule::class, ChatHostActivityModule::class, ChatFragmentModule::class,
                       DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,

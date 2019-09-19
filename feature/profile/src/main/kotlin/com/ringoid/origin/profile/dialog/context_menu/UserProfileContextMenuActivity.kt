@@ -8,6 +8,7 @@ import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.profile.context_menu.ContextMenuAction
 import com.ringoid.origin.profile.context_menu.ContextMenuExtras
 import com.ringoid.origin.view.base.theme.ThemedSimpleBaseDialogActivity
+import com.ringoid.utility.DebugOnly
 
 @AppNav("user_profile_context_menu")
 class UserProfileContextMenuActivity : ThemedSimpleBaseDialogActivity(), IUserProfileContextMenuActivity {
@@ -34,6 +35,12 @@ class UserProfileContextMenuActivity : ThemedSimpleBaseDialogActivity(), IUserPr
     override fun onDeleteImage() {
         outputData.putExtra(ContextMenuExtras.EXTRA_ACTION, ContextMenuAction.DELETE_IMAGE)
         setResultExposed(Activity.RESULT_OK, outputData)
+    }
+
+    @DebugOnly
+    override fun onDeleteImageDebug() {
+        outputData.putExtra("debug", true)
+        onDeleteImage()
     }
 
     override fun onEditProfile() {

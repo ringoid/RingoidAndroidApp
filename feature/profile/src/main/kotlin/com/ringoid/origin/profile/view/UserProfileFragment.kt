@@ -179,10 +179,15 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 descriptionResId = OriginR_string.common_uncancellable,
                 positiveBtnLabelResId = OriginR_string.button_delete,
                 negativeBtnLabelResId = OriginR_string.button_cancel,
-                positiveListener = { dialog, _ ->
-                    vm.deleteImage(id = imageId)
-                    dialog.dismiss()
-                })
+                positiveListener = { dialog, _ -> vm.deleteImage(id = imageId); dialog.dismiss() })
+        }
+
+        fun onDeleteImage(data: Intent) {
+            if (data.hasExtra("debug")) {  // DebugOnly
+                vm.deleteImageDebug(id = data.getStringExtra("imageId"))
+            } else {
+                askToDeleteImage(imageId = data.getStringExtra("imageId"))
+            }
         }
 
         // --------------------------------------
@@ -200,29 +205,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                         (data.extras!!.getSerializable(ContextMenuExtras.EXTRA_ACTION) as? ContextMenuAction)?.let { action ->
                             when (action) {
                                 ContextMenuAction.ADD_IMAGE -> onAddImage()
-                                ContextMenuAction.DELETE_IMAGE -> askToDeleteImage(imageId = data.getStringExtra("imageId"))
+                                ContextMenuAction.DELETE_IMAGE -> onDeleteImage(data)
                                 ContextMenuAction.EDIT_PROFILE -> openSettingsProfileScreen()
                                 ContextMenuAction.EDIT_STATUS -> openSettingsProfileScreenForStatus()
                             }
                         }
                     } ?: run {
                         "No output from Context Menu dialog - this is an error!".let { msg ->
-                            Timber.e(msg); Report.e(msg)
-                        }
-                    }
-                }
-            }
-            RequestCode.RC_DELETE_IMAGE_DIALOG -> {
-                showControls(isVisible = true)
-                if (resultCode == Activity.RESULT_OK) {
-                    data?.let {
-                        if (data.hasExtra("debug")) {  // DebugOnly
-                            vm.deleteImageDebug(id = data.getStringExtra("imageId"))
-                        } else {
-                            vm.deleteImage(id = data.getStringExtra("imageId"))
-                        }
-                    } ?: run {
-                        "No output image id from Delete Image dialog - this is an error!".let { msg ->
                             Timber.e(msg); Report.e(msg)
                         }
                     }
