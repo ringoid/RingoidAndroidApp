@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.manager.location.ILocationProvider
 import com.ringoid.base.manager.location.LocationServiceUnavailableException
+import com.ringoid.base.manager.location.LocationServiceUnavailableException.Companion.STATUS_SERVICE_TURNED_OFF
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.debug.DebugLogUtil
@@ -37,7 +38,12 @@ abstract class BasePermissionViewModel(app: Application) : BaseViewModel(app) {
                 DebugLogUtil.d("Location [client]: start get at $start")
             }
             .doOnSuccess { DebugLogUtil.d("Location [client]: success [$it]") }
-            .doOnError { Report.capture(it, "Location get failed") }
+            .doOnError { e ->
+                (e as? LocationServiceUnavailableException)?.status
+                    ?.takeUnless { it == STATUS_SERVICE_TURNED_OFF }
+                    ?.let { Report.capture(e, "Location get failed") }
+                    ?: run { "Location Service (gps) is turned off".let { msg -> DebugLogUtil.w(msg); Report.i(msg) } }
+            }
             .doFinally {
                 val elapsed = System.currentTimeMillis() - start
                 DebugLogUtil.d("Location [client]: obtain location has taken $elapsed ms")
