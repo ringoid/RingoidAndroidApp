@@ -7,7 +7,6 @@ import com.ringoid.datainterface.local.messenger.IMessageDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
-import com.ringoid.domain.action_storage.NoAction
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
@@ -385,8 +384,7 @@ class MessengerRepository @Inject constructor(
      */
     private fun Maybe<List<Message>>.readMessagesFromPeerByUser(chatId: String): Completable =
         map { it.map { message ->
-            ReadMessageActionObject(messageId = message.id, peerId = message.chatId,
-                                    triggerStrategies = listOf(NoAction))
+            ReadMessageActionObject(messageId = message.id, peerId = message.chatId)
         } }
         .flatMapCompletable(aObjPool::putSource)
         .andThen(aObjPool.triggerSource().ignoreElement())
