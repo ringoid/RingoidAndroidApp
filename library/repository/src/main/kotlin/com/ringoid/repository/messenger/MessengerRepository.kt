@@ -321,12 +321,23 @@ class MessengerRepository @Inject constructor(
      */
     private fun getMessagesAndMarkAsReadByUser(chatId: String): Single<List<Message>> =
         getMessagesImpl(chatId)
-            .mergeWith(readMessagesFromPeer(chatId).toSingleDefault(emptyList()))
+            .mergeWith(readMessagesFromPeer(chatId).toSingleDefault(emptyList() /** emit nothing */))
             .parallel(2)
             .runOn(Schedulers.io())
             .sequential()
-            .filter { it.isNotEmpty() }
-            .singleOrError()
+            /**
+             * This chain is running two rails - primary and secondary ones:
+             *
+             *     - primary rail is retrieving messages from the local cache, if the result could be empty.
+             *     - secondary rail just runs in parallel, doing some work, but it emits empty result.
+             *
+             * Empty result if filtered out to mitigate emission from secondary rail, but since
+             * the primary rail could also emit empty result, it should be delivered as it is (empty),
+             * so the final [Single] will just emit default value, because it's upstream source
+             * emits no result at all (since all such emissions was empty and hence - filtered out).
+             */
+            .filter { it.isNotEmpty() }  // if primary rail emits empty result - filter it out and emit nothing here
+            .single(emptyList())  // but then emit that empty result as it would be emitted by the upstream without filter
 
     // ------------------------------------------
     override fun sendMessage(essence: MessageEssence): Single<Message> {
