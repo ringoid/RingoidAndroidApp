@@ -10,9 +10,11 @@ import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.actions.MessageActionObject
+import com.ringoid.domain.model.actions.ReadMessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.report.exception.SkipThisTryException
 import com.ringoid.repository.BaseRepository
@@ -105,17 +107,17 @@ class MessengerRepository @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    override fun getChat(chatId: String, resolution: ImageResolution): Single<Chat> =
-        aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, lastActionTime = it) }
+    override fun getChat(chatId: String, resolution: ImageResolution, isChatOpen: Boolean): Single<Chat> =
+        aObjPool.triggerSource().flatMap { getChatOnly(chatId, resolution, isChatOpen, lastActionTime = it) }
 
-    override fun getChatOnly(chatId: String, resolution: ImageResolution): Single<Chat> =
-        getChatOnly(chatId, resolution, aObjPool.lastActionTime())
+    override fun getChatOnly(chatId: String, resolution: ImageResolution, isChatOpen: Boolean): Single<Chat> =
+        getChatOnly(chatId, resolution, isChatOpen, aObjPool.lastActionTime())
 
-    override fun getChatNew(chatId: String, resolution: ImageResolution): Single<Chat> =
-        aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, lastActionTime = it) }
+    override fun getChatNew(chatId: String, resolution: ImageResolution, isChatOpen: Boolean): Single<Chat> =
+        aObjPool.triggerSource().flatMap { getChatNewOnly(chatId, resolution, isChatOpen, lastActionTime = it) }
 
-    override fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat> =
-        getChatNew(chatId, resolution)
+    override fun pollChatNew(chatId: String, resolution: ImageResolution, isChatOpen: Boolean): Flowable<Chat> =
+        getChatNew(chatId, resolution, isChatOpen)
             .repeatWhen { it.flatMap { Flowable.timer(pollingDelay, TimeUnit.MILLISECONDS, Schedulers.io()) } }
             .retryWhen { errorSource ->
                 errorSource.flatMap { error ->
@@ -130,7 +132,8 @@ class MessengerRepository @Inject constructor(
             }
 
     // ------------------------------------------
-    private fun getChatOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
+    private fun getChatOnly(chatId: String, resolution: ImageResolution,
+                            isChatOpen: Boolean, lastActionTime: Long): Single<Chat> =
         spm.accessSingle { accessToken ->
             Single.just(0L)
                 .flatMap {
@@ -139,6 +142,7 @@ class MessengerRepository @Inject constructor(
                             .concatWithUnconsumedSentLocalMessages(chatId)
                             .cacheUnconsumedSentLocalMessages(chatId)
                             .cacheMessagesFromChat()
+                            .readMessagesFromPeerByUser(isChatOpen)
                             .doOnSuccess { Timber.v("New chat full: ${it.print()}") }
                             .doFinally { releaseLock(chatId) }
                     } else {
@@ -148,7 +152,8 @@ class MessengerRepository @Inject constructor(
                 }
         }
 
-    private fun getChatNewOnly(chatId: String, resolution: ImageResolution, lastActionTime: Long): Single<Chat> =
+    private fun getChatNewOnly(chatId: String, resolution: ImageResolution,
+                               isChatOpen: Boolean, lastActionTime: Long): Single<Chat> =
         spm.accessSingle { accessToken ->
             Single.just(0L)
                 .flatMap {
@@ -158,6 +163,7 @@ class MessengerRepository @Inject constructor(
                             .concatWithUnconsumedSentLocalMessages(chatId)
                             .cacheUnconsumedSentLocalMessages(chatId)
                             .cacheMessagesFromChat()  // cache only new chat messages, including sent by current user (if any), because they've been uploaded
+                            .readMessagesFromPeerByUser(isChatOpen)
                             .doOnSuccess { Timber.v("New chat delta: ${it.print()}") }
                             .doFinally { releaseLock(chatId) }
                     } else {
@@ -179,10 +185,7 @@ class MessengerRepository @Inject constructor(
 
     // ------------------------------------------
     private fun Single<Chat>.cacheMessagesFromChat(): Single<Chat> =
-        flatMap { chat ->
-            Completable.fromCallable { local.insertMessages(chat.messages, unread = 0) }
-                       .toSingleDefault(chat)
-        }
+        flatMap { Completable.fromAction { local.insertMessages(it.messages) }.toSingleDefault(it) }
 
     /**
      * Compare old messages list to incoming messages list for chat given by [chatId] and retain only
@@ -235,9 +238,24 @@ class MessengerRepository @Inject constructor(
         }
         .flatMap { chat ->
             if (sentMessages.containsKey(chatId) && sentMessages[chatId]!!.isNotEmpty()) {
-                Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!, unread = 0) }
+                Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!) }
                            .toSingleDefault(chat)
             } else Single.just(chat)
+        }
+
+    private fun Single<Chat>.readMessagesFromPeerByUser(isChatOpen: Boolean): Single<Chat> =
+        flatMap { chat ->
+            if (isChatOpen) {
+                chat.messages
+                    .filter { it.isPeerMessage() && it.readStatus == MessageReadStatus.UnreadByUser }
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { Maybe.just(it) }
+                    ?.readMessagesFromPeerByUser(chatId = chat.id)
+                    ?.toSingleDefault(chat)
+                    ?: Single.just(chat)
+            } else {
+                Single.just(chat)
+            }
         }
 
     // --------------------------------------------------------------------------------------------
@@ -282,7 +300,7 @@ class MessengerRepository @Inject constructor(
         Single.just(0L)
             .flatMap {
                 if (tryAcquireLock(chatId)) {
-                    getMessagesImpl(chatId).doFinally { releaseLock(chatId) }
+                    getMessagesAndMarkAsReadByUser(chatId).doFinally { releaseLock(chatId) }
                 } else {
                     Timber.w("Cache is busy, retry get local messages")
                     Single.error(SkipThisTryException())
@@ -290,11 +308,23 @@ class MessengerRepository @Inject constructor(
             }
 
     private fun getMessagesImpl(chatId: String): Single<List<Message>> =
-        Maybe.fromCallable { local.markMessagesAsRead(chatId = chatId) }
-            .flatMap { local.messages(chatId = chatId) }
+        local.messages(chatId = chatId)
             .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<Message>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.reversed() }
+
+    /**
+     * Retrieves local messages for chat, given by [chatId], and also marks unread by the current user
+     * ones as read ones, composing and committing action objects for that. Run these tasks in parallel.
+     */
+    private fun getMessagesAndMarkAsReadByUser(chatId: String): Single<List<Message>> =
+        getMessagesImpl(chatId)
+            .mergeWith(readMessagesFromPeer(chatId).toSingleDefault(emptyList()))
+            .parallel(2)
+            .runOn(Schedulers.io())
+            .sequential()
+            .filter { it.isNotEmpty() }
+            .singleOrError()
 
     // ------------------------------------------
     override fun sendMessage(essence: MessageEssence): Single<Message> {
@@ -302,7 +332,8 @@ class MessengerRepository @Inject constructor(
             id = "_${randomString()}_${essence.peerId}",  // client-side id
             chatId = essence.peerId,
             /** 'clientId' equals to 'id' */
-            peerId = DomainUtil.CURRENT_USER_ID,
+            peerId = DomainUtil.CURRENT_USER_ID,  // message sent by the current user
+            readStatus = MessageReadStatus.UnreadByPeer,  // just sent message is unread by peer
             text = essence.text,
             ts = System.currentTimeMillis())  // ts at sending message
 
@@ -329,6 +360,35 @@ class MessengerRepository @Inject constructor(
                 sentMessages[chatId]!!.retainAll { it.clientId in unconsumedClientIds }
             }
         }
+
+    /**
+     * Given only messages from peer that are unread by user for chat, given by [chatId],
+     * make them all read by user remotely and locally.
+     *
+     * @see [readMessagesFromPeerByUser].
+     */
+    private fun readMessagesFromPeer(chatId: String): Completable =
+        local.messagesPeer(chatId = chatId, readStatus = MessageReadStatus.UnreadByUser)
+             .doOnSubscribe { Timber.v("Start reading messages from peer by current user, for chat: $chatId") }
+             .readMessagesFromPeerByUser(chatId)
+
+    /**
+     * Composes [ReadMessageActionObject] action objects for each message from peer
+     * in the chat, given by [chatId], and commit them to the remote cloud to mark
+     * these messages as 'read' by the current user for the peer in that chat.
+     *
+     * Input messages should be preliminary filtered by belonging to peer and having read status
+     * as unread by the current user.
+     *
+     * @note: [chatId] is equal to 'peerId', since only peer's messages are retrieved here.
+     */
+    private fun Maybe<List<Message>>.readMessagesFromPeerByUser(chatId: String): Completable =
+        map { it.map { message ->
+            ReadMessageActionObject(messageId = message.id, peerId = message.chatId)
+        } }
+        .flatMapCompletable(aObjPool::putSource)
+        .andThen(aObjPool.triggerSource().ignoreElement())
+        .andThen(Completable.fromAction { local.markMessagesAsReadByUser(chatId = chatId) })
 
     // --------------------------------------------------------------------------------------------
     @Suppress("CheckResult")

@@ -21,7 +21,9 @@ class StyleSharedPrefsManager @Inject constructor(context: Context) {
     }
 
     fun getThemeId(defaultTheme: ThemeId = ThemeId.DARK): ThemeId =
-        sharedPreferences.getString(SP_KEY_THEME, defaultTheme.name).let { ThemeId.valueOf(it) }
+        sharedPreferences.getString(SP_KEY_THEME, defaultTheme.name)
+            ?.let { ThemeId.valueOf(it) }
+            ?: ThemeId.valueOf(defaultTheme.name)
 
     internal fun saveThemeId(theme: ThemeId) {
         sharedPreferences.edit().putString(SP_KEY_THEME, theme.name).apply()

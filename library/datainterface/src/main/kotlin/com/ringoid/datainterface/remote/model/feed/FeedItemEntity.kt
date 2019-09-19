@@ -120,6 +120,7 @@ open class FeedItemEntity(
                     chatId = id,
                     clientId = message.clientId,
                     peerId = peerId,
+                    readStatus = message.getReadStatus(),
                     text = message.text,
                     ts = message.ts)
             }.toMutableList(),

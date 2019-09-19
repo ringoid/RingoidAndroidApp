@@ -160,6 +160,7 @@ class ChatViewModel @Inject constructor(
     private fun prepareGetChatParams(profileId: String): Params =
         Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                 .put("chatId", profileId)
+                .put("isChatOpen", true)
 
     private fun handleChatUpdate(chat: Chat) {
         ChatInMemoryCache.addPeerMessagesCount(profileId = chat.id, count = countPeerMessages(chat.messages))

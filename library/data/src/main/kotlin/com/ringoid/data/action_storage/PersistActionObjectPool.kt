@@ -54,7 +54,7 @@ class PersistActionObjectPool @Inject constructor(
             .subscribe({ DebugLogUtil.v("Put ${aobjs.size} aobjs completed ${aobjs.joinToString { it.actionType }}") }, Timber::e)
     }
 
-    private fun putSource(aobj: OriginActionObject): Completable =
+    override fun putSource(aobj: OriginActionObject): Completable =
         Completable.fromCallable {
             local.addActionObject(aobj)
             analyzeActionObject(aobj)
@@ -64,14 +64,17 @@ class PersistActionObjectPool @Inject constructor(
             DebugLogUtil.v("Put single action object: ${aobj.actionType}")
         }
 
-    private fun putSource(aobjs: Collection<OriginActionObject>): Completable =
-        Completable.fromCallable {
-            local.addActionObjects(aobjs)
-            aobjs.forEach { analyzeActionObject(it) }
-        }
-        .doOnSubscribe {
-            Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
-            DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
+    override fun putSource(aobjs: Collection<OriginActionObject>): Completable =
+        if (aobjs.isEmpty()) {
+            Completable.complete()
+        } else {
+            Completable.fromCallable {
+                local.addActionObjects(aobjs)
+                analyzeActionObjects(aobjs)
+            }.doOnSubscribe {
+                Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
+                DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
+            }
         }
 
     // ------------------------------------------
@@ -79,6 +82,7 @@ class PersistActionObjectPool @Inject constructor(
         Single.fromCallable {
             DebugLogUtil.v("Put and commit action object: ${aobj.actionType}")
             local.addActionObject(aobj)
+            // no need to analyze trigger strategies
         }
         .flatMap { triggerSource() }
 

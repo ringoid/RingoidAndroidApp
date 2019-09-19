@@ -218,7 +218,6 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        payload?.isChatEmpty = chatAdapter.isEmpty() && payload?.isChatEmpty == true
         val tag = arguments?.getString(BUNDLE_KEY_TAG, TAG) ?: TAG
         communicator(IDialogCallback::class.java)?.onDialogDismiss(tag = tag, payload = payload)
     }

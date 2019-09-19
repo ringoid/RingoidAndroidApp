@@ -18,4 +18,11 @@
         android:paddingEnd="@dimen/std_margin_16"
         android:textColor="@android:color/black"
         style="@style/StdText.Primary"/>
+
+    <ImageView
+        android:id="@+id/iv_chat_message_read_status"
+        android:layout_width="@dimen/std_icon_18"
+        android:layout_height="@dimen/std_icon_18"
+        android:layout_gravity="end|bottom"
+        android:contentDescription="@null"/>
 </FrameLayout>

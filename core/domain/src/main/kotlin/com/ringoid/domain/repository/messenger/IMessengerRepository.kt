@@ -10,13 +10,13 @@ import io.reactivex.Single
 
 interface IMessengerRepository {
 
-    fun getChat(chatId: String, resolution: ImageResolution): Single<Chat>
+    fun getChat(chatId: String, resolution: ImageResolution, isChatOpen: Boolean = false): Single<Chat>
 
-    fun getChatOnly(chatId: String, resolution: ImageResolution): Single<Chat>
+    fun getChatOnly(chatId: String, resolution: ImageResolution, isChatOpen: Boolean = false): Single<Chat>
 
-    fun getChatNew(chatId: String, resolution: ImageResolution): Single<Chat>
+    fun getChatNew(chatId: String, resolution: ImageResolution, isChatOpen: Boolean = false): Single<Chat>
 
-    fun pollChatNew(chatId: String, resolution: ImageResolution): Flowable<Chat>
+    fun pollChatNew(chatId: String, resolution: ImageResolution, isChatOpen: Boolean = false): Flowable<Chat>
 
     // ------------------------------------------
     fun clearMessages(): Completable

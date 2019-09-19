@@ -109,6 +109,7 @@ class MessagesFeedViewModel @Inject constructor(
             .flatMapSingle { peerId ->
                 val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                                      .put("chatId", peerId)
+                                     .put("isChatOpen", ChatInMemoryCache.isChatOpen(chatId = peerId))
                 getChatUseCase.source(params = params)
                     .doOnSuccess { markFeedItemAsNotSeen(feedItemId = peerId) }
                     .onErrorResumeNext { Single.just(EmptyChat) }
@@ -204,8 +205,9 @@ class MessagesFeedViewModel @Inject constructor(
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         HandledPushDataInMemory.incrementCountOfHandledPushMessages()
-        incomingPushMessages.onNext(event)
+        // consume push event and skip any updates if target Chat is currently open
         if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
+            incomingPushMessages.onNext(event)
             incomingPushMessagesEffect.onNext(0L)
         }
     }

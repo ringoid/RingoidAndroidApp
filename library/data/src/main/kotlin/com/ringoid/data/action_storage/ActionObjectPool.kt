@@ -58,16 +58,21 @@ class ActionObjectPool @Inject constructor(
     override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
         Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
         DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
-        aobjs.forEach { aobj ->
-            queue.offer(aobj)
-            analyzeActionObject(aobj)
-        }
+        aobjs.forEach { queue.offer(it) }
+        analyzeActionObjects(aobjs)
         onComplete?.invoke()
     }
 
+    override fun putSource(aobj: OriginActionObject): Completable =
+        Completable.fromCallable { put(aobj) }
+
+    override fun putSource(aobjs: Collection<OriginActionObject>): Completable =
+        if (aobjs.isEmpty()) Completable.complete()
+        else Completable.fromCallable { put(aobjs) }
+
     // ------------------------------------------
     override fun commitNow(aobj: OriginActionObject): Single<Long> {
-        put(aobj)
+        put(aobj)  // no need to analyze trigger strategies
         return triggerSource()
     }
 

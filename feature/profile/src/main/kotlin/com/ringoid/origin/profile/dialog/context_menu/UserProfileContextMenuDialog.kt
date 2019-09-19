@@ -6,6 +6,7 @@ import android.view.View
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
+import com.ringoid.domain.BuildConfig
 import com.ringoid.origin.profile.OriginR_string
 import com.ringoid.origin.profile.R
 import com.ringoid.utility.ValueUtils.atCharSocialId
@@ -45,6 +46,16 @@ class UserProfileContextMenuDialog : SimpleBaseDialogFragment() {
             socialTikTok.takeIf { it.isNotBlank() }?.let { tiktokUserId ->
                 btn_open_social_tiktok.text = String.format(resources.getString(OriginR_string.profile_button_open_social_tiktok, atCharSocialId(tiktokUserId)))
             } ?: run { btn_open_social_tiktok.changeVisibility(isVisible = false) }
+        }
+
+        if (BuildConfig.DEBUG) {
+            with (btn_delete_image_debug) {
+                changeVisibility(isVisible = true)
+                clicks().compose(clickDebounce()).subscribe {
+                    communicator(IUserProfileContextMenuActivity::class.java)?.onDeleteImageDebug()
+                    close()
+                }
+            }
         }
     }
 

@@ -12,7 +12,7 @@ object DomainUtil {
     const val BAD_SORT_POSITION: Int = Int.MAX_VALUE
     const val BAD_VALUE = -1
     const val UNKNOWN_VALUE = 0
-    const val CURRENT_USER_ID: String = "currentUserId"
+    const val CURRENT_USER_ID: String = "currentUserId"  // don't change, because it is used in database
     const val DEBOUNCE_DEVELOP = 150L
     const val DEBOUNCE_NET = 400L
     const val DEBOUNCE_PUSH = 300L

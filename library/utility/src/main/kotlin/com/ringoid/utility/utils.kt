@@ -23,6 +23,8 @@ const val LOCATION_EPS = 0.000001
 
 /* Misc */
 // ------------------------------------------------------------------------------------------------
+fun Boolean.asInt(): Int = takeIf { this }?.let { 1 } ?: 0
+
 fun checkForNull(state: Bundle?): String? = state?.let { "saved state" }
 
 inline fun <reified T> Collection<T>.cloneAsList(): List<T> = ArrayList(this.map { it })

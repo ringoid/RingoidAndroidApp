@@ -2,16 +2,14 @@ package com.ringoid.domain.model.actions
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.ringoid.domain.action_storage.DelayFromLast
-import com.ringoid.domain.action_storage.TriggerStrategy
-import com.ringoid.domain.action_storage.VIEW_DELAY_ON_TRIGGER
+import com.ringoid.domain.action_storage.*
 
 class ViewActionObject(
     @Expose @SerializedName(COLUMN_VIEW_COUNT) val count: Int = 1,
     @Expose @SerializedName(COLUMN_VIEW_TIME_MILLIS) override var timeInMillis: Long = 1L,
     actionTime: Long = System.currentTimeMillis(),
     sourceFeed: String, targetImageId: String, targetUserId: String,
-    triggerStrategies: List<TriggerStrategy> = listOf(DelayFromLast(VIEW_DELAY_ON_TRIGGER)))
+    triggerStrategies: List<TriggerStrategy> = listOf(CountFromLast(COUNT_ON_TRIGGER), DelayFromLast(VIEW_DELAY_ON_TRIGGER)))
     : DurableActionObject(actionTime = actionTime, actionType = ACTION_TYPE_VIEW, sourceFeed = sourceFeed,
                           targetImageId = targetImageId, targetUserId = targetUserId,
                           triggerStrategies = triggerStrategies) {

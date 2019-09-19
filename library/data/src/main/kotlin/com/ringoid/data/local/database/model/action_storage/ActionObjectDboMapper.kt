@@ -25,7 +25,9 @@ class ActionObjectDboMapper @Inject constructor() {
                     targetUserId = aobj.targetUserId
                 }
             }
+            // other subclasses of OriginActionObject
             is LocationActionObject -> dbo.apply { latitude = aobj.latitude ; longitude = aobj.longitude }
+            is ReadMessageActionObject -> dbo.apply {readMessageId = aobj.messageId; readMessagePeerId = aobj.peerId }
             else -> dbo
         }
     }

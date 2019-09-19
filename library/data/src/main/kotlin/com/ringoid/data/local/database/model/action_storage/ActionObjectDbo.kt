@@ -24,6 +24,8 @@ data class ActionObjectDbo(
     @ColumnInfo(name = COLUMN_MESSAGE_CLIENT_ID) var messageClientId: String = "",
     @ColumnInfo(name = COLUMN_MESSAGE_TEXT) var messageText: String = "",
     @ColumnInfo(name = COLUMN_OPEN_CHAT_TIME_MILLIS) var openChatTimeMillis: Long = 0L,
+    @ColumnInfo(name = COLUMN_READ_MESSAGE_ID) var readMessageId: String = "",
+    @ColumnInfo(name = COLUMN_READ_MESSAGE_PEER_ID) var readMessagePeerId: String = "",
     @ColumnInfo(name = COLUMN_VIEW_CHAT_TIME_MILLIS) var viewChatTimeMillis: Long = 0L,
     @ColumnInfo(name = COLUMN_VIEW_TIME_MILLIS) var viewTimeMillis: Long = 0L) : Mappable<OriginActionObject> {
 
@@ -45,6 +47,8 @@ data class ActionObjectDbo(
         const val COLUMN_MESSAGE_CLIENT_ID = "messageClientId"
         const val COLUMN_MESSAGE_TEXT = "messageText"
         const val COLUMN_OPEN_CHAT_TIME_MILLIS = "openChatTimeMillis"
+        const val COLUMN_READ_MESSAGE_ID = "readMessageId"
+        const val COLUMN_READ_MESSAGE_PEER_ID = "readMessagePeerId"
         const val COLUMN_VIEW_CHAT_TIME_MILLIS = "viewChatTimeMillis"
         const val COLUMN_VIEW_TIME_MILLIS = "viewTimeMillis"
 
@@ -67,6 +71,7 @@ data class ActionObjectDbo(
             ActionObject.ACTION_TYPE_LOCATION -> LocationActionObject(latitude = latitude, longitude = longitude, actionTime = actionTime)
             ActionObject.ACTION_TYPE_LIKE -> LikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_MESSAGE -> MessageActionObject(clientId = messageClientId, text = messageText, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_MESSAGE_READ -> ReadMessageActionObject(messageId = readMessageId, peerId = readMessagePeerId)
             ActionObject.ACTION_TYPE_OPEN_CHAT -> OpenChatActionObject(timeInMillis = openChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_UNLIKE -> UnlikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             ActionObject.ACTION_TYPE_VIEW -> ViewActionObject(timeInMillis = viewTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)

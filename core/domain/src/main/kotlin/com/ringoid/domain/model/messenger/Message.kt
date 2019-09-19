@@ -20,6 +20,7 @@ data class Message(
     @Expose @SerializedName(COLUMN_CHAT_ID) val chatId: String,
     @Expose @SerializedName(COLUMN_CLIENT_ID) val clientId: String = id,
     @Expose @SerializedName(COLUMN_PEER_ID) val peerId: String,
+    @Expose @SerializedName(COLUMN_READ_STATUS) val readStatus: MessageReadStatus,
     @Expose @SerializedName(COLUMN_TEXT) override val text: String,
     @Expose @SerializedName(COLUMN_TIMESTAMP) val ts: Long = 0L)
     : IEssence, IListModel, IMessage, Parcelable {
@@ -29,6 +30,7 @@ data class Message(
         chatId = source.readString() ?: DomainUtil.BAD_ID,
         clientId = source.readString() ?: DomainUtil.BAD_ID,
         peerId = source.readString() ?: DomainUtil.BAD_ID,
+        readStatus = MessageReadStatus.from(source.readInt()),
         text = source.readString() ?: "",
         ts = source.readLong())
 
@@ -42,6 +44,7 @@ data class Message(
             writeString(chatId)
             writeString(clientId)
             writeString(peerId)
+            writeInt(readStatus.value)
             writeString(text)
             writeLong(ts)
         }
@@ -56,6 +59,7 @@ data class Message(
         const val COLUMN_CHAT_ID = "chatId"
         const val COLUMN_CLIENT_ID = "clientId"
         const val COLUMN_PEER_ID = "peerId"
+        const val COLUMN_READ_STATUS = "readStatus"
         const val COLUMN_TEXT = "text"
         const val COLUMN_TIMESTAMP = "ts"
 
@@ -68,12 +72,13 @@ data class Message(
 }
 
 val EmptyMessage = Message(id = randomString(), chatId = DomainUtil.BAD_ID, clientId = DomainUtil.BAD_ID,
-                           peerId = DomainUtil.BAD_ID, text = "", ts = 0L)
+                           peerId = DomainUtil.BAD_ID, readStatus = MessageReadStatus.ReadByUser, text = "", ts = 0L)
 
 fun peerMessage(chatId: String): Message =
     Message(id = randomString(), chatId = chatId, clientId = DomainUtil.BAD_ID,
-            peerId = chatId, text = "", ts = 0L)
+            peerId = chatId, readStatus = MessageReadStatus.ReadByUser, text = "", ts = 0L)
 
 fun userMessage(chatId: String): Message =
     Message(id = randomString(), chatId = chatId, clientId = DomainUtil.BAD_ID,
-            peerId = DomainUtil.CURRENT_USER_ID, text = "", ts = 0L)
+            peerId = DomainUtil.CURRENT_USER_ID, readStatus = MessageReadStatus.ReadByPeer,
+            text = "", ts = 0L)

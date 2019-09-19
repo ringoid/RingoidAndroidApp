@@ -535,7 +535,7 @@ open class FeedRepository @Inject constructor(
 
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
         doOnSuccess { feedMessages.onNext(LmmSlice(items = it.messages, totalNotFilteredCount = it.totalNotFilteredMessages)) }
-        .zipWith(messengerLocal.countUnreadMessages(),
+        .zipWith(messengerLocal.countUnreadByUserMessages(),
             BiFunction { lmm: Lmm, count: Int ->
                 if (count > 0) {
                     badgeMessenger.onNext(true)

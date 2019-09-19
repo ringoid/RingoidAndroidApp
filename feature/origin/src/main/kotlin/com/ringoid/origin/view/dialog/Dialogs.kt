@@ -18,6 +18,7 @@ import com.ringoid.base.view.BaseActivity
 import com.ringoid.origin.R
 import com.ringoid.utility.showKeyboard
 import kotlinx.android.synthetic.main.dialog_edit_text.view.*
+import timber.log.Timber
 
 object Dialogs {
 
@@ -122,8 +123,8 @@ object Dialogs {
             negativeListener: ((dialog: DialogInterface, which: Int) -> Unit)? = null,
             isCancellable: Boolean = true) =
         activity?.takeIf { !it.isActivityDestroyed() }
-                ?.let { activity ->
-                    val dialog = getTextDialog(activity, title, description,
+                ?.let { xactivity ->
+                    val dialog = getTextDialog(xactivity, title, description,
                         positiveBtnLabelResId, negativeBtnLabelResId,
                         positiveListener, negativeListener, isCancellable)
                     registry.takeIf { !it.contains(dialog.hash) }
@@ -189,10 +190,10 @@ object Dialogs {
             :HashAlertDialog {
         fun getInputText(view: View?): String? = view?.et_dialog_entry?.text?.toString()
 
-        return activity?.let { activity ->
+        return activity?.let { xactivity ->
             var xdialog: DialogInterface? = null  // lateinit reference to dialog being built
-            val hash = hashOf(activity, titleResId, hintRestId.takeIf { it != 0}?.let { activity.resources.getString(it) }, positiveBtnLabelResId, negativeBtnLabelResId)
-            val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_text, null)
+            val hash = hashOf(xactivity, titleResId, hintRestId.takeIf { it != 0}?.let { xactivity.resources.getString(it) }, positiveBtnLabelResId, negativeBtnLabelResId)
+            val view = LayoutInflater.from(xactivity).inflate(R.layout.dialog_edit_text, null)
                 .apply {
                     with (et_dialog_entry) {
                         initText?.let { setText(it); setSelection(it.length) }
@@ -211,7 +212,7 @@ object Dialogs {
                         }
                     }
                 }
-            val builder = AlertDialog.Builder(activity).setView(view)
+            val builder = AlertDialog.Builder(xactivity).setView(view)
             titleResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setTitle(resId) } }
             positiveBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setPositiveButton(resId) { dialog, which -> positiveListener?.invoke(dialog, which, getInputText(view)) } } }
             negativeBtnLabelResId.takeIf { it != 0 }?.let { resId -> builder.also { it.setNegativeButton(resId) { dialog, which -> negativeListener?.invoke(dialog, which, getInputText(view)) } } }
@@ -230,8 +231,8 @@ object Dialogs {
             initText: String? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, maxLength: Int = Int.MAX_VALUE,
             imeOptions: Int = EditorInfo.IME_NULL, imeActionListener: ((dialog: DialogInterface?) -> Unit)? = null) =
         activity?.takeIf { !it.isActivityDestroyed() }
-                ?.let { activity ->
-                    val dialog = getEditTextDialog(activity, titleResId, hintRestId,
+                ?.let { xactivity ->
+                    val dialog = getEditTextDialog(xactivity, titleResId, hintRestId,
                         positiveBtnLabelResId, negativeBtnLabelResId,
                         positiveListener, negativeListener, cancelListener,
                         initText, inputType, maxLength,
@@ -294,6 +295,7 @@ object Dialogs {
         activity
             ?.takeIf { !it.isActivityDestroyed() }
             ?.let {
+                Timber.d(e, "Handle error via status dialog")
                 StatusDialog.newInstance(titleResId = R.string.error_common)
                     .apply { setOnDismissListener { registry.remove(StatusDialog.TAG.hashCode().toLong()) } }
             }

@@ -42,9 +42,10 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
     }
 
     /**
-     * Analyze every incoming [ActionObject], in particular it's [ActionObject.triggerStrategies]
-     * and fulfill some criteria when to call [trigger] based on those strategies.
-     * Not that data structures that keep some data for this are not actually persisted,
+     * Analyzes every incoming [ActionObject], in particular it's [ActionObject.triggerStrategies]
+     * and when some criteria fulfilled then calls to [trigger] based on those strategies.
+     *
+     * Note that data structures that keep some data for this are not actually persisted,
      * but some implementations of [BaseActionObjectPool] could persist the queue of [ActionObject]s.
      * This data is lost on app restart, so in order to launch that strategies again,
      * a new [ActionObject] should be put into this pool, and no [ActionObject]s that was persisted
@@ -52,6 +53,10 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
      */
     @Synchronized
     protected fun analyzeActionObject(aobj: OriginActionObject) {
+        if (aobj.triggerStrategies.isEmpty() || aobj.triggerStrategies.all { it is NoAction }) {
+            return  // don't analyze and let some another caller to trigger
+        }
+
         if (getTotalQueueSize() >= CAPACITY || aobj.triggerStrategies.contains(Immediate)) {
             Timber.v("Trigger immediately at $aobj")
             DebugLogUtil.v("# Trigger by strategy: Immediate")
@@ -59,7 +64,32 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
             return
         }
 
+        analyzeActionObjectImpl(aobj)  // analyze more complex trigger strategies
+    }
+
+    @Synchronized
+    protected fun analyzeActionObjects(aobjs: Collection<OriginActionObject>) {
+        aobjs.filter { aobj -> aobj.triggerStrategies.isNotEmpty() && !aobj.triggerStrategies.all { it is NoAction } }
+             .let { list ->
+                 list.find { it.triggerStrategies.contains(Immediate) }
+                     ?.let {
+                         Timber.v("Trigger batch immediately at $it")
+                         DebugLogUtil.v("# Trigger batch by strategy: Immediate")
+                         trigger()  // trigger the whole batch immediately
+                         emptyList<OriginActionObject>()  // nothing to analyze further
+                     } ?: list  // all aobjs have some more complex trigger strategies to be analyzed
+             }
+             // doesn't iterate over empty list
+             .forEach { aobj -> analyzeActionObjectImpl(aobj) }  // analyze each aobj separately
+    }
+
+    private fun analyzeActionObjectImpl(aobj: OriginActionObject) {
+        // start analyze action object with some more complex trigger strategies
         aobj.javaClass.let { key ->
+            /**
+             * Increment count of action objects of type as the current one.
+             * This could be used for [CountFromLast] trigger strategy criterion.
+             */
             numbers.takeIf { !it.containsKey(key) }
                 ?.let { it[key] = 1 }  // first object of that type
                 ?: run { numbers[key] = (numbers[key] ?: 0) + 1 }
@@ -82,7 +112,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
              */
             strategies[key]  // previously stored strategies
                 ?.find { it is CountFromLast }?.let { it as CountFromLast }
-                ?.takeIf { it.count <= numbers[key] ?: 0 }  // test hit the threshold
+                ?.takeIf { it.count <= (numbers[key] ?: 0) }  // test hit the threshold
                 ?.let {
                     Timber.v("Count strategy has just satisfied at $aobj")
                     DebugLogUtil.v("# Trigger by strategy: CountFromLast")
@@ -140,6 +170,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
     protected fun updateLastActionTime(lastActionTime: Long) {
         val prev = lastActionTime()
         if (prev > lastActionTime) {
+            DebugLogUtil.v("Update last action time for lesser value")
 //            Report.d("Update last action time for lesser value", extras = listOf("lAt" to "$lastActionTime", "prev lAt" to "$prev"))
         } else if (prev < lastActionTime) {
             lastActionTimeValue.set(lastActionTime)
