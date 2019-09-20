@@ -31,6 +31,8 @@ interface IMessageDbFacade {
 
     fun deleteMessages(chatId: String)
 
+    fun deleteMessages(messages: Collection<Message>)
+
     fun insertMessages(messages: Collection<Message>)
 
     fun markMessagesAsReadByUser(chatId: String): Int
@@ -44,6 +46,8 @@ interface IMessageDbFacade {
     fun messagesPeer(chatId: String, readStatus: MessageReadStatus): Maybe<List<Message>>
 
     fun messagesUser(chatId: String, readStatus: MessageReadStatus): Maybe<List<Message>>
+
+    fun updateMessages(messages: Collection<Message>): Int
 
     // App migration
     // --------------------------------------------------------------------------------------------

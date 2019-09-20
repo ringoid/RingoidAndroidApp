@@ -126,6 +126,9 @@ interface MessageDao {
     @Delete
     fun deleteMessages(messages: Collection<MessageDbo>)
 
+    @Update
+    fun updateMessages(messages: Collection<MessageDbo>): Int
+
     // App migration
     // --------------------------------------------------------------------------------------------
     @AppMigrationFrom(version = 255)

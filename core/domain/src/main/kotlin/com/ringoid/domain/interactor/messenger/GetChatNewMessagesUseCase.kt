@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Same as [GetChatUseCase], but retain only new messages in result data. Message is considered
  * as 'new' if it hasn't been stored locally yet.
  */
-class GetChatNewMessagesUseCase @Inject constructor(private val repository: IMessengerRepository,
+class GetChatNewMessagesUseCase @Inject constructor(val repository: IMessengerRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
     : SingleUseCase<Chat>(threadExecutor, postExecutor) {
 

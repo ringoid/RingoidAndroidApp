@@ -43,6 +43,8 @@ class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMe
 
     override fun deleteMessages(chatId: String) = dao.deleteMessages(chatId)
 
+    override fun deleteMessages(messages: Collection<Message>) = dao.deleteMessages(messages.map { MessageDbo.from(it) })
+
     override fun insertMessages(messages: Collection<Message>) {
         messages.map { MessageDbo.from(it) }.also { dao.insertMessages(it) }
     }
@@ -68,6 +70,8 @@ class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMe
         checkConsistencyForPeerIdAndReadStatus(peerId = DomainUtil.CURRENT_USER_ID, readStatus = readStatus)
         return dao.messagesUser(chatId = chatId, readStatus = readStatus.value).map { it.mapList() }
     }
+
+    override fun updateMessages(messages: Collection<Message>): Int = dao.updateMessages(messages.map { MessageDbo.from(it) })
 
     // ------------------------------------------
     private fun checkConsistencyForPeerIdAndReadStatus(peerId: String, readStatus: MessageReadStatus) {

@@ -6,6 +6,7 @@ import com.ringoid.domain.model.messenger.Chat
 import com.ringoid.domain.model.messenger.Message
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 
 interface IMessengerRepository {
@@ -17,6 +18,8 @@ interface IMessengerRepository {
     fun getChatNew(chatId: String, resolution: ImageResolution, isChatOpen: Boolean = false): Single<Chat>
 
     fun pollChatNew(chatId: String, resolution: ImageResolution, isChatOpen: Boolean = false): Flowable<Chat>
+
+    fun updateReadStatusForUserMessagesSource(): Observable<List<Message>>
 
     // ------------------------------------------
     fun clearMessages(): Completable

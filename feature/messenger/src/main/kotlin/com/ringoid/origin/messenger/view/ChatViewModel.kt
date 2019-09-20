@@ -25,6 +25,7 @@ import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.report.log.Report
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -57,6 +58,16 @@ class ChatViewModel @Inject constructor(
     private var currentMessageList: List<Message> = emptyList()
 
     private val incomingPushMessage = PublishSubject.create<BusEvent>()
+
+    init {
+        // reflect updates on user message items in list
+        getChatNewMessagesUseCase.repository.updateReadStatusForUserMessagesSource()
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({
+                // TODO
+            }, Timber::e)
+    }
 
     private fun subscribeOnPush() {
         if (incomingPushMessage.hasObservers()) {

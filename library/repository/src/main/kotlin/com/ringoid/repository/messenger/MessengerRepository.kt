@@ -20,12 +20,11 @@ import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.report.exception.SkipThisTryException
 import com.ringoid.repository.BaseRepository
 import com.ringoid.utility.randomString
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.*
+import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -93,6 +92,9 @@ class MessengerRepository @Inject constructor(
         migrateMarkAllUserMessagesAsReadByPeer()  // TODO: remove when all users update to 256+
     }
 
+    private val updateReadStatusForUserMessages = PublishSubject.create<List<Message>>()
+    override fun updateReadStatusForUserMessagesSource(): Observable<List<Message>> = updateReadStatusForUserMessages.hide()
+
     /* Concurrency */
     // --------------------------------------------------------------------------------------------
     @Synchronized
@@ -141,6 +143,7 @@ class MessengerRepository @Inject constructor(
                 .flatMap {
                     if (tryAcquireLock(chatId)) {
                         getChatImpl(accessToken.accessToken, chatId, resolution, lastActionTime)
+                            .updateReadStatusOnUserMessages(isChatOpen)
                             .concatWithUnconsumedSentLocalMessages(chatId)
                             .cacheUnconsumedSentLocalMessages(chatId)
                             .cacheMessagesFromChat()
@@ -161,6 +164,7 @@ class MessengerRepository @Inject constructor(
                 .flatMap {
                     if (tryAcquireLock(chatId)) {
                         getChatImpl(accessToken.accessToken, chatId, resolution, lastActionTime)
+                            .updateReadStatusOnUserMessages(isChatOpen)
                             .filterOutChatOldMessages(chatId)
                             .concatWithUnconsumedSentLocalMessages(chatId)
                             .cacheUnconsumedSentLocalMessages(chatId)
@@ -186,6 +190,10 @@ class MessengerRepository @Inject constructor(
             .map { it.chat.mapToChat() }
 
     // ------------------------------------------
+    /**
+     * Stores chat messages to the local cache. Does not rewrite already existing messages in case of
+     * coincidence, see [IMessageDbFacade.insertMessages] that ignores insertion for already existing rows (by id).
+     */
     private fun Single<Chat>.cacheMessagesFromChat(): Single<Chat> =
         flatMap { Completable.fromAction { local.insertMessages(it.messages) }.toSingleDefault(it) }
 
@@ -259,6 +267,36 @@ class MessengerRepository @Inject constructor(
                 Single.just(chat)
             }
         }
+
+    @Suppress("CheckResult")
+    private fun Single<Chat>.updateReadStatusOnUserMessages(isChatOpen: Boolean): Single<Chat> =
+        flatMap { chat ->  // this is new (relevant) chat data
+            // it's only make sense to update read status from 'unread' to 'read' (by peer) for user messages
+            local.messagesUser(chatId = chat.id, readStatus = MessageReadStatus.UnreadByPeer)
+                .filter { it.isNotEmpty() }
+                .map { list ->  // list of local user messages that are 'unread' by peer
+                    chat.messages  // select only user messages that have become 'read' by peer in new chat data
+                        .filter { it.isUserMessage() && it.readStatus == MessageReadStatus.ReadByPeer }
+                        .takeIf { it.isNotEmpty() }
+                        ?.map { it.id }
+                        ?.let { ids -> list.toMutableList().apply { retainAll { it.id in ids } } as List<Message> }
+                        ?: emptyList()  // no user messages that could have become 'read' by peer
+                }
+                .flatMapCompletable { list ->  // list of local user messages that have their read status updated based on new chat data
+                    list.takeIf { it.isNotEmpty() }  // no local user messages to update read status
+                        ?.let {
+                            Completable.fromAction { local.updateMessages(it) }
+                                .doOnComplete {
+                                    if (isChatOpen) {
+                                        // for currently opened chat - need to reflect any rows updates
+                                        updateReadStatusForUserMessages.onNext(it)
+                                    }  // for chats that are currently closed - just update rows in local cache
+                                }
+                        }
+                        ?: Completable.complete()
+                }
+                .toSingleDefault(chat)
+    }
 
     // --------------------------------------------------------------------------------------------
     override fun clearMessages(): Completable =
