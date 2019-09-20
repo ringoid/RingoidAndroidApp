@@ -19,6 +19,7 @@ import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.report.exception.SkipThisTryException
 import com.ringoid.repository.BaseRepository
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.randomString
 import io.reactivex.*
 import io.reactivex.Observable
@@ -253,6 +254,15 @@ class MessengerRepository @Inject constructor(
             } else Single.just(chat)
         }
 
+    @DebugOnly
+    private fun Single<Chat>.debugGetLocalUserMessages(chatId: String, prefix: String): Single<Chat> =
+        flatMap { chat ->
+            local.messagesUser(chatId)
+                 .doOnSuccess { Timber.v("$prefix\n${it.joinToString("\n\t\t", "\n\t\t", transform = { it.toDebugString() })}") }
+                 .ignoreElement()
+                 .toSingleDefault(chat)
+        }
+
     private fun Single<Chat>.readMessagesFromPeerByUser(isChatOpen: Boolean): Single<Chat> =
         flatMap { chat ->
             if (isChatOpen) {
@@ -284,18 +294,21 @@ class MessengerRepository @Inject constructor(
                 }
                 .flatMapCompletable { list ->  // list of local user messages that have their read status updated based on new chat data
                     list.takeIf { it.isNotEmpty() }  // no local user messages to update read status
-                        ?.let {
-                            Completable.fromAction { local.updateMessages(it) }
-                                .doOnComplete {
-                                    if (isChatOpen) {
-                                        // for currently opened chat - need to reflect any rows updates
-                                        updateReadStatusForUserMessages.onNext(it)
-                                    }  // for chats that are currently closed - just update rows in local cache
-                                }
-                        }
-                        ?: Completable.complete()
-                }
-                .toSingleDefault(chat)
+                        ?.let { xlist ->
+                            xlist.forEach { it.readStatus = MessageReadStatus.ReadByPeer }  // update read status
+                            Completable.fromAction {
+                                // update read status for messages in local cache
+                                val count = local.updateMessages(xlist)
+                                Timber.v("Updated read status for $count user messages")
+                            }
+                            .doOnComplete {
+                                if (isChatOpen) {
+                                    // for currently opened chat - need to reflect any rows updates
+                                    updateReadStatusForUserMessages.onNext(xlist)
+                                }  // for chats that are currently closed - just update rows in local cache
+                            }
+                        } ?: Completable.complete()
+                }.toSingleDefault(chat)
     }
 
     // --------------------------------------------------------------------------------------------

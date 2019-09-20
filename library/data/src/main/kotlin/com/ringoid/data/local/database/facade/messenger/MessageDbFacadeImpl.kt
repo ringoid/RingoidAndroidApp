@@ -55,6 +55,10 @@ class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMe
 
     override fun messages(chatId: String): Maybe<List<Message>> = dao.messages(chatId).map { it.mapList() }
 
+    override fun messagesPeer(chatId: String): Maybe<List<Message>> = dao.messagesPeer(chatId).map { it.mapList() }
+
+    override fun messagesUser(chatId: String): Maybe<List<Message>> = dao.messagesUser(chatId).map { it.mapList() }
+
     override fun messages(chatId: String, peerId: String, readStatus: MessageReadStatus): Maybe<List<Message>> {
         checkConsistencyForPeerIdAndReadStatus(peerId = peerId, readStatus = readStatus)
         return dao.messages(chatId = chatId, peerId = peerId, readStatus = readStatus.value).map { it.mapList() }

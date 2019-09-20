@@ -41,6 +41,10 @@ interface IMessageDbFacade {
 
     fun messages(chatId: String): Maybe<List<Message>>
 
+    fun messagesPeer(chatId: String): Maybe<List<Message>>
+
+    fun messagesUser(chatId: String): Maybe<List<Message>>
+
     fun messages(chatId: String, peerId: String, readStatus: MessageReadStatus): Maybe<List<Message>>
 
     fun messagesPeer(chatId: String, readStatus: MessageReadStatus): Maybe<List<Message>>

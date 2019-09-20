@@ -73,6 +73,12 @@ interface MessageDao {
     @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId")
     fun messages(chatId: String): Maybe<List<MessageDbo>>  // Maybe calls onComplete() rather than Single
 
+    @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_PEER_ID} != '${DomainUtil.CURRENT_USER_ID}'")
+    fun messagesPeer(chatId: String): Maybe<List<MessageDbo>>
+
+    @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_PEER_ID} = '${DomainUtil.CURRENT_USER_ID}'")
+    fun messagesUser(chatId: String): Maybe<List<MessageDbo>>
+
     /**
      * Get all messages for chat, given by [chatId], that are from peer, given by [peerId],
      * and have [readStatus] specified.

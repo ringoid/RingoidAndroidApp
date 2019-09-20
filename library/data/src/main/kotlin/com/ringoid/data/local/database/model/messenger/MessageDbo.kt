@@ -45,6 +45,12 @@ data class MessageDbo(
     }
 
     override fun map(): Message =
-        Message(id = id, chatId = chatId, clientId = clientId, peerId = peerId,
-                readStatus = MessageReadStatus.from(readStatus), text = text, ts = ts)
+        Message(
+            id = id,
+            chatId = chatId,
+            clientId = clientId,
+            peerId = peerId,
+            readStatus = MessageReadStatus.from(readStatus),
+            text = text,
+            ts = ts)
 }
