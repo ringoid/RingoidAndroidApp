@@ -110,9 +110,7 @@ abstract class FeedViewModel(
                 .forEach { viewActionObjectBuffer[it.key()] = it }
         } else {
             DebugLogUtil.v("Hide feed '${getFeedName()}'... push [${viewActionObjectBuffer.size}] active VIEWs: ${viewActionObjectBuffer.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
-            advanceAndPushViewObjects(backupPool = viewActionObjectBackup) {
-                actionObjectPool.trigger()
-            }
+            advanceAndPushViewObjects(backupPool = viewActionObjectBackup)
         }
     }
 
