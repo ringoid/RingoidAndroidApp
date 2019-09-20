@@ -138,7 +138,7 @@ class ChatViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     private fun startPollingChat(profileId: String) {
-        Flowable.timer(50L, TimeUnit.MILLISECONDS)  // emit once and complete
+        Flowable.timer(1100L, TimeUnit.MILLISECONDS)  // emit once and complete
             .flatMap {
                 pollChatNewMessagesUseCase.source(params = prepareGetChatParams(profileId))
                     .takeUntil { isStopped }  // stop polling if Chat screen was hidden
