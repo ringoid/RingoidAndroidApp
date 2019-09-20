@@ -83,4 +83,16 @@ class ChatAdapter : OriginListAdapter<Message, BaseChatViewHolder>(MessageDiffCa
     // ------------------------------------------
     override fun getStubItem(): Message = EmptyMessage
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_chat_header
+
+    // --------------------------------------------------------------------------------------------
+    internal fun updateReadStatusOnMessages(messages: List<Message>) {
+        if (messages.isEmpty()) {
+            return
+        }
+
+        messages.forEach { message ->
+            findModel { it.id == message.id }?.readStatus = message.readStatus
+        }
+        notifyDataSetChanged()
+    }
 }

@@ -120,6 +120,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             observeOneShot(vm.notifyOnMessagesLoadOneShot()) { started ->
                 if (started) timeKeeper.start() else timeKeeper.stop()
             }
+            observeOneShot(vm.updateReadStatusOnMessagesOneShot(), chatAdapter::updateReadStatusOnMessages)
         }
         communicator(IBaseActivity::class.java)?.keyboard()
             ?.autoDisposable(scopeProvider)

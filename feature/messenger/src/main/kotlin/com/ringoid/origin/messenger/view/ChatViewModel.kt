@@ -48,11 +48,13 @@ class ChatViewModel @Inject constructor(
     private val onlineStatus by lazy { MutableLiveData<OnlineStatus>() }
     private val peerName by lazy { MutableLiveData<String>() }
     private val notifyOnMessagesLoadOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
+    private val updateReadStatusOnMessagesOneShot by lazy { MutableLiveData<OneShot<List<Message>>>() }
     internal fun messages(): LiveData<List<Message>> = messages
     internal fun sentMessage(): LiveData<Message> = sentMessage
     internal fun onlineStatus(): LiveData<OnlineStatus> = onlineStatus
     internal fun peerName(): LiveData<String> = peerName
     internal fun notifyOnMessagesLoadOneShot(): LiveData<OneShot<Boolean>> = notifyOnMessagesLoadOneShot
+    internal fun updateReadStatusOnMessagesOneShot(): LiveData<OneShot<List<Message>>> = updateReadStatusOnMessagesOneShot
 
     private var chatData: ChatData? = null
     private var currentMessageList: List<Message> = emptyList()
@@ -62,11 +64,10 @@ class ChatViewModel @Inject constructor(
     init {
         // reflect updates on user message items in list
         getChatNewMessagesUseCase.repository.updateReadStatusForUserMessagesSource()
+            .filter { it.isNotEmpty() }  // ignore empty data, if any (though it should be already filtered internally)
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({
-                // TODO
-            }, Timber::e)
+            .subscribe({ updateReadStatusOnMessagesOneShot.value = OneShot(it) }, Timber::e)
     }
 
     private fun subscribeOnPush() {
