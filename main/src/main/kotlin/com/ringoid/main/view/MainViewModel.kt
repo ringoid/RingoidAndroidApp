@@ -162,7 +162,7 @@ class MainViewModel @Inject constructor(
         analyticsManager.persist(spm)
         ChatInMemoryCache.persist(spm)
         FiltersInMemoryCache.persist(spm)
-        actionObjectPool.trigger()
+        actionObjectPool.trigger()  // trigger when App went on background
     }
 
     // --------------------------------------------------------------------------------------------

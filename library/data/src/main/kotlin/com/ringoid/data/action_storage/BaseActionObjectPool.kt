@@ -116,7 +116,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
                 ?.let {
                     Timber.v("Count strategy has just satisfied at $aobj")
                     DebugLogUtil.v("# Trigger by strategy: CountFromLast")
-                    trigger()
+                    trigger()  // trigger by Count strategy
                     return
                 }
 
@@ -153,7 +153,7 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
                             Timber.v("Delay strategy has just satisfied at $aobj")
                             DebugLogUtil.v("# Trigger by strategy: DelayFromLast")
                         }
-                        .subscribe({ trigger() }, Timber::e)
+                        .subscribe({ trigger() /** trigger by Delay strategy */ }, Timber::e)
                 }
         }
     }

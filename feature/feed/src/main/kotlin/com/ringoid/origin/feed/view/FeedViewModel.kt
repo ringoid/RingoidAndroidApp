@@ -145,7 +145,7 @@ abstract class FeedViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        advanceAndPushViewObjects { actionObjectPool.trigger() }
+        advanceAndPushViewObjects { actionObjectPool.trigger() }  // trigger before destroy Feed screen
     }
 
     /* Feed */
