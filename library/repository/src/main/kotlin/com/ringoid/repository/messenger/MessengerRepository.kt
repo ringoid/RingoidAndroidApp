@@ -311,6 +311,7 @@ class MessengerRepository @Inject constructor(
 
     private fun getMessagesImpl(chatId: String): Single<List<Message>> =
         local.messages(chatId = chatId)
+//            .doOnSuccess { Timber.v(it.joinToString("\t\t\t\n", "\t\t\t\n", transform = { it.toDebugString() })) }
             .concatWith(sentMessagesLocal.messages(chatId))
             .collect({ mutableListOf<Message>() }, { out, localMessages -> out.addAll(localMessages) })
             .map { it.reversed() }
@@ -428,6 +429,10 @@ class MessengerRepository @Inject constructor(
                 ?.let { Timber.d("MessengerRepository has been migrate already") }
                 ?: run { spm.saveByKey(key, "done"); runMigration() }
         }
+
+//        Completable.fromAction { local.debugMarkPeerMessagesAsUnreadByUser("c3ff8f2ba8983fffba2e1c331e050ec08bf5dde0") }
+//            .subscribeOn(Schedulers.io())
+//            .subscribe({}, Timber::e)
     }
 
     @Suppress("CheckResult")
