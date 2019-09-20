@@ -26,12 +26,7 @@ abstract class DebugBaseChatViewHolder(view: View) : BaseChatViewHolder(view) {
     }
 }
 
-class MyChatViewHolder(view: View) : BaseChatViewHolder(view)
-
-@DebugOnly
-class DebugMyChatViewHolder(view: View) : DebugBaseChatViewHolder(view)
-
-class PeerChatViewHolder(view: View) : BaseChatViewHolder(view) {
+class MyChatViewHolder(view: View) : BaseChatViewHolder(view) {
 
     override fun bind(model: Message) {
         super.bind(model)
@@ -43,6 +38,11 @@ class PeerChatViewHolder(view: View) : BaseChatViewHolder(view) {
         itemView.iv_chat_message_read_status.setImageResource(iconResId)
     }
 }
+
+@DebugOnly
+class DebugMyChatViewHolder(view: View) : DebugBaseChatViewHolder(view)
+
+class PeerChatViewHolder(view: View) : BaseChatViewHolder(view)
 
 @DebugOnly
 class DebugPeerChatViewHolder(view: View) : DebugBaseChatViewHolder(view)
