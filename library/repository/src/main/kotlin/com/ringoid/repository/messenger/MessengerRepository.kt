@@ -90,7 +90,7 @@ class MessengerRepository @Inject constructor(
 
     init {
         restoreCachedSentMessagesLocal()
-        migrateMarkAllUserMessagesAsReadByPeer()
+        migrateMarkAllUserMessagesAsReadByPeer()  // TODO: remove when all users update to 256+
     }
 
     /* Concurrency */
