@@ -8,6 +8,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.mapList
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.model.messenger.MessageReadStatus
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
@@ -92,4 +93,9 @@ class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMe
     override fun migrateMarkAllUserMessagesAsReadByPeer() {
         dao.migrateMarkAllUserMessagesAsReadByPeer()
     }
+
+    /* Debug */
+    // --------------------------------------------------------------------------------------------
+    @DebugOnly
+    override fun debugMarkPeerMessagesAsUnreadByUser(chatId: String) = dao.debugMarkPeerMessagesAsUnreadByUser(chatId)
 }

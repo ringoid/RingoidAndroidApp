@@ -3,6 +3,7 @@ package com.ringoid.datainterface.local.messenger
 import com.ringoid.config.AppMigrationFrom
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.model.messenger.MessageReadStatus
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -48,4 +49,9 @@ interface IMessageDbFacade {
     // --------------------------------------------------------------------------------------------
     @AppMigrationFrom(version = 255)
     fun migrateMarkAllUserMessagesAsReadByPeer()
+
+    /* Debug */
+    // --------------------------------------------------------------------------------------------
+    @DebugOnly
+    fun debugMarkPeerMessagesAsUnreadByUser(chatId: String)
 }

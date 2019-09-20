@@ -396,7 +396,8 @@ class MessengerRepository @Inject constructor(
      * @note: [chatId] is equal to 'peerId', since only peer's messages are retrieved here.
      */
     private fun Maybe<List<Message>>.readMessagesFromPeerByUser(chatId: String): Completable =
-        map { it.map { message ->
+        doOnSuccess { Timber.v("Found ${it.size} peer messages that are unread by user for chat: $chatId") }
+        .map { it.map { message ->
             ReadMessageActionObject(messageId = message.id, peerId = message.chatId)
         } }
         .flatMapCompletable(aObjPool::putSource)

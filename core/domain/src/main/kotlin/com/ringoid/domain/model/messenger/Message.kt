@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IEssence
 import com.ringoid.domain.model.IListModel
+import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.randomString
 
 /**
@@ -69,6 +70,9 @@ data class Message(
             override fun newArray(size: Int): Array<Message?>  = arrayOfNulls(size)
         }
     }
+
+    @DebugOnly
+    fun toDebugString(): String = "Message: id=$[$id]($clientId), chatId=[$chatId], peer=[$peerId], rs=$readStatus"
 }
 
 val EmptyMessage = Message(id = randomString(), chatId = DomainUtil.BAD_ID, clientId = DomainUtil.BAD_ID,

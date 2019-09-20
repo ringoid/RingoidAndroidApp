@@ -8,6 +8,7 @@ import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.domain.model.messenger.READ_BY_PEER
 import com.ringoid.domain.model.messenger.READ_BY_USER
 import com.ringoid.domain.model.messenger.UNREAD_BY_USER
+import com.ringoid.utility.DebugOnly
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -130,4 +131,10 @@ interface MessageDao {
     @AppMigrationFrom(version = 255)
     @Query("UPDATE ${MessageDbo.TABLE_NAME} SET ${MessageDbo.COLUMN_READ_STATUS} = $READ_BY_PEER WHERE ${MessageDbo.COLUMN_PEER_ID} = '${DomainUtil.CURRENT_USER_ID}'")
     fun migrateMarkAllUserMessagesAsReadByPeer()
+
+    /* Debug */
+    // --------------------------------------------------------------------------------------------
+    @DebugOnly
+    @Query("UPDATE ${MessageDbo.TABLE_NAME} SET ${MessageDbo.COLUMN_READ_STATUS} = $UNREAD_BY_USER WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId AND ${MessageDbo.COLUMN_PEER_ID} != '${DomainUtil.CURRENT_USER_ID}'")
+    fun debugMarkPeerMessagesAsUnreadByUser(chatId: String)
 }
