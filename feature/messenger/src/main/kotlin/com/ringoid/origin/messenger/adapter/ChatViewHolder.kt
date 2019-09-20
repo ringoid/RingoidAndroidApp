@@ -40,7 +40,19 @@ class MyChatViewHolder(view: View) : BaseChatViewHolder(view) {
 }
 
 @DebugOnly
-class DebugMyChatViewHolder(view: View) : DebugBaseChatViewHolder(view)
+class DebugMyChatViewHolder(view: View) : DebugBaseChatViewHolder(view) {
+
+    override fun bind(model: Message) {
+        super.bind(model)
+        val iconResId = when (model.readStatus) {
+            MessageReadStatus.ReadByPeer -> R.drawable.ic_chat_message_read_white_18dp
+            MessageReadStatus.UnreadByPeer -> R.drawable.ic_chat_message_sent_white_18dp
+            else -> WidgetR_drawable.ic_empty_stub_18dp
+        }
+        itemView.iv_chat_message_read_status.setImageResource(iconResId)
+    }
+
+}
 
 class PeerChatViewHolder(view: View) : BaseChatViewHolder(view)
 
