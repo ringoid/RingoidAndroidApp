@@ -9,11 +9,11 @@ import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.ResultOnClose
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.origin.rateus.view.RateUsDialog.Companion.RATING_THRESHOLD
-import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
+import com.ringoid.origin.view.base.settings.SimpleBaseSettingsViewModel
 import javax.inject.Inject
 
 class RateUsViewModel @Inject constructor(postToSlackUseCase: PostToSlackUseCase, app: Application)
-    : BaseSettingsViewModel(postToSlackUseCase, app) {
+    : SimpleBaseSettingsViewModel(postToSlackUseCase, app) {
 
     private var closeCode: Int = ResultOnClose.CLOSE
 

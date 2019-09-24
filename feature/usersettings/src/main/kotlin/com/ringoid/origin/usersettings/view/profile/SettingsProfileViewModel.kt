@@ -13,6 +13,7 @@ import com.ringoid.domain.interactor.user.UpdateUserProfileSettingsUseCase
 import com.ringoid.domain.misc.UserProfileCustomPropertiesUnsavedInput
 import com.ringoid.origin.model.*
 import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
+import com.ringoid.origin.view.base.settings.SimpleBaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class SettingsProfileViewModel @Inject constructor(
     private val updateUserProfileSettingsUseCase: UpdateUserProfileSettingsUseCase,
     postToSlackUseCase: PostToSlackUseCase, app: Application)
-    : BaseSettingsViewModel(postToSlackUseCase, app) {
+    : SimpleBaseSettingsViewModel(postToSlackUseCase, app) {
 
     private val profile by lazy { MutableLiveData<UserProfileProperties>() }
     internal fun profile(): LiveData<UserProfileProperties> = profile

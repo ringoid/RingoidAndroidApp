@@ -12,14 +12,14 @@ import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.misc.PushSettingsRaw
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.domain.model.user.UserSettings
-import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
+import com.ringoid.origin.view.base.settings.SimpleBaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import javax.inject.Inject
 
 class SettingsPushViewModel @Inject constructor(
     private val updateUserSettingsUseCase: UpdateUserSettingsUseCase,
     postToSlackUseCase: PostToSlackUseCase, app: Application)
-    : BaseSettingsViewModel(postToSlackUseCase, app) {
+    : SimpleBaseSettingsViewModel(postToSlackUseCase, app) {
 
     private val pushSettings by lazy { MutableLiveData<PushSettingsRaw>() }
     internal fun pushSettings(): LiveData<PushSettingsRaw> = pushSettings

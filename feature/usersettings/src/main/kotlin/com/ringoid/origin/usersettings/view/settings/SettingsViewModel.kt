@@ -11,7 +11,7 @@ import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.interactor.user.DeleteUserProfileUseCase
 import com.ringoid.origin.style.AppTheme
 import com.ringoid.origin.style.ThemeUtils
-import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
+import com.ringoid.origin.view.base.settings.SimpleBaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val deleteUserProfileUseCase: DeleteUserProfileUseCase,
     postToSlackUseCase: PostToSlackUseCase, app: Application)
-    : BaseSettingsViewModel(postToSlackUseCase, app) {
+    : SimpleBaseSettingsViewModel(postToSlackUseCase, app) {
 
     private val changeThemeOneShot by lazy { MutableLiveData<OneShot<AppTheme>>() }
     private val logoutUserOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
