@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.ringoid.origin.view.base.theme.ThemedSimpleBaseActivity
 
-abstract class BottomSheetActivity : ThemedSimpleBaseActivity() {
+abstract class BaseDialogHostActivity : ThemedSimpleBaseActivity() {
 
     protected abstract fun getFragmentTag(): String
     protected abstract fun instantiateFragment(): DialogFragment
