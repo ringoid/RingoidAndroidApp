@@ -5,16 +5,16 @@
 
     <ImageView
         android:id="@+id/iv_rating_1"
-        android:layout_width="@dimen/std_icon_18"
-        android:layout_height="@dimen/std_icon_18"
+        android:layout_width="@dimen/std_icon_48"
+        android:layout_height="@dimen/std_icon_48"
         android:layout_gravity="center_vertical"
         android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@null"/>
 
     <ImageView
         android:id="@+id/iv_rating_2"
-        android:layout_width="@dimen/std_icon_18"
-        android:layout_height="@dimen/std_icon_18"
+        android:layout_width="@dimen/std_icon_48"
+        android:layout_height="@dimen/std_icon_48"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/widget_rating_line_spacing"
         android:background="?selectableItemBackgroundBorderless"
@@ -22,8 +22,8 @@
 
     <ImageView
         android:id="@+id/iv_rating_3"
-        android:layout_width="@dimen/std_icon_18"
-        android:layout_height="@dimen/std_icon_18"
+        android:layout_width="@dimen/std_icon_48"
+        android:layout_height="@dimen/std_icon_48"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/widget_rating_line_spacing"
         android:background="?selectableItemBackgroundBorderless"
@@ -31,8 +31,8 @@
 
     <ImageView
         android:id="@+id/iv_rating_4"
-        android:layout_width="@dimen/std_icon_18"
-        android:layout_height="@dimen/std_icon_18"
+        android:layout_width="@dimen/std_icon_48"
+        android:layout_height="@dimen/std_icon_48"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/widget_rating_line_spacing"
         android:background="?selectableItemBackgroundBorderless"
@@ -40,8 +40,8 @@
 
     <ImageView
         android:id="@+id/iv_rating_5"
-        android:layout_width="@dimen/std_icon_18"
-        android:layout_height="@dimen/std_icon_18"
+        android:layout_width="@dimen/std_icon_48"
+        android:layout_height="@dimen/std_icon_48"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/widget_rating_line_spacing"
         android:background="?selectableItemBackgroundBorderless"

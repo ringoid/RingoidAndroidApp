@@ -15,7 +15,6 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.TextView
 
 abstract class AutoLinkMovementMethod : LinkMovementMethod() {
@@ -75,7 +74,7 @@ fun Activity.hideKeyboard() {
     imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
 }
 
-fun EditText.showKeyboard() {
+fun View.showKeyboard() {
     requestFocus()
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_FORCED)

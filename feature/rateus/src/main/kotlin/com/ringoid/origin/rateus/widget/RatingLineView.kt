@@ -19,7 +19,7 @@ open class RatingLineView : LinearLayout {
     protected var halfStar: Drawable? = null
     protected var noneStar: Drawable? = null
 
-    protected var ratingValue: Float = 0.0F
+    protected var ratingValue: Float = 0.0f
 
     constructor(context: Context): this(context, null)
 
@@ -86,8 +86,8 @@ open class RatingLineView : LinearLayout {
     private fun initResources() {
         if (noneStar != null && halfStar != null && fullStar != null) return
 
-        fullStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_star_full_36dp)
-        halfStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_star_half_36dp)
-        noneStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_star_empty_36dp)
+        fullStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_star_full_48dp)
+        halfStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_star_half_48dp)
+        noneStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_star_empty_48dp)
     }
 }

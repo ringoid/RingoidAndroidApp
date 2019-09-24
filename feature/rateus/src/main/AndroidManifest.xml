@@ -5,6 +5,6 @@
         <activity
             android:name=".view.RateUsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark"/>
+            android:theme="@style/AppTheme.Dark.SemiTransparent"/>
     </application>
 </manifest>

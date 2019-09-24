@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
     android:background="?attr/refColorBg"
     android:minWidth="@dimen/std_dialog_width"
     android:orientation="vertical"
@@ -21,14 +20,15 @@
 
     <com.ringoid.origin.rateus.widget.SelectRatingLineView
         android:id="@+id/rating_line"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/std_margin_16"/>
 
     <TextView
         android:id="@+id/tv_dialog_description"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/std_margin_8"
+        android:layout_marginTop="@dimen/std_margin_16"
         android:gravity="center"
         android:text="@string/rate_us_dialog_feedback_description"
         android:textSize="@dimen/std_text_14"
@@ -40,14 +40,14 @@
         android:id="@+id/et_dialog_entry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/std_margin_8"
+        android:layout_marginTop="@dimen/std_margin_16"
         android:background="@drawable/rect_round_secondary_stroke_grey"
         android:gravity="start|top"
         android:imeOptions="actionDone"
         android:inputType="textMultiLine|textCapSentences"
         android:maxLength="300"
         android:maxLines="5"
-        android:minHeight="@dimen/dialog_big_edit_text_height"
+        android:minHeight="@dimen/dialog_big_edit_text_height_small"
         android:padding="@dimen/std_margin_8"
         android:textColor="?refTextColorPrimary"
         android:visibility="gone">
@@ -57,19 +57,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/std_margin_8"
+        android:layout_marginStart="@dimen/std_icon_36"
+        android:layout_marginEnd="@dimen/std_margin_36"
         android:orientation="horizontal">
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/btn_cancel"
             android:layout_marginEnd="@dimen/std_margin_24"
             android:text="@string/button_later"
             style="@style/FlatButton"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/btn_rate"

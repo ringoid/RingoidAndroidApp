@@ -1,5 +1,6 @@
 package com.ringoid.origin.rateus.view
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -9,10 +10,7 @@ import com.ringoid.base.view.BaseDialogFragment
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.rateus.OriginR_string
 import com.ringoid.origin.rateus.R
-import com.ringoid.utility.changeVisibility
-import com.ringoid.utility.clickDebounce
-import com.ringoid.utility.hideKeyboard
-import com.ringoid.utility.showKeyboard
+import com.ringoid.utility.*
 import kotlinx.android.synthetic.main.dialog_rate_us.*
 
 class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
@@ -51,19 +49,33 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
                 rating >= RATING_THRESHOLD -> showGoodRating()
             }
         }
+
+        showNoRating()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        close()
     }
 
     // --------------------------------------------------------------------------------------------
+    private fun close() {
+        et_dialog_entry?.hideKeyboard()
+        dismiss()
+        activity?.finish()
+    }
+
+    // ------------------------------------------
     private fun onCancelRate() {
         vm.cancelRate()
-        dismiss()
+        close()
     }
 
     private fun onSendRating() {
         vm.sendRating(rating = rating_line.getRating().toInt(),
                       feedBackText = et_dialog_entry.text.toString(),
                       tag = "CloseChat")
-        dismiss()
+        close()
     }
 
     // ------------------------------------------
@@ -72,9 +84,9 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
             isEnabled = true
             setText(OriginR_string.button_send)
         }
-        et_dialog_entry.showKeyboard()  // show keyboard
         et_dialog_entry.changeVisibility(isVisible = true)
         tv_dialog_description.changeVisibility(isVisible = true)
+        et_dialog_entry.delay(300L) { showKeyboard() }  // show keyboard
     }
 
     private fun showGoodRating() {
@@ -82,9 +94,9 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
             isEnabled = true
             setText(OriginR_string.button_rate)
         }
-        et_dialog_entry.hideKeyboard()
         et_dialog_entry.changeVisibility(isVisible = false)
         tv_dialog_description.changeVisibility(isVisible = false)
+        et_dialog_entry.delay(300L) { hideKeyboard() }
     }
 
     private fun showNoRating() {
@@ -92,8 +104,8 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
             isEnabled = false
             setText(OriginR_string.button_rate)
         }
-        et_dialog_entry.hideKeyboard()
         et_dialog_entry.changeVisibility(isVisible = false)
         tv_dialog_description.changeVisibility(isVisible = false)
+        et_dialog_entry.delay(300L) { hideKeyboard() }
     }
 }

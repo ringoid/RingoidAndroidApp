@@ -1,6 +1,7 @@
 package com.ringoid.utility
 
 import android.os.Looper
+import android.view.View
 import io.reactivex.ObservableTransformer
 import io.reactivex.Observer
 import io.reactivex.Scheduler
@@ -40,6 +41,10 @@ fun delay(delay: Long = BuildConfig.POST_DELAY, units: TimeUnit = TimeUnit.MILLI
     Single.just(0)
         .delay(delay, units, scheduler)
         .subscribe({ body() }, Timber::e)
+}
+
+fun View.delay(delay: Long = BuildConfig.POST_DELAY, body: View.() -> Unit) {
+    postDelayed({ body() }, delay)
 }
 
 @Suppress("CheckResult")
