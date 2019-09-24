@@ -4,6 +4,8 @@ import org.joda.time.DateTime
 import org.joda.time.Days
 import java.util.*
 
+const val DAY_IN_MILLIS: Long = 24L * 3600L * 1000L
+
 fun age(yearOfBirth: Int, calendar: Calendar): Int =
     calendar.get(Calendar.YEAR) - yearOfBirth
 
@@ -18,7 +20,6 @@ fun daysAgo(ts: Long): String =
 
 fun fromTs(ts: Long): String =
     DateTime(ts).let { dt -> "${dt.year().get()}-${dt.monthOfYear().get()}-${dt.dayOfMonth().get()}" }
-
 
 fun wrapTimeUnit(unit: Int): String = if (unit < 10) "0$unit" else "$unit"
 fun wrapMillisUnit(unit: Long): String = if (unit < 10) "00$unit" else if (unit < 100) "0$unit" else "$unit"

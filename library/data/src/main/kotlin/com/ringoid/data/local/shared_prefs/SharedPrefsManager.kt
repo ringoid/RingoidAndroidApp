@@ -16,6 +16,7 @@ import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.domain.model.user.AccessToken
 import com.ringoid.report.exception.InvalidAccessTokenException
 import com.ringoid.report.exception.SilentFatalException
+import com.ringoid.utility.DAY_IN_MILLIS
 import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.LOCATION_EPS
 import com.ringoid.utility.randomString
@@ -37,9 +38,14 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         sharedPreferences = context.getSharedPreferences(SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
         backupSharedPreferences = context.getSharedPreferences(BACKUP_SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
         getAppUid()  // generate app uid, if not exists
+
         if (isAppUpdated()) {
             Timber.d("App has been updated to ${BuildConfig.BUILD_NUMBER}")
-            sharedPreferences.edit().putInt(SP_KEY_BUILD_CODE, BuildConfig.BUILD_NUMBER).apply()
+            val prevAppBuildCode = sharedPreferences.getInt(SP_KEY_BUILD_CODE, 0)
+            sharedPreferences.edit()
+                .putInt(SP_KEY_BUILD_CODE, BuildConfig.BUILD_NUMBER)
+                .putInt(SP_KEY_PREV_BUILD_CODE, prevAppBuildCode)
+                .apply()
             deleteLastActionTime()
         }
 
@@ -53,6 +59,7 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         private const val BACKUP_SHARED_PREFS_FILE_NAME = "RingoidBackup.prefs"
 
         private const val SP_KEY_BUILD_CODE = "sp_key_build_code"
+        private const val SP_KEY_PREV_BUILD_CODE = "sp_key_prev_build_code"
         private const val SP_KEY_APP_FIRST_LAUNCH = "sp_key_app_first_launch"
         private const val SP_KEY_APP_UID = "sp_key_app_uid"
         @DebugOnly
@@ -60,7 +67,10 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         @DebugOnly
         private const val SP_KEY_DEVELOPER_MODE = "sp_key_developer_mode"
 
+        private const val SP_KEY_RATE_US_DIALOG_CLOSE_BUILD_CODE = "sp_key_rate_us_dialog_close_build_code"
         private const val SP_KEY_RATE_US_DIALOG_CLOSE_CODE = "sp_key_rate_us_dialog_close_code"
+        private const val SP_KEY_RATE_US_DIALOG_CLOSE_TIME_CHECK = "sp_key_rate_us_dialog_close_time_check"
+        private const val SP_KEY_RATE_US_DIALOG_CLOSE_TS = "sp_key_rate_us_dialog_close_ts"
 
         /* Auth */
         // --------------------------------------
@@ -137,26 +147,39 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     // ------------------------------------------
     override fun needShowRateUsDialog(): Boolean =
-        sharedPreferences.getInt(SP_KEY_RATE_US_DIALOG_CLOSE_CODE, ResultOnClose.CLOSE)
+        sharedPreferences.getInt(SP_KEY_RATE_US_DIALOG_CLOSE_CODE, ResultOnClose.UNKNOWN)
             .let { closeCode ->
                 when (closeCode) {
                     ResultOnClose.CLOSE -> {
                         // show RateUs dialog in 1, 2, 4 days and then every 4 days
-                        // TODO
-                        true
+                        val tCheck = minOf(4, sharedPreferences.getInt(SP_KEY_RATE_US_DIALOG_CLOSE_TIME_CHECK, 1))
+                        val rateUsTs = sharedPreferences.getLong(SP_KEY_RATE_US_DIALOG_CLOSE_TS, System.currentTimeMillis())
+                        System.currentTimeMillis() >= rateUsTs + DAY_IN_MILLIS * tCheck
                     }
                     ResultOnClose.CLOSE_FOREVER -> false  // never show RateUs dialog again
                     ResultOnClose.CLOSE_TILL_UPDATE -> {
+                        var result = false
                         // show RateUs dialog in 2 app updates plus at least in 1 day
-                        // TODO
-                        true
+                        val previousBuildCode = sharedPreferences.getInt(SP_KEY_PREV_BUILD_CODE, 0)
+                        val rateUsBuildCode = sharedPreferences.getInt(SP_KEY_RATE_US_DIALOG_CLOSE_BUILD_CODE, BuildConfig.BUILD_NUMBER)
+                        if (BuildConfig.BUILD_NUMBER > rateUsBuildCode && previousBuildCode > rateUsBuildCode) {
+                            val rateUsTs = sharedPreferences.getLong(SP_KEY_RATE_US_DIALOG_CLOSE_TS, System.currentTimeMillis())
+                            result = System.currentTimeMillis() >= rateUsTs + DAY_IN_MILLIS
+                        }
+                        result
                     }
-                    else -> true  // show RateUs dialog without any constraints
+                    else /** UNKNOWN */ -> true  // show RateUs dialog without any constraints
                 }
             }
 
     override fun updateRateUsDialogCloseCode(code: Int) {
-        sharedPreferences.edit().putInt(SP_KEY_RATE_US_DIALOG_CLOSE_CODE, code).apply()
+        val tCheck = sharedPreferences.getInt(SP_KEY_RATE_US_DIALOG_CLOSE_TIME_CHECK, 0)
+        sharedPreferences.edit()
+            .putInt(SP_KEY_RATE_US_DIALOG_CLOSE_BUILD_CODE, BuildConfig.BUILD_NUMBER)
+            .putInt(SP_KEY_RATE_US_DIALOG_CLOSE_CODE, code)
+            .putInt(SP_KEY_RATE_US_DIALOG_CLOSE_TIME_CHECK, tCheck + 1)  // increment
+            .putLong(SP_KEY_RATE_US_DIALOG_CLOSE_TS, System.currentTimeMillis())
+            .apply()
     }
 
     // ------------------------------------------

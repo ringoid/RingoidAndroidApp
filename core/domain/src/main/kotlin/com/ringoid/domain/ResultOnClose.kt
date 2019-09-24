@@ -5,4 +5,5 @@ object ResultOnClose {
     const val CLOSE = 1000
     const val CLOSE_FOREVER = 1001
     const val CLOSE_TILL_UPDATE = 1002
+    const val UNKNOWN = 0
 }
