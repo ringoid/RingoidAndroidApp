@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/refColorBg"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_send_like"
+        android:layout_width="match_parent"
+        android:text="@string/send_like_feed_item_context_menu_button"
+        android:textColor="@color/flat_button_text_color_primary"
+        style="@style/FlatButton.Tall"/>
+
+    <Button
+        android:id="@+id/btn_open_social_instagram"
+        android:layout_width="match_parent"
+        android:text="@string/profile_button_open_social_instagram"
+        android:textColor="@color/flat_button_text_color_primary"
+        style="@style/FlatButton.Tall"/>
+
+    <Button
+        android:id="@+id/btn_open_social_tiktok"
+        android:layout_width="match_parent"
+        android:text="@string/profile_button_open_social_tiktok"
+        android:textColor="@color/flat_button_text_color_primary"
+        style="@style/FlatButton.Tall"/>
+
+    <Button
+        android:id="@+id/btn_block"
+        android:layout_width="match_parent"
+        android:text="@string/block_profile_button_block"
+        android:textColor="@color/flat_button_text_color_primary"
+        style="@style/FlatButton.Tall"/>
+
+    <Button
+        android:id="@+id/btn_report"
+        android:layout_width="match_parent"
+        android:text="@string/block_profile_button_report"
+        android:textColor="@color/flat_button_text_color_primary"
+        style="@style/FlatButton.Tall"/>
+</LinearLayout>

@@ -53,6 +53,7 @@
     <!-- Feed screen -->
     <string name="block_profile_button_block">Block</string>
     <string name="block_profile_button_report">Report &#38; Block</string>
+    <string name="send_like_feed_item_context_menu_button">Send like</string>
 
     <string-array name="block_profile_array">
         <item>@string/block_profile_button_block</item>

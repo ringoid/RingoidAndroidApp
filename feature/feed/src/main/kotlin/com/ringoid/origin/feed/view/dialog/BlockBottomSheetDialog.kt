@@ -30,12 +30,12 @@ class BlockBottomSheetDialog : SimpleBaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_block.clicks().compose(clickDebounce()).subscribe {
-            communicator(IBlockBottomSheetActivity::class.java)?.onBlock()
+            communicator(IFeedItemContextMenuActivity::class.java)?.onBlock()
             close()
         }
         btn_report.clicks().compose(clickDebounce()).subscribe {
             dismiss()
-            communicator(IBlockBottomSheetActivity::class.java)?.onReportSheetOpen()
+            communicator(IFeedItemContextMenuActivity::class.java)?.onReportSheetOpen()
         }
     }
 
@@ -46,6 +46,6 @@ class BlockBottomSheetDialog : SimpleBaseDialogFragment() {
 
     // ------------------------------------------
     private fun close() {
-        communicator(IBlockBottomSheetActivity::class.java)?.onClose()
+        communicator(IFeedItemContextMenuActivity::class.java)?.onClose()
     }
 }

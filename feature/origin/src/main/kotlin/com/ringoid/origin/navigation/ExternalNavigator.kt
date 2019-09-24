@@ -151,14 +151,14 @@ object ExternalNavigator {
      * @see https://stackoverflow.com/questions/15497261/open-instagram-user-profile?lq=1
      * @see https://stackoverflow.com/questions/21505941/intent-to-open-instagram-user-profile-on-android/23511180#23511180
      */
-    fun openSocialInstagram(activity: Activity, instagramUserId: String) {
+    fun openSocialInstagram(activity: Activity, instagramUserId: String?) {
         openSocial(activity, social = "instagram", host = "http://instagram.com/_u", socialUserId = instagramUserId)
     }
 
     /**
      * @see https://stackoverflow.com/questions/53344812/open-user-page-in-tiktok-app-on-android-with-intent
      */
-    fun openSocialTiktok(activity: Activity, tiktokUserId: String) {
+    fun openSocialTiktok(activity: Activity, tiktokUserId: String?) {
         openSocial(activity, social = "tiktok", host = "http://www.tiktok.com", host4raw = "http://vm.tiktok.com", socialUserId = tiktokUserId, prefix = "@")
     }
 
@@ -170,14 +170,15 @@ object ExternalNavigator {
      * - https://instagram.com/username
      * - instagram.com/username
      */
-    private fun openSocial(activity: Activity, social: String, host: String, host4raw: String = host, socialUserId: String, prefix: String = "") {
+    private fun openSocial(activity: Activity, social: String, host: String, host4raw: String = host, socialUserId: String?, prefix: String = "") {
         socialUserId
-            .toLowerCase(Locale.getDefault())
-            .removePrefix("@")  // prefix could be outer
-            .removeSurrounding(prefix = "$social.com/", suffix = "")  // refine uri if schema is omitted
-            .removePrefix("@")  // prefix could be inner
-            .trim()
-            .takeIf { it.isNotBlank() }
+            .takeIf { !it.isNullOrBlank() }
+            ?.toLowerCase(Locale.getDefault())
+            ?.removePrefix("@")  // prefix could be outer
+            ?.removeSurrounding(prefix = "$social.com/", suffix = "")  // refine uri if schema is omitted
+            ?.removePrefix("@")  // prefix could be inner
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
             ?.let {
                 if (it.contains(social, ignoreCase = true) &&
                     URLUtil.isValidUrl(it) &&

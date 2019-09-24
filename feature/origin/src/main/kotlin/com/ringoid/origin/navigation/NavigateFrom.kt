@@ -23,7 +23,8 @@ object RequestCode {
     const val RC_GOOGLE_PLAY = 10000
 
     const val RC_BLOCK_DIALOG = 11000
-    const val RC_CHAT = 11002
+    const val RC_CHAT = 11001
+    const val RC_CONTEXT_MENU_FEED_ITEM = 11003
     const val RC_CONTEXT_MENU_USER_PROFILE = 11002
     const val RC_SETTINGS_LANG = 11100
     const val RC_SETTINGS_PROFILE = 11101

@@ -11,7 +11,9 @@ data class BlockReportPayload(
     @Expose @SerializedName(COLUMN_PROFILE_THUMB_URI) val profileThumbnailUri: String? = null)
     : IEssence, Parcelable {
 
-    private constructor(source: Parcel): this(profileImageUri = source.readString(), profileThumbnailUri = source.readString())
+    private constructor(source: Parcel)
+            : this(profileImageUri = source.readString(),
+                   profileThumbnailUri = source.readString())
 
     override fun describeContents(): Int = 0
 
@@ -28,8 +30,7 @@ data class BlockReportPayload(
 
         @JvmField
         val CREATOR = object : Parcelable.Creator<BlockReportPayload> {
-            override fun createFromParcel(source: Parcel): BlockReportPayload =
-                BlockReportPayload(source)
+            override fun createFromParcel(source: Parcel): BlockReportPayload = BlockReportPayload(source)
             override fun newArray(size: Int): Array<BlockReportPayload?> = arrayOfNulls(size)
         }
     }

@@ -7,7 +7,6 @@ import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.view.BottomSheet
 import com.ringoid.base.view.SimpleBaseDialogFragment
-import com.ringoid.origin.AppRes
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.R
 import com.ringoid.origin.view.dialog.Dialogs
@@ -68,13 +67,13 @@ class ReportBottomSheetDialog : SimpleBaseDialogFragment() {
 
     // ------------------------------------------
     private fun close() {
-        communicator(IBlockBottomSheetActivity::class.java)?.onClose()
+        communicator(IFeedItemContextMenuActivity::class.java)?.onClose()
     }
 
     // ------------------------------------------
     private fun onProfileReport(reason: Int) {
         fun reportProfileAndClose() {
-            communicator(IBlockBottomSheetActivity::class.java)?.onReport(reason = reason)
+            communicator(IFeedItemContextMenuActivity::class.java)?.onReport(reason = reason)
             close()
         }
 

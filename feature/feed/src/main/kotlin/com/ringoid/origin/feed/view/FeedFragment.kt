@@ -27,7 +27,7 @@ import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.model.ProfileImageVO
 import com.ringoid.origin.feed.view.widget.FiltersPopupWidget
 import com.ringoid.origin.feed.view.widget.ToolbarWidget
-import com.ringoid.origin.model.BlockReportPayload
+import com.ringoid.origin.model.FeedItemContextMenuPayload
 import com.ringoid.origin.navigation.*
 import com.ringoid.origin.view.base.BaseListFragment
 import com.ringoid.origin.view.common.EmptyFragment
@@ -273,12 +273,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
             onScrollHorizontalListener = { showRefreshPopup(isVisible = false) }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
-                vm.onSettingsClick(model.id)
+                vm.onSettingsClick(profileId = model.id)
                 val image = model.images[positionOfImage]
-                val payload = BlockReportPayload(
+                val payload = FeedItemContextMenuPayload(
                     profileImageUri = image.uri,
-                    profileThumbnailUri = image.thumbnailUri)
-                navigate(this@FeedFragment, path = "/block_dialog?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_BLOCK_DIALOG)
+                    profileThumbnailUri = image.thumbnailUri,
+                    socialInstagram = model.instagram(),
+                    socialTiktok = model.tiktok())
+                navigate(this@FeedFragment, path = "/feed_item_context_menu?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_CONTEXT_MENU_FEED_ITEM)
             }
         }
         invalidateScrollCaches()
@@ -288,21 +290,29 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            RequestCode.RC_BLOCK_DIALOG -> {
+            RequestCode.RC_CONTEXT_MENU_FEED_ITEM -> {
                 if (data == null) {
-                    Report.w("No output from Block/Report dialog")
+                    Report.w("No output from FeedItemContextMenu dialog")
                     return
                 }
 
                 if (resultCode == Activity.RESULT_OK) {
                     val imageId = data.extras!!.getString("imageId")!!
                     val profileId = data.extras!!.getString("profileId")!!
+                    val position = data.extras!!.getString("position")!!.toInt()
 
+                    if (data.hasExtra(Extras.OUT_EXTRA_LIKE_SENT)) {
+                        data.getBooleanExtra(Extras.OUT_EXTRA_LIKE_SENT, false)
+                            .takeIf { it && vm.onBeforeLike(position) }
+                            ?.let { vm.onLike(profileId = profileId, imageId = imageId) }
+                    }
                     if (data.hasExtra(Extras.OUT_EXTRA_REPORT_REASON)) {
-                        val reasonNumber = data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0)
-                        vm.onReport(profileId = profileId, imageId = imageId, reasonNumber = reasonNumber)
-                    } else {
-                        vm.onBlock(profileId = profileId, imageId = imageId)
+                        data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0).let {
+                            when (it) {
+                                0 -> vm.onBlock(profileId = profileId, imageId = imageId)
+                                else -> vm.onReport(profileId = profileId, imageId = imageId, reasonNumber = it)
+                            }
+                        }
                     }
                 }
             }

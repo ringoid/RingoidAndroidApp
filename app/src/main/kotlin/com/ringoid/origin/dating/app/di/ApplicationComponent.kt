@@ -13,6 +13,7 @@ import com.ringoid.origin.auth.di.LoginActivityModule
 import com.ringoid.origin.dating.app.RingoidApplication
 import com.ringoid.origin.feed.view.dialog.di.BlockBottomSheetDialogModule
 import com.ringoid.origin.feed.view.dialog.di.FeedItemContextMenuActivityModule
+import com.ringoid.origin.feed.view.dialog.di.FeedItemContextMenuDialogModule
 import com.ringoid.origin.feed.view.dialog.di.ReportBottomSheetDialogModule
 import com.ringoid.origin.feed.view.explore.di.ExploreFragmentModule
 import com.ringoid.origin.feed.view.lc.like.di.LikesFeedFragmentModule
@@ -58,8 +59,9 @@ import javax.inject.Singleton
 @Component(modules = [AndroidInjectionModule::class, ApplicationModule::class, DeeplinkDiModule::class,
                       /** Screen modules */
                       AboutDialogModule::class, BigEditTextDialogModule::class,
-                      FeedItemContextMenuActivityModule::class, BlockBottomSheetDialogModule::class,
-                      ReportBottomSheetDialogModule::class, ChatHostActivityModule::class, ChatFragmentModule::class,
+                      FeedItemContextMenuActivityModule::class, FeedItemContextMenuDialogModule::class,
+                      BlockBottomSheetDialogModule::class, ReportBottomSheetDialogModule::class,
+                      ChatHostActivityModule::class, ChatFragmentModule::class,
                       DebugActivityModule::class, DebugFragmentModule::class, ExploreFragmentModule::class,
                       ImagePreviewActivityModule::class, ImagePreviewFragmentModule::class,
                       FiltersFragmentModule::class, LikesFeedFragmentModule::class,

@@ -55,12 +55,10 @@ class UserProfileContextMenuActivity : ThemedSimpleBaseDialogActivity(), IUserPr
 
     override fun openSocialInstagram() {
         ExternalNavigator.openSocialInstagram(this, instagramUserId = spm.getUserProfileProperties().socialInstagram)
-        finish()
     }
 
     override fun openSocialTiktok() {
         ExternalNavigator.openSocialTiktok(this, tiktokUserId = spm.getUserProfileProperties().socialTikTok)
-        finish()
     }
 
     /* Lifecycle */
