@@ -79,12 +79,13 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        super.onCancel(dialog)
-        close()
+        // cancelling on touch outside
+        onCancelRate()
     }
 
     // --------------------------------------------------------------------------------------------
     private fun close() {
+        vm.onCloseDialog()
         et_dialog_entry?.hideKeyboard()
         dismiss()
         activity?.finish()

@@ -145,6 +145,7 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
 
                 payload?.let {
                     vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
+                    openRateUsDialogIfNeed()  // open RateUs dialog when Chat closed
                 }
             }
         }
@@ -159,6 +160,10 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
         vm.onReport(profileId = payload.peerId, imageId = payload.peerImageId, reasonNumber = reasonNumber, sourceFeed = payload.sourceFeed.feedName, fromChat = true)
     }
 
+    /**
+     * Callback on Chat close. Uses either directly, if Chat is opened as [ChatFragment] in [openChat],
+     * or indirectly from [onActivityResult] if Chat is opened via [IChatHost] Activity.
+     */
     override fun onDialogDismiss(tag: String, payload: Parcelable?) {
         (payload as? ChatPayload)
             ?.let {
@@ -208,6 +213,12 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                     vm.onChatOpen(profileId = peerId, imageId = image?.id ?: DomainUtil.BAD_ID)
                     navigate(this, path = "/chat?peerId=$peerId&payload=${payload.toJson()}&tag=$tag", rc = RequestCode.RC_CHAT)
                 }
+        }
+    }
+
+    private fun openRateUsDialogIfNeed() {
+        if (spm.needShowRateUsDialog()) {
+            navigate(this, path = "/rate_us")
         }
     }
 

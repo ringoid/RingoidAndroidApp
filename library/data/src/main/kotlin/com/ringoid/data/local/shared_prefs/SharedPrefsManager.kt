@@ -7,6 +7,7 @@ import com.ringoid.data.manager.RuntimeConfig
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
+import com.ringoid.domain.ResultOnClose
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.misc.*
 import com.ringoid.domain.model.feed.EmptyFilters
@@ -58,6 +59,8 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         private const val SP_KEY_DEBUG_LOG_ENABLED = "sp_key_debug_log_enabled"
         @DebugOnly
         private const val SP_KEY_DEVELOPER_MODE = "sp_key_developer_mode"
+
+        private const val SP_KEY_RATE_US_DIALOG_CLOSE_CODE = "sp_key_rate_us_dialog_close_code"
 
         /* Auth */
         // --------------------------------------
@@ -131,6 +134,30 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
 
     private fun isAppUpdated(): Boolean =
         sharedPreferences.getInt(SP_KEY_BUILD_CODE, 0) < BuildConfig.BUILD_NUMBER
+
+    // ------------------------------------------
+    override fun needShowRateUsDialog(): Boolean =
+        sharedPreferences.getInt(SP_KEY_RATE_US_DIALOG_CLOSE_CODE, ResultOnClose.CLOSE)
+            .let { closeCode ->
+                when (closeCode) {
+                    ResultOnClose.CLOSE -> {
+                        // show RateUs dialog in 1, 2, 4 days and then every 4 days
+                        // TODO
+                        true
+                    }
+                    ResultOnClose.CLOSE_FOREVER -> false  // never show RateUs dialog again
+                    ResultOnClose.CLOSE_TILL_UPDATE -> {
+                        // show RateUs dialog in 2 app updates plus at least in 1 day
+                        // TODO
+                        true
+                    }
+                    else -> true  // show RateUs dialog without any constraints
+                }
+            }
+
+    override fun updateRateUsDialogCloseCode(code: Int) {
+        sharedPreferences.edit().putInt(SP_KEY_RATE_US_DIALOG_CLOSE_CODE, code).apply()
+    }
 
     // ------------------------------------------
     override fun getByKey(key: String): String? = sharedPreferences.getString(key, null)

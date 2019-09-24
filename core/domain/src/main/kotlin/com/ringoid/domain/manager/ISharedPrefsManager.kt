@@ -11,6 +11,9 @@ interface ISharedPrefsManager : IFiltersSource {
     fun isFirstAppLaunch(): Boolean
     fun dropFirstAppLaunch()
 
+    fun needShowRateUsDialog(): Boolean
+    fun updateRateUsDialogCloseCode(code: Int)
+
     // ------------------------------------------
     fun getByKey(key: String): String?
     fun saveByKey(key: String, json: String)

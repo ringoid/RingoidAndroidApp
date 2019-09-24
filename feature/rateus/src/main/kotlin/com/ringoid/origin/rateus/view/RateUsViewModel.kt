@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.domain.ResultOnClose
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.origin.rateus.view.RateUsDialog.Companion.RATING_THRESHOLD
 import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
@@ -14,6 +15,8 @@ import javax.inject.Inject
 class RateUsViewModel @Inject constructor(postToSlackUseCase: PostToSlackUseCase, app: Application)
     : BaseSettingsViewModel(postToSlackUseCase, app) {
 
+    private var closeCode: Int = ResultOnClose.CLOSE
+
     private val closeDialogOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     private val openGooglePlayOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun closeDialogOneShot(): LiveData<OneShot<Boolean>> = closeDialogOneShot
@@ -21,6 +24,7 @@ class RateUsViewModel @Inject constructor(postToSlackUseCase: PostToSlackUseCase
 
     internal fun cancelRate() {
         analyticsManager.fire(Analytics.RATE_US_ALERT_CANCELED)
+        closeCode = ResultOnClose.CLOSE
     }
 
     internal fun sendRating(rating: Int, feedBackText: String? = null, tag: String? = null) {
@@ -29,6 +33,7 @@ class RateUsViewModel @Inject constructor(postToSlackUseCase: PostToSlackUseCase
                 analyticsManager.fire(Analytics.RATE_US_ALERT_FEEDBACK, "rating" to "$rating")
                 if (!feedBackText.isNullOrBlank()) {
                     viewState.value = ViewState.LOADING
+                    closeCode = ResultOnClose.CLOSE_TILL_UPDATE
                     suggestImprovements(text = feedBackText, tag = tag) {
                         viewState.value = ViewState.IDLE
                         closeDialogOneShot.value = OneShot(true)
@@ -37,9 +42,14 @@ class RateUsViewModel @Inject constructor(postToSlackUseCase: PostToSlackUseCase
             }
             rating >= RATING_THRESHOLD -> {
                 analyticsManager.fire(Analytics.RATE_US_ALERT_RATED, "rating" to "$rating")
+                closeCode = ResultOnClose.CLOSE_FOREVER
                 openGooglePlayOneShot.value = OneShot(true)
             }
         }
+    }
+
+    internal fun onCloseDialog() {
+        spm.updateRateUsDialogCloseCode(code = closeCode)
     }
 
     /* Lifecycle */
