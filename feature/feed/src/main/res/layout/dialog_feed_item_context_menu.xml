@@ -8,7 +8,7 @@
     <Button
         android:id="@+id/btn_send_like"
         android:layout_width="match_parent"
-        android:text="@string/send_like_feed_item_context_menu_button"
+        android:text="@string/feed_item_context_menu_button_send_like"
         android:textColor="@color/flat_button_text_color_primary"
         style="@style/FlatButton.Tall"/>
 
