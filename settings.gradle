@@ -18,6 +18,7 @@ include ':app',
         ':feature:messenger',
         ':feature:origin',
         ':feature:profile',
+        ':feature:rateus',
         ':feature:usersettings'
 
 include ':cropiwa'

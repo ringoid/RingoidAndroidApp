@@ -159,6 +159,7 @@ ext {
             imagePreview: ':feature:imagepreview',
             messenger:    ':feature:messenger',
             profile:      ':feature:profile',
+            rateus:       ':feature:rateus',
             userSettings: ':feature:usersettings',
 
             main:      ':main',       // -+- [ :main ]
@@ -188,6 +189,7 @@ ext {
     def ImagePreview = [[configuration: "implementation", dependency: project(modules.imagePreview)]]
     def Messenger = [[configuration: "implementation", dependency: project(modules.messenger)]]
     def Profile = [[configuration: "implementation", dependency: project(modules.profile)]]
+    def RateUs = [[configuration: "implementation", dependency: project(modules.rateus)]]
     def UserSettings = [[configuration: "implementation", dependency: project(modules.userSettings)]]
 
     def Main = [[configuration: "implementation", dependency: project(modules.main)]]
@@ -453,7 +455,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
     ]
-    feedDependencies += Messenger + Origin + Analytics + Develop + ImageLoader + Report +
+    feedDependencies += Messenger + Origin + Analytics + Develop + ImageLoader + RateUs + Report +
                         android + androidView + arch + autoDispose +
                         dagger + deeplink + gson + kotlin + log + rx + rxBind + view
 
@@ -518,6 +520,21 @@ ext {
     testProfileDependencies = test
 
     profilePlugins = [
+        xPlugins.androidLib,
+        xPlugins.kotlinAndroid,
+        xPlugins.kotlinAndroidExt,
+        xPlugins.kotlinAnnotation,
+    ]
+
+    /* Feature Rate Us */
+    // ------------------------------------------
+    rateUsDependencies = []
+    rateUsDependencies += Analytics + android + dagger + kotlin + log
+
+    androidTestRateUsDeps = androidTest
+    testRateUsDependencies = test
+
+    rateUsPlugins = [
         xPlugins.androidLib,
         xPlugins.kotlinAndroid,
         xPlugins.kotlinAndroidExt,

@@ -1,0 +1,21 @@
+rootProject.rateUsPlugins.each {
+    apply plugin: it
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def rateUsDependencies = rootProject.ext.rateUsDependencies
+    def androidTestRateUsDeps = rootProject.ext.androidTestRateUsDeps
+    def testRateUsDependencies = rootProject.ext.testRateUsDependencies
+
+    rateUsDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    testRateUsDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+    androidTestRateUsDeps.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}
