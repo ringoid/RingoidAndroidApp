@@ -22,7 +22,7 @@ abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlack
     private val suggestImprovementsOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun suggestImprovementsOneShot(): LiveData<OneShot<Boolean>> = suggestImprovementsOneShot
 
-    internal fun suggestImprovements(text: String, tag: String?) {
+    fun suggestImprovements(text: String, tag: String?) {
         if (text.isBlank()) {
             return
         }

@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseDialogFragment
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.rateus.OriginR_string
 import com.ringoid.origin.rateus.R
 import com.ringoid.utility.changeVisibility
@@ -42,6 +44,10 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
                 rating >= RATING_THRESHOLD -> showGoodRating()
             }
         }
+
+        observeOneShot(vm.openGooglePlayOneShot()) {
+            context?.let { ExternalNavigator.openGooglePlay(it) }
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -51,7 +57,9 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
     }
 
     private fun onSendRating() {
-        vm.sendRating(rating = rating_line.getRating().toInt())
+        vm.sendRating(rating = rating_line.getRating().toInt(),
+                      feedBackText = et_dialog_entry.text.toString(),
+                      tag = "CloseChat")
         dismiss()
     }
 
