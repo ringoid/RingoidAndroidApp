@@ -530,7 +530,7 @@ ext {
     // ------------------------------------------
     rateUsDependencies = []
     rateUsDependencies += Utility + Analytics + Base + Domain + Origin +
-                          android + arch + dagger + deeplink + kotlin + log + rxBind
+                          android + arch + autoDispose + dagger + deeplink + kotlin + log + rxBind
 
     androidTestRateUsDeps = androidTest
     testRateUsDependencies = test

@@ -18,6 +18,7 @@ import com.ringoid.origin.messenger.deeplink.ChatDeepLinkModuleLoader
 import com.ringoid.origin.profile.deeplink.ProfileDeepLinkModule
 import com.ringoid.origin.profile.deeplink.ProfileDeepLinkModuleLoader
 import com.ringoid.origin.rateus.deeplink.RateUsDeepLinkModule
+import com.ringoid.origin.rateus.deeplink.RateUsDeepLinkModuleLoader
 import com.ringoid.origin.usersettings.deeplink.UserSettingsDeepLinkModule
 import com.ringoid.origin.usersettings.deeplink.UserSettingsDeepLinkModuleLoader
 
@@ -32,7 +33,8 @@ class DeepLinkHandlerActivity : Activity() {
         val deepLinkDelegate = DeepLinkDelegate(
             AppDeepLinkModuleLoader(), AuthDeepLinkModuleLoader(), ChatDeepLinkModuleLoader(),
             FeedDeepLinkModuleLoader(), ImagePreviewDeepLinkModuleLoader(), MainDeepLinkModuleLoader(),
-            OriginDeepLinkModuleLoader(), ProfileDeepLinkModuleLoader(), UserSettingsDeepLinkModuleLoader())
+            OriginDeepLinkModuleLoader(), ProfileDeepLinkModuleLoader(), RateUsDeepLinkModuleLoader(),
+            UserSettingsDeepLinkModuleLoader())
         /**
          * Delegate the deep link handling to DeepLinkDispatch.
          * It will start the correct Activity based on the incoming Intent URI

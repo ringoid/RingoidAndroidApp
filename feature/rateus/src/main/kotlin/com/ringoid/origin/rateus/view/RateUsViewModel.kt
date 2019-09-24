@@ -8,8 +8,9 @@ import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.origin.rateus.view.RateUsDialog.Companion.RATING_THRESHOLD
 import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
+import javax.inject.Inject
 
-class RateUsViewModel(postToSlackUseCase: PostToSlackUseCase, app: Application)
+class RateUsViewModel @Inject constructor(postToSlackUseCase: PostToSlackUseCase, app: Application)
     : BaseSettingsViewModel(postToSlackUseCase, app) {
 
     private val openGooglePlayOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
