@@ -22,7 +22,7 @@ abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlack
     private val suggestImprovementsOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun suggestImprovementsOneShot(): LiveData<OneShot<Boolean>> = suggestImprovementsOneShot
 
-    fun suggestImprovements(text: String, tag: String?) {
+    fun suggestImprovements(text: String, tag: String?, doFinally: (() -> Unit)? = null) {
         if (text.isBlank()) {
             return
         }
@@ -53,6 +53,7 @@ abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlack
                              .put("text", reportText)
         postToSlackUseCase.source(params = params)
             .doOnComplete { suggestImprovementsOneShot.value = OneShot(true) }
+            .doFinally { doFinally?.invoke() }
             .autoDisposable(this)
             .subscribe({ spm.dropBigEditText() }, DebugLogUtil::e)
     }

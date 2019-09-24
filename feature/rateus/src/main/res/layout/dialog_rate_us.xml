@@ -72,9 +72,20 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
 
-        <Button
-            android:id="@+id/btn_rate"
-            android:text="@string/button_rate"
-            style="@style/FlatButton"/>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/pb_loading"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                style="@style/ProgressBar"/>
+
+            <Button
+                android:id="@+id/btn_rate"
+                android:text="@string/button_rate"
+                style="@style/FlatButton"/>
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

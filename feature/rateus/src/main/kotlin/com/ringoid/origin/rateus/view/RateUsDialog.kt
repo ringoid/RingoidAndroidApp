@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.BaseDialogFragment
+import com.ringoid.base.view.ViewState
 import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.rateus.OriginR_string
 import com.ringoid.origin.rateus.R
@@ -28,12 +29,28 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
     @LayoutRes
     override fun getLayoutId(): Int = R.layout.dialog_rate_us
 
+    // --------------------------------------------------------------------------------------------
+    override fun onViewStateChange(newState: ViewState) {
+        fun showLoading(isVisible: Boolean) {
+            pb_loading.changeVisibility(isVisible)
+            btn_rate.changeVisibility(!isVisible)
+        }
+
+        super.onViewStateChange(newState)
+        when (newState) {
+            ViewState.IDLE -> showLoading(isVisible = false)
+            ViewState.LOADING -> showLoading(isVisible = true)
+        }
+    }
+
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        observeOneShot(vm.closeDialogOneShot()) { close() }
         observeOneShot(vm.openGooglePlayOneShot()) {
             context?.let { ExternalNavigator.openGooglePlay(it) }
+            close()
         }
     }
 
@@ -75,7 +92,6 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
         vm.sendRating(rating = rating_line.getRating().toInt(),
                       feedBackText = et_dialog_entry.text.toString(),
                       tag = "CloseChat")
-        close()
     }
 
     // ------------------------------------------
