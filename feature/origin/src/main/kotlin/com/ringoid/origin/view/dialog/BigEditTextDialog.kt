@@ -32,12 +32,13 @@ class BigEditTextDialog : SimpleBaseDialogFragment() {
         private const val BUNDLE_KEY_INPUT = "bundle_key_input"
         private const val BUNDLE_KEY_TAG = "bundle_key_tag"
 
-        fun newInstance(@StringRes titleResId: Int,
-                        @StringRes subtitleResId: Int = 0,
-                        @StringRes descriptionResId: Int = 0,
-                        @StringRes btnPositiveResId: Int = R.string.button_ok,
-                        @StringRes btnNegativeResId: Int = R.string.button_cancel,
-                        closeOnEnter: Boolean = false, input: String = "", tag: String? = null)
+        fun newInstance(
+                @StringRes titleResId: Int,
+                @StringRes subtitleResId: Int = 0,
+                @StringRes descriptionResId: Int = 0,
+                @StringRes btnPositiveResId: Int = R.string.button_ok,
+                @StringRes btnNegativeResId: Int = R.string.button_cancel,
+                closeOnEnter: Boolean = false, input: String = "", tag: String? = null)
                 : BigEditTextDialog =
             BigEditTextDialog().apply {
                 arguments = Bundle().apply {
