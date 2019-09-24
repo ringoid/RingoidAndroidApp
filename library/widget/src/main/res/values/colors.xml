@@ -76,6 +76,7 @@
     <color name="white_70">#b3ffffff</color>
     <color name="white_80">#ccffffff</color>
     <color name="white">#ffffff</color>
+    <color name="yellow_rating">#ffeb3b</color>
 
     <array name="swipe_refresh_colors">
         <item name="progress_1">@color/accent</item>

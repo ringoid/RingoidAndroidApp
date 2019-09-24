@@ -32,4 +32,9 @@ object Analytics {
     const val PULL_TO_REFRESH = "PULL_TO_REFRESH"
     const val TAP_TO_REFRESH = "TAP_TO_REFRESH"
     const val PUSH_OPEN = "PUSH_OPEN"
+
+    const val RATE_US_ALERT_CANCELLED = "RATE_US_ALERT_CANCELED"  // spelling from Google Doc
+    const val RATE_US_ALERT_FEEDBACK = "RATE_US_ALERT_FEEDBACK"
+    const val RATE_US_ALERT_RATED = "RATE_US_ALERT_RATED"
+    const val RATE_US_ALERT_SHOWN = "RATE_US_ALERT_SHOWN"
 }

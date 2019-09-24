@@ -11,10 +11,12 @@
     <string name="button_filter">Фильтровать (%s)</string>
     <string name="button_later">Не сейчас</string>
     <string name="button_ok">ОК</string>
+    <string name="button_rate">Оценить</string>
     <string name="button_retry">Повторить</string>
     <string name="button_settings">Настройки</string>
     <string name="button_show_all">Показать все (%s)</string>
     <string name="button_show_all_init">Показать все (0)</string>
+    <string name="button_send">Отправить</string>
 
     <string name="common_choose_image">Выбери фото</string>
     <string name="common_clipboard">Скопировано в буфер</string>
@@ -124,6 +126,10 @@
     <string name="profile_empty_images_dialog">Добавь фото, чтобы получать лайки</string>
     <string name="profile_empty_title">Профиль</string>
     <string name="profile_label_coins">%s монет</string>
+
+    <!-- Rate us screen -->
+    <string name="rate_us_dialog_feedback_description">Расскажите нам, как мы могли бы улучшить это приложение</string>
+    <string name="rate_us_dialog_title">Какова вероятность того, что вы порекомендуете Ringoid другу?</string>
 
     <!-- Referral code screen -->
     <string name="referral_dialog_title">Код приглашения</string>

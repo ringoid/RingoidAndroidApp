@@ -529,7 +529,7 @@ ext {
     /* Feature Rate Us */
     // ------------------------------------------
     rateUsDependencies = []
-    rateUsDependencies += Analytics + android + dagger + kotlin + log
+    rateUsDependencies += Utility + Analytics + Base + Origin + android + dagger + kotlin + log + rxBind
 
     androidTestRateUsDeps = androidTest
     testRateUsDependencies = test
