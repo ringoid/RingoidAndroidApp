@@ -32,6 +32,13 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeOneShot(vm.openGooglePlayOneShot()) {
+            context?.let { ExternalNavigator.openGooglePlay(it) }
+        }
+    }
+
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,10 +50,6 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
                 rating < RATING_THRESHOLD -> showBadRating()
                 rating >= RATING_THRESHOLD -> showGoodRating()
             }
-        }
-
-        observeOneShot(vm.openGooglePlayOneShot()) {
-            context?.let { ExternalNavigator.openGooglePlay(it) }
         }
     }
 
