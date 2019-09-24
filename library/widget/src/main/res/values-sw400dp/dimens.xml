@@ -20,6 +20,7 @@
     <dimen name="std_margin_20">20dp</dimen>
     <dimen name="std_margin_24">24dp</dimen>
     <dimen name="std_margin_32">32dp</dimen>
+    <dimen name="std_margin_36">36dp</dimen>
     <dimen name="std_margin_40">40dp</dimen>
     <dimen name="std_margin_48">48dp</dimen>
     <dimen name="std_margin_64">64dp</dimen>

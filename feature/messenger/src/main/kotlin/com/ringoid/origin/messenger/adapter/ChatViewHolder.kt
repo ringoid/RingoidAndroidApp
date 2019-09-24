@@ -5,7 +5,6 @@ import com.ringoid.base.adapter.BaseViewHolder
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.origin.messenger.R
-import com.ringoid.origin.messenger.WidgetR_drawable
 import com.ringoid.utility.DebugOnly
 import kotlinx.android.synthetic.main.rv_item_chat_item.view.tv_chat_message
 import kotlinx.android.synthetic.main.rv_item_my_chat_item.view.*
@@ -31,9 +30,9 @@ class MyChatViewHolder(view: View) : BaseChatViewHolder(view) {
     override fun bind(model: Message) {
         super.bind(model)
         val iconResId = when (model.readStatus) {
-            MessageReadStatus.ReadByPeer -> R.drawable.ic_chat_message_read_white_18dp
-            MessageReadStatus.UnreadByPeer -> R.drawable.ic_chat_message_sent_white_18dp
-            else -> WidgetR_drawable.ic_empty_stub_18dp
+            MessageReadStatus.ReadByPeer -> R.drawable.ic_chat_message_read_green_shadow_18dp
+            MessageReadStatus.UnreadByPeer -> R.drawable.ic_chat_message_sent_white_shadow_18dp
+            else -> R.drawable.ic_empty_stub_18dp
         }
         itemView.iv_chat_message_read_status.setImageResource(iconResId)
     }
@@ -45,9 +44,9 @@ class DebugMyChatViewHolder(view: View) : DebugBaseChatViewHolder(view) {
     override fun bind(model: Message) {
         super.bind(model)
         val iconResId = when (model.readStatus) {
-            MessageReadStatus.ReadByPeer -> R.drawable.ic_chat_message_read_white_18dp
-            MessageReadStatus.UnreadByPeer -> R.drawable.ic_chat_message_sent_white_18dp
-            else -> WidgetR_drawable.ic_empty_stub_18dp
+            MessageReadStatus.ReadByPeer -> R.drawable.ic_chat_message_read_green_shadow_18dp
+            MessageReadStatus.UnreadByPeer -> R.drawable.ic_chat_message_sent_white_shadow_18dp
+            else -> R.drawable.ic_empty_stub_18dp
         }
         itemView.iv_chat_message_read_status.setImageResource(iconResId)
     }

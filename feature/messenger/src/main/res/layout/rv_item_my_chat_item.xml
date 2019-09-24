@@ -5,11 +5,12 @@
     android:paddingTop="@dimen/chat_blob_divider_height"
     android:paddingBottom="@dimen/chat_blob_divider_height"
     android:paddingStart="@dimen/std_screen_10"
-    android:paddingEnd="@dimen/std_margin_20">
+    android:paddingEnd="0dp">
 
     <TextView
         android:id="@id/tv_chat_message"
         android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="@dimen/std_margin_20"
         android:background="@drawable/widget_chat_blob_my"
         android:gravity="center_vertical|start"
         android:paddingTop="@dimen/std_margin_12"
@@ -24,6 +25,8 @@
         android:layout_width="@dimen/std_icon_18"
         android:layout_height="@dimen/std_icon_18"
         android:layout_gravity="end|bottom"
+        android:layout_marginBottom="@dimen/std_margin_8"
         android:layout_marginEnd="4dp"
+        android:visibility="gone"
         android:contentDescription="@null"/>
 </FrameLayout>
