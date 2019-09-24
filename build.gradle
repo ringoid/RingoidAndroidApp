@@ -63,7 +63,7 @@ static String getVersionName(Environment env, int major, int minor, int build) {
 }
 
 ext {
-    env = Environment.STAGING
+    env = Environment.PRODUCTION
     onboarding = Onboarding.DIRECT  // change it to alter onboarding process
     onboardingExt = true  // enable or disable extension for onboarding process
 
@@ -122,7 +122,7 @@ allprojects {
     ext {
         majorVersion = 4
         minorVersion = 0
-        buildVersion = 261
+        buildVersion = 262
 
         androidApplicationId = getAppId(env)
         androidVersionCode = buildVersion
