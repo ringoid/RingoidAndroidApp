@@ -2,7 +2,9 @@ package com.ringoid.origin.rateus.view
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observeOneShot
@@ -45,6 +47,12 @@ class RateUsDialog : BaseDialogFragment<RateUsViewModel>() {
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val rootView = super.onCreateView(inflater, container, savedInstanceState)
+        dialog?.setCanceledOnTouchOutside(false)
+        return rootView
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeOneShot(vm.closeDialogOneShot()) { close() }
