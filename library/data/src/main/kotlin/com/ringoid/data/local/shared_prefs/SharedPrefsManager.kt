@@ -288,6 +288,8 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
         dropUserProfileProperties()  // forget profile properties for previous user
         dropUserProfileCustomPropertiesUnsavedInput()  // forget unsaved input profile properties
         sharedPreferences.edit()
+            .putInt(SP_KEY_RATE_US_DIALOG_CLOSE_CODE, ResultOnClose.UNKNOWN)
+            .putInt(SP_KEY_RATE_US_DIALOG_CLOSE_TIME_CHECK, 0)
             .putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS, true)
             .putBoolean(SP_KEY_FLAG_NEED_SHOW_FILTERS_ON_LC, true)
             .putBoolean(SP_KEY_FLAG_NEED_SHOW_STUB_STATUS, true)
