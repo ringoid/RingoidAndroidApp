@@ -305,7 +305,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     if (data.hasExtra(Extras.OUT_EXTRA_LIKE_SENT)) {
                         data.getBooleanExtra(Extras.OUT_EXTRA_LIKE_SENT, false)
                             .takeIf { it && vm.onBeforeLike(position) }
-                            ?.let { vm.onLike(profileId = profileId, imageId = imageId) }
+                            ?.let {
+                                rv_items.linearLayoutManager()?.findViewByPosition(position)
+                                    ?.let { vm.onImageTouch(it.pivotX, it.pivotY) }  // show like visual effect
+                                vm.onLike(profileId = profileId, imageId = imageId)
+                            }
                     }
                     if (data.hasExtra(Extras.OUT_EXTRA_REPORT_REASON)) {
                         data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0).let {
