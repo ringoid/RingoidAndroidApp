@@ -46,7 +46,6 @@ class SharedPrefsManager @Inject constructor(context: Context, private val confi
                 .putInt(SP_KEY_BUILD_CODE, BuildConfig.BUILD_NUMBER)
                 .putInt(SP_KEY_PREV_BUILD_CODE, prevAppBuildCode)
                 .apply()
-            deleteLastActionTime()
         }
 
         DebugLogUtil.setConfig(config)
