@@ -455,7 +455,7 @@ ext {
         [configuration: "implementation", dependency: d_libs.eventBus],
         [configuration: "implementation", dependency: d_libs.fresco],
     ]
-    feedDependencies += Messenger + Origin + Analytics + Develop + ImageLoader + RateUs + Report +
+    feedDependencies += Messenger + Origin + Analytics + Develop + ImageLoader + Report +
                         android + androidView + arch + autoDispose +
                         dagger + deeplink + gson + kotlin + log + rx + rxBind + view
 
