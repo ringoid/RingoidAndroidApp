@@ -14,7 +14,7 @@ import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.*
 import com.ringoid.origin.usersettings.*
 import com.ringoid.origin.usersettings.R
-import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
+import com.ringoid.origin.view.base.settings.BaseSettingsFragment
 import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.utility.*
 import com.ringoid.widget.model.ListItem

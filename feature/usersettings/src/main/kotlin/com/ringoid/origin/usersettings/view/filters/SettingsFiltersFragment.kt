@@ -11,7 +11,7 @@ import com.ringoid.origin.usersettings.OriginR_id
 import com.ringoid.origin.usersettings.OriginR_menu
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
-import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
+import com.ringoid.origin.view.base.settings.BaseSettingsFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.filters.FiltersFragment
 import com.ringoid.utility.clickDebounce

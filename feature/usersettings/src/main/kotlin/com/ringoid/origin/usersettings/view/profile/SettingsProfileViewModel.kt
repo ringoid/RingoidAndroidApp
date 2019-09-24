@@ -12,7 +12,7 @@ import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.interactor.user.UpdateUserProfileSettingsUseCase
 import com.ringoid.domain.misc.UserProfileCustomPropertiesUnsavedInput
 import com.ringoid.origin.model.*
-import com.ringoid.origin.usersettings.view.base.BaseSettingsViewModel
+import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
 import javax.inject.Inject

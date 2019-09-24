@@ -1,4 +1,4 @@
-package com.ringoid.origin.usersettings.view.base
+package com.ringoid.origin.view.base.settings
 
 import android.app.Application
 import android.os.Build

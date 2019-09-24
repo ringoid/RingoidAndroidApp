@@ -11,7 +11,7 @@ import com.ringoid.base.view.ViewState
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
-import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
+import com.ringoid.origin.view.base.settings.BaseSettingsFragment
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import kotlinx.android.synthetic.main.fragment_settings_push.*

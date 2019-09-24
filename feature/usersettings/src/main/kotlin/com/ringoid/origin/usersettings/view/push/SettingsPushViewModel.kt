@@ -12,7 +12,7 @@ import com.ringoid.domain.interactor.user.UpdateUserSettingsUseCase
 import com.ringoid.domain.misc.PushSettingsRaw
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthorized
 import com.ringoid.domain.model.user.UserSettings
-import com.ringoid.origin.usersettings.view.base.BaseSettingsViewModel
+import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import javax.inject.Inject
 

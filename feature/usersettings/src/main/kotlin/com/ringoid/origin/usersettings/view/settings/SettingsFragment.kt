@@ -18,7 +18,7 @@ import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.usersettings.OriginR_string
 import com.ringoid.origin.usersettings.R
-import com.ringoid.origin.usersettings.view.base.BaseSettingsFragment
+import com.ringoid.origin.view.base.settings.BaseSettingsFragment
 import com.ringoid.origin.view.dialog.BigEditTextDialog
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
