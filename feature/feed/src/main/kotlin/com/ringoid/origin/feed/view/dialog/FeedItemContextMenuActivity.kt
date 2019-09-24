@@ -58,6 +58,11 @@ class FeedItemContextMenuActivity : ThemedSimpleBaseActivity(), IFeedItemContext
         setResultExposed(Activity.RESULT_OK, outputData)
     }
 
+    override fun openChat() {
+        outputData.putExtra(Extras.OUT_EXTRA_OPEN_CHAT, true)
+        setResultExposed(Activity.RESULT_OK, outputData)
+    }
+
     override fun openSocialInstagram() {
         ExternalNavigator.openSocialInstagram(this, instagramUserId = instagramUserId)
     }
@@ -118,7 +123,8 @@ class FeedItemContextMenuActivity : ThemedSimpleBaseActivity(), IFeedItemContext
     // --------------------------------------------------------------------------------------------
     private fun createFeedItemContextMenuDialogIfNeed() {
         if (feedItemContextMenuDialog == null) {
-            feedItemContextMenuDialog = FeedItemContextMenuDialog.newInstance(socialInstagram = instagramUserId, socialTiktok = tiktokUserId)
+            val contextMenuActions = intent.extras?.getString("actions")
+            feedItemContextMenuDialog = FeedItemContextMenuDialog.newInstance(contextMenuActions, socialInstagram = instagramUserId, socialTiktok = tiktokUserId)
         }
     }
 

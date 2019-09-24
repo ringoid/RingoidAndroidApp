@@ -58,6 +58,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     protected val timeKeeper = TimeKeeper()
 
     // ------------------------------------------
+    protected abstract fun contextMenuActions(): String
+
     override fun getLayoutId(): Int = R.layout.fragment_feed
     override fun getRecyclerView(): RecyclerView = rv_items
 
@@ -281,7 +283,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     profileThumbnailUri = image.thumbnailUri,
                     socialInstagram = model.instagram(),
                     socialTiktok = model.tiktok())
-                navigate(this@FeedFragment, path = "/feed_item_context_menu?position=$position&profileId=${model.id}&imageId=${image.id}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_CONTEXT_MENU_FEED_ITEM)
+                navigate(this@FeedFragment, path = "/feed_item_context_menu?position=$position&profileId=${model.id}&imageId=${image.id}&actions=${contextMenuActions()}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_CONTEXT_MENU_FEED_ITEM)
             }
         }
         invalidateScrollCaches()
@@ -302,6 +304,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     val profileId = data.extras!!.getString("profileId")!!
                     val position = data.extras!!.getString("position")!!.toInt()
 
+                    // send like from context menu
                     if (data.hasExtra(Extras.OUT_EXTRA_LIKE_SENT)) {
                         data.getBooleanExtra(Extras.OUT_EXTRA_LIKE_SENT, false)
                             .takeIf { it && vm.onBeforeLike(position) }
@@ -311,6 +314,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                                 vm.onLike(profileId = profileId, imageId = imageId)
                             }
                     }
+
+                    // block / report from context menu
                     if (data.hasExtra(Extras.OUT_EXTRA_REPORT_REASON)) {
                         data.getIntExtra(Extras.OUT_EXTRA_REPORT_REASON, 0).let {
                             when (it) {

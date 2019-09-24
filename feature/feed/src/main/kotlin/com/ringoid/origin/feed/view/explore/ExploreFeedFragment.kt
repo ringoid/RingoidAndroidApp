@@ -63,6 +63,8 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
 
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_explore_title
 
+    override fun contextMenuActions(): String = "like"
+
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {
         when (newState) {

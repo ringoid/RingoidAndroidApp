@@ -67,6 +67,8 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
 
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_likes_you_title
 
+    override fun contextMenuActions(): String = "like"
+
     // --------------------------------------------------------------------------------------------
     override fun setDefaultToolbarTitle() {
         toolbar.setTitle(OriginR_string.feed_likes_you_title)

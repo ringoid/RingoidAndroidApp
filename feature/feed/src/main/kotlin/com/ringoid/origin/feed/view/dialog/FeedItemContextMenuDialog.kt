@@ -20,12 +20,20 @@ class FeedItemContextMenuDialog : SimpleBaseDialogFragment() {
     companion object {
         const val TAG = "FeedItemContextMenuDialog_tag"
 
+        private const val BUNDLE_KEY_CONTEXT_MENU_ACTIONS = "bundle_key_context_menu_actions"
         private const val BUNDLE_KEY_SOCIAL_INSTAGRAM = "bundle_key_social_instagram"
         private const val BUNDLE_KEY_SOCIAL_TIKTOK = "bundle_key_social_tiktok"
 
-        fun newInstance(socialInstagram: String? = null, socialTiktok: String? = null): FeedItemContextMenuDialog =
+        fun newInstance(contextMenuActions: String? = null,
+                        socialInstagram: String? = null,
+                        socialTiktok: String? = null): FeedItemContextMenuDialog =
             FeedItemContextMenuDialog().apply {
                 arguments = Bundle().apply {
+                    contextMenuActions?.takeIf { it.isNotBlank() }
+                        ?.let {
+                            val actions = it.split(',')
+                            putStringArray(BUNDLE_KEY_CONTEXT_MENU_ACTIONS, actions.toTypedArray())
+                        }
                     putString(BUNDLE_KEY_SOCIAL_INSTAGRAM, socialInstagram)
                     putString(BUNDLE_KEY_SOCIAL_TIKTOK, socialTiktok)
                 }
@@ -42,8 +50,13 @@ class FeedItemContextMenuDialog : SimpleBaseDialogFragment() {
         btn_block.clicks().compose(clickDebounce()).subscribe { onBlock() }
         btn_report.clicks().compose(clickDebounce()).subscribe { onReportSheetOpen() }
         btn_send_like.clicks().compose(clickDebounce()).subscribe { onSendLike() }
+        btn_open_chat.clicks().compose(clickDebounce()).subscribe { onOpenChat() }
         btn_open_social_instagram.clicks().compose(clickDebounce()).subscribe { openSocialInstagram() }
         btn_open_social_tiktok.clicks().compose(clickDebounce()).subscribe { openSocialTiktok() }
+
+        val contextMenuActions = arguments?.getStringArray(BUNDLE_KEY_CONTEXT_MENU_ACTIONS) ?: emptyArray()
+        btn_open_chat.changeVisibility(isVisible = contextMenuActions.contains("chat"))
+        btn_send_like.changeVisibility(isVisible = contextMenuActions.contains("like"))
 
         arguments?.getString(BUNDLE_KEY_SOCIAL_INSTAGRAM)?.takeIf { it.isNotBlank() }?.let { instagramUserId ->
             btn_open_social_instagram.text = String.format(resources.getString(OriginR_string.profile_button_open_social_instagram, ValueUtils.atCharSocialId(instagramUserId)))
@@ -67,6 +80,11 @@ class FeedItemContextMenuDialog : SimpleBaseDialogFragment() {
     // ------------------------------------------
     private fun onBlock() {
         communicator(IFeedItemContextMenuActivity::class.java)?.onBlock()
+        close()
+    }
+
+    private fun onOpenChat() {
+        communicator(IFeedItemContextMenuActivity::class.java)?.openChat()
         close()
     }
 

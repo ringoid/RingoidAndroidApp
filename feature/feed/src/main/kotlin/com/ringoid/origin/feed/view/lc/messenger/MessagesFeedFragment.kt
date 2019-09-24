@@ -29,6 +29,7 @@ import com.ringoid.origin.feed.view.lc.base.BaseLcFeedFragment
 import com.ringoid.origin.messenger.model.ChatPayload
 import com.ringoid.origin.messenger.view.ChatFragment
 import com.ringoid.origin.messenger.view.IChatHost
+import com.ringoid.origin.navigation.Extras
 import com.ringoid.origin.navigation.RequestCode
 import com.ringoid.origin.navigation.navigate
 import com.ringoid.origin.navigation.noConnection
@@ -39,6 +40,7 @@ import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
+import com.ringoid.report.log.Report
 import com.ringoid.utility.communicator
 import com.ringoid.utility.getAttributeColor
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -79,6 +81,8 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
 
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_messages_title
+
+    override fun contextMenuActions(): String = "chat"
 
     // --------------------------------------------------------------------------------------------
     override fun setDefaultToolbarTitle() {
@@ -146,6 +150,26 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
                 payload?.let {
                     vm.onChatClose(profileId = it.peerId, imageId = it.peerImageId)
                     openRateUsDialogIfNeed()  // open RateUs dialog when Chat closed
+                }
+            }
+            RequestCode.RC_CONTEXT_MENU_FEED_ITEM -> {
+                if (data == null) {
+                    Report.w("No output from FeedItemContextMenu dialog")
+                    return
+                }
+
+                if (resultCode == Activity.RESULT_OK) {
+                    val imageId = data.extras!!.getString("imageId")!!
+                    val profileId = data.extras!!.getString("profileId")!!
+                    val position = data.extras!!.getString("position")!!.toInt()
+
+                    // open chat from context menu
+                    if (data.hasExtra(Extras.OUT_EXTRA_OPEN_CHAT)) {
+                        val image = feedAdapter.findModel(position)?.images?.find { it.id == imageId }
+                        data.getBooleanExtra(Extras.OUT_EXTRA_OPEN_CHAT, false)
+                            .takeIf { it }
+                            ?.let { openChat(position = position, peerId = profileId, image = image) }
+                    }
                 }
             }
         }

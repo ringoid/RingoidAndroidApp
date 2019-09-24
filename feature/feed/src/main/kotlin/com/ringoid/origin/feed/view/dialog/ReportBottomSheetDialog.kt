@@ -26,7 +26,7 @@ class ReportBottomSheetDialog : SimpleBaseDialogFragment() {
         fun newInstance(excludedReasons: String? = null): ReportBottomSheetDialog =
             ReportBottomSheetDialog().apply {
                 arguments = excludedReasons
-                    ?.takeIf { !it.isNullOrBlank() }
+                    ?.takeIf { it.isNotBlank() }
                     ?.let {
                         val reasons = it.split(',').map { it.toInt() }
                         Bundle().apply { putIntArray(BUNDLE_KEY_EXCLUDED_REASONS, reasons.toIntArray()) }
