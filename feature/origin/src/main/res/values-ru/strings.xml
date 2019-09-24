@@ -147,6 +147,7 @@
     <string name="settings_account_delete_info">Если вы не открывали Ringoid более 16 дней, профиль автоматически удаляется.</string>
     <string name="settings_account_delete_dialog_title">Удалить аккаунт?</string>
     <string name="settings_app_info">Информация</string>
+    <string name="settings_debug">Отладка</string>
     <string name="settings_filters">Фильтры</string>
     <string name="settings_language">Язык</string>
     <string name="settings_language_help">Если вы хотите помочь и перевести Ringoid на родной язык, пожалуйста, напишите в support@ringoid.com</string>

@@ -25,6 +25,8 @@ import com.ringoid.origin.messenger.di.ChatHostActivityModule
 import com.ringoid.origin.profile.dialog.context_menu.di.UserProfileContextMenuActivityModule
 import com.ringoid.origin.profile.dialog.context_menu.di.UserProfileContextMenuDialogModule
 import com.ringoid.origin.profile.view.di.UserProfileFragmentModule
+import com.ringoid.origin.rateus.view.di.RateUsActivityModule
+import com.ringoid.origin.rateus.view.di.RateUsDialogModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugActivityModule
 import com.ringoid.origin.usersettings.view.debug.di.DebugFragmentModule
 import com.ringoid.origin.usersettings.view.filters.di.SettingsFiltersActivityModule
@@ -69,6 +71,7 @@ import javax.inject.Singleton
                       MessagesFeedFragmentModule::class, NoNetworkConnectionActivityModule::class,
                       OldAppVersionActivityModule::class, UserProfileFragmentModule::class,
                       UserProfileContextMenuActivityModule::class, UserProfileContextMenuDialogModule::class,
+                      RateUsActivityModule::class, RateUsDialogModule::class,
                       SettingsActivityModule::class, SettingsFragmentModule::class,
                       SettingsAppInfoActivityModule::class, SettingsAppInfoFragmentModule::class,
                       SettingsFiltersActivityModule::class, SettingsFiltersFragmentModule::class,

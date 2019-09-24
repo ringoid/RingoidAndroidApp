@@ -15,6 +15,7 @@ import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.debug.timer.TimeKeeper
+import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.image.EmptyImage
 import com.ringoid.origin.AppRes
@@ -360,6 +361,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
         }
 
+        @DebugOnly
+        fun onDebugOptionSelect() {
+            navigate(this@FeedFragment, path = "/rate_us")
+        }
+
+        // --------------------------------------
         super.onViewCreated(view, savedInstanceState)
         filtersPopupWidget = FiltersPopupWidget(view) {
             onShowFiltersPopup()
@@ -390,10 +397,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         toolbarWidget = ToolbarWidget(view).init { toolbar ->
             with (toolbar) {
                 setTitle(getToolbarTitleResId())
-                inflateMenu(R.menu.feed_toolbar_menu)
+                inflateMenu(if (BuildConfig.IS_STAGING) R.menu.feed_toolbar_menu_debug else R.menu.feed_toolbar_menu)
                 setOnClickListener { filtersPopupWidget?.show() }
                 setOnMenuItemClickListener {
                     when (it.itemId) {
+                        R.id.debug -> { onDebugOptionSelect(); true }
                         R.id.filters -> { filtersPopupWidget?.show(); true }
                         else -> false
                     }

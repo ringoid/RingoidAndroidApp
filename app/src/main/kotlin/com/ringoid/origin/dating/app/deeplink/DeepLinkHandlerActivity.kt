@@ -17,12 +17,14 @@ import com.ringoid.origin.messenger.deeplink.ChatDeepLinkModule
 import com.ringoid.origin.messenger.deeplink.ChatDeepLinkModuleLoader
 import com.ringoid.origin.profile.deeplink.ProfileDeepLinkModule
 import com.ringoid.origin.profile.deeplink.ProfileDeepLinkModuleLoader
+import com.ringoid.origin.rateus.deeplink.RateUsDeepLinkModule
 import com.ringoid.origin.usersettings.deeplink.UserSettingsDeepLinkModule
 import com.ringoid.origin.usersettings.deeplink.UserSettingsDeepLinkModuleLoader
 
 @DeepLinkHandler(value = [AppDeepLinkModule::class, AuthDeepLinkModule::class, ChatDeepLinkModule::class,
                           FeedDeepLinkModule::class, ImagePreviewDeepLinkModule::class, MainDeepLinkModule::class,
-                          OriginDeepLinkModule::class, ProfileDeepLinkModule::class, UserSettingsDeepLinkModule::class])
+                          OriginDeepLinkModule::class, ProfileDeepLinkModule::class, RateUsDeepLinkModule::class,
+                          UserSettingsDeepLinkModule::class])
 class DeepLinkHandlerActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

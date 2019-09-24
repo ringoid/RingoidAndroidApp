@@ -8,5 +8,5 @@ import dagger.android.ContributesAndroidInjector
 abstract class FeedItemContextMenuDialogModule {
 
     @ContributesAndroidInjector
-    abstract fun contributeFeedItemContextMenuDialog(): FeedItemContextMenuDialog
+    abstract fun contributeFeedItemContextMenuDialogInjector(): FeedItemContextMenuDialog
 }

@@ -152,6 +152,7 @@
     <string name="settings_account_delete_info">If you don\'t use Ringoid for more than 16 days, your account will be automatically deleted.</string>
     <string name="settings_account_delete_dialog_title">Delete Account?</string>
     <string name="settings_app_info">Legal</string>
+    <string name="settings_debug">Debug</string>
     <string name="settings_filters">Filters</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_help">If you want to help the community and localise Ringoid to your native language, please email support@ringoid.com</string>

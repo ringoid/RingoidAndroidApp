@@ -210,7 +210,7 @@ ext {
     def Widget = [[configuration: "implementation", dependency: project(modules.widget)]]
 
     def Develop = Base + Config + Debug + Domain + Utility + Widget
-    def AllFeatures = Auth + Feed + ImagePreview + Messenger + Profile + UserSettings + Origin
+    def AllFeatures = Auth + Feed + ImagePreview + Messenger + Profile + RateUs + UserSettings + Origin
 
     /* Plugins */
     // --------------------------------------------------------------------------------------------
@@ -529,7 +529,8 @@ ext {
     /* Feature Rate Us */
     // ------------------------------------------
     rateUsDependencies = []
-    rateUsDependencies += Utility + Analytics + Base + Domain + Origin + android + dagger + kotlin + log + rxBind
+    rateUsDependencies += Utility + Analytics + Base + Domain + Origin +
+                          android + arch + dagger + deeplink + kotlin + log + rxBind
 
     androidTestRateUsDeps = androidTest
     testRateUsDependencies = test
