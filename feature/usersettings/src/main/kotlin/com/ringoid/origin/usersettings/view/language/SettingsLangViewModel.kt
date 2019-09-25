@@ -14,7 +14,7 @@ class SettingsLangViewModel @Inject constructor(
     private val updateUserSettingsUseCase: UpdateUserSettingsUseCase,
     app: Application) : BaseViewModel(app) {
 
-    fun updateUserSettingLocale() {
+    internal fun updateUserSettingLocale() {
         val settings = UserSettings(locale = app.localeManager.getLang())
         val params = Params().put(UpdateUserSettingsEssenceUnauthorized(settings))
         updateUserSettingsUseCase.source(params = params)

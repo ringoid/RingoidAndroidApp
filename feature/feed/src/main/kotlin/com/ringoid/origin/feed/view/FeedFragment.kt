@@ -361,13 +361,17 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         fun onExpandFilters() {
             toolbarWidget?.collapse()
             overlay?.changeVisibility(isVisible = true)
-            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
+            if (isAdded) {
+                childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
+            }
         }
 
         fun onHideFilters() {
             toolbarWidget?.expand()
             overlay?.changeVisibility(isVisible = false)
-            childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
+            if (isAdded) {
+                childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
+            }
         }
 
         @DebugOnly
