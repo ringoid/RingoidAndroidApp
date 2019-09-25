@@ -16,7 +16,7 @@
         android:text="@string/rate_us_dialog_title"
         android:textSize="@dimen/std_text_16"
         android:textStyle="bold"
-        style="@style/StdText.Primary"/>
+        style="@style/StdText.Secondary"/>
 
     <com.ringoid.origin.rateus.widget.SelectRatingLineView
         android:id="@+id/rating_line"
@@ -65,7 +65,7 @@
             android:id="@+id/btn_cancel"
             android:layout_marginEnd="@dimen/std_margin_24"
             android:text="@string/button_later"
-            style="@style/FlatButton"/>
+            style="@style/FlatButton.Primary"/>
 
         <Space
             android:layout_width="0dp"
@@ -85,7 +85,7 @@
             <Button
                 android:id="@+id/btn_rate"
                 android:text="@string/button_rate"
-                style="@style/FlatButton"/>
+                style="@style/FlatButton.Primary"/>
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>
