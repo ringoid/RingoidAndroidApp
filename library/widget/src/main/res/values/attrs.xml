@@ -18,6 +18,16 @@
     </declare-styleable>
 
     <!-- Widget -->
+    <declare-styleable name="AlertPopup">
+        <attr name="alert_bg" format="reference"/>
+        <attr name="alert_icon" format="reference"/>
+        <attr name="alert_icon_hide" format="reference"/>
+        <attr name="alert_action_text" format="reference|string"/>
+        <attr name="alert_action_text_color" format="reference"/>
+        <attr name="alert_description_text" format="reference|string"/>
+        <attr name="alert_description_text_color" format="reference"/>
+    </declare-styleable>
+
     <declare-styleable name="ExtendImageButton">
         <attr name="xbtnInnerSize" format="reference"/>
         <attr name="xbtnBg" format="reference"/>

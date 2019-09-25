@@ -101,6 +101,18 @@
     </style>
 
     <!-- Widget -->
+    <style name="AlertPopup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="alert_bg">?refColorBg</item>
+        <item name="alert_action_text_color">?refTextColorPrimary</item>
+        <item name="alert_description_text_color">?refTextColorPrimary</item>
+    </style>
+
+    <style name="AlertPopup.Error">
+        <item name="alert_bg">@color/red_alert</item>
+    </style>
+
     <style name="IconItemView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/icon_item_view_height</item>
