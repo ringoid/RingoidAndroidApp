@@ -1,10 +1,13 @@
 package com.ringoid.origin.push
 
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.ringoid.origin.R
+import com.ringoid.utility.targetVersion
 
 object PushUtils {
 
@@ -36,4 +39,21 @@ object PushUtils {
         val nm = NotificationManagerCompat.from(context)
         nm.cancel(notificationId)
     }
+
+    // ------------------------------------------
+    /**
+     * Checks whether push notifications are enabled for the whole app in device settings.
+     *
+     * @see https://stackoverflow.com/questions/38198775/android-app-detect-if-app-push-notification-is-off
+     */
+    fun areNotificationsEnabled(context: Context, channelId: String? = null): Boolean =
+        if (targetVersion(Build.VERSION_CODES.O)) {
+            channelId?.takeIf { it.isNotBlank() }
+                ?.let { context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager }
+                ?.getNotificationChannel(channelId)
+                ?.let { channel -> channel.importance != NotificationManager.IMPORTANCE_NONE }
+                ?: false
+        } else {
+            NotificationManagerCompat.from(context).areNotificationsEnabled()
+        }
 }
