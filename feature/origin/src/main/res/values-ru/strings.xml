@@ -128,8 +128,8 @@
     <string name="profile_label_coins">%s монет</string>
 
     <!-- Rate us screen -->
-    <string name="rate_us_dialog_feedback_description">Расскажите нам, как мы могли бы улучшить это приложение</string>
-    <string name="rate_us_dialog_title">Какова вероятность того, что вы порекомендуете Ringoid другу?</string>
+    <string name="rate_us_dialog_feedback_description">Предложите улучшения</string>
+    <string name="rate_us_dialog_title">Вам нравится Ringoid?</string>
 
     <!-- Referral code screen -->
     <string name="referral_dialog_title">Код приглашения</string>
