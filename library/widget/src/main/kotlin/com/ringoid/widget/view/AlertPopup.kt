@@ -8,6 +8,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.jakewharton.rxbinding3.view.clicks
+import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.widget.R
 import kotlinx.android.synthetic.main.widget_alert_popup_layout.view.*
@@ -43,6 +45,21 @@ class AlertPopup : ConstraintLayout {
 
             recycle()
         }
+
+        setOnClickListener { /* consume any clicks inside this widget */ }
+    }
+
+    /* API */
+    // -------------------------------------------------------------------------------------------
+    @Suppress("CheckResult")
+    fun setOnActionClickListener(l: (() -> Unit)?) {
+        btn_action.clicks().compose(clickDebounce()).subscribe { l?.invoke() }
+        tv_description.clicks().compose(clickDebounce()).subscribe { l?.invoke() }
+    }
+
+    @Suppress("CheckResult")
+    fun setOnHideClickListener(l: (() -> Unit)?) {
+        ibtn_hide_icon.clicks().compose(clickDebounce()).subscribe { l?.invoke() }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -75,6 +92,6 @@ class AlertPopup : ConstraintLayout {
     }
 
     private fun setHideIcon(@DrawableRes resId: Int) {
-        iv_hide_icon.setImageResource(resId)
+        ibtn_hide_icon.setImageResource(resId)
     }
 }

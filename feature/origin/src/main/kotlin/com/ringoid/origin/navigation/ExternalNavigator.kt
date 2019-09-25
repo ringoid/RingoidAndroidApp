@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
@@ -14,6 +15,8 @@ import androidx.fragment.app.Fragment
 import com.ringoid.base.ContextUtil
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.R
+import com.ringoid.report.log.Report
+import com.ringoid.utility.targetVersion
 import com.ringoid.utility.toast
 import timber.log.Timber
 import java.util.*
@@ -45,8 +48,7 @@ object ExternalNavigator {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
             } else {
-                val message = "No Activity was found to open Browser!"
-                Timber.e(message); context.toast(message)
+                reportFailedToOpenExternalScreen(context, "browser")
             }
         } else {
             Timber.e("Input url [%s] is invalid !", url)
@@ -59,6 +61,7 @@ object ExternalNavigator {
         openEmailComposerIntent(email = email, subject = subject, body = body)
             .takeIf { it.resolveActivity(activity.packageManager) != null }
             ?.let { activity.startActivityForResult(it, RC_EMAIL_SEND) }
+            ?: run { reportFailedToOpenExternalScreen(activity, "email") }
     }
 
     fun openEmailComposer(fragment: Fragment, email: String, subject: String = "", body: String = "") {
@@ -66,6 +69,7 @@ object ExternalNavigator {
             openEmailComposerIntent(email = email, subject = subject, body = body)
                 .takeIf { it.resolveActivity(activity.packageManager) != null }
                 ?.let { fragment.startActivityForResult(it, RC_EMAIL_SEND) }
+                ?: run { reportFailedToOpenExternalScreen(fragment.context, "email") }
         }
     }
 
@@ -93,6 +97,7 @@ object ExternalNavigator {
         openGalleryToGetImageIntent()
             .takeIf { it.resolveActivity(activity.packageManager) != null }
             ?.let { activity.startActivityForResult(it, RC_GALLERY_GET_IMAGE) }
+            ?: run { reportFailedToOpenExternalScreen(activity, "gallery") }
     }
 
     fun openGalleryToGetImageFragment(fragment: Fragment) {
@@ -100,6 +105,7 @@ object ExternalNavigator {
             openGalleryToGetImageIntent()
                 .takeIf { it.resolveActivity(activity.packageManager) != null }
                 ?.let { fragment.startActivityForResult(it, RC_GALLERY_GET_IMAGE) }
+                ?: run { reportFailedToOpenExternalScreen(fragment.context, "gallery") }
         }
     }
 
@@ -123,18 +129,20 @@ object ExternalNavigator {
         }
     }
 
-    /* Location */
+    /* Location Settings */
     // --------------------------------------------------------------------------------------------
     fun openLocationSettings(context: Context) {
         Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             .takeIf { it.resolveActivity(context.packageManager) != null }
             ?.let { context.startActivity(it) }
+            ?: run { reportFailedToOpenExternalScreen(context, "location settings") }
     }
 
     fun openLocationSettingsForResult(activity: Activity) {
         Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             .takeIf { it.resolveActivity(activity.packageManager) != null }
             ?.let { activity.startActivityForResult(it, RC_SETTINGS_LOCATION) }
+            ?: run { reportFailedToOpenExternalScreen(activity, "location settings") }
     }
 
     fun openLocationSettingsForResult(fragment: Fragment) {
@@ -142,7 +150,33 @@ object ExternalNavigator {
             Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 .takeIf { it.resolveActivity(activity.packageManager) != null }
                 ?.let { fragment.startActivityForResult(it, RC_SETTINGS_LOCATION) }
+                ?: run { reportFailedToOpenExternalScreen(fragment.context, "location settings") }
         }
+    }
+
+    /* Notification Settings */
+    // --------------------------------------------------------------------------------------------
+    /**
+     * Open notification settings of the app.
+     *
+     * @see https://stackoverflow.com/questions/32366649/any-way-to-link-to-the-android-notification-settings-for-my-app
+     * @see https://stackoverflow.com/questions/38124552/access-application-notification-settings-programmatically
+     */
+    fun openNotificationSettings(context: Context) {
+        if (targetVersion(Build.VERSION_CODES.O)) {  // for Android 8+
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+//                putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
+            }
+        } else {  // for Android 5-7
+            Intent("android.settings.APP_NOTIFICATION_SETTINGS").apply {
+                putExtra("app_package", context.packageName)
+                putExtra("app_uid", context.applicationInfo.uid)
+            }
+        }.takeIf { it.resolveActivity(context.packageManager) != null }
+        ?.let { context.startActivity(it) }
+        ?: run { reportFailedToOpenExternalScreen(context, "notification settings") }
     }
 
     /* Social */
@@ -195,6 +229,12 @@ object ExternalNavigator {
             ?.let { uri -> Intent(Intent.ACTION_VIEW, uri) }
             ?.takeIf { it.resolveActivity(activity.packageManager) != null }
             ?.let { intent -> activity.startActivity(intent) }
-            ?: run { activity.toast(R.string.error_common) }
+            ?: run { reportFailedToOpenExternalScreen(activity, "social $social") }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun reportFailedToOpenExternalScreen(context: Context?, tag: String) {
+        context?.toast(R.string.error_common)
+        Report.w("Failed to open external screen", extras = listOf("screen" to tag))
     }
 }

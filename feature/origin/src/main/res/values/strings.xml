@@ -48,6 +48,9 @@
     <string name="time_keeper_interval_alert_load">Data is not ready yet, please wait&#8230;</string>
 
     <!-- Error screen -->
+    <string name="alert_push_notifications_action_text">Enable push notification</string>
+    <string name="alert_push_notifications_description_text">See when you\'ve got new like,\nmatch or message</string>
+
     <string name="error_screen_no_network_connection">No internet</string>
     <string name="error_screen_no_network_connection_button_label">Retry</string>
     <string name="error_screen_old_app_version_button_label">Update the app</string>

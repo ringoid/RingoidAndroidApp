@@ -48,6 +48,7 @@ class MainActivity : BaseMainActivity<MainViewModel>() {
         observe(vm.newLikesCount()) { showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = it) }
         observe(vm.newMatchesCount()) { showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = it) }
         observe(vm.newMessagesCount()) { showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = it) }
+        observeOneShot(vm.alertNoPushNotificationsOneShot(), ::showAlertNoPushNotifications)
         observeOneShot(vm.closeDebugViewOneShot()) { askToCloseDebugView() }
 
         AppUtils.checkForGooglePlayServices(this)

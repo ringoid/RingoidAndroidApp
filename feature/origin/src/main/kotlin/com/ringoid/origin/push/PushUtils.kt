@@ -52,8 +52,11 @@ object PushUtils {
                 ?.let { context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager }
                 ?.getNotificationChannel(channelId)
                 ?.let { channel -> channel.importance != NotificationManager.IMPORTANCE_NONE }
-                ?: false
+                ?: areNotificationsEnabledCompat(context)
         } else {
-            NotificationManagerCompat.from(context).areNotificationsEnabled()
+            areNotificationsEnabledCompat(context)
         }
+
+    private fun areNotificationsEnabledCompat(context: Context): Boolean =
+        NotificationManagerCompat.from(context).areNotificationsEnabled()
 }

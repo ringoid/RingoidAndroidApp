@@ -8,47 +8,51 @@
         android:id="@+id/iv_icon"
         android:layout_width="@dimen/std_icon_36"
         android:layout_height="@dimen/std_icon_36"
+        android:layout_marginTop="@dimen/std_margin_12"
         android:layout_marginStart="@dimen/std_margin_16"
         android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <ImageView
-        android:id="@+id/iv_hide_icon"
+    <ImageButton
+        android:id="@+id/ibtn_hide_icon"
         android:layout_width="@dimen/std_icon_36"
         android:layout_height="@dimen/std_icon_36"
+        android:layout_marginTop="@dimen/std_margin_12"
         android:layout_marginEnd="@dimen/std_margin_8"
+        android:background="?selectableItemBackground"
         android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/tv_description"
         android:layout_width="0dp"
         android:layout_marginTop="@dimen/std_margin_8"
-        android:layout_marginStart="@dimen/std_margin_16"
-        android:layout_marginEnd="@dimen/std_margin_16"
+        android:layout_marginStart="@dimen/std_margin_32"
+        android:layout_marginEnd="@dimen/std_margin_32"
+        android:gravity="center_vertical|start"
+        android:textSize="@dimen/std_text_18"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
-        app:layout_constraintEnd_toStartOf="@id/iv_hide_icon"
+        app:layout_constraintEnd_toStartOf="@id/ibtn_hide_icon"
         style="@style/StdText.Primary"/>
 
     <Button
         android:id="@+id/btn_action"
         android:layout_width="0dp"
-        android:layout_marginBottom="@dimen/std_margin_8"
         android:layout_marginStart="@dimen/std_margin_16"
         android:layout_marginEnd="@dimen/std_margin_16"
+        android:background="?selectableItemBackground"
+        android:minHeight="@dimen/std_btn_height_narrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
-        app:layout_constraintEnd_toStartOf="@id/iv_hide_icon"
+        app:layout_constraintEnd_toStartOf="@id/ibtn_hide_icon"
         style="@style/FlatButton.Primary"/>
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/std_margin_24"
+        android:layout_height="@dimen/std_margin_12"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
         app:layout_constraintBottom_toTopOf="@id/btn_action"/>
 </merge>

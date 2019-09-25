@@ -22,6 +22,19 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <com.ringoid.widget.view.AlertPopup
+        android:id="@+id/alert_no_push"
+        android:layout_marginTop="@dimen/std_margin_64"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:alert_icon="@drawable/ic_alert_white_36dp"
+        app:alert_icon_hide="@drawable/ic_alert_close_white_36dp"
+        app:alert_action_text="@string/alert_push_notifications_action_text"
+        app:alert_description_text="@string/alert_push_notifications_description_text"
+        style="@style/AlertPopup.Error"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

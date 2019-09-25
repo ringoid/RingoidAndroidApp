@@ -26,6 +26,7 @@ import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssenceUnauthoriz
 import com.ringoid.domain.model.feed.Filters
 import com.ringoid.domain.model.feed.NoFilters
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
+import com.ringoid.origin.push.PushUtils
 import com.ringoid.origin.view.main.BaseMainViewModel
 import com.ringoid.report.exception.WrongRequestParamsClientApiException
 import com.ringoid.report.log.Report
@@ -54,6 +55,7 @@ class MainViewModel @Inject constructor(
     private val newLikesCount by lazy { MutableLiveData<Int>() }
     private val newMatchesCount by lazy { MutableLiveData<Int>() }
     private val newMessagesCount by lazy { MutableLiveData<Int>() }
+    private val alertNoPushNotificationsOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     @DebugOnly private val closeDebugViewOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun badgeLikes(): LiveData<Boolean> = badgeLikes
     internal fun badgeMessages(): LiveData<Boolean> = badgeMessages
@@ -61,6 +63,7 @@ class MainViewModel @Inject constructor(
     internal fun newLikesCount(): LiveData<Int> = newLikesCount
     internal fun newMatchesCount(): LiveData<Int> = newMatchesCount
     internal fun newMessagesCount(): LiveData<Int> = newMessagesCount
+    internal fun alertNoPushNotificationsOneShot(): LiveData<OneShot<Boolean>> = alertNoPushNotificationsOneShot
     @DebugOnly internal fun closeDebugViewOneShot(): LiveData<OneShot<Boolean>> = closeDebugViewOneShot
 
     init {
@@ -149,6 +152,11 @@ class MainViewModel @Inject constructor(
 
     internal fun onAppReOpen() {
         onEachAppStart()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        alertNoPushNotificationsOneShot.value = OneShot(PushUtils.areNotificationsEnabled(getApplication()))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

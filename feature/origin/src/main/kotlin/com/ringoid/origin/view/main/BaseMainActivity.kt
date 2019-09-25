@@ -17,6 +17,7 @@ import com.ringoid.base.view.BaseFragment
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.memory.ILoginInMemoryCache
 import com.ringoid.origin.R
+import com.ringoid.origin.navigation.ExternalNavigator
 import com.ringoid.origin.navigation.NavigateFrom
 import com.ringoid.origin.navigation.Payload
 import com.ringoid.origin.view.base.BasePermissionActivity
@@ -76,6 +77,11 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
             }
 
         registerReceiver(powerSafeModeReceiver, IntentFilter().apply { addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED) })
+
+        with (alert_no_push) {
+            setOnActionClickListener { ExternalNavigator.openNotificationSettings(this@BaseMainActivity) }
+            setOnHideClickListener { alert_no_push.changeVisibility(isVisible = false) }
+        }
 
         bottom_bar.apply {
             setOnNavigationItemSelectedListener {
@@ -233,6 +239,10 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     // --------------------------------------------------------------------------------------------
+    protected fun showAlertNoPushNotifications(isEnabled: Boolean) {
+        alert_no_push.changeVisibility(isVisible = !isEnabled)
+    }
+
     override fun showBadgeOnLikes(isVisible: Boolean) {
         bottom_bar.showBadgeOnLikes(isVisible)
     }
