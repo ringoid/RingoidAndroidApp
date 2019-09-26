@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.preference.PreferenceManager
+import com.ringoid.utility.targetVersion
 import timber.log.Timber
 import java.util.*
 
@@ -53,6 +54,7 @@ class LocaleManager(context: Context) {
     fun setNewLocale(context: Context, lang: String) {
         persist(lang)
         update(context, lang)
+        Timber.v("Set new locale: $lang")
     }
 
     /* Internal */
@@ -74,14 +76,14 @@ class LocaleManager(context: Context) {
     private fun updateResources(context: Context, lang: String) {
         val locale = Locale(lang).apply { Locale.setDefault(this) }
 
-        val config = Configuration(context.resources.configuration)
-            .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    setLocale(locale)
-                } else {
-                    this.locale = locale
-                }
+        val config = Configuration(context.resources.configuration).apply {
+            if (targetVersion(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
+                setLocale(locale)
+            } else {
+                this.locale = locale
             }
+        }
         context.resources.updateConfiguration(config, context.resources.displayMetrics)
+        Timber.v("Update locale: ${locale.language} default=${Locale.getDefault().language}")
     }
 }
