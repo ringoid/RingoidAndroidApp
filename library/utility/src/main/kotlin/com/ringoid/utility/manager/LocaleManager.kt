@@ -1,10 +1,10 @@
 package com.ringoid.utility.manager
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Build
 import android.preference.PreferenceManager
 import com.ringoid.utility.targetVersion
@@ -47,18 +47,34 @@ class LocaleManager(context: Context) {
     // --------------------------------------------------------------------------------------------
     fun getLang(): String = prefs.getString(LANG_KEY, null) ?: Locale.getDefault().language
 
-    fun setLocale(context: Context) {
-        update(context, getLang())
+    /**
+     * Sets up default locale. Call this method in [Activity.onCreate] and [Application.onCreate].
+     *
+     * @param context - either [Activity] or [Application.getApplicationContext].
+     */
+    fun initLocale(context: Context) {
+        val deviceLang = getRealLocale(context).language
+        val inAppLang = getLang()
+        val lang = inAppLang
+        Timber.v("Init locale: $lang, device($deviceLang), in-app($inAppLang)")
+        setNewLocale(context, lang)
     }
 
     fun setNewLocale(context: Context, lang: String) {
-        persist(lang)
-        update(context, lang)
         Timber.v("Set new locale: $lang")
+        persist(lang)
+        updateResources(context, lang)
     }
 
     /* Internal */
     // --------------------------------------------------------------------------------------------
+    private fun getRealLocale(context: Context): Locale =
+        if (targetVersion(Build.VERSION_CODES.N)) {
+            context.resources.configuration.locales[0]
+        } else {
+            context.resources.configuration.locale
+        }
+
     @Suppress("ApplySharedPref")
     private fun persist(lang: String) {
         /**
@@ -66,11 +82,6 @@ class LocaleManager(context: Context) {
          * immediately which will prevent apply() to finish
          */
         prefs.edit().putString(LANG_KEY, lang).commit()
-    }
-
-    private fun update(context: Context, lang: String) {
-        updateResources(context, lang)
-        updateResources(context.applicationContext, lang)
     }
 
     private fun updateResources(context: Context, lang: String) {
@@ -84,6 +95,6 @@ class LocaleManager(context: Context) {
             }
         }
         context.resources.updateConfiguration(config, context.resources.displayMetrics)
-        Timber.v("Update locale: ${locale.language} default=${Locale.getDefault().language}")
+        Timber.v("Finish update locale: ${locale.language} default(${Locale.getDefault().language})")
     }
 }

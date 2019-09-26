@@ -84,7 +84,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onBeforeCreate")
         DebugLogUtil.lifecycle(this, "onBeforeCreate")
-        app.localeManager.setLocale(this)
+        app.localeManager.initLocale(this)  // initialize locale
         LocaleManager.resetActivityTitle(this)
         // override in subclasses
     }

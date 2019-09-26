@@ -52,7 +52,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        localeManager.setLocale(this)
+        localeManager.initLocale(applicationContext)  // refresh local on configuration change
     }
 
     /* Debugging */
@@ -91,7 +91,7 @@ abstract class BaseRingoidApplication : DaggerApplication(), IBaseRingoidApplica
     /* Resources */
     // ------------------------------------------------------------------------
     private fun initializeResources() {
-        localeManager.setLocale(this)
+        localeManager.initLocale(applicationContext)  // initialize locale in app
         AppRes.init(applicationContext)
     }
 
