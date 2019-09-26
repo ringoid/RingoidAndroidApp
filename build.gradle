@@ -118,7 +118,7 @@ allprojects {
     ext {
         majorVersion = 4
         minorVersion = 0
-        buildVersion = 264
+        buildVersion = 265
 
         androidApplicationId = getAppId(env)
         androidVersionCode = buildVersion
