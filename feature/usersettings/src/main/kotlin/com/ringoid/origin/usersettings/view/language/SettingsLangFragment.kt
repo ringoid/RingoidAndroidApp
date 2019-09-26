@@ -31,7 +31,7 @@ class SettingsLangFragment : BaseFragment<SettingsLangViewModel>() {
 
     private val langAdapter = SettingsLangAdapter().apply {
         itemClickListener = { model, _ ->
-            app?.localeManager?.setNewLocale(context!!, lang = model.language.id)
+            app?.localeManager?.setNewLocale(lang = model.language.id)
             vm.updateUserSettingLocale()  // viewModel outlives this screen's recreation
             (activity as? BaseActivity<*>)?.apply {
                 setResultExposed(Activity.RESULT_OK)

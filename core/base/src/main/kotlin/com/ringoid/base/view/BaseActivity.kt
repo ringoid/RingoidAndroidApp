@@ -1,6 +1,7 @@
 package com.ringoid.base.view
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.LayoutRes
@@ -80,11 +81,15 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
+    override fun attachBaseContext(newBase: Context) {
+        val context = LocaleManager.initLocale(newBase)  // initialize locale
+        super.attachBaseContext(context)
+    }
+
     protected open fun onBeforeCreate() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onBeforeCreate")
         DebugLogUtil.lifecycle(this, "onBeforeCreate")
-        app.localeManager.initLocale(this)  // initialize locale
         LocaleManager.resetActivityTitle(this)
         // override in subclasses
     }
