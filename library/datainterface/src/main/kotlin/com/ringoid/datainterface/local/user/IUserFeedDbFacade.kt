@@ -15,5 +15,7 @@ interface IUserFeedDbFacade {
 
     fun deleteProfileIds()
 
+    fun insertProfileIds(profileIds: Collection<String>)
+
     fun profileIds(): Single<List<String>>
 }

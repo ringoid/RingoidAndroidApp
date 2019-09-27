@@ -504,7 +504,7 @@ open class FeedRepository @Inject constructor(
         .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
             val profiles = lmm.notSeenLikesProfileIds()
-            Completable.fromAction { newLikesProfilesCache.addProfileIds(profiles) }
+            Completable.fromAction { newLikesProfilesCache.insertProfileIds(profiles) }
                        .toSingleDefault(lmm to count)
         }
         .zipWith(newLikesProfilesCache.countProfileIds(),
@@ -523,7 +523,7 @@ open class FeedRepository @Inject constructor(
         .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
             val profiles = lmm.notSeenMatchesProfileIds()
-            Completable.fromAction { newMatchesProfilesCache.addProfileIds(profiles) }
+            Completable.fromAction { newMatchesProfilesCache.insertProfileIds(profiles) }
                        .toSingleDefault(lmm to count)
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(),
