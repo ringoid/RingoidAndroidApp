@@ -12,7 +12,6 @@ import com.ringoid.domain.interactor.system.PostToSlackUseCase
 import com.ringoid.domain.interactor.user.UpdateUserProfileSettingsUseCase
 import com.ringoid.domain.misc.UserProfileCustomPropertiesUnsavedInput
 import com.ringoid.origin.model.*
-import com.ringoid.origin.view.base.settings.BaseSettingsViewModel
 import com.ringoid.origin.view.base.settings.SimpleBaseSettingsViewModel
 import com.uber.autodispose.lifecycle.autoDisposable
 import timber.log.Timber
@@ -26,6 +25,7 @@ class SettingsProfileViewModel @Inject constructor(
     private val profile by lazy { MutableLiveData<UserProfileProperties>() }
     internal fun profile(): LiveData<UserProfileProperties> = profile
 
+    private var inited: Boolean = false
     private lateinit var properties: UserProfileProperties
     private lateinit var unsavedProperties: UserProfileCustomPropertiesUnsavedInput
 
@@ -37,6 +37,7 @@ class SettingsProfileViewModel @Inject constructor(
         unsavedProperties = spm.getUserProfileCustomPropertiesUnsavedInput()
         profile.value = properties  // assign initial values to views
         spm.dropNeedShowStubStatus()  // drop flag
+        inited = true
     }
 
     override fun onStop() {
@@ -47,7 +48,7 @@ class SettingsProfileViewModel @Inject constructor(
     /* Properties */
     // --------------------------------------------------------------------------------------------
     fun onPropertyChanged_children(children: ChildrenProfileProperty) {
-        if (properties.children == children) {
+        if (!inited || properties.children == children) {
             return
         }
         properties.children = children
@@ -55,7 +56,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     fun onPropertyChanged_education(education: EducationProfileProperty) {
-        if (properties.education == education) {
+        if (!inited || properties.education == education) {
             return
         }
         properties.education = education
@@ -63,7 +64,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     fun onPropertyChanged_hairColor(hairColor: HairColorProfileProperty) {
-        if (properties.hairColor == hairColor) {
+        if (!inited || properties.hairColor == hairColor) {
             return
         }
         properties.hairColor = hairColor
@@ -71,7 +72,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     fun onPropertyChanged_income(income: IncomeProfileProperty) {
-        if (properties.income == income) {
+        if (!inited || properties.income == income) {
             return
         }
         properties.income = income
@@ -79,7 +80,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     fun onPropertyChanged_property(property: PropertyProfileProperty) {
-        if (properties.property == property) {
+        if (!inited || properties.property == property) {
             return
         }
         properties.property = property
@@ -87,7 +88,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     fun onPropertyChanged_transport(transport: TransportProfileProperty) {
-        if (properties.transport == transport) {
+        if (!inited || properties.transport == transport) {
             return
         }
         properties.transport = transport
@@ -97,7 +98,7 @@ class SettingsProfileViewModel @Inject constructor(
     /* Custom Properties */
     // --------------------------------------------------------------------------------------------
     internal fun onCustomPropertyChanged_about(text: String) {
-        if (properties.about() == text) {
+        if (!inited || properties.about() == text) {
             return
         }
         properties.about(text)
@@ -111,7 +112,7 @@ class SettingsProfileViewModel @Inject constructor(
     internal fun getCustomPropertyUnsavedInput_about(): String = unsavedProperties.about
 
     internal fun onCustomPropertyChanged_company(text: String) {
-        if (properties.company() == text) {
+        if (!inited || properties.company() == text) {
             return
         }
         properties.company(text)
@@ -119,7 +120,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     internal fun onCustomPropertyChanged_jobTitle(text: String) {
-        if (properties.jobTitle() == text) {
+        if (!inited || properties.jobTitle() == text) {
             return
         }
         properties.jobTitle(text)
@@ -127,7 +128,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     internal fun onCustomPropertyChanged_height(height: Int) {
-        if (properties.height == height || height in 1..91) {
+        if (!inited || properties.height == height || height in 1..91) {
             return
         }
         properties.height = height
@@ -135,7 +136,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     internal fun onCustomPropertyChanged_name(text: String) {
-        if (properties.name() == text) {
+        if (!inited || properties.name() == text) {
             return
         }
         properties.name(text)
@@ -143,7 +144,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     internal fun onCustomPropertyChanged_status(text: String) {
-        if (properties.status() == text) {
+        if (!inited || properties.status() == text) {
             return
         }
         properties.status(text)
@@ -151,7 +152,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     internal fun onCustomPropertyChanged_socialInstagram(text: String) {
-        if (properties.instagram() == text) {
+        if (!inited || properties.instagram() == text) {
             return
         }
         properties.instagram(text)
@@ -159,7 +160,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     internal fun onCustomPropertyChanged_socialTikTok(text: String) {
-        if (properties.tiktok() == text) {
+        if (!inited || properties.tiktok() == text) {
             return
         }
         properties.tiktok(text)
@@ -167,7 +168,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     internal fun onCustomPropertyChanged_university(text: String) {
-        if (properties.university() == text) {
+        if (!inited || properties.university() == text) {
             return
         }
         properties.university(text)
@@ -175,7 +176,7 @@ class SettingsProfileViewModel @Inject constructor(
     }
 
     internal fun onCustomPropertyChanged_whereLive(text: String) {
-        if (properties.whereLive() == text) {
+        if (!inited || properties.whereLive() == text) {
             return
         }
         properties.whereLive(text)
