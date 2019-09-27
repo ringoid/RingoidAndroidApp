@@ -6,13 +6,13 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.observe
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.origin.AppRes
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.feed.OriginR_string
 import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lc.FeedCounts
-import com.ringoid.origin.feed.view.lc.SeenAllFeed
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
@@ -65,11 +65,12 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
     }
 
     /**
-     * All feed items on a particular LC feed, specified by [SeenAllFeed.sourceFeed],
+     * All feed items on a particular LC feed, specified by [sourceFeed],
      * have been seen by user, so it's time to hide red badge on a corresponding LC tab.
      */
-    private fun onSeenAllFeed(seenAllFeed: SeenAllFeed) {
-        when (seenAllFeed.sourceFeed) {
+    private fun onSeenAllFeed(sourceFeed: LcNavTab) {
+        DebugLogUtil.v("All seen [$sourceFeed]")
+        when (sourceFeed) {
             LcNavTab.LIKES -> communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(false)
             LcNavTab.MESSAGES -> communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(false)
         }

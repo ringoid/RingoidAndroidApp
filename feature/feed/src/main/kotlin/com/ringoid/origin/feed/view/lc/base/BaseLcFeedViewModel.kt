@@ -24,7 +24,6 @@ import com.ringoid.origin.feed.model.FeedItemVO
 import com.ringoid.origin.feed.view.FeedViewModel
 import com.ringoid.origin.feed.view.lc.FeedCounts
 import com.ringoid.origin.feed.view.lc.LcCoordinator
-import com.ringoid.origin.feed.view.lc.SeenAllFeed
 import com.ringoid.origin.utils.ScreenHelper
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.report.exception.ErrorConnectionTimedOut
@@ -60,12 +59,12 @@ abstract class BaseLcFeedViewModel(
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
     private val feedCountsOneShot by lazy { MutableLiveData<OneShot<FeedCounts>>() }
     private val lmmLoadFailedOneShot by lazy { MutableLiveData<OneShot<Throwable>>() }
-    private val seenAllFeedItemsOneShot by lazy { MutableLiveData<OneShot<SeenAllFeed>>() }
+    private val seenAllFeedItemsOneShot by lazy { MutableLiveData<OneShot<LcNavTab>>() }
     private val transferProfileCompleteOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
     internal fun feedCountsOneShot(): MutableLiveData<OneShot<FeedCounts>> = feedCountsOneShot
     internal fun lmmLoadFailedOneShot(): LiveData<OneShot<Throwable>> = lmmLoadFailedOneShot
-    internal fun seenAllFeedItemsOneShot(): LiveData<OneShot<SeenAllFeed>> = seenAllFeedItemsOneShot
+    internal fun seenAllFeedItemsOneShot(): LiveData<OneShot<LcNavTab>> = seenAllFeedItemsOneShot
     internal fun transferProfileCompleteOneShot(): LiveData<OneShot<Boolean>> = transferProfileCompleteOneShot
 
     @Inject protected lateinit var coordinator: LcCoordinator
@@ -288,7 +287,7 @@ abstract class BaseLcFeedViewModel(
             DebugLogUtil.b("Seen [${feedItemId.substring(0..3)}]. Left not seen [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
             if (notSeenFeedItemIds.isEmpty()) {
                 DebugLogUtil.b("All seen [${getFeedName()}]")
-                seenAllFeedItemsOneShot.value = OneShot(SeenAllFeed(getSourceFeed()))
+                seenAllFeedItemsOneShot.value = OneShot(getSourceFeed())
             }
         }
     }
