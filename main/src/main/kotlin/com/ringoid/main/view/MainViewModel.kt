@@ -67,11 +67,29 @@ class MainViewModel @Inject constructor(
     @DebugOnly internal fun closeDebugViewOneShot(): LiveData<OneShot<Boolean>> = closeDebugViewOneShot
 
     init {
+        /**
+         * LC data contains some not seen likes.
+         */
         getLcUseCase.repository.badgeLikesSource()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ badgeLikes.value = it }, Timber::e)
 
+        /**
+         * LC data contains some not seen matches.
+         *
+         * @note Since matches are merged together with messages in one single feed - Messages Feed,
+         *       any flag that there are some not seen matches should affect the appearance of badge
+         *       for Messages Feed, i.e. fall through to update [MainViewModel.badgeMessages].
+         */
+        getLcUseCase.repository.badgeMatchesSource()
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(this)
+            .subscribe({ badgeMessages.value = it }, Timber::e)  // updates badge for Messages Feed by intention
+
+        /**
+         * LC data contains some messages that are unread by the current user
+         */
         getLcUseCase.repository.badgeMessengerSource()
             .observeOn(AndroidSchedulers.mainThread())
             .autoDisposable(this)

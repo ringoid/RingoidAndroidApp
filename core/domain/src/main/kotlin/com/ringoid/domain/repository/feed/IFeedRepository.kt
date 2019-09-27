@@ -39,7 +39,6 @@ interface IFeedRepository {
     fun feedLikesSource(): Observable<LmmSlice>
     fun feedMatchesSource(): Observable<LmmSlice>
     fun feedMessagesSource(): Observable<LmmSlice>
-    fun lmmChangedSource(): Observable<Boolean>
     fun lmmLoadFinishSource(): Observable<Int>
     fun lmmLoadFailedSource(): Observable<Throwable>
     fun newLikesCountSource(): Observable<Int>

@@ -114,7 +114,6 @@ open class FeedRepository @Inject constructor(
     @Deprecated("LMM -> LC")
     private val feedMatches = PublishSubject.create<LmmSlice>()  // deprecated, 'matches' are part of 'chats' in LC
     private val feedMessages = PublishSubject.create<LmmSlice>()
-    private val lmmChanged = PublishSubject.create<Boolean>()  // LMM contains new data
     private val lmmLoadFinish = PublishSubject.create<Int>()  // LMM load finished, contains LMM's total count
     private val lmmLoadFailed = PublishSubject.create<Throwable>()  // LMM load failed, fallback to cache
     private val newLikesCount = PublishSubject.create<Int>()  // for particle animation
@@ -126,7 +125,6 @@ open class FeedRepository @Inject constructor(
     override fun feedLikesSource(): Observable<LmmSlice> = feedLikes.hide()
     override fun feedMatchesSource(): Observable<LmmSlice> = feedMatches.hide()
     override fun feedMessagesSource(): Observable<LmmSlice> = feedMessages.hide()
-    override fun lmmChangedSource(): Observable<Boolean> = lmmChanged.hide()
     override fun lmmLoadFinishSource(): Observable<Int> = lmmLoadFinish.hide()
     override fun lmmLoadFailedSource(): Observable<Throwable> = lmmLoadFailed.hide()
     override fun newLikesCountSource(): Observable<Int> = newLikesCount.hide()
@@ -214,7 +212,7 @@ open class FeedRepository @Inject constructor(
 //                .detectCollisionProfilesLmmResponse()
                 .filterOutBlockedProfilesLmmResponse()
                 .map { it.map() }
-                .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
+                // now notify observers on data's arrived from Server, properties are not applicable on Server's data
                 .checkForNewLikes()
                 .checkForNewMatches()
                 .checkForNewMessages()
@@ -232,7 +230,7 @@ open class FeedRepository @Inject constructor(
             .doOnSuccess { DebugLogUtil.v("# Cached Lmm: [${it.toLogString()}] before filter out blocked profiles") }
             .filterOutBlockedProfilesLmm()
             .doOnSuccess { DebugLogUtil.v("# Cached Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
-            .checkForNewFeedItems()
+            // now notify observers on data's arrived from Cache, properties are not applicable on Cache's data
             .checkForNewLikes()
             .checkForNewMatches()
             .checkForNewMessages()
@@ -304,8 +302,9 @@ open class FeedRepository @Inject constructor(
             }
         }
         .dropLmmStatsOnSubscribe()
-        .checkForNewFeedItems()  // now notify observers on data's arrived from Server, properties are not applicable on Server's data
+        // now notify observers on data's arrived from Server, properties are not applicable on Server's data
         .checkForNewLikes()
+        .checkForNewMatches()
         .checkForNewMessages()
         .cacheLmm()  // cache new LC data fetched from the Server
         .cacheMessagesFromLmm()
@@ -315,8 +314,9 @@ open class FeedRepository @Inject constructor(
         getCachedLcOnly()
             .dropLmmStatsOnSubscribe()
             .filterOutBlockedProfilesLmm()
-            .checkForNewFeedItems()
+            // now notify observers on data's arrived from Cache, properties are not applicable on Cache's data
             .checkForNewLikes()
+            .checkForNewMatches()
             .checkForNewMessages()
 
     private fun getCachedLcOnly(): Single<Lmm> =
@@ -494,9 +494,6 @@ open class FeedRepository @Inject constructor(
         doAfterSuccess { lmmInMemory = LcInMemory(it, aObjPool.lastActionTime(), filters) }
 
     // ------------------------------------------
-    private fun Single<Lmm>.checkForNewFeedItems(): Single<Lmm> =
-        doOnSuccess { lmmChanged.onNext(it.containsNotSeenItems()) }  // have not seen items
-
     private fun Single<Lmm>.checkForNewLikes(): Single<Lmm> =
         doOnSuccess {
             badgeLikes.onNext(it.notSeenLikesCount() > 0)
@@ -505,7 +502,8 @@ open class FeedRepository @Inject constructor(
         .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
             val profiles = lmm.notSeenLikesProfileIds()
-            Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }.toSingleDefault(lmm to count)
+            Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }
+                       .toSingleDefault(lmm to count)
         }
         .zipWith(newLikesProfilesCache.countProfileIds(),
             BiFunction { (lmm, oldCount), newCount ->
@@ -523,7 +521,8 @@ open class FeedRepository @Inject constructor(
         .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
             val profiles = lmm.notSeenMatchesProfileIds()
-            Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }.toSingleDefault(lmm to count)
+            Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }
+                       .toSingleDefault(lmm to count)
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(),
             BiFunction { (lmm, oldCount), newCount ->
@@ -535,21 +534,18 @@ open class FeedRepository @Inject constructor(
 
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
         doOnSuccess { feedMessages.onNext(LmmSlice(items = it.messages, totalNotFilteredCount = it.totalNotFilteredMessages)) }
-        .zipWith(messengerLocal.countUnreadByUserMessages(),
+        .zipWith(messengerLocal.countUnreadByUserMessages(),  // count unread local messages
             BiFunction { lmm: Lmm, count: Int ->
-                if (count > 0) {
-                    badgeMessenger.onNext(true)
-                    lmmChanged.onNext(true)  // have unread messages since last update
-                }
+                badgeMessenger.onNext(count > 0)  // have unread messages since last update
                 lmm
             })
         .zipWith(messengerLocal.countPeerMessages(),  // old total messages count from any peer
             BiFunction { lmm: Lmm, count: Int ->
                 val peerMessagesCount = lmm.peerMessagesCount()
                 if (peerMessagesCount != 0 && count < peerMessagesCount) {
+                    // have new messages from any peer
                     val diff = peerMessagesCount - count
                     badgeMessenger.onNext(true)
-                    lmmChanged.onNext(true)  // have new messages from any peer
                     newMessagesCount.onNext(diff)
                     DebugLogUtil.v("# LC: count of new messages: $diff")
                 }
@@ -561,7 +557,6 @@ open class FeedRepository @Inject constructor(
             badgeLikes.onNext(false)
             badgeMatches.onNext(false)
             badgeMessenger.onNext(false)
-            lmmChanged.onNext(false)
         }
 
     private fun Single<Lmm>.dropLmmStatsOnSubscribe(): Single<Lmm> =
@@ -569,6 +564,5 @@ open class FeedRepository @Inject constructor(
             badgeLikes.onNext(false)
             badgeMatches.onNext(false)
             badgeMessenger.onNext(false)
-            lmmChanged.onNext(false)
         }
 }
