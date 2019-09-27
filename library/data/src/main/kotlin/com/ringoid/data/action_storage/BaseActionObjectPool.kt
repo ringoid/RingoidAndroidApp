@@ -5,7 +5,9 @@ import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.action_storage.*
 import com.ringoid.domain.model.actions.ActionObject
+import com.ringoid.domain.model.actions.DurableActionObject
 import com.ringoid.domain.model.actions.OriginActionObject
+import com.ringoid.domain.model.actions.ViewActionObject
 import com.ringoid.report.log.Report
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -29,11 +31,47 @@ abstract class BaseActionObjectPool(protected val cloud: IRingoidCloudFacade, pr
 //        }
     }
 
+    protected abstract fun getTotalQueueSize(): Int
+
+    /**
+     * Analyzes [aobj] and creates a companion [ViewActionObject] for it, if need.
+     */
+    protected fun createSyntheticViewActionObjectFor(aobj: OriginActionObject): OriginActionObject? =
+        when (aobj) {
+            is DurableActionObject -> null  // VIEW doesn't require to be followed by durable action objects
+            is ActionObject ->
+                ViewActionObject(
+                    actionTime = aobj.actionTime - 1,
+                    sourceFeed = aobj.sourceFeed,
+                    targetImageId = aobj.targetImageId,
+                    targetUserId = aobj.targetUserId,
+                    triggerStrategies = emptyList()  /** no trigger strategies for synthetic action object */)
+            else -> null
+        }
+
+    /**
+     * Analyzes [aobjs] list and creates list of companion [ViewActionObject] each complementing
+     * corresponding [ActionObject] from [aobjs] for a given unique pairs of [ActionObject.targetImageId]
+     * and [ActionObject.targetUserId].
+     */
+    protected fun createSyntheticViewActionObjectsFor(aobjs: Collection<OriginActionObject>): Collection<OriginActionObject> {
+        val list = mutableListOf<OriginActionObject>()
+        val pairs = mutableMapOf<Pair<String, String>, ActionObject>()
+        aobjs.forEach { aobj ->
+            when (aobj) {
+                is ActionObject -> pairs[aobj.key()] = aobj
+            }
+        }
+        pairs.entries.forEach { (_, aobj) ->
+            createSyntheticViewActionObjectFor(aobj)?.let { list.add(it) }
+        }
+        return list
+    }
+
+    // --------------------------------------------------------------------------------------------
     private val numbers = mutableMapOf<Class<OriginActionObject>, Int>()
     private val strategies = mutableMapOf<Class<OriginActionObject>, List<TriggerStrategy>>()
     private val timers = mutableMapOf<Class<OriginActionObject>, Disposable?>()
-
-    protected abstract fun getTotalQueueSize(): Int
 
     protected fun dropStrategyData() {
         numbers.clear()

@@ -56,7 +56,9 @@ class PersistActionObjectPool @Inject constructor(
 
     override fun putSource(aobj: OriginActionObject): Completable =
         Completable.fromCallable {
-            local.addActionObject(aobj)
+            createSyntheticViewActionObjectFor(aobj)
+                ?.let { local.addActionObjects(listOf(it, aobj)) }
+                ?: run { local.addActionObject(aobj) }
             analyzeActionObject(aobj)
         }
         .doOnSubscribe {
@@ -69,7 +71,13 @@ class PersistActionObjectPool @Inject constructor(
             Completable.complete()
         } else {
             Completable.fromCallable {
-                local.addActionObjects(aobjs)
+                createSyntheticViewActionObjectsFor(aobjs)
+                    .takeIf { it.isNotEmpty() }
+                    ?.let {
+                        val xaobjs = ArrayList(it).apply { addAll(aobjs) }
+                        local.addActionObjects(xaobjs)
+                    }
+                    ?: run { local.addActionObjects(aobjs) }
                 analyzeActionObjects(aobjs)
             }.doOnSubscribe {
                 Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
@@ -81,7 +89,7 @@ class PersistActionObjectPool @Inject constructor(
     override fun commitNow(aobj: OriginActionObject): Single<Long> =
         Single.fromCallable {
             DebugLogUtil.v("Put and commit action object: ${aobj.actionType}")
-            local.addActionObject(aobj)
+            local.addActionObject(aobj)  // don't create synthetic action object
             // no need to analyze trigger strategies
         }
         .flatMap { triggerSource() }

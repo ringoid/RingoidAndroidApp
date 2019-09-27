@@ -1,6 +1,7 @@
 package com.ringoid.domain.action_storage
 
 import com.ringoid.domain.model.actions.BaseActionObject
+import com.ringoid.domain.model.actions.OriginActionObject
 
 /**
  * [IActionObjectPool] will analyze [TriggerStrategy] for each incoming [BaseActionObject] and
@@ -14,6 +15,8 @@ sealed class TriggerStrategy {
 /**
  * [IActionObjectPool] won't commit actions automatically while [BaseActionObject] with
  * this strategy are put into, until some action object with another strategy comes.
+ *
+ * @note: this has the same effect as leaving [OriginActionObject.triggerStrategies] empty.
  */
 object NoAction : TriggerStrategy()
 

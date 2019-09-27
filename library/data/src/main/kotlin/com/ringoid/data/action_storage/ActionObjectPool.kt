@@ -40,15 +40,7 @@ class ActionObjectPool @Inject constructor(
     override fun put(aobj: OriginActionObject, onComplete: (() -> Unit)?) {
         Timber.v("Put action object: $aobj")
         DebugLogUtil.v("Put single action object: ${aobj.actionType}")
-//        when (aobj) {
-//            is ViewActionObject, is ViewChatActionObject -> { /* no-op */ }
-//            else -> {
-//                val viewAobj = ViewActionObject(actionTime = aobj.actionTime - 1, sourceFeed = aobj.sourceFeed,
-//                    targetImageId = aobj.targetImageId, targetUserId = aobj.targetUserId,
-//                    triggerStrategies = emptyList() /* no trigger strategies for synthetic action object */)
-//                queue.offer(viewAobj)
-//            }
-//        }
+        createSyntheticViewActionObjectFor(aobj = aobj)?.let { queue.offer(it) }
         queue.offer(aobj)
         analyzeActionObject(aobj)
         onComplete?.invoke()
@@ -58,6 +50,7 @@ class ActionObjectPool @Inject constructor(
     override fun put(aobjs: Collection<OriginActionObject>, onComplete: (() -> Unit)?) {
         Timber.v("Put action objects [${aobjs.size}]: ${aobjs.joinToString()}")
         DebugLogUtil.v("Put [${aobjs.size}] action objects: ${aobjs.joinToString { it.actionType }}")
+        createSyntheticViewActionObjectsFor(aobjs = aobjs).forEach { queue.offer(it) }
         aobjs.forEach { queue.offer(it) }
         analyzeActionObjects(aobjs)
         onComplete?.invoke()
@@ -72,7 +65,8 @@ class ActionObjectPool @Inject constructor(
 
     // ------------------------------------------
     override fun commitNow(aobj: OriginActionObject): Single<Long> {
-        put(aobj)  // no need to analyze trigger strategies
+        put(aobj)  // don't create synthetic action object
+        // no need to analyze trigger strategies
         return triggerSource()
     }
 
