@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 class TrackingBus<T>(
     val onSuccess: Consumer<T>, val onError: Consumer<Throwable>,
-    val timeout: Long = VIEW_EVENT_START_THRESHOLD) {
+    private val timeout: Long = VIEW_EVENT_START_THRESHOLD) {
 
     companion object {
         const val VIEW_EVENT_START_THRESHOLD = 50L  // in millis
