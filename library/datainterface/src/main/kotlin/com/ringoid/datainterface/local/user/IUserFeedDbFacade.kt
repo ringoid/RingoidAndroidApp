@@ -15,7 +15,10 @@ interface IUserFeedDbFacade {
 
     fun deleteProfileIds()
 
-    fun insertProfileIds(profileIds: Collection<String>)
+    /**
+     * Inserts item if not already exists. Returns count of actually inserted items.
+     */
+    fun insertProfileIds(profileIds: Collection<String>): Int
 
     fun profileIds(): Single<List<String>>
 }

@@ -20,7 +20,7 @@ interface UserFeedDao {
     fun addProfileIds(profileIds: Collection<ProfileIdDbo>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertProfileIds(profileIds: Collection<ProfileIdDbo>)
+    fun insertProfileIds(profileIds: Collection<ProfileIdDbo>): List<Long>
 
     @Query("SELECT * FROM ${ProfileIdDbo.TABLE_NAME}")
     fun profileIds(): Single<List<ProfileIdDbo>>

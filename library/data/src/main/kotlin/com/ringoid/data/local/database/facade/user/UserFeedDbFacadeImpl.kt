@@ -28,9 +28,8 @@ class UserFeedDbFacadeImpl @Inject constructor(private val dao: UserFeedDao) : I
 
     override fun deleteProfileIds() = dao.deleteProfileIds()
 
-    override fun insertProfileIds(profileIds: Collection<String>) {
-        profileIds.map { ProfileIdDbo(it) }.also { dao.insertProfileIds(it) }
-    }
+    override fun insertProfileIds(profileIds: Collection<String>) =
+        profileIds.map { ProfileIdDbo(it) }.let { dao.insertProfileIds(it).size }
 
     override fun profileIds(): Single<List<String>> = dao.profileIds().map { it.mapList() }
 }

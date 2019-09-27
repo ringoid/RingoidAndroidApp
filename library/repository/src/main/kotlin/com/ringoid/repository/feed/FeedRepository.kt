@@ -501,38 +501,32 @@ open class FeedRepository @Inject constructor(
             badgeLikes.onNext(it.notSeenLikesCount() > 0)
             feedLikes.onNext(LmmSlice(items = it.likes, totalNotFilteredCount = it.totalNotFilteredLikes))
         }
-        .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
-        .flatMap { (lmm, count) ->
-            val profiles = lmm.notSeenLikesProfileIds()
-            Completable.fromAction { newLikesProfilesCache.insertProfileIds(profiles) }
-                       .toSingleDefault(lmm to count)
+        .flatMap { lmm ->
+            Completable.fromAction {
+                val profiles = lmm.notSeenLikesProfileIds()
+                newLikesProfilesCache.insertProfileIds(profiles)
+                    .also { DebugLogUtil.v("# Lmm: count of new likes: $it") }
+                    .takeIf { it > 0 }
+                    ?.let { newLikesCount.onNext(it) }
+            }
+            .toSingleDefault(lmm)
         }
-        .zipWith(newLikesProfilesCache.countProfileIds(),
-            BiFunction { (lmm, oldCount), newCount ->
-                val diff = newCount - oldCount
-                if (diff > 0) { newLikesCount.onNext(diff) }
-                DebugLogUtil.v("# Lmm: count of new likes: $diff")
-                lmm
-            })
 
     private fun Single<Lmm>.checkForNewMatches(): Single<Lmm> =
         doOnSuccess {
             badgeMatches.onNext(it.notSeenMatchesCount() > 0)
             feedMatches.onNext(LmmSlice(items = it.matches, totalNotFilteredCount = DomainUtil.BAD_VALUE))  // count not supported as 'matches' are deprecated
         }
-        .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
-        .flatMap { (lmm, count) ->
-            val profiles = lmm.notSeenMatchesProfileIds()
-            Completable.fromAction { newMatchesProfilesCache.insertProfileIds(profiles) }
-                       .toSingleDefault(lmm to count)
+        .flatMap { lmm ->
+            Completable.fromAction {
+                val profiles = lmm.notSeenMatchesProfileIds()
+                newMatchesProfilesCache.insertProfileIds(profiles)
+                    .also { DebugLogUtil.v("# Lmm: count of new matches: $it") }
+                    .takeIf { it > 0 }
+                    ?.let { newMatchesCount.onNext(it) }
+            }
+            .toSingleDefault(lmm)
         }
-        .zipWith(newMatchesProfilesCache.countProfileIds(),
-            BiFunction { (lmm, oldCount), newCount ->
-                val diff = newCount - oldCount
-                if (diff > 0) { newMatchesCount.onNext(diff) }
-                DebugLogUtil.v("# Lmm: count of new matches: $diff")
-                lmm
-            })
 
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
         doOnSuccess { feedMessages.onNext(LmmSlice(items = it.messages, totalNotFilteredCount = it.totalNotFilteredMessages)) }
