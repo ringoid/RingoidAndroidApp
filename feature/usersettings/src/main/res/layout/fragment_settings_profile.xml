@@ -168,6 +168,13 @@
                 app:icon_item_text="@string/profile_property_transport"
                 style="?attr/spinnerIconItemView"/>
 
+            <com.ringoid.widget.view.item_view.IconItemView
+                android:id="@+id/item_suggest_improvements"
+                android:layout_marginTop="@dimen/std_margin_32"
+                app:icon_item_hide_icon="true"
+                app:icon_item_text="@string/settings_suggest_improvements"
+                style="?attr/iconItemView"/>
+
             <TextView
                 android:id="@+id/tv_support"
                 android:layout_width="match_parent"
