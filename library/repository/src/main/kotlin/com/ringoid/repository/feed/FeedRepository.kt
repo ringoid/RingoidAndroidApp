@@ -63,48 +63,50 @@ open class FeedRepository @Inject constructor(
         doOnSuccess { alreadySeenProfilesCache.addProfileModelIds(it.profiles) }
 
     override fun cacheAlreadySeenProfileIds(ids: Collection<String>): Completable =
-        Completable.fromCallable { alreadySeenProfilesCache.addProfileIds(ids) }
+        Completable.fromAction { alreadySeenProfilesCache.addProfileIds(ids) }
 
     override fun getAlreadySeenProfileIds(): Single<List<String>> = alreadySeenProfilesCache.profileIds()
 
     override fun deleteAlreadySeenProfileIds(): Completable =
-        Completable.fromCallable { alreadySeenProfilesCache.deleteProfileIds() }
+        Completable.fromAction { alreadySeenProfilesCache.deleteProfileIds() }
 
     // -------------------------------------------
     override fun cacheBlockedProfileId(profileId: String): Completable =
-        Completable.fromCallable { blockedProfilesCache.addProfileId(profileId) }
+        Completable.fromAction { blockedProfilesCache.addProfileId(profileId) }
 
     override fun getBlockedProfileIds(): Single<List<String>> =
         blockedProfilesCache.profileIds()
 
     override fun deleteBlockedProfileIds(): Completable =
-        Completable.fromCallable { blockedProfilesCache.deleteProfileIds() }
+        Completable.fromAction { blockedProfilesCache.deleteProfileIds() }
 
     // ------------------------------------------
     override fun getCachedFeedItemById(id: String): Single<FeedItem> =
         local.feedItem(profileId = id)
 
-    override fun clearCachedLmm(): Completable = Completable.fromCallable { local.deleteFeedItems() }
+    override fun clearCachedLmm(): Completable = Completable.fromAction { local.deleteFeedItems() }
 
     /**
      * Clear data that was used to track profiles that have already contributed to new likes and matches.
      */
     override fun clearCachedLmmProfileIds(): Completable =
-        Single.fromCallable { newLikesProfilesCache.deleteProfileIds() }
-              .flatMapCompletable { Completable.fromCallable { newMatchesProfilesCache.deleteProfileIds() } }
+        Completable.fromAction {
+            newLikesProfilesCache.deleteProfileIds()
+            newMatchesProfilesCache.deleteProfileIds()
+        }
 
     override fun clearCachedLmmTotalCounts(): Completable =
-        Completable.fromCallable {
+        Completable.fromAction {
             feedSharedPrefs.dropTotalNotFilteredLikes()
             feedSharedPrefs.dropTotalNotFilteredMessages()
         }
 
     // ------------------------------------------
     override fun markFeedItemAsSeen(feedItemId: String, isNotSeen: Boolean): Completable =
-        Completable.fromCallable { local.markFeedItemAsSeen(feedItemId, isNotSeen) }
+        Completable.fromAction { local.markFeedItemAsSeen(feedItemId, isNotSeen) }
 
     override fun transferFeedItem(feedItemId: String, destinationFeed: String): Completable =
-        Completable.fromCallable { local.updateSourceFeed(feedItemId, destinationFeed) }
+        Completable.fromAction { local.updateSourceFeed(feedItemId, destinationFeed) }
 
     // --------------------------------------------------------------------------------------------
     private val badgeLikes = PublishSubject.create<Boolean>()  // LMM contains new likes
@@ -458,7 +460,7 @@ open class FeedRepository @Inject constructor(
                 lmm.matches.forEach { addAll(it.messages) }
                 lmm.messages.forEach { addAll(it.messages) }
             }
-            Completable.fromCallable { messengerLocal.insertMessages(messages) }  // cache new messages
+            Completable.fromAction { messengerLocal.insertMessages(messages) }  // cache new messages
                        .toSingleDefault(lmm)
         }
 
@@ -502,7 +504,7 @@ open class FeedRepository @Inject constructor(
         .zipWith(newLikesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
             val profiles = lmm.notSeenLikesProfileIds()
-            Completable.fromCallable { newLikesProfilesCache.addProfileIds(profiles) }
+            Completable.fromAction { newLikesProfilesCache.addProfileIds(profiles) }
                        .toSingleDefault(lmm to count)
         }
         .zipWith(newLikesProfilesCache.countProfileIds(),
@@ -521,7 +523,7 @@ open class FeedRepository @Inject constructor(
         .zipWith(newMatchesProfilesCache.countProfileIds(), BiFunction { lmm: Lmm, count: Int -> lmm to count })
         .flatMap { (lmm, count) ->
             val profiles = lmm.notSeenMatchesProfileIds()
-            Completable.fromCallable { newMatchesProfilesCache.addProfileIds(profiles) }
+            Completable.fromAction { newMatchesProfilesCache.addProfileIds(profiles) }
                        .toSingleDefault(lmm to count)
         }
         .zipWith(newMatchesProfilesCache.countProfileIds(),
