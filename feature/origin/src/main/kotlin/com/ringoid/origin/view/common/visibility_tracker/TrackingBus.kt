@@ -1,5 +1,6 @@
 package com.ringoid.origin.view.common.visibility_tracker
 
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.internal.functions.ObjectHelper
@@ -28,6 +29,7 @@ class TrackingBus<T>(
             .subscribeOn(Schedulers.computation())
             .distinctUntilChanged { prev, cur -> checkFlagAndDrop() && ObjectHelper.equals(prev, cur) }
             .debounce(timeout, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::onCallback, onError::accept)
     }
 
