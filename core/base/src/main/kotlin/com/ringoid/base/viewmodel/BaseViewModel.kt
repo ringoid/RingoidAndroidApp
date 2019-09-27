@@ -42,7 +42,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     protected val viewState: MutableLiveData<ViewState> by lazy { ActiveMutableLiveData<ViewState>(ViewState.NO_STATE) }
     fun viewState(): LiveData<ViewState> = viewState
 
-    protected var isStopped = false
+    protected var isStopped = false  // indicates that hosting View was stopped and hasn't started yet
         private set
     private var userVisibilityHint: Boolean = false
 

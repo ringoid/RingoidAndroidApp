@@ -100,7 +100,7 @@ class MessagesFeedViewModel @Inject constructor(
             }
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ if (!isStopped && shouldVibrate) app.vibrate() }, DebugLogUtil::e)
+            .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)
 
         // show 'tap-to-refresh' popup on Feed screen and update chat for particular feed items
         incomingPushMessages
@@ -136,7 +136,7 @@ class MessagesFeedViewModel @Inject constructor(
             }
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
-            .subscribe({ if (!isStopped && shouldVibrate) app.vibrate() }, DebugLogUtil::e)
+            .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)
     }
 
     // ------------------------------------------
@@ -201,8 +201,10 @@ class MessagesFeedViewModel @Inject constructor(
     fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        incomingPushMatch.onNext(event)  // for 'tap-to-refresh' popup
-        incomingPushMatchEffect.onNext(0L)
+        incomingPushMatch.onNext(event)  // for badge and 'tap-to-refresh' popup
+        if (!isStopped) {
+            incomingPushMatchEffect.onNext(0L)  // for particles and vibration
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
@@ -211,8 +213,10 @@ class MessagesFeedViewModel @Inject constructor(
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         // consume push event and skip any updates if target Chat is currently open
         if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
-            incomingPushMessages.onNext(event)
-            incomingPushMessagesEffect.onNext(0L)
+            incomingPushMessages.onNext(event)  // for update unopened chats, badge and 'tap-to-refresh' popup
+            if (!isStopped) {
+                incomingPushMessagesEffect.onNext(0L)  // for particles and vibration
+            }
         }
     }
 }
