@@ -497,33 +497,33 @@ open class FeedRepository @Inject constructor(
 
     // ------------------------------------------
     private fun Single<Lmm>.checkForNewLikes(): Single<Lmm> =
-        doOnSuccess {
-            badgeLikes.onNext(it.notSeenLikesCount() > 0)
-            feedLikes.onNext(LmmSlice(items = it.likes, totalNotFilteredCount = it.totalNotFilteredLikes))
-        }
-        .flatMap { lmm ->
+        flatMap { lmm ->
             Completable.fromAction {
                 val profiles = lmm.notSeenLikesProfileIds()
-                newLikesProfilesCache.insertProfileIds(profiles)
-                    .also { DebugLogUtil.v("# Lmm: count of new likes: $it") }
-                    .takeIf { it > 0 }
-                    ?.let { newLikesCount.onNext(it) }
+                badgeLikes.onNext(profiles.isNotEmpty())
+                feedLikes.onNext(LmmSlice(items = lmm.likes, totalNotFilteredCount = lmm.totalNotFilteredLikes))
+                if (profiles.isNotEmpty()) {
+                    newLikesProfilesCache.insertProfileIds(profiles)
+                        .also { DebugLogUtil.v("# Lmm: count of new likes: $it") }
+                        .takeIf { it > 0 }
+                        ?.let { newLikesCount.onNext(it) }
+                }
             }
             .toSingleDefault(lmm)
         }
 
     private fun Single<Lmm>.checkForNewMatches(): Single<Lmm> =
-        doOnSuccess {
-            badgeMatches.onNext(it.notSeenMatchesCount() > 0)
-            feedMatches.onNext(LmmSlice(items = it.matches, totalNotFilteredCount = DomainUtil.BAD_VALUE))  // count not supported as 'matches' are deprecated
-        }
-        .flatMap { lmm ->
+        flatMap { lmm ->
             Completable.fromAction {
                 val profiles = lmm.notSeenMatchesProfileIds()
-                newMatchesProfilesCache.insertProfileIds(profiles)
-                    .also { DebugLogUtil.v("# Lmm: count of new matches: $it") }
-                    .takeIf { it > 0 }
-                    ?.let { newMatchesCount.onNext(it) }
+                badgeMatches.onNext(profiles.isNotEmpty())
+                feedMatches.onNext(LmmSlice(items = lmm.matches, totalNotFilteredCount = DomainUtil.BAD_VALUE))  // count not supported as 'matches' are deprecated
+                if (profiles.isNotEmpty()) {
+                    newMatchesProfilesCache.insertProfileIds(profiles)
+                        .also { DebugLogUtil.v("# Lmm: count of new matches: $it") }
+                        .takeIf { it > 0 }
+                        ?.let { newMatchesCount.onNext(it) }
+                }
             }
             .toSingleDefault(lmm)
         }
