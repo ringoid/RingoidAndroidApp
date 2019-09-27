@@ -191,7 +191,7 @@ class MessagesFeedViewModel @Inject constructor(
     // --------------------------------------------------------------------------------------------
     override fun onChatClose(profileId: String, imageId: String) {
         super.onChatClose(profileId, imageId)
-        markFeedItemAsSeen(feedItemId = profileId)
+        markFeedItemAsSeen(feedItemId = profileId)  // on chat close
     }
 
     /* Event Bus */

@@ -308,17 +308,17 @@ abstract class BaseLcFeedViewModel(
     // --------------------------------------------------------------------------------------------
     override fun onLike(profileId: String, imageId: String) {
         super.onLike(profileId, imageId)
-        markFeedItemAsSeen(feedItemId = profileId)
+        markFeedItemAsSeen(feedItemId = profileId)  // on like
     }
 
     override fun onBlock(profileId: String, imageId: String, sourceFeed: String, fromChat: Boolean) {
         super.onBlock(profileId, imageId, sourceFeed, fromChat)
-        markFeedItemAsSeen(feedItemId = profileId)
+        markFeedItemAsSeen(feedItemId = profileId)  // on block
     }
 
     override fun onReport(profileId: String, imageId: String, reasonNumber: Int, sourceFeed: String, fromChat: Boolean) {
         super.onReport(profileId, imageId, reasonNumber, sourceFeed, fromChat)
-        markFeedItemAsSeen(feedItemId = profileId)
+        markFeedItemAsSeen(feedItemId = profileId)  // on report
     }
 
     override fun onDiscardProfile(profileId: String) {

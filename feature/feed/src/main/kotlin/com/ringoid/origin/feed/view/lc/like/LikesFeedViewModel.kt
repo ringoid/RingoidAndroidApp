@@ -144,12 +144,12 @@ class LikesFeedViewModel @Inject constructor(
 
     override fun onViewFeedItem(feedItemId: String) {
         super.onViewFeedItem(feedItemId)
-        markFeedItemAsSeen(feedItemId = feedItemId)
+        markFeedItemAsSeen(feedItemId = feedItemId)  // on view feed item
     }
 
     override fun onSettingsClick(profileId: String) {
         super.onSettingsClick(profileId)
-        markFeedItemAsSeen(profileId)
+        markFeedItemAsSeen(profileId)  // on settings click
     }
 
     /* Event Bus */
