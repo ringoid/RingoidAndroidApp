@@ -40,9 +40,6 @@ import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
-import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.report.log.Report
 import com.ringoid.utility.*
 import com.ringoid.widget.view._swipes
@@ -692,17 +689,5 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
 
     private fun showDotTabs(isVisible: Boolean) {
         tabs2?.post { tabs2?.changeVisibility(isVisible = isVisible && imagesAdapter.itemCount > 1, soft = true) }
-    }
-
-    @DebugOnly
-    private fun simulateParticles(count: Int) {
-        if (count <= 0) {
-            return
-        }
-        communicator((IBaseMainActivity::class.java))?.let {
-            it.showParticleAnimation(id = PARTICLE_TYPE_LIKE, count = count)
-            it.showParticleAnimation(id = PARTICLE_TYPE_MATCH, count = count / 10)
-            it.showParticleAnimation(id = PARTICLE_TYPE_MESSAGE, count = count / 20)
-        }
     }
 }
