@@ -76,6 +76,7 @@ abstract class BaseLcFeedViewModel(
     private val notSeenFeedItemIds = Collections.newSetFromMap<String>(ConcurrentHashMap())
 
     protected abstract fun getSourceFeed(): LcNavTab
+    override fun getFeedName(): String = getSourceFeed().feedName
 
     init {
         sourceBadge()

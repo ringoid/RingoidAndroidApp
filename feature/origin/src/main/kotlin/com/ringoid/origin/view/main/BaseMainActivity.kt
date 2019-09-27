@@ -244,10 +244,12 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
     }
 
     override fun showBadgeOnLikes(isVisible: Boolean) {
+        DebugLogUtil.v("${if (isVisible) "Show" else "Hide"} badge on Likes")
         bottom_bar.showBadgeOnLikes(isVisible)
     }
 
     override fun showBadgeOnMessages(isVisible: Boolean) {
+        DebugLogUtil.v("${if (isVisible) "Show" else "Hide"} badge on Messages")
         bottom_bar.showBadgeOnMessages(isVisible)
     }
 

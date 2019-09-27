@@ -94,7 +94,6 @@ class LikesFeedViewModel @Inject constructor(
 
     // ------------------------------------------
     override fun getSourceFeed(): LcNavTab = LcNavTab.LIKES
-    override fun getFeedName(): String = DomainUtil.SOURCE_SCREEN_FEED_LIKES
 
     override fun sourceBadge(): Observable<Boolean> =
         getLcUseCase.repository.badgeLikesSource()
