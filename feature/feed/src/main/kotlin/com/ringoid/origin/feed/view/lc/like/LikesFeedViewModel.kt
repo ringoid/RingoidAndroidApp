@@ -79,7 +79,10 @@ class LikesFeedViewModel @Inject constructor(
 
         // show particle animation and vibrate
         incomingPushLikeEffect
-            .doOnNext { pushNewLike.value = 0L }  // for particle animation
+            .doOnNext {
+                HandledPushDataInMemory.incrementCountOfHandledPushLikes()
+                pushNewLike.value = 0L  // for particle animation
+            }
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ if (!isStopped && shouldVibrate) app.vibrate() }, DebugLogUtil::e)
@@ -156,7 +159,6 @@ class LikesFeedViewModel @Inject constructor(
     fun onEventPushNewLike(event: BusEvent.PushNewLike) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        HandledPushDataInMemory.incrementCountOfHandledPushLikes()
         incomingPushLike.onNext(event)  // for 'tap-to-refresh' popup
         incomingPushLikeEffect.onNext(0L)
     }

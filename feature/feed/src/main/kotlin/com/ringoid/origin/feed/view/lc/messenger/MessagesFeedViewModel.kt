@@ -94,7 +94,10 @@ class MessagesFeedViewModel @Inject constructor(
 
         // show particle animation and vibrate
         incomingPushMatchEffect
-            .doOnNext { pushNewMatch.value = 0L }  // for particle animation
+            .doOnNext {
+                HandledPushDataInMemory.incrementCountOfHandledPushMatches()
+                pushNewMatch.value = 0L  // for particle animation
+            }
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ if (!isStopped && shouldVibrate) app.vibrate() }, DebugLogUtil::e)
@@ -127,7 +130,10 @@ class MessagesFeedViewModel @Inject constructor(
 
         // show particle animation and vibrate
         incomingPushMessagesEffect
-            .doOnNext { pushNewMessage.value = 0L }  // for particle animation
+            .doOnNext {
+                HandledPushDataInMemory.incrementCountOfHandledPushMessages()
+                pushNewMessage.value = 0L  // for particle animation
+            }
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ if (!isStopped && shouldVibrate) app.vibrate() }, DebugLogUtil::e)
@@ -195,7 +201,6 @@ class MessagesFeedViewModel @Inject constructor(
     fun onEventPushNewMatch(event: BusEvent.PushNewMatch) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        HandledPushDataInMemory.incrementCountOfHandledPushMatches()
         incomingPushMatch.onNext(event)  // for 'tap-to-refresh' popup
         incomingPushMatchEffect.onNext(0L)
     }
@@ -204,7 +209,6 @@ class MessagesFeedViewModel @Inject constructor(
     fun onEventPushNewMessage(event: BusEvent.PushNewMessage) {
         Timber.d("Received bus event: $event")
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
-        HandledPushDataInMemory.incrementCountOfHandledPushMessages()
         // consume push event and skip any updates if target Chat is currently open
         if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
             incomingPushMessages.onNext(event)
