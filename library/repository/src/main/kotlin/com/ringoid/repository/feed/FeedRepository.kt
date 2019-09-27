@@ -113,8 +113,6 @@ open class FeedRepository @Inject constructor(
     private val badgeMatches = PublishSubject.create<Boolean>()  // LMM contains new matches
     private val badgeMessenger = PublishSubject.create<Boolean>()  // LMM contains new messages
     private val feedLikes = PublishSubject.create<LmmSlice>()
-    @Deprecated("LMM -> LC")
-    private val feedMatches = PublishSubject.create<LmmSlice>()  // deprecated, 'matches' are part of 'chats' in LC
     private val feedMessages = PublishSubject.create<LmmSlice>()
     private val lmmLoadFinish = PublishSubject.create<Int>()  // LMM load finished, contains LMM's total count
     private val lmmLoadFailed = PublishSubject.create<Throwable>()  // LMM load failed, fallback to cache
@@ -125,7 +123,6 @@ open class FeedRepository @Inject constructor(
     override fun badgeMatchesSource(): Observable<Boolean> = badgeMatches.hide()
     override fun badgeMessengerSource(): Observable<Boolean> = badgeMessenger.hide()
     override fun feedLikesSource(): Observable<LmmSlice> = feedLikes.hide()
-    override fun feedMatchesSource(): Observable<LmmSlice> = feedMatches.hide()
     override fun feedMessagesSource(): Observable<LmmSlice> = feedMessages.hide()
     override fun lmmLoadFinishSource(): Observable<Int> = lmmLoadFinish.hide()
     override fun lmmLoadFailedSource(): Observable<Throwable> = lmmLoadFailed.hide()
@@ -517,7 +514,7 @@ open class FeedRepository @Inject constructor(
             Completable.fromAction {
                 val profiles = lmm.notSeenMatchesProfileIds()
                 badgeMatches.onNext(profiles.isNotEmpty())
-                feedMatches.onNext(LmmSlice(items = lmm.matches, totalNotFilteredCount = DomainUtil.BAD_VALUE))  // count not supported as 'matches' are deprecated
+                // 'matches' are deprecated,so no items being emitted here
                 if (profiles.isNotEmpty()) {
                     newMatchesProfilesCache.insertProfileIds(profiles)
                         .also { DebugLogUtil.v("# Lmm: count of new matches: $it") }
