@@ -212,6 +212,7 @@ open class FeedRepository @Inject constructor(
                 .filterOutBlockedProfilesLmmResponse()
                 .map { it.map() }
                 // now notify observers on data's arrived from Server, properties are not applicable on Server's data
+                .notifyLmmUpdate()
                 .checkForNewLikes()
                 .checkForNewMatches()
                 .checkForNewMessages()
@@ -226,10 +227,9 @@ open class FeedRepository @Inject constructor(
     private fun getCachedLmm(): Single<Lmm> =
         getCachedLmmOnly()
             .dropLmmStatsOnSubscribe()
-            .doOnSuccess { DebugLogUtil.v("# Cached Lmm: [${it.toLogString()}] before filter out blocked profiles") }
             .filterOutBlockedProfilesLmm()
-            .doOnSuccess { DebugLogUtil.v("# Cached Lmm: [${it.toLogString()}] after filtering out blocked profiles") }
             // now notify observers on data's arrived from Cache, properties are not applicable on Cache's data
+            .notifyLmmUpdate()
             .checkForNewLikes()
             .checkForNewMatches()
             .checkForNewMessages()
@@ -302,6 +302,7 @@ open class FeedRepository @Inject constructor(
         }
         .dropLmmStatsOnSubscribe()
         // now notify observers on data's arrived from Server, properties are not applicable on Server's data
+        .notifyLmmUpdate()
         .checkForNewLikes()
         .checkForNewMatches()
         .checkForNewMessages()
@@ -314,6 +315,7 @@ open class FeedRepository @Inject constructor(
             .dropLmmStatsOnSubscribe()
             .filterOutBlockedProfilesLmm()
             // now notify observers on data's arrived from Cache, properties are not applicable on Cache's data
+            .notifyLmmUpdate()
             .checkForNewLikes()
             .checkForNewMatches()
             .checkForNewMessages()
@@ -444,6 +446,14 @@ open class FeedRepository @Inject constructor(
         }
 
     // --------------------------------------------------------------------------------------------
+    private fun Single<Lmm>.notifyLmmUpdate(): Single<Lmm> =
+        doOnSuccess { lmm ->
+            feedLikes.onNext(LmmSlice(items = lmm.likes, totalNotFilteredCount = lmm.totalNotFilteredLikes))
+            // 'matches' are deprecated,so no items being emitted here
+            feedMessages.onNext(LmmSlice(items = lmm.messages, totalNotFilteredCount = lmm.totalNotFilteredMessages))
+        }
+
+    // ------------------------------------------
     private fun Single<Lmm>.cacheMessagesFromLmm(): Single<Lmm> =
         flatMap { lmm ->
             /**
@@ -498,7 +508,6 @@ open class FeedRepository @Inject constructor(
             Completable.fromAction {
                 val profiles = lmm.notSeenLikesProfileIds()
                 badgeLikes.onNext(profiles.isNotEmpty())
-                feedLikes.onNext(LmmSlice(items = lmm.likes, totalNotFilteredCount = lmm.totalNotFilteredLikes))
                 if (profiles.isNotEmpty()) {
                     newLikesProfilesCache.insertProfileIds(profiles)
                         .also { DebugLogUtil.v("# Lmm: count of new likes: $it") }
@@ -514,7 +523,6 @@ open class FeedRepository @Inject constructor(
             Completable.fromAction {
                 val profiles = lmm.notSeenMatchesProfileIds()
                 badgeMatches.onNext(profiles.isNotEmpty())
-                // 'matches' are deprecated,so no items being emitted here
                 if (profiles.isNotEmpty()) {
                     newMatchesProfilesCache.insertProfileIds(profiles)
                         .also { DebugLogUtil.v("# Lmm: count of new matches: $it") }
@@ -528,6 +536,26 @@ open class FeedRepository @Inject constructor(
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
         doOnSuccess { feedMessages.onNext(LmmSlice(items = it.messages, totalNotFilteredCount = it.totalNotFilteredMessages)) }
         .zipWith(messengerLocal.countUnreadByUserMessages(),  // count unread local messages
+            BiFunction { lmm: Lmm, count: Int ->
+                badgeMessenger.onNext(count > 0)  // have unread messages since last update
+                lmm
+            })
+        .zipWith(messengerLocal.countPeerMessages(),  // old total messages count from any peer
+            BiFunction { lmm: Lmm, count: Int ->
+                val peerMessagesCount = lmm.peerMessagesCount()
+                if (peerMessagesCount != 0 && count < peerMessagesCount) {
+                    // have new messages from any peer
+                    val diff = peerMessagesCount - count
+                    badgeMessenger.onNext(true)
+                    newMessagesCount.onNext(diff)
+                    DebugLogUtil.v("# LC: count of new messages: $diff")
+                }
+                lmm
+            })
+    //TODO remove
+
+    private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
+        zipWith(messengerLocal.countUnreadByUserMessages(),  // count unread local messages
             BiFunction { lmm: Lmm, count: Int ->
                 badgeMessenger.onNext(count > 0)  // have unread messages since last update
                 lmm
