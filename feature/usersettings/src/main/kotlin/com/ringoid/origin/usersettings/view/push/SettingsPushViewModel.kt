@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.ViewModelParams
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
@@ -28,8 +29,8 @@ class SettingsPushViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?, viewModelParams: ViewModelParams?) {
+        super.onCreate(savedInstanceState, viewModelParams)
         properties = spm.getUserPushSettings()
         pushSettings.value = properties  // assign initial values to views
     }

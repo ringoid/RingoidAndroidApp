@@ -16,6 +16,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.base.viewmodel.ViewModelParams
 import com.ringoid.config.IRuntimeConfig
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.debug.ICloudDebug
@@ -73,6 +74,8 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
         resolveAnnotations()
     }
 
+    protected open fun onBeforeViewModelInit(): ViewModelParams? = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onCreateDialog")
@@ -107,6 +110,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onActivityCreated")
         isActivityCreated = true
+        val viewModelParams = onBeforeViewModelInit()
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // tie observer to view's lifecycle rather than Fragment's one
             with(viewLifecycleOwner) {
@@ -114,7 +118,7 @@ abstract class BaseDialogFragment<T : BaseViewModel> : DialogFragment() {
                 observe(viewState(), this@BaseDialogFragment::onViewStateChange)
             }
         }
-        vm.onCreate(savedInstanceState)  // for Fragments
+        vm.onCreate(savedInstanceState, viewModelParams)  // for Fragments
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

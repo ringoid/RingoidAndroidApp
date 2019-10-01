@@ -14,6 +14,7 @@ import com.ringoid.base.print
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.base.viewmodel.ViewModelParams
 import com.ringoid.config.IRuntimeConfig
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.debug.ICloudDebug
@@ -94,6 +95,8 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         // override in subclasses
     }
 
+    protected open fun onBeforeViewModelInit(): ViewModelParams? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.d("onCreate(${checkForNull(savedInstanceState)}), intent: ${intent.print()}")
@@ -103,6 +106,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         onBeforeCreate()
         super.onCreate(savedInstanceState)
         getLayoutId()?.let { setContentView(it) }
+        val viewModelParams = onBeforeViewModelInit()
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             subscribeOnBusEvents()
             observe(viewState(), ::onViewStateChange)
@@ -111,7 +115,7 @@ abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity(), IBaseActiv
         savedInstanceState?.let { setResultExposed(it.getInt(BUNDLE_KEY_CURRENT_RESULT_CODE)) }
         isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
-        vm.onCreate(savedInstanceState)
+        vm.onCreate(savedInstanceState, viewModelParams)
     }
 
     override fun onNewIntent(intent: Intent) {

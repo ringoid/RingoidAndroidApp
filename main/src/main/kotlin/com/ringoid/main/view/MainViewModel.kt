@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.base.viewmodel.ViewModelParams
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.actions.CountActionObjectsCachedInPoolUseCase
 import com.ringoid.domain.interactor.base.Params
@@ -129,8 +130,8 @@ class MainViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?, viewModelParams: ViewModelParams?) {
+        super.onCreate(savedInstanceState, viewModelParams)
         savedInstanceState
             ?.let {
                 analyticsManager.restore(it)

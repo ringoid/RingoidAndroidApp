@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.ViewModelParams
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.system.PostToSlackUseCase
@@ -31,12 +32,14 @@ class SettingsProfileViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?, viewModelParams: ViewModelParams?) {
+        super.onCreate(savedInstanceState, viewModelParams)
         properties = UserProfileProperties.from(spm.getUserProfileProperties())
         unsavedProperties = spm.getUserProfileCustomPropertiesUnsavedInput()
         profile.value = properties  // assign initial values to views
-        spm.dropNeedShowStubStatus()  // drop flag
+        if ((viewModelParams as? SettingsProfileViewModelParams)?.isOnboarding != true) {
+            spm.dropNeedShowStubStatus()  // drop flag if Settings screen isn't opened while onboarding
+        }
         inited = true
     }
 

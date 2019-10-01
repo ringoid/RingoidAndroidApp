@@ -16,6 +16,7 @@ import com.ringoid.base.observe
 import com.ringoid.base.viewModel
 import com.ringoid.base.viewmodel.BaseViewModel
 import com.ringoid.base.viewmodel.DaggerViewModelFactory
+import com.ringoid.base.viewmodel.ViewModelParams
 import com.ringoid.config.IRuntimeConfig
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.debug.ICloudDebug
@@ -147,6 +148,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         DebugLogUtil.lifecycle(this, "onCreate")
     }
 
+    protected open fun onBeforeViewModelInit(): ViewModelParams? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
@@ -177,6 +180,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.v("onActivityCreated($savedInstanceState)")
         DebugLogUtil.lifecycle(this, "onActivityCreated")
         isActivityCreated = true
+        val viewModelParams = onBeforeViewModelInit()
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             setUserVisibleHintInternal(userVisibleHint)  // actualize visible hint on viewModel
             // tie observer to view's lifecycle rather than Fragment's one
@@ -187,7 +191,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         }
         isViewModelInitialized = true
         isOnFreshStart = savedInstanceState == null
-        vm.onCreate(savedInstanceState)  // for Fragments
+        vm.onCreate(savedInstanceState, viewModelParams)  // for Fragments
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

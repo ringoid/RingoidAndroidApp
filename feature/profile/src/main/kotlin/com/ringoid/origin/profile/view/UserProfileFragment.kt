@@ -590,9 +590,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         }
     }
 
-    private fun openSettingsProfileScreen() {
+    private fun openSettingsProfileScreen(isOnboarding: Boolean = false) {
         // open settings profile screen and focus on whatever field should be focused by default
-        navigate(this, path = "/settings_profile", rc = RequestCode.RC_SETTINGS_PROFILE)
+        val isOnboardingStr = if (isOnboarding) "?onboarding=true" else ""
+        navigate(this, path = "/settings_profile$isOnboardingStr", rc = RequestCode.RC_SETTINGS_PROFILE)
     }
 
     private fun openSettingsProfileScreenForStatus() {
@@ -601,10 +602,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     private fun openSettingsProfileScreenToFillEmptyFields(): Boolean {
+        // open settings profile screen while onboarding
         val properties = UserProfileProperties.from(spm.getUserProfileProperties())
         val check = properties.name().isBlank() || properties.whereLive().isBlank()
         if (check) {
-            openSettingsProfileScreen()
+            openSettingsProfileScreen(isOnboarding = true)  // focus on whatever field should be focused by default
         }
         return check
     }

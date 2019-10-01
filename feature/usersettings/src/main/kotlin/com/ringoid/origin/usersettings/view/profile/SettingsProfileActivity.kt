@@ -11,13 +11,15 @@ import com.ringoid.utility.hideKeyboard
 class SettingsProfileActivity : BaseHostActivity() {
 
     private var focus: String? = null
+    private var onboarding: Boolean = false
 
     override fun appScreen(): AppScreen = AppScreen.SETTINGS_PROFILE
     override fun getFragmentTag(): String = SettingsProfileFragment.TAG
-    override fun instantiateFragment(): Fragment = SettingsProfileFragment.newInstance(focus)
+    override fun instantiateFragment(): Fragment = SettingsProfileFragment.newInstance(focus, onboarding)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         focus = intent.extras?.getString("focus")
+        onboarding = intent.extras?.getString("onboarding")?.toBoolean() ?: false
         super.onCreate(savedInstanceState)
     }
 
