@@ -326,7 +326,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 withAbout = about.isNotBlank()
                 tv_about.text = about.trim()
             }
-            properties.status().let { status -> tv_status.text = status.trim() }
+            properties.status()
+                .takeIf { it.isNotBlank() }
+                ?.let { status ->
+                    tv_status.changeVisibility(isVisible = true)
+                    tv_status.text = status.trim()
+                }
+                ?: run { tv_status.changeVisibility(isVisible = false) }
 
             mutableListOf<String>().apply {
                 properties.name()
@@ -671,7 +677,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         ll_left_container.changeVisibility(isVisible = isVisible)
         ll_right_section.changeVisibility(isVisible = isVisible)
         tv_about.changeVisibility(isVisible = isVisible && isAboutVisible())
-        tv_status.changeVisibility(isVisible = isVisible)
+        tv_status.alpha = if (isVisible) 1.0f else 0.0f
     }
 
     // --------------------------------------------------------------------------------------------
