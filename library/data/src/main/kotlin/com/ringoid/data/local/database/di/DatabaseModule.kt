@@ -64,6 +64,12 @@ class DatabaseModule {
             .build()
 
     @Provides @Singleton
+    fun provideUnreadChatsUserRingoidDatabase(applicationContext: Context): UnreadChatsUserRingoidDatabase =
+        Room.databaseBuilder(applicationContext, UnreadChatsUserRingoidDatabase::class.java, UnreadChatsUserRingoidDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigrationFrom(1)
+            .build()
+
+    @Provides @Singleton
     fun provideBackupRingoidDatabase(applicationContext: Context): BackupRingoidDatabase =
         Room.databaseBuilder(applicationContext, BackupRingoidDatabase::class.java, BackupRingoidDatabase.DATABASE_NAME)
             .fallbackToDestructiveMigrationFrom(3)

@@ -14,8 +14,8 @@ import com.ringoid.data.local.database.dao.image.UserImageDao
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.dao.user.UserDao
 import com.ringoid.datainterface.di.*
-import com.ringoid.debug.barrier.IBarrierLogDaoHelper
 import com.ringoid.debug.IDebugLogDaoHelper
+import com.ringoid.debug.barrier.IBarrierLogDaoHelper
 import com.ringoid.utility.DebugOnly
 import dagger.Module
 import dagger.Provides
@@ -65,6 +65,9 @@ class DaoModule {
 
     @Provides @Singleton @PerLmmMatches
     fun provideNewMatchesUserFeedDao(database: NewMatchesProfilesUserRingoidDatabase): UserFeedDao = database.userFeedDao()
+
+    @Provides @Singleton @PerLmmMessages
+    fun provideUnreadChatsUserFeedDao(database: UnreadChatsUserRingoidDatabase): UserFeedDao = database.userFeedDao()
 
     @Provides @Singleton @DebugOnly
     fun provideBarrierLogDao(database: DebugRingoidDatabase): BarrierLogDao = database.barrierLogDao()

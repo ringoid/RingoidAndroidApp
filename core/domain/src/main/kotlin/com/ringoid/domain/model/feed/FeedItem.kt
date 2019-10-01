@@ -4,6 +4,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.misc.Gender
 import com.ringoid.domain.model.image.IImage
 import com.ringoid.domain.model.messenger.Message
+import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.utility.randomString
 
 open class FeedItem(
@@ -35,6 +36,9 @@ open class FeedItem(
     override val whereLive: String? = null,
     val isNotSeen: Boolean,
     override val isRealModel: Boolean = true) : IFeedItem {
+
+    fun hasUnreadByUserMessages(): Boolean =
+        messages.count { it.isPeerMessage() && it.readStatus == MessageReadStatus.UnreadByUser } > 0
 
     fun toShortString(): String = "FeedItem(id=${id.substring(0..3)}, ${if (isNotSeen) "Not Seen" else "Seen"}, img=[${images.size}], msg=[${messages.size}])"
 }

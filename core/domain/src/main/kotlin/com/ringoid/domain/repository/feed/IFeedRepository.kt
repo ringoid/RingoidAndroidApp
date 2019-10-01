@@ -42,7 +42,7 @@ interface IFeedRepository {
     fun lmmLoadFailedSource(): Observable<Throwable>
     fun newLikesCountSource(): Observable<Int>
     fun newMatchesCountSource(): Observable<Int>
-    fun newMessagesCountSource(): Observable<Int>
+    fun newUnreadChatsCountSource(): Observable<Int>
 
     fun getDiscover(resolution: ImageResolution, limit: Int?, filters: Filters?): Single<Feed>
 
@@ -56,4 +56,6 @@ interface IFeedRepository {
     fun getLcCounters(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm>
 
     fun getLmmProfileIds(): Single<List<String>>
+
+    fun tryUnreadChat(chatId: String): Completable
 }

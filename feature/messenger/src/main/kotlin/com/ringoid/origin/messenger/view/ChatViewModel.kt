@@ -96,7 +96,7 @@ class ChatViewModel @Inject constructor(
      * Get chat messages from the local storage. Those messages had been stored locally
      * when Lmm data fetching had completed.
      */
-    fun getMessages(profileId: String) {
+    internal fun getMessages(profileId: String) {
         chatData = ChatData(chatId = profileId)
         // The most recent message is the first one in list, positions ascending and message age is also ascending
         getMessagesForPeerUseCase.source(params = Params().put("chatId", profileId))
@@ -118,8 +118,8 @@ class ChatViewModel @Inject constructor(
     }
 
     @Suppress("CheckResult")
-    fun sendMessage(peerId: String, imageId: String = DomainUtil.BAD_ID, text: String?,
-                    sourceFeed: LcNavTab = LcNavTab.MESSAGES) {
+    internal fun sendMessage(peerId: String, imageId: String = DomainUtil.BAD_ID, text: String?,
+                             sourceFeed: LcNavTab = LcNavTab.MESSAGES) {
         if (text.isNullOrBlank()) {
             return  // don't send empty text
         }

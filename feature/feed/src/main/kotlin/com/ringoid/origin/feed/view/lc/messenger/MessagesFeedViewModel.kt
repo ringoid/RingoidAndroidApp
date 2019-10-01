@@ -14,6 +14,7 @@ import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
 import com.ringoid.domain.interactor.messenger.GetChatOnlyUseCase
 import com.ringoid.domain.interactor.messenger.GetChatUseCase
+import com.ringoid.domain.interactor.messenger.TryUnreadChatUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
@@ -43,6 +44,7 @@ import javax.inject.Inject
 class MessagesFeedViewModel @Inject constructor(
     private val getChatUseCase: GetChatUseCase,
     private val getChatOnlyUseCase: GetChatOnlyUseCase,
+    private val tryUnreadChatUseCase: TryUnreadChatUseCase,
     getLcUseCase: GetLcUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
@@ -108,7 +110,16 @@ class MessagesFeedViewModel @Inject constructor(
             .map { (it as BusEvent.PushNewMessage).peerId }
             // consume push event and skip any updates if target Chat is currently open
             .filter { !ChatInMemoryCache.isChatOpen(chatId = it) }
+            /**
+             * Push notifications, especially for new messages, could come unlimited,
+             * and multiple ones could be from the same peer in a row. First of all,
+             * there should be only one handling for all push notifications, that are
+             * coming from the same peer in a row, so [Observable.distinctUntilChanged].
+             *
+             * For interleaving push notifications - see below.
+             */
             .distinctUntilChanged { prev, cur -> checkFlagAndDrop() && ObjectHelper.equals(prev, cur) }
+            // internally update each particular not-opened Chat, this push notification belongs to
             .flatMapSingle { peerId ->
                 val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
                                      .put("chatId", peerId)
@@ -118,7 +129,22 @@ class MessagesFeedViewModel @Inject constructor(
                     .onErrorResumeNext { Single.just(EmptyChat) }
                     .map { peerId }
             }  // use case will deliver it's result to Main thread
+            // update appearance of Feed item in Messages Feed, that corresponds to Chat being processed here
             .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = OneShot(profileId) }
+            /**
+             * Some Chat has been updated with the incoming push notification. That push
+             * notification is considered as another source of Chat data, which is part of LC data.
+             * Since any update of LC data could have side-effects, here the implementation
+             * is being notified also that the update has occurred and it then should perform
+             * handling of any side-effects those update might internally involve.
+             */
+            .flatMap { tryUnreadChatUseCase.source().toObservable<String>() }
+            /**
+             * Interleaving push notifications could still come in a rapid pace, but there is only
+             * global side-effects left to be handled, that affect some state which does not
+             * reflect the change in any particular entity, but in the whole Messages Feed at once.
+             * Thus, we debounce push notifications to minimize the number of changes for that global state.
+             */
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({
@@ -128,12 +154,8 @@ class MessagesFeedViewModel @Inject constructor(
                 refreshOnPush.value = true
             }, DebugLogUtil::e)
 
-        // show particle animation and vibrate
+        // vibrate on incoming messages
         incomingPushMessagesEffect
-            .doOnNext {
-                HandledPushDataInMemory.incrementCountOfHandledPushMessages()
-                pushNewMessage.value = 0L  // for particle animation
-            }
             .throttleFirst(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)

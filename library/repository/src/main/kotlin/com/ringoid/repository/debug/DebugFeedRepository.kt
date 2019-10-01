@@ -1,10 +1,7 @@
 package com.ringoid.repository.debug
 
 import com.ringoid.data.handleError
-import com.ringoid.datainterface.di.PerAlreadySeen
-import com.ringoid.datainterface.di.PerBlock
-import com.ringoid.datainterface.di.PerLmmLikes
-import com.ringoid.datainterface.di.PerLmmMatches
+import com.ringoid.datainterface.di.*
 import com.ringoid.datainterface.local.feed.IFeedDbFacade
 import com.ringoid.datainterface.local.image.IImageDbFacade
 import com.ringoid.datainterface.local.messenger.IMessageDbFacade
@@ -40,11 +37,12 @@ class DebugFeedRepository @Inject constructor(
     @PerBlock blockedProfilesCache: IUserFeedDbFacade,
     @PerLmmLikes newLikesProfilesCache: IUserFeedDbFacade,
     @PerLmmMatches newMatchesProfilesCache: IUserFeedDbFacade,
+    @PerLmmMessages unreadChatsCache: IUserFeedDbFacade,
     cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : FeedRepository(
         local, imagesLocal, messengerLocal, feedSharedPrefs,
         alreadySeenProfilesCache, blockedProfilesCache,
-        newLikesProfilesCache, newMatchesProfilesCache,
+        newLikesProfilesCache, newMatchesProfilesCache, unreadChatsCache,
         cloud, spm, aObjPool), IDebugFeedRepository {
 
     /* Debug */

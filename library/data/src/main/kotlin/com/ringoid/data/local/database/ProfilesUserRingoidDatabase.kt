@@ -34,3 +34,13 @@ abstract class NewMatchesProfilesUserRingoidDatabase : RoomDatabase() {
 
     abstract fun userFeedDao(): UserFeedDao
 }
+
+@Database(version = 100, entities = [ProfileIdDbo::class])
+abstract class UnreadChatsUserRingoidDatabase : RoomDatabase() {
+
+    companion object {
+        const val DATABASE_NAME = "UnreadChatsUserRingoid.db"
+    }
+
+    abstract fun userFeedDao(): UserFeedDao
+}

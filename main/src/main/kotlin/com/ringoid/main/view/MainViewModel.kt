@@ -115,9 +115,8 @@ class MainViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({ newMatchesCount.value = it }, Timber::e)
 
-        getLcUseCase.repository.newMessagesCountSource()
+        getLcUseCase.repository.newUnreadChatsCountSource()
             .observeOn(AndroidSchedulers.mainThread())
-            .map { it - HandledPushDataInMemory.getCountOfHandledPushMessages() }
             .filter { it > 0 }
             .autoDisposable(this)
             .subscribe({ newMessagesCount.value = it }, Timber::e)

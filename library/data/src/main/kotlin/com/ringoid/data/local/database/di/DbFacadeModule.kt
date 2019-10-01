@@ -60,6 +60,9 @@ class DbFacadeModule {
     @Provides @Singleton @PerLmmMatches
     fun provideNewMatchesUserFeedDbFacade(@PerLmmMatches dao: UserFeedDao): IUserFeedDbFacade = UserFeedDbFacadeImpl(dao)
 
+    @Provides @Singleton @PerLmmMessages
+    fun provideUnreadChatsUserFeedDbFacade(@PerLmmMessages dao: UserFeedDao): IUserFeedDbFacade = UserFeedDbFacadeImpl(dao)
+
     @Provides @Singleton @PerUser
     fun provideUserDbFacade(@PerUser dao: UserDao): IUserDbFacade = UserDbFacadeImpl(dao)
 

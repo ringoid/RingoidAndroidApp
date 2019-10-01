@@ -3,8 +3,10 @@ package com.ringoid.repository.messenger
 import com.ringoid.config.AppMigrationFrom
 import com.ringoid.data.handleError
 import com.ringoid.data.local.shared_prefs.accessSingle
+import com.ringoid.datainterface.di.PerLmmMessages
 import com.ringoid.datainterface.di.PerUser
 import com.ringoid.datainterface.local.messenger.IMessageDbFacade
+import com.ringoid.datainterface.local.user.IUserFeedDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
@@ -81,6 +83,7 @@ import javax.inject.Singleton
 class MessengerRepository @Inject constructor(
     private val local: IMessageDbFacade,
     @PerUser private val sentMessagesLocal: IMessageDbFacade,
+    @PerLmmMessages private val unreadChatsCache: IUserFeedDbFacade,
     cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IMessengerRepository {
 
@@ -347,6 +350,10 @@ class MessengerRepository @Inject constructor(
                         Flowable.error(error)
                     }
                 }
+            }
+            .flatMap { list ->  // chat is considered read by user, so remove it from unread chats
+                Completable.fromAction { unreadChatsCache.deleteProfileId(profileId = chatId) }
+                           .toSingleDefault(list)
             }
 
     private fun getMessagesOnly(chatId: String): Single<List<Message>> =

@@ -6,10 +6,7 @@ import com.ringoid.data.handleError
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
 import com.ringoid.data.local.shared_prefs.accessSingle
-import com.ringoid.datainterface.di.PerAlreadySeen
-import com.ringoid.datainterface.di.PerBlock
-import com.ringoid.datainterface.di.PerLmmLikes
-import com.ringoid.datainterface.di.PerLmmMatches
+import com.ringoid.datainterface.di.*
 import com.ringoid.datainterface.local.feed.IFeedDbFacade
 import com.ringoid.datainterface.local.image.IImageDbFacade
 import com.ringoid.datainterface.local.messenger.IMessageDbFacade
@@ -53,6 +50,7 @@ open class FeedRepository @Inject constructor(
     @PerBlock private val blockedProfilesCache: IUserFeedDbFacade,
     @PerLmmLikes private val newLikesProfilesCache: IUserFeedDbFacade,
     @PerLmmMatches private val newMatchesProfilesCache: IUserFeedDbFacade,
+    @PerLmmMessages private val unreadChatsCache: IUserFeedDbFacade,
     cloud: IRingoidCloudFacade, spm: ISharedPrefsManager, aObjPool: IActionObjectPool)
     : BaseRepository(cloud, spm, aObjPool), IFeedRepository {
 
@@ -93,6 +91,7 @@ open class FeedRepository @Inject constructor(
         Completable.fromAction {
             newLikesProfilesCache.deleteProfileIds()
             newMatchesProfilesCache.deleteProfileIds()
+            unreadChatsCache.deleteProfileIds()
         }
 
     override fun clearCachedLmmTotalCounts(): Completable =
@@ -118,7 +117,7 @@ open class FeedRepository @Inject constructor(
     private val lmmLoadFailed = PublishSubject.create<Throwable>()  // LMM load failed, fallback to cache
     private val newLikesCount = PublishSubject.create<Int>()  // for particle animation
     private val newMatchesCount = PublishSubject.create<Int>()  // for particle animation
-    private val newMessagesCount = PublishSubject.create<Int>()  // for particle animation
+    private val newUnreadChatsCount = PublishSubject.create<Int>()  // for particle animation
     override fun badgeLikesSource(): Observable<Boolean> = badgeLikes.hide()
     override fun badgeMatchesSource(): Observable<Boolean> = badgeMatches.hide()
     override fun badgeMessengerSource(): Observable<Boolean> = badgeMessenger.hide()
@@ -128,7 +127,7 @@ open class FeedRepository @Inject constructor(
     override fun lmmLoadFailedSource(): Observable<Throwable> = lmmLoadFailed.hide()
     override fun newLikesCountSource(): Observable<Int> = newLikesCount.hide()
     override fun newMatchesCountSource(): Observable<Int> = newMatchesCount.hide()
-    override fun newMessagesCountSource(): Observable<Int> = newMessagesCount.hide()
+    override fun newUnreadChatsCountSource(): Observable<Int> = newUnreadChatsCount.hide()
 
     /* Discover (former New Faces) */
     // ------------------------------------------
@@ -341,6 +340,16 @@ open class FeedRepository @Inject constructor(
             })
 
     // --------------------------------------------------------------------------------------------
+    override fun tryUnreadChat(chatId: String): Completable =
+        Completable.fromAction {
+            val isInserted = unreadChatsCache.insertProfileId(profileId = chatId)
+            if (isInserted) {
+                badgeMessenger.onNext(true)
+                newUnreadChatsCount.onNext(1)
+            }
+        }
+
+    // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.filterOutAlreadySeenProfilesFeed(): Single<FeedResponse> =
         filterOutProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())
 
@@ -510,7 +519,7 @@ open class FeedRepository @Inject constructor(
                 badgeLikes.onNext(profiles.isNotEmpty())
                 if (profiles.isNotEmpty()) {
                     newLikesProfilesCache.insertProfileIds(profiles)
-                        .also { DebugLogUtil.v("# Lmm: count of new likes: $it") }
+                        .also { DebugLogUtil.v("# LC: count of new likes: $it") }
                         .takeIf { it > 0 }
                         ?.let { newLikesCount.onNext(it) }
                 }
@@ -525,7 +534,7 @@ open class FeedRepository @Inject constructor(
                 badgeMatches.onNext(profiles.isNotEmpty())
                 if (profiles.isNotEmpty()) {
                     newMatchesProfilesCache.insertProfileIds(profiles)
-                        .also { DebugLogUtil.v("# Lmm: count of new matches: $it") }
+                        .also { DebugLogUtil.v("# LC: count of new matches: $it") }
                         .takeIf { it > 0 }
                         ?.let { newMatchesCount.onNext(it) }
                 }
@@ -533,45 +542,38 @@ open class FeedRepository @Inject constructor(
             .toSingleDefault(lmm)
         }
 
-    private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
-        doOnSuccess { feedMessages.onNext(LmmSlice(items = it.messages, totalNotFilteredCount = it.totalNotFilteredMessages)) }
-        .zipWith(messengerLocal.countUnreadByUserMessages(),  // count unread local messages
-            BiFunction { lmm: Lmm, count: Int ->
-                badgeMessenger.onNext(count > 0)  // have unread messages since last update
-                lmm
-            })
-        .zipWith(messengerLocal.countPeerMessages(),  // old total messages count from any peer
-            BiFunction { lmm: Lmm, count: Int ->
-                val peerMessagesCount = lmm.peerMessagesCount()
-                if (peerMessagesCount != 0 && count < peerMessagesCount) {
-                    // have new messages from any peer
-                    val diff = peerMessagesCount - count
-                    badgeMessenger.onNext(true)
-                    newMessagesCount.onNext(diff)
-                    DebugLogUtil.v("# LC: count of new messages: $diff")
-                }
-                lmm
-            })
-    //TODO remove
-
+    /**
+     * Checks whether [Lmm] contains chats that are unread by user. Since this method checks
+     * local cache, it must be called before [cacheLmm].
+     */
     private fun Single<Lmm>.checkForNewMessages(): Single<Lmm> =
         zipWith(messengerLocal.countUnreadByUserMessages(),  // count unread local messages
+            /**
+             * [cacheLmm] hasn't been called yet, by convention, so here we checks the old cache,
+             * whether it contains messages that are unread by user, through all chats.
+             */
             BiFunction { lmm: Lmm, count: Int ->
                 badgeMessenger.onNext(count > 0)  // have unread messages since last update
                 lmm
             })
-        .zipWith(messengerLocal.countPeerMessages(),  // old total messages count from any peer
-            BiFunction { lmm: Lmm, count: Int ->
-                val peerMessagesCount = lmm.peerMessagesCount()
-                if (peerMessagesCount != 0 && count < peerMessagesCount) {
-                    // have new messages from any peer
-                    val diff = peerMessagesCount - count
-                    badgeMessenger.onNext(true)
-                    newMessagesCount.onNext(diff)
-                    DebugLogUtil.v("# LC: count of new messages: $diff")
-                }
-                lmm
-            })
+        .flatMap { lmm ->
+            lmm.messages
+                .filter { it.hasUnreadByUserMessages() }
+                .map { it.id }
+                .takeIf { it.isNotEmpty() }
+                ?.let {
+                    Single.fromCallable { unreadChatsCache.insertProfileIds(it) }
+                          .doOnSuccess {
+                              // actually inserted items (no duplicates)
+                              if (it > 0) {
+                                  badgeMessenger.onNext(true)
+                                  newUnreadChatsCount.onNext(it)
+                                  DebugLogUtil.v("# LC: count of new unread chats: $it")
+                              }
+                          }
+                          .map { lmm }
+                } ?: Single.just(lmm)
+        }
 
     private fun Single<LmmResponse>.dropLmmResponseStatsOnSubscribe(): Single<LmmResponse> =
         doOnSubscribe {
