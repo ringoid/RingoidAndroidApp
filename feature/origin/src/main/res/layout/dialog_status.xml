@@ -6,7 +6,6 @@
     android:background="?attr/refColorBg"
     android:orientation="vertical"
     android:paddingTop="@dimen/std_margin_24"
-    android:paddingBottom="@dimen/std_margin_8"
     android:paddingStart="@dimen/std_margin_24"
     android:paddingEnd="@dimen/std_margin_24">
 
