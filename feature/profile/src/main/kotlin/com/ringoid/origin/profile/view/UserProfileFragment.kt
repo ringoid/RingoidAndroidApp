@@ -326,7 +326,13 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
                 withAbout = about.isNotBlank()
                 tv_about.text = about.trim()
             }
-            properties.status().let { status -> tv_status.text = status.trim() }
+            properties.status()
+                .takeIf { it.isNotBlank() }
+                ?.let { status ->
+                    tv_status.changeVisibility(isVisible = true)
+                    tv_status.text = status.trim()
+                }
+                ?: run { tv_status.changeVisibility(isVisible = false) }
 
             mutableListOf<String>().apply {
                 properties.name()
@@ -584,9 +590,10 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         }
     }
 
-    private fun openSettingsProfileScreen() {
+    private fun openSettingsProfileScreen(isOnboarding: Boolean = false) {
         // open settings profile screen and focus on whatever field should be focused by default
-        navigate(this, path = "/settings_profile", rc = RequestCode.RC_SETTINGS_PROFILE)
+        val isOnboardingStr = if (isOnboarding) "?onboarding=true" else ""
+        navigate(this, path = "/settings_profile$isOnboardingStr", rc = RequestCode.RC_SETTINGS_PROFILE)
     }
 
     private fun openSettingsProfileScreenForStatus() {
@@ -595,10 +602,11 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     }
 
     private fun openSettingsProfileScreenToFillEmptyFields(): Boolean {
+        // open settings profile screen while onboarding
         val properties = UserProfileProperties.from(spm.getUserProfileProperties())
         val check = properties.name().isBlank() || properties.whereLive().isBlank()
         if (check) {
-            openSettingsProfileScreen()
+            openSettingsProfileScreen(isOnboarding = true)  // focus on whatever field should be focused by default
         }
         return check
     }
@@ -671,7 +679,7 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
         ll_left_container.changeVisibility(isVisible = isVisible)
         ll_right_section.changeVisibility(isVisible = isVisible)
         tv_about.changeVisibility(isVisible = isVisible && isAboutVisible())
-        tv_status.changeVisibility(isVisible = isVisible)
+        tv_status.alpha = if (isVisible) 1.0f else 0.0f
     }
 
     // --------------------------------------------------------------------------------------------

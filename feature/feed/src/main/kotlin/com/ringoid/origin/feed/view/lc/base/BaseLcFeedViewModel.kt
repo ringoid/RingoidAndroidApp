@@ -8,6 +8,7 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
+import com.ringoid.base.viewmodel.ViewModelParams
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.interactor.base.Params
@@ -121,8 +122,8 @@ abstract class BaseLcFeedViewModel(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?, viewModelParams: ViewModelParams?) {
+        super.onCreate(savedInstanceState, viewModelParams)
         coordinator.init()
         coordinator.registerListener(this)
     }

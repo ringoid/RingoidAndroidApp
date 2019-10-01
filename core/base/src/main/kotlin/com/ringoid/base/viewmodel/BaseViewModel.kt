@@ -67,7 +67,7 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
      *
      * @see https://medium.com/androiddevelopers/viewmodels-persistence-onsaveinstancestate-restoring-ui-state-and-loaders-fc7cc4a6c090
      */
-    open fun onCreate(savedInstanceState: Bundle?) {
+    open fun onCreate(savedInstanceState: Bundle?, viewModelParams: ViewModelParams?) {
         savedInstanceState?.let {
             if (viewState.value == ViewState.NO_STATE) {
                 onRecreate(it)

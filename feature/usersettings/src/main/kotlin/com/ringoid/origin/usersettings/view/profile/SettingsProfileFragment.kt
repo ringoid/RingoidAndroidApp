@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.observe
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.viewmodel.ViewModelParams
 import com.ringoid.domain.misc.UserProfileEditablePropertyId
 import com.ringoid.origin.error.handleOnView
 import com.ringoid.origin.model.*
@@ -33,10 +34,14 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
         private const val ABOUT_PROPERTY_DIALOG_TAG = "PropertyAbout"
 
         private const val BUNDLE_KEY_FOCUS_FIELD = "bundle_key_focus_field"
+        private const val BUNDLE_KEY_ONBOARDNG = "bundle_key_onboardng"
 
-        fun newInstance(focus: String? = null): SettingsProfileFragment =
+        fun newInstance(focus: String? = null, onboarding: Boolean = false): SettingsProfileFragment =
             SettingsProfileFragment().apply {
-                arguments = Bundle().apply { putString(BUNDLE_KEY_FOCUS_FIELD, focus) }
+                arguments = Bundle().apply {
+                    putString(BUNDLE_KEY_FOCUS_FIELD, focus)
+                    putBoolean(BUNDLE_KEY_ONBOARDNG, onboarding)
+                }
             }
     }
 
@@ -62,6 +67,9 @@ class SettingsProfileFragment : BaseSettingsFragment<SettingsProfileViewModel>()
     }
 
     // --------------------------------------------------------------------------------------------
+    override fun onBeforeViewModelInit(): ViewModelParams? =
+        SettingsProfileViewModelParams(isOnboarding = arguments?.getBoolean(BUNDLE_KEY_ONBOARDNG) ?: false)
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with (viewLifecycleOwner) {
