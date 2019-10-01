@@ -14,7 +14,7 @@
         android:text="@string/settings_info_about_dialog_title"
         android:textSize="@dimen/std_text_22"
         android:textStyle="bold"
-        style="@style/StdText.Primary"/>
+        style="@style/StdText.Secondary"/>
 
     <TextView
         android:id="@+id/tv_description"
@@ -23,7 +23,7 @@
         android:layout_marginEnd="@dimen/std_margin_24"
         android:gravity="start"
         android:text="@string/settings_info_about_dialog_description"
-        style="@style/StdText.Primary"/>
+        style="@style/StdText.Secondary"/>
 
     <Button
         android:id="@+id/btn_close"
@@ -33,5 +33,5 @@
         android:layout_marginEnd="@dimen/std_margin_8"
         android:text="@string/button_close"
         android:textAllCaps="true"
-        style="@style/FlatButton"/>
+        style="@style/FlatButton.Primary"/>
 </LinearLayout>
