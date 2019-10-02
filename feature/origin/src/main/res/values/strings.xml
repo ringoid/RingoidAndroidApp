@@ -59,7 +59,8 @@
     <string name="block_profile_button_block">Block</string>
     <string name="block_profile_button_report">Report &#38; Block</string>
     <string name="feed_item_context_menu_button_open_chat">Open Chat</string>
-    <string name="feed_item_context_menu_button_send_like">Send Mutual Mike</string>
+    <string name="feed_item_context_menu_button_send_like">Send Like</string>
+    <string name="feed_item_context_menu_button_send_match">Send Mutual Mike</string>
 
     <string-array name="block_profile_array">
         <item>@string/block_profile_button_block</item>

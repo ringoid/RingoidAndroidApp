@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:text="@string/feed_item_context_menu_button_open_chat"
         android:textColor="@color/flat_button_text_color_primary"
+        android:visibility="gone"
         style="@style/FlatButton.Tall"/>
 
     <Button
@@ -17,6 +18,15 @@
         android:layout_width="match_parent"
         android:text="@string/feed_item_context_menu_button_send_like"
         android:textColor="@color/flat_button_text_color_primary"
+        android:visibility="gone"
+        style="@style/FlatButton.Tall"/>
+
+    <Button
+        android:id="@+id/btn_send_match"
+        android:layout_width="match_parent"
+        android:text="@string/feed_item_context_menu_button_send_match"
+        android:textColor="@color/flat_button_text_color_primary"
+        android:visibility="gone"
         style="@style/FlatButton.Tall"/>
 
     <Button
