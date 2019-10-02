@@ -13,6 +13,7 @@ import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import kotlinx.android.synthetic.main.dialog_feed_item_context_menu.*
+import timber.log.Timber
 
 @BottomSheet(true)
 class FeedItemContextMenuDialog : SimpleBaseDialogFragment() {
@@ -49,14 +50,17 @@ class FeedItemContextMenuDialog : SimpleBaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         btn_block.clicks().compose(clickDebounce()).subscribe { onBlock() }
         btn_report.clicks().compose(clickDebounce()).subscribe { onReportSheetOpen() }
-        btn_send_like.clicks().compose(clickDebounce()).subscribe { onSendLike() }
         btn_open_chat.clicks().compose(clickDebounce()).subscribe { onOpenChat() }
+        btn_send_like.clicks().compose(clickDebounce()).subscribe { onSendLike() }
+        btn_send_match.clicks().compose(clickDebounce()).subscribe { onSendMatch() }
         btn_open_social_instagram.clicks().compose(clickDebounce()).subscribe { openSocialInstagram() }
         btn_open_social_tiktok.clicks().compose(clickDebounce()).subscribe { openSocialTiktok() }
 
         val contextMenuActions = arguments?.getStringArray(BUNDLE_KEY_CONTEXT_MENU_ACTIONS) ?: emptyArray()
+        Timber.v("List of context menu actions: ${contextMenuActions.joinToString()}")
         btn_open_chat.changeVisibility(isVisible = contextMenuActions.contains("chat"))
         btn_send_like.changeVisibility(isVisible = contextMenuActions.contains("like"))
+        btn_send_match.changeVisibility(isVisible = contextMenuActions.contains("match"))
 
         arguments?.getString(BUNDLE_KEY_SOCIAL_INSTAGRAM)?.takeIf { it.isNotBlank() }?.let { instagramUserId ->
             btn_open_social_instagram.text = String.format(resources.getString(OriginR_string.profile_button_open_social_instagram, ValueUtils.atCharSocialId(instagramUserId)))
@@ -95,6 +99,11 @@ class FeedItemContextMenuDialog : SimpleBaseDialogFragment() {
 
     private fun onSendLike() {
         communicator(IFeedItemContextMenuActivity::class.java)?.onSendLike()
+        close()
+    }
+
+    private fun onSendMatch() {
+        communicator(IFeedItemContextMenuActivity::class.java)?.onSendMatch()
         close()
     }
 

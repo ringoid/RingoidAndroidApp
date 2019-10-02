@@ -58,6 +58,10 @@ class FeedItemContextMenuActivity : ThemedSimpleBaseActivity(), IFeedItemContext
         setResultExposed(Activity.RESULT_OK, outputData)
     }
 
+    override fun onSendMatch() {
+        onSendLike()  // sending match is the same as sending like
+    }
+
     override fun openChat() {
         outputData.putExtra(Extras.OUT_EXTRA_OPEN_CHAT, true)
         setResultExposed(Activity.RESULT_OK, outputData)

@@ -10,6 +10,7 @@ interface IFeedItemContextMenuActivity : ICommunicator {
     fun onReport(reason: Int)
     fun onReportSheetOpen()
     fun onSendLike()
+    fun onSendMatch()
     fun openChat()
     fun openSocialInstagram()
     fun openSocialTiktok()
