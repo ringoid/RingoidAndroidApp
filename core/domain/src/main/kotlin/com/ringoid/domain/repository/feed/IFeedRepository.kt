@@ -57,5 +57,5 @@ interface IFeedRepository {
 
     fun getLmmProfileIds(): Single<List<String>>
 
-    fun tryUnreadChat(chatId: String): Single<Boolean>
+    fun onUpdateSomeChatExternal()
 }

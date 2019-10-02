@@ -340,15 +340,10 @@ open class FeedRepository @Inject constructor(
             })
 
     // --------------------------------------------------------------------------------------------
-    override fun tryUnreadChat(chatId: String): Single<Boolean> =
-        Single.fromCallable {
-            unreadChatsCache.insertProfileId(profileId = chatId)
-                .takeIf { it }
-                ?.also {
-                    badgeMessenger.onNext(true)
-                    newUnreadChatsCount.onNext(1)
-                } ?: false
-        }
+    override fun onUpdateSomeChatExternal() {
+        badgeMessenger.onNext(true)
+        newUnreadChatsCount.onNext(1)
+    }
 
     // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.filterOutAlreadySeenProfilesFeed(): Single<FeedResponse> =

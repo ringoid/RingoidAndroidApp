@@ -12,15 +12,12 @@ import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.CountUserImagesUseCase
 import com.ringoid.domain.interactor.messenger.ClearMessagesForChatUseCase
-import com.ringoid.domain.interactor.messenger.GetChatOnlyUseCase
-import com.ringoid.domain.interactor.messenger.GetChatUseCase
-import com.ringoid.domain.interactor.messenger.TryUnreadChatUseCase
+import com.ringoid.domain.interactor.messenger.UpdateChatUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.IFiltersSource
 import com.ringoid.domain.memory.IUserInMemoryCache
 import com.ringoid.domain.model.feed.FeedItem
 import com.ringoid.domain.model.feed.LmmSlice
-import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.origin.feed.misc.HandledPushDataInMemory
 import com.ringoid.origin.feed.view.lc.base.BaseLcFeedViewModel
 import com.ringoid.origin.utils.ScreenHelper
@@ -29,7 +26,6 @@ import com.ringoid.report.log.Report
 import com.ringoid.utility.vibrate
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -41,9 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 class MessagesFeedViewModel @Inject constructor(
-    private val getChatUseCase: GetChatUseCase,
-    private val getChatOnlyUseCase: GetChatOnlyUseCase,
-    private val tryUnreadChatUseCase: TryUnreadChatUseCase,
+    private val updateChatUseCase: UpdateChatUseCase,
     getLcUseCase: GetLcUseCase,
     getCachedFeedItemByIdUseCase: GetCachedFeedItemByIdUseCase,
     updateFeedItemAsSeenUseCase: UpdateFeedItemAsSeenUseCase,
@@ -122,22 +116,12 @@ class MessagesFeedViewModel @Inject constructor(
                             .put("isChatOpen", ChatInMemoryCache.isChatOpen(chatId = peerId))
 
                         // UseCase will deliver it's result to Main thread
-                        getChatOnlyUseCase.source(params = params)
+                        updateChatUseCase.source(params = params)
                             .doOnSuccess { markFeedItemAsNotSeen(feedItemId = peerId) }
-                            .onErrorResumeNext { Single.just(EmptyChat) }
                             .map { peerId }
                     }
                     // update appearance of Feed item in Messages Feed, that corresponds to Chat being processed here
                     .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = OneShot(profileId) }
-                    /**
-                     * Some Chat has been updated with the incoming push notification. That push
-                     * notification is considered as another source of Chat data, which is part of LC data.
-                     * Since any update of LC data could have side-effects, here the implementation
-                     * is being notified also that the update has occurred and it then should perform
-                     * handling of any side-effects those update might internally involve.
-                     */
-                    // side-effects are: particle animation, show badge on Messages LC tab, depending on whether 'peerId' was inserted to cache here
-                    .flatMap { tryUnreadChatUseCase.source(params = Params().put("chatId", it)).toObservable() }
             }
             /**
              * Interleaving push notifications could still come in a rapid pace, but there is only

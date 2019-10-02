@@ -16,6 +16,7 @@ import com.ringoid.domain.model.actions.MessageActionObject
 import com.ringoid.domain.model.actions.ReadMessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
+import com.ringoid.domain.model.messenger.EmptyChat
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.domain.repository.messenger.IMessengerRepository
@@ -138,6 +139,13 @@ class MessengerRepository @Inject constructor(
                     }
                 }
             }
+
+    override fun updateChat(chatId: String, resolution: ImageResolution, isChatOpen: Boolean)
+            : Single<Pair<Chat, Boolean>> =
+        getChatOnly(chatId, resolution, isChatOpen)
+            .onErrorResumeNext { Single.just(EmptyChat) }  // update without any interruption
+            .zipWith(Single.fromCallable { unreadChatsCache.insertProfileId(profileId = chatId) },
+                     BiFunction { chat: Chat, isInserted: Boolean -> chat to isInserted })
 
     // ------------------------------------------
     private fun getChatOnly(chatId: String, resolution: ImageResolution,

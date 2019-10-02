@@ -19,6 +19,8 @@ interface IMessengerRepository {
 
     fun pollChatNew(chatId: String, resolution: ImageResolution, isChatOpen: Boolean = false): Flowable<Chat>
 
+    fun updateChat(chatId: String, resolution: ImageResolution, isChatOpen: Boolean = false): Single<Pair<Chat, Boolean>>
+
     fun updateReadStatusForUserMessagesSource(): Observable<List<Message>>
 
     // ------------------------------------------
