@@ -2,11 +2,11 @@ package com.ringoid.domain.interactor.messenger
 
 import com.ringoid.domain.executor.UseCasePostExecutor
 import com.ringoid.domain.executor.UseCaseThreadExecutor
-import com.ringoid.domain.interactor.base.CompletableUseCase
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.base.processCompletable
+import com.ringoid.domain.interactor.base.SingleUseCase
+import com.ringoid.domain.interactor.base.processSingle
 import com.ringoid.domain.repository.feed.IFeedRepository
-import io.reactivex.Completable
+import io.reactivex.Single
 import javax.inject.Inject
 
 /**
@@ -15,8 +15,8 @@ import javax.inject.Inject
  */
 class TryUnreadChatUseCase @Inject constructor(private val repository: IFeedRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
-    : CompletableUseCase(threadExecutor, postExecutor) {
+    : SingleUseCase<Boolean>(threadExecutor, postExecutor) {
 
-    override fun sourceImpl(params: Params): Completable =
-        params.processCompletable("chatId", repository::tryUnreadChat)
+    override fun sourceImpl(params: Params): Single<Boolean> =
+        params.processSingle("chatId", repository::tryUnreadChat)
 }

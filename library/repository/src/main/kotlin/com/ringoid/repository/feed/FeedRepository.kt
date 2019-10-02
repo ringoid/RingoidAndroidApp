@@ -340,13 +340,14 @@ open class FeedRepository @Inject constructor(
             })
 
     // --------------------------------------------------------------------------------------------
-    override fun tryUnreadChat(chatId: String): Completable =
-        Completable.fromAction {
-            val isInserted = unreadChatsCache.insertProfileId(profileId = chatId)
-            if (isInserted) {
-                badgeMessenger.onNext(true)
-                newUnreadChatsCount.onNext(1)
-            }
+    override fun tryUnreadChat(chatId: String): Single<Boolean> =
+        Single.fromCallable {
+            unreadChatsCache.insertProfileId(profileId = chatId)
+                .takeIf { it }
+                ?.also {
+                    badgeMessenger.onNext(true)
+                    newUnreadChatsCount.onNext(1)
+                } ?: false
         }
 
     // --------------------------------------------------------------------------------------------

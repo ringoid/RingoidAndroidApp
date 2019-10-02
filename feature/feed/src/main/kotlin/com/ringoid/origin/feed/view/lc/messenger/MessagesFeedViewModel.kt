@@ -31,7 +31,6 @@ import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.internal.functions.ObjectHelper
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import org.greenrobot.eventbus.Subscribe
@@ -110,35 +109,36 @@ class MessagesFeedViewModel @Inject constructor(
             .map { (it as BusEvent.PushNewMessage).peerId }
             // consume push event and skip any updates if target Chat is currently open
             .filter { !ChatInMemoryCache.isChatOpen(chatId = it) }
-            /**
-             * Push notifications, especially for new messages, could come unlimited,
-             * and multiple ones could be from the same peer in a row. First of all,
-             * there should be only one handling for all push notifications, that are
-             * coming from the same peer in a row, so [Observable.distinctUntilChanged].
-             *
-             * For interleaving push notifications - see below.
-             */
-            .distinctUntilChanged { prev, cur -> checkFlagAndDrop() && ObjectHelper.equals(prev, cur) }
-            // internally update each particular not-opened Chat, this push notification belongs to
-            .flatMapSingle { peerId ->
-                val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
-                                     .put("chatId", peerId)
-                                     .put("isChatOpen", ChatInMemoryCache.isChatOpen(chatId = peerId))
-                getChatOnlyUseCase.source(params = params)
-                    .doOnSuccess { markFeedItemAsNotSeen(feedItemId = peerId) }
-                    .onErrorResumeNext { Single.just(EmptyChat) }
-                    .map { peerId }
-            }  // use case will deliver it's result to Main thread
-            // update appearance of Feed item in Messages Feed, that corresponds to Chat being processed here
-            .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = OneShot(profileId) }
-            /**
-             * Some Chat has been updated with the incoming push notification. That push
-             * notification is considered as another source of Chat data, which is part of LC data.
-             * Since any update of LC data could have side-effects, here the implementation
-             * is being notified also that the update has occurred and it then should perform
-             * handling of any side-effects those update might internally involve.
-             */
-            .flatMap { tryUnreadChatUseCase.source(params = Params().put("chatId", it)).toObservable<String>() }
+            // group push notifications by their peerId and handle each group independently on each other
+            .groupBy { it /** peerId */ }
+            .flatMap { source ->  // one source for all push messages with the same peerId
+                source
+                    // handle the last push notification for the given chatId within timespan
+                    .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS)
+                    // internally update each particular not-opened Chat, this push notification belongs to
+                    .flatMapSingle { peerId ->
+                        val params = Params().put(ScreenHelper.getLargestPossibleImageResolution(context))
+                            .put("chatId", peerId)
+                            .put("isChatOpen", ChatInMemoryCache.isChatOpen(chatId = peerId))
+
+                        // UseCase will deliver it's result to Main thread
+                        getChatOnlyUseCase.source(params = params)
+                            .doOnSuccess { markFeedItemAsNotSeen(feedItemId = peerId) }
+                            .onErrorResumeNext { Single.just(EmptyChat) }
+                            .map { peerId }
+                    }
+                    // update appearance of Feed item in Messages Feed, that corresponds to Chat being processed here
+                    .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = OneShot(profileId) }
+                    /**
+                     * Some Chat has been updated with the incoming push notification. That push
+                     * notification is considered as another source of Chat data, which is part of LC data.
+                     * Since any update of LC data could have side-effects, here the implementation
+                     * is being notified also that the update has occurred and it then should perform
+                     * handling of any side-effects those update might internally involve.
+                     */
+                    // side-effects are: particle animation, show badge on Messages LC tab, depending on whether 'peerId' was inserted to cache here
+                    .flatMap { tryUnreadChatUseCase.source(params = Params().put("chatId", it)).toObservable() }
+            }
             /**
              * Interleaving push notifications could still come in a rapid pace, but there is only
              * global side-effects left to be handled, that affect some state which does not
