@@ -446,8 +446,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             refreshes().compose(clickDebounce()).subscribe { onRefresh() }
             _swipes().compose(clickDebounce()).subscribe { vm.onStartRefresh() }
         }
-//        ll_left_container.clicks().compose(clickDebounce()).subscribe { openContextMenu() }
-//        ll_right_container.clicks().compose(clickDebounce()).subscribe { openContextMenu() }
         val snapHelper = EnhancedPagerSnapHelper(duration = 30)
         rv_items.apply {
             adapter = imagesAdapter.also { it.tabsObserver = tabs2.adapterDataObserver }
@@ -460,7 +458,6 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
             OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             addOnScrollListener(pageSelectListener)
         }
-//        tv_about.clicks().compose(clickDebounce()).subscribe { openContextMenu() }
         tv_app_title.clicks().compose(clickDebounce()).subscribe { navigate(this, path = "/settings") }
         tv_status.clicks().compose(clickDebounce()).subscribe { openSettingsProfileScreenForStatus() }
     }
