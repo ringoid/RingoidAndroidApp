@@ -143,9 +143,9 @@ class MessengerRepository @Inject constructor(
     override fun updateChat(chatId: String, resolution: ImageResolution, isChatOpen: Boolean)
             : Single<Pair<Chat, Boolean>> =
         getChatOnly(chatId, resolution, isChatOpen)
-            .onErrorResumeNext { Single.just(EmptyChat) }  // update without any interruption
             .zipWith(Single.fromCallable { unreadChatsCache.insertProfileId(profileId = chatId) },
-                     BiFunction { chat: Chat, isInserted: Boolean -> chat to isInserted })
+                     BiFunction { chat: Chat, isNewUnreadChat: Boolean -> chat to isNewUnreadChat })
+            .onErrorResumeNext { Single.just(EmptyChat to false) }  // update without any interruption
 
     // ------------------------------------------
     private fun getChatOnly(chatId: String, resolution: ImageResolution,

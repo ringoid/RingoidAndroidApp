@@ -66,7 +66,7 @@ class LikesFeedViewModel @Inject constructor(
     private var shouldVibrate: Boolean = true
 
     init {
-        // show 'tap-to-refresh' popup on Feed screen
+        // show badge and 'tap-to-refresh' popup on Feed screen
         incomingPushLike
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)

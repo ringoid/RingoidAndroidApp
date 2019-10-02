@@ -340,12 +340,6 @@ open class FeedRepository @Inject constructor(
             })
 
     // --------------------------------------------------------------------------------------------
-    override fun onUpdateSomeChatExternal() {
-        badgeMessenger.onNext(true)
-        newUnreadChatsCount.onNext(1)
-    }
-
-    // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.filterOutAlreadySeenProfilesFeed(): Single<FeedResponse> =
         filterOutProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())
 

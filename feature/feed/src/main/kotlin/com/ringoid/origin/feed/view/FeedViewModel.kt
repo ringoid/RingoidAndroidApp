@@ -462,6 +462,13 @@ abstract class FeedViewModel(
         ?.also { onViewFeedItem(it.targetUserId) }
 
     // ------------------------------------------
+    /**
+     * Checks whether [FeedItemVO] given by [profileId] is currently visible on screen,
+     * so it's [ViewActionObject] is buffered, but not yet pushed.
+     */
+    protected fun isFeedItemOnViewport(profileId: String): Boolean =
+        viewActionObjectBuffer.keys.find { it.second == profileId } != null
+
     private fun logViewObjectsBufferState(tag: String) {
         if (BuildConfig.DEBUG && targetVersion(Build.VERSION_CODES.O)) {
             DebugLogUtil.d("View buffer [$tag]:\n${viewActionObjectBuffer.values.joinToString("\n\t\t","\t\t", transform = { it.toActionString() })}")

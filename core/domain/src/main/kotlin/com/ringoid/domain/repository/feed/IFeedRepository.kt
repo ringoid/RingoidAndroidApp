@@ -56,6 +56,4 @@ interface IFeedRepository {
     fun getLcCounters(resolution: ImageResolution, limit: Int?, filters: Filters?, source: String?): Single<Lmm>
 
     fun getLmmProfileIds(): Single<List<String>>
-
-    fun onUpdateSomeChatExternal()
 }

@@ -33,7 +33,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 class MessagesFeedViewModel @Inject constructor(
@@ -76,7 +75,7 @@ class MessagesFeedViewModel @Inject constructor(
     private var shouldVibrate: Boolean = true
 
     init {
-        // show 'tap-to-refresh' popup on Feed screen
+        // show badge and 'tap-to-refresh' popup on Feed screen
         incomingPushMatch
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
@@ -97,7 +96,19 @@ class MessagesFeedViewModel @Inject constructor(
             .autoDisposable(this)
             .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)
 
-        // show 'tap-to-refresh' popup on Feed screen and update chat for particular feed items
+        /**
+         * Update chats for particular feed items the push notifications correspond to.
+         * Update appearance of feed items corresponding to that chats.
+         *
+         * Also show particle animation for new unread chats (for existing chats - don't show particle
+         * animation even if some chats have become unread).
+         *
+         * Show 'tap-to-refresh' popup, if some chats have become unread, but corresponding
+         * feed items are not visible on screen.
+         *
+         * Show badge always, since push notification always means that there are unread chats
+         * have appeared.
+         */
         incomingPushMessages
             .subscribeOn(Schedulers.computation())
             .map { (it as BusEvent.PushNewMessage).peerId }
@@ -117,25 +128,30 @@ class MessagesFeedViewModel @Inject constructor(
 
                         // UseCase will deliver it's result to Main thread
                         updateChatUseCase.source(params = params)
-                            .doOnSuccess { markFeedItemAsNotSeen(feedItemId = peerId) }
+                            .doOnSuccess { (_, isNewUnreadChat) ->
+                                markFeedItemAsNotSeen(feedItemId = peerId)
+                                if (isNewUnreadChat && !isStopped) {
+                                    pushNewMessage.value = 0L  // for particle animation
+                                }
+                            }
                             .map { peerId }
                     }
-                    // update appearance of Feed item in Messages Feed, that corresponds to Chat being processed here
-                    .doOnNext { profileId -> pushMessageUpdateProfileOneShot.value = OneShot(profileId) }
+                    .doOnNext { profileId ->
+                        // update appearance of Feed item in Messages Feed, that corresponds to Chat being processed here
+                        pushMessageUpdateProfileOneShot.value = OneShot(profileId)
+                        // don't show 'tap-to-refresh' popup, if update has occurred for currently visible feed items
+                        if (!isFeedItemOnViewport(profileId = profileId)) {
+                            // show 'tap-to-refresh' popup on Feed screen
+                            refreshOnPush.value = true
+                        }
+                    }
             }
-            /**
-             * Interleaving push notifications could still come in a rapid pace, but there is only
-             * global side-effects left to be handled, that affect some state which does not
-             * reflect the change in any particular entity, but in the whole Messages Feed at once.
-             * Thus, we debounce push notifications to minimize the number of changes for that global state.
-             */
+            // next goes update for global visual states, which could be debounced to avoid spam change due to massive come of push notifications
             .debounce(DomainUtil.DEBOUNCE_PUSH, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .autoDisposable(this)
             .subscribe({
                 // show badge on Messages LC tab
                 pushMessagesBadgeOneShot.value = OneShot(true)
-                // show 'tap-to-refresh' popup on Feed screen
-                refreshOnPush.value = true
             }, DebugLogUtil::e)
 
         // vibrate on incoming messages
@@ -145,7 +161,7 @@ class MessagesFeedViewModel @Inject constructor(
             .subscribe({ if (shouldVibrate) app.vibrate() }, DebugLogUtil::e)
     }
 
-    // ------------------------------------------
+    // --------------------------------------------------------------------------------------------
     override fun countNotSeen(feed: List<FeedItem>): List<String> =
         feed.takeIf { it.isNotEmpty() }
             ?.let { items ->
@@ -154,15 +170,6 @@ class MessagesFeedViewModel @Inject constructor(
                      .filter { it.second > ChatInMemoryCache.getPeerMessagesCount(it.first) }
                      .map { it.first }
             } ?: emptyList()
-
-    // ------------------------------------------
-    private var compareFlag = AtomicBoolean(true)
-
-    private fun allowSingleUnchanged() {
-        compareFlag.set(false)
-    }
-
-    private fun checkFlagAndDrop(): Boolean = compareFlag.getAndSet(true)
 
     // ------------------------------------------
     override fun getSourceFeed(): LcNavTab = LcNavTab.MESSAGES
@@ -218,9 +225,10 @@ class MessagesFeedViewModel @Inject constructor(
         Report.breadcrumb("Bus Event ${event.javaClass.simpleName}", "event" to "$event")
         // consume push event and skip any updates if target Chat is currently open
         if (!ChatInMemoryCache.isChatOpen(chatId = event.peerId)) {
-            incomingPushMessages.onNext(event)  // for update unopened chats, badge and 'tap-to-refresh' popup
+            // for update unopened chats, show badge, particles and 'tap-to-refresh' popup
+            incomingPushMessages.onNext(event)
             if (!isStopped) {
-                incomingPushMessagesEffect.onNext(0L)  // for particles and vibration
+                incomingPushMessagesEffect.onNext(0L)  // for vibration only
             }
         }
     }
