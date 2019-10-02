@@ -565,10 +565,10 @@ open class FeedRepository @Inject constructor(
                     Single.fromCallable { unreadChatsCache.insertProfileIds(it) }
                           .doOnSuccess {
                               // actually inserted items (no duplicates)
+                              DebugLogUtil.v("# LC: count of new unread chats: $it")
                               if (it > 0) {
                                   badgeMessenger.onNext(true)
                                   newUnreadChatsCount.onNext(it)
-                                  DebugLogUtil.v("# LC: count of new unread chats: $it")
                               }
                           }
                           .map { lmm }
