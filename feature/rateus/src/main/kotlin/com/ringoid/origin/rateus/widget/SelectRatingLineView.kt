@@ -58,8 +58,6 @@ class SelectRatingLineView : RatingLineView {
             }
             ++index
         }
-
-        listener?.onRatingSelected(rating)
     }
 
     @Suppress("ClickableViewAccessibility")
@@ -77,6 +75,7 @@ class SelectRatingLineView : RatingLineView {
                 }
                 return true  // allow subsequent events
             }
+            MotionEvent.ACTION_UP -> listener?.onRatingSelected(ratingValue.toInt())
         }
         return super.onTouchEvent(event)
     }
