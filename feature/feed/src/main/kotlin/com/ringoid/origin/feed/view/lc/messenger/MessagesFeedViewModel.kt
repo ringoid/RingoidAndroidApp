@@ -138,7 +138,7 @@ class MessagesFeedViewModel @Inject constructor(
              * is being notified also that the update has occurred and it then should perform
              * handling of any side-effects those update might internally involve.
              */
-            .flatMap { tryUnreadChatUseCase.source().toObservable<String>() }
+            .flatMap { tryUnreadChatUseCase.source(params = Params().put("chatId", it)).toObservable<String>() }
             /**
              * Interleaving push notifications could still come in a rapid pace, but there is only
              * global side-effects left to be handled, that affect some state which does not
