@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.widget_alert_popup_layout.view.*
 
 class AlertPopup : ConstraintLayout {
 
+    private var listener: (() -> Unit)? = null
+
     constructor(context: Context): this(context, null)
 
     constructor(context: Context, attributes: AttributeSet?): this(context, attributes, 0)
@@ -24,6 +26,7 @@ class AlertPopup : ConstraintLayout {
         init(context, attributes, defStyleAttr)
     }
 
+    @Suppress("CheckResult")
     private fun init(context: Context, attributes: AttributeSet?, defStyleAttr: Int) {
         LayoutInflater.from(context).inflate(R.layout.widget_alert_popup_layout, this, true)
 
@@ -46,15 +49,14 @@ class AlertPopup : ConstraintLayout {
             recycle()
         }
 
-        setOnClickListener { /* consume any clicks inside this widget */ }
+        setOnClickListener { listener?.invoke() }
+        btn_action.clicks().compose(clickDebounce()).subscribe { listener?.invoke() }
     }
 
     /* API */
     // -------------------------------------------------------------------------------------------
-    @Suppress("CheckResult")
     fun setOnActionClickListener(l: (() -> Unit)?) {
-        btn_action.clicks().compose(clickDebounce()).subscribe { l?.invoke() }
-        tv_description.clicks().compose(clickDebounce()).subscribe { l?.invoke() }
+        listener = l
     }
 
     @Suppress("CheckResult")
