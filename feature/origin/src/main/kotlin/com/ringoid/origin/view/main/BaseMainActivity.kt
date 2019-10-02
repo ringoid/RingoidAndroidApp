@@ -198,7 +198,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
                     }
                     ?: run {
                         Timber.i("Open init tab (unknown notification type)")
-                        openInitialTab()  // unknown notification type
+                        openMainTab(tab = NavTab.EXPLORE)  // unknown notification type
                     }
             }
             ?: run {
