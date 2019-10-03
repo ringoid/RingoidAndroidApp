@@ -26,6 +26,7 @@ import com.ringoid.report.log.Report
 import com.ringoid.utility.vibrate
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -101,7 +102,7 @@ class MessagesFeedViewModel @Inject constructor(
          * Update appearance of feed items corresponding to that chats.
          *
          * Also show particle animation for new unread chats (for existing chats - don't show particle
-         * animation even if some chats have become unread).
+         * animation even if some chats have become unread). See [UpdateChatUseCase] docs for explanation.
          *
          * Show 'tap-to-refresh' popup, if some chats have become unread, but corresponding
          * feed items are not visible on screen.
@@ -128,22 +129,29 @@ class MessagesFeedViewModel @Inject constructor(
 
                         // UseCase will deliver it's result to Main thread
                         updateChatUseCase.source(params = params)
-                            .doOnSuccess { (_, isNewUnreadChat) ->
+                            .map { (_, isNewUnreadChat) ->
+                                DebugLogUtil.v("Success update chat by push [new: $isNewUnreadChat]: $peerId")
                                 markFeedItemAsNotSeen(feedItemId = peerId)
                                 if (isNewUnreadChat && !isStopped) {
                                     pushNewMessage.value = 0L  // for particle animation
                                 }
+                                // update appearance of Feed item in Messages Feed, that corresponds to Chat being processed here
+                                pushMessageUpdateProfileOneShot.value = OneShot(peerId)
+                                peerId
                             }
-                            .map { peerId }
-                    }
-                    .doOnNext { profileId ->
-                        // update appearance of Feed item in Messages Feed, that corresponds to Chat being processed here
-                        pushMessageUpdateProfileOneShot.value = OneShot(profileId)
-                        // don't show 'tap-to-refresh' popup, if update has occurred for currently visible feed items
-                        if (!isFeedItemOnViewport(profileId = profileId)) {
-                            // show 'tap-to-refresh' popup on Feed screen
-                            refreshOnPush.value = true
-                        }
+                            .doOnSuccess {
+                                // don't show 'tap-to-refresh' popup, if update has occurred for currently visible feed items
+                                if (!isFeedItemOnViewport(profileId = peerId)) {
+                                    DebugLogUtil.v("Show refresh popup on chat update, which is beyond viewport")
+                                    refreshOnPush.value = true  // show 'tap-to-refresh' popup on Feed screen
+                                }
+                            }
+                            // allow to recover (by refresh) manually if a particular chat has failed to update
+                            .doOnError {
+                                DebugLogUtil.w("Failed to update chat by push: $peerId")
+                                refreshOnPush.value = true
+                            }
+                            .onErrorResumeNext { Single.just(peerId) }  // don't fail channel on error and continue
                     }
             }
             // next goes update for global visual states, which could be debounced to avoid spam change due to massive come of push notifications

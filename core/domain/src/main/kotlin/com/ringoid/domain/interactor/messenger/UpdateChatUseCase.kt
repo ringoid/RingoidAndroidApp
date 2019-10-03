@@ -20,7 +20,9 @@ import javax.inject.Inject
  * handling of any side-effects those update might internally involve.
  *
  * Result contains updated Chat (or empty in case of failure) and flag indicating that
- * chat is new unread by user, so some sie-effects should be involved.
+ * chat is new unread by user, so some side-effects should be involved.
+ * Chat is considered new unread by user, if it hasn't appear before, or it had but has been
+ * read by user before and then became unread by user after successful update.
  */
 class UpdateChatUseCase @Inject constructor(private val messengerRepository: IMessengerRepository,
     threadExecutor: UseCaseThreadExecutor, postExecutor: UseCasePostExecutor)
