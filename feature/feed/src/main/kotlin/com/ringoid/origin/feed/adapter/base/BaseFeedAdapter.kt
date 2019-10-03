@@ -14,7 +14,7 @@ import com.ringoid.utility.collection.EqualRange
 import com.ringoid.utility.linearLayoutManager
 import kotlinx.android.synthetic.main.rv_item_feed_profile_content.view.*
 
-abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows: Int = 0)
+abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows: Int = 1)
     : BaseListAdapter<FeedItemVO, OriginFeedViewHolder>(diffCb, headerRows = headerRows) {
 
     var onBeforeLikeListener: ((position: Int) -> Boolean)? = null
@@ -83,6 +83,7 @@ abstract class BaseFeedAdapter(diffCb: BaseDiffCallback<FeedItemVO>, headerRows:
     }
 
     // ------------------------------------------
+    override fun getHeaderLayoutResId(): Int = R.layout.rv_item_feed_lmm_header
     override fun getFooterLayoutResId(): Int = R.layout.rv_item_lmm_footer
 
     override fun getErrorLayoutResId(): Int = R.layout.rv_item_feed_footer_error
