@@ -3,6 +3,7 @@ package com.ringoid.origin.feed.view.widget
 import android.view.View
 import com.github.techisfun.android.topsheet.TopSheetBehavior
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.utility.changeVisibility
 import com.ringoid.utility.clickDebounce
@@ -32,6 +33,7 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
             setOnTouchListener { _, _ -> true }
             // allow [TopSheetBehavior.STATE_HIDDEN]
             TopSheetBehavior.from(this).isHideable = true
+            dim_overlay.touches().compose(clickDebounce()).subscribe { hide() }
         }
     }
 
@@ -77,14 +79,25 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
                     stateHistory.add(newState)
                     isSliding = newState == TopSheetBehavior.STATE_SETTLING
                     slideOneShot = isSliding
+                    popupView.dim_overlay.alpha = when (newState) {
+                        TopSheetBehavior.STATE_HIDDEN -> 0.0f
+                        TopSheetBehavior.STATE_EXPANDED -> 1.0f
+                        else -> popupView.dim_overlay.alpha  // no change
+                    }
                     l?.invoke(newState)
                 }
 
+                /**
+                 * [slideOffset] changes from 0 to 1 while expanding, and from 1 to 0 while collapsing.
+                 */
                 override fun onSlide(popupView: View, slideOffset: Float) {
+                    fun hasCollectedSlideHistory(): Boolean =
+                        slideHistory.size >= SLIDE_NUMBER && slideCounter >= SLIDE_NUMBER
+
                     if (isSliding) {
                         slideHistory.add(slideOffset)
                         ++slideCounter
-                        if (slideOneShot && slideHistory.size >= SLIDE_NUMBER && slideCounter >= SLIDE_NUMBER) {
+                        if (slideOneShot && hasCollectedSlideHistory()) {
                             slideOneShot = false
                             val delta = slideHistory.peekFirst() - slideHistory.peekLast()
                             slideListener?.onSlideUp(delta >= 0)
@@ -92,6 +105,8 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
                     } else {
                         slideCounter = 0
                     }
+
+                    popupView.dim_overlay.alpha = slideOffset
                 }
             })
     }
@@ -108,7 +123,9 @@ class FiltersPopupWidget(private val rootView: View, private val onShowCallback:
                 if (isVisible) {
                     onShowCallback.invoke()
                     TopSheetBehavior.STATE_EXPANDED
-                } else TopSheetBehavior.STATE_HIDDEN
+                } else {
+                    TopSheetBehavior.STATE_HIDDEN
+                }
         }  // ignore if view hierarchy hasn't been initialized yet
     }
 }
