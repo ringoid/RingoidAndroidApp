@@ -60,11 +60,13 @@ abstract class BaseLcFeedViewModel(
     private val feed by lazy { MutableLiveData<List<FeedItemVO>>() }
     private val feedCountsOneShot by lazy { MutableLiveData<OneShot<FeedCounts>>() }
     private val lmmLoadFailedOneShot by lazy { MutableLiveData<OneShot<Throwable>>() }
+    private val notSeenAllFeedItemsOneShot by lazy { MutableLiveData<OneShot<LcNavTab>>() }
     private val seenAllFeedItemsOneShot by lazy { MutableLiveData<OneShot<LcNavTab>>() }
     private val transferProfileCompleteOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun feed(): LiveData<List<FeedItemVO>> = feed
     internal fun feedCountsOneShot(): MutableLiveData<OneShot<FeedCounts>> = feedCountsOneShot
     internal fun lmmLoadFailedOneShot(): LiveData<OneShot<Throwable>> = lmmLoadFailedOneShot
+    internal fun notSeenAllFeedItemsOneShot(): LiveData<OneShot<LcNavTab>> = notSeenAllFeedItemsOneShot
     internal fun seenAllFeedItemsOneShot(): LiveData<OneShot<LcNavTab>> = seenAllFeedItemsOneShot
     internal fun transferProfileCompleteOneShot(): LiveData<OneShot<Boolean>> = transferProfileCompleteOneShot
 
@@ -212,6 +214,9 @@ abstract class BaseLcFeedViewModel(
             viewState.value = ViewState.IDLE  // set LC feed items success
             notSeenFeedItemIds.addAll(countNotSeen(items))
             DebugLogUtil.b("Not seen profiles [${getFeedName()}]: ${notSeenFeedItemIds.joinToString(",", "[", "]", transform = { it.substring(0..3) })}")
+            if (notSeenFeedItemIds.isNotEmpty()) {
+                notSeenAllFeedItemsOneShot.value = OneShot(getSourceFeed())
+            }
         }
     }
 

@@ -65,6 +65,17 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
     }
 
     /**
+     * Some feed items haven't been seen by user on a particular LC feed, specified by [sourceFeed].
+     */
+    private fun onNotSeenAllFeed(sourceFeed: LcNavTab) {
+        DebugLogUtil.v("There are not seen items [$sourceFeed]")
+        when (sourceFeed) {
+            LcNavTab.LIKES -> communicator(IBaseMainActivity::class.java)?.showBadgeOnLikes(true)
+            LcNavTab.MESSAGES -> communicator(IBaseMainActivity::class.java)?.showBadgeOnMessages(true)
+        }
+    }
+
+    /**
      * All feed items on a particular LC feed, specified by [sourceFeed],
      * have been seen by user, so it's time to hide red badge on a corresponding LC tab.
      */
@@ -110,6 +121,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             }
             observe(vm.refreshOnPush(), ::showRefreshPopup)
             observeOneShot(vm.feedCountsOneShot(), ::updateFeedCounts)
+            observeOneShot(vm.notSeenAllFeedItemsOneShot(), ::onNotSeenAllFeed)
             observeOneShot(vm.seenAllFeedItemsOneShot(), ::onSeenAllFeed)
             observeOneShot(vm.lmmLoadFailedOneShot()) {
                 it.handleOnView(this@BaseLcFeedFragment, {}) { vm.refresh() /** refresh on connection timeout */ }
