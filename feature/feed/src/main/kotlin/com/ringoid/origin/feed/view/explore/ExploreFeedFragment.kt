@@ -23,6 +23,7 @@ import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.getAttributeColor
+import com.ringoid.utility.runOnUiThread
 
 class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
 
@@ -83,7 +84,7 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
             }
             is ViewState.PAGING -> {
                 timeKeeper.start()
-                feedAdapter.loading()
+                runOnUiThread { feedAdapter.loading() }  // avoid inconsistency in RV
             }
         }
         super.onViewStateChange(newState)
