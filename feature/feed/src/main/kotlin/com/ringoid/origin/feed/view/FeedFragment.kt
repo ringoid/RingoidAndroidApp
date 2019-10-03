@@ -52,7 +52,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     private lateinit var imagesTrackingBus: TrackingBus<EqualRange<ProfileImageVO>>
 
     protected var filtersPopupWidget: FiltersPopupWidget? = null
-    protected var toolbarWidget: ToolbarWidget? = null
+    private var toolbarWidget: ToolbarWidget? = null
 
     protected val timeKeeper = TimeKeeper()
 
@@ -100,7 +100,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
-        toolbarWidget?.removeScrollFlags()  // prevent toolbar from scrolling while in CLEAR state
+        listHeaderView = null
         getEmptyStateInput(mode)?.let {
             showEmptyStub(input = it)
             showLoading(isVisible = false)
@@ -426,8 +426,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             setHasFixedSize(true)
             recycledViewPool.setMaxRecycledViews(OriginListAdapter.VIEW_TYPE_NORMAL, 10)
 //            OverScrollDecoratorHelper.setUpOverScroll(this, OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+            addOnScrollListener(scrollListener)
             addOnScrollListener(itemOffsetScrollListener)
-            addOnScrollListener(topScrollListener)
             addOnScrollListener(visibilityTrackingScrollListener)
         }
         with (swipe_refresh_layout) {
@@ -466,8 +466,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onDestroyView() {
         super.onDestroyView()
         with (rv_items) {
+            removeOnScrollListener(scrollListener)
             removeOnScrollListener(itemOffsetScrollListener)
-            removeOnScrollListener(topScrollListener)
             removeOnScrollListener(visibilityTrackingScrollListener)
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View) {}
@@ -528,7 +528,18 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
-    private val topScrollListener = object : RecyclerView.OnScrollListener() {
+    private var listHeaderView: View? = null
+
+    private fun listHeaderView(): View? =
+        if (listHeaderView != null) {
+            listHeaderView
+        } else {
+            val view = rv_items.linearLayoutManager()?.findViewByPosition(0)
+            listHeaderView = view  // could be null if RV is empty
+            view
+        }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
             rv.linearLayoutManager()?.let {
@@ -536,10 +547,25 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     if (btn_refresh_popup.isVisible()) {
                         showRefreshPopup(isVisible = false)
                     }
-                } else {  // scroll list up - to see previous items
+                    if (toolbarWidget?.isShowAnimated() == true) {
+                        listHeaderView()
+                            ?.takeIf { it.bottom <= 12 }
+                            ?.let { toolbarWidget?.collapse(animated = true) }
+                    }
+                    true
+                } else if (dy < 0) {  // scroll list up - to see previous items
                     if (!btn_refresh_popup.isVisible()) {
                         showRefreshPopup(isVisible = true)
                     }
+                    if (toolbarWidget?.isShowAnimated() == false) {
+                        listHeaderView()
+                            ?.takeIf { it.bottom >= 0 }
+                            ?.let { toolbarWidget?.expand(animated = true) }
+                    }
+                    true
+                } else {
+                    // dy == 0 is a layout change, not a user scroll, ignore
+                    false
                 }
             }
         }
@@ -548,7 +574,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     // ------------------------------------------
     private lateinit var offsetScrollStrats: List<OffsetScrollStrategy>
 
-    protected fun invalidateScrollCaches() {
+    private fun invalidateScrollCaches() {
         offsetScrollStrats = getOffsetScrollStrategies()
     }
 
@@ -574,7 +600,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     val from = it.findFirstVisibleItemPosition()
                     val to = it.findLastVisibleItemPosition()
                     val top = getTopBorderForOffsetScroll()
-                    val bottom = getBottomBorderForOffsetScroll() - (if (dy < 0) AppRes.FEED_TOOLBAR_HEIGHT else 0)
+                    val bottom = getBottomBorderForOffsetScroll()
                     for (i in from..to) {
                         processItemView(i, it.findViewByPosition(i), top, bottom)
                     }
@@ -712,7 +738,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         // apply strategies on item at position, regardless of whether that position has been affected before
         rv_items.linearLayoutManager()?.let {
             val top = getTopBorderForOffsetScroll()
-            val bottom = getBottomBorderForOffsetScroll() - (if (toolbarWidget?.isShow() == true) AppRes.FEED_TOOLBAR_HEIGHT else 0)
+            val bottom = getBottomBorderForOffsetScroll()
             processItemView(position, it.findViewByPosition(position), top, bottom)
         }
     }

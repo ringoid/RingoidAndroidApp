@@ -115,12 +115,7 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with (viewLifecycleOwner) {
-            observe(vm.feed()) {
-                if (feedAdapter.getModelsCount() + it.profiles.size > 0) {
-                    toolbarWidget?.restoreScrollFlags()
-                }
-                feedAdapter.append(it.profiles.map { FeedItemVO(it) }) { !isEmpty() }
-            }
+            observe(vm.feed()) { feed -> feedAdapter.append(feed.profiles.map { FeedItemVO(it) }) { !isEmpty() } }
             observeOneShot(vm.discardProfilesOneShot()) { onDiscardMultipleProfilesState(profileIds = it) }
         }
     }

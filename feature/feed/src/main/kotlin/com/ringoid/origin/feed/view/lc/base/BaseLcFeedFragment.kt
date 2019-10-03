@@ -112,11 +112,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         with(viewLifecycleOwner) {
-            observe(vm.feed()) {
-                if (it.isNotEmpty()) {
-                    toolbarWidget?.restoreScrollFlags()
-                }
-                feedAdapter.submitList(it)
+            observe(vm.feed(), feedAdapter::submitList) {
                 runOnUiThread { rv_items?.let { scrollListToPosition(0) } }
             }
             observe(vm.refreshOnPush(), ::showRefreshPopup)
