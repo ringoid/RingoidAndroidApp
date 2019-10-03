@@ -82,7 +82,7 @@ buildscript {
         testVersion = '1.1.0'
         testCoreVersion = '1.0.0'
 
-        buildGradleVersion = '3.5.0'
+        buildGradleVersion = '3.5.1'
         crashlyticsVersion = '2.10.1@aar'
         googleServicesVersion = '4.0.1'
         gradleVersionsPluginVersion = '0.22.0'
