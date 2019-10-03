@@ -15,7 +15,7 @@ object DomainUtil {
     const val CURRENT_USER_ID: String = "currentUserId"  // don't change, because it is used in database
     const val DEBOUNCE_DEVELOP = 150L
     const val DEBOUNCE_NET = 400L
-    const val DEBOUNCE_PUSH = 540L
+    const val DEBOUNCE_PUSH = 600L
     const val LIMIT_PER_PAGE = 40
     const val LIMIT_PER_PAGE_LMM = 5
     const val LOAD_MORE_THRESHOLD = 10  // items left to end
