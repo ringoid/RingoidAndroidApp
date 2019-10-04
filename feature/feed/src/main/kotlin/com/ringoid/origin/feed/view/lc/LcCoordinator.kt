@@ -25,7 +25,10 @@ import javax.inject.Singleton
  * Coordinates single entry point for data loading for LC feeds and notifies them on arrival.
  * Helps to avoid double-loading of separate LC feeds, basically when some bus event occurs.
  *
- * @note: coordinates only bus events
+ * @note: coordinates only bus events, coming for LC. Direct or manual refreshes that occur
+ *        on any of LC feed are not coordinated automatically, and such source LC feed should
+ *        pass notification to this [LcCoordinator] by calling [LcCoordinator.notifyOnRefresh]
+ *        or [LcCoordinator.notifyOnError].
  */
 @Singleton
 class LcCoordinator @Inject constructor(
@@ -80,8 +83,9 @@ class LcCoordinator @Inject constructor(
     }
 
     /**
-     * Refresh has been initiated from [source] listener, so one can notify all other listeners.
-     * If [source] is 'null', all listeners will be notified.
+     * Notifies listeners that refresh has been initiated on [source] listener,
+     * [source] listener is excluded from recipients. If [source] is 'null',
+     * all listeners will be notified.
      */
     internal fun notifyOnRefresh(source: LcDataListener?) {
         // notify all listeners except 'source' to display some refreshing UI

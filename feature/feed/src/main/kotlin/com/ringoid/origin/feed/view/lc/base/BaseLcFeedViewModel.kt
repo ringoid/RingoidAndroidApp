@@ -256,13 +256,15 @@ abstract class BaseLcFeedViewModel(
      * of state.
      */
     override fun onStartLcDataLoading() {
+        // drop value on each any other LC feed, when user taps on 'tap to refresh' popup on current LC feed
+        refreshOnPush.value = false
         viewState.value = ViewState.CLEAR(ViewState.CLEAR.MODE_DEFAULT)
         viewState.value = ViewState.LOADING
     }
 
     internal fun onTapToRefreshClick() {
         analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
-        refreshOnPush.value = false  // drop value on each LC feed, when user taps on 'tap to refresh' popup on any LC feed
+        refreshOnPush.value = false  // drop value on current LC feed, when user taps on 'tap to refresh' popup on current LC feed
         refreshWithoutFilters_showAll()
     }
 
