@@ -232,7 +232,7 @@ abstract class BaseLcFeedViewModel(
         coordinator.dropFilters()
     }
 
-    internal fun onShowAllWithoutFilters() {
+    internal fun refreshWithoutFilters_showAll() {
         dropFilters()
         refresh()  // refresh without any filters
     }
@@ -263,7 +263,7 @@ abstract class BaseLcFeedViewModel(
     internal fun onTapToRefreshClick() {
         analyticsManager.fire(Analytics.TAP_TO_REFRESH, "sourceFeed" to getFeedName())
         refreshOnPush.value = false  // drop value on each LC feed, when user taps on 'tap to refresh' popup on any LC feed
-        onShowAllWithoutFilters()
+        refreshWithoutFilters_showAll()
     }
 
     // ------------------------------------------

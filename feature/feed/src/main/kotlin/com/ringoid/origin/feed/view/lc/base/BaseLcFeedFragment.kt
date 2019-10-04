@@ -148,7 +148,7 @@ abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>()
             }
             widget.setOnClickListener_showAll {
                 it.hide()
-                vm.onShowAllWithoutFilters()
+                vm.refreshWithoutFilters_showAll()
             }
         }
     }
