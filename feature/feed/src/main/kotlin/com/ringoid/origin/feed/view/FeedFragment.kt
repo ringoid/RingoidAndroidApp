@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.techisfun.android.topsheet.TopSheetBehavior
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
-import com.jakewharton.rxbinding3.view.clicks
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
