@@ -1,6 +1,5 @@
 package com.ringoid.repository.messenger
 
-import com.ringoid.config.AppMigrationFrom
 import com.ringoid.data.handleError
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.datainterface.di.PerLmmMessages
@@ -93,7 +92,6 @@ class MessengerRepository @Inject constructor(
 
     init {
         restoreCachedSentMessagesLocal()
-        migrateMarkAllUserMessagesAsReadByPeer()  // TODO: remove when all users update to 256+
     }
 
     private val updateReadStatusForUserMessages = PublishSubject.create<List<Message>>()
@@ -475,28 +473,6 @@ class MessengerRepository @Inject constructor(
             sentMessages[sentMessage.chatId] = Collections.newSetFromMap(ConcurrentHashMap())
         }
         sentMessages[sentMessage.chatId]!!.add(sentMessage)  // will be sorted by ts
-    }
-
-    @AppMigrationFrom(version = 255)
-    private fun migrateMarkAllUserMessagesAsReadByPeer() {
-        fun runMigration() {
-            Completable.fromAction { local.migrateMarkAllUserMessagesAsReadByPeer() }
-                .doOnSubscribe { Timber.d("MessengerRepository's started running migration") }
-                .doOnComplete { Timber.d("MessengerRepository's finished migration") }
-                .subscribeOn(Schedulers.io())
-                .subscribe({}, Timber::e)
-        }
-
-        // --------------------------------------
-        "migrate_once_mark_all_peer_messages_read_by_user".let { key ->
-            spm.getByKey(key)
-                ?.let { Timber.d("MessengerRepository has been migrate already") }
-                ?: run { spm.saveByKey(key, "done"); runMigration() }
-        }
-
-//        Completable.fromAction { local.debugMarkPeerMessagesAsUnreadByUser("c3ff8f2ba8983fffba2e1c331e050ec08bf5dde0") }
-//            .subscribeOn(Schedulers.io())
-//            .subscribe({}, Timber::e)
     }
 
     @Suppress("CheckResult")
