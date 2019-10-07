@@ -37,7 +37,6 @@ internal class ToolbarWidget(private val rootView: View) {
         }
     }
 
-    internal fun isShow(): Boolean = rootView.appbar.bottom >= 4
     internal fun isShowAnimated(): Boolean = isVisibleAnimated
 
     internal fun show(isVisible: Boolean) {

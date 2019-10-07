@@ -100,7 +100,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
-        listHeaderView = null
+        clearScrollData()
+
         getEmptyStateInput(mode)?.let {
             showEmptyStub(input = it)
             showLoading(isVisible = false)
@@ -528,39 +529,51 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
-    private var listHeaderView: View? = null
+    private var totalScrollDown: Int = 0
+    private var totalScrollUp: Int = 0
+    private var headerView: View? = null
 
-    private fun listHeaderView(): View? =
-        if (listHeaderView != null) {
-            listHeaderView
-        } else {
-            val view = rv_items.linearLayoutManager()?.findViewByPosition(0)
-            listHeaderView = view  // could be null if RV is empty
-            view
+    private fun clearScrollData() {
+        totalScrollDown = 0
+        totalScrollUp = 0
+        headerView = null
+    }
+
+    private fun headerView(): View? {
+        if (headerView == null) {
+            headerView = rv_items.linearLayoutManager()?.findViewByPosition(0)
         }
+        return headerView
+    }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            fun deltaTop(): Int = headerView()?.bottom ?: 0
+
             super.onScrolled(rv, dx, dy)
             rv.linearLayoutManager()?.let {
                 if (dy > 0) {  // scroll list down - to see new items
                     if (btn_refresh_popup.isVisible()) {
                         showRefreshPopup(isVisible = false)
                     }
+                    totalScrollUp = 0
+                    totalScrollDown += dy
                     if (toolbarWidget?.isShowAnimated() == true) {
-                        listHeaderView()
-                            ?.takeIf { it.bottom <= 12 }
-                            ?.let { toolbarWidget?.collapse(animated = true) }
+                        if (totalScrollDown >= AppRes.FEED_TOOLBAR_HEIGHT) {
+                            toolbarWidget?.collapse(animated = true)
+                        }
                     }
                     true
                 } else if (dy < 0) {  // scroll list up - to see previous items
                     if (!btn_refresh_popup.isVisible()) {
                         showRefreshPopup(isVisible = true)
                     }
+                    totalScrollDown = 0
+                    totalScrollUp -= dy
                     if (toolbarWidget?.isShowAnimated() == false) {
-                        listHeaderView()
-                            ?.takeIf { it.bottom >= 0 }
-                            ?.let { toolbarWidget?.expand(animated = true) }
+                        if (totalScrollUp >= AppRes.FEED_TOOLBAR_HEIGHT || deltaTop() >= 12) {
+                            toolbarWidget?.expand(animated = true)
+                        }
                     }
                     true
                 } else {
