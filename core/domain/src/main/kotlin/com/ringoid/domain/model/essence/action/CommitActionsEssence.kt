@@ -14,6 +14,9 @@ data class CommitActionsEssence(
         const val COLUMN_ACTIONS = "actions"
     }
 
+    fun copyWith(actions: Collection<OriginActionObject>): CommitActionsEssence =
+        CommitActionsEssence(accessToken, actions = actions)
+
     override fun toDebugPayload(): String = actions.joinToString("\n\t\t", "\n\t\t", transform = { it.toDebugPayload() })
     override fun toSentryPayload(): String = actions.joinToString(", ", "[", "]", transform = { it.toSentryPayload() })
 }

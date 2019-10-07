@@ -1,5 +1,6 @@
 package com.ringoid.data.remote.facade
 
+import com.ringoid.data.handleError
 import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.BaseResponse
@@ -11,6 +12,7 @@ import com.ringoid.datainterface.remote.model.image.ImageUploadUrlResponse
 import com.ringoid.datainterface.remote.model.image.UserImageListResponse
 import com.ringoid.datainterface.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.datainterface.remote.model.user.UserSettingsResponse
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
@@ -21,7 +23,9 @@ import com.ringoid.domain.model.essence.user.ReferralCodeEssence
 import com.ringoid.domain.model.essence.user.UpdateUserProfileEssence
 import com.ringoid.domain.model.essence.user.UpdateUserSettingsEssence
 import com.ringoid.domain.model.feed.Filters
+import com.ringoid.report.log.Report
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.File
 import javax.inject.Inject
@@ -29,6 +33,11 @@ import javax.inject.Singleton
 
 @Singleton
 class RingoidCloudFacadeImpl @Inject constructor(private val cloud: RingoidCloud) : IRingoidCloudFacade {
+
+    companion object {
+        private const val ACTIONS_CHUNK_SIZE = 40
+        private const val ACTIONS_LIMIT_TO_WARN = 60
+    }
 
     /* User (Auth, Profile) */
     // --------------------------------------------------------------------------------------------
@@ -53,8 +62,27 @@ class RingoidCloudFacadeImpl @Inject constructor(private val cloud: RingoidCloud
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
-    override fun commitActions(essence: CommitActionsEssence): Single<CommitActionsResponse> =
+    override fun commitActions(essence: CommitActionsEssence): Single<CommitActionsResponse> {
+        essence.actions.size.also { size -> "Committing $size action objects".let { DebugLogUtil.d(it) } }
+               .takeIf { it >= ACTIONS_LIMIT_TO_WARN }
+               ?.let { Report .d("Committing too many action objects at once", extras = listOf("size" to "$it")) }
+
+        return if (essence.actions.size <= ACTIONS_CHUNK_SIZE) {  // commit actions all at once
             cloud.commitActions(essence)
+            // TODO: handle error here rather than outside
+        } else {  // split too large essence by chunks of fixed size and tail of lesser size
+            essence.actions.chunked(ACTIONS_CHUNK_SIZE)
+                .also { DebugLogUtil.d("Committing ${it.size} chunks by $ACTIONS_CHUNK_SIZE action objects") }
+                .let { Observable.fromIterable(it) }
+                .map { essence.copyWith(actions = it) }
+                .flatMapSingle({
+                    cloud.commitActions(essence)  // commit single chunk of action objects and handle error
+                         .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
+                        // TODO: mark failed chunks as 'unused' to prevent from deletion
+                }, true)
+                .toList().map { it.maxBy { it.lastActionTime } }
+        }
+    }
 
     /* Image */
     // --------------------------------------------------------------------------------------------
