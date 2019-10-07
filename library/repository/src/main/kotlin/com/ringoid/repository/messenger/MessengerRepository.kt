@@ -20,7 +20,6 @@ import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.domain.repository.messenger.IMessengerRepository
 import com.ringoid.report.exception.SkipThisTryException
 import com.ringoid.repository.BaseRepository
-import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.randomString
 import io.reactivex.*
 import io.reactivex.Observable
@@ -259,15 +258,6 @@ class MessengerRepository @Inject constructor(
                 Completable.fromCallable { sentMessagesLocal.addMessages(sentMessages[chatId]!!) }
                            .toSingleDefault(chat)
             } else Single.just(chat)
-        }
-
-    @DebugOnly
-    private fun Single<Chat>.debugGetLocalUserMessages(chatId: String, prefix: String): Single<Chat> =
-        flatMap { chat ->
-            local.messagesUser(chatId)
-                 .doOnSuccess { Timber.v("$prefix\n${it.joinToString("\n\t\t", "\n\t\t", transform = { it.toDebugString() })}") }
-                 .ignoreElement()
-                 .toSingleDefault(chat)
         }
 
     private fun Single<Chat>.readMessagesFromPeerByUser(isChatOpen: Boolean): Single<Chat> =
