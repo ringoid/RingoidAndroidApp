@@ -1,5 +1,6 @@
 package com.ringoid.data.local.database.facade.messenger
 
+import androidx.room.EmptyResultSetException
 import com.ringoid.config.AppMigrationFrom
 import com.ringoid.data.local.database.dao.messenger.MessageDao
 import com.ringoid.data.local.database.model.messenger.MessageDbo
@@ -48,6 +49,16 @@ class MessageDbFacadeImpl @Inject constructor(private val dao: MessageDao) : IMe
     override fun insertMessages(messages: Collection<Message>) {
         messages.map { MessageDbo.from(it) }.also { dao.insertMessages(it) }
     }
+
+    override fun lastMessage(chatId: String): Single<Message> =
+        dao.lastMessage(chatId).map { it.map() }
+            .onErrorResumeNext { error: Throwable ->
+                val e = when (error) {
+                    is EmptyResultSetException -> NoSuchElementException()
+                    else -> error
+                }
+                Single.error(e)
+            }
 
     override fun markMessagesAsReadByUser(chatId: String): Int = dao.markMessagesAsReadByUser(chatId)
 

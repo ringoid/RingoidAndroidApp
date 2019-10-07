@@ -61,6 +61,9 @@ interface MessageDao {
     @Query("SELECT COUNT(*) FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_PEER_ID} != '${DomainUtil.CURRENT_USER_ID}' AND ${MessageDbo.COLUMN_READ_STATUS} = $UNREAD_BY_USER")
     fun countUnreadByUserMessages(): Single<Int>
 
+    @Query("SELECT * FROM ${MessageDbo.TABLE_NAME} WHERE ${MessageDbo.COLUMN_CHAT_ID} = :chatId ORDER BY rowid DESC LIMIT 1")
+    fun lastMessage(chatId: String): Single<MessageDbo>
+
     /**
      * Get all messages.
      */

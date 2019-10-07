@@ -35,6 +35,8 @@ interface IMessageDbFacade {
 
     fun insertMessages(messages: Collection<Message>)
 
+    fun lastMessage(chatId: String): Single<Message>
+
     fun markMessagesAsReadByUser(chatId: String): Int
 
     fun messages(): Maybe<List<Message>>

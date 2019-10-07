@@ -15,6 +15,7 @@ import com.ringoid.domain.model.actions.MessageActionObject
 import com.ringoid.domain.model.actions.ReadMessageActionObject
 import com.ringoid.domain.model.essence.messenger.MessageEssence
 import com.ringoid.domain.model.messenger.Chat
+import com.ringoid.domain.model.messenger.EmptyMessage
 import com.ringoid.domain.model.messenger.Message
 import com.ringoid.domain.model.messenger.MessageReadStatus
 import com.ringoid.domain.repository.messenger.IMessengerRepository
@@ -210,12 +211,27 @@ class MessengerRepository @Inject constructor(
      * by the current user.
      */
     private fun Single<Chat>.filterOutChatOldMessages(chatId: String): Single<Chat> =
-        zipWith(local.countChatMessages(chatId = chatId),
-            BiFunction { chat: Chat, localMessagesCount: Int ->
-                if (chat.messages.size > localMessagesCount) {
-                    val newMessages = chat.messages.subList(localMessagesCount, chat.messages.size)
-                    chat.copyWith(newMessages)  // retain only new messages
-                } else chat.copyWith(messages = emptyList())  // no new messages
+        zipWith(local.lastMessage(chatId = chatId)
+                    .onErrorResumeNext { error: Throwable ->
+                        when (error) {
+                            is NoSuchElementException -> Single.just(EmptyMessage)
+                            else -> Single.error(error)
+                        }
+                    },
+            BiFunction { chat: Chat, lastLocalMessage: Message ->
+                if (lastLocalMessage == EmptyMessage) {
+                    chat  // no messages in cache for a given chatId
+                } else {
+                    val index = chat.messages.indexOfLast { it.id == lastLocalMessage.id }
+                    when {
+                        index <= DomainUtil.BAD_POSITION -> chat  // the whole chat consists of new messages
+                        index == chat.messages.size - 1 -> chat.copyWith(messages = emptyList())  // no new messages
+                        else -> {
+                            val newMessages = chat.messages.subList(index + 1, chat.messages.size)
+                            chat.copyWith(newMessages)  // retain only new messages
+                        }
+                    }
+                }
             })
 
     /**
