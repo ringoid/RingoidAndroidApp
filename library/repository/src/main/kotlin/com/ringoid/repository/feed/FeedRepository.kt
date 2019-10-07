@@ -341,17 +341,16 @@ open class FeedRepository @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     protected fun Single<FeedResponse>.filterOutAlreadySeenProfilesFeed(): Single<FeedResponse> =
-        filterOutProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())
+        filterOutProfilesFeed(idsSource = getAlreadySeenProfileIds())
 
     protected fun Single<FeedResponse>.filterOutBlockedProfilesFeed(): Single<FeedResponse> =
-        filterOutProfilesFeed(idsSource = getBlockedProfileIds().toObservable())
+        filterOutProfilesFeed(idsSource = getBlockedProfileIds())
 
     private fun Single<FeedResponse>.filterOutLMMProfilesFeed(): Single<FeedResponse> =
-        filterOutProfilesFeed(idsSource = getLmmProfileIds().toObservable())
+        filterOutProfilesFeed(idsSource = getLmmProfileIds())
 
-    private fun Single<FeedResponse>.filterOutProfilesFeed(idsSource: Observable<List<String>>): Single<FeedResponse> =
-        toObservable()
-        .withLatestFrom(idsSource,
+    private fun Single<FeedResponse>.filterOutProfilesFeed(idsSource: Single<List<String>>): Single<FeedResponse> =
+        zipWith(idsSource,
             BiFunction { feed: FeedResponse, blockedIds: List<String> ->
                 blockedIds
                     .takeIf { it.isNotEmpty() }
@@ -360,7 +359,6 @@ open class FeedRepository @Inject constructor(
                         feed.copyWith(profiles = l)
                     } ?: feed
             })
-        .single(FeedResponse()  /* by default - empty feed */)
 
     private fun Single<FeedResponse>.filterOutDuplicateProfilesFeed(): Single<FeedResponse> =
         flatMap { response ->
@@ -387,8 +385,7 @@ open class FeedRepository @Inject constructor(
         }
 
     private fun Single<LmmResponse>.filterOutBlockedProfilesLmmResponse(): Single<LmmResponse> =
-        toObservable()
-        .withLatestFrom(getBlockedProfileIds().toObservable(),
+        zipWith(getBlockedProfileIds(),
             BiFunction { lmm: LmmResponse, blockedIds: List<String> ->
                 blockedIds
                     .takeIf { it.isNotEmpty() }
@@ -399,11 +396,9 @@ open class FeedRepository @Inject constructor(
                         lmm.copyWith(likes = likes, matches = matches, messages = messages)
                     } ?: lmm
             })
-        .single(LmmResponse()  /* by default - empty lmm */)
 
     private fun Single<Lmm>.filterOutBlockedProfilesLmm(): Single<Lmm> =
-        toObservable()
-        .withLatestFrom(getBlockedProfileIds().toObservable(),
+        zipWith(getBlockedProfileIds(),
             BiFunction { lmm: Lmm, blockedIds: List<String> ->
                 blockedIds
                     .takeIf { it.isNotEmpty() }
@@ -414,7 +409,6 @@ open class FeedRepository @Inject constructor(
                         Lmm(likes = likes, matches = matches, messages = messages)
                     } ?: lmm
             })
-        .single(Lmm()  /* by default - empty lmm */)
 
     private fun Single<LmmResponse>.filterOutDuplicateProfilesLmmResponse(): Single<LmmResponse> =
         flatMap { response ->

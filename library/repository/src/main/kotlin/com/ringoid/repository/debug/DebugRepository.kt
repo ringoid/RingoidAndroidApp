@@ -377,14 +377,13 @@ class DebugRepository @Inject constructor(
     private fun getBlockedProfileIds(): Single<List<String>> = blockedProfilesCache.profileIds()
 
     private fun Single<Feed>.filterAlreadySeenProfilesFeed(): Single<Feed> =
-        filterProfilesFeed(idsSource = getAlreadySeenProfileIds().toObservable())
+        filterProfilesFeed(idsSource = getAlreadySeenProfileIds())
 
     private fun Single<Feed>.filterBlockedProfilesFeed(): Single<Feed> =
-        filterProfilesFeed(idsSource = getBlockedProfileIds().toObservable())
+        filterProfilesFeed(idsSource = getBlockedProfileIds())
 
-    private fun Single<Feed>.filterProfilesFeed(idsSource: Observable<List<String>>): Single<Feed> =
-        toObservable()
-        .withLatestFrom(idsSource,
+    private fun Single<Feed>.filterProfilesFeed(idsSource: Single<List<String>>): Single<Feed> =
+        zipWith(idsSource,
             BiFunction { feed: Feed, blockedIds: List<String> ->
                 blockedIds
                     .takeIf { it.isNotEmpty() }
@@ -393,5 +392,4 @@ class DebugRepository @Inject constructor(
                         feed.copyWith(profiles = l)
                     } ?: feed
             })
-        .single(EmptyFeed  /* by default - empty feed */)
 }

@@ -210,15 +210,13 @@ class MessengerRepository @Inject constructor(
      * by the current user.
      */
     private fun Single<Chat>.filterOutChatOldMessages(chatId: String): Single<Chat> =
-        toObservable()
-        .withLatestFrom(local.countChatMessages(chatId = chatId).toObservable(),
+        zipWith(local.countChatMessages(chatId = chatId),
             BiFunction { chat: Chat, localMessagesCount: Int ->
                 if (chat.messages.size > localMessagesCount) {
                     val newMessages = chat.messages.subList(localMessagesCount, chat.messages.size)
                     chat.copyWith(newMessages)  // retain only new messages
                 } else chat.copyWith(messages = emptyList())  // no new messages
             })
-        .singleOrError()
 
     /**
      * Given the most recent sublist of chat's messages, analyze locally stored sent messages and
