@@ -8,6 +8,7 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.domain.interactor.actions.ClearCachedActionObjectsUseCase
 import com.ringoid.domain.interactor.base.Params
 import com.ringoid.domain.interactor.feed.*
 import com.ringoid.domain.interactor.image.ClearCachedImageRequestsUseCase
@@ -18,6 +19,7 @@ import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
 import com.ringoid.domain.memory.ChatInMemoryCache
 import com.ringoid.domain.memory.FiltersInMemoryCache
 import com.ringoid.domain.misc.Gender
+import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.style.AppTheme
@@ -33,6 +35,7 @@ import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
     private val createUserProfileUseCase: CreateUserProfileUseCase,
+    private val clearCachedActionObjectsUseCase: ClearCachedActionObjectsUseCase,
     private val clearLocalUserDataUseCase: ClearLocalUserDataUseCase,
     private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
     private val clearCachedBlockedProfileIdsUseCase: ClearCachedBlockedProfileIdsUseCase,
@@ -132,6 +135,7 @@ class LoginViewModel @Inject constructor(
             .andThen(clearCachedUserImagesUseCase.source())
             .andThen(clearCachedImageRequestsUseCase.source())
             .andThen(clearMessagesUseCase.source())
+            .andThen(clearCachedActionObjectsUseCase.source(params = Params().put("actionType", ActionObject.ACTION_TYPE_MESSAGE_READ)))
             .autoDisposable(this)
             .subscribe({ Timber.i("Local user data has been cleared on logout") }, DebugLogUtil::e)
     }

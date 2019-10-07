@@ -13,6 +13,9 @@ interface IActionObjectPool {
     fun putSource(aobj: OriginActionObject): Completable
     fun putSource(aobjs: Collection<OriginActionObject>): Completable
 
+    fun deleteActionObjectsForType(type: String): Completable
+    fun deleteAllActionObject(): Completable
+
     fun commitNow(aobj: OriginActionObject): Single<Long>
     fun trigger()
     fun triggerSource(): Single<Long>

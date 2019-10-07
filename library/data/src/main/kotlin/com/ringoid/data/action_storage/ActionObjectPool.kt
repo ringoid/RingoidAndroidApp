@@ -63,6 +63,14 @@ class ActionObjectPool @Inject constructor(
         if (aobjs.isEmpty()) Completable.complete()
         else Completable.fromCallable { put(aobjs) }
 
+    override fun deleteActionObjectsForType(type: String): Completable =
+        Completable.fromAction { backup.deleteActionObjectsForType(type) }
+                   .doOnComplete { queue.removeAll { it.actionType == type } }
+
+    override fun deleteAllActionObject(): Completable =
+        Completable.fromAction { backup.deleteActionObjects() }
+                   .doOnComplete { queue.clear() }
+
     // ------------------------------------------
     override fun commitNow(aobj: OriginActionObject): Single<Long> {
         put(aobj)  // don't create synthetic action object

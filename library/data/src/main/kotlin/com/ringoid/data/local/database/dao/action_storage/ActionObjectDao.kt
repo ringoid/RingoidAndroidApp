@@ -31,6 +31,9 @@ interface ActionObjectDao {
     @Delete
     fun deleteActionObjects(aobjs: Collection<ActionObjectDbo>)
 
+    @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME} WHERE ${ActionObjectDbo.COLUMN_ACTION_TYPE} = :type")
+    fun deleteActionObjectsForType(type: String)
+
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME} WHERE ${ActionObjectDbo.COLUMN_USED} = 1")
     fun deleteUsedActionObjects()
 }

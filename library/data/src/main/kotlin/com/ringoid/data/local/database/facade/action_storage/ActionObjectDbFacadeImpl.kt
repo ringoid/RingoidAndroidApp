@@ -76,6 +76,10 @@ class ActionObjectDbFacadeImpl @Inject constructor(
         dao.deleteActionObjects()
     }
 
+    override fun deleteActionObjectsForType(type: String) {
+        dao.deleteActionObjectsForType(type)
+    }
+
     override fun deleteUsedActionObjects() {
         dao.deleteUsedActionObjects()
     }

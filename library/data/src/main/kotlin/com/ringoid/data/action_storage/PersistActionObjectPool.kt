@@ -85,6 +85,12 @@ class PersistActionObjectPool @Inject constructor(
             }
         }
 
+    override fun deleteActionObjectsForType(type: String): Completable =
+        Completable.fromAction { local.deleteActionObjectsForType(type) }
+
+    override fun deleteAllActionObject(): Completable =
+        Completable.fromAction { local.deleteActionObjects() }
+
     // ------------------------------------------
     override fun commitNow(aobj: OriginActionObject): Single<Long> =
         Single.fromCallable {

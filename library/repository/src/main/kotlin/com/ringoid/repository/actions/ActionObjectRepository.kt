@@ -5,6 +5,7 @@ import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.repository.actions.IActionObjectRepository
 import com.ringoid.repository.BaseRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,4 +16,9 @@ class ActionObjectRepository @Inject constructor(
     : BaseRepository(cloud, spm, aObjPool), IActionObjectRepository {
 
     override fun countCachedActionObjects(): Single<Int> = aObjPool.countActionObjects()
+
+    override fun deleteActionObjectsForType(type: String): Completable =
+        aObjPool.deleteActionObjectsForType(type)
+
+    override fun deleteAllActionObjects(): Completable = aObjPool.deleteAllActionObject()
 }
