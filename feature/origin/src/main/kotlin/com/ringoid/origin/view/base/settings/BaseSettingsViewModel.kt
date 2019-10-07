@@ -22,7 +22,10 @@ abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlack
     private val suggestImprovementsOneShot by lazy { MutableLiveData<OneShot<Boolean>>() }
     internal fun suggestImprovementsOneShot(): LiveData<OneShot<Boolean>> = suggestImprovementsOneShot
 
-    fun suggestImprovements(text: String, tag: String?, doFinally: (() -> Unit)? = null) {
+    fun suggestImprovements(text: String, tag: String?, payload: List<Pair<String, String>> = emptyList(),
+                            doFinally: (() -> Unit)? = null) {
+        fun getPayloadField(key: String): String? = payload.find { it.first == key }?.second
+
         if (text.isBlank()) {
             return
         }
@@ -43,7 +46,9 @@ abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlack
         // profile properties
         val profile = spm.getUserProfileProperties()
         val city = profile.whereLive.takeIf { it.isNotBlank() }?.let { " @ `$it`" } ?: ""
-        val reportText = "*${ageGenderStr.joinToString(" ").trim()}* from `$tag`$city\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt ($daysAgo)"}"
+        // wrap up
+        val ratingStr = getPayloadField("rating")?.let { " *rate: $it* " }?.trim() ?: ""
+        val reportText = "*${ageGenderStr.joinToString(" ").trim()}* from `$tag`$city$ratingStr\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt ($daysAgo)"}"
 
         val channelId = when (gender) {
             Gender.FEMALE -> "CL9ATCU3B"

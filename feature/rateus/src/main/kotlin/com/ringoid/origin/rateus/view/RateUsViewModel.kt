@@ -34,7 +34,7 @@ class RateUsViewModel @Inject constructor(postToSlackUseCase: PostToSlackUseCase
                 if (!feedBackText.isNullOrBlank()) {
                     viewState.value = ViewState.LOADING
                     closeCode = ResultOnClose.CLOSE_TILL_UPDATE
-                    suggestImprovements(text = feedBackText, tag = tag) {
+                    suggestImprovements(text = feedBackText, tag = tag, payload = listOf("rating" to "$rating")) {
                         viewState.value = ViewState.IDLE
                         closeDialogOneShot.value = OneShot(true)
                     }
