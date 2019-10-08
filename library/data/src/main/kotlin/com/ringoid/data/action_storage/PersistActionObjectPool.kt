@@ -5,6 +5,7 @@ import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.datainterface.local.action_storage.IActionObjectDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.domain.exception.CommitActionsException
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.scope.UserScopeProvider
@@ -135,9 +136,20 @@ class PersistActionObjectPool @Inject constructor(
                         }
                 }
             }
-            .doOnError {
-                Report.breadcrumb("Commit actions error", "exception" to "${it.javaClass}", "message" to "${it.message}")
-                DebugLogUtil.e("Commit actions error: $it")
+            .onErrorResumeNext { e ->
+                Report.breadcrumb("Commit actions error", "exception" to "${e.javaClass}", "message" to "${e.message}")
+                DebugLogUtil.e("Commit actions error: $e")
+                when (e) {
+                    is CommitActionsException ->
+                        Single.fromCallable {
+                            // drop 'used' flag for action objects that have failed to be committed
+                            local.unmarkUsedActionObjects(e.failToCommit)
+                            // delete 'used' action objects that have been committed successfully
+                            local.deleteUsedActionObjects()
+                        }
+                        .flatMap { Single.error<Long>(e) }  // pass error further
+                    else -> Single.error(e)  // pass error further
+                }
             }
             .doOnSubscribe { dropStrategyData() }
             .doOnSuccess { updateLastActionTime(it /* lastActionTime */) }
@@ -146,6 +158,7 @@ class PersistActionObjectPool @Inject constructor(
                 finalizePool()  // clear state of pool
             }
             .flatMap { lastActionTime ->
+                // delete 'used' action objects that have been committed successfully
                 Completable.fromCallable { local.deleteUsedActionObjects() }
                            .toSingleDefault(lastActionTime)
             }
