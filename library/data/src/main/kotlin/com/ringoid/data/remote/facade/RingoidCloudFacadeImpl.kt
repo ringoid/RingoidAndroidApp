@@ -12,6 +12,7 @@ import com.ringoid.datainterface.remote.model.image.UserImageListResponse
 import com.ringoid.datainterface.remote.model.user.AuthCreateProfileResponse
 import com.ringoid.datainterface.remote.model.user.UserSettingsResponse
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.domain.exception.CommitActionsException
 import com.ringoid.domain.misc.ImageResolution
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
@@ -26,6 +27,7 @@ import com.ringoid.report.log.Report
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.exceptions.CompositeException
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -74,7 +76,9 @@ class RingoidCloudFacadeImpl @Inject constructor(private val cloud: RingoidCloud
 
         return if (essence.actions.size <= ACTIONS_CHUNK_SIZE) {  // commit actions all at once
             cloud.commitActions(essence)
+                 .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
                  .map { it.lastActionTime }
+                 .onErrorResumeNext { e -> CommitActionsException(essence.actions, cause = e).let { Single.error<Long>(it) } }
         } else {  // split too large essence by chunks of fixed size and tail of lesser size
             essence.actions.chunked(ACTIONS_CHUNK_SIZE)
                 .also { DebugLogUtil.d("Committing ${it.size} chunks by $ACTIONS_CHUNK_SIZE action objects") }
@@ -83,10 +87,24 @@ class RingoidCloudFacadeImpl @Inject constructor(private val cloud: RingoidCloud
                 .flatMapSingle({ subEssence ->
                     cloud.commitActions(subEssence)  // commit single chunk of action objects and handle error
                          .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
+                         .onErrorResumeNext { Single.error(CommitActionsException(subEssence.actions, cause = it)) }
                 }, true)
                 .toList()
                 .map { it.maxBy { it.lastActionTime } }
                 .map { it.lastActionTime }
+                .onErrorResumeNext { error ->
+                    when (error) {
+                        is CompositeException -> {
+                            val failToCommit = error.exceptions
+                                .filterIsInstance<CommitActionsException>()
+                                .map { it.failToCommit.toMutableList() }
+                                .reduce { acc, collection -> acc.addAll(collection); acc }
+
+                            CommitActionsException(failToCommit, cause = error).let { Single.error<Long>(it) }
+                        }
+                        else -> Single.error<Long>(error)
+                    }
+                }
         }
     }
 
