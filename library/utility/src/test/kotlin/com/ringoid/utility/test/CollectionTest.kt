@@ -1,8 +1,10 @@
 package com.ringoid.utility.test
 
+import com.ringoid.utility.SysTimber
 import com.ringoid.utility.randomString
 import org.junit.Assert
 import org.junit.Test
+import kotlin.math.pow
 
 class CollectionTest {
 
@@ -118,5 +120,25 @@ class CollectionTest {
 
         Assert.assertArrayEquals(result.toTypedArray(), pageTwo.toTypedArray())
         Assert.assertArrayEquals(concat.toTypedArray(), concatResult.toTypedArray())
+    }
+
+    @Test
+    fun collectListFromLists_someListOfLists_flatListContainingAllItems() {
+        val list = mutableListOf<List<Int>>()
+        for (j in 1..3) {
+            val sublist = mutableListOf<Int>()
+            for (i in 1..10) {
+                sublist.add(i.toFloat().pow(j).toInt())
+            }
+            list.add(sublist)
+        }
+        val result = list
+            .map { it.toMutableList() }
+            .reduce { acc, collection -> acc.addAll(collection); acc }
+
+        SysTimber.v("Result: ${result.joinToString()}")
+        Assert.assertEquals(30, result.size)
+        Assert.assertArrayEquals(arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000),
+                                 result.toTypedArray())
     }
 }
