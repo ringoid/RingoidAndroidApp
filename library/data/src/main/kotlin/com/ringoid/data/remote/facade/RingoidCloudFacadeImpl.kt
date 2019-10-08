@@ -71,7 +71,9 @@ class RingoidCloudFacadeImpl @Inject constructor(private val cloud: RingoidCloud
                        add("size" to "$size")
                        addAll(essence.toContentString())
                    }
-                   Report.i("Committing too many action objects at once", extras = extras)
+                   "Committing too many action objects at once".let { str ->
+                       DebugLogUtil.w(str); Report.i(str, extras = extras)
+                   }
                }
 
         return if (essence.actions.size <= ACTIONS_CHUNK_SIZE) {  // commit actions all at once
