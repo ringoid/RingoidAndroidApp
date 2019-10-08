@@ -17,6 +17,26 @@ data class CommitActionsEssence(
     fun copyWith(actions: Collection<OriginActionObject>): CommitActionsEssence =
         CommitActionsEssence(accessToken, actions = actions)
 
+    // ------------------------------------------
+    fun toContentString(): List<Pair<String, String>> {
+        fun put(map: MutableMap<String, Int>, key: String) {
+            if (!map.containsKey(key)) {
+                map[key] = 0  // create entry by key and initial value
+            }
+            map[key]?.plus(1)
+        }
+
+        val map = mutableMapOf<String, Int>()
+        actions.forEach { put(map, key = it.actionType) }
+
+        val size = actions.size
+        val list = mutableListOf<Pair<String, String>>()
+        map.entries.forEach { (key, count) ->
+            list.add(key to "${count * 100 / size}% [$count]")
+        }
+        return list
+    }
+
     override fun toDebugPayload(): String = actions.joinToString("\n\t\t", "\n\t\t", transform = { it.toDebugPayload() })
     override fun toSentryPayload(): String = actions.joinToString(", ", "[", "]", transform = { it.toSentryPayload() })
 }
