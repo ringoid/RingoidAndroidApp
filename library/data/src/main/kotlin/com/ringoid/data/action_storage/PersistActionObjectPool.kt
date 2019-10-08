@@ -142,6 +142,7 @@ class PersistActionObjectPool @Inject constructor(
                 when (e) {
                     is CommitActionsException ->
                         Single.fromCallable {
+                            Report.i("Failed to commit some action objects", extras = listOf("size" to "${e.failToCommit.size}"))
                             // drop 'used' flag for action objects that have failed to be committed
                             local.unmarkUsedActionObjects(e.failToCommit)
                             // delete 'used' action objects that have been committed successfully
