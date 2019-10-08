@@ -3,14 +3,16 @@ package com.ringoid.data.local.database.model.action_storage
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.Mappable
 import com.ringoid.domain.model.actions.*
 import com.ringoid.utility.ValueUtils
+import com.ringoid.utility.randomInt
 
 @Entity(tableName = ActionObjectDbo.TABLE_NAME)
 data class ActionObjectDbo(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) val id: Int = 0,
-    @ColumnInfo(name = COLUMN_ACTION_ID) val actionId: Int,
+    @ColumnInfo(name = COLUMN_ACTION_ID) val actionId: Int = DomainUtil.UNKNOWN_VALUE,
     @ColumnInfo(name = COLUMN_ACTION_TIME) val actionTime: Long,
     @ColumnInfo(name = COLUMN_ACTION_TYPE) val actionType: String,
     @ColumnInfo(name = COLUMN_USED) val used: Int = 0,
@@ -59,6 +61,15 @@ data class ActionObjectDbo(
         fun from(aobj: OriginActionObject): ActionObjectDbo =
             ActionObjectDbo(actionId = aobj.id, actionTime = aobj.actionTime, actionType = aobj.actionType)
     }
+
+    internal fun copyWithActionId(actionId: Int = randomInt()): ActionObjectDbo =
+        ActionObjectDbo(id = id, actionId = actionId, actionTime = actionTime, actionType = actionType,
+                        used = used, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId,
+                        blockReasonNumber = blockReasonNumber, latitude = latitude, longitude = longitude,
+                        messageClientId = messageClientId, messageText = messageText,
+                        openChatTimeMillis = openChatTimeMillis,
+                        readMessageId = readMessageId, readMessagePeerId = readMessagePeerId,
+                        viewChatTimeMillis = viewChatTimeMillis, viewTimeMillis = viewTimeMillis)
 
     internal fun isValid(): Boolean =
         when (actionType) {

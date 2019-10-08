@@ -4,8 +4,10 @@ import com.ringoid.data.local.database.dao.action_storage.ActionObjectDao
 import com.ringoid.data.local.database.model.action_storage.ActionObjectDboMapper
 import com.ringoid.datainterface.local.action_storage.IActionObjectDbFacade
 import com.ringoid.debug.DebugLogUtil
+import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.mapList
+import com.ringoid.utility.randomInt
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -29,7 +31,17 @@ class ActionObjectDbFacadeImpl @Inject constructor(
             .flatMapObservable { Observable.fromIterable(it) }
             .filter { !it.isValid() }
             .toList()
-            .flatMapCompletable { Completable.fromCallable { dao.deleteActionObjects(it) } }
+            .flatMapCompletable { Completable.fromAction { dao.deleteActionObjects(it) } }
+            .subscribe({}, Timber::e)
+
+        // assign 'actionId' to action objects that have it missing
+        dao.actionObjects()
+            .subscribeOn(Schedulers.io())
+            .flatMapObservable { Observable.fromIterable(it) }
+            .filter { it.actionId == DomainUtil.UNKNOWN_VALUE }
+            .map { it.copyWithActionId(actionId = randomInt()) }
+            .toList()
+            .flatMapCompletable { Completable.fromAction { dao.updateActionObjects(it) } }
             .subscribe({}, Timber::e)
     }
 

@@ -36,4 +36,7 @@ interface ActionObjectDao {
 
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME} WHERE ${ActionObjectDbo.COLUMN_USED} = 1")
     fun deleteUsedActionObjects()
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateActionObjects(aobjs: Collection<ActionObjectDbo>)
 }
