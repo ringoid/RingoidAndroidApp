@@ -1,4 +1,4 @@
-package com.ringoid.datainterface.remote.model.actions
+package com.ringoid.data.remote.model.actions
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

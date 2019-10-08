@@ -1,7 +1,7 @@
 package com.ringoid.data.remote.api
 
 import com.ringoid.datainterface.remote.model.BaseResponse
-import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
+import com.ringoid.data.remote.model.actions.CommitActionsResponse
 import com.ringoid.datainterface.remote.model.feed.ChatResponse
 import com.ringoid.datainterface.remote.model.feed.FeedResponse
 import com.ringoid.datainterface.remote.model.feed.LmmResponse
