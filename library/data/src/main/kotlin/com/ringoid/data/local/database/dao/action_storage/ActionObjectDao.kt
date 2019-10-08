@@ -26,17 +26,17 @@ interface ActionObjectDao {
     fun markActionObjectsAsUsed(ids: List<Int>, used: Int = 1): Int
 
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME}")
-    fun deleteActionObjects()
+    fun deleteActionObjects(): Int
 
     @Delete
-    fun deleteActionObjects(aobjs: Collection<ActionObjectDbo>)
+    fun deleteActionObjects(aobjs: Collection<ActionObjectDbo>): Int
 
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME} WHERE ${ActionObjectDbo.COLUMN_ACTION_TYPE} = :type")
-    fun deleteActionObjectsForType(type: String)
+    fun deleteActionObjectsForType(type: String): Int
 
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME} WHERE ${ActionObjectDbo.COLUMN_USED} = 1")
-    fun deleteUsedActionObjects()
+    fun deleteUsedActionObjects(): Int
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateActionObjects(aobjs: Collection<ActionObjectDbo>)
+    fun updateActionObjects(aobjs: Collection<ActionObjectDbo>): Int
 }

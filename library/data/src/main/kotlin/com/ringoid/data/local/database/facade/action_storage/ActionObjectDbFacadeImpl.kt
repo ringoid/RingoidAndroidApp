@@ -7,8 +7,8 @@ import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.mapList
+import com.ringoid.report.log.Report
 import com.ringoid.utility.randomInt
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -31,8 +31,8 @@ class ActionObjectDbFacadeImpl @Inject constructor(
             .flatMapObservable { Observable.fromIterable(it) }
             .filter { !it.isValid() }
             .toList()
-            .flatMapCompletable { Completable.fromAction { dao.deleteActionObjects(it) } }
-            .subscribe({}, Timber::e)
+            .flatMap { Single.fromCallable { dao.deleteActionObjects(it) } }
+            .subscribe({ Report.i("Removed invalid aObjs from cache", extras = listOf("size" to "$it")) }, Timber::e)
 
         // assign 'actionId' to action objects that have it missing
         dao.actionObjects()
@@ -41,8 +41,8 @@ class ActionObjectDbFacadeImpl @Inject constructor(
             .filter { it.actionId == DomainUtil.UNKNOWN_VALUE }
             .map { it.copyWithActionId(actionId = randomInt()) }
             .toList()
-            .flatMapCompletable { Completable.fromAction { dao.updateActionObjects(it) } }
-            .subscribe({}, Timber::e)
+            .flatMap { Single.fromCallable { dao.updateActionObjects(it) } }
+            .subscribe({ Report.i("Assigned actionIds for aObjs in cache", extras = listOf("size" to "$it")) }, Timber::e)
     }
 
     // ------------------------------------------
