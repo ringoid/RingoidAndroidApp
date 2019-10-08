@@ -12,6 +12,9 @@ data class CommitActionsEssence(
     companion object {
         const val COLUMN_ACCESS_TOKEN = "accessToken"
         const val COLUMN_ACTIONS = "actions"
+
+        fun sorted(accessToken: String, actions: Collection<OriginActionObject>): CommitActionsEssence =
+            CommitActionsEssence(accessToken, actions.sortedBy { it.actionTime })
     }
 
     fun copyWith(actions: Collection<OriginActionObject>): CommitActionsEssence =

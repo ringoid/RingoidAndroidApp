@@ -110,8 +110,8 @@ class ActionObjectPool @Inject constructor(
                  * @see https://github.com/google/gson/issues/1159
                  */
                 val queueCopy = ArrayDeque(queue)
-                val essence = CommitActionsEssence(accessToken.accessToken, queueCopy)
-                cloud.commitActions(essence)
+                val essence = CommitActionsEssence.sorted(accessToken.accessToken, queueCopy)
+                cloud.commitActions(essence)  // sorted by action time
             }
         }
         .doOnSubscribe {

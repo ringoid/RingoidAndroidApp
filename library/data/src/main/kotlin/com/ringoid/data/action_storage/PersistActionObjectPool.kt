@@ -130,8 +130,8 @@ class PersistActionObjectPool @Inject constructor(
                                  * @see [ActionObjectPool.triggerSourceImpl] for explanation.
                                  */
                                 val queueCopy = ArrayDeque(queue)
-                                val essence = CommitActionsEssence(it.accessToken, queueCopy)
-                                cloud.commitActions(essence)
+                                val essence = CommitActionsEssence.sorted(it.accessToken, queueCopy)
+                                cloud.commitActions(essence)  // sorted by action time
                             }
                         }
                 }
