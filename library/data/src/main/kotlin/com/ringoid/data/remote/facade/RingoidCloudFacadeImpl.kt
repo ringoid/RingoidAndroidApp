@@ -14,6 +14,7 @@ import com.ringoid.datainterface.remote.model.user.UserSettingsResponse
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.exception.CommitActionsException
 import com.ringoid.domain.misc.ImageResolution
+import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
 import com.ringoid.domain.model.essence.image.ImageDeleteEssence
 import com.ringoid.domain.model.essence.image.ImageUploadUrlEssence
@@ -28,6 +29,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.exceptions.CompositeException
+import io.reactivex.functions.BiFunction
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -64,49 +66,123 @@ class RingoidCloudFacadeImpl @Inject constructor(private val cloud: RingoidCloud
     /* Actions */
     // --------------------------------------------------------------------------------------------
     override fun commitActions(essence: CommitActionsEssence): Single<Long> {
-        essence.actions.size.also { size -> "Committing $size action objects".let { DebugLogUtil.d(it) } }
-               .takeIf { it >= ACTIONS_LIMIT_TO_WARN }
-               ?.let { size ->
-                   val extras = mutableListOf<Pair<String, String>>().apply {
-                       add("size" to "$size")
-                       addAll(essence.toContentString())
-                   }
-                   "Committing too many action objects at once".let { str ->
-                       DebugLogUtil.w(str); Report.i(str, extras = extras)
-                   }
-               }
+        fun reportSizeOfEssence(essence: CommitActionsEssence) {
+            essence.actions.size.also { size -> "Committing $size action objects".let { DebugLogUtil.d(it) } }
+                .takeIf { it >= ACTIONS_LIMIT_TO_WARN }
+                ?.let { size ->
+                    val extras = mutableListOf<Pair<String, String>>().apply {
+                        add("size" to "$size")
+                        addAll(essence.toContentString())
+                    }
+                    "Committing too many action objects at once".let { str ->
+                        DebugLogUtil.w(str); Report.i(str, extras = extras)
+                    }
+                }
+        }
 
-        return if (essence.actions.size <= ACTIONS_CHUNK_SIZE) {  // commit actions all at once
+        /**
+         * Commits [essence] as a whole.
+         */
+        fun commitSingleChunk(essence: CommitActionsEssence): Single<Long> =
             cloud.commitActions(essence)
-                 .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
-                 .map { it.lastActionTime }
-                 .onErrorResumeNext { e -> CommitActionsException(essence.actions, cause = e).let { Single.error<Long>(it) } }
-        } else {  // split too large essence by chunks of fixed size and tail of lesser size
+                .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
+                .map { it.lastActionTime }
+                .onErrorResumeNext { e -> CommitActionsException(essence.actions, cause = e).let { Single.error<Long>(it) } }
+
+        /**
+         * Splits too large [essence] by chunks of fixed size and an optional tail of lesser size,
+         * and then commits them in parallel. Delays possible errors and then combines all of them
+         * into single error, which is then propagated downstream.
+         */
+        fun commitMultipleChunksParallel(essence: CommitActionsEssence): Single<Long> =
             essence.actions.chunked(ACTIONS_CHUNK_SIZE)
                 .also { DebugLogUtil.d("Committing ${it.size} chunks by $ACTIONS_CHUNK_SIZE action objects") }
                 .let { Observable.fromIterable(it) }
-                .map { essence.copyWith(actions = it) }
-                .flatMapSingle({ subEssence ->
-                    cloud.commitActions(subEssence)  // commit single chunk of action objects and handle error
-                         .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
-                         .onErrorResumeNext { Single.error(CommitActionsException(subEssence.actions, cause = it)) }
+                .map { essence.copyWith(actions = it) }  // prepare chunk of action objects
+                .flatMapSingle({ subEssence ->  // indices are not taken into account
+                    // commit single chunk of action objects and handle error
+                    cloud.commitActions(subEssence)
+                        .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
+                        .onErrorResumeNext { Single.error(CommitActionsException(subEssence.actions, cause = it)) }
                 }, true)
                 .toList()
                 .map { it.maxBy { it.lastActionTime } }
                 .map { it.lastActionTime }
-                .onErrorResumeNext { error ->
-                    when (error) {
+                .onErrorResumeNext {
+                    when (it) {  // transform error
                         is CompositeException -> {
-                            val failToCommit = error.exceptions
+                            /**
+                             * Given combined error, represented by [CompositeException], loop over it,
+                             * extracting each particular error as instance of [CommitActionsException],
+                             * then extract list of action objects that have failed to be committed from
+                             * each one and combine all of them together in a single [CommitActionsException],
+                             * that is then should be emitted downstream.
+                             */
+                            val failToCommit = it.exceptions
                                 .filterIsInstance<CommitActionsException>()
-                                .map { it.failToCommit.toMutableList() }
+                                .map { e -> e.failToCommit.toMutableList() }
                                 .reduce { acc, collection -> acc.addAll(collection); acc }
 
-                            CommitActionsException(failToCommit, cause = error).let { Single.error<Long>(it) }
+                            // all action objects that have remained uncommitted are stored here
+                            CommitActionsException(failToCommit, cause = it)
                         }
-                        else -> Single.error<Long>(error)
-                    }
+                        else -> it
+                    }.let { e -> Single.error(e) }  // propagate error downstream
                 }
+
+        /**
+         * Splits too large [essence] by chunks of fixed size and an optional tail of lesser size,
+         * and then commits them sequentially one after another. Fails the whole chain if some chunk
+         * is failed to be committed, and propagates a single error downstream.
+         */
+        fun commitMultipleChunksSequential(essence: CommitActionsEssence): Single<Long> {
+            val chunks = essence.actions.chunked(ACTIONS_CHUNK_SIZE)
+                .also { DebugLogUtil.d("Committing ${it.size} chunks by $ACTIONS_CHUNK_SIZE action objects") }
+            val totalChunks = chunks.size
+
+            return chunks
+                .let { Observable.fromIterable(it) }
+                .map { essence.copyWith(actions = it) }  // prepare chunk of action objects
+                .zipWith(Observable.range(1, totalChunks),
+                         BiFunction { subEssence: CommitActionsEssence, index: Int -> subEssence to index })
+                .concatMapSingle { (subEssence, index) ->
+                    // commit single chunk of action objects and handle error
+                    cloud.commitActions(subEssence)
+                        .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
+                        .onErrorResumeNext { Single.error(CommitActionsException(subEssence.actions, indexOfChunk = index, cause = it)) }
+                }
+                .toList()
+                .map { it.maxBy { it.lastActionTime } }
+                .map { it.lastActionTime }
+                .onErrorResumeNext {
+                    when (it) {
+                        /**
+                         * At some point committing of some chunk of action objects has failed,
+                         * so the whole chain has stopped as well. Keep all yet uncommitted action
+                         * objects in one single [CommitActionsException] and propagate it downstream.
+                         */
+                        is CommitActionsException -> {
+                            val actions = mutableListOf<OriginActionObject>().apply {
+                                addAll(it.failToCommit)
+                                val from = it.indexOfChunk * ACTIONS_CHUNK_SIZE
+                                if (from < essence.actions.size) {
+                                    addAll(essence.actions.toMutableList().subList(from, essence.actions.size))
+                                }
+                            }
+                            CommitActionsException(failToCommit = actions, cause = it)
+                        }
+                        else -> it
+                    }.let { e -> Single.error(e) }  // propagate error downstream
+                }
+        }
+
+        // --------------------------------------
+        reportSizeOfEssence(essence)
+
+        return if (essence.actions.size <= ACTIONS_CHUNK_SIZE) {
+            commitSingleChunk(essence)  // commit actions all at once
+        } else {
+            commitMultipleChunksSequential(essence)  // split and commit by chunks
         }
     }
 
