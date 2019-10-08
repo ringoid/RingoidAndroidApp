@@ -20,4 +20,6 @@ interface IActionObjectDbFacade {
     fun deleteActionObjectsForType(type: String)
 
     fun deleteUsedActionObjects()
+
+    fun unmarkUsedActionObjects(objects: Collection<OriginActionObject>)
 }

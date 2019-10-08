@@ -83,4 +83,8 @@ class ActionObjectDbFacadeImpl @Inject constructor(
     override fun deleteUsedActionObjects() {
         dao.deleteUsedActionObjects()
     }
+
+    override fun unmarkUsedActionObjects(objects: Collection<OriginActionObject>) {
+        dao.markActionObjectsAsUsed(ids = objects.map { it.id }, used = 0)
+    }
 }
