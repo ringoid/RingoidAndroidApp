@@ -4,7 +4,6 @@ import com.ringoid.data.handleError
 import com.ringoid.data.remote.api.RingoidCloud
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
 import com.ringoid.datainterface.remote.model.BaseResponse
-import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
 import com.ringoid.datainterface.remote.model.feed.ChatResponse
 import com.ringoid.datainterface.remote.model.feed.FeedResponse
 import com.ringoid.datainterface.remote.model.feed.LmmResponse
@@ -62,25 +61,25 @@ class RingoidCloudFacadeImpl @Inject constructor(private val cloud: RingoidCloud
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
-    override fun commitActions(essence: CommitActionsEssence): Single<CommitActionsResponse> {
+    override fun commitActions(essence: CommitActionsEssence): Single<Long> {
         essence.actions.size.also { size -> "Committing $size action objects".let { DebugLogUtil.d(it) } }
                .takeIf { it >= ACTIONS_LIMIT_TO_WARN }
-               ?.let { Report .d("Committing too many action objects at once", extras = listOf("size" to "$it")) }
 
         return if (essence.actions.size <= ACTIONS_CHUNK_SIZE) {  // commit actions all at once
             cloud.commitActions(essence)
-            // TODO: handle error here rather than outside
+                 .map { it.lastActionTime }
         } else {  // split too large essence by chunks of fixed size and tail of lesser size
             essence.actions.chunked(ACTIONS_CHUNK_SIZE)
                 .also { DebugLogUtil.d("Committing ${it.size} chunks by $ACTIONS_CHUNK_SIZE action objects") }
                 .let { Observable.fromIterable(it) }
                 .map { essence.copyWith(actions = it) }
-                .flatMapSingle({
-                    cloud.commitActions(essence)  // commit single chunk of action objects and handle error
+                .flatMapSingle({ subEssence ->
+                    cloud.commitActions(subEssence)  // commit single chunk of action objects and handle error
                          .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
-                        // TODO: mark failed chunks as 'unused' to prevent from deletion
                 }, true)
-                .toList().map { it.maxBy { it.lastActionTime } }
+                .toList()
+                .map { it.maxBy { it.lastActionTime } }
+                .map { it.lastActionTime }
         }
     }
 
