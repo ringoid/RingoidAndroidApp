@@ -1,3 +1,3 @@
 package com.ringoid.report.exception
 
-class SimulatedException : RuntimeException()
+class SimulatedException(msg: String = "") : RuntimeException(msg)
