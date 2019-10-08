@@ -10,6 +10,7 @@ import com.ringoid.utility.ValueUtils
 @Entity(tableName = ActionObjectDbo.TABLE_NAME)
 data class ActionObjectDbo(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) val id: Int = 0,
+    @ColumnInfo(name = COLUMN_ACTION_ID) val actionId: Int,
     @ColumnInfo(name = COLUMN_ACTION_TIME) val actionTime: Long,
     @ColumnInfo(name = COLUMN_ACTION_TYPE) val actionType: String,
     @ColumnInfo(name = COLUMN_USED) val used: Int = 0,
@@ -31,6 +32,7 @@ data class ActionObjectDbo(
 
     companion object {
         const val COLUMN_ID = "id"
+        const val COLUMN_ACTION_ID = "actionId"
         const val COLUMN_ACTION_TIME = "actionTime"
         const val COLUMN_ACTION_TYPE = "actionType"
         const val COLUMN_USED = "used"
@@ -55,7 +57,7 @@ data class ActionObjectDbo(
         const val TABLE_NAME = "ActionObjects"
 
         fun from(aobj: OriginActionObject): ActionObjectDbo =
-            ActionObjectDbo(actionTime = aobj.actionTime, actionType = aobj.actionType)
+            ActionObjectDbo(actionId = aobj.id, actionTime = aobj.actionTime, actionType = aobj.actionType)
     }
 
     internal fun isValid(): Boolean =
@@ -66,16 +68,16 @@ data class ActionObjectDbo(
 
     override fun map(): OriginActionObject =
         when (actionType) {
-            ActionObject.ACTION_TYPE_BLOCK -> BlockActionObject(numberOfBlockReason = blockReasonNumber, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
-            ActionObject.ACTION_TYPE_DEBUG -> DebugActionObject()
-            ActionObject.ACTION_TYPE_LOCATION -> LocationActionObject(latitude = latitude, longitude = longitude, actionTime = actionTime)
-            ActionObject.ACTION_TYPE_LIKE -> LikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
-            ActionObject.ACTION_TYPE_MESSAGE -> MessageActionObject(clientId = messageClientId, text = messageText, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
-            ActionObject.ACTION_TYPE_MESSAGE_READ -> ReadMessageActionObject(messageId = readMessageId, peerId = readMessagePeerId)
-            ActionObject.ACTION_TYPE_OPEN_CHAT -> OpenChatActionObject(timeInMillis = openChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
-            ActionObject.ACTION_TYPE_UNLIKE -> UnlikeActionObject(actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
-            ActionObject.ACTION_TYPE_VIEW -> ViewActionObject(timeInMillis = viewTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
-            ActionObject.ACTION_TYPE_VIEW_CHAT -> ViewChatActionObject(timeInMillis = viewChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_BLOCK -> BlockActionObject(id = actionId, numberOfBlockReason = blockReasonNumber, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_DEBUG -> DebugActionObject(id = actionId)
+            ActionObject.ACTION_TYPE_LOCATION -> LocationActionObject(id = actionId, latitude = latitude, longitude = longitude, actionTime = actionTime)
+            ActionObject.ACTION_TYPE_LIKE -> LikeActionObject(id = actionId, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_MESSAGE -> MessageActionObject(id = actionId, clientId = messageClientId, text = messageText, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_MESSAGE_READ -> ReadMessageActionObject(id = actionId, messageId = readMessageId, peerId = readMessagePeerId)
+            ActionObject.ACTION_TYPE_OPEN_CHAT -> OpenChatActionObject(id = actionId, timeInMillis = openChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_UNLIKE -> UnlikeActionObject(id = actionId, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_VIEW -> ViewActionObject(id = actionId, timeInMillis = viewTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
+            ActionObject.ACTION_TYPE_VIEW_CHAT -> ViewChatActionObject(id = actionId, timeInMillis = viewChatTimeMillis, actionTime = actionTime, sourceFeed = sourceFeed, targetImageId = targetImageId, targetUserId = targetUserId)
             else -> throw IllegalArgumentException("Unsupported action type: $actionType")
         }
 }

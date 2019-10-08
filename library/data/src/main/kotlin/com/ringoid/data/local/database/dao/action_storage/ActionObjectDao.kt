@@ -22,7 +22,7 @@ interface ActionObjectDao {
     @Query("UPDATE ${ActionObjectDbo.TABLE_NAME} SET ${ActionObjectDbo.COLUMN_USED} = :used")
     fun markActionObjectsAsUsed(used: Int = 1): Int
 
-    @Query("UPDATE ${ActionObjectDbo.TABLE_NAME} SET ${ActionObjectDbo.COLUMN_USED} = :used WHERE ${ActionObjectDbo.COLUMN_ID} IN (:ids)")
+    @Query("UPDATE ${ActionObjectDbo.TABLE_NAME} SET ${ActionObjectDbo.COLUMN_USED} = :used WHERE ${ActionObjectDbo.COLUMN_ACTION_ID} IN (:ids)")
     fun markActionObjectsAsUsed(ids: List<Int>, used: Int = 1): Int
 
     @Query("DELETE FROM ${ActionObjectDbo.TABLE_NAME}")
