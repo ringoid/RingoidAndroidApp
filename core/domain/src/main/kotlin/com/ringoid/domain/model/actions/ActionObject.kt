@@ -6,6 +6,7 @@ import com.ringoid.domain.BuildConfig
 import com.ringoid.domain.action_storage.TriggerStrategy
 import com.ringoid.domain.model.IEssence
 import com.ringoid.utility.DebugOnly
+import com.ringoid.utility.randomInt
 
 sealed class BaseActionObject
 
@@ -16,6 +17,7 @@ sealed class BaseActionObject
  * }
  */
 open class OriginActionObject(
+    val id: Int = randomInt(),
     @Expose @SerializedName(ActionObject.COLUMN_ACTION_TIME) val actionTime: Long = System.currentTimeMillis(),
     @Expose @SerializedName(ActionObject.COLUMN_ACTION_TYPE) val actionType: String,
     val triggerStrategies: List<TriggerStrategy> = emptyList())
@@ -47,12 +49,13 @@ open class OriginActionObject(
  * }
  */
 open class ActionObject(
+    id: Int = randomInt(),
     actionTime: Long = System.currentTimeMillis(), actionType: String,
     @Expose @SerializedName(COLUMN_SOURCE_FEED) val sourceFeed: String,
     @Expose @SerializedName(COLUMN_TARGET_IMAGE_ID) val targetImageId: String,
     @Expose @SerializedName(COLUMN_TARGET_USER_ID) val targetUserId: String,
     triggerStrategies: List<TriggerStrategy> = emptyList())
-    : OriginActionObject(actionTime, actionType, triggerStrategies) {
+    : OriginActionObject(id, actionTime, actionType, triggerStrategies) {
 
     fun key(): Pair<String, String> = targetImageId to targetUserId
 
