@@ -1,7 +1,6 @@
 package com.ringoid.datainterface.remote
 
 import com.ringoid.datainterface.remote.model.BaseResponse
-import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
 import com.ringoid.datainterface.remote.model.feed.ChatResponse
 import com.ringoid.datainterface.remote.model.feed.FeedResponse
 import com.ringoid.datainterface.remote.model.feed.LmmResponse
@@ -42,7 +41,7 @@ interface IRingoidCloudFacade {
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
-    fun commitActions(essence: CommitActionsEssence): Single<CommitActionsResponse>
+    fun commitActions(essence: CommitActionsEssence): Single<Long>
 
     /* Image */
     // --------------------------------------------------------------------------------------------

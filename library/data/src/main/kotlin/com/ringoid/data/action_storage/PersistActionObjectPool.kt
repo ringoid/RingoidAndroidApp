@@ -1,11 +1,9 @@
 package com.ringoid.data.action_storage
 
-import com.ringoid.data.handleError
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.datainterface.local.action_storage.IActionObjectDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
-import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -122,7 +120,7 @@ class PersistActionObjectPool @Inject constructor(
             .flatMap { count ->
                 if (count <= 0) {
                     DebugLogUtil.d("No actions to commit, lAt is up-to-date [implementation]")
-                    Single.just(CommitActionsResponse(lastActionTime()))  // do nothing on empty queue
+                    Single.just(lastActionTime())  // do nothing on empty queue
                 } else {
                     local.actionObjectsMarkAsUsed()
                         .flatMap { queue ->
@@ -133,7 +131,6 @@ class PersistActionObjectPool @Inject constructor(
                                 val queueCopy = ArrayDeque(queue)
                                 val essence = CommitActionsEssence(it.accessToken, queueCopy)
                                 cloud.commitActions(essence)
-                                     .handleError(tag = "commitActions", traceTag = "actions/actions", count = 8)
                             }
                         }
                 }
@@ -143,13 +140,13 @@ class PersistActionObjectPool @Inject constructor(
                 DebugLogUtil.e("Commit actions error: $it")
             }
             .doOnSubscribe { dropStrategyData() }
-            .doOnSuccess { updateLastActionTime(it.lastActionTime) }
+            .doOnSuccess { updateLastActionTime(it /* lastActionTime */) }
             .doOnDispose {
                 DebugLogUtil.d("Commit actions disposed [user scope: ${userScopeProvider.hashCode()}]")
-                finalizePool()
+                finalizePool()  // clear state of pool
             }
-            .flatMap {
+            .flatMap { lastActionTime ->
                 Completable.fromCallable { local.deleteUsedActionObjects() }
-                           .toSingleDefault(it.lastActionTime)
+                           .toSingleDefault(lastActionTime)
             }
 }

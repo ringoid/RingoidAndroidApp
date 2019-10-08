@@ -1,12 +1,10 @@
 package com.ringoid.data.action_storage
 
-import com.ringoid.data.handleError
 import com.ringoid.data.local.shared_prefs.SharedPrefsManager
 import com.ringoid.data.local.shared_prefs.accessSingle
 import com.ringoid.datainterface.di.PerBackup
 import com.ringoid.datainterface.local.action_storage.IActionObjectDbFacade
 import com.ringoid.datainterface.remote.IRingoidCloudFacade
-import com.ringoid.datainterface.remote.model.actions.CommitActionsResponse
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.model.actions.OriginActionObject
 import com.ringoid.domain.model.essence.action.CommitActionsEssence
@@ -99,7 +97,7 @@ class ActionObjectPool @Inject constructor(
         val source = spm.accessSingle { accessToken ->
             if (queue.isEmpty()) {
                 DebugLogUtil.d("No actions to commit, lAt is up-to-date [chained]")
-                Single.just(CommitActionsResponse(lastActionTime()))
+                Single.just(lastActionTime())
             } else {
                 /**
                  * The Gson object is threadsafe, but serialization of user objects is not.
@@ -116,8 +114,6 @@ class ActionObjectPool @Inject constructor(
                 cloud.commitActions(essence)
             }
         }
-        .doOnError { DebugLogUtil.e("Commit actions error: $it") }
-        .handleError(tag = "commitActions", traceTag = "actions/actions")
         .doOnSubscribe {
             Timber.d("Trigger Queue started. Queue size [${queue.size}], last action time: ${lastActionTime()}, queue: ${printQueue()}")
             backupQueue.addAll(queue)
@@ -127,21 +123,23 @@ class ActionObjectPool @Inject constructor(
         .doOnSuccess {
             // Queue.size == 0 always at this stage
             Timber.d("Successfully committed all [${queue.size}] actions, triggering has finished")
-            if (localLastActionTime != it.lastActionTime) {
-                Timber.w("Last action times differ: server=${it.lastActionTime}, client=${lastActionTime()}, delta=${it.lastActionTime - lastActionTime()}")
+            if (localLastActionTime != it /* lastActionTime */) {
+                Timber.w("Last action times differ: server=$it, client=${lastActionTime()}, delta=${it - lastActionTime()}")
                 Report.w("Last action time from Server differs from Client",
-                    listOf("server last action time" to "${it.lastActionTime}",
+                    listOf("server last action time" to "$it",
                            "client last action time" to "${lastActionTime()}"))
             }
-            updateLastActionTime(it.lastActionTime)
+            updateLastActionTime(it /* lastActionTime */)
+        }
+        .doOnError {
+            DebugLogUtil.e("Commit actions error: $it")
+            backupQueue(backupQueue)
         }
         .doOnDispose {
             DebugLogUtil.d("Commit actions disposed [user scope: ${userScopeProvider.hashCode()}]")
             finalizePool()  // clear state of pool
         }
-        .doOnError { backupQueue(backupQueue) }
         .doFinally { backupQueue.clear() }
-        .map { it.lastActionTime }
 
         return backup.actionObjects()
             .flatMapCompletable {
