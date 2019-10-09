@@ -3,12 +3,15 @@ package com.ringoid.origin.feed.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.techisfun.android.topsheet.TopSheetBehavior
+import com.jakewharton.rxbinding3.appcompat.itemClicks
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
+import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
@@ -409,20 +412,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             with (toolbar) {
                 setTitle(getToolbarTitleResId())
                 inflateMenu(if (BuildConfig.IS_STAGING) R.menu.feed_toolbar_menu_debug else R.menu.feed_toolbar_menu)
-                setOnClickListener {
-                    if (toolbarWidget?.isShow() == true) {
-                        filtersPopupWidget?.show()
+                itemClicks().filter { toolbarWidget?.isShow() == true }.compose(clickDebounce()).subscribe {
+                    when (it.itemId) {
+                        R.id.debug -> onDebugOptionSelect()
+                        R.id.filters -> filtersPopupWidget?.show()
                     }
                 }
-                setOnMenuItemClickListener {
-                    if (toolbarWidget?.isShow() == true) {
-                        when (it.itemId) {
-                            R.id.debug -> { onDebugOptionSelect(); true }
-                            R.id.filters -> { filtersPopupWidget?.show(); true }
-                            else -> false
-                        }
-                    } else false
-                }
+                touches { toolbarWidget?.isShow() == true && it.actionMasked == MotionEvent.ACTION_UP }.compose(clickDebounce()).subscribe { filtersPopupWidget?.show() }
             }
         }
 
