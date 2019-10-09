@@ -34,7 +34,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/std_toolbar_height"
-        android:background="?refColorBgSemi"
+        android:background="?refColorToolbar"
         android:elevation="0dp"
         app:titleTextColor="?refTextColorPrimary"/>
 
