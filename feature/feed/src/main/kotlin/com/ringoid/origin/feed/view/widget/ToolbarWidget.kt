@@ -1,6 +1,7 @@
 package com.ringoid.origin.feed.view.widget
 
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import androidx.appcompat.widget.Toolbar
 import com.ringoid.utility.changeVisibility
@@ -24,11 +25,21 @@ internal class ToolbarWidget(private val rootView: View) {
 
         if (animated) {
             TranslateAnimation(0f, 0f, 0f, -rootView.appbar.height.toFloat())
-                .apply { duration = 400; fillAfter = true }
+                .apply {
+                    duration = 400
+                    fillAfter = true
+                    setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation) {}
+
+                        override fun onAnimationEnd(animation: Animation) {
+                            rootView.appbar.changeVisibility(isVisible = false)
+                        }
+
+                        override fun onAnimationRepeat(animation: Animation) {}
+                    })
+                }
                 .let { rootView.appbar.startAnimation(it) }
         }
-
-        rootView.appbar.changeVisibility(isVisible = false)
     }
 
     internal fun show(animated: Boolean = true) {
@@ -36,13 +47,23 @@ internal class ToolbarWidget(private val rootView: View) {
             return
         }
 
-        rootView.appbar.changeVisibility(isVisible = true)
-
         isVisibleAnimated = true
 
         if (animated) {
             TranslateAnimation(0f, 0f, -rootView.appbar.height.toFloat(), 0f)
-                .apply { duration = 400; fillAfter = true }
+                .apply {
+                    duration = 400
+                    fillAfter = true
+                    setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation) {}
+
+                        override fun onAnimationEnd(animation: Animation) {
+                            rootView.appbar.changeVisibility(isVisible = true)
+                        }
+
+                        override fun onAnimationRepeat(animation: Animation) {}
+                    })
+                }
                 .let { rootView.appbar.startAnimation(it) }
         }
     }
