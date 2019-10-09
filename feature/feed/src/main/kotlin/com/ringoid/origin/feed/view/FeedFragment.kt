@@ -359,14 +359,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     @Suppress("CheckResult", "AutoDispose")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fun onExpandFilters() {
-            toolbarWidget?.hide()  // hide toolbar on show filters popup
+            toolbarWidget?.hide(animated = false)  // hide toolbar on show filters popup
             if (isAdded) {
                 childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
             }
         }
 
         fun onHideFilters() {
-            toolbarWidget?.show()  // show toolbar on hide filters popup
+            toolbarWidget?.show(animated = false)  // show toolbar on hide filters popup
             if (isAdded) {
                 childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
             }

@@ -15,20 +15,23 @@ internal class ToolbarWidget(private val rootView: View) {
         return this
     }
 
-    internal fun hide() {
+    internal fun hide(animated: Boolean = true) {
         if (!isShow()) {
             return
         }
 
         isVisibleAnimated = false
-        TranslateAnimation(0f, 0f, 0f, -rootView.appbar.height.toFloat())
-            .apply { duration = 400; fillAfter = true }
-            .let { rootView.appbar.startAnimation(it) }
+
+        if (animated) {
+            TranslateAnimation(0f, 0f, 0f, -rootView.appbar.height.toFloat())
+                .apply { duration = 400; fillAfter = true }
+                .let { rootView.appbar.startAnimation(it) }
+        }
 
         rootView.appbar.changeVisibility(isVisible = false, soft = true)
     }
 
-    internal fun show() {
+    internal fun show(animated: Boolean = true) {
         if (isShow()) {
             return
         }
@@ -36,9 +39,12 @@ internal class ToolbarWidget(private val rootView: View) {
         rootView.appbar.changeVisibility(isVisible = true)
 
         isVisibleAnimated = true
-        TranslateAnimation(0f, 0f, -rootView.appbar.height.toFloat(), 0f)
-            .apply { duration = 400; fillAfter = true }
-            .let { rootView.appbar.startAnimation(it) }
+
+        if (animated) {
+            TranslateAnimation(0f, 0f, -rootView.appbar.height.toFloat(), 0f)
+                .apply { duration = 400; fillAfter = true }
+                .let { rootView.appbar.startAnimation(it) }
+        }
     }
 
     private fun isShow(): Boolean = isVisibleAnimated
