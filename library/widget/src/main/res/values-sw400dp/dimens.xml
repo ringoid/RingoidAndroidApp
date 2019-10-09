@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="std_btn_height">60dp</dimen>
-    <dimen name="std_btn_height_narrow">48dp</dimen>
+    <dimen name="std_btn_height_narrow">52dp</dimen>
     <dimen name="std_dialog_height">200dp</dimen>
     <dimen name="std_dialog_height_double">400dp</dimen>
     <dimen name="std_dialog_width">360dp</dimen>

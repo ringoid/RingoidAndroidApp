@@ -8,6 +8,7 @@
         <attr name="refColorPrimaryDark" format="reference"/>
         <attr name="refColorBottomBarIcon" format="reference"/>
         <attr name="refColorBottomBarIconSelected" format="reference"/>
+        <attr name="refColorToolbar" format="reference"/>
         <attr name="refColorUnderscore" format="reference"/>
         <attr name="refTextColorPrimary" format="reference"/>
         <attr name="refTextColorSecondary" format="reference"/>

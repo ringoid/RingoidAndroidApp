@@ -23,6 +23,7 @@
     <color name="brown">#282828</color>
     <color name="brown_half">#aa282828</color>
     <color name="brown_70">#b3282828</color>
+    <color name="brown_90">#e6282828</color>
     <color name="debug">#4eFF0339</color>
     <color name="facebook">#4267b2</color>
     <color name="female_pink">#ff62ab</color>
@@ -75,6 +76,7 @@
     <color name="white_half">#aaffffff</color>
     <color name="white_70">#b3ffffff</color>
     <color name="white_80">#ccffffff</color>
+    <color name="white_90">#e6ffffff</color>
     <color name="white">#ffffff</color>
     <color name="yellow_rating">#ffeb3b</color>
 

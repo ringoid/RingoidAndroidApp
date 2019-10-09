@@ -13,6 +13,7 @@
         <item name="refColorAccent">@color/grass</item>
         <item name="refColorPrimary">@color/steel</item>
         <item name="refColorPrimaryDark">@color/agat_semi</item>
+        <item name="refColorToolbar">@color/white_70</item>
         <item name="refColorUnderscore">?refColorBg</item>
         <item name="refTextColorPrimary">@color/primary_text</item>
         <item name="refTextColorSecondary">@color/secondary_text</item>
@@ -109,6 +110,7 @@
         <item name="refColorBgSemi">@color/brown_70</item>
         <item name="refColorPrimary">@android:color/black</item>
         <item name="refColorPrimaryDark">@android:color/black</item>
+        <item name="refColorToolbar">@color/brown_90</item>
         <item name="refTextColorPrimary">@android:color/white</item>
         <item name="refTextColorSecondary">@color/secondary_text_light</item>
         <item name="flatButtonBg">@drawable/flat_button_bg_black</item>

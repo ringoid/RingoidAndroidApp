@@ -1,57 +1,83 @@
 package com.ringoid.origin.feed.view.widget
 
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.TranslateAnimation
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.appbar.AppBarLayout
+import com.ringoid.origin.AppRes
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.fragment_feed.view.*
 
-class ToolbarWidget(private val rootView: View) {
+/**
+ * Toolbar widget.
+ *
+ * For animations behavior:
+ *
+ * @see https://stackoverflow.com/questions/4728908/android-view-with-view-gone-still-receives-ontouch-and-onclick
+ */
+internal class ToolbarWidget(private val rootView: View) {
+
+    private var isVisibleAnimated: Boolean = true
 
     internal fun init(l: (toolbar: Toolbar) -> Unit): ToolbarWidget {
         l.invoke(rootView.toolbar)
         return this
     }
 
-    internal fun collapse() {
-        rootView.appbar.changeVisibility(isVisible = false, soft = true)
-    }
+    internal fun hide(animated: Boolean = true) {
+        if (!isShow()) {
+            return
+        }
 
-    internal fun expand() {
-        rootView.appbar.changeVisibility(isVisible = true)
-    }
+        isVisibleAnimated = false
 
-    internal fun isShow(): Boolean = rootView.appbar.height - rootView.appbar.bottom <= 0
+        if (animated) {
+            AnimationSet(true).apply {
+//                addAnimation(AlphaAnimation(1.0f, 0.0f))
+                addAnimation(TranslateAnimation(0f, 0f, 0f, -AppRes.FEED_TOOLBAR_HEIGHT.toFloat()))
+                duration = 400
+                fillAfter = true
+                setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation) {}
 
-    internal fun removeScrollFlags() {
-        rootView.toolbar?.let { v ->
-            v.layoutParams = v.layoutParams
-                ?.let { it as? AppBarLayout.LayoutParams }
-                ?.let { lp -> lp.scrollFlags = 0; lp }
+                    override fun onAnimationEnd(animation: Animation) {
+                        rootView.toolbar.changeVisibility(isVisible = false)
+                        rootView.toolbar.clearAnimation()
+                    }
+
+                    override fun onAnimationRepeat(animation: Animation) {}
+                })
+            }.let { rootView.toolbar.startAnimation(it) }
         }
     }
 
-    internal fun restoreScrollFlags() {
-        rootView.toolbar?.let { v ->
-            v.layoutParams = v.layoutParams
-                ?.let { it as? AppBarLayout.LayoutParams }
-                ?.let { lp ->
-                    lp.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                            AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or
-                            AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
-                    lp
-                }
+    internal fun show(animated: Boolean = true) {
+        if (isShow()) {
+            return
+        }
+
+        isVisibleAnimated = true
+
+        if (animated) {
+            AnimationSet(true).apply {
+//                addAnimation(AlphaAnimation(0.0f, 1.0f))
+                addAnimation(TranslateAnimation(0f, 0f, -AppRes.FEED_TOOLBAR_HEIGHT.toFloat(), 0f))
+                duration = 400
+                fillAfter = true
+                setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation) {}
+
+                    override fun onAnimationEnd(animation: Animation) {
+                        rootView.toolbar.changeVisibility(isVisible = true)
+                        rootView.toolbar.clearAnimation()
+                    }
+
+                    override fun onAnimationRepeat(animation: Animation) {}
+                })
+            }.let { rootView.toolbar.startAnimation(it) }
         }
     }
 
-    internal fun show(isVisible: Boolean) {
-        rootView.appbar?.let {
-            if (isShow()) {
-                if (isVisible) return
-            } else {
-                if (!isVisible) return
-            }
-            it.setExpanded(isVisible)
-        }
-    }
+    internal fun isShow(): Boolean = isVisibleAnimated
 }

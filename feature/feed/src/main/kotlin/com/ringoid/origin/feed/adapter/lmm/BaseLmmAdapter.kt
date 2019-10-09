@@ -8,8 +8,7 @@ import com.ringoid.origin.feed.adapter.base.FeedItemVODiffCallback
 import com.ringoid.origin.feed.model.EmptyFeedItemVO
 import com.ringoid.origin.feed.model.FeedItemVO
 
-abstract class BaseLmmAdapter(headerRows: Int = 0)
-    : BaseFeedAdapter(FeedItemVODiffCallback(), headerRows = headerRows) {
+abstract class BaseLmmAdapter : BaseFeedAdapter(FeedItemVODiffCallback(), headerRows = 1) {
 
     var messageClickListener: ((model: FeedItem, position: Int, positionOfImage: Int) -> Unit)? = null
 
@@ -22,5 +21,4 @@ abstract class BaseLmmAdapter(headerRows: Int = 0)
 
     // ------------------------------------------
     override fun getStubItem(): FeedItemVO = EmptyFeedItemVO
-    override fun getHeaderLayoutResId(): Int = R.layout.rv_item_feed_lmm_header
 }

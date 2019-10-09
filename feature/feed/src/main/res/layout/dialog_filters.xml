@@ -5,8 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="2000dp"
     android:orientation="vertical"
-    android:paddingTop="@dimen/std_margin_48"
     app:layout_behavior="com.github.techisfun.android.topsheet.TopSheetBehavior">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/std_margin_48"
+        android:background="?refColorBg"/>
 
     <FrameLayout
         android:id="@+id/fl_content"
