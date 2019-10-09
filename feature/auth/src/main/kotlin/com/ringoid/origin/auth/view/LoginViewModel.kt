@@ -73,7 +73,7 @@ class LoginViewModel @Inject constructor(
     }
 
     // --------------------------------------------------------------------------------------------
-    fun login() {
+    internal fun login() {
         val essence = AuthCreateProfileEssence(
             yearOfBirth = yearOfBirth,
             sex = gender?.string ?: Gender.MALE.string /* safe null-check */,
@@ -96,11 +96,11 @@ class LoginViewModel @Inject constructor(
             }, DebugLogUtil::e)
     }
 
-    fun onGenderSelect(gender: Gender) {
+    internal fun onGenderSelect(gender: Gender) {
         this.gender = gender
     }
 
-    fun onYearOfBirthChange(text: String) {
+    internal fun onYearOfBirthChange(text: String) {
         yearOfBirthEntryState.value =
                 text.takeIf { it.isEmpty() }
                     ?.let { WidgetState.NORMAL }
@@ -115,7 +115,7 @@ class LoginViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    fun onLogout() {
+    internal fun onLogout() {
         clearLocalUserDataUseCase.source()
             .doOnSubscribe {
                 ChatInMemoryCache.clear()
@@ -141,7 +141,7 @@ class LoginViewModel @Inject constructor(
     }
 
     // ------------------------------------------
-    fun switchTheme() {
+    internal fun switchTheme() {
         val newTheme = ThemeUtils.switchTheme(styleSpm)
         changeThemeOneShot.value = OneShot(AppTheme(newTheme))
     }
