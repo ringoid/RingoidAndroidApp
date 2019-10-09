@@ -9,6 +9,13 @@ import com.ringoid.origin.AppRes
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.fragment_feed.view.*
 
+/**
+ * Toolbar widget.
+ *
+ * For animations behavior:
+ *
+ * @see https://stackoverflow.com/questions/4728908/android-view-with-view-gone-still-receives-ontouch-and-onclick
+ */
 internal class ToolbarWidget(private val rootView: View) {
 
     private var isVisibleAnimated: Boolean = true
@@ -36,6 +43,7 @@ internal class ToolbarWidget(private val rootView: View) {
 
                     override fun onAnimationEnd(animation: Animation) {
                         rootView.toolbar.changeVisibility(isVisible = false)
+                        rootView.toolbar.clearAnimation()
                     }
 
                     override fun onAnimationRepeat(animation: Animation) {}
@@ -62,6 +70,7 @@ internal class ToolbarWidget(private val rootView: View) {
 
                     override fun onAnimationEnd(animation: Animation) {
                         rootView.toolbar.changeVisibility(isVisible = true)
+                        rootView.toolbar.clearAnimation()
                     }
 
                     override fun onAnimationRepeat(animation: Animation) {}
