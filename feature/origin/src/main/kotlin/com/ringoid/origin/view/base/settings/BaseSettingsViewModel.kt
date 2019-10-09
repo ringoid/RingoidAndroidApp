@@ -47,7 +47,7 @@ abstract class BaseSettingsViewModel(private val postToSlackUseCase: PostToSlack
         val profile = spm.getUserProfileProperties()
         val city = profile.whereLive.takeIf { it.isNotBlank() }?.let { " @ `$it`" } ?: ""
         // wrap up
-        val ratingStr = getPayloadField("rating")?.let { " *rate: $it* " }?.trim() ?: ""
+        val ratingStr = getPayloadField("rating")?.let { "  *rate: $it* " } ?: ""
         val reportText = "*${ageGenderStr.joinToString(" ").trim()}* from `$tag`$city$ratingStr\n\n> ${text.replace("\n", "\n>")}\n\nAndroid ${BuildConfig.VERSION_NAME}\n${Build.MANUFACTURER} ${Build.MODEL}\n\n`$id`${if (createdAt.isNullOrBlank()) "" else " createdAt $createdAt ($daysAgo)"}"
 
         val channelId = when (gender) {
