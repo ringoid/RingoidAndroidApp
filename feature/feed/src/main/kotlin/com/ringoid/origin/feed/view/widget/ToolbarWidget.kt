@@ -21,34 +21,24 @@ internal class ToolbarWidget(private val rootView: View) {
             TranslateAnimation(0f, 0f, 0f, -rootView.appbar.height.toFloat())
                 .apply { duration = 400; fillAfter = true }
                 .let { rootView.appbar.startAnimation(it) }
-        } else {
-            rootView.appbar.changeVisibility(isVisible = false, soft = true)
         }
+        rootView.appbar.changeVisibility(isVisible = false, soft = true)
     }
 
     internal fun expand(animated: Boolean = false) {
+        rootView.appbar.changeVisibility(isVisible = true)
         if (animated) {
             isVisibleAnimated = true
             TranslateAnimation(0f, 0f, -rootView.appbar.height.toFloat(), 0f)
                 .apply { duration = 400; fillAfter = true }
                 .let { rootView.appbar.startAnimation(it) }
-        } else {
-            rootView.appbar.changeVisibility(isVisible = true)
         }
     }
 
-    internal fun isShowAnimated(): Boolean = isVisibleAnimated
+    internal fun isShow(): Boolean = isVisibleAnimated
 
     internal fun show(isVisible: Boolean) {
-        fun isShow(): Boolean = rootView.appbar.height - rootView.appbar.bottom <= 0
-
-        rootView.appbar?.let {
-            if (isShow()) {
-                if (isVisible) return
-            } else {
-                if (!isVisible) return
-            }
-            it.setExpanded(isVisible)
-        }
+        if (isShow() == isVisible) return  // visibility not changed
+        expand(animated = true)
     }
 }

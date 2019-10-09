@@ -256,7 +256,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     override fun onTabTransaction(payload: String?, extras: String?) {
         super.onTabTransaction(payload, extras)
-        toolbarWidget?.show(isVisible = true)  // switch back on any Feed should show toolbar, if was hide
+        toolbarWidget?.show(isVisible = true)  // switch back on any Feed should show toolbar, if it was hide
         /**
          * If user has intended to like someone's profile (feed item) and had no images in her Profile,
          * such intention is memorized. Next time user navigates on Explore screen, such intention should
@@ -449,7 +449,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     override fun onStart() {
         super.onStart()
-        toolbarWidget?.show(isVisible = true)
+        toolbarWidget?.show(isVisible = true)  // show toolbar on start
     }
 
     override fun onResume() {
@@ -558,7 +558,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     }
                     totalScrollUp = 0
                     totalScrollDown += dy
-                    if (toolbarWidget?.isShowAnimated() == true) {
+                    if (toolbarWidget?.isShow() == true) {
                         if (totalScrollDown >= AppRes.FEED_TOOLBAR_HEIGHT) {
                             toolbarWidget?.collapse(animated = true)
                         }
@@ -570,7 +570,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     }
                     totalScrollDown = 0
                     totalScrollUp -= dy
-                    if (toolbarWidget?.isShowAnimated() == false) {
+                    if (toolbarWidget?.isShow() == false) {
                         if (totalScrollUp >= AppRes.FEED_TOOLBAR_HEIGHT || deltaTop() >= 12) {
                             toolbarWidget?.expand(animated = true)
                         }
