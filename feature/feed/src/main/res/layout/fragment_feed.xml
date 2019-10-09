@@ -30,22 +30,13 @@
         android:layout_height="match_parent"
         android:visibility="invisible"/>
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/std_toolbar_height"
         android:background="?refColorBgSemi"
         android:elevation="0dp"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?refColorBgSemi"
-            android:elevation="0dp"
-            app:titleTextColor="?refTextColorPrimary"/>
-    </com.google.android.material.appbar.AppBarLayout>
+        app:titleTextColor="?refTextColorPrimary"/>
 
     <include layout="@layout/dialog_filters"/>
     

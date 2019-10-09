@@ -2,8 +2,10 @@ package com.ringoid.origin.feed.view.widget
 
 import android.view.View
 import android.view.animation.Animation
+import android.view.animation.AnimationSet
 import android.view.animation.TranslateAnimation
 import androidx.appcompat.widget.Toolbar
+import com.ringoid.origin.AppRes
 import com.ringoid.utility.changeVisibility
 import kotlinx.android.synthetic.main.fragment_feed.view.*
 
@@ -24,22 +26,21 @@ internal class ToolbarWidget(private val rootView: View) {
         isVisibleAnimated = false
 
         if (animated) {
-            TranslateAnimation(0f, 0f, 0f, -rootView.appbar.height.toFloat())
-                .apply {
-                    duration = 400
-                    fillAfter = true
-                    setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation) {}
+            AnimationSet(true).apply {
+//                addAnimation(AlphaAnimation(1.0f, 0.0f))
+                addAnimation(TranslateAnimation(0f, 0f, 0f, -AppRes.FEED_TOOLBAR_HEIGHT.toFloat()))
+                duration = 400
+                fillAfter = true
+                setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation) {}
 
-                        override fun onAnimationEnd(animation: Animation) {
-                            rootView.appbar.changeVisibility(isVisible = false)
-                            rootView.appbar.toolbar.changeVisibility(isVisible = false)
-                        }
+                    override fun onAnimationEnd(animation: Animation) {
+                        rootView.toolbar.changeVisibility(isVisible = false)
+                    }
 
-                        override fun onAnimationRepeat(animation: Animation) {}
-                    })
-                }
-                .let { rootView.appbar.startAnimation(it) }
+                    override fun onAnimationRepeat(animation: Animation) {}
+                })
+            }.let { rootView.toolbar.startAnimation(it) }
         }
     }
 
@@ -51,22 +52,21 @@ internal class ToolbarWidget(private val rootView: View) {
         isVisibleAnimated = true
 
         if (animated) {
-            TranslateAnimation(0f, 0f, -rootView.appbar.height.toFloat(), 0f)
-                .apply {
-                    duration = 400
-                    fillAfter = true
-                    setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation) {}
+            AnimationSet(true).apply {
+//                addAnimation(AlphaAnimation(0.0f, 1.0f))
+                addAnimation(TranslateAnimation(0f, 0f, -AppRes.FEED_TOOLBAR_HEIGHT.toFloat(), 0f))
+                duration = 400
+                fillAfter = true
+                setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation) {}
 
-                        override fun onAnimationEnd(animation: Animation) {
-                            rootView.appbar.changeVisibility(isVisible = true)
-                            rootView.appbar.toolbar.changeVisibility(isVisible = true)
-                        }
+                    override fun onAnimationEnd(animation: Animation) {
+                        rootView.toolbar.changeVisibility(isVisible = true)
+                    }
 
-                        override fun onAnimationRepeat(animation: Animation) {}
-                    })
-                }
-                .let { rootView.appbar.startAnimation(it) }
+                    override fun onAnimationRepeat(animation: Animation) {}
+                })
+            }.let { rootView.toolbar.startAnimation(it) }
         }
     }
 
