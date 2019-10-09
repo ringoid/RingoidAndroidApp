@@ -103,6 +103,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
 
         feedAdapter.clear()  // on MODE_DEFAULT - just clear adapter items
+        toolbarWidget?.show()  // show toolbar when feed is empty
         clearScrollData()
 
         getEmptyStateInput(mode)?.let {
@@ -166,8 +167,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
      * animation finishes.
      */
     protected open fun onDiscardProfile(profileId: String): FeedItemVO? =
-        feedAdapter.findModel { it.id == profileId }
-            ?.also { _ ->
+        feedAdapter.findModelAndPosition { it.id == profileId }
+            ?.also { (position, _) ->
                 val count = feedAdapter.getModelsCount()
                 if (count <= 1) {  // remove last feed item - show empty stub directly
                     onDiscardAllProfiles()
@@ -188,6 +189,13 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                         .doFinally {
                             DebugLogUtil.v("Discard item ${profileId.substring(0..3)} has completed")
                             localScopeProvider.stop()
+                            /**
+                             * Discarding first items will make header item to come into viewport,
+                             * thus it should be covered with toolbar, which could be hidden, so show it.
+                             */
+                            if (position <= 1) {
+                                toolbarWidget?.show()  // show toolbar on discard, if was hidden
+                            }
                         }
                         .autoDisposable(localScopeProvider)
                         .subscribe({ _ ->
@@ -202,6 +210,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 }
                 vm.onDiscardProfile(profileId)
             }
+            ?.second  // return model and ignore position
 
     private fun onDiscardProfileRef(profileId: String) {
         onDiscardProfile(profileId)
