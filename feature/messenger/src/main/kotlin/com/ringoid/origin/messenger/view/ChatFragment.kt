@@ -238,7 +238,7 @@ class ChatFragment : BaseDialogFragment<ChatViewModel>() {
             ChatInMemoryCache.addProfileWithPosition(profileId = peerId, position = position to scroll)
         }
         et_message.hideKeyboard()
-        dismiss()
+        dismissAllowingStateLoss()
     }
 
     private fun scrollListToPosition(position: Int) {
