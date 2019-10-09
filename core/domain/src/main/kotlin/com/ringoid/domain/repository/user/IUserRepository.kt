@@ -19,6 +19,8 @@ interface IUserRepository {
     fun deleteUserProfile(): Completable
     fun deleteUserLocalData(): Completable
 
+    fun doOnLogout(): Completable
+
     fun updateUserProfile(essence: UpdateUserProfileEssenceUnauthorized): Completable
     fun updateUserSettings(essence: UpdateUserSettingsEssenceUnauthorized): Completable
 }

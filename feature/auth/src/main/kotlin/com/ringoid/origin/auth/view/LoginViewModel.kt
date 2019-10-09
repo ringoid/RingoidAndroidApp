@@ -8,24 +8,15 @@ import com.ringoid.analytics.Analytics
 import com.ringoid.base.view.ViewState
 import com.ringoid.base.viewmodel.OneShot
 import com.ringoid.debug.DebugLogUtil
-import com.ringoid.domain.interactor.actions.ClearCachedActionObjectsUseCase
 import com.ringoid.domain.interactor.base.Params
-import com.ringoid.domain.interactor.feed.*
-import com.ringoid.domain.interactor.image.ClearCachedImageRequestsUseCase
-import com.ringoid.domain.interactor.image.ClearCachedUserImagesUseCase
-import com.ringoid.domain.interactor.messenger.ClearMessagesUseCase
-import com.ringoid.domain.interactor.user.ClearLocalUserDataUseCase
 import com.ringoid.domain.interactor.user.CreateUserProfileUseCase
-import com.ringoid.domain.memory.ChatInMemoryCache
-import com.ringoid.domain.memory.FiltersInMemoryCache
+import com.ringoid.domain.interactor.user.DoOnLogoutUseCase
 import com.ringoid.domain.misc.Gender
-import com.ringoid.domain.model.actions.ActionObject
 import com.ringoid.domain.model.essence.user.AuthCreateProfileEssence
 import com.ringoid.origin.BaseRingoidApplication
 import com.ringoid.origin.style.AppTheme
 import com.ringoid.origin.style.ThemeUtils
 import com.ringoid.origin.view.base.theme.ThemedBaseViewModel
-import com.ringoid.report.log.Report
 import com.ringoid.utility.isAdultAge
 import com.ringoid.widget.WidgetState
 import com.uber.autodispose.lifecycle.autoDisposable
@@ -35,16 +26,7 @@ import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
     private val createUserProfileUseCase: CreateUserProfileUseCase,
-    private val clearCachedActionObjectsUseCase: ClearCachedActionObjectsUseCase,
-    private val clearLocalUserDataUseCase: ClearLocalUserDataUseCase,
-    private val clearCachedAlreadySeenProfileIdsUseCase: ClearCachedAlreadySeenProfileIdsUseCase,
-    private val clearCachedBlockedProfileIdsUseCase: ClearCachedBlockedProfileIdsUseCase,
-    private val clearCachedLmmUseCase: ClearCachedLmmUseCase,
-    private val clearCachedLmmProfileIdsUseCase: ClearCachedLmmProfileIdsUseCase,
-    private val clearCachedLmmTotalCountsUseCase: ClearCachedLmmTotalCountsUseCase,
-    private val clearCachedUserImagesUseCase: ClearCachedUserImagesUseCase,
-    private val clearCachedImageRequestsUseCase: ClearCachedImageRequestsUseCase,
-    private val clearMessagesUseCase: ClearMessagesUseCase,
+    private val doOnLogoutUseCase: DoOnLogoutUseCase,
     app: Application) : ThemedBaseViewModel(app) {
 
     private val calendar: Calendar by lazy { getApplication<BaseRingoidApplication>().calendar }
@@ -116,26 +98,13 @@ class LoginViewModel @Inject constructor(
 
     // ------------------------------------------
     internal fun onLogout() {
-        clearLocalUserDataUseCase.source()
+        doOnLogoutUseCase.source()
             .doOnSubscribe {
-                ChatInMemoryCache.clear()
-                DebugLogUtil.clear()
-                FiltersInMemoryCache.clear()
-                Report.clear()
-                spm.onLogout()  // clean-up on logout
-                actionObjectPool.finalizePool()  // clear state of pool, if any
-                analyticsManager.exitUserScope(spm)  // clear analytics manager data for the current user
-                app.userScopeProvider.onLogout()  // prevent pool from receiving new state, if subscribed
+                // clear analytics manager data for the current user
+                analyticsManager.exitUserScope(spm)
+                // user scope has ended, all subscribes should be disposed
+                app.userScopeProvider.onLogout()
             }
-            .andThen(clearCachedAlreadySeenProfileIdsUseCase.source())
-            .andThen(clearCachedBlockedProfileIdsUseCase.source())
-            .andThen(clearCachedLmmUseCase.source())
-            .andThen(clearCachedLmmProfileIdsUseCase.source())
-            .andThen(clearCachedLmmTotalCountsUseCase.source())
-            .andThen(clearCachedUserImagesUseCase.source())
-            .andThen(clearCachedImageRequestsUseCase.source())
-            .andThen(clearMessagesUseCase.source())
-            .andThen(clearCachedActionObjectsUseCase.source(params = Params().put("actionType", ActionObject.ACTION_TYPE_MESSAGE_READ)))
             .autoDisposable(this)
             .subscribe({ Timber.i("Local user data has been cleared on logout") }, DebugLogUtil::e)
     }
