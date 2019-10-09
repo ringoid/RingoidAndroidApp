@@ -409,13 +409,19 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             with (toolbar) {
                 setTitle(getToolbarTitleResId())
                 inflateMenu(if (BuildConfig.IS_STAGING) R.menu.feed_toolbar_menu_debug else R.menu.feed_toolbar_menu)
-                setOnClickListener { filtersPopupWidget?.show() }
-                setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.debug -> { onDebugOptionSelect(); true }
-                        R.id.filters -> { filtersPopupWidget?.show(); true }
-                        else -> false
+                setOnClickListener {
+                    if (toolbarWidget?.isShow() == true) {
+                        filtersPopupWidget?.show()
                     }
+                }
+                setOnMenuItemClickListener {
+                    if (toolbarWidget?.isShow() == true) {
+                        when (it.itemId) {
+                            R.id.debug -> { onDebugOptionSelect(); true }
+                            R.id.filters -> { filtersPopupWidget?.show(); true }
+                            else -> false
+                        }
+                    } else false
                 }
             }
         }

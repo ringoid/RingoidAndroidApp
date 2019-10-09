@@ -28,7 +28,7 @@ internal class ToolbarWidget(private val rootView: View) {
                 .let { rootView.appbar.startAnimation(it) }
         }
 
-        rootView.appbar.changeVisibility(isVisible = false, soft = true)
+        rootView.appbar.changeVisibility(isVisible = false)
     }
 
     internal fun show(animated: Boolean = true) {
@@ -47,5 +47,5 @@ internal class ToolbarWidget(private val rootView: View) {
         }
     }
 
-    private fun isShow(): Boolean = isVisibleAnimated
+    internal fun isShow(): Boolean = isVisibleAnimated
 }
