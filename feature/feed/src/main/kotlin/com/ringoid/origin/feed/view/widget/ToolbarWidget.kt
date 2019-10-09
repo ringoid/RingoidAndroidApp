@@ -33,6 +33,7 @@ internal class ToolbarWidget(private val rootView: View) {
 
                         override fun onAnimationEnd(animation: Animation) {
                             rootView.appbar.changeVisibility(isVisible = false)
+                            rootView.appbar.toolbar.changeVisibility(isVisible = false)
                         }
 
                         override fun onAnimationRepeat(animation: Animation) {}
@@ -59,6 +60,7 @@ internal class ToolbarWidget(private val rootView: View) {
 
                         override fun onAnimationEnd(animation: Animation) {
                             rootView.appbar.changeVisibility(isVisible = true)
+                            rootView.appbar.toolbar.changeVisibility(isVisible = true)
                         }
 
                         override fun onAnimationRepeat(animation: Animation) {}
