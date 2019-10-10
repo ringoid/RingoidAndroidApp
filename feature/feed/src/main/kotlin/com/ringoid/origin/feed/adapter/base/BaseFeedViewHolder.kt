@@ -100,13 +100,13 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             scrollListener = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(rv, dx, dy)
-                    rv.linearLayoutManager()?.let {
-                        val from = it.findFirstVisibleItemPosition()
-                        val to = it.findLastVisibleItemPosition()
-                        val items = profileImageAdapter.getItemsExposed(from = from, to = to)
-                        Timber.v("Visible profile images [${items.size}] [$from, $to]: $items")
-                        trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
-                        if (dx != 0) {
+                    if (dx != 0) {
+                        rv.linearLayoutManager()?.let {
+                            val from = it.findFirstVisibleItemPosition()
+                            val to = it.findLastVisibleItemPosition()
+                            val items = profileImageAdapter.getItemsExposed(from = from, to = to)
+                            Timber.v("Visible profile images [${items.size}] [$from, $to]: $items")
+                            trackingBus?.postViewEvent(EqualRange(from = from, to = to, items = items))
                             snapPositionListener?.invoke(from)
                         }
                     }
@@ -148,6 +148,7 @@ abstract class BaseFeedViewHolder(view: View, viewPool: RecyclerView.RecycledVie
             subscription?.dispose()
             subscription = insertItemsSource()
                 .observeOn(AndroidSchedulers.mainThread())
+                // TODO: auto dispose
                 .subscribe({
                     itemView.rv_items.linearLayoutManager()?.scrollToPosition(positionOfImage)
                     itemView.tabs.alpha = if (model.images.size < 2) 0.0f else 1.0f

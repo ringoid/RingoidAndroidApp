@@ -43,6 +43,7 @@ import com.ringoid.utility.*
 import com.ringoid.utility.collection.EqualRange
 import com.ringoid.widget.view._swipes
 import com.uber.autodispose.lifecycle.autoDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
@@ -297,6 +298,11 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     socialTiktok = model.tiktok())
                 navigate(this@FeedFragment, path = "/feed_item_context_menu?position=$position&profileId=${model.id}&imageId=${image.id}&actions=${contextMenuActions()}&excludedReasons=10,50,70&payload=${payload.toJson()}", rc = RequestCode.RC_CONTEXT_MENU_FEED_ITEM)
             }
+            insertItemsSource()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { DebugLogUtil.d2("Inserted ${it.second} feed items at position ${it.first}") }
+                .autoDisposable(scopeProvider)
+                .subscribe(::trackVisibilityOnListInsert, DebugLogUtil::e)
         }
         invalidateScrollCaches()
         timeKeeper.registerCallback { runOnUiThread { context?.toast(OriginR_string.time_keeper_interval_alert_load) } }
@@ -767,7 +773,9 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(rv, dx, dy)
-            trackVisibility(rv)
+            if (dy != 0) {
+                trackVisibility(rv)
+            }
         }
     }
 
@@ -806,4 +814,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
     }
 
+    private fun trackVisibilityOnListInsert(positionAndCount: Pair<Int, Int>) {
+        trackVisibility(rv_items)
+    }
 }
