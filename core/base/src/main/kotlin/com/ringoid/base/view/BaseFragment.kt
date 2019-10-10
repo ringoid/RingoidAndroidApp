@@ -24,6 +24,7 @@ import com.ringoid.domain.manager.IConnectionManager
 import com.ringoid.domain.manager.ISharedPrefsManager
 import com.ringoid.domain.scope.LocalScopeProvider
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
+import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import dagger.android.support.AndroidSupportInjection
 import leakcanary.AppWatcher
 import timber.log.Timber
@@ -32,7 +33,7 @@ import javax.inject.Inject
 abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     protected val localScopeProvider by lazy { LocalScopeProvider() }
-    protected val scopeProvider by lazy { AndroidLifecycleScopeProvider.from(this) }
+    protected val scopeProvider: LifecycleScopeProvider<*> by lazy { AndroidLifecycleScopeProvider.from(this) }
     protected val app by lazy { activity?.application as? IBaseRingoidApplication }
 
     protected lateinit var vm: T
