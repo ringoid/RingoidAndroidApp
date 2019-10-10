@@ -142,8 +142,8 @@ class LikesFeedViewModel @Inject constructor(
         VisualEffectManager.call(MatchVisualEffect(x, y))
     }
 
-    override fun onViewFeedItem(feedItemId: String) {
-        super.onViewFeedItem(feedItemId)
+    override fun onSeenFeedItem(feedItemId: String) {
+        super.onSeenFeedItem(feedItemId)
         markFeedItemAsSeen(feedItemId = feedItemId)  // on view feed item
     }
 

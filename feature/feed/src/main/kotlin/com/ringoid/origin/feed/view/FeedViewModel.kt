@@ -272,7 +272,7 @@ abstract class FeedViewModel(
          * does not work during background. So, as a workaround, such transition should be done here
          * while feed screen is on foreground and chat not yet opened.
          */
-        onViewFeedItem(feedItemId = profileId)
+        onSeenFeedItem(feedItemId = profileId)
         openChatTimers[profileId to imageId] = System.currentTimeMillis()  // record open chat time
     }
 
@@ -369,8 +369,8 @@ abstract class FeedViewModel(
     /**
      * Profile represented as [FeedItem] instance has been seen by user.
      */
-    protected open fun onViewFeedItem(feedItemId: String) {
-        DebugLogUtil.v("On View profile [${getFeedName()}]: ${feedItemId.substring(0..3)}")
+    protected open fun onSeenFeedItem(feedItemId: String) {
+        DebugLogUtil.v("On seen profile [${getFeedName()}]: ${feedItemId.substring(0..3)}")
         // do something when feed item with id specified has been viewed
     }
 
@@ -432,7 +432,7 @@ abstract class FeedViewModel(
         with (viewActionObjectBuffer) {
             mutableSetOf<String>()
                 .apply { keys.forEach { add(it.second) } }
-                .forEach { onViewFeedItem(feedItemId = it) }
+                .forEach { onSeenFeedItem(feedItemId = it) }
 
             values.forEach { it.advance() }
             /**
@@ -459,7 +459,7 @@ abstract class FeedViewModel(
             it.remove(key)  // remove aobjs from collection, but still return it below
             aobj as? ViewActionObject
         }
-        ?.also { onViewFeedItem(it.targetUserId) }
+        ?.also { onSeenFeedItem(it.targetUserId) }
 
     // ------------------------------------------
     /**
