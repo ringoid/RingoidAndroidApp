@@ -4,7 +4,8 @@ import com.ringoid.domain.action_storage.TriggerStrategy
 import com.ringoid.utility.randomInt
 
 open class DurableActionObject(
-    override var timeInMillis: Long = 1L, override var isHidden: Boolean = false,
+    override var timeInMillis: Long = 1L,
+    override var isHidden: Boolean = false,
     id: Int = randomInt(),
     actionTime: Long = System.currentTimeMillis(), actionType: String,
     sourceFeed: String,
