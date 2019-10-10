@@ -766,36 +766,44 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     // ------------------------------------------
     private val visibilityTrackingScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-            fun trackVisibility(rv: RecyclerView) {
-                rv.linearLayoutManager()?.let {
-                    val from = it.findFirstVisibleItemPosition()
-                    val to = it.findLastVisibleItemPosition()
-                    if (from == RecyclerView.NO_POSITION || to == RecyclerView.NO_POSITION) {
-                        return  // avoid internal inconsistent calls while RecyclerView is adjusting
-                    }
-
-                    val items = feedAdapter.getItemsExposed(from = from, to = to)
-                    // use 0th image, because cannot access currently visible image on feed item, see [FeedViewModel::onViewVertical] for more info
-                    var range = EqualRange(from = from, to = to,
-                        items = items.map {
-                            val image = if (it.isRealModel && it.images.isNotEmpty()) it.images[0] else EmptyImage
-                            ProfileImageVO(profileId = it.id, image = image)
-                        })
-                    range = range.takeIf { feedAdapter.withHeader() }
-                        ?.takeIf { from == 0 }
-                        ?.let { it.dropItems(n = 1) }  // exclude header item from visibility tracking
-                            ?: range  // no header item within the visible range
-                    range = range.takeIf { feedAdapter.withFooter() }
-                        ?.takeIf { to == feedAdapter.footerPosition() }
-                        ?.let { it.dropLastItems(n = 1) }  // exclude footer item from visibility tracking
-                            ?: range  // no footer item within the visible range
-                    Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
-                    feedTrackingBus.postViewEvent(range)
-                }
-            }
-
             super.onScrolled(rv, dx, dy)
             trackVisibility(rv)
         }
     }
+
+    /**
+     * Detects which items are currently visible while feed is scrolling vertically.
+     */
+    private fun trackVisibility(rv: RecyclerView) {
+        rv.linearLayoutManager()?.let {
+            val from = it.findFirstVisibleItemPosition()
+            val to = it.findLastVisibleItemPosition()
+            if (from == RecyclerView.NO_POSITION || to == RecyclerView.NO_POSITION) {
+                return  // avoid internal inconsistent calls while RecyclerView is adjusting
+            }
+
+            val items = feedAdapter.getItemsExposed(from = from, to = to)
+            // use 0th image, because cannot access currently visible image on feed item, see [FeedViewModel::onViewVertical] for more info
+            var range = EqualRange(from = from, to = to,
+                items = items.map { feedItem ->
+                    val image = if (feedItem.isRealModel && feedItem.images.isNotEmpty()) feedItem.images[0]
+                                else EmptyImage
+                    ProfileImageVO(profileId = feedItem.id, image = image)
+                })
+
+            range = range.takeIf { feedAdapter.withHeader() }
+                ?.takeIf { from == 0 }
+                ?.dropItems(n = 1)  // exclude header item from visibility tracking
+                ?: range  // no header item within the visible range
+
+            range = range.takeIf { feedAdapter.withFooter() }
+                ?.takeIf { to == feedAdapter.footerPosition() }
+                ?.dropLastItems(n = 1)  // exclude footer item from visibility tracking
+                ?: range  // no footer item within the visible range
+
+            Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
+            feedTrackingBus.postViewEvent(range)
+        }
+    }
+
 }
