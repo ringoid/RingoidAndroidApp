@@ -20,6 +20,10 @@ class ViewActionObject(
         targetImageId = targetImageId, targetUserId = targetUserId,
         triggerStrategies = triggerStrategies) {
 
+    fun copyWith(timeInMillis: Long, sourceFeed: String): ViewActionObject =
+        ViewActionObject(timeInMillis = timeInMillis, sourceFeed = sourceFeed,
+                         targetImageId = targetImageId, targetUserId = targetUserId)
+
     /**
      * Clones this object, but drops it's accumulated lifetime.
      */

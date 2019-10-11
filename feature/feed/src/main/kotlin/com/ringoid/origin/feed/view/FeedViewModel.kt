@@ -90,9 +90,8 @@ abstract class FeedViewModel(
         if (isVisibleToUser) {
             DebugLogUtil.v("Show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
             viewActionObjectBackup.values.forEach {
-                val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
-                    targetImageId = it.targetImageId, targetUserId = it.targetUserId)
-                addViewObjectToBuffer(aobj)
+                it.copyWith(timeInMillis = 0L, sourceFeed = getFeedName())
+                  .also { aobj -> addViewObjectToBuffer(aobj) }
             }
             viewActionObjectBackup.clear()  // all backup-ed aobjs have been consumed
             // reset time of creation ('actionTime') for hidden action objects as they've became visible now
@@ -371,9 +370,9 @@ abstract class FeedViewModel(
             horizontalPrevRanges[profile.id] = EqualRange(0, 0, listOf(ProfileImageVO(profileId = profile.id, image = image)))
         }
 
-        val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
-            targetImageId = image.id, targetUserId = profile.id)
-        addViewObjectToBuffer(aobj)
+        ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
+                         targetImageId = image.id, targetUserId = profile.id)
+            .also { addViewObjectToBuffer(it) }
     }
 
     open fun onDiscardProfile(profileId: String) {
@@ -477,10 +476,10 @@ abstract class FeedViewModel(
     private fun addViewObjectsToBuffer(items: EqualRange<ProfileImageVO>, tag: String = "") {
         items.forEach {
             if (it.image.isRealModel) {
-                val aobj = ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
-                    targetImageId = it.image.id, targetUserId = it.profileId)
-                aobj.isHidden = !getUserVisibleHint()
-                addViewObjectToBuffer(aobj, tag = tag)
+                ViewActionObject(timeInMillis = 0L, sourceFeed = getFeedName(),
+                                 targetImageId = it.image.id, targetUserId = it.profileId)
+                    .apply { isHidden = !getUserVisibleHint() }
+                    .also { aobj -> addViewObjectToBuffer(aobj, tag = tag) }
             }
         }
     }
