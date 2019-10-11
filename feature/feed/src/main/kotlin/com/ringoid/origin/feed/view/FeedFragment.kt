@@ -15,6 +15,7 @@ import com.jakewharton.rxbinding3.view.touches
 import com.ringoid.base.adapter.OriginListAdapter
 import com.ringoid.base.observeOneShot
 import com.ringoid.base.view.ViewState
+import com.ringoid.base.view.VisibleHint
 import com.ringoid.debug.DebugLogUtil
 import com.ringoid.debug.timer.TimeKeeper
 import com.ringoid.domain.BuildConfig
@@ -88,6 +89,14 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             }
             is ViewState.LOADING -> showLoading(isVisible = true)
             is ViewState.ERROR -> newState.e.handleOnView(this, ::onErrorState) { vm.refresh() /** refresh on connection timeout */ }
+        }
+    }
+
+    override fun onVisibleHintChange(newHint: VisibleHint) {
+        super.onVisibleHintChange(newHint)
+        when (newHint) {
+            VisibleHint.VISIBLE -> trackVisibilityOnListInsert()
+            else -> { /* no-op */ }
         }
     }
 
@@ -302,7 +311,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { DebugLogUtil.d2("Inserted ${it.second} feed items at position ${it.first}") }
                 .autoDisposable(scopeProvider)
-                .subscribe(::trackVisibilityOnListInsert, DebugLogUtil::e)
+                .subscribe({ trackVisibilityOnListInsert() }, DebugLogUtil::e)
         }
         invalidateScrollCaches()
         timeKeeper.registerCallback { runOnUiThread { context?.toast(OriginR_string.time_keeper_interval_alert_load) } }
@@ -379,6 +388,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         fun onExpandFilters() {
             toolbarWidget?.hide(animated = false)  // hide toolbar on show filters popup
             if (isAdded) {
+                Timber.v("Expand filters")
                 childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = true
             }
         }
@@ -386,6 +396,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         fun onHideFilters() {
             toolbarWidget?.show(animated = false)  // show toolbar on hide filters popup
             if (isAdded) {
+                Timber.v("Hide filters")
                 childFragmentManager.findFragmentByTag(BaseFiltersFragment.TAG)?.userVisibleHint = false
             }
         }
@@ -814,7 +825,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         }
     }
 
-    private fun trackVisibilityOnListInsert(positionAndCount: Pair<Int, Int>) {
+    private fun trackVisibilityOnListInsert() {
         trackVisibility(rv_items)
     }
 }
