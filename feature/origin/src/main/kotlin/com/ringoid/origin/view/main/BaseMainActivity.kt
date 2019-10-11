@@ -126,6 +126,7 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
 
     override fun onStart() {
         super.onStart()
+        fragNav.currentFrag?.userVisibleHint = true
         showDebugView()
     }
 

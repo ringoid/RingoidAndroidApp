@@ -136,7 +136,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-//        refreshVisibleHint()
+        refreshVisibleHint()
         super.setUserVisibleHint(isVisibleToUser)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("setUserVisibleHint: $isVisibleToUser")
@@ -230,8 +230,6 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         if (isOnFreshStart) {
             vm.onFreshStart()
             isOnFreshStart = false
-        } else {
-//            refreshVisibleHint()
         }
         NavigationRegistry.recordCurrentScreen(screen = appScreen())
         vm.onStart()
@@ -264,7 +262,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     override fun onStop() {
-//        visibleHint.value = VisibleHint.GONE
+        visibleHint.value = VisibleHint.STOPPED
         super.onStop()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onStop")
