@@ -22,9 +22,9 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
     fun copyWith(items: List<T>): EqualRange<T> {
         val delta = items.size - size
         return when {
-            delta == 0 -> EqualRange(from, to, items)
-            delta > 0 -> EqualRange(from, to + delta, items)  // items is longer
-            delta < 0 -> EqualRange(from, to - delta, items)  // items is shorter
+            delta == 0 -> EqualRange(from, to, items)  // range size not changed, some items could be changed
+            delta > 0 -> EqualRange(from, to + delta, items)  // range's become longer
+            delta < 0 -> EqualRange(from, to - delta, items)  // range's become shorter
             else -> EqualRange(from, to, items)  // unreachable case
         }
     }
