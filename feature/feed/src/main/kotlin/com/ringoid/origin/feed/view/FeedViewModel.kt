@@ -392,10 +392,17 @@ abstract class FeedViewModel(
      * be gone, so that new [onViewVertical] during scroll will operate with correct feed items.
      */
     internal fun onSettleVisibleItemsAfterDiscard(items: List<FeedItemVO>) {
+        fun log(tag: String) {
+            if (BuildConfig.IS_STAGING) {
+                val logStr = "[${verticalPrevRange?.size ?: 0}]: ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}"
+                DebugLogUtil.v("Settle on discard [vert], $tag $logStr")
+            }
+        }
+
         val fixItems = items.map { ProfileImageVO(it.id, image = horizontalPrevRanges[it.id]?.pickOne()?.image ?: it.images[it.positionOfImage]) }
-        DebugLogUtil.v("Settle on discard [vert], before [${verticalPrevRange?.size ?: 0}]: ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}")
+        log(tag = "before")
         verticalPrevRange = verticalPrevRange?.copyWith(fixItems)
-        DebugLogUtil.v("Settle on discard [vert], after [${verticalPrevRange?.size ?: 0}]: ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}")
+        log(tag = "after")
     }
 
     // --------------------------------------------------------------------------------------------
