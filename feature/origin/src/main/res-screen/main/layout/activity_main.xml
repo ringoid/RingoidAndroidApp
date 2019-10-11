@@ -22,6 +22,15 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <com.ringoid.origin.view.debug.DebugVisibilityView
+        android:id="@+id/debug_vis_view"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/widget_debug_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <com.ringoid.widget.view.AlertPopup
         android:id="@+id/alert_no_push"
         android:layout_marginTop="@dimen/std_margin_64"
