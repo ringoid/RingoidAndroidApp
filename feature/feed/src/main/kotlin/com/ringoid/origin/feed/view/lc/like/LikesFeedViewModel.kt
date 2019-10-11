@@ -115,8 +115,8 @@ class LikesFeedViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun handleUserVisibleHint(isVisibleToUser: Boolean) {
-        super.handleUserVisibleHint(isVisibleToUser)
+    override fun handleVisibleHintChange(isVisibleToUser: Boolean) {
+        super.handleVisibleHintChange(isVisibleToUser)
         if (isVisibleToUser) {  /** switched to this LC tab */
             if (badgeIsOn) {  /** has new feed items */
                 analyticsManager.fireOnce(Analytics.AHA_FIRST_LIKES_YOU, "sourceFeed" to getFeedName())

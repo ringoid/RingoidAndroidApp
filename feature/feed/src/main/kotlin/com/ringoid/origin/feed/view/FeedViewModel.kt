@@ -85,16 +85,8 @@ abstract class FeedViewModel(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-//    override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
-//        val changed = super.setUserVisibleHint(isVisibleToUser)
-//        DebugLogUtil.v("Handle user visible hint change: hint=$isVisibleToUser, changed=$changed")
-//        if (changed) {
-//            handleUserVisibleHint(isVisibleToUser)
-//        }
-//        return changed
-//    }
-
-    protected open fun handleUserVisibleHint(isVisibleToUser: Boolean) {
+    override fun handleVisibleHintChange(isVisibleToUser: Boolean) {
+        super.handleVisibleHintChange(isVisibleToUser)
         if (isVisibleToUser) {
             DebugLogUtil.v("Show feed '${getFeedName()}'... restore [${viewActionObjectBackup.size}] active VIEWs: ${viewActionObjectBackup.values.joinToString("\n\t\t", "\n\t\t", transform = { it.toActionString() })}")
             viewActionObjectBackup.values.forEach {
