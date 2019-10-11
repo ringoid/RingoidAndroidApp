@@ -146,17 +146,21 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
     // --------------------------------------------------------------------------------------------
     protected fun getUserVisibleHint(): Boolean = userVisibilityHint
 
-    open fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean =
-        setUserVisibleHintInternal(isVisibleToUser)
-
-    internal fun setUserVisibleHintInternal(isVisibleToUser: Boolean): Boolean {
+    internal fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
         val changed = userVisibilityHint != isVisibleToUser
         "Set user visibility hint: $isVisibleToUser (changed=$changed)".let { str ->
             Timber.tag(javaClass.simpleName); Timber.i(str)
             DebugLogUtil.lifecycle(this, str)
         }
         userVisibilityHint = isVisibleToUser  // only set flag without side effects
+        if (changed) {  // don't handle if already handled this change before
+            handleVisibleHintChange(isVisibleToUser = isVisibleToUser)
+        }
         return changed
+    }
+
+    protected open fun handleVisibleHintChange(isVisibleToUser: Boolean) {
+        // override in subclasses
     }
 
     /* Event Bus */

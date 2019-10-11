@@ -106,14 +106,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         if (isViewModelInitialized) {
             vm.onBeforeTabSelect()
         }
-        if (isAdded) {
-            childFragmentManager.fragments.forEach {
-                it.takeIf { it.isAdded }
-                    ?.takeIf { it is BaseFragment<*> }
-                    ?.let { it as BaseFragment<*> }
-                    ?.onBeforeTabSelect()
-            }
-        }
+        // recursively loop over all child fragments and perform same action on them
+        doOnChildFragments { onBeforeTabSelect() }
         // override in subclasses
     }
 
@@ -141,6 +135,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("setUserVisibleHint: $isVisibleToUser")
         DebugLogUtil.lifecycle(this, "setUserVisibleHint: $isVisibleToUser")
+        // recursively loop over all child fragments and perform same action on them
+        doOnChildFragments { userVisibleHint = isVisibleToUser }
     }
 
     protected fun doPostponedTabTransaction() {
@@ -202,7 +198,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         val viewModelParams = onBeforeViewModelInit()
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
             // actualize visible hint on viewModel
-            setUserVisibleHintInternal(isVisibleToUser = visibleHint.value == VisibleHint.VISIBLE)
+            setUserVisibleHint(isVisibleToUser = visibleHint.value == VisibleHint.VISIBLE)
             // tie observer to view's lifecycle rather than Fragment's one
             with(viewLifecycleOwner) {
                 subscribeOnBusEvents()
@@ -292,5 +288,15 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onDetach")
         DebugLogUtil.lifecycle(this, "onDetach")
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private fun doOnChildFragments(action: BaseFragment<*>.() -> Unit) {
+        if (isAdded) {
+            childFragmentManager.fragments
+                .filterIsInstance(BaseFragment::class.java)
+                .filter { it.isAdded }
+                .forEach { it.action() }
+        }
     }
 }
