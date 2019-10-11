@@ -15,6 +15,7 @@ import com.ringoid.base.eventbus.BusEvent
 import com.ringoid.base.livedata.ActiveMutableLiveData
 import com.ringoid.base.view.BaseFragment
 import com.ringoid.base.view.ViewState
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.action_storage.IActionObjectPool
 import com.ringoid.domain.interactor.user.GetUserAccessTokenUseCase
 import com.ringoid.domain.manager.IConnectionManager
@@ -150,6 +151,10 @@ abstract class BaseViewModel(app: Application) : AutoDisposeViewModel(app) {
 
     internal fun setUserVisibleHintInternal(isVisibleToUser: Boolean): Boolean {
         val changed = userVisibilityHint != isVisibleToUser
+        "Set user visibility hint: $isVisibleToUser (changed=$changed)".let { str ->
+            Timber.tag(javaClass.simpleName); Timber.i(str)
+            DebugLogUtil.lifecycle(this, str)
+        }
         userVisibilityHint = isVisibleToUser  // only set flag without side effects
         return changed
     }
