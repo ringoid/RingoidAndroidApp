@@ -31,21 +31,21 @@ open class BaseFiltersViewModel @Inject constructor(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
-        if (isVisibleToUser) {
-            setUpFilters()
-        }
-        return super.setUserVisibleHint(isVisibleToUser)
-    }
+//    override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
+//        if (isVisibleToUser) {
+//            setUpFilters()
+//        }
+//        return super.setUserVisibleHint(isVisibleToUser)
+//    }
 
     override fun onStart() {
         super.onStart()
-        setUserVisibleHint(isVisibleToUser = true)  // initialize filters
+//        setUserVisibleHint(isVisibleToUser = true)  // initialize filters
     }
 
     override fun onStop() {
         super.onStop()
-        setUserVisibleHint(isVisibleToUser = false)
+//        setUserVisibleHint(isVisibleToUser = false)
     }
 
     // --------------------------------------------------------------------------------------------

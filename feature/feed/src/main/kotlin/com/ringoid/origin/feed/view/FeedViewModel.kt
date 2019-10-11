@@ -85,13 +85,14 @@ abstract class FeedViewModel(
 
     /* Lifecycle */
     // --------------------------------------------------------------------------------------------
-    override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
-        val changed = super.setUserVisibleHint(isVisibleToUser)
-        if (changed) {
-            handleUserVisibleHint(isVisibleToUser)
-        }
-        return changed
-    }
+//    override fun setUserVisibleHint(isVisibleToUser: Boolean): Boolean {
+//        val changed = super.setUserVisibleHint(isVisibleToUser)
+//        DebugLogUtil.v("Handle user visible hint change: hint=$isVisibleToUser, changed=$changed")
+//        if (changed) {
+//            handleUserVisibleHint(isVisibleToUser)
+//        }
+//        return changed
+//    }
 
     protected open fun handleUserVisibleHint(isVisibleToUser: Boolean) {
         if (isVisibleToUser) {
@@ -128,7 +129,6 @@ abstract class FeedViewModel(
         if (willRestart) {
             willRestart = false
             DebugLogUtil.v("Restarting feed '${getFeedName()}'...")
-            setUserVisibleHint(isVisibleToUser = true)
         }
     }
 
@@ -137,7 +137,6 @@ abstract class FeedViewModel(
         willRestart = getUserVisibleHint()
         if (willRestart) {
             DebugLogUtil.v("Stopping feed '${getFeedName()}'...")
-            setUserVisibleHint(isVisibleToUser = false)
         }
     }
 
