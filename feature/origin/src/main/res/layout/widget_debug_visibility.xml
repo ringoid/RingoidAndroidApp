@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_explore"
+        android:text="Explore"
+        android:textSize="@dimen/std_text_10"
+        style="@style/StdText.Secondary"/>
+
+    <TextView
+        android:id="@+id/tv_vis_explore"
+        android:textAllCaps="true"
+        style="@style/StdText.Accent"/>
+
+    <TextView
+        android:id="@+id/tv_likes"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:text="Likes"
+        android:textSize="@dimen/std_text_10"
+        style="@style/StdText.Secondary"/>
+
+    <TextView
+        android:id="@+id/tv_vis_likes"
+        android:textAllCaps="true"
+        style="@style/StdText.Accent"/>
+
+    <TextView
+        android:id="@+id/tv_messages"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:text="Messages"
+        android:textSize="@dimen/std_text_10"
+        style="@style/StdText.Secondary"/>
+
+    <TextView
+        android:id="@+id/tv_vis_messages"
+        android:textAllCaps="true"
+        style="@style/StdText.Accent"/>
+
+    <TextView
+        android:id="@+id/tv_profile"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:text="Profile"
+        android:textSize="@dimen/std_text_10"
+        style="@style/StdText.Secondary"/>
+
+    <TextView
+        android:id="@+id/tv_vis_profile"
+        android:textAllCaps="true"
+        style="@style/StdText.Accent"/>
+
+    <TextView
+        android:id="@+id/tv_explore_filters"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:text="Explore Filters"
+        android:textSize="@dimen/std_text_10"
+        style="@style/StdText.Secondary"/>
+
+    <TextView
+        android:id="@+id/tv_vis_explore_filters"
+        android:textAllCaps="true"
+        style="@style/StdText.Accent"/>
+
+    <TextView
+        android:id="@+id/tv_likes_filters"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:text="Likes Filters"
+        android:textSize="@dimen/std_text_10"
+        style="@style/StdText.Secondary"/>
+
+    <TextView
+        android:id="@+id/tv_vis_likes_filters"
+        android:textAllCaps="true"
+        style="@style/StdText.Accent"/>
+
+    <TextView
+        android:id="@+id/tv_messages_filters"
+        android:layout_marginTop="@dimen/std_margin_8"
+        android:text="Messages Filters"
+        android:textSize="@dimen/std_text_10"
+        style="@style/StdText.Secondary"/>
+
+    <TextView
+        android:id="@+id/tv_vis_messages_filters"
+        android:textAllCaps="true"
+        style="@style/StdText.Accent"/>
+</merge>
