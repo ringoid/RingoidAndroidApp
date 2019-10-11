@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.ringoid.base.IBaseRingoidApplication
+import com.ringoid.base.debug.DebugVisibilityLogUtil
 import com.ringoid.base.navigation.AppScreen
 import com.ringoid.base.navigation.NavigationRegistry
 import com.ringoid.base.observe
@@ -53,6 +55,13 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     private var lastTabTransactionPayload: String? = null
     private var lastTabTransactionExtras: String? = null
 
+    private val visibleHint by lazy { MutableLiveData<VisibleHint>(VisibleHint.UNKNOWN) }
+    protected fun visibleHint(): LiveData<VisibleHint> = visibleHint
+    private fun refreshVisibleHint() {
+        visibleHint.value = if (userVisibleHint) VisibleHint.VISIBLE
+                            else VisibleHint.GONE
+    }
+
     protected abstract fun getVmClass(): Class<T>  // cannot infer type of T in runtime due to Type Erasure
 
     @LayoutRes protected abstract fun getLayoutId(): Int
@@ -75,6 +84,17 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         // override in subclasses
     }
 
+    protected open fun onVisibleHintChange(newHint: VisibleHint) {
+        Timber.tag("${javaClass.simpleName}[${hashCode()}]")
+        Timber.e("Visible hint has changed to: $newHint")
+        DebugLogUtil.lifecycle(this, "onVisibleHintChange: $newHint")
+        DebugVisibilityLogUtil.log(javaClass.simpleName, newHint)
+        if (isViewModelInitialized) {
+            vm.setUserVisibleHint(isVisibleToUser = newHint == VisibleHint.VISIBLE)
+        }
+        // override in subclasses
+    }
+
     // ------------------------------------------
     /**
      * Called immediately before switching to another [Fragment], so that the current [Fragment] has
@@ -82,7 +102,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
      */
     open fun onBeforeTabSelect() {
         DebugLogUtil.lifecycle(this, "onBeforeTabSelect")
-        if (userVisibleHint) userVisibleHint = false
+        visibleHint.value = VisibleHint.GONE
         if (isViewModelInitialized) {
             vm.onBeforeTabSelect()
         }
@@ -111,19 +131,16 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         DebugLogUtil.lifecycle(this, "onTabTransaction")
         lastTabTransactionPayload = payload
         lastTabTransactionExtras = extras
-        if (!userVisibleHint) userVisibleHint = true
+        visibleHint.value = VisibleHint.VISIBLE
         // override in subclasses
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        val changed = userVisibleHint != isVisibleToUser
+//        refreshVisibleHint()
         super.setUserVisibleHint(isVisibleToUser)
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("setUserVisibleHint: $isVisibleToUser")
         DebugLogUtil.lifecycle(this, "setUserVisibleHint: $isVisibleToUser")
-        if (isViewModelInitialized && changed) {
-            vm.setUserVisibleHint(isVisibleToUser)
-        }
     }
 
     protected fun doPostponedTabTransaction() {
@@ -156,6 +173,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onCreateView")
         DebugLogUtil.lifecycle(this, "onCreateView")
+        viewLifecycleOwner.observe(visibleHint, ::onVisibleHintChange)
         return inflater.inflate(getLayoutId(), container, false)
     }
 
@@ -183,7 +201,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         isActivityCreated = true
         val viewModelParams = onBeforeViewModelInit()
         vm = viewModel(klass = getVmClass(), factory = vmFactory) {
-            setUserVisibleHintInternal(userVisibleHint)  // actualize visible hint on viewModel
+            // actualize visible hint on viewModel
+            setUserVisibleHintInternal(isVisibleToUser = visibleHint.value == VisibleHint.VISIBLE)
             // tie observer to view's lifecycle rather than Fragment's one
             with(viewLifecycleOwner) {
                 subscribeOnBusEvents()
@@ -211,6 +230,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         if (isOnFreshStart) {
             vm.onFreshStart()
             isOnFreshStart = false
+        } else {
+//            refreshVisibleHint()
         }
         NavigationRegistry.recordCurrentScreen(screen = appScreen())
         vm.onStart()
@@ -243,6 +264,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     override fun onStop() {
+//        visibleHint.value = VisibleHint.GONE
         super.onStop()
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
         Timber.v("onStop")
