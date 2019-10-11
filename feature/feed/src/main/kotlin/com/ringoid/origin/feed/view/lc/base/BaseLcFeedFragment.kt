@@ -15,13 +15,15 @@ import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.feed.view.lc.FeedCounts
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
+import com.ringoid.origin.view.main.INavTabFragment
 import com.ringoid.origin.view.main.LcNavTab
 import com.ringoid.utility.clickDebounce
 import com.ringoid.utility.communicator
 import com.ringoid.utility.runOnUiThread
 import kotlinx.android.synthetic.main.fragment_feed.*
 
-abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>(), ILcFeedFiltersHost {
+abstract class BaseLcFeedFragment<VM : BaseLcFeedViewModel> : FeedFragment<VM>(),
+    ILcFeedFiltersHost, INavTabFragment {
 
     protected var lcCountHidden: Int = 0
     protected var lcCountShow: Int = 0

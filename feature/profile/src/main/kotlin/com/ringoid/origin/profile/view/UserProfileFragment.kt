@@ -40,6 +40,8 @@ import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.common.IEmptyScreenCallback
 import com.ringoid.origin.view.dialog.Dialogs
 import com.ringoid.origin.view.main.IBaseMainActivity
+import com.ringoid.origin.view.main.INavTabFragment
+import com.ringoid.origin.view.main.NavTab
 import com.ringoid.report.log.Report
 import com.ringoid.utility.*
 import com.ringoid.widget.view._swipes
@@ -49,7 +51,8 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import timber.log.Timber
 import java.util.*
 
-class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmptyScreenCallback {
+class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(),
+    IEmptyScreenCallback, INavTabFragment {
 
     companion object {
         fun newInstance(): UserProfileFragment = UserProfileFragment()
@@ -83,6 +86,8 @@ class UserProfileFragment : BaseFragment<UserProfileFragmentViewModel>(), IEmpty
     override fun getVmClass(): Class<UserProfileFragmentViewModel> = UserProfileFragmentViewModel::class.java
 
     override fun getLayoutId(): Int = R.layout.fragment_profile
+
+    override fun navTab(): NavTab = NavTab.PROFILE
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {

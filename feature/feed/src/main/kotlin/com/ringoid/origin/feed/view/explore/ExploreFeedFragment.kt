@@ -20,12 +20,14 @@ import com.ringoid.origin.feed.view.FeedFragment
 import com.ringoid.origin.navigation.noConnection
 import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
+import com.ringoid.origin.view.main.INavTabFragment
+import com.ringoid.origin.view.main.NavTab
 import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.utility.debugToast
 import com.ringoid.utility.getAttributeColor
 import com.ringoid.utility.runOnUiThread
 
-class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
+class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>(), INavTabFragment {
 
     companion object {
         fun newInstance(): ExploreFeedFragment = ExploreFeedFragment()
@@ -65,6 +67,8 @@ class ExploreFeedFragment : FeedFragment<ExploreFeedViewModel>() {
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_explore_title
 
     override fun contextMenuActions(): String = "like"
+
+    override fun navTab(): NavTab = NavTab.EXPLORE
 
     // --------------------------------------------------------------------------------------------
     override fun onViewStateChange(newState: ViewState) {

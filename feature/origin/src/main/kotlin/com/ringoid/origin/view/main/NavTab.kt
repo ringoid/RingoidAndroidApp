@@ -52,3 +52,8 @@ enum class LcNavTab(val feedName: String) {
             }
     }
 }
+
+interface INavTabFragment {
+
+    fun navTab(): NavTab
+}

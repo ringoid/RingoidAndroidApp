@@ -38,6 +38,7 @@ import com.ringoid.origin.view.dialog.IDialogCallback
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.origin.view.main.NavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MATCH
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_MESSAGE
 import com.ringoid.report.log.Report
@@ -83,6 +84,8 @@ class MessagesFeedFragment : BaseLcFeedFragment<MessagesFeedViewModel>(), IChatH
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_messages_title
 
     override fun contextMenuActions(): String = "chat"
+
+    override fun navTab(): NavTab = NavTab.MESSAGES
 
     // --------------------------------------------------------------------------------------------
     override fun setDefaultToolbarTitle() {

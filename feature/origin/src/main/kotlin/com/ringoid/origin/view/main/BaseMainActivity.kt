@@ -84,13 +84,22 @@ abstract class BaseMainActivity<VM : BaseMainViewModel> : BasePermissionActivity
         }
 
         bottom_bar.apply {
-            setOnNavigationItemSelectedListener {
+            setOnNavigationItemSelectedListener { tab ->
                 (fragNav.currentFrag as? BaseFragment<*>)?.let { fragment ->
-                    fragment.onBeforeTabSelect()
-                    fragment.setLastTabTransactionPayload(tabPayload)
-                    fragment.setLastTabTransactionExtras(tabExtras)
-                }
-                fragNav.switchTab(it.ordinal)
+                    fragment
+                        .takeIf { it is INavTabFragment }
+                        ?.let { it as? INavTabFragment }
+                        ?.navTab()
+                        ?.takeIf { it != tab }  // switch another tab
+                        ?.let {
+                            with (fragment) {
+                                onBeforeTabSelect()
+                                setLastTabTransactionPayload(tabPayload)
+                                setLastTabTransactionExtras(tabExtras)
+                            }
+                            fragNav.switchTab(tab.ordinal)
+                        }
+                } ?: run { fragNav.switchTab(tab.ordinal) }  // switch w.o checking current fragment
             }
             setOnNavigationItemReselectedListener {
                 (fragNav.currentFrag as? BaseFragment<*>)?.onTabReselect(tabPayload)

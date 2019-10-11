@@ -25,6 +25,7 @@ import com.ringoid.origin.view.common.EmptyFragment
 import com.ringoid.origin.view.filters.BaseFiltersFragment
 import com.ringoid.origin.view.main.IBaseMainActivity
 import com.ringoid.origin.view.main.LcNavTab
+import com.ringoid.origin.view.main.NavTab
 import com.ringoid.origin.view.particles.PARTICLE_TYPE_LIKE
 import com.ringoid.utility.communicator
 import com.ringoid.utility.getAttributeColor
@@ -68,6 +69,8 @@ class LikesFeedFragment : BaseLcFeedFragment<LikesFeedViewModel>() {
     override fun getToolbarTitleResId(): Int = OriginR_string.feed_likes_you_title
 
     override fun contextMenuActions(): String = "match"
+
+    override fun navTab(): NavTab = NavTab.LIKES
 
     // --------------------------------------------------------------------------------------------
     override fun setDefaultToolbarTitle() {
