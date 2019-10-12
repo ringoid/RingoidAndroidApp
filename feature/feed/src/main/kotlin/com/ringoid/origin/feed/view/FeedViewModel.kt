@@ -335,6 +335,7 @@ abstract class FeedViewModel(
             ?.let { range ->
                 Timber.v("Excluded items in [vertical] range ${range.range()}, consume VIEW action objects")
                 logViewObjectsBufferState("before [vert]")  // show view aobjs buffer contents in debug logs
+                logVerticalPrevRangeState(tag = "Vertical prev range [before]")
                 range.pickOne()
                     ?.let { horizontalPrevRanges[it.profileId] }
                     ?.also { advanceAndPushViewObjects(keys = it.map { it.image.id to it.profileId }) }
@@ -354,6 +355,7 @@ abstract class FeedViewModel(
         items.filter { !horizontalPrevRanges.containsKey(it.profileId) }
              .forEach { horizontalPrevRanges[it.profileId] = EqualRange(from = 0, to = 0, items = listOf(it)) }
         verticalPrevRange = fixRange
+        logVerticalPrevRangeState(tag = "Vertical prev range [after]")
     }
 
     /**
@@ -460,7 +462,6 @@ abstract class FeedViewModel(
         viewActionObjectBuffer.keys.find { it.second == profileId } != null
 
     private fun logViewObjectsBufferState(tag: String) {
-        logVerticalPrevRangeState(tag = "Vertical prev range [$tag]")
         if (BuildConfig.DEBUG && targetVersion(Build.VERSION_CODES.O)) {
             DebugLogUtil.d("View buffer [$tag]:\n${viewActionObjectBuffer.values.joinToString("\n\t\t","\t\t", transform = { it.toActionString() })}")
         }
@@ -468,7 +469,7 @@ abstract class FeedViewModel(
 
     private fun logVerticalPrevRangeState(tag: String) {
         if (BuildConfig.DEBUG) {
-            val logStr = "[${verticalPrevRange?.size ?: 0}]: ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}"
+            val logStr = "[${verticalPrevRange?.size ?: 0}](${verticalPrevRange?.from ?: -1}..${verticalPrevRange?.to ?: -1}): ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}"
             DebugLogUtil.v("$tag $logStr")
         }
     }
