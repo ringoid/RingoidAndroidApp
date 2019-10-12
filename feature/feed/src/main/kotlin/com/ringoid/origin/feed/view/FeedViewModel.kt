@@ -391,17 +391,10 @@ abstract class FeedViewModel(
      * be gone, so that new [onViewVertical] during scroll will operate with correct feed items.
      */
     internal fun onSettleVisibleItemsAfterDiscard(items: List<FeedItemVO>) {
-        fun log(tag: String) {
-            if (BuildConfig.IS_STAGING) {
-                val logStr = "[${verticalPrevRange?.size ?: 0}]: ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}"
-                DebugLogUtil.v("Settle on discard [vert], $tag $logStr")
-            }
-        }
-
         val fixItems = items.map { ProfileImageVO(it.id, image = horizontalPrevRanges[it.id]?.pickOne()?.image ?: it.images[it.positionOfImage]) }
-        log(tag = "before")
+        logVerticalPrevRangeState(tag = "Settle on discard [vert], before")
         verticalPrevRange = verticalPrevRange?.copyWith(fixItems)
-        log(tag = "after")
+        logVerticalPrevRangeState(tag = "Settle on discard [vert], after")
     }
 
     // --------------------------------------------------------------------------------------------
@@ -467,8 +460,16 @@ abstract class FeedViewModel(
         viewActionObjectBuffer.keys.find { it.second == profileId } != null
 
     private fun logViewObjectsBufferState(tag: String) {
+        logVerticalPrevRangeState(tag = "Vertical prev range [$tag]")
         if (BuildConfig.DEBUG && targetVersion(Build.VERSION_CODES.O)) {
             DebugLogUtil.d("View buffer [$tag]:\n${viewActionObjectBuffer.values.joinToString("\n\t\t","\t\t", transform = { it.toActionString() })}")
+        }
+    }
+
+    private fun logVerticalPrevRangeState(tag: String) {
+        if (BuildConfig.DEBUG) {
+            val logStr = "[${verticalPrevRange?.size ?: 0}]: ${verticalPrevRange?.joinToString { it.profileId.substring(0..3) }}"
+            DebugLogUtil.v("$tag $logStr")
         }
     }
 
