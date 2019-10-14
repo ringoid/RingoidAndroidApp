@@ -36,16 +36,14 @@ abstract class LcFeedFiltersViewModel(
                         .put(filtersSource.getFilters())
             }
             .flatMapSingle { getLcUseCountersCase.source(params = it) }
+            .map {
+                FeedFilterCounts(
+                    countLikes = it.likes.size,
+                    countMessages = it.messages.size,
+                    totalNotFilteredLikes = it.totalNotFilteredLikes,
+                    totalNotFilteredMessages = it.totalNotFilteredMessages)
+            }
             .autoDisposable(this)
-            .subscribe({
-                val counts =
-                    FeedFilterCounts(
-                        countLikes = it.likes.size,
-                        countMessages = it.messages.size,
-                        totalNotFilteredLikes = it.totalNotFilteredLikes,
-                        totalNotFilteredMessages = it.totalNotFilteredMessages)
-
-                filterCountsOneShot.value = OneShot(counts)
-            }, DebugLogUtil::e)
+            .subscribe({ filterCountsOneShot.value = OneShot(it) }, DebugLogUtil::e)
     }
 }
