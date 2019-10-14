@@ -86,7 +86,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     protected open fun onVisibleHintChange(newHint: VisibleHint) {
         Timber.tag("${javaClass.simpleName}[${hashCode()}]")
-        Timber.e("Visible hint has changed to: $newHint")
+        Timber.d("Visible hint has changed to: $newHint")
         DebugLogUtil.lifecycle(this, "onVisibleHintChange: $newHint")
         DebugVisibilityLogUtil.log(javaClass.simpleName, newHint)
         if (isViewModelInitialized) {
