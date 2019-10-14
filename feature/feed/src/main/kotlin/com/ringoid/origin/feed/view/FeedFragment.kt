@@ -309,7 +309,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             }
             insertItemsSource()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { DebugLogUtil.d2("Inserted ${it.second} feed items at position ${it.first}") }
+                .doOnNext { DebugLogUtil.d2("Inserted ${it.second} feed items at position ${it.first} [${this@FeedFragment.javaClass.simpleName}]") }
                 .autoDisposable(scopeProvider)
                 .subscribe({ trackVisibilityOnListInsert() }, DebugLogUtil::e)
         }
