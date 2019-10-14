@@ -95,7 +95,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     override fun onVisibleHintChange(newHint: VisibleHint) {
         super.onVisibleHintChange(newHint)
         when (newHint) {
-            VisibleHint.VISIBLE -> trackVisibilityOnListInsert()
+            VisibleHint.VISIBLE -> view?.delay { trackVisibilityOnListInsert() }
             else -> { /* no-op */ }
         }
     }
