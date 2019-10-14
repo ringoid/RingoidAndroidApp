@@ -20,8 +20,8 @@ open class BaseFiltersViewModel @Inject constructor(
     internal fun filters(): LiveData<Filters> = filters
     internal fun filtersChangeOneShot(): LiveData<OneShot<Boolean>> = filtersChangeOneShot
 
-    private val filtersChanged = PublishSubject.create<Boolean>()
-    protected fun filtersChangedSource(): Observable<Boolean> = filtersChanged.hide()
+    private val filtersUpdateRequest = PublishSubject.create<Boolean>()
+    protected fun filtersUpdateRequestSource(): Observable<Boolean> = filtersUpdateRequest.hide()
 
     private fun setUpFilters() {
         val filtersValue = filtersSource.getFilters()
@@ -40,7 +40,7 @@ open class BaseFiltersViewModel @Inject constructor(
 
     // --------------------------------------------------------------------------------------------
     internal fun requestFiltersForUpdate() {
-        filtersChanged.onNext(true)
+        filtersUpdateRequest.onNext(true)
     }
 
     internal fun setMinMaxAge(minAge: Int, maxAge: Int) {
