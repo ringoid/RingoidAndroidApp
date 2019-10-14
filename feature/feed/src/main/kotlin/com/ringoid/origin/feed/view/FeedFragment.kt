@@ -296,7 +296,12 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
         feedAdapter = createFeedAdapter().apply {
             onBeforeLikeListener = { vm.onBeforeLike(position = it) }
             onImageTouchListener = { x, y -> vm.onImageTouch(x, y) }
-            onScrollHorizontalListener = { showRefreshPopup(isVisible = false) }
+            onScrollHorizontalListener = {
+                showRefreshPopup(isVisible = false)
+                if (totalScrollDown >= AppRes.FEED_TOOLBAR_HEIGHT) {
+                    toolbarWidget?.hide()
+                }
+            }
             settingsClickListener = { model: FeedItemVO, position: Int, positionOfImage: Int ->
                 vm.onSettingsClick(profileId = model.id)
                 val image = model.images[positionOfImage]
@@ -557,13 +562,15 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
 
     /* Scroll listeners */
     // --------------------------------------------------------------------------------------------
+    private var instantTotalScrollDown: Int = 0
+    private var instantTotalScrollUp: Int = 0
     private var totalScrollDown: Int = 0
-    private var totalScrollUp: Int = 0
     private var headerView: View? = null
 
     private fun clearScrollData() {
+        instantTotalScrollDown = 0
+        instantTotalScrollUp = 0
         totalScrollDown = 0
-        totalScrollUp = 0
         headerView = null
     }
 
@@ -584,9 +591,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     if (btn_refresh_popup.isVisible()) {
                         showRefreshPopup(isVisible = false)
                     }
-                    totalScrollUp = 0
+                    instantTotalScrollUp = 0
+                    instantTotalScrollDown += dy
                     totalScrollDown += dy
-                    if (totalScrollDown >= AppRes.FEED_TOOLBAR_HEIGHT) {
+                    if (instantTotalScrollDown >= AppRes.FEED_TOOLBAR_HEIGHT) {
                         toolbarWidget?.hide()  // hide toolbar on scroll
                     }
                     true
@@ -594,9 +602,10 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     if (!btn_refresh_popup.isVisible()) {
                         showRefreshPopup(isVisible = true)
                     }
-                    totalScrollDown = 0
-                    totalScrollUp -= dy
-                    if (totalScrollUp >= AppRes.FEED_TOOLBAR_HEIGHT || deltaTop() >= 12) {
+                    instantTotalScrollDown = 0
+                    instantTotalScrollUp -= dy
+                    totalScrollDown += dy  // negative value decreases total scroll
+                    if (instantTotalScrollUp >= AppRes.FEED_TOOLBAR_HEIGHT || deltaTop() >= 12) {
                         toolbarWidget?.show()  // show toolbar on scroll
                     }
                     true
