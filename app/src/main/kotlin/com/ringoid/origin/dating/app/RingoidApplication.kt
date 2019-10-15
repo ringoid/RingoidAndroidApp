@@ -46,6 +46,7 @@ class RingoidApplication : BaseRingoidApplication() {
             .also { DebugLogUtil.connectToDb((it as ApplicationComponent).debugLogDao()) }
 
     override fun onCreate() {
+        initializeReportAnalytics()
         super.onCreate()
         initializeAnalytics()
         initializeImageLoader()
@@ -61,7 +62,9 @@ class RingoidApplication : BaseRingoidApplication() {
             .withContinueSessionMillis(10000)
             .withLogLevel(Log.VERBOSE)
             .build(this, BuildConfig.FLURRY_API_KEY)
+    }
 
+    private fun initializeReportAnalytics() {
         Sentry.init(BuildConfig.SENTRY_DSN)
     }
 
