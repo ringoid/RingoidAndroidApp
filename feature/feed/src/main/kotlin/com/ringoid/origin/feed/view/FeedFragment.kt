@@ -802,8 +802,8 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
     /**
      * Detects which items are currently visible while feed is scrolling vertically.
      */
-    private fun trackVisibility(rv: RecyclerView) {
-        rv.linearLayoutManager()?.let {
+    private fun trackVisibility(rv: RecyclerView?) {
+        rv?.linearLayoutManager()?.let {
             val from = it.findFirstVisibleItemPosition()
             val to = it.findLastVisibleItemPosition()
             if (from == RecyclerView.NO_POSITION || to == RecyclerView.NO_POSITION) {
