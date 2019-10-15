@@ -32,7 +32,11 @@ class ActionObjectDbFacadeImpl @Inject constructor(
             .filter { !it.isValid() }
             .toList()
             .flatMap { Single.fromCallable { dao.deleteActionObjects(it) } }
-            .subscribe({ Report.i("Removed invalid aObjs from cache", extras = listOf("size" to "$it")) }, Timber::e)
+            .subscribe({
+                if (it > 0) {
+                    Report.i("Removed invalid aObjs from cache", extras = listOf("size" to "$it"))
+                }
+            }, Timber::e)
 
         // assign 'actionId' to action objects that have it missing
         dao.actionObjects()
@@ -42,7 +46,11 @@ class ActionObjectDbFacadeImpl @Inject constructor(
             .map { it.copyWithActionId(actionId = randomInt()) }
             .toList()
             .flatMap { Single.fromCallable { dao.updateActionObjects(it) } }
-            .subscribe({ Report.i("Assigned actionIds for aObjs in cache", extras = listOf("size" to "$it")) }, Timber::e)
+            .subscribe({
+                if (it > 0) {
+                    Report.i("Assigned actionIds for aObjs in cache", extras = listOf("size" to "$it"))
+                }
+            }, Timber::e)
     }
 
     // ------------------------------------------
