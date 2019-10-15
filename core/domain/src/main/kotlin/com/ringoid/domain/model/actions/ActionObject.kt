@@ -1,5 +1,7 @@
 package com.ringoid.domain.model.actions
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.ringoid.domain.BuildConfig
@@ -21,7 +23,7 @@ open class OriginActionObject(
     @Expose @SerializedName(ActionObject.COLUMN_ACTION_TIME) val actionTime: Long = System.currentTimeMillis(),
     @Expose @SerializedName(ActionObject.COLUMN_ACTION_TYPE) val actionType: String,
     val triggerStrategies: List<TriggerStrategy> = emptyList())
-    : BaseActionObject(), IEssence {
+    : BaseActionObject(), IEssence, Parcelable {
 
     open fun isValid(): Boolean = true
 
@@ -37,6 +39,31 @@ open class OriginActionObject(
     @DebugOnly
     override fun toDebugPayload(): String = toActionString()
     override fun toSentryPayload(): String = toActionString()
+
+    // --------------------------------------------------------------------------------------------
+    override fun describeContents(): Int = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        with (dest) {
+            writeInt(id)
+            writeLong(actionTime)
+            writeString(actionType)
+            // trigger strategies are not serialized
+        }
+    }
+
+    private constructor(source: Parcel): this(
+        id = source.readInt(),
+        actionTime = source.readLong(),
+        actionType = source.readString())
+
+    companion object {
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<OriginActionObject> {
+            override fun createFromParcel(source: Parcel): OriginActionObject = OriginActionObject(source)
+            override fun newArray(size: Int): Array<OriginActionObject?> = arrayOfNulls(size)
+        }
+    }
 }
 
 /**
@@ -76,6 +103,12 @@ open class ActionObject(
         const val ACTION_TYPE_UNLIKE = "UNLIKE"
         const val ACTION_TYPE_VIEW = "VIEW"
         const val ACTION_TYPE_VIEW_CHAT = "VIEW_CHAT"
+
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<ActionObject> {
+            override fun createFromParcel(source: Parcel): ActionObject = ActionObject(source)
+            override fun newArray(size: Int): Array<ActionObject?> = arrayOfNulls(size)
+        }
     }
 
     override fun toString(): String {
@@ -94,4 +127,22 @@ open class ActionObject(
             "p=${targetUserId.substring(0..3)}," +
             "aT=${actionTime % 1000000},$sourceFeed"
         } else sourceFeed
+
+    // --------------------------------------------------------------------------------------------
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        super.writeToParcel(dest, flags)
+        with (dest) {
+            writeString(sourceFeed)
+            writeString(targetImageId)
+            writeString(targetUserId)
+        }
+    }
+
+    private constructor(source: Parcel): this(
+        id = source.readInt(),
+        actionTime = source.readLong(),
+        actionType = source.readString(),
+        sourceFeed = source.readString(),
+        targetImageId = source.readString(),
+        targetUserId = source.readString())
 }

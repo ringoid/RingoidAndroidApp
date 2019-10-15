@@ -40,7 +40,7 @@ data class Message(
     override fun describeContents(): Int = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.apply {
+        with (dest) {
             writeString(id)
             writeString(chatId)
             writeString(clientId)
