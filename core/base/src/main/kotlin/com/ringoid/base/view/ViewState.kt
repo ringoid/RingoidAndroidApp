@@ -2,7 +2,9 @@ package com.ringoid.base.view
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.ringoid.domain.exception.SafeSerializableException
 import kotlinx.android.parcel.Parcelize
+import timber.log.Timber
 
 sealed class ViewState : Parcelable {
 
@@ -52,7 +54,12 @@ sealed class ViewState : Parcelable {
         override fun describeContents(): Int = 0
 
         override fun writeToParcel(dest: Parcel, flags: Int) {
-            dest.writeSerializable(e)
+            try {
+                dest.writeSerializable(e)
+            } catch (ex: Throwable) {
+                Timber.e(ex)
+                dest.writeSerializable(SafeSerializableException(e.javaClass.toString(), e.message ?: ""))
+            }
         }
     }
 
