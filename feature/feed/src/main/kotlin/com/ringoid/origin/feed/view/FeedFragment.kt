@@ -48,6 +48,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_feed.*
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmptyScreenCallback {
 
@@ -193,6 +194,7 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
                     rv_items.itemAnimator
                         .let { it as FeedItemAnimator }
                         .removeAnimationFinishedSource()
+                        .delay(100L, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                         .take(1)  // single-shot subscription
                         .doOnSubscribe { localScopeProvider.start() }
                         .doOnDispose { DebugLogUtil.v("Discard item ${profileId.substring(0..3)}: disposed local subscription") }
