@@ -3,6 +3,7 @@ package com.ringoid.base.adapter
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
+import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IListModel
 import io.reactivex.Observable
@@ -242,10 +243,12 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             throw IllegalArgumentException("Invalid input range: ($from, $to) of $itemCount")
         }
 
+        val xfrom = if (getItemViewType(from) != VIEW_TYPE_NORMAL) from + 1 else from
         val xto = if (getItemViewType(to) != VIEW_TYPE_NORMAL) to - 1 else to
 
         val list = mutableListOf<T>()
-        for (i in from..xto) list.add(getModel(i))
+        for (i in xfrom..xto) list.add(getModel(i))
+//        DebugLogUtil.v("Models in range [$from, $to] ($xfrom, $xto), size: ${list.size} (${helper.currentList.size})")
         return list
     }
 
