@@ -74,6 +74,7 @@ data class ActionObjectDbo(
     internal fun isValid(): Boolean =
         when (actionType) {
             ActionObject.ACTION_TYPE_LOCATION -> ValueUtils.isValidLocation(latitude = latitude, longitude = longitude)
+            ActionObject.ACTION_TYPE_VIEW_CHAT -> targetImageId.isNotBlank()
             else -> true
         }
 
