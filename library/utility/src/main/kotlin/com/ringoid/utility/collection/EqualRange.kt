@@ -20,6 +20,10 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
     }
 
     fun copyWith(items: List<T>): EqualRange<T> {
+        if (items.isEmpty()) {
+            return empty()
+        }
+
         val delta = items.size - size
         return when {
             delta == 0 -> EqualRange(from, to, items)  // range size not changed, some items could be changed
@@ -36,6 +40,11 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
     fun range(): Pair<Int, Int> = from to to
 
     /**
+     * Calculates difference between this range and [new] range.
+     *
+     * this range - [a, b]
+     * new range  - [c, d]
+     *
      *  [a   b]  [c  d] -> [a, b]
      *  [c   d]  [a  b] -> [a, b]
      *  [a  [c   b]  d] -> [a, c)
