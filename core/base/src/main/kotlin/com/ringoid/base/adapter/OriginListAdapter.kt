@@ -3,7 +3,6 @@ package com.ringoid.base.adapter
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
-import com.ringoid.debug.DebugLogUtil
 import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IListModel
 import io.reactivex.Observable

@@ -26,7 +26,8 @@ data class CommitActionsEssence(
             if (!map.containsKey(key)) {
                 map[key] = 0  // create entry by key and initial value
             }
-            map[key]?.plus(1)
+            val x = map[key] ?: 0
+            map[key] = x + 1
         }
 
         val map = mutableMapOf<String, Int>()
