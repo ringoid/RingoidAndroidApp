@@ -61,7 +61,7 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
          */
         if (new.from in from..to && to in new.from..new.to) {
             if (from < new.from) return EqualRange(from, new.from - 1, subList(0, new.from - from))
-            if (from == new.from) return EqualRange.empty()
+            if (from == new.from) return empty()
         }
         /**
          * [a|c  d]  b] => (d  b]
@@ -88,7 +88,7 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
          */
         if (from in new.from..new.to && new.to in from..to) {
             if (new.to < to) return EqualRange(new.to + 1, to, subList(new.to + 1 - from, to + 1 - from))
-            if (new.to == to) return EqualRange.empty()
+            if (new.to == to) return empty()
         }
         /**
          * [a  b][c  d], [c  d][a  b] => [a  b]
