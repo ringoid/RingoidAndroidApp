@@ -9,6 +9,7 @@ import com.ringoid.domain.action_storage.TriggerStrategy
 import com.ringoid.domain.model.IEssence
 import com.ringoid.utility.DebugOnly
 import com.ringoid.utility.randomInt
+import java.io.Serializable
 
 sealed class BaseActionObject
 
@@ -23,7 +24,17 @@ open class OriginActionObject(
     @Expose @SerializedName(ActionObject.COLUMN_ACTION_TIME) val actionTime: Long = System.currentTimeMillis(),
     @Expose @SerializedName(ActionObject.COLUMN_ACTION_TYPE) val actionType: String,
     val triggerStrategies: List<TriggerStrategy> = emptyList())
-    : BaseActionObject(), IEssence, Parcelable {
+    : BaseActionObject(), IEssence, Parcelable, Serializable {
+
+    companion object {
+        private const val serialVersionUID: Long = 400L
+
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<OriginActionObject> {
+            override fun createFromParcel(source: Parcel): OriginActionObject = OriginActionObject(source)
+            override fun newArray(size: Int): Array<OriginActionObject?> = arrayOfNulls(size)
+        }
+    }
 
     open fun isValid(): Boolean = true
 
@@ -56,14 +67,6 @@ open class OriginActionObject(
         id = source.readInt(),
         actionTime = source.readLong(),
         actionType = source.readString())
-
-    companion object {
-        @JvmField
-        val CREATOR = object : Parcelable.Creator<OriginActionObject> {
-            override fun createFromParcel(source: Parcel): OriginActionObject = OriginActionObject(source)
-            override fun newArray(size: Int): Array<OriginActionObject?> = arrayOfNulls(size)
-        }
-    }
 }
 
 /**
