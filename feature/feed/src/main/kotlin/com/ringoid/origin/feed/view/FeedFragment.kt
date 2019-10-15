@@ -811,26 +811,32 @@ abstract class FeedFragment<VM : FeedViewModel> : BaseListFragment<VM>(), IEmpty
             }
 
             val items = feedAdapter.getItemsExposed(from = from, to = to)
-            // use 0th image, because cannot access currently visible image on feed item, see [FeedViewModel::onViewVertical] for more info
-            var range = EqualRange(from = from, to = to,
-                items = items.map { feedItem ->
-                    val image = if (feedItem.isRealModel && feedItem.images.isNotEmpty()) feedItem.images[0]
-                                else EmptyImage
-                    ProfileImageVO(profileId = feedItem.id, image = image)
-                })
+            try {
+                // use 0th image, because cannot access currently visible image on feed item, see [FeedViewModel::onViewVertical] for more info
+                var range = EqualRange(from = from, to = to,
+                    items = items.map { feedItem ->
+                        val image = if (feedItem.isRealModel && feedItem.images.isNotEmpty()) feedItem.images[0]
+                                    else EmptyImage
+                        ProfileImageVO(profileId = feedItem.id, image = image)
+                    })
 
-            range = range.takeIf { feedAdapter.withHeader() }
-                ?.takeIf { from == 0 }
-                ?.dropItems(n = 1)  // exclude header item from visibility tracking
-                ?: range  // no header item within the visible range
+                range = range.takeIf { feedAdapter.withHeader() }
+                    ?.takeIf { from == 0 }
+                    ?.dropItems(n = 1)  // exclude header item from visibility tracking
+                    ?: range  // no header item within the visible range
 
-            range = range.takeIf { feedAdapter.withFooter() }
-                ?.takeIf { to == feedAdapter.footerPosition() }
-                ?.dropLastItems(n = 1)  // exclude footer item from visibility tracking
-                ?: range  // no footer item within the visible range
+                range = range.takeIf { feedAdapter.withFooter() }
+                    ?.takeIf { to == feedAdapter.footerPosition() }
+                    ?.dropLastItems(n = 1)  // exclude footer item from visibility tracking
+                    ?: range  // no footer item within the visible range
 
-            Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
-            feedTrackingBus.postViewEvent(range)
+                Timber.v("Visible feed items [${range.size}] [${range.from}, ${range.to}]: $range")
+                feedTrackingBus.postViewEvent(range)
+
+            } catch (e: IllegalArgumentException) {
+                Report.capture(e, message = e.message, tag = "trackVisibility",
+                               extras = listOf("from" to "$from", "to" to "$to", "size" to "${items.size}"))
+            }
         }
     }
 
