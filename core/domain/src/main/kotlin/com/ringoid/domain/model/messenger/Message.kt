@@ -8,6 +8,7 @@ import com.ringoid.domain.DomainUtil
 import com.ringoid.domain.model.IEssence
 import com.ringoid.domain.model.IListModel
 import com.ringoid.utility.DebugOnly
+import com.ringoid.utility.goodHashCode
 import com.ringoid.utility.randomString
 
 /**
@@ -35,7 +36,7 @@ data class Message(
         text = source.readString() ?: "",
         ts = source.readLong())
 
-    override fun getModelId(): Long = id.hashCode().toLong()
+    override fun getModelId(): Long = id.goodHashCode()
 
     override fun describeContents(): Int = 0
 
