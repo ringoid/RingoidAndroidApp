@@ -1,0 +1,13 @@
+Why Java String hashCode() is not well distributed?
+https://dzone.com/articles/what-is-wrong-with-hashcode-in-javalangstring
+
+Comparison for hash algorithms:
+https://softwareengineering.stackexchange.com/questions/49550/which-hashing-algorithm-is-best-for-uniqueness-and-speed
+
+Murmur algorithm implementation by Green Robot
+http://greenrobot.org/essentials/features/performant-hash-functions-for-java/#Murmur3
+https://github.com/greenrobot/essentials/blob/master/java-essentials/src/main/java/org/greenrobot/essentials/hash/Murmur3F.java
+
+Some Djb2 algorithm implementation
+http://www.cse.yorku.ca/~oz/hash.html
+https://github.com/kfricilone/OpenRS/blob/master/source/net/openrs/util/crypto/Djb2.java
