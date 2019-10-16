@@ -3,6 +3,7 @@ package com.ringoid.utility
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import org.greenrobot.essentials.hash.Murmur3F
 import org.json.JSONObject
 import timber.log.Timber
 import java.io.PrintWriter
@@ -20,6 +21,8 @@ import java.util.regex.Pattern
 const val LOCATION_110m = 0.001
 const val LOCATION_550m = 0.005
 const val LOCATION_EPS = 0.000001
+
+val murmur3F by lazy { Murmur3F() }
 
 /* Misc */
 // ------------------------------------------------------------------------------------------------
@@ -49,6 +52,7 @@ fun randomLong(): Long = randomInt().toLong()
 fun randomString(): String = UUID.randomUUID().toString()
 fun randomString(length: Int): String = randomString().substring(0 until length)
 
+fun String.goodHashCode(): Long = murmur3F.let { it.update(toByteArray(Charsets.UTF_8)); it.value }
 fun String.upToNChar(n: Int): String = substring(0, minOf(length, n))
 
 fun Throwable.stackTraceString(): String {

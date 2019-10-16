@@ -85,6 +85,7 @@ ext {
             fragNav:        "com.ncapdevi:frag-nav:${fragNavVersion}",
             fresco:         "com.facebook.fresco:fresco:${frescoVersion}",
             frescoOkHttp:   "com.facebook.fresco:imagepipeline-okhttp3:${frescoVersion}",
+            greenEssential: "org.greenrobot:essentials:${greenEssentialVersion}",
             gson:           "com.google.code.gson:gson:${gsonVersion}",
             jobQueue:       "com.birbit:android-priority-jobqueue:${jobQueueVersion}",
             jodaTime:       "net.danlew:android.joda:${jodaTimeVersion}",
@@ -715,6 +716,7 @@ ext {
     // ------------------------------------------
     utilityDependencies = [
         [configuration: "implementation", dependency: d_libs.jodaTime],
+        [configuration: "implementation", dependency: d_libs.greenEssential],
     ]
     utilityDependencies += android + androidView + kotlin + log + rx
     testUtilityDependencies = test

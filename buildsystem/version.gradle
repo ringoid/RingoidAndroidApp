@@ -38,6 +38,7 @@ buildscript {
         eventBusVersion = '3.1.1'
         fragNavVersion = '3.3.0'
         frescoVersion = '2.0.0'
+        greenEssentialVersion = '3.0.0-RC1'
         gsonVersion = '2.8.5'
         jobQueueVersion = '2.0.1'
         jodaTimeVersion = '2.10.2'
