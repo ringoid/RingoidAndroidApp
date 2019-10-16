@@ -52,7 +52,13 @@ fun randomLong(): Long = randomInt().toLong()
 fun randomString(): String = UUID.randomUUID().toString()
 fun randomString(length: Int): String = randomString().substring(0 until length)
 
-fun String.goodHashCode(): Long = murmur3F.let { it.update(toByteArray(Charsets.UTF_8)); it.value }
+fun String.goodHashCode(): Long = goodHashCode(engine = murmur3F)
+internal fun String.goodHashCode(engine: Murmur3F): Long = engine.let {
+    it.reset()  // reproduce same hash code for same string
+    it.update(toByteArray(Charsets.UTF_8))
+    it.value
+}
+
 fun String.upToNChar(n: Int): String = substring(0, minOf(length, n))
 
 fun Throwable.stackTraceString(): String {
