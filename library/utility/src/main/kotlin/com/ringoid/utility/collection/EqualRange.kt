@@ -14,7 +14,7 @@ class EqualRange<T>(val from: Int, val to: Int, items: List<T>) : ArrayList<T>(i
             if (to - from + 1 != items.size) {
                 throw IllegalArgumentException("Inconsistency between size of items [${items.size}] and range ($from..$to)")
             }
-        } else if (!items.isEmpty()) {
+        } else if (items.isNotEmpty()) {
             throw IllegalArgumentException("Invalid size for empty range")
         }
     }
