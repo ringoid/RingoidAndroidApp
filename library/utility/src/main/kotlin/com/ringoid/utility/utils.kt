@@ -22,7 +22,7 @@ const val LOCATION_110m = 0.001
 const val LOCATION_550m = 0.005
 const val LOCATION_EPS = 0.000001
 
-val murmur3F by lazy { Murmur3F() }
+val murmur3F by lazy { Murmur3F(randomInt()) }
 
 /* Misc */
 // ------------------------------------------------------------------------------------------------
