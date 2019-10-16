@@ -113,11 +113,11 @@ fun tagLine(prefix: String = "") {
 
 object SysTimber {
 
-    fun d(msg: String) { println(msg) }
-    fun d(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
-    fun i(msg: String) { println(msg) }
-    fun i(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
-    fun e(e: Throwable) { println("${e.javaClass.simpleName}: ${e.message}") }
-    fun v(msg: String) { println(msg) }
-    fun v(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
+    @JvmStatic fun d(msg: String) { println(msg) }
+    @JvmStatic fun d(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
+    @JvmStatic fun i(msg: String) { println(msg) }
+    @JvmStatic fun i(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
+    @JvmStatic fun e(e: Throwable) { println("${e.javaClass.simpleName}: ${e.message}") }
+    @JvmStatic  fun v(msg: String) { println(msg) }
+    @JvmStatic fun v(e: Throwable, msg: String) { println("${e.javaClass.simpleName}: ${e.message} $msg") }
 }

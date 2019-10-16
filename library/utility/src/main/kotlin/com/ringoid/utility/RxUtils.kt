@@ -5,6 +5,18 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
+
+/**
+ * @see https://stackoverflow.com/questions/49863931/rxjava2-buffer-with-debounce
+ */
+fun <T> bufferDebounce(delay: Long, unit: TimeUnit, scheduler: Scheduler): ObservableTransformer<T, List<T>> =
+    ObservableTransformer {
+        it.publish { v ->
+            v.buffer(v.debounce(delay, unit, scheduler)
+                      .takeUntil<T>(v.ignoreElements().toObservable()))
+        }
+    }
 
 //region DoAndWait
 inline fun <T> Maybe<T>.doAndWait(crossinline completableAction: (T) -> Completable): Maybe<T> =

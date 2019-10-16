@@ -28,12 +28,18 @@ import com.ringoid.report.exception.ErrorConnectionTimedOut
 import com.ringoid.report.exception.ThresholdExceededException
 import com.ringoid.report.log.Report
 import com.ringoid.utility.DebugOnly
+import com.ringoid.utility.bufferDebounce
+import com.ringoid.utility.collection.DebugHashItemSet
+import com.ringoid.utility.model.DebugHashItem
 import com.uber.autodispose.lifecycle.autoDisposable
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ExploreFeedViewModel @Inject constructor(
@@ -65,8 +71,11 @@ class ExploreFeedViewModel @Inject constructor(
     internal fun discardProfilesOneShot(): LiveData<OneShot<Collection<String>>> = discardProfilesOneShot
 
     private var isLoadingMore: Boolean = false
-    private var nextPage: Int = 0
     private val distinctIds = mutableSetOf<String>()
+
+    @DebugOnly private var nextPage: Int = 0
+    @DebugOnly private val debugUniqueIdsSource = PublishSubject.create<Pair<DebugHashItem, DebugHashItem>>()
+    @DebugOnly private val debugUniqueIds = DebugHashItemSet { old, new -> debugUniqueIdsSource.onNext(old to new) }
 
     override fun getFeedName(): String = DomainUtil.SOURCE_SCREEN_FEED_EXPLORE
 
@@ -88,6 +97,15 @@ class ExploreFeedViewModel @Inject constructor(
                         }
                 }
             }, DebugLogUtil::e)
+
+        // debug uniqueness of ids in list
+        debugUniqueIdsSource
+            .compose(bufferDebounce(2000L, TimeUnit.MILLISECONDS, Schedulers.computation()))
+            .autoDisposable(this)
+            .subscribe({ collisions ->
+                Report.i("Detect hash collisions on Explore feed",
+                         extras = collisions.map { "collision" to "old: ${it.first}, new: ${it.second}" })
+            }, DebugLogUtil::e)
     }
 
     /* Lifecycle */
@@ -108,7 +126,10 @@ class ExploreFeedViewModel @Inject constructor(
             .doOnSubscribe { viewState.value = ViewState.LOADING }  // load feed items progress
             .doOnSuccess {
                 // distinction is guaranteed by [GetDiscoverUseCase] implementation, so no duplicates here for 'feed'
-                distinctIds.addAll(it.profiles.map { it.id })
+                it.profiles.map { it.id }.let { list ->
+                    distinctIds.addAll(list)
+                    debugUniqueIds.addAllString(list)
+                }
                 feed.value = it  // update feed content, no duplicates
                 /**
                  * Notify state changed on new feed content.
@@ -161,7 +182,8 @@ class ExploreFeedViewModel @Inject constructor(
             }
             .doFinally { isLoadingMore = false }
             .map {
-                val distinctIdsOnPage = it.profiles.map { it.id }.minus(distinctIds)
+                val ids = it.profiles.map { it.id }
+                val distinctIdsOnPage = ids.minus(distinctIds).also { debugUniqueIds.addAllString(it) }
                 if (distinctIdsOnPage.size != it.profiles.size) {
                     // there are duplicates detected on this page with all the previous pages
                     Report.i("Skip duplicates for this page with all the previous pages on Discover",
