@@ -194,6 +194,9 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
             }
         }
 
+    /**
+     * Get item by adapter [position]: either model or header / footer item.
+     */
     protected open fun getItem(position: Int): T =
         when (getItemViewType(position)) {
             VIEW_TYPE_HEADER, VIEW_TYPE_FOOTER, VIEW_TYPE_ERROR, VIEW_TYPE_LOADING -> getStubItem()
@@ -264,7 +267,7 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
         if (to < from) {
             throw IllegalArgumentException("Invalid range: [$from, $to]")
         }
-        if (isEmpty()) {
+        if (isEmpty() && !withAnyOfStubItems()) {
             return emptyList()
         }
 
@@ -287,6 +290,9 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
         else VIEW_TYPE_NORMAL
     }
 
+    /**
+     * Checks whether there is no models in this adapter. Does not count headers and footers.
+     */
     fun isEmpty(): Boolean = helper.currentList.isEmpty()  // don't count header / footer
 
     // ------------------------------------------
@@ -298,6 +304,8 @@ abstract class OriginListAdapter<T : IListModel, VH : BaseViewHolder<T>>(
     fun withFooter(): Boolean = getFooterLayoutResId() != 0 && !withLoader() && !withError()
     fun withLoader(): Boolean = isThereMore
     fun withError():  Boolean = isInErrorState
+    private fun withAnyOfStubItems(): Boolean =
+        withHeader() || withFooter() || withLoader() || withError()
 
     private fun fixUpForHeader(): Int = if (isEmpty()) 0 else if (withHeader()) 1 else 0
     private fun fixUpForFooter(): Int = if (isEmpty()) 0 else if (withFooter()) 1 else 0
