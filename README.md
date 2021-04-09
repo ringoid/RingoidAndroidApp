@@ -1,6 +1,8 @@
 # Ringoid Android App
 A charming dating service.
 
+https://www.youtube.com/watch?v=IKma4MHIq98
+
 ##### Clean Architecture that honors SOLID principles.
 
 ## Data
